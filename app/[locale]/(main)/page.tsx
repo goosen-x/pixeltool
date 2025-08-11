@@ -1,40 +1,12 @@
-import { Container } from '@/components/layout/Container/container'
-import { ScrollSpy } from '@/components/global/ScrollSpy'
-import {
-	ContactSection,
-	SectionExperience,
-	SectionMain,
-	SectionProjects,
-	SectionTechStack,
-	SectionBlog,
-	SectionContact
-} from '@/components/homepage'
-import { BackgroundBeamsWrapper } from '@/components/global/BackgroundBeamsWrapper'
+import { redirect } from 'next/navigation'
 
-type Props = {
-	params: Promise<{
-		locale: string
-	}>
+interface Props {
+  params: Promise<{ locale: string }>
 }
 
-export default async function Home(props: Props) {
-	const params = await props.params
-	
-	return (
-		<>
-			<ScrollSpy />
-			<Container>
-				<SectionMain id='main' />
-				<SectionTechStack id='techstack' />
-				<SectionProjects id='projects' />
-				<SectionExperience id='experience' />
-				<SectionBlog locale={params.locale} />
-				<SectionContact id='contact' />
-				<BackgroundBeamsWrapper />
-			</Container>
-		</>
-	)
+export default async function MainPage({ params }: Props) {
+  const { locale } = await params
+  // Redirect from (main) to the actual home page
+  redirect(`/${locale}`)
 }
-
-// Enable ISR with 30 minutes revalidation for homepage
-export const revalidate = 1800
+EOF < /dev/null
