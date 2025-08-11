@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { Home, FolderOpen, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
-import { CryptoDonationModal } from '@/components/global'
 
 export const FooterNavigation = () => {
 	const t = useTranslations('Header.nav')
@@ -78,7 +77,6 @@ export const FooterNavigation = () => {
 					{tFooter('support.title')}
 				</h3>
 				<div className='flex flex-col gap-2'>
-					<CryptoDonationModal />
 					<a
 						href="https://www.buymeacoffee.com/yourname"
 						target="_blank"

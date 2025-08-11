@@ -8,7 +8,11 @@ import { Home, ChevronRight, Settings, ChevronDown } from 'lucide-react'
 import { widgets, widgetCategories, getWidgetsByCategory } from '@/lib/constants/widgets'
 import { useState, useEffect } from 'react'
 
-export function ProjectsSidebar() {
+interface ProjectsSidebarProps {
+	onLinkClick?: () => void
+}
+
+export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	const pathname = usePathname()
 	const locale = useLocale()
 	const t = useTranslations('projectsPage')
@@ -44,10 +48,10 @@ export function ProjectsSidebar() {
 	}
 
 	return (
-		<aside className="w-64 border-r bg-muted/30 backdrop-blur-sm">
+		<aside className="w-64 h-screen lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm">
 			<div className="flex h-full flex-col">
-				<div className="border-b bg-background/50 px-6 py-4">
-					<h2 className="text-lg font-semibold">{t('title')}</h2>
+				<div className="border-b bg-background/50 px-6 py-4 pt-8 lg:pt-4">
+					<h2 className="text-lg font-heading font-semibold">{t('title')}</h2>
 					<p className="text-sm text-muted-foreground mt-1">
 						{t('description')}
 					</p>
@@ -57,19 +61,20 @@ export function ProjectsSidebar() {
 					<div className="space-y-1">
 						<Link
 							href={`/${locale}/tools`}
+							onClick={onLinkClick}
 							className={cn(
-								"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent/10 hover:text-foreground",
-								pathname === `/${locale}/tools` && "bg-accent text-white"
+								"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-primary/10 hover:text-primary",
+								pathname === `/${locale}/tools` && "bg-primary text-white"
 							)}
 						>
 							<Home className="w-4 h-4" />
 							<span>Overview</span>
 						</Link>
 
-						<div className="my-4 space-y-4">
+						<div className="my-4 space-y-2">
 							{/* Render categories dynamically */}
 							{Object.entries(widgetCategories)
-								.map(([categoryKey, categoryName]) => {
+								.map(([categoryKey, categoryName], idx) => {
 									const categoryWidgets = getWidgetsByCategory(categoryKey as keyof typeof widgetCategories)
 									
 									if (categoryWidgets.length === 0) return null
@@ -77,10 +82,10 @@ export function ProjectsSidebar() {
 									const isCollapsed = collapsedCategories.has(categoryKey)
 									
 									return (
-										<div key={categoryKey}>
+										<div key={categoryKey} className="relative mb-2" style={{zIndex: 100 - idx}}>
 											<button
 												onClick={() => toggleCategory(categoryKey)}
-												className="w-full flex items-center justify-between mb-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground hover:bg-accent/5 transition-all duration-200 rounded-md group"
+												className="w-full flex items-center justify-between mb-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground hover:bg-primary/5 transition-all duration-200 rounded-md group relative z-20"
 											>
 												<span className="group-hover:translate-x-1 transition-transform duration-200">{categoryName}</span>
 												<ChevronDown 
@@ -92,10 +97,10 @@ export function ProjectsSidebar() {
 											</button>
 											<div 
 												className={cn(
-													"overflow-hidden transition-all duration-300 ease-out",
+													"transition-all duration-300 ease-out space-y-0.5 pb-1",
 													isCollapsed 
-														? "max-h-0 opacity-0 transform -translate-y-2" 
-														: "max-h-[1000px] opacity-100 transform translate-y-0"
+														? "max-h-0 opacity-0 transform -translate-y-2 pb-0 overflow-hidden" 
+														: "opacity-100 transform translate-y-0"
 												)}
 											>
 												{categoryWidgets.map((widget, index) => {
@@ -117,9 +122,10 @@ export function ProjectsSidebar() {
 													>
 														<Link
 															href={`/${locale}/tools/${widget.path}`}
+															onClick={onLinkClick}
 															className={cn(
-																"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 hover:bg-accent/10 hover:text-foreground hover:translate-x-1",
-																isActive && "bg-accent text-white"
+																"relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:translate-x-1 isolate",
+																isActive && "bg-primary text-white"
 															)}
 														>
 															<Icon className="w-4 h-4" />
@@ -141,9 +147,10 @@ export function ProjectsSidebar() {
 				<div className="border-t p-4">
 					<Link
 						href={`/${locale}/settings`}
+						onClick={onLinkClick}
 						className={cn(
-							"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent/10 hover:text-foreground",
-							pathname === `/${locale}/settings` && "bg-accent text-white"
+							"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-primary/10 hover:text-primary",
+							pathname === `/${locale}/settings` && "bg-primary text-white"
 						)}
 					>
 						<Settings className="w-4 h-4" />

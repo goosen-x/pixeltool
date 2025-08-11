@@ -55,7 +55,8 @@ import {
 	Fingerprint,
 	TrendingUp,
 	CreditCard,
-	Fuel
+	Fuel,
+	Image
 } from 'lucide-react'
 export interface WidgetFAQ {
 	question: string
@@ -4004,6 +4005,58 @@ export const widgets: Widget[] = [
 						'Могу ли я форматировать минифицированные или компактные данные?',
 					answer:
 						'Да! Форматтер может взять минифицированный/сжатый JSON или компактный YAML и развернуть его с правильными отступами и переносами строк, что значительно облегчает чтение и отладку.'
+				}
+			],
+			he: []
+		}
+	},
+	{
+		id: 'favicon-generator',
+		icon: FileImage,
+		category: 'webdev',
+		translationKey: 'faviconGenerator',
+		path: 'favicon-generator',
+		gradient: 'from-blue-500 to-purple-600',
+		recommendedTools: ['color-converter', 'css-box-shadow', 'html-tree'],
+		difficulty: 'beginner',
+		tags: ['favicon', 'icon', 'generator', 'upload', 'png'],
+		useCase: 'Generate favicon files in multiple sizes and formats for web and mobile platforms',
+		metaDescription: 'Free favicon generator tool. Upload an image and generate favicon files in multiple sizes for websites and mobile apps.',
+		faqs: {
+			en: [
+				{
+					question: 'What image formats can I upload?',
+					answer: 'You can upload PNG, JPG, JPEG, SVG, GIF, and other common image formats. The tool supports files up to 5MB in size.'
+				},
+				{
+					question: 'What favicon sizes are generated?',
+					answer: 'The tool generates 10 different sizes: 16x16 (classic), 32x32 (standard), 48x48 (Windows), 57x57 (iOS), 76x76 (iPad), 120x120 (iPhone Retina), 152x152 (iPad Retina), 180x180 (iPhone X/11/12), 192x192 (Android), and 512x512 (Android large).'
+				},
+				{
+					question: 'What is the best image size to upload?',
+					answer: 'Upload a square image (1:1 aspect ratio) with at least 512x512 pixels for best results. Simple, bold designs work better at small sizes than complex detailed images.'
+				},
+				{
+					question: 'How do I implement the generated favicons?',
+					answer: 'Add the favicon files to your website root directory and include the appropriate <link> tags in your HTML <head> section. The tool provides sample HTML code for implementation.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какие форматы изображений можно загружать?',
+					answer: 'Можно загружать PNG, JPG, JPEG, SVG, GIF и другие распространенные форматы изображений. Инструмент поддерживает файлы размером до 5 МБ.'
+				},
+				{
+					question: 'Какие размеры фавиконок генерируются?',
+					answer: 'Инструмент генерирует 10 различных размеров: 16x16 (классический), 32x32 (стандартный), 48x48 (Windows), 57x57 (iOS), 76x76 (iPad), 120x120 (iPhone Retina), 152x152 (iPad Retina), 180x180 (iPhone X/11/12), 192x192 (Android) и 512x512 (Android большой).'
+				},
+				{
+					question: 'Какой лучший размер изображения для загрузки?',
+					answer: 'Загружайте квадратное изображение (соотношение 1:1) размером не менее 512x512 пикселей для лучших результатов. Простые, яркие дизайны работают лучше в маленьких размерах, чем сложные детализированные изображения.'
+				},
+				{
+					question: 'Как внедрить сгенерированные фавиконки?',
+					answer: 'Добавьте файлы фавиконок в корневую папку вашего сайта и включите соответствующие теги <link> в секцию <head> вашего HTML. Инструмент предоставляет примерный HTML код для внедрения.'
 				}
 			],
 			he: []

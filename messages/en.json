@@ -49,24 +49,6 @@
 			"filename": "CV_Borisenko_Dmitry_Frontend_En.pdf"
 		}
 	},
-	"CryptoDonation": {
-		"title": "Support Development",
-		"subtitle": "Crypto Donation",
-		"supportWithCrypto": "Support with cryptocurrency",
-		"selectNetwork": "Select Network",
-		"amount": "Amount",
-		"sendDonation": "Send Donation",
-		"connectWallet": "Connect Wallet",
-		"walletConnected": "Wallet connected successfully",
-		"connectionError": "Failed to connect wallet",
-		"noWallet": "MetaMask not found. Please install it",
-		"networkError": "Failed to switch network",
-		"enterAmount": "Please enter amount",
-		"donationSent": "Thank you for your donation!",
-		"transactionError": "Transaction failed",
-		"addressCopied": "Address copied to clipboard",
-		"manualTransfer": "Or send directly to this address:"
-	},
 	"Feedback": {
 		"title": "Feedback",
 		"description": "Help us improve by reporting bugs, suggesting features, or sharing your thoughts.",
@@ -256,7 +238,7 @@
 	"Footer": {
 		"slogan": "Every line of code is a step towards perfection. I'm ready to take on your challenge and turn it into a successful project.",
 		"copyright": "Created by Borisenko Dmitry",
-		"description": "View source code on GitHub",
+		"description": "A collection of 50+ professional tools for developers and designers. Converters, generators, formatters - all in one place.",
 		"shortcuts": {
 			"title": "Shortcuts:",
 			"copy": "⌘C Copy",
@@ -269,8 +251,8 @@
 		}
 	},
 	"projectsPage": {
-		"title": "Mini Projects",
-		"description": "A collection of interactive tools and demos built with modern web technologies",
+		"title": "Professional Tools",
+		"description": "50+ free tools for developers and designers",
 		"mainPageSections": "Main Page",
 		"categories": {
 			"css-tools": {
@@ -296,6 +278,9 @@
 		}
 	},
 	"widgets": {
+		"tools": "Tools",
+		"title": "Mini Projects",
+		"description": "Interactive tools and demos",
 		"mainPage": {
 			"main": "Main",
 			"techstack": "Tech Stack",
@@ -1209,6 +1194,19 @@
 		"fuelCalculator": {
 			"title": "Fuel Consumption Calculator",
 			"description": "Calculate fuel consumption, cost, and average consumption per 100 km"
+		},
+		"faviconGenerator": {
+			"title": "Favicon Generator",
+			"description": "Generate favicon files in multiple sizes and formats for web and mobile platforms"
+		},
+		"search": {
+			"placeholder": "Search tools by name, description, or tags...",
+			"categories": "Categories",
+			"allCategories": "All",
+			"results": "{count, plural, =0 {No tools found} =1 {1 tool found} other {# tools found}}",
+			"clearFilters": "Clear filters",
+			"noResults": "No tools found",
+			"noResultsDescription": "Try adjusting your search terms or clearing the filters to see more results."
 		},
 		"rightSidebar": {
 			"widgetInfo": {

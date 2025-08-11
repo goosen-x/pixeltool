@@ -18,17 +18,17 @@ export default async function TestDB() {
 	
 	return (
 		<div className="p-8">
-			<h1 className="text-2xl font-bold mb-4">Database Test Page</h1>
+			<h1 className="text-2xl font-heading font-bold mb-4">Database Test Page</h1>
 			
 			<div className="mb-6">
-				<h2 className="text-xl font-semibold mb-2">Environment Variables:</h2>
+				<h2 className="text-xl font-heading font-semibold mb-2">Environment Variables:</h2>
 				<pre className="bg-gray-100 p-4 rounded">
 					{JSON.stringify(envInfo, null, 2)}
 				</pre>
 			</div>
 			
 			<div className="mb-6">
-				<h2 className="text-xl font-semibold mb-2">Database Connection:</h2>
+				<h2 className="text-xl font-heading font-semibold mb-2">Database Connection:</h2>
 				{error ? (
 					<div className="bg-red-100 text-red-700 p-4 rounded">
 						Error: {error}
@@ -42,7 +42,7 @@ export default async function TestDB() {
 			
 			{posts.length > 0 && (
 				<div>
-					<h2 className="text-xl font-semibold mb-2">Posts:</h2>
+					<h2 className="text-xl font-heading font-semibold mb-2">Posts:</h2>
 					<ul className="space-y-2">
 						{posts.map(post => (
 							<li key={post.id} className="bg-gray-100 p-3 rounded">

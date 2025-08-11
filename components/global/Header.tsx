@@ -5,15 +5,18 @@ import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import ThemeToggle from '@/components/global/ThemeToggle'
 import { LanguageSelect } from '@/components/global/LanguageSelect'
-import { DownloadCV } from '@/components/global/DownloadCV'
 import { Logo } from '@/components/global/Logo'
 import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
+import { Home, Wrench, BookOpen, Mail, Sparkles, ArrowRight, Menu as MenuIcon, X } from 'lucide-react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 const Header = () => {
 	const locale = useLocale()
 	const t = useTranslations('Header')
 	const pathname = usePathname()
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
 	// Clean up any theme transition artifacts on route change
 	useEffect(() => {
@@ -36,9 +39,6 @@ const Header = () => {
 	// Remove locale from segments
 	const segments = pathSegments.slice(1)
 
-	// Check if we're on the main page
-	const isMainPage = segments.length === 0
-
 	// Create breadcrumb items
 	const breadcrumbs = segments.map((segment, index) => {
 		const path = `/${locale}/${segments.slice(0, index + 1).join('/')}`
@@ -50,29 +50,34 @@ const Header = () => {
 	return (
 		<header
 			className={cn(
-				'border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50'
+				'border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm w-full'
 			)}
 		>
-			<div className='px-5'>
-				<div className='flex items-center justify-between h-16'>
+			<div className='w-full px-4 sm:px-6 lg:px-8'>
+				<div className='flex items-center justify-between h-20'>
 					{/* Logo/Brand with Breadcrumbs */}
 					<div className='flex items-center'>
 						<Link
 							href={`/${locale}`}
-							className='flex items-center gap-2 text-2xl font-bold text-foreground hover:text-foreground/80 transition-colors'
+							className='group flex items-center gap-3 text-2xl font-bold text-foreground hover:text-foreground/80 transition-all'
 						>
-							<Logo size={28} />
-							PixelTool
+							<div className='relative'>
+								<Logo size={36} className='group-hover:scale-110 transition-transform' />
+								<div className='absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity' />
+							</div>
+							<span className='font-heading font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
+								PixelTool
+							</span>
 						</Link>
 
 						{/* Breadcrumb navigation */}
 						{breadcrumbs.length > 0 && (
-							<nav className='flex items-center ml-2' aria-label='Breadcrumb'>
+							<nav className='hidden sm:flex items-center ml-4' aria-label='Breadcrumb'>
 								{breadcrumbs.map((crumb, index) => (
 									<div key={crumb.path} className='flex items-center'>
-										<span className='mx-2 text-muted-foreground'>/</span>
+										<span className='mx-3 text-muted-foreground/50'>/</span>
 										{index === breadcrumbs.length - 1 ? (
-											<span className='text-lg font-medium text-primary'>
+											<span className='text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent'>
 												{crumb.label}
 											</span>
 										) : (
@@ -90,96 +95,129 @@ const Header = () => {
 					</div>
 
 					{/* Navigation & Controls */}
-					<div className='flex items-center gap-4'>
-						<nav className='hidden md:flex items-center space-x-8'>
+					<div className='flex items-center gap-2 sm:gap-4'>
+						<nav className='hidden lg:flex items-center gap-2'>
 							<Link
 								href={`/${locale}`}
 								className={cn(
-									'font-medium transition-colors relative',
-									pathname === `/${locale}`
-										? 'text-foreground'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname === `/${locale}` && 'bg-primary text-white'
 								)}
 							>
-								{t('nav.main')}
-								{pathname === `/${locale}` && (
-									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
-								)}
+								<Home className='w-4 h-4' />
+								<span>{t('nav.main')}</span>
 							</Link>
 
 							<Link
 								href={`/${locale}/tools`}
 								className={cn(
-									'font-medium transition-colors relative',
-									pathname.startsWith(`/${locale}/tools`)
-										? 'text-foreground'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname.startsWith(`/${locale}/tools`) && 'bg-primary text-white'
 								)}
 							>
-								{t('nav.tools')}
-								{pathname.startsWith(`/${locale}/tools`) && (
-									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
-								)}
+								<Wrench className='w-4 h-4' />
+								<span>{t('nav.tools')}</span>
 							</Link>
 							<Link
 								href={`/${locale}/blog`}
 								className={cn(
-									'font-medium transition-colors relative',
-									pathname.startsWith(`/${locale}/blog`)
-										? 'text-foreground'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname.startsWith(`/${locale}/blog`) && 'bg-primary text-white'
 								)}
 							>
-								{t('nav.blog')}
-								{pathname.startsWith(`/${locale}/blog`) && (
-									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
-								)}
+								<BookOpen className='w-4 h-4' />
+								<span>{t('nav.blog')}</span>
 							</Link>
 							<Link
 								href={`/${locale}/contact`}
 								className={cn(
-									'font-medium transition-colors relative',
-									pathname === `/${locale}/contact`
-										? 'text-foreground'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname === `/${locale}/contact` && 'bg-primary text-white'
 								)}
 							>
-								{t('nav.contact')}
-								{pathname === `/${locale}/contact` && (
-									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
-								)}
+								<Mail className='w-4 h-4' />
+								<span>{t('nav.contact')}</span>
 							</Link>
 						</nav>
-						<div className='hidden md:flex items-center gap-2'>
-							{isMainPage && <DownloadCV />}
+						<div className='hidden md:flex items-center gap-3'>
 							<LanguageSelect className='shrink-0' locale={locale} />
 							<ThemeToggle />
 						</div>
 					</div>
 
 					{/* Mobile controls */}
-					<div className='flex items-center gap-2 md:hidden'>
-						{isMainPage && <DownloadCV />}
+					<div className='flex items-center gap-2 lg:hidden'>
 						<LanguageSelect className='shrink-0' locale={locale} />
 						<ThemeToggle />
-						<button className='text-muted-foreground hover:text-foreground'>
-							<svg
-								className='w-6 h-6'
-								fill='none'
-								stroke='currentColor'
-								viewBox='0 0 24 24'
-							>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M4 6h16M4 12h16M4 18h16'
-								/>
-							</svg>
-						</button>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+							className="text-foreground"
+						>
+							{isMobileMenuOpen ? <X className='w-5 h-5' /> : <MenuIcon className='w-5 h-5' />}
+						</Button>
 					</div>
 				</div>
 			</div>
+
+			{/* Mobile Navigation Menu */}
+			{isMobileMenuOpen && (
+				<div className='fixed inset-0 z-50 lg:hidden'>
+					<div className='fixed inset-0 bg-black/50' onClick={() => setIsMobileMenuOpen(false)} />
+					<nav className='fixed top-20 left-0 right-0 bg-background border-b shadow-xl'>
+						<div className='flex flex-col p-4 space-y-2'>
+							<Link
+								href={`/${locale}`}
+								onClick={() => setIsMobileMenuOpen(false)}
+								className={cn(
+									'flex items-center gap-3 rounded-lg px-3 py-2 font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname === `/${locale}` && 'bg-primary text-white'
+								)}
+							>
+								<Home className='w-5 h-5' />
+								<span>{t('nav.main')}</span>
+							</Link>
+
+							<Link
+								href={`/${locale}/tools`}
+								onClick={() => setIsMobileMenuOpen(false)}
+								className={cn(
+									'flex items-center gap-3 rounded-lg px-3 py-2 font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname.startsWith(`/${locale}/tools`) && 'bg-primary text-white'
+								)}
+							>
+								<Wrench className='w-5 h-5' />
+								<span>{t('nav.tools')}</span>
+							</Link>
+
+							<Link
+								href={`/${locale}/blog`}
+								onClick={() => setIsMobileMenuOpen(false)}
+								className={cn(
+									'flex items-center gap-3 rounded-lg px-3 py-2 font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname.startsWith(`/${locale}/blog`) && 'bg-primary text-white'
+								)}
+							>
+								<BookOpen className='w-5 h-5' />
+								<span>{t('nav.blog')}</span>
+							</Link>
+
+							<Link
+								href={`/${locale}/contact`}
+								onClick={() => setIsMobileMenuOpen(false)}
+								className={cn(
+									'flex items-center gap-3 rounded-lg px-3 py-2 font-medium transition-all hover:bg-primary/10 hover:text-primary',
+									pathname === `/${locale}/contact` && 'bg-primary text-white'
+								)}
+							>
+								<Mail className='w-5 h-5' />
+								<span>{t('nav.contact')}</span>
+							</Link>
+						</div>
+					</nav>
+				</div>
+			)}
 		</header>
 	)
 }

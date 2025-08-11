@@ -25,7 +25,7 @@ export const SectionBlog = async ({ locale }: Props) => {
 		<section id="blog" className="py-16 sm:py-24">
 			<div className="mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8">
 				<div className="flex flex-col items-center text-center">
-					<h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-foreground">
+					<h2 className="text-3xl font-heading font-bold tracking-tighter sm:text-4xl md:text-5xl text-foreground">
 						{t('title')}
 					</h2>
 					<p className="mt-4 max-w-2xl text-gray-600 dark:text-gray-400 md:text-lg">

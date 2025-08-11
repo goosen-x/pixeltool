@@ -18,20 +18,20 @@ export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
 
 	return (
 		<div className='mb-8'>
-			<div className='flex gap-4'>
+			<div className='flex flex-col sm:flex-row gap-4'>
 				<div
 					className={cn(
-						`w-18 h-18 rounded-lg bg-gradient-to-br flex items-center justify-center text-white`,
+						`w-16 h-16 sm:w-18 sm:h-18 rounded-lg bg-gradient-to-br flex items-center justify-center text-white shrink-0`,
 						widget.gradient
 					)}
 				>
-					<Icon className='w-10 h-10' />
+					<Icon className='w-8 h-8 sm:w-10 sm:h-10' />
 				</div>
-				<div className='flex flex-col gap-2 mb-4 '>
-					<h1 className='text-4xl font-bold'>
+				<div className='flex flex-col gap-2'>
+					<h1 className='text-2xl sm:text-3xl md:text-4xl font-heading font-bold'>
 						{t(`${widget.translationKey}.title`)}
 					</h1>
-					<p className='text-xl text-muted-foreground'>
+					<p className='text-base sm:text-lg md:text-xl text-muted-foreground'>
 						{t(`${widget.translationKey}.description`)}
 					</p>
 				</div>

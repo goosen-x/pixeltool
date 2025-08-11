@@ -20,7 +20,6 @@ import {
 import { getWidgetById, getWidgetByPath } from '@/lib/constants/widgets'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { CryptoDonationModal } from '@/components/global'
 import { FeedbackModal } from '@/components/feedback'
 import { useState, useEffect } from 'react'
 
@@ -271,11 +270,10 @@ export function ProjectsRightSidebar() {
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
 						<Heart className='w-4 h-4' />
-						{t('CryptoDonation.title')}
+						Support
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-2'>
-					<CryptoDonationModal variant='sidebar' />
 
 					<Button
 						variant='outline'
@@ -289,9 +287,6 @@ export function ProjectsRightSidebar() {
 						{tSidebar('donation.buyMeCoffee')}
 					</Button>
 
-					<p className='text-xs text-muted-foreground text-center mt-3'>
-						{t('CryptoDonation.supportWithCrypto')}
-					</p>
 				</CardContent>
 			</Card>
 		</aside>

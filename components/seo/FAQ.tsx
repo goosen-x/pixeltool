@@ -38,7 +38,7 @@ export function FAQ({ items, title = 'Frequently Asked Questions' }: FAQProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       
-      <h2 className="text-2xl font-bold mb-6">{title}</h2>
+      <h2 className="text-2xl font-heading font-bold mb-6">{title}</h2>
       
       <div className="space-y-4">
         {items.map((item, index) => (

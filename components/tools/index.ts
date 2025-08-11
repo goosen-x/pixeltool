@@ -1,0 +1,1 @@
+export { WidgetSearch } from './WidgetSearch'

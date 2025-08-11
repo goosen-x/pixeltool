@@ -30,7 +30,7 @@ export const BlogCard = ({ post, locale }: Props) => {
 						</Badge>
 						<time className="text-xs text-muted-foreground">{formattedDate}</time>
 					</div>
-					<h3 className="text-lg font-semibold line-clamp-2 group-hover:text-accent transition-colors">
+					<h3 className="text-lg font-heading font-semibold line-clamp-2 group-hover:text-accent transition-colors">
 						{post.title}
 					</h3>
 				</CardHeader>

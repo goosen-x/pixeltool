@@ -226,8 +226,11 @@ body {
 
 @theme {
 	--font-sans:
-		var(--font-sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+		var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
 		'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+	
+	--font-heading:
+		var(--font-heading), 'Open Sans', ui-sans-serif, system-ui, sans-serif;
 
 	--color-border: hsl(var(--border));
 	--color-input: hsl(var(--input));
@@ -292,6 +295,11 @@ body {
 	}
 }
 
+/* Typography utilities */
+@utility font-heading {
+	font-family: var(--font-heading);
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -312,55 +320,58 @@ body {
 
 @layer base {
 	:root {
-		--background: 0 0% 95%;
-		--foreground: 240 10% 3.9%;
+		/* New Modern Color Palette - Light Mode */
+		--background: 0 0% 100%;
+		--foreground: 222 84% 5%;
 
 		--card: 0 0% 100%;
-		--card-foreground: 240 10% 3.9%;
+		--card-foreground: 222 84% 5%;
 
 		--popover: 0 0% 100%;
-		--popover-foreground: 240 10% 3.9%;
+		--popover-foreground: 222 84% 5%;
 
-		--primary: 240 5.9% 10%;
-		--primary-foreground: 0 0% 98%;
+		/* Vibrant blue primary color */
+		--primary: 217 91% 60%; /* Blue #4A90E2 */
+		--primary-foreground: 0 0% 100%;
 
-		--secondary: 240 4.8% 95.9%;
-		--secondary-foreground: 240 5.9% 10%;
+		--secondary: 220 14% 96%;
+		--secondary-foreground: 222 84% 5%;
 
-		--muted: 240 4.8% 95.9%;
-		--muted-foreground: 240 3.8% 46.1%;
+		--muted: 220 14% 96%;
+		--muted-foreground: 220 9% 46%;
 
-		--accent: 258 90% 66%;
-		--accent-foreground: 240 5.9% 10%;
+		--accent: 25 100% 53%; /* Orange #FD850F */
+		--accent-foreground: 0 0% 100%;
 
-		--destructive: 0 84.2% 60.2%;
+		--destructive: 0 84% 60%;
 		--destructive-foreground: 0 0% 98%;
 
-		--border: 240 5.9% 90%;
-		--input: 240 5.9% 90%;
-		--ring: 240 10% 3.9%;
+		--border: 220 13% 91%;
+		--input: 220 13% 91%;
+		--ring: 352 84% 58%;
 
-		--radius: 0.5rem;
+		--radius: 0.75rem;
 	}
 
 	.dark {
-		--background: 240 10% 3.9%;
-		--foreground: 0 0% 98%;
+		/* New Modern Color Palette - Dark Mode */
+		--background: 222 84% 5%;
+		--foreground: 210 40% 98%;
 
-		--card: 240 5% 10%;
-		--card-foreground: 0 0% 98%;
+		--card: 217 33% 11%;
+		--card-foreground: 210 40% 98%;
 
-		--popover: 240 10% 3.9%;
-		--popover-foreground: 0 0% 98%;
+		--popover: 217 33% 11%;
+		--popover-foreground: 210 40% 98%;
 
-		--primary: 0 0% 98%;
-		--primary-foreground: 240 5.9% 10%;
+		--primary: 217 91% 60%; /* Blue #4A90E2 */
+		--primary-foreground: 0 0% 100%;
 
-		--secondary: 240 3.7% 15.9%;
-		--secondary-foreground: 0 0% 98%;
+		--secondary: 217 33% 17%;
+		--secondary-foreground: 210 40% 98%;
 
-		--muted: 240 3.7% 15.9%;
-		--muted-foreground: 240 5% 64.9%;
+		--muted: 217 33% 17%;
+		--muted-foreground: 215 20% 65%;
 
 		--accent: 258 90% 66%;
 		--accent-foreground: 0 0% 98%;
@@ -506,12 +517,12 @@ pre[class*='language-'] {
 :root {
 	--sidebar: hsl(0 0% 98%);
 	--sidebar-foreground: hsl(240 5.3% 26.1%);
-	--sidebar-primary: hsl(240 5.9% 10%);
+	--sidebar-primary: hsl(217 91% 60%);
 	--sidebar-primary-foreground: hsl(0 0% 98%);
-	--sidebar-accent: hsl(240 4.8% 95.9%);
-	--sidebar-accent-foreground: hsl(240 5.9% 10%);
+	--sidebar-accent: hsl(217 91% 95%);
+	--sidebar-accent-foreground: hsl(217 91% 20%);
 	--sidebar-border: hsl(220 13% 91%);
-	--sidebar-ring: hsl(217.2 91.2% 59.8%);
+	--sidebar-ring: hsl(217 91% 60%);
 }
 
 /*
@@ -521,12 +532,12 @@ pre[class*='language-'] {
 .dark {
 	--sidebar: hsl(240 5.9% 10%);
 	--sidebar-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-primary: hsl(224.3 76.3% 48%);
+	--sidebar-primary: hsl(217 91% 60%);
 	--sidebar-primary-foreground: hsl(0 0% 100%);
-	--sidebar-accent: hsl(240 3.7% 15.9%);
-	--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+	--sidebar-accent: hsl(217 33% 17%);
+	--sidebar-accent-foreground: hsl(210 40% 98%);
 	--sidebar-border: hsl(240 3.7% 15.9%);
-	--sidebar-ring: hsl(217.2 91.2% 59.8%);
+	--sidebar-ring: hsl(217 91% 60%);
 }
 
 /*
@@ -554,6 +565,35 @@ pre[class*='language-'] {
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+	
+	/* Heading styles with Plus Jakarta Sans */
+	h1, h2, h3, h4, h5, h6 {
+		@apply font-heading font-bold tracking-tight;
+	}
+	
+	h1 {
+		@apply text-4xl sm:text-5xl lg:text-6xl;
+	}
+	
+	h2 {
+		@apply text-3xl sm:text-4xl;
+	}
+	
+	h3 {
+		@apply text-2xl sm:text-3xl;
+	}
+	
+	h4 {
+		@apply text-xl sm:text-2xl;
+	}
+	
+	h5 {
+		@apply text-lg sm:text-xl;
+	}
+	
+	h6 {
+		@apply text-base sm:text-lg;
 	}
 }
 
