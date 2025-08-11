@@ -17,7 +17,6 @@ export const Navigation = ({ burger = false, setOpen }: NavigationProps) => {
 	// Только страницы, якори убраны в ScrollSpy
 	const menuItems = [
 		{ title: t('tools'), href: `/${locale}/tools` },
-		{ title: t('activities'), href: `/${locale}/activities` },
 		{ title: t('blog'), href: `/${locale}/blog` },
 		{ title: t('contact'), href: `/${locale}/contact` }
 	]

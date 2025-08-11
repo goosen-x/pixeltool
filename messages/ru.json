@@ -41,8 +41,7 @@
 			"tools": "Инструменты",
 			"experience": "Опыт",
 			"contact": "Контакты",
-			"blog": "Блог",
-			"activities": "Активности"
+			"blog": "Блог"
 		},
 		"cv": {
 			"btnText": "СКАЧАТЬ РЕЗЮМЕ",
@@ -267,78 +266,6 @@
 		"support": {
 			"title": "Поддержка",
 			"buyMeCoffee": "Купить мне кофе"
-		}
-	},
-	"activities": {
-		"title": "IT Активности",
-		"description": "Мое участие в техническом сообществе, вклад в open source и путь непрерывного обучения.",
-		"stats": {
-			"opensource": "Open Source вклады",
-			"completed": "Завершенные проекты",
-			"talks": "Технические доклады",
-			"csstalk": "Планируемый доклад на конференции MoscowCSS",
-			"courses": "Пройденные курсы",
-			"projects": "Активные проекты"
-		},
-		"badges": {
-			"active": "Активно",
-			"ongoing": "В процессе",
-			"live": "Запущено",
-			"year": "2024",
-			"planned": "Конференции"
-		},
-		"sections": {
-			"codewars": "Прогресс Codewars",
-			"achievement": "Последнее достижение",
-			"achievementText": "Завершил курс в PurpleSchool по Neovim",
-			"community": "Участие в сообществе",
-			"communityItems": {
-				"react": "Активный участник MoscowCSS сообщества",
-				"meetups": "Регулярный участник локальных митапов",
-				"mentor": "Ментор для junior разработчиков"
-			},
-			"learning": "Путь обучения",
-			"learningItems": {
-				"ai": "Основы AI/ML",
-				"system": "Системный дизайн",
-				"typescript": "Продвинутый TypeScript",
-				"performance": "React производительность"
-			},
-			"status": {
-				"progress": "В процессе",
-				"completed": "Завершено"
-			},
-			"skills": "Топ навыки",
-			"goals": "Цели на 2025",
-			"goalsItems": {
-				"oss": "Выступление на конференции MoscowCSS",
-				"rust": "Продвинутый Linux"
-			}
-		},
-		"cta": {
-			"title": "Давайте свяжемся!",
-			"description": "Я всегда заинтересован в сотрудничестве над open source проектами, выступлениях на мероприятиях или общении с коллегами-разработчиками. Не стесняйтесь обращаться!",
-			"button": "Связаться"
-		},
-		"viewProfile": "Открыть профиль",
-		"december": "Декабрь",
-		"february": "Февраль",
-		"github": {
-			"title": "Активность GitHub",
-			"error": "Не удалось загрузить активность GitHub в данный момент.",
-			"viewProfile": "Открыть профиль",
-			"contributionsText": "контрибуций за последний год",
-			"stats": {
-				"total": "Всего контрибуций",
-				"average": "В среднем в день",
-				"activeDays": "Активных дней",
-				"maxDay": "Максимум за день"
-			}
-		},
-		"donation": {
-			"title": "Поддержать разработку",
-			"crypto": "Донат в крипте",
-			"tooltip": "Поддержать криптовалютой"
 		}
 	},
 	"projectsPage": {

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
-import { Home, FolderOpen, Activity, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
+import { Home, FolderOpen, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
 import { CryptoDonationModal } from '@/components/global'
 
 export const FooterNavigation = () => {
@@ -15,7 +15,6 @@ export const FooterNavigation = () => {
 	const links = [
 		{ title: t('main'), href: `/${locale}`, icon: Home },
 		{ title: t('tools'), href: `/${locale}/tools`, icon: FolderOpen },
-		{ title: t('activities'), href: `/${locale}/activities`, icon: Activity },
 		{ title: t('blog'), href: `/${locale}/blog`, icon: BookOpen },
 		{ title: t('contact'), href: `/${locale}/contact`, icon: Mail }
 	]

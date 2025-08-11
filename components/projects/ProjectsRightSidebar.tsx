@@ -36,7 +36,6 @@ interface AnalyticsStats {
 export function ProjectsRightSidebar() {
 	const pathname = usePathname()
 	const t = useTranslations('widgets')
-	const tActivities = useTranslations('activities')
 	const tSidebar = useTranslations('widgets.rightSidebar')
 	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(null)
 	const [isLoadingStats, setIsLoadingStats] = useState(true)
@@ -272,7 +271,7 @@ export function ProjectsRightSidebar() {
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
 						<Heart className='w-4 h-4' />
-						{tActivities('donation.title')}
+						{t('CryptoDonation.title')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-2'>
@@ -291,7 +290,7 @@ export function ProjectsRightSidebar() {
 					</Button>
 
 					<p className='text-xs text-muted-foreground text-center mt-3'>
-						{tActivities('donation.tooltip')}
+						{t('CryptoDonation.supportWithCrypto')}
 					</p>
 				</CardContent>
 			</Card>

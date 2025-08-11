@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import ThemeToggle from '@/components/global/ThemeToggle'
 import { LanguageSelect } from '@/components/global/LanguageSelect'
 import { DownloadCV } from '@/components/global/DownloadCV'
+import { Logo } from '@/components/global/Logo'
 import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -58,8 +59,9 @@ const Header = () => {
 					<div className='flex items-center'>
 						<Link
 							href={`/${locale}`}
-							className='text-2xl font-bold text-foreground hover:text-foreground/80 transition-colors'
+							className='flex items-center gap-2 text-2xl font-bold text-foreground hover:text-foreground/80 transition-colors'
 						>
+							<Logo size={28} />
 							PixelTool
 						</Link>
 
@@ -116,20 +118,6 @@ const Header = () => {
 							>
 								{t('nav.tools')}
 								{pathname.startsWith(`/${locale}/tools`) && (
-									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
-								)}
-							</Link>
-							<Link
-								href={`/${locale}/activities`}
-								className={cn(
-									'font-medium transition-colors relative',
-									pathname === `/${locale}/activities`
-										? 'text-foreground'
-										: 'text-muted-foreground hover:text-foreground'
-								)}
-							>
-								{t('nav.activities')}
-								{pathname === `/${locale}/activities` && (
 									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
 								)}
 							</Link>

@@ -41,8 +41,7 @@
 			"tools": "Tools",
 			"experience": "Experience",
 			"contact": "Contact",
-			"blog": "Blog",
-			"activities": "Activities"
+			"blog": "Blog"
 		},
 		"cv": {
 			"btnText": "DOWNLOAD CV",
@@ -267,78 +266,6 @@
 		"support": {
 			"title": "Support",
 			"buyMeCoffee": "Buy me a coffee"
-		}
-	},
-	"activities": {
-		"title": "IT Activities",
-		"description": "My involvement in the tech community, open source contributions, and continuous learning journey.",
-		"stats": {
-			"opensource": "Open Source Contributions",
-			"completed": "Completed Projects",
-			"talks": "Tech Talks",
-			"csstalk": "Planned Talk at MoscowCSS Conference",
-			"courses": "Completed Courses",
-			"projects": "Active Projects"
-		},
-		"badges": {
-			"active": "Active",
-			"ongoing": "Ongoing",
-			"live": "Live",
-			"year": "2024",
-			"planned": "Conferences"
-		},
-		"sections": {
-			"codewars": "Codewars Progress",
-			"achievement": "Latest Achievement",
-			"achievementText": "Completed Neovim course at PurpleSchool",
-			"community": "Community Involvement",
-			"communityItems": {
-				"react": "Active member of MoscowCSS community",
-				"meetups": "Regular participant in local meetups",
-				"mentor": "Mentor for junior developers"
-			},
-			"learning": "Learning Path",
-			"learningItems": {
-				"ai": "AI/ML Fundamentals",
-				"system": "System Design",
-				"typescript": "Advanced TypeScript",
-				"performance": "React Performance"
-			},
-			"status": {
-				"progress": "In Progress",
-				"completed": "Completed"
-			},
-			"skills": "Top Skills",
-			"goals": "2025 Goals",
-			"goalsItems": {
-				"oss": "Speaking at MoscowCSS Conference",
-				"rust": "Advanced Linux"
-			}
-		},
-		"cta": {
-			"title": "Let's Connect!",
-			"description": "I'm always interested in collaborating on open source projects, speaking at events, or connecting with fellow developers. Feel free to reach out!",
-			"button": "Get in Touch"
-		},
-		"viewProfile": "View Profile",
-		"december": "December",
-		"february": "February",
-		"github": {
-			"title": "GitHub Activity",
-			"error": "Unable to load GitHub activity at this time.",
-			"viewProfile": "View Profile",
-			"contributionsText": "contributions in the last year",
-			"stats": {
-				"total": "Total Contributions",
-				"average": "Daily Average",
-				"activeDays": "Active Days",
-				"maxDay": "Max in Day"
-			}
-		},
-		"donation": {
-			"title": "Support Development",
-			"crypto": "Donate Crypto",
-			"tooltip": "Support with cryptocurrency"
 		}
 	},
 	"projectsPage": {
