@@ -8,19 +8,18 @@ import { LanguageSelect } from '@/components/global/LanguageSelect'
 import { DownloadCV } from '@/components/global/DownloadCV'
 import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
-import { tekturFont } from '@/lib/fonts/fonts'
 
 const BreadcrumbHeader = () => {
 	const locale = useLocale()
 	const t = useTranslations('Header')
 	const pathname = usePathname()
-	
+
 	// Clean up any theme transition artifacts on route change
 	useEffect(() => {
 		// Remove all transition-related state when route changes
 		document.documentElement.classList.remove(
 			'theme-fade-transition',
-			'theme-circle-transition', 
+			'theme-circle-transition',
 			'theme-slide-transition',
 			'theme-flip-transition',
 			'theme-blur-transition'
@@ -35,7 +34,7 @@ const BreadcrumbHeader = () => {
 	const pathSegments = pathname.split('/').filter(Boolean)
 	// Remove locale from segments
 	const segments = pathSegments.slice(1)
-	
+
 	// Check if we're on the main page
 	const isMainPage = segments.length === 0
 
@@ -48,7 +47,11 @@ const BreadcrumbHeader = () => {
 	})
 
 	return (
-		<header className={cn('border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50', tekturFont.className)} data-force-font="tektur">
+		<header
+			className={cn(
+				'border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50'
+			)}
+		>
 			<div className='px-5'>
 				<div className='flex items-center justify-between h-16'>
 					{/* Logo/Brand with Breadcrumbs */}
@@ -57,9 +60,9 @@ const BreadcrumbHeader = () => {
 							href={`/${locale}`}
 							className='text-2xl font-bold text-foreground hover:text-foreground/80 transition-colors'
 						>
-							goosen.pro
+							PixelTool
 						</Link>
-						
+
 						{/* Breadcrumb navigation */}
 						{breadcrumbs.length > 0 && (
 							<nav className='flex items-center ml-2' aria-label='Breadcrumb'>
@@ -91,71 +94,71 @@ const BreadcrumbHeader = () => {
 								href={`/${locale}`}
 								className={cn(
 									'font-medium transition-colors relative',
-									pathname === `/${locale}` 
-										? 'text-foreground' 
+									pathname === `/${locale}`
+										? 'text-foreground'
 										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
 								{t('nav.main')}
 								{pathname === `/${locale}` && (
-									<span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent" />
+									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
 								)}
 							</Link>
 
 							<Link
-								href={`/${locale}/projects`}
+								href={`/${locale}/tools`}
 								className={cn(
 									'font-medium transition-colors relative',
-									pathname.startsWith(`/${locale}/projects`) 
-										? 'text-foreground' 
+									pathname.startsWith(`/${locale}/tools`)
+										? 'text-foreground'
 										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
-								{t('nav.projects')}
-								{pathname.startsWith(`/${locale}/projects`) && (
-									<span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent" />
+								{t('nav.tools')}
+								{pathname.startsWith(`/${locale}/tools`) && (
+									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
 								)}
 							</Link>
 							<Link
 								href={`/${locale}/activities`}
 								className={cn(
 									'font-medium transition-colors relative',
-									pathname === `/${locale}/activities` 
-										? 'text-foreground' 
+									pathname === `/${locale}/activities`
+										? 'text-foreground'
 										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
 								{t('nav.activities')}
 								{pathname === `/${locale}/activities` && (
-									<span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent" />
+									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
 								)}
 							</Link>
 							<Link
 								href={`/${locale}/blog`}
 								className={cn(
 									'font-medium transition-colors relative',
-									pathname.startsWith(`/${locale}/blog`) 
-										? 'text-foreground' 
+									pathname.startsWith(`/${locale}/blog`)
+										? 'text-foreground'
 										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
 								{t('nav.blog')}
 								{pathname.startsWith(`/${locale}/blog`) && (
-									<span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent" />
+									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
 								)}
 							</Link>
 							<Link
 								href={`/${locale}/contact`}
 								className={cn(
 									'font-medium transition-colors relative',
-									pathname === `/${locale}/contact` 
-										? 'text-foreground' 
+									pathname === `/${locale}/contact`
+										? 'text-foreground'
 										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
 								{t('nav.contact')}
 								{pathname === `/${locale}/contact` && (
-									<span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent" />
+									<span className='absolute -bottom-1 left-0 right-0 h-0.5 bg-accent' />
 								)}
 							</Link>
 						</nav>

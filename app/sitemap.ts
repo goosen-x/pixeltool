@@ -15,26 +15,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/contact',
     '/activities',
     '/blog',
-    '/projects',
+    '/tools',
   ]
   
   // Widget routes
   const widgetRoutes = [
-    '/projects/css-clamp-calculator',
-    '/projects/color-converter',
-    '/projects/bezier-curve',
-    '/projects/css-specificity',
-    '/projects/flexbox-generator',
-    '/projects/grid-generator',
-    '/projects/html-tree',
-    '/projects/password-generator',
-    '/projects/qr-generator',
-    '/projects/speed-test',
-    '/projects/svg-encoder',
-    '/projects/utm-builder',
-    '/projects/youtube-thumbnail',
-    '/projects/theme-settings',
-    '/projects/language-settings',
+    '/tools/css-clamp-calculator',
+    '/tools/color-converter',
+    '/tools/bezier-curve',
+    '/tools/css-specificity',
+    '/tools/flexbox-generator',
+    '/tools/grid-generator',
+    '/tools/html-tree',
+    '/tools/password-generator',
+    '/tools/qr-generator',
+    '/tools/speed-test',
+    '/tools/svg-encoder',
+    '/tools/utm-builder',
+    '/tools/youtube-thumbnail',
+    '/tools/theme-settings',
+    '/tools/language-settings',
   ]
   
   // Generate sitemap entries for all routes and locales
@@ -47,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${BASE_URL}/${locale}${route}`,
         lastModified: new Date(),
         changeFrequency: route === '' ? 'weekly' : 'monthly',
-        priority: route === '' ? 1.0 : route === '/projects' ? 0.9 : 0.8,
+        priority: route === '' ? 1.0 : route === '/tools' ? 0.9 : 0.8,
       })
     })
   })

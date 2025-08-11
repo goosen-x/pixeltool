@@ -14,7 +14,7 @@ export const FooterNavigation = () => {
 
 	const links = [
 		{ title: t('main'), href: `/${locale}`, icon: Home },
-		{ title: t('projects'), href: `/${locale}/projects`, icon: FolderOpen },
+		{ title: t('tools'), href: `/${locale}/tools`, icon: FolderOpen },
 		{ title: t('activities'), href: `/${locale}/activities`, icon: Activity },
 		{ title: t('blog'), href: `/${locale}/blog`, icon: BookOpen },
 		{ title: t('contact'), href: `/${locale}/contact`, icon: Mail }

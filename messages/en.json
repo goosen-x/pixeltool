@@ -1,14 +1,44 @@
 {
 	"Locale": "en",
 	"MetaData": {
-		"title": "goosen.pro Web Developer Portfolio",
-		"description": "Projects and experience in web development: building modern applications using Next.js, Strapi, PostgreSQL, and other technologies."
+		"title": "PixelTool - Web Developer Tools & Utilities",
+		"description": "Free online tools for developers and designers. CSS generators, converters, calculators, and more. All tools work directly in your browser."
+	},
+	"HomePage": {
+		"hero": {
+			"subtitle": "Powerful online tools for developers and designers. No installation required.",
+			"exploreTools": "Explore Tools"
+		},
+		"features": {
+			"title": "Why Choose PixelTool?",
+			"developers": {
+				"title": "For Developers",
+				"description": "Code formatters, validators, generators, and more development tools."
+			},
+			"designers": {
+				"title": "For Designers",
+				"description": "CSS generators, color tools, and design utilities."
+			},
+			"fast": {
+				"title": "Fast & Reliable",
+				"description": "All tools work instantly in your browser. No server delays."
+			},
+			"accessible": {
+				"title": "Always Accessible",
+				"description": "Free to use, no registration required. Works on any device."
+			}
+		},
+		"cta": {
+			"title": "Ready to boost your productivity?",
+			"description": "Join thousands of developers and designers using our tools daily.",
+			"viewAllTools": "View All Tools"
+		}
 	},
 	"Header": {
 		"nav": {
 			"main": "Main",
 			"techstack": "TechStack",
-			"projects": "Projects",
+			"tools": "Tools",
 			"experience": "Experience",
 			"contact": "Contact",
 			"blog": "Blog",
@@ -1252,6 +1282,52 @@
 		"fuelCalculator": {
 			"title": "Fuel Consumption Calculator",
 			"description": "Calculate fuel consumption, cost, and average consumption per 100 km"
+		},
+		"rightSidebar": {
+			"widgetInfo": {
+				"title": "Widget Info",
+				"difficulty": "Difficulty",
+				"difficultyLevels": {
+					"beginner": "Beginner",
+					"intermediate": "Intermediate",
+					"advanced": "Advanced"
+				},
+				"category": "Category",
+				"tags": "Tags"
+			},
+			"categories": {
+				"webdev": "Web Development",
+				"business": "Business & Finance",
+				"content": "Content Creation",
+				"security": "Security & Privacy",
+				"multimedia": "Multimedia",
+				"analytics": "Analytics & Data",
+				"lifestyle": "Health & Lifestyle"
+			},
+			"quickActions": {
+				"title": "Quick Actions",
+				"share": "Share Widget"
+			},
+			"useCase": {
+				"title": "When to Use"
+			},
+			"usageStats": {
+				"title": "Usage Stats",
+				"viewsToday": "Views today",
+				"totalUses": "Total uses",
+				"avgSession": "Avg. session",
+				"noData": "No data available"
+			},
+			"feedback": {
+				"title": "Feedback",
+				"helpText": "Help us improve this tool"
+			},
+			"relatedTools": {
+				"title": "Related Tools"
+			},
+			"donation": {
+				"buyMeCoffee": "Buy me a coffee"
+			}
 		}
 	},
 	"settings": {
@@ -1332,7 +1408,7 @@
 		"enterText": "Enter text to speak",
 		"placeholder": "Type or paste your text here, then press ENTER or click Speak...",
 		"speak": "Speak",
-		"resume": "Resume", 
+		"resume": "Resume",
 		"pause": "Pause",
 		"stop": "Stop",
 		"settings": "Voice Settings",

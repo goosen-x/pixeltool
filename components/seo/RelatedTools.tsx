@@ -51,7 +51,7 @@ export function RelatedTools({ currentTool, category = 'css' }: RelatedToolsProp
             return (
               <Link
                 key={widget.id}
-                href={`/${locale}/projects/${widget.path}`}
+                href={`/${locale}/tools/${widget.path}`}
                 className="group flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/50"
               >
                 <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${widget.gradient} flex items-center justify-center text-white flex-shrink-0 group-hover:scale-110 transition-transform`}>

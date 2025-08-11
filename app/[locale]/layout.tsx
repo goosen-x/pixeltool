@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { Footer } from '@/components/layout'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { tekturFont } from '@/lib/fonts/fonts'
+// Removed Geist font imports - using local fonts instead
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
@@ -47,8 +47,7 @@ export default async function RootLayout({
 			<NextIntlClientProvider messages={messages}>
 				<body
 					className={cn(
-						'min-h-screen bg-background font-sans antialiased',
-						tekturFont.className
+						'min-h-screen bg-background font-sans antialiased'
 					)}
 				>
 					<ThemeProvider

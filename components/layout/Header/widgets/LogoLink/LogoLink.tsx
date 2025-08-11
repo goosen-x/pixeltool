@@ -13,9 +13,9 @@ export const LogoLink = () => {
 				width={100}
 				height={100}
 				src={logo}
-				alt='logo'
+				alt='PixelTool logo'
 			/>
-			<span className='sr-only'>Acme Inc</span>
+			<span className='font-bold text-xl'>PixelTool</span>
 		</Link>
 	)
 }

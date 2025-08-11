@@ -1,14 +1,44 @@
 {
 	"Locale": "ru",
 	"MetaData": {
-		"title": "goosen.pro Web Developer Portfolio",
-		"description": "Projects and experience in web development: building modern applications using Next.js, Strapi, PostgreSQL, and other technologies."
+		"title": "PixelTool - Инструменты для веб-разработчиков",
+		"description": "Бесплатные онлайн-инструменты для разработчиков и дизайнеров. CSS генераторы, конвертеры, калькуляторы и многое другое. Все инструменты работают прямо в браузере."
+	},
+	"HomePage": {
+		"hero": {
+			"subtitle": "Мощные онлайн-инструменты для разработчиков и дизайнеров. Установка не требуется.",
+			"exploreTools": "Изучить инструменты"
+		},
+		"features": {
+			"title": "Почему выбирают PixelTool?",
+			"developers": {
+				"title": "Для разработчиков",
+				"description": "Форматтеры кода, валидаторы, генераторы и другие инструменты разработки."
+			},
+			"designers": {
+				"title": "Для дизайнеров",
+				"description": "CSS генераторы, инструменты для работы с цветом и дизайн-утилиты."
+			},
+			"fast": {
+				"title": "Быстро и надежно",
+				"description": "Все инструменты работают мгновенно в вашем браузере. Без задержек сервера."
+			},
+			"accessible": {
+				"title": "Всегда доступно",
+				"description": "Бесплатно, без регистрации. Работает на любом устройстве."
+			}
+		},
+		"cta": {
+			"title": "Готовы повысить продуктивность?",
+			"description": "Присоединяйтесь к тысячам разработчиков и дизайнеров, использующих наши инструменты ежедневно.",
+			"viewAllTools": "Все инструменты"
+		}
 	},
 	"Header": {
 		"nav": {
 			"main": "Главная",
 			"techstack": "Стек технологий",
-			"projects": "Проекты",
+			"tools": "Инструменты",
 			"experience": "Опыт",
 			"contact": "Контакты",
 			"blog": "Блог",
@@ -1252,6 +1282,52 @@
 		"textEmoticons": {
 			"title": "Текстовые смайлики",
 			"description": "ASCII эмотиконы и японские каомодзи для текстовых выражений"
+		},
+		"rightSidebar": {
+			"widgetInfo": {
+				"title": "Информация о виджете",
+				"difficulty": "Сложность",
+				"difficultyLevels": {
+					"beginner": "Начальный",
+					"intermediate": "Средний",
+					"advanced": "Продвинутый"
+				},
+				"category": "Категория",
+				"tags": "Теги"
+			},
+			"categories": {
+				"webdev": "Веб-разработка",
+				"business": "Бизнес и финансы",
+				"content": "Создание контента",
+				"security": "Безопасность и конфиденциальность",
+				"multimedia": "Мультимедиа",
+				"analytics": "Аналитика и данные",
+				"lifestyle": "Здоровье и образ жизни"
+			},
+			"quickActions": {
+				"title": "Быстрые действия",
+				"share": "Поделиться виджетом"
+			},
+			"useCase": {
+				"title": "Когда использовать"
+			},
+			"usageStats": {
+				"title": "Статистика использования",
+				"viewsToday": "Просмотров сегодня",
+				"totalUses": "Всего использований",
+				"avgSession": "Средняя сессия",
+				"noData": "Нет данных"
+			},
+			"feedback": {
+				"title": "Обратная связь",
+				"helpText": "Помогите нам улучшить этот инструмент"
+			},
+			"relatedTools": {
+				"title": "Похожие инструменты"
+			},
+			"donation": {
+				"buyMeCoffee": "Купите мне кофе"
+			}
 		}
 	},
 	"settings": {

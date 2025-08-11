@@ -37,6 +37,7 @@ export function ProjectsRightSidebar() {
 	const pathname = usePathname()
 	const t = useTranslations('widgets')
 	const tActivities = useTranslations('activities')
+	const tSidebar = useTranslations('widgets.rightSidebar')
 	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(null)
 	const [isLoadingStats, setIsLoadingStats] = useState(true)
 
@@ -81,29 +82,29 @@ export function ProjectsRightSidebar() {
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
 						<Info className='w-4 h-4' />
-						Widget Info
+						{tSidebar('widgetInfo.title')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-3'>
 					{widget.difficulty && (
 						<div className='flex items-center justify-between'>
-							<span className='text-sm text-muted-foreground'>Difficulty</span>
+							<span className='text-sm text-muted-foreground'>{tSidebar('widgetInfo.difficulty')}</span>
 							<Badge className={difficultyColors[widget.difficulty]}>
-								{widget.difficulty}
+								{tSidebar(`widgetInfo.difficultyLevels.${widget.difficulty}`)}
 							</Badge>
 						</div>
 					)}
 
 					<div className='flex items-center justify-between'>
-						<span className='text-sm text-muted-foreground'>Category</span>
-						<Badge variant='outline'>{widget.category}</Badge>
+						<span className='text-sm text-muted-foreground'>{tSidebar('widgetInfo.category')}</span>
+						<Badge variant='outline'>{tSidebar(`categories.${widget.category}`)}</Badge>
 					</div>
 
 					{widget.tags && widget.tags.length > 0 && (
 						<div className='space-y-2'>
 							<span className='text-sm text-muted-foreground flex items-center gap-1'>
 								<Tag className='w-3 h-3' />
-								Tags
+								{tSidebar('widgetInfo.tags')}
 							</span>
 							<div className='flex flex-wrap gap-1'>
 								{widget.tags.map(tag => (
@@ -122,7 +123,7 @@ export function ProjectsRightSidebar() {
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
 						<Code2 className='w-4 h-4' />
-						Quick Actions
+						{tSidebar('quickActions.title')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-2'>
@@ -135,7 +136,7 @@ export function ProjectsRightSidebar() {
 						}}
 					>
 						<Share2 className='w-4 h-4 mr-2' />
-						Share Widget
+						{tSidebar('quickActions.share')}
 					</Button>
 					{/* <Button
             variant="outline"
@@ -155,7 +156,7 @@ export function ProjectsRightSidebar() {
 					<CardHeader className='pb-3'>
 						<CardTitle className='text-sm flex items-center gap-2'>
 							<Lightbulb className='w-4 h-4' />
-							When to Use
+							{tSidebar('useCase.title')}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
@@ -169,35 +170,35 @@ export function ProjectsRightSidebar() {
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
 						<BarChart className='w-4 h-4' />
-						Usage Stats
+						{tSidebar('usageStats.title')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-2'>
 					{isLoadingStats ? (
 						<>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>Views today</span>
+								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.viewsToday')}</span>
 								<div className='w-8 h-4 bg-muted animate-pulse rounded'></div>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>Total uses</span>
+								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.totalUses')}</span>
 								<div className='w-12 h-4 bg-muted animate-pulse rounded'></div>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>Avg. session</span>
+								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.avgSession')}</span>
 								<div className='w-10 h-4 bg-muted animate-pulse rounded'></div>
 							</div>
 						</>
 					) : analyticsStats ? (
 						<>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>Views today</span>
+								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.viewsToday')}</span>
 								<span className='text-sm font-medium'>
 									{analyticsStats.viewsToday.toLocaleString()}
 								</span>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>Total uses</span>
+								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.totalUses')}</span>
 								<span className='text-sm font-medium'>
 									{analyticsStats.totalViews >= 1000 
 										? `${(analyticsStats.totalViews / 1000).toFixed(1)}k` 
@@ -205,7 +206,7 @@ export function ProjectsRightSidebar() {
 								</span>
 							</div>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>Avg. session</span>
+								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.avgSession')}</span>
 								<span className='text-sm font-medium'>
 									{analyticsStats.averageSessionDuration || '0s'}
 								</span>
@@ -213,7 +214,7 @@ export function ProjectsRightSidebar() {
 						</>
 					) : (
 						<div className='text-center py-2'>
-							<span className='text-sm text-muted-foreground'>No data available</span>
+							<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.noData')}</span>
 						</div>
 					)}
 				</CardContent>
@@ -224,13 +225,13 @@ export function ProjectsRightSidebar() {
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
 						<MessageSquare className='w-4 h-4' />
-						Feedback
+						{tSidebar('feedback.title')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-2'>
 					<FeedbackModal variant='sidebar' />
 					<p className='text-xs text-muted-foreground text-center'>
-						Help us improve this tool
+						{tSidebar('feedback.helpText')}
 					</p>
 				</CardContent>
 			</Card>
@@ -239,7 +240,7 @@ export function ProjectsRightSidebar() {
 			{widget.recommendedTools && widget.recommendedTools.length > 0 && (
 				<Card>
 					<CardHeader className='pb-3'>
-						<CardTitle className='text-sm'>Related Tools</CardTitle>
+						<CardTitle className='text-sm'>{tSidebar('relatedTools.title')}</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className='space-y-1'>
@@ -249,7 +250,7 @@ export function ProjectsRightSidebar() {
 								return (
 									<Link
 										key={tool.id}
-										href={`/${pathname.split('/')[1]}/projects/${tool.path}`}
+										href={`/${pathname.split('/')[1]}/tools/${tool.path}`}
 										className='block p-2 rounded hover:bg-muted transition-colors'
 									>
 										<div className='flex items-center gap-2'>
@@ -286,7 +287,7 @@ export function ProjectsRightSidebar() {
 						}}
 					>
 						<Coffee className='w-4 h-4 mr-2' />
-						Buy me a coffee
+						{tSidebar('donation.buyMeCoffee')}
 					</Button>
 
 					<p className='text-xs text-muted-foreground text-center mt-3'>

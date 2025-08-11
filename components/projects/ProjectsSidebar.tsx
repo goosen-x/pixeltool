@@ -19,7 +19,7 @@ export function ProjectsSidebar() {
 	
 	// Load collapsed state from localStorage on mount
 	useEffect(() => {
-		const saved = localStorage.getItem('projects-collapsed-categories')
+		const saved = localStorage.getItem('tools-collapsed-categories')
 		if (saved) {
 			try {
 				const collapsed = JSON.parse(saved)
@@ -40,7 +40,7 @@ export function ProjectsSidebar() {
 		setCollapsedCategories(newCollapsed)
 		
 		// Save to localStorage
-		localStorage.setItem('projects-collapsed-categories', JSON.stringify(Array.from(newCollapsed)))
+		localStorage.setItem('tools-collapsed-categories', JSON.stringify(Array.from(newCollapsed)))
 	}
 
 	return (
@@ -56,10 +56,10 @@ export function ProjectsSidebar() {
 				<nav className="flex-1 overflow-y-auto p-4 projects-scroll">
 					<div className="space-y-1">
 						<Link
-							href={`/${locale}/projects`}
+							href={`/${locale}/tools`}
 							className={cn(
 								"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent/10 hover:text-foreground",
-								pathname === `/${locale}/projects` && "bg-accent text-white"
+								pathname === `/${locale}/tools` && "bg-accent text-white"
 							)}
 						>
 							<Home className="w-4 h-4" />
@@ -99,7 +99,7 @@ export function ProjectsSidebar() {
 												)}
 											>
 												{categoryWidgets.map((widget, index) => {
-												const isActive = pathname === `/${locale}/projects/${widget.path}`
+												const isActive = pathname === `/${locale}/tools/${widget.path}`
 												const Icon = widget.icon
 												
 												return (
@@ -116,7 +116,7 @@ export function ProjectsSidebar() {
 														}}
 													>
 														<Link
-															href={`/${locale}/projects/${widget.path}`}
+															href={`/${locale}/tools/${widget.path}`}
 															className={cn(
 																"flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 hover:bg-accent/10 hover:text-foreground hover:translate-x-1",
 																isActive && "bg-accent text-white"

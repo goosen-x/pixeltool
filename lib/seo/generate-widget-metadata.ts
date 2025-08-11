@@ -13,8 +13,8 @@ export function generateWidgetMetadata(
     return {}
   }
 
-  const url = `${BASE_URL}/${locale}/projects/${widgetKey}`
-  const canonicalUrl = `${BASE_URL}/en/projects/${widgetKey}`
+  const url = `${BASE_URL}/${locale}/tools/${widgetKey}`
+  const canonicalUrl = `${BASE_URL}/en/tools/${widgetKey}`
 
   return {
     title: metadata.title,
@@ -23,8 +23,8 @@ export function generateWidgetMetadata(
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        'en': `${BASE_URL}/en/projects/${widgetKey}`,
-        'ru': `${BASE_URL}/ru/projects/${widgetKey}`,
+        'en': `${BASE_URL}/en/tools/${widgetKey}`,
+        'ru': `${BASE_URL}/ru/tools/${widgetKey}`,
       }
     },
     openGraph: {

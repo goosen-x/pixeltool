@@ -1,0 +1,22 @@
+{
+  "Locale": "en",
+  "MetaData": {
+    "title": "Dmitry Borisenko - Frontend Developer Portfolio",
+    "description": "Projects and experience in web development: building modern applications using Next.js, React, TypeScript, and other technologies."
+  },
+  "Header": {
+    "nav": {
+      "main": "Main",
+      "techstack": "TechStack", 
+      "projects": "Projects",
+      "experience": "Experience",
+      "contact": "Contact",
+      "blog": "Blog"
+    },
+    "cv": {
+      "btnText": "DOWNLOAD CV",
+      "href": "/cv/CV_Borisenko_Dmitry_Frontend_En.pdf",
+      "filename": "CV_Borisenko_Dmitry_Frontend_En.pdf"
+    }
+  }
+}
