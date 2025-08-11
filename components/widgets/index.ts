@@ -1,3 +1,5 @@
 export { WidgetHeader } from './WidgetHeader'
 export { WidgetFAQ } from './WidgetFAQ'
 export { WidgetMetadata } from './WidgetMetadata'
+export { WidgetSkeleton, WidgetSkeletonSimple } from './WidgetSkeleton'
+export { WidgetWrapper } from './WidgetWrapper'

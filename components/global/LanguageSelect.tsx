@@ -18,7 +18,7 @@ import { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@/lib/utils'
 
 export const LOCALES = [
-	{ key: 'ENGLISH', value: 'en', flag: '🇬🇧' },
+	{ key: 'ENGLISH', value: 'en', flag: '🇺🇸' },
 	{ key: 'RUSSIAN', value: 'ru', flag: '🇷🇺' }
 ] as const
 

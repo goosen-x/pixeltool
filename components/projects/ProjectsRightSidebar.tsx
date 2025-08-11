@@ -22,15 +22,49 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { CryptoDonationModal } from '@/components/global'
 import { FeedbackModal } from '@/components/feedback'
+import { useState, useEffect } from 'react'
+
+interface AnalyticsStats {
+	viewsToday: number
+	totalViews: number
+	uniqueSessionsToday: number
+	totalSessions: number
+	averageSessionDuration: string
+	averageSessionSeconds: number
+}
 
 export function ProjectsRightSidebar() {
 	const pathname = usePathname()
 	const t = useTranslations('widgets')
 	const tActivities = useTranslations('activities')
+	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(null)
+	const [isLoadingStats, setIsLoadingStats] = useState(true)
 
 	// Extract widget path from URL
 	const widgetPath = pathname.split('/').pop()
 	const widget = widgetPath ? getWidgetByPath(widgetPath) : null
+
+	// Fetch analytics stats
+	useEffect(() => {
+		if (!widget) return
+
+		const fetchStats = async () => {
+			try {
+				setIsLoadingStats(true)
+				const response = await fetch(`/api/analytics/stats/${widget.id}?timeframe=7d`)
+				if (response.ok) {
+					const stats = await response.json()
+					setAnalyticsStats(stats)
+				}
+			} catch (error) {
+				console.error('Failed to fetch analytics stats:', error)
+			} finally {
+				setIsLoadingStats(false)
+			}
+		}
+
+		fetchStats()
+	}, [widget])
 
 	if (!widget) return null
 
@@ -130,7 +164,7 @@ export function ProjectsRightSidebar() {
 				</Card>
 			)}
 
-			{/* Widget Stats (Placeholder) */}
+			{/* Widget Stats */}
 			<Card>
 				<CardHeader className='pb-3'>
 					<CardTitle className='text-sm flex items-center gap-2'>
@@ -139,18 +173,49 @@ export function ProjectsRightSidebar() {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-2'>
-					<div className='flex items-center justify-between'>
-						<span className='text-sm text-muted-foreground'>Views today</span>
-						<span className='text-sm font-medium'>142</span>
-					</div>
-					<div className='flex items-center justify-between'>
-						<span className='text-sm text-muted-foreground'>Total uses</span>
-						<span className='text-sm font-medium'>3.2k</span>
-					</div>
-					<div className='flex items-center justify-between'>
-						<span className='text-sm text-muted-foreground'>Avg. session</span>
-						<span className='text-sm font-medium'>2m 34s</span>
-					</div>
+					{isLoadingStats ? (
+						<>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>Views today</span>
+								<div className='w-8 h-4 bg-muted animate-pulse rounded'></div>
+							</div>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>Total uses</span>
+								<div className='w-12 h-4 bg-muted animate-pulse rounded'></div>
+							</div>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>Avg. session</span>
+								<div className='w-10 h-4 bg-muted animate-pulse rounded'></div>
+							</div>
+						</>
+					) : analyticsStats ? (
+						<>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>Views today</span>
+								<span className='text-sm font-medium'>
+									{analyticsStats.viewsToday.toLocaleString()}
+								</span>
+							</div>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>Total uses</span>
+								<span className='text-sm font-medium'>
+									{analyticsStats.totalViews >= 1000 
+										? `${(analyticsStats.totalViews / 1000).toFixed(1)}k` 
+										: analyticsStats.totalViews.toLocaleString()}
+								</span>
+							</div>
+							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground'>Avg. session</span>
+								<span className='text-sm font-medium'>
+									{analyticsStats.averageSessionDuration || '0s'}
+								</span>
+							</div>
+						</>
+					) : (
+						<div className='text-center py-2'>
+							<span className='text-sm text-muted-foreground'>No data available</span>
+						</div>
+					)}
 				</CardContent>
 			</Card>
 

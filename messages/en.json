@@ -731,7 +731,115 @@
 		},
 		"systemInfo": {
 			"title": "System Info",
-			"description": "Instantly detect system architecture (32/64-bit), screen resolution, and device specifications"
+			"description": "Instantly detect system architecture (32/64-bit), screen resolution, and device specifications",
+			"refresh": "Refresh",
+			"architecture": {
+				"title": "Processor Architecture",
+				"supports64bit": "Supports 64-bit applications",
+				"supports32bit": "Only 32-bit applications",
+				"recommended": "Recommended"
+			},
+			"display": {
+				"title": "Screen Resolution",
+				"retina": "Actual: {resolution}",
+				"standard": "Standard resolution",
+				"logical": "Logical Resolution",
+				"physical": "Physical Resolution",
+				"cssPixels": "CSS pixels",
+				"actualPixels": "Actual pixels",
+				"pixelRatio": "Pixel Ratio",
+				"colorDepth": "Color Depth",
+				"orientation": "Orientation",
+				"density": "Pixel Density",
+				"screenInfo": "Screen Information",
+				"screenSize": "Screen Size"
+			},
+			"device": {
+				"title": "Device",
+				"type": {
+					"desktop": "Desktop",
+					"tablet": "Tablet",
+					"mobile": "Mobile",
+					"unknown": "Unknown"
+				},
+				"screenSize": "Size: {size}",
+				"touchEnabled": "Touch Enabled"
+			},
+			"tabs": {
+				"overview": "Overview",
+				"hardware": "Hardware",
+				"display": "Display",
+				"browser": "Browser",
+				"features": "Features"
+			},
+			"overview": {
+				"systemOverview": "System Overview",
+				"os": "Operating System",
+				"browser": "Browser",
+				"platform": "Platform",
+				"language": "Language",
+				"networkInfo": "Network Information",
+				"status": "Status",
+				"online": "Online",
+				"offline": "Offline",
+				"hostname": "Hostname",
+				"protocol": "Protocol",
+				"timezone": "Timezone",
+				"pixelRatio": "Pixel Ratio",
+				"languages": "Languages",
+				"colorDepth": "Color Depth",
+				"touchPoints": "Touch Points"
+			},
+			"hardware": {
+				"processorInfo": "Processor Information",
+				"architecture": "Architecture",
+				"architectureDesc": "Processor bit width",
+				"platform": "Platform",
+				"platformDesc": "Operating system",
+				"whatIsArchitecture": "What does architecture mean?",
+				"64bit": {
+					"title": "64-bit systems",
+					"memory": "Support more than 4GB RAM",
+					"performance": "Process large data volumes faster",
+					"compatibility": "Compatible with 32-bit applications",
+					"security": "More secure and modern"
+				},
+				"32bit": {
+					"title": "32-bit systems",
+					"memory": "Limited to 4GB RAM",
+					"performance": "Slower under heavy loads",
+					"compatibility": "Incompatible with 64-bit programs",
+					"deprecated": "Becoming obsolete"
+				}
+			},
+			"browser": {
+				"information": "Browser Information",
+				"browser": "Browser",
+				"os": "Operating System",
+				"version": "Version",
+				"languages": "Preferred Languages"
+			},
+			"features": {
+				"browserFeatures": "Browser Features",
+				"storage": "Storage Support",
+				"privacy": "Privacy Settings",
+				"touch": "Touch Support",
+				"touchSupport": "Touch Support",
+				"multitouch": "Multi-touch",
+				"points": "points",
+				"enabled": "Enabled",
+				"disabled": "Disabled",
+				"notSet": "Not Set",
+				"detected": "Detected",
+				"notDetected": "Not Detected",
+				"supported": "Supported",
+				"notSupported": "Not Supported"
+			},
+			"toast": {
+				"copied": "{item} copied to clipboard",
+				"copyError": "Failed to copy to clipboard",
+				"refreshed": "Information updated!"
+			}
 		},
 		"jsonTools": {
 			"title": "JSON Tools",
@@ -997,7 +1105,41 @@
 		},
 		"worldTime": {
 			"title": "World Time",
-			"description": "Track time across cities and convert between timezones"
+			"description": "Track time across cities and convert between timezones",
+			"localTime": "Local Time",
+			"tabs": {
+				"worldClocks": "World Clocks",
+				"converter": "Time Converter"
+			},
+			"worldClocks": "World Clocks",
+			"addCity": "Add City",
+			"addMoreCities": "Add more cities",
+			"timezoneConverter": "Timezone Converter",
+			"fromTime": "From Time",
+			"fromDate": "From Date",
+			"fromTimezone": "From Timezone",
+			"toTimezone": "To Timezone",
+			"searchTimezone": "Search timezone...",
+			"convertTime": "Convert Time",
+			"result": "Result",
+			"day": "day",
+			"about": {
+				"title": "About Time Zones",
+				"accurate": "Accurate Time Data",
+				"accurateDesc": "Real-time updates using your browser's built-in timezone database",
+				"dst": "DST Support",
+				"dstDesc": "Automatically adjusts for Daylight Saving Time changes",
+				"popular": "Popular Cities",
+				"popularDesc": "Quick access to major cities and business centers worldwide",
+				"storage": "Local Storage",
+				"storageDesc": "Your selected cities are saved locally in your browser"
+			},
+			"toast": {
+				"alreadyAdded": "This timezone is already added",
+				"cityAdded": "{city} has been added",
+				"enterTimeDate": "Please enter both time and date",
+				"invalidDateTime": "Invalid date or time format"
+			}
 		},
 		"diceRoller": {
 			"title": "Dice Roller",

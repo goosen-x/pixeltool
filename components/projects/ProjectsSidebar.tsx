@@ -123,7 +123,7 @@ export function ProjectsSidebar() {
 															)}
 														>
 															<Icon className="w-4 h-4" />
-															<span className="flex-1">{widgetT(`${widget.translationKey}.title`)}</span>
+															<span className="flex-1 text-left">{widgetT(`${widget.translationKey}.title`)}</span>
 															{isActive && <ChevronRight className="w-4 h-4" />}
 														</Link>
 													</div>
@@ -147,7 +147,7 @@ export function ProjectsSidebar() {
 						)}
 					>
 						<Settings className="w-4 h-4" />
-						<span className="flex-1">{t('categories.settings.title')}</span>
+						<span className="flex-1 text-left">{t('categories.settings.title')}</span>
 						{pathname === `/${locale}/settings` && <ChevronRight className="w-4 h-4" />}
 					</Link>
 				</div>

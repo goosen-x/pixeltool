@@ -1,0 +1,128 @@
+
+> my-app@0.1.0 build
+> next build
+
+   ▲ Next.js 15.4.6
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 8.0s
+   Linting and checking validity of types ...
+
+./app/[locale]/(projects)/projects/age-calculator/page.tsx
+237:6  Warning: React Hook useEffect has a missing dependency: 'handleCalculate'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/base64-encoder/page.tsx
+117:6  Warning: React Hook useEffect has a missing dependency: 'processText'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+355:21  Warning: Image elements must have an alt prop, either with meaningful text, or an empty string for decorative images.  jsx-a11y/alt-text
+
+./app/[locale]/(projects)/projects/bmi-calculator/page.tsx
+104:6  Warning: React Hook useEffect has a missing dependency: 'calculateBMI'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/color-contrast-checker/page.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'calculateContrast'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/compound-interest-calculator/page.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'calculateCompoundInterest'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/css-clamp-calculator/page.tsx
+87:5  Warning: React Hook useEffect has a missing dependency: 'validate'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/css-keyframes-generator/page.tsx
+208:6  Warning: React Hook useEffect has a missing dependency: 'iterationCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/currency-converter/page.tsx
+98:6  Warning: React Hook useEffect has a missing dependency: 'calculateExchange'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/fuel-consumption-calculator/page.tsx
+99:6  Warning: React Hook useEffect has missing dependencies: 'calculateAverageConsumption' and 'calculateFuelConsumption'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/internet-speed-test/page.tsx
+328:5  Warning: React Hook useEffect has a missing dependency: 'runSpeedTest'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/javascript-syntax-checker/page.tsx
+176:6  Warning: React Hook useEffect has a missing dependency: 'checkSyntax'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/js-validator/page.tsx
+154:5  Warning: React Hook useEffect has a missing dependency: 'validateCode'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/json-tools/page.tsx
+97:5  Warning: React Hook useEffect has a missing dependency: 'analyzeJSON'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/json-yaml-formatter/page.tsx
+209:6  Warning: React Hook useEffect has a missing dependency: 'formatAndValidate'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/jwt-decoder/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'decodeJWT'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/loan-calculator/page.tsx
+96:6  Warning: React Hook useEffect has a missing dependency: 'calculateLoan'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/mysql-syntax-checker/page.tsx
+137:6  Warning: React Hook useEffect has a missing dependency: 'checkSyntax'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/password-generator/page.tsx
+275:5  Warning: React Hook useEffect has a missing dependency: 'generatePassword'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/percentage-calculator/page.tsx
+134:5  Warning: React Hook useEffect has a missing dependency: 'calculatePercentOfNumber'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+145:5  Warning: React Hook useEffect has a missing dependency: 'calculateWhatPercent'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+156:5  Warning: React Hook useEffect has a missing dependency: 'calculateFindTotal'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+167:5  Warning: React Hook useEffect has a missing dependency: 'calculatePercentChange'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+173:5  Warning: React Hook useEffect has a missing dependency: 'calculateAddPercent'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+183:5  Warning: React Hook useEffect has a missing dependency: 'calculateSubtractPercent'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/php-syntax-checker/page.tsx
+119:6  Warning: React Hook useEffect has a missing dependency: 'checkSyntax'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/pomodoro-timer/page.tsx
+163:5  Warning: React Hook useEffect has a missing dependency: 'handleSessionComplete'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/px-rem-converter/page.tsx
+93:6  Warning: React Hook useEffect has a missing dependency: 'calculateConversion'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/qr-generator/page.tsx
+141:5  Warning: React Hook useEffect has a missing dependency: 'generateQR'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/random-number-generator/page.tsx
+78:5  Warning: React Hook useEffect has a missing dependency: 'handleGenerate'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/regex-tester/page.tsx
+119:6  Warning: React Hook useEffect has a missing dependency: 'testRegex'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+125:6  Warning: React Hook useEffect has a missing dependency: 'performReplace'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/svg-to-base64-encoder/page.tsx
+134:5  Warning: React Hook useEffect has a missing dependency: 'getResults'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/system-info/page.tsx
+284:5  Warning: React Hook useEffect has a missing dependency: 'detectSystemInfo'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/text-diff-tool/page.tsx
+66:6  Warning: React Hook useEffect has a missing dependency: 'calculateDiff'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/text-to-speech/page.tsx
+125:5  Warning: React Hook useEffect has a missing dependency: 'currentUtterance'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/timer-countdown/page.tsx
+139:6  Warning: React Hook useEffect has a missing dependency: 'updateTimer'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/utm-link-builder/page.tsx
+119:5  Warning: React Hook useEffect has a missing dependency: 'generateURL'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/uuid-generator/page.tsx
+105:6  Warning: React Hook useEffect has a missing dependency: 'generateUUIDs'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/[locale]/(projects)/projects/world-time/page.tsx
+289:5  Warning: React Hook useEffect has missing dependencies: 'addCity' and 'updateCityTimes'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+299:5  Warning: React Hook useEffect has a missing dependency: 'updateCityTimes'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/blog/live-code-example.tsx
+113:5  Warning: React Hook useEffect has a missing dependency: 'runCode'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/global/ScrollSpy.tsx
+19:8  Warning: The 'sections' array makes the dependencies of useEffect Hook (at line 69) change on every render. To fix this, wrap the initialization of 'sections' in its own useMemo() Hook.  react-hooks/exhaustive-deps
+
+./lib/hooks/useThemeWithTransition.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'transitionType'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

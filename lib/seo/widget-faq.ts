@@ -6,7 +6,6 @@ interface LocaleFAQ {
 type WidgetFAQ = {
   en: LocaleFAQ[]
   ru: LocaleFAQ[]
-  he: LocaleFAQ[]
 }
 
 export const widgetFAQ: Record<string, WidgetFAQ> = {
@@ -41,16 +40,10 @@ export const widgetFAQ: Record<string, WidgetFAQ> = {
       {
         question: "Какие браузеры поддерживают CSS clamp()?",
         answer: "CSS clamp() поддерживается всеми современными браузерами: Chrome 79+, Firefox 75+, Safari 13.1+ и Edge 79+. Для старых браузеров могут потребоваться фоллбэки."
-      }
-    ],
-    he: [
-      {
-        question: "מה זה פונקציית CSS clamp()?",
-        answer: "פונקציית CSS clamp() מאפשרת להגדיר ערך שמתאים את עצמו בין מינימום למקסימום בהתאם לגודל החלון. מושלם ליצירת טיפוגרפיה רספונסיבית."
       },
       {
-        question: "איך משתמשים ב-clamp() לגופנים רספונסיביים?",
-        answer: "השתמש ב-clamp() עם שלושה ערכים: גודל מינימלי, גודל מועדף (בדרך כלל עם יחידות vw), וגודל מקסימלי."
+        question: "Можно ли использовать отрицательные значения в clamp()?",
+        answer: "Да, clamp() может принимать отрицательные значения, что полезно для свойств margin или transform. Однако будьте осторожны, так как некоторые свойства не принимают отрицательные значения."
       }
     ]
   },
@@ -86,16 +79,6 @@ export const widgetFAQ: Record<string, WidgetFAQ> = {
         question: "В чем разница между HSL и HSB?",
         answer: "HSL (тон, насыщенность, светлота) и HSB/HSV (тон, насыщенность, яркость) похожи, но вычисляют цвет по-разному. HSL часто более интуитивен для веб-дизайна."
       }
-    ],
-    he: [
-      {
-        question: "אילו פורמטים של צבעים הממיר תומך?",
-        answer: "הממיר שלנו תומך בפורמטים HEX, RGB, HSL, HSB/HSV, CMYK, LAB ו-XYZ. ניתן להמיר בין כל הפורמטים באופן מיידי."
-      },
-      {
-        question: "האם אפשר להשתמש בערכים האלה ב-CSS?",
-        answer: "כן! ערכי HEX, RGB ו-HSL ניתנים לשימוש ישיר ב-CSS. CMYK, LAB ו-XYZ אינם נתמכים ב-CSS אך שימושיים ליישומים אחרים."
-      }
     ]
   },
   'flexbox-generator': {
@@ -129,16 +112,6 @@ export const widgetFAQ: Record<string, WidgetFAQ> = {
       {
         question: "Как центрировать элементы с Flexbox?",
         answer: "Для центрирования элементов по горизонтали и вертикали используйте: display: flex; justify-content: center; align-items: center; на родительском контейнере."
-      }
-    ],
-    he: [
-      {
-        question: "מה זה CSS Flexbox?",
-        answer: "Flexbox היא שיטת פריסה ב-CSS המאפשרת לסדר אלמנטים בשורה או עמודה, עם אפשרויות יישור וחלוקה מתקדמות."
-      },
-      {
-        question: "איך ממרכזים אלמנטים עם Flexbox?",
-        answer: "כדי למרכז אלמנטים אופקית ואנכית, השתמש ב: display: flex; justify-content: center; align-items: center; על המיכל ההורה."
       }
     ]
   }

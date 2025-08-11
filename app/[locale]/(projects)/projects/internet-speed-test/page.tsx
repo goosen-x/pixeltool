@@ -338,90 +338,202 @@ export default function SpeedTestPage() {
 
 				<TabsContent value="test" className="space-y-6">
 					{/* Main Test Card */}
-					<Card>
-						<CardContent className="pt-6">
-							<div className="grid gap-6 md:grid-cols-2">
-								{/* Download Speed */}
-								<div className="text-center space-y-2">
-									<div className="flex items-center justify-center gap-2 text-muted-foreground">
-										<Download className="w-4 h-4" />
-										<span className="text-sm">{t('download')}</span>
+					<Card className="overflow-hidden">
+						<div className="relative">
+							{/* Background gradient animation */}
+							<div className={`absolute inset-0 bg-gradient-to-br transition-all duration-1000 ${
+								testState.phase === 'download' ? 'from-blue-500/10 to-blue-600/5' :
+								testState.phase === 'upload' ? 'from-purple-500/10 to-purple-600/5' :
+								testState.phase === 'ping' ? 'from-green-500/10 to-green-600/5' :
+								'from-primary/5 to-primary/10'
+							}`} />
+							
+							<CardContent className="relative pt-8 pb-8">
+								{/* Speed Meter Visualization */}
+								<div className="mb-8 flex justify-center">
+									<div className="relative w-64 h-64">
+										{/* Outer circle */}
+										<svg className="w-full h-full transform -rotate-90">
+											<circle
+												cx="128"
+												cy="128"
+												r="120"
+												stroke="currentColor"
+												strokeWidth="2"
+												fill="none"
+												className="text-muted-foreground/20"
+											/>
+											{/* Progress circle */}
+											<circle
+												cx="128"
+												cy="128"
+												r="120"
+												stroke="currentColor"
+												strokeWidth="8"
+												fill="none"
+												strokeLinecap="round"
+												className={`transition-all duration-500 ${
+													currentResult.download >= 100 ? 'text-green-500' :
+													currentResult.download >= 50 ? 'text-yellow-500' :
+													currentResult.download >= 10 ? 'text-orange-500' :
+													'text-red-500'
+												}`}
+												strokeDasharray={`${2 * Math.PI * 120}`}
+												strokeDashoffset={`${2 * Math.PI * 120 * (1 - Math.min(currentResult.download, 200) / 200)}`}
+											/>
+										</svg>
+										
+										{/* Center content */}
+										<div className="absolute inset-0 flex flex-col items-center justify-center">
+											<div className="text-center">
+												<div className={`text-5xl font-bold transition-all duration-300 ${
+													testState.isRunning ? 'scale-105' : 'scale-100'
+												} ${getSpeedColor(currentResult.download)}`}>
+													{formatSpeed(currentResult.download)}
+												</div>
+												<div className="text-sm text-muted-foreground mt-1">Mbps</div>
+												{testState.isRunning && (
+													<div className="mt-2 flex items-center justify-center gap-1">
+														<div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+														<div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-100" />
+														<div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-200" />
+													</div>
+												)}
+											</div>
+										</div>
 									</div>
-									<div className={`text-4xl font-bold ${getSpeedColor(currentResult.download)}`}>
-										{formatSpeed(currentResult.download)}
-									</div>
-									<div className="text-sm text-muted-foreground">Mbps</div>
 								</div>
 
-								{/* Upload Speed */}
-								<div className="text-center space-y-2">
-									<div className="flex items-center justify-center gap-2 text-muted-foreground">
-										<Upload className="w-4 h-4" />
-										<span className="text-sm">{t('upload')}</span>
+								{/* Speed Cards */}
+								<div className="grid gap-4 md:grid-cols-3 mb-6">
+									{/* Download Card */}
+									<div className={`relative group p-4 rounded-lg border transition-all duration-300 ${
+										testState.phase === 'download' ? 'border-blue-500 bg-blue-500/5 scale-105' : 'hover:border-primary/50'
+									}`}>
+										<div className="flex items-center justify-between mb-2">
+											<div className="flex items-center gap-2">
+												<div className={`p-2 rounded-lg transition-colors ${
+													testState.phase === 'download' ? 'bg-blue-500 text-white' : 'bg-muted'
+												}`}>
+													<Download className="w-4 h-4" />
+												</div>
+												<span className="text-sm font-medium">{t('download')}</span>
+											</div>
+										</div>
+										<div className={`text-2xl font-bold ${getSpeedColor(currentResult.download)}`}>
+											{formatSpeed(currentResult.download)}
+										</div>
+										<div className="text-xs text-muted-foreground">Mbps</div>
 									</div>
-									<div className={`text-4xl font-bold ${getSpeedColor(currentResult.upload)}`}>
-										{formatSpeed(currentResult.upload)}
+
+									{/* Upload Card */}
+									<div className={`relative group p-4 rounded-lg border transition-all duration-300 ${
+										testState.phase === 'upload' ? 'border-purple-500 bg-purple-500/5 scale-105' : 'hover:border-primary/50'
+									}`}>
+										<div className="flex items-center justify-between mb-2">
+											<div className="flex items-center gap-2">
+												<div className={`p-2 rounded-lg transition-colors ${
+													testState.phase === 'upload' ? 'bg-purple-500 text-white' : 'bg-muted'
+												}`}>
+													<Upload className="w-4 h-4" />
+												</div>
+												<span className="text-sm font-medium">{t('upload')}</span>
+											</div>
+										</div>
+										<div className={`text-2xl font-bold ${getSpeedColor(currentResult.upload)}`}>
+											{formatSpeed(currentResult.upload)}
+										</div>
+										<div className="text-xs text-muted-foreground">Mbps</div>
 									</div>
-									<div className="text-sm text-muted-foreground">Mbps</div>
-								</div>
-							</div>
 
-							{/* Ping and Info */}
-							<div className="mt-6 grid gap-4 md:grid-cols-3 text-sm">
-								<div className="flex items-center gap-2">
-									<Activity className="w-4 h-4 text-muted-foreground" />
-									<span className="text-muted-foreground">{t('ping')}:</span>
-									<span className="font-medium">{currentResult.ping > 0 ? `${currentResult.ping} ms` : '-- ms'}</span>
-								</div>
-								<div className="flex items-center gap-2">
-									<Monitor className="w-4 h-4 text-muted-foreground" />
-									<span className="text-muted-foreground">{t('client')}:</span>
-									<span className="font-medium">{currentResult.ip}</span>
-								</div>
-								<div className="flex items-center gap-2">
-									<Server className="w-4 h-4 text-muted-foreground" />
-									<span className="text-muted-foreground">{t('server')}:</span>
-									<span className="font-medium">{currentResult.server}</span>
-								</div>
-							</div>
-
-							{/* Progress */}
-							{testState.isRunning && (
-								<div className="mt-6 space-y-2">
-									<div className="flex items-center justify-between text-sm">
-										<span className="text-muted-foreground">
-											{t(`phase.${testState.phase}`)}
-										</span>
-										<span className="text-muted-foreground">
-											{Math.round(testState.progress)}%
-										</span>
+									{/* Ping Card */}
+									<div className={`relative group p-4 rounded-lg border transition-all duration-300 ${
+										testState.phase === 'ping' ? 'border-green-500 bg-green-500/5 scale-105' : 'hover:border-primary/50'
+									}`}>
+										<div className="flex items-center justify-between mb-2">
+											<div className="flex items-center gap-2">
+												<div className={`p-2 rounded-lg transition-colors ${
+													testState.phase === 'ping' ? 'bg-green-500 text-white' : 'bg-muted'
+												}`}>
+													<Activity className="w-4 h-4" />
+												</div>
+												<span className="text-sm font-medium">{t('ping')}</span>
+											</div>
+										</div>
+										<div className="text-2xl font-bold">
+											{currentResult.ping > 0 ? currentResult.ping : '--'}
+										</div>
+										<div className="text-xs text-muted-foreground">ms</div>
 									</div>
-									<Progress value={testState.progress} />
 								</div>
-							)}
 
-							{/* Test Button */}
-							<div className="mt-6 flex justify-center">
-								<Button
-									size="lg"
-									onClick={runSpeedTest}
-									className="gap-2"
-									variant={testState.isRunning ? "destructive" : "default"}
-								>
-									{testState.isRunning ? (
-										<>
-											<Pause className="w-4 h-4" />
-											{t('cancel')}
-										</>
-									) : (
-										<>
-											<Play className="w-4 h-4" />
-											{t('start')}
-										</>
-									)}
-								</Button>
-							</div>
-						</CardContent>
+								{/* Connection Info */}
+								<div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+									<div className="flex items-center gap-2">
+										<Monitor className="w-4 h-4" />
+										<span>{currentResult.ip}</span>
+									</div>
+									<div className="w-px h-4 bg-border" />
+									<div className="flex items-center gap-2">
+										<Server className="w-4 h-4" />
+										<span>{currentResult.server}</span>
+									</div>
+								</div>
+
+								{/* Progress */}
+								{testState.isRunning && (
+									<div className="mt-6 space-y-3">
+										<div className="flex items-center justify-between text-sm">
+											<span className="font-medium">
+												{t(`phase.${testState.phase}`)}
+											</span>
+											<span className="text-muted-foreground">
+												{Math.round(testState.progress)}%
+											</span>
+										</div>
+										<div className="relative">
+											<Progress value={testState.progress} className="h-2" />
+											<div className={`absolute top-0 h-full bg-gradient-to-r rounded-full transition-all duration-300 ${
+												testState.phase === 'download' ? 'from-blue-500/30 to-blue-600/30' :
+												testState.phase === 'upload' ? 'from-purple-500/30 to-purple-600/30' :
+												'from-green-500/30 to-green-600/30'
+											}`} style={{ width: `${testState.progress}%` }} />
+										</div>
+									</div>
+								)}
+
+								{/* Test Button */}
+								<div className="mt-8 flex justify-center">
+									<Button
+										size="lg"
+										onClick={runSpeedTest}
+										className={`group relative overflow-hidden transition-all duration-300 ${
+											testState.isRunning 
+												? 'pl-12 pr-12' 
+												: 'hover:scale-105 hover:shadow-lg'
+										}`}
+										variant={testState.isRunning ? "destructive" : "default"}
+									>
+										{/* Button background animation */}
+										{!testState.isRunning && (
+											<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+										)}
+										
+										{testState.isRunning ? (
+											<>
+												<Pause className="w-5 h-5 mr-2" />
+												{t('cancel')}
+											</>
+										) : (
+											<>
+												<Wifi className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+												{t('start')}
+											</>
+										)}
+									</Button>
+								</div>
+							</CardContent>
+						</div>
 					</Card>
 
 					{/* Info Card */}
@@ -505,12 +617,16 @@ export default function SpeedTestPage() {
 					<Card>
 						<CardHeader>
 							<CardTitle className="flex items-center justify-between">
-								<span>{t('history.title')}</span>
+								<div className="flex items-center gap-2">
+									<History className="w-5 h-5" />
+									<span>{t('history.title')}</span>
+								</div>
 								{history.length > 0 && (
 									<Button
-										variant="outline"
+										variant="ghost"
 										size="sm"
 										onClick={clearHistory}
+										className="hover:text-destructive"
 									>
 										<RotateCcw className="w-4 h-4 mr-1" />
 										{t('history.clear')}
@@ -520,45 +636,108 @@ export default function SpeedTestPage() {
 						</CardHeader>
 						<CardContent>
 							{history.length > 0 ? (
-								<div className="space-y-2">
-									{history.map((result, index) => (
-										<div
-											key={index}
-											className="p-3 border rounded-lg flex items-center justify-between text-sm"
-										>
-											<div className="flex items-center gap-4">
-												<div className="text-muted-foreground">
-													{result.timestamp.toLocaleDateString()} {result.timestamp.toLocaleTimeString()}
+								<div className="space-y-3">
+									{/* Average speeds */}
+									{history.length > 1 && (
+										<div className="mb-6 p-4 bg-muted/50 rounded-lg">
+											<h4 className="text-sm font-medium mb-3">Average Speeds</h4>
+											<div className="grid grid-cols-3 gap-4 text-center">
+												<div>
+													<div className="text-xs text-muted-foreground mb-1">Download</div>
+													<div className={`text-lg font-bold ${getSpeedColor(
+														history.reduce((sum, r) => sum + r.download, 0) / history.length
+													)}`}>
+														{(history.reduce((sum, r) => sum + r.download, 0) / history.length).toFixed(1)} Mbps
+													</div>
 												</div>
-												<div className="flex items-center gap-4">
-													<div className="flex items-center gap-1">
-														<Download className="w-3 h-3" />
-														<span className={getSpeedColor(result.download)}>
-															{result.download} Mbps
-														</span>
+												<div>
+													<div className="text-xs text-muted-foreground mb-1">Upload</div>
+													<div className={`text-lg font-bold ${getSpeedColor(
+														history.reduce((sum, r) => sum + r.upload, 0) / history.length
+													)}`}>
+														{(history.reduce((sum, r) => sum + r.upload, 0) / history.length).toFixed(1)} Mbps
 													</div>
-													<div className="flex items-center gap-1">
-														<Upload className="w-3 h-3" />
-														<span className={getSpeedColor(result.upload)}>
-															{result.upload} Mbps
-														</span>
-													</div>
-													<div className="flex items-center gap-1">
-														<Activity className="w-3 h-3" />
-														<span>{result.ping} ms</span>
+												</div>
+												<div>
+													<div className="text-xs text-muted-foreground mb-1">Ping</div>
+													<div className="text-lg font-bold">
+														{Math.round(history.reduce((sum, r) => sum + r.ping, 0) / history.length)} ms
 													</div>
 												</div>
 											</div>
-											<div className="text-muted-foreground">
-												{result.server}
+										</div>
+									)}
+									
+									{/* History items */}
+									{history.map((result, index) => (
+										<div
+											key={index}
+											className="group relative p-4 border rounded-lg hover:border-primary/50 transition-all duration-200"
+										>
+											{/* Trend indicator */}
+											{index < history.length - 1 && (
+												<div className="absolute -left-3 top-1/2 -translate-y-1/2">
+													{result.download > history[index + 1].download ? (
+														<div className="w-6 h-6 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center">
+															<svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+																<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+															</svg>
+														</div>
+													) : result.download < history[index + 1].download ? (
+														<div className="w-6 h-6 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center">
+															<svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+																<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+															</svg>
+														</div>
+													) : null}
+												</div>
+											)}
+											
+											<div className="flex items-center justify-between">
+												<div className="space-y-2">
+													<div className="text-sm text-muted-foreground">
+														{result.timestamp.toLocaleDateString(undefined, { 
+															weekday: 'short', 
+															month: 'short', 
+															day: 'numeric' 
+														})} at {result.timestamp.toLocaleTimeString(undefined, { 
+															hour: '2-digit', 
+															minute: '2-digit' 
+														})}
+													</div>
+													<div className="flex items-center gap-6">
+														<div className="flex items-center gap-2">
+															<Download className="w-4 h-4 text-blue-500" />
+															<span className={`font-medium ${getSpeedColor(result.download)}`}>
+																{result.download} Mbps
+															</span>
+														</div>
+														<div className="flex items-center gap-2">
+															<Upload className="w-4 h-4 text-purple-500" />
+															<span className={`font-medium ${getSpeedColor(result.upload)}`}>
+																{result.upload} Mbps
+															</span>
+														</div>
+														<div className="flex items-center gap-2">
+															<Activity className="w-4 h-4 text-green-500" />
+															<span className="font-medium">{result.ping} ms</span>
+														</div>
+													</div>
+												</div>
+												<div className="text-right">
+													<div className="text-xs text-muted-foreground">{result.server}</div>
+													<div className="text-xs text-muted-foreground mt-1">{getConnectionType(result.download)}</div>
+												</div>
 											</div>
 										</div>
 									))}
 								</div>
 							) : (
-								<p className="text-center text-muted-foreground py-8">
-									{t('history.empty')}
-								</p>
+								<div className="text-center py-12">
+									<Wifi className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+									<p className="text-muted-foreground">{t('history.empty')}</p>
+									<p className="text-sm text-muted-foreground mt-1">Run a speed test to see results here</p>
+								</div>
 							)}
 						</CardContent>
 					</Card>
