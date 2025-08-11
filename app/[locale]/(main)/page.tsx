@@ -9,4 +9,3 @@ export default async function MainPage({ params }: Props) {
   // Redirect from (main) to the actual home page
   redirect(`/${locale}`)
 }
-EOF < /dev/null
