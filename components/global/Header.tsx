@@ -9,7 +9,7 @@ import { DownloadCV } from '@/components/global/DownloadCV'
 import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 
-const BreadcrumbHeader = () => {
+const Header = () => {
 	const locale = useLocale()
 	const t = useTranslations('Header')
 	const pathname = usePathname()
@@ -196,4 +196,4 @@ const BreadcrumbHeader = () => {
 	)
 }
 
-export default BreadcrumbHeader
+export default Header

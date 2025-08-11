@@ -1,4 +1,4 @@
-import BreadcrumbHeader from '@/components/global/BreadcrumbHeader'
+import Header from '@/components/global/Header'
 import { Footer } from '@/components/layout'
 import { ReactNode } from 'react'
 
@@ -12,7 +12,7 @@ export default async function OtherLayout({ children, params }: Props) {
 
 	return (
 		<main className='min-h-screen w-full'>
-			<BreadcrumbHeader />
+			<Header />
 			{children}
 			<Footer />
 		</main>
