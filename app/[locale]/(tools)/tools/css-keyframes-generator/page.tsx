@@ -522,7 +522,7 @@ export default function CSSKeyframesGeneratorPage() {
                   <div className="space-y-2">
                     {Object.entries(keyframe.properties).map(([prop, value]) => (
                       <div key={prop} className="flex items-center gap-2">
-                        <code className="text-sm bg-muted px-2 py-1 rounded">{prop}:</code>
+                        <code className="inline-code">{prop}:</code>
                         <Input
                           value={value}
                           onChange={(e) => addPropertyToKeyframe(keyframe.id, prop, e.target.value)}

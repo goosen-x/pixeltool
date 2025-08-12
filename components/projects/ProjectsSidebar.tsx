@@ -48,16 +48,16 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	}
 
 	return (
-		<aside className="w-64 h-screen lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm">
+		<aside className="w-64 lg:w-56 xl:w-64 h-screen lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm flex-shrink-0">
 			<div className="flex h-full flex-col">
-				<div className="border-b bg-background/50 px-6 py-4 pt-8 lg:pt-4">
-					<h2 className="text-lg font-heading font-semibold">{t('title')}</h2>
-					<p className="text-sm text-muted-foreground mt-1">
+				<div className="border-b bg-background/50 px-4 lg:px-6 py-4 pt-8 lg:pt-4">
+					<h2 className="text-base lg:text-lg font-heading font-semibold">{t('title')}</h2>
+					<p className="text-xs lg:text-sm text-muted-foreground mt-1 break-words">
 						{t('description')}
 					</p>
 				</div>
 
-				<nav className="flex-1 overflow-y-auto p-4 projects-scroll">
+				<nav className="flex-1 overflow-y-auto p-3 lg:p-4 projects-scroll">
 					<div className="space-y-1">
 						<Link
 							href={`/${locale}/tools`}
@@ -129,7 +129,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 															)}
 														>
 															<Icon className="w-4 h-4" />
-															<span className="flex-1 text-left">{widgetT(`${widget.translationKey}.title`)}</span>
+															<span className="flex-1 text-left truncate">{widgetT(`${widget.translationKey}.title`)}</span>
 															{isActive && <ChevronRight className="w-4 h-4" />}
 														</Link>
 													</div>
@@ -154,7 +154,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 						)}
 					>
 						<Settings className="w-4 h-4" />
-						<span className="flex-1 text-left">{t('categories.settings.title')}</span>
+						<span className="flex-1 text-left truncate">{t('categories.settings.title')}</span>
 						{pathname === `/${locale}/settings` && <ChevronRight className="w-4 h-4" />}
 					</Link>
 				</div>

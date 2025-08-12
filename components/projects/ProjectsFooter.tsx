@@ -1,7 +1,6 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
 
 export function ProjectsFooter() {
 	const t = useTranslations('Footer')
@@ -17,17 +16,9 @@ export function ProjectsFooter() {
 					<span className='opacity-70'>{t('shortcuts.save')}</span>
 				</div>
 				
-				{/* Copyright */}
+				{/* Info */}
 				<div className='flex items-center gap-2'>
-					<span>{t('copyright')}</span>
-					<span>•</span>
-					<Link
-						className='text-foreground hover:underline'
-						href='https://github.com/goosen-x/next-portfolio'
-						target='_blank'
-					>
-						{t('description')}
-					</Link>
+					<span>{t('description')}</span>
 				</div>
 			</div>
 		</footer>

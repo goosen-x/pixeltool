@@ -136,6 +136,20 @@ export async function GET(
       hourlyViews.set(hour, (hourlyViews.get(hour) || 0) + 1)
     })
 
+    // Get online users (sessions active in the last 5 minutes)
+    const fiveMinutesAgo = new Date()
+    fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5)
+    
+    const { data: onlineData, error: onlineError } = await supabase
+      .from('usage_events')
+      .select('session_id')
+      .eq('widget_id', widgetId)
+      .gte('timestamp', fiveMinutesAgo.toISOString())
+    
+    if (onlineError) console.error('Online users error:', onlineError)
+    
+    const onlineUsers = new Set(onlineData?.map(e => e.session_id) || []).size
+
     const stats = {
       viewsToday: todayStats?.length || 0,
       totalViews: totalStats?.length || 0,
@@ -143,6 +157,7 @@ export async function GET(
       totalSessions: totalSessions,
       averageSessionDuration: formatDuration(averageSessionDuration),
       averageSessionSeconds: averageSessionDuration,
+      onlineUsers: onlineUsers,
       hourlyViews: Array.from(hourlyViews.entries()).map(([hour, views]) => ({
         hour,
         views
@@ -169,6 +184,7 @@ export async function GET(
       totalSessions: random(500, 20000),
       averageSessionDuration: `${random(1, 5)}m ${random(0, 59)}s`,
       averageSessionSeconds: random(60, 300),
+      onlineUsers: random(1, 10),
       hourlyViews: Array.from({ length: 24 }, (_, i) => ({
         hour: i,
         views: random(0, 100)

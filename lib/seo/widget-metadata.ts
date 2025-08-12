@@ -7,7 +7,6 @@ type LocaleMetadata = {
 type WidgetMetadata = {
   en: LocaleMetadata
   ru: LocaleMetadata
-  he: LocaleMetadata
 }
 
 export const widgetMetadata: Record<string, WidgetMetadata> = {
@@ -22,11 +21,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Бесплатный онлайн калькулятор CSS clamp(). Создавайте адаптивную типографику и отступы. Генерируйте clamp() значения с визуальным превью.',
       keywords: ['css clamp калькулятор', 'адаптивная типографика', 'калькулятор css', 'адаптивный дизайн', 'clamp функция']
     },
-    he: {
-      title: 'מחשבון CSS Clamp - טיפוגרפיה רספונסיבית | כלי אונליין',
-      description: 'מחשבון CSS clamp() מקוון חינמי. צור טיפוגרפיה ורווחים רספונסיביים. צור ערכי clamp() עם תצוגה מקדימה.',
-      keywords: ['css clamp', 'מחשבון clamp', 'טיפוגרפיה רספונסיבית', 'עיצוב רספונסיבי']
-    }
   },
   'color-converter': {
     en: {
@@ -39,11 +33,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Конвертируйте цвета между форматами HEX, RGB, HSL, HSB, CMYK, LAB и XYZ. Бесплатный онлайн конвертер с мгновенным превью.',
       keywords: ['конвертер цветов', 'hex в rgb', 'rgb в hex', 'палитра цветов', 'cmyk конвертер', 'конвертер цвета онлайн']
     },
-    he: {
-      title: 'ממיר צבעים - HEX ל-RGB, HSL, CMYK | כלי מקוון חינמי',
-      description: 'המר צבעים בין פורמטים HEX, RGB, HSL, HSB, CMYK, LAB ו-XYZ. ממיר צבעים מקוון חינמי עם תצוגה מקדימה.',
-      keywords: ['ממיר צבעים', 'hex ל-rgb', 'בוחר צבעים', 'כלי צבע']
-    }
   },
   'bezier-curve': {
     en: {
@@ -56,11 +45,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Создавайте кубические кривые Безье для CSS анимаций. Визуальный редактор с 30+ пресетами. Генерируйте cubic-bezier() значения.',
       keywords: ['кривые безье', 'генератор безье', 'css анимация', 'easing функция', 'кубические кривые']
     },
-    he: {
-      title: 'מחולל עקומות בזייה - אנימציות CSS | כלי אונליין',
-      description: 'צור עקומות בזייה מותאמות אישית לאנימציות CSS. עורך חזותי עם 30+ תבניות מוכנות.',
-      keywords: ['עקומות בזייה', 'אנימציות css', 'cubic bezier', 'מחולל בזייה']
-    }
   },
   'css-specificity': {
     en: {
@@ -73,11 +57,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Рассчитайте специфичность CSS селекторов мгновенно. Понимайте вес селекторов и каскад. Визуальная разбивка по ID, классам и элементам.',
       keywords: ['специфичность css', 'калькулятор специфичности', 'css селекторы', 'вес селектора', 'css каскад']
     },
-    he: {
-      title: 'מחשבון ספציפיות CSS - ניתוח משקל סלקטורים | כלי חינמי',
-      description: 'חשב ספציפיות של סלקטורי CSS באופן מיידי. הבן את משקל הסלקטורים והקסקדה.',
-      keywords: ['ספציפיות css', 'מחשבון ספציפיות', 'סלקטורי css', 'משקל סלקטור']
-    }
   },
   'flexbox-generator': {
     en: {
@@ -90,11 +69,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Визуальный генератор CSS flexbox с живым превью. Создавайте гибкие макеты легко. Экспортируйте чистый CSS код.',
       keywords: ['генератор flexbox', 'css flexbox', 'flex макет', 'конструктор flexbox', 'генератор css']
     },
-    he: {
-      title: 'מחולל Flexbox - בונה CSS Flexbox חזותי | כלי אונליין',
-      description: 'מחולל CSS flexbox חזותי עם תצוגה מקדימה חיה. צור פריסות גמישות בקלות.',
-      keywords: ['מחולל flexbox', 'css flexbox', 'פריסת flex', 'בונה flexbox']
-    }
   },
   'grid-generator': {
     en: {
@@ -107,11 +81,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Создавайте CSS Grid макеты визуально. Генерируйте grid-template код с живым превью. Идеальный инструмент для адаптивных сеток.',
       keywords: ['генератор css grid', 'grid макет', 'css сетка', 'конструктор grid', 'адаптивная сетка']
     },
-    he: {
-      title: 'מחולל CSS Grid - בונה פריסת רשת חזותי | כלי חינמי',
-      description: 'צור פריסות CSS Grid באופן חזותי. צור קוד grid-template עם תצוגה מקדימה חיה.',
-      keywords: ['מחולל css grid', 'פריסת רשת', 'css grid', 'בונה רשת']
-    }
   },
   'password-generator': {
     en: {
@@ -124,11 +93,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Генерируйте надежные, безопасные пароли мгновенно. Настройте длину и типы символов. Создавайте невзламываемые пароли.',
       keywords: ['генератор паролей', 'надежный пароль', 'безопасный пароль', 'случайный пароль', 'создать пароль']
     },
-    he: {
-      title: 'מחולל סיסמאות - סיסמאות אקראיות מאובטחות | כלי חינמי',
-      description: 'צור סיסמאות חזקות ומאובטחות באופן מיידי. התאם אישית אורך וסוגי תווים.',
-      keywords: ['מחולל סיסמאות', 'סיסמה חזקה', 'סיסמה מאובטחת', 'סיסמה אקראית']
-    }
   },
   'qr-generator': {
     en: {
@@ -141,11 +105,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Генерируйте QR коды для URL, текста, WiFi и другого. Настройте цвета, добавьте логотип, скачайте в разных форматах.',
       keywords: ['генератор qr кода', 'qr генератор', 'создать qr код', 'qr код онлайн', 'бесплатный qr код']
     },
-    he: {
-      title: 'מחולל קוד QR - צור קודי QR מותאמים | כלי מקוון חינמי',
-      description: 'צור קודי QR עבור כתובות URL, טקסט, WiFi ועוד. התאם אישית צבעים, הוסף לוגו.',
-      keywords: ['מחולל qr', 'יצירת qr code', 'קוד qr', 'מחולל ברקוד']
-    }
   },
   'svg-encoder': {
     en: {
@@ -158,11 +117,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Кодируйте SVG в data URI для CSS. Оптимизируйте SVG для встроенного использования. Конвертируйте SVG в base64 или URL-формат.',
       keywords: ['svg кодировщик', 'svg в data uri', 'svg в base64', 'оптимизатор svg', 'конвертер svg']
     },
-    he: {
-      title: 'מקודד SVG - המרת SVG ל-Data URI | כלי אונליין',
-      description: 'קודד SVG ל-data URI עבור CSS. מטב SVG לשימוש מוטבע. המר קבצי SVG ל-base64.',
-      keywords: ['מקודד svg', 'svg ל-data uri', 'svg ל-base64', 'ממיר svg']
-    }
   },
   'utm-builder': {
     en: {
@@ -175,11 +129,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Создавайте UTM ссылки для маркетинговых кампаний. Отслеживайте источники трафика в Google Analytics. Генерируйте URL с UTM параметрами.',
       keywords: ['utm генератор', 'utm метки', 'utm ссылки', 'генератор utm', 'google analytics', 'отслеживание кампаний']
     },
-    he: {
-      title: 'בונה UTM - מחולל כתובות URL לקמפיינים | כלי שיווק חינמי',
-      description: 'בנה כתובות URL עם מעקב UTM לקמפיינים שיווקיים. עקוב אחר מקורות תנועה ב-Google Analytics.',
-      keywords: ['בונה utm', 'מחולל utm', 'פרמטרי utm', 'google analytics']
-    }
   },
   'youtube-thumbnail': {
     en: {
@@ -192,11 +141,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Скачивайте превью YouTube видео в HD качестве. Получите все размеры миниатюр мгновенно. Бесплатный загрузчик превью YouTube.',
       keywords: ['превью youtube', 'скачать превью', 'миниатюра youtube', 'youtube thumbnail', 'загрузчик превью']
     },
-    he: {
-      title: 'מוריד תמונות ממוזערות של YouTube - קבל תמונות HD | כלי חינמי',
-      description: 'הורד תמונות ממוזערות של סרטוני YouTube באיכות HD. קבל את כל גדלי התמונות באופן מיידי.',
-      keywords: ['תמונה ממוזערת youtube', 'מוריד תמונות', 'youtube thumbnail', 'תמונת youtube']
-    }
   },
   'seo-markdown-generator': {
     en: {
@@ -209,11 +153,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Генерируйте SEO-оптимизированные markdown файлы для блога. Создавайте структурированный контент с метаданными и ключевыми словами.',
       keywords: ['seo markdown', 'генератор markdown', 'генератор постов', 'seo контент', 'создать markdown', 'генератор контента']
     },
-    he: {
-      title: 'מחולל Markdown ל-SEO - צור פוסטים מותאמים | כלי חינמי',
-      description: 'צור קבצי markdown מותאמי SEO לפוסטים בבלוג. צור תוכן מובנה עם מטא-נתונים ומילות מפתח.',
-      keywords: ['seo markdown', 'מחולל markdown', 'מחולל פוסטים', 'תוכן seo', 'יצירת markdown']
-    }
   },
   'html-tree': {
     en: {
@@ -226,11 +165,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Визуализируйте структуру HTML DOM как интерактивное дерево. Анализируйте вложенные элементы и иерархию.',
       keywords: ['html дерево', 'визуализатор dom', 'структура html', 'dom дерево', 'анализатор html']
     },
-    he: {
-      title: 'מציג עץ HTML - מציג מבנה DOM | כלי למפתחים',
-      description: 'הצג מבנה HTML DOM כעץ אינטראקטיבי. נתח אלמנטים מקוננים והיררכיה.',
-      keywords: ['עץ html', 'מציג dom', 'מבנה html', 'עץ dom']
-    }
   },
   'speed-test': {
     en: {
@@ -243,10 +177,5 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Протестируйте скорость интернет-соединения. Измерьте скорость загрузки, отдачи и пинг. Бесплатный онлайн тест скорости.',
       keywords: ['тест скорости', 'скорость интернета', 'проверить скорость', 'тест соединения', 'speedtest']
     },
-    he: {
-      title: 'בדיקת מהירות אינטרנט - בדוק מהירות הורדה והעלאה | חינם',
-      description: 'בדוק את מהירות חיבור האינטרנט שלך. מדוד מהירות הורדה, העלאה ופינג.',
-      keywords: ['בדיקת מהירות', 'מהירות אינטרנט', 'בדיקת רוחב פס', 'מהירות חיבור']
-    }
   }
 }

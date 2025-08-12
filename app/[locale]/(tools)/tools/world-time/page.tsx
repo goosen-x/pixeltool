@@ -571,7 +571,7 @@ export default function WorldTimePage() {
 								<div className={cn(
 									'absolute inset-0 bg-gradient-to-br transition-opacity duration-300',
 									city.isDay 
-										? 'from-yellow-100/50 to-orange-100/30 dark:from-yellow-900/20 dark:to-orange-900/10' 
+										? 'from-blue-100/50 to-blue-200/30 dark:from-blue-900/20 dark:to-blue-800/10' 
 										: 'from-blue-100/50 to-purple-100/30 dark:from-blue-900/20 dark:to-purple-900/10'
 								)} />
 

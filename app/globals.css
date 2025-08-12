@@ -197,6 +197,27 @@ body {
 	}
 }
 
+/* Code block styles for better contrast */
+code.inline-code {
+	@apply text-xs px-1.5 py-0.5 rounded font-mono;
+	background-color: hsl(var(--muted) / 0.5);
+	border: 1px solid hsl(var(--border));
+}
+
+/* Light theme code styles */
+.light code.inline-code {
+	background-color: hsl(240 5% 96%);
+	border-color: hsl(240 5% 84%);
+	color: hsl(240 10% 3.9%);
+}
+
+/* Dark theme code styles */
+.dark code.inline-code {
+	background-color: hsl(240 3.7% 15%);
+	border-color: hsl(240 3.7% 25%);
+	color: hsl(0 0% 95%);
+}
+
 /* Circle transition */
 .theme-transition-circle::view-transition-old(root) {
 	animation-name: circle-out !important;
@@ -340,7 +361,7 @@ body {
 		--muted: 220 14% 96%;
 		--muted-foreground: 220 9% 46%;
 
-		--accent: 25 100% 53%; /* Orange #FD850F */
+		--accent: 217 91% 60%; /* Blue #4A90E2 */
 		--accent-foreground: 0 0% 100%;
 
 		--destructive: 0 84% 60%;

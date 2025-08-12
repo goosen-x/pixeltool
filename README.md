@@ -8,7 +8,7 @@ experience, and projects as a fullstack developer.
 ## 🌟 Features
 
 - Responsive design for optimal viewing on all devices
-- Internationalization support for English, Russian, and Hebrew
+- Internationalization support for English and Russian
 - Interactive sections for About Me, Experience, Skills, and Projects
 - Dark mode support
 - 3D animations and interactive elements
@@ -68,7 +68,6 @@ This project supports multiple languages:
 
 - English (default)
 - Russian
-- Hebrew
 
 Language files are located in the `messages` directory. To add a new language,
 create a new JSON file in this directory and update the language switcher
@@ -114,7 +113,7 @@ improvements. Feel free to open an issue or submit a pull request.
 Dmitry Borisenko -
 [dmitryborisenko.msk@gmail.com](mailto:dmitryborisenko.msk@gmail.com)
 
-Project Link: [https://www.goosen.pro](https://www.goosen.pro)
+Project Link: [https://www.pixeltool.pro](https://www.pixeltool.pro)
 
 ---
 

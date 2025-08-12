@@ -162,7 +162,7 @@ export default function YouTubeThumbnailPage() {
 					<ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
 						{exampleUrls.map((example, index) => (
 							<li key={index}>
-								<code className="text-xs bg-muted px-1 py-0.5 rounded">
+								<code className="inline-code">
 									{example}
 								</code>
 							</li>
@@ -179,7 +179,7 @@ export default function YouTubeThumbnailPage() {
 								<div className="flex items-center gap-2">
 									<Youtube className="w-5 h-5 text-red-500" />
 									<span className="font-medium">{t('videoId')}</span>
-									<code className="bg-muted px-2 py-1 rounded text-sm">
+									<code className="inline-code">
 										{videoId}
 									</code>
 								</div>
@@ -263,19 +263,19 @@ export default function YouTubeThumbnailPage() {
 						<div className="space-y-3">
 							<div>
 								<p className="text-sm font-medium mb-1">{t('thumbnail')} 1:</p>
-								<code className="text-xs bg-muted px-2 py-1 rounded block overflow-x-auto">
+								<code className="inline-code block overflow-x-auto">
 									{`https://img.youtube.com/vi/${videoId}/1.jpg`}
 								</code>
 							</div>
 							<div>
 								<p className="text-sm font-medium mb-1">{t('thumbnail')} 2:</p>
-								<code className="text-xs bg-muted px-2 py-1 rounded block overflow-x-auto">
+								<code className="inline-code block overflow-x-auto">
 									{`https://img.youtube.com/vi/${videoId}/2.jpg`}
 								</code>
 							</div>
 							<div>
 								<p className="text-sm font-medium mb-1">{t('thumbnail')} 3:</p>
-								<code className="text-xs bg-muted px-2 py-1 rounded block overflow-x-auto">
+								<code className="inline-code block overflow-x-auto">
 									{`https://img.youtube.com/vi/${videoId}/3.jpg`}
 								</code>
 							</div>

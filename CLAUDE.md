@@ -29,7 +29,7 @@ This project uses **Neon PostgreSQL** (via Vercel Postgres) for blog data storag
 
 ## Architecture Overview
 
-This is a modern Next.js 15 portfolio website with internationalization support for English, Russian, and Hebrew. The project uses the App Router architecture with TypeScript and Tailwind CSS v4.
+This is a modern Next.js 15 portfolio website with internationalization support for English and Russian. The project uses the App Router architecture with TypeScript and Tailwind CSS v4.
 
 ### Key Architectural Decisions
 

@@ -499,9 +499,9 @@ export default function LoanCalculatorPage() {
                   </div>
                 </div>
                 
-                <div className="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                   <div className="text-sm text-muted-foreground">Переплата %</div>
-                  <div className="text-xl font-semibold text-orange-700 dark:text-orange-400">
+                  <div className="text-xl font-semibold text-blue-700 dark:text-blue-400">
                     {formatPercent(result.overpaymentPercent)}
                   </div>
                 </div>

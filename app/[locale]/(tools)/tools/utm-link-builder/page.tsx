@@ -453,7 +453,7 @@ export default function UTMBuilderPage() {
 								<div className="space-y-2">
 									{DYNAMIC_PARAMS.google.map((param, index) => (
 										<div key={index} className="text-sm">
-											<code className="bg-muted px-1 rounded">{param.param}</code>
+											<code className="inline-code">{param.param}</code>
 											<p className="text-xs text-muted-foreground mt-1">{param.desc}</p>
 										</div>
 									))}
@@ -470,7 +470,7 @@ export default function UTMBuilderPage() {
 								<div className="space-y-2">
 									{DYNAMIC_PARAMS.yandex.map((param, index) => (
 										<div key={index} className="text-sm">
-											<code className="bg-muted px-1 rounded">{param.param}</code>
+											<code className="inline-code">{param.param}</code>
 											<p className="text-xs text-muted-foreground mt-1">{param.desc}</p>
 										</div>
 									))}
@@ -487,7 +487,7 @@ export default function UTMBuilderPage() {
 								<div className="space-y-2">
 									{DYNAMIC_PARAMS.vk.map((param, index) => (
 										<div key={index} className="text-sm">
-											<code className="bg-muted px-1 rounded">{param.param}</code>
+											<code className="inline-code">{param.param}</code>
 											<p className="text-xs text-muted-foreground mt-1">{param.desc}</p>
 										</div>
 									))}

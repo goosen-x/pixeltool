@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
 	Info,
 	Code2,
@@ -15,7 +16,8 @@ import {
 	Lightbulb,
 	Heart,
 	Coffee,
-	MessageSquare
+	MessageSquare,
+	Users
 } from 'lucide-react'
 import { getWidgetById, getWidgetByPath } from '@/lib/constants/widgets'
 import Link from 'next/link'
@@ -30,6 +32,7 @@ interface AnalyticsStats {
 	totalSessions: number
 	averageSessionDuration: string
 	averageSessionSeconds: number
+	onlineUsers?: number
 }
 
 export function ProjectsRightSidebar() {
@@ -74,7 +77,7 @@ export function ProjectsRightSidebar() {
 	}
 
 	return (
-		<aside className='w-80 p-4 space-y-4 overflow-y-auto projects-scroll'>
+		<aside className='w-72 xl:w-80 h-full p-3 lg:p-4 space-y-3 lg:space-y-4 overflow-y-auto projects-scroll flex-shrink-0'>
 			{/* Widget Info Card */}
 			<Card>
 				<CardHeader className='pb-3'>
@@ -85,23 +88,23 @@ export function ProjectsRightSidebar() {
 				</CardHeader>
 				<CardContent className='space-y-3'>
 					{widget.difficulty && (
-						<div className='flex items-center justify-between'>
-							<span className='text-sm text-muted-foreground'>{tSidebar('widgetInfo.difficulty')}</span>
-							<Badge className={difficultyColors[widget.difficulty]}>
+						<div className='flex items-center justify-between gap-2'>
+							<span className='text-xs lg:text-sm text-muted-foreground whitespace-nowrap'>{tSidebar('widgetInfo.difficulty')}</span>
+							<Badge className={cn(difficultyColors[widget.difficulty], 'text-xs')}>
 								{tSidebar(`widgetInfo.difficultyLevels.${widget.difficulty}`)}
 							</Badge>
 						</div>
 					)}
 
-					<div className='flex items-center justify-between'>
-						<span className='text-sm text-muted-foreground'>{tSidebar('widgetInfo.category')}</span>
-						<Badge variant='outline'>{tSidebar(`categories.${widget.category}`)}</Badge>
+					<div className='flex items-center justify-between gap-2'>
+						<span className='text-xs lg:text-sm text-muted-foreground whitespace-nowrap'>{tSidebar('widgetInfo.category')}</span>
+						<Badge variant='outline' className='text-xs'>{tSidebar(`categories.${widget.category}`)}</Badge>
 					</div>
 
 					{widget.tags && widget.tags.length > 0 && (
 						<div className='space-y-2'>
-							<span className='text-sm text-muted-foreground flex items-center gap-1'>
-								<Tag className='w-3 h-3' />
+							<span className='text-xs lg:text-sm text-muted-foreground flex items-center gap-1'>
+								<Tag className='w-3 h-3 flex-shrink-0' />
 								{tSidebar('widgetInfo.tags')}
 							</span>
 							<div className='flex flex-wrap gap-1'>
@@ -128,13 +131,13 @@ export function ProjectsRightSidebar() {
 					<Button
 						variant='outline'
 						size='sm'
-						className='w-full justify-start'
+						className='w-full justify-start text-xs lg:text-sm'
 						onClick={() => {
 							navigator.clipboard.writeText(window.location.href)
 						}}
 					>
-						<Share2 className='w-4 h-4 mr-2' />
-						{tSidebar('quickActions.share')}
+						<Share2 className='w-3 h-3 lg:w-4 lg:h-4 mr-2 flex-shrink-0' />
+						<span className='truncate'>{tSidebar('quickActions.share')}</span>
 					</Button>
 					{/* <Button
             variant="outline"
@@ -158,7 +161,15 @@ export function ProjectsRightSidebar() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<p className='text-sm text-muted-foreground'>{widget.useCase}</p>
+						<p className='text-sm text-muted-foreground'>
+							{(() => {
+								try {
+									return t(`${widget.translationKey}.useCase`)
+								} catch {
+									return widget.useCase
+								}
+							})()}
+						</p>
 					</CardContent>
 				</Card>
 			)}
@@ -175,6 +186,13 @@ export function ProjectsRightSidebar() {
 					{isLoadingStats ? (
 						<>
 							<div className='flex items-center justify-between'>
+								<span className='text-sm text-muted-foreground flex items-center gap-1'>
+									<Users className='w-3 h-3' />
+									{tSidebar('usageStats.onlineNow')}
+								</span>
+								<div className='w-6 h-4 bg-muted animate-pulse rounded'></div>
+							</div>
+							<div className='flex items-center justify-between'>
 								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.viewsToday')}</span>
 								<div className='w-8 h-4 bg-muted animate-pulse rounded'></div>
 							</div>
@@ -189,23 +207,32 @@ export function ProjectsRightSidebar() {
 						</>
 					) : analyticsStats ? (
 						<>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.viewsToday')}</span>
-								<span className='text-sm font-medium'>
+							<div className='flex items-center justify-between gap-2'>
+								<span className='text-xs lg:text-sm text-muted-foreground flex items-center gap-1'>
+									<Users className='w-3 h-3 flex-shrink-0' />
+									<span className='truncate'>{tSidebar('usageStats.onlineNow')}</span>
+								</span>
+								<span className='text-xs lg:text-sm font-medium text-green-600 dark:text-green-400 whitespace-nowrap'>
+									{analyticsStats.onlineUsers || 0}
+								</span>
+							</div>
+							<div className='flex items-center justify-between gap-2'>
+								<span className='text-xs lg:text-sm text-muted-foreground truncate'>{tSidebar('usageStats.viewsToday')}</span>
+								<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
 									{analyticsStats.viewsToday.toLocaleString()}
 								</span>
 							</div>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.totalUses')}</span>
-								<span className='text-sm font-medium'>
+							<div className='flex items-center justify-between gap-2'>
+								<span className='text-xs lg:text-sm text-muted-foreground truncate'>{tSidebar('usageStats.totalUses')}</span>
+								<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
 									{analyticsStats.totalViews >= 1000 
 										? `${(analyticsStats.totalViews / 1000).toFixed(1)}k` 
 										: analyticsStats.totalViews.toLocaleString()}
 								</span>
 							</div>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm text-muted-foreground'>{tSidebar('usageStats.avgSession')}</span>
-								<span className='text-sm font-medium'>
+							<div className='flex items-center justify-between gap-2'>
+								<span className='text-xs lg:text-sm text-muted-foreground truncate'>{tSidebar('usageStats.avgSession')}</span>
+								<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
 									{analyticsStats.averageSessionDuration || '0s'}
 								</span>
 							</div>

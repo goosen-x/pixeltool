@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
+import { widgets } from '@/lib/constants/widgets'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.vercel.app'
 
@@ -15,26 +16,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/contact',
     '/blog',
     '/tools',
+    '/settings'
   ]
   
-  // Widget routes
-  const widgetRoutes = [
-    '/tools/css-clamp-calculator',
-    '/tools/color-converter',
-    '/tools/bezier-curve',
-    '/tools/css-specificity',
-    '/tools/flexbox-generator',
-    '/tools/grid-generator',
-    '/tools/html-tree',
-    '/tools/password-generator',
-    '/tools/qr-generator',
-    '/tools/speed-test',
-    '/tools/svg-encoder',
-    '/tools/utm-builder',
-    '/tools/youtube-thumbnail',
-    '/tools/theme-settings',
-    '/tools/language-settings',
-  ]
+  // Generate widget routes from widgets array
+  const widgetRoutes = widgets.map(widget => `/tools/${widget.path}`)
   
   // Generate sitemap entries for all routes and locales
   const sitemapEntries: MetadataRoute.Sitemap = []

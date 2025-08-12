@@ -116,6 +116,21 @@ export const widgets: Widget[] = [
 					question: 'How do I calculate the ideal values?',
 					answer:
 						'Input your minimum and maximum font sizes along with viewport widths. The calculator handles the complex math for you.'
+				},
+				{
+					question: 'When should I use clamp() instead of media queries?',
+					answer:
+						'Use clamp() for smooth, fluid scaling between viewport sizes. Media queries are better for abrupt changes at specific breakpoints or layout changes.'
+				},
+				{
+					question: 'What units can I use with clamp()?',
+					answer:
+						'You can use any CSS unit with clamp(): rem, em, px, vw, vh, %, etc. The calculator supports both px and rem units, automatically converting between them using the standard 16px base.'
+				},
+				{
+					question: 'How do I test my clamp() values?',
+					answer:
+						'Use browser developer tools to resize your viewport and see how the values scale. The live preview in this calculator shows how your text will look at different viewport sizes.'
 				}
 			],
 			ru: [
@@ -128,6 +143,21 @@ export const widgets: Widget[] = [
 					question: 'Как рассчитать идеальные значения?',
 					answer:
 						'Введите минимальный и максимальный размеры шрифта вместе с шириной viewport. Калькулятор выполнит сложные вычисления за вас.'
+				},
+				{
+					question: 'Когда использовать clamp() вместо медиа-запросов?',
+					answer:
+						'Используйте clamp() для плавного масштабирования между размерами viewport. Медиа-запросы лучше для резких изменений в определенных точках или изменений layout.'
+				},
+				{
+					question: 'Какие единицы измерения можно использовать с clamp()?',
+					answer:
+						'Вы можете использовать любые CSS единицы с clamp(): rem, em, px, vw, vh, % и т.д. Калькулятор поддерживает px и rem, автоматически конвертируя между ними с базой 16px.'
+				},
+				{
+					question: 'Как протестировать мои значения clamp()?',
+					answer:
+						'Используйте инструменты разработчика в браузере для изменения размера viewport и наблюдения за масштабированием. Живой превью в калькуляторе показывает, как будет выглядеть текст при разных размерах экрана.'
 				}
 			],
 			he: [
@@ -140,6 +170,11 @@ export const widgets: Widget[] = [
 					question: 'איך מחשבים את הערכים האידיאליים?',
 					answer:
 						'הזן את גודל הגופן המינימלי והמקסימלי יחד עם רוחב התצוגה. המחשבון יטפל בחישובים המורכבים עבורך.'
+				},
+				{
+					question: 'מתי להשתמש ב-clamp() במקום media queries?',
+					answer:
+						'השתמש ב-clamp() לשינוי גודל חלק ונזיל בין גדלי מסך. Media queries טובים יותר לשינויים חדים בנקודות עצירה ספציפיות או שינויי פריסה.'
 				}
 			]
 		}
@@ -2323,7 +2358,7 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['email', 'html', 'mailto', 'clipboard', 'link', 'generator'],
 		useCase:
-			'Generate modern email links with automatic copying instead of outdated mailto: format',
+			'When you need clickable email links that copy the address to clipboard instead of opening mail clients',
 		metaDescription:
 			'Create modern email links with auto-copy functionality. Better than mailto: links for modern web.',
 		faqs: {
@@ -4020,43 +4055,53 @@ export const widgets: Widget[] = [
 		recommendedTools: ['color-converter', 'css-box-shadow', 'html-tree'],
 		difficulty: 'beginner',
 		tags: ['favicon', 'icon', 'generator', 'upload', 'png'],
-		useCase: 'Generate favicon files in multiple sizes and formats for web and mobile platforms',
-		metaDescription: 'Free favicon generator tool. Upload an image and generate favicon files in multiple sizes for websites and mobile apps.',
+		useCase:
+			'Generate favicon files in multiple sizes and formats for web and mobile platforms',
+		metaDescription:
+			'Free favicon generator tool. Upload an image and generate favicon files in multiple sizes for websites and mobile apps.',
 		faqs: {
 			en: [
 				{
 					question: 'What image formats can I upload?',
-					answer: 'You can upload PNG, JPG, JPEG, SVG, GIF, and other common image formats. The tool supports files up to 5MB in size.'
+					answer:
+						'You can upload PNG, JPG, JPEG, SVG, GIF, and other common image formats. The tool supports files up to 5MB in size.'
 				},
 				{
 					question: 'What favicon sizes are generated?',
-					answer: 'The tool generates 10 different sizes: 16x16 (classic), 32x32 (standard), 48x48 (Windows), 57x57 (iOS), 76x76 (iPad), 120x120 (iPhone Retina), 152x152 (iPad Retina), 180x180 (iPhone X/11/12), 192x192 (Android), and 512x512 (Android large).'
+					answer:
+						'The tool generates 10 different sizes: 16x16 (classic), 32x32 (standard), 48x48 (Windows), 57x57 (iOS), 76x76 (iPad), 120x120 (iPhone Retina), 152x152 (iPad Retina), 180x180 (iPhone X/11/12), 192x192 (Android), and 512x512 (Android large).'
 				},
 				{
 					question: 'What is the best image size to upload?',
-					answer: 'Upload a square image (1:1 aspect ratio) with at least 512x512 pixels for best results. Simple, bold designs work better at small sizes than complex detailed images.'
+					answer:
+						'Upload a square image (1:1 aspect ratio) with at least 512x512 pixels for best results. Simple, bold designs work better at small sizes than complex detailed images.'
 				},
 				{
 					question: 'How do I implement the generated favicons?',
-					answer: 'Add the favicon files to your website root directory and include the appropriate <link> tags in your HTML <head> section. The tool provides sample HTML code for implementation.'
+					answer:
+						'Add the favicon files to your website root directory and include the appropriate <link> tags in your HTML <head> section. The tool provides sample HTML code for implementation.'
 				}
 			],
 			ru: [
 				{
 					question: 'Какие форматы изображений можно загружать?',
-					answer: 'Можно загружать PNG, JPG, JPEG, SVG, GIF и другие распространенные форматы изображений. Инструмент поддерживает файлы размером до 5 МБ.'
+					answer:
+						'Можно загружать PNG, JPG, JPEG, SVG, GIF и другие распространенные форматы изображений. Инструмент поддерживает файлы размером до 5 МБ.'
 				},
 				{
 					question: 'Какие размеры фавиконок генерируются?',
-					answer: 'Инструмент генерирует 10 различных размеров: 16x16 (классический), 32x32 (стандартный), 48x48 (Windows), 57x57 (iOS), 76x76 (iPad), 120x120 (iPhone Retina), 152x152 (iPad Retina), 180x180 (iPhone X/11/12), 192x192 (Android) и 512x512 (Android большой).'
+					answer:
+						'Инструмент генерирует 10 различных размеров: 16x16 (классический), 32x32 (стандартный), 48x48 (Windows), 57x57 (iOS), 76x76 (iPad), 120x120 (iPhone Retina), 152x152 (iPad Retina), 180x180 (iPhone X/11/12), 192x192 (Android) и 512x512 (Android большой).'
 				},
 				{
 					question: 'Какой лучший размер изображения для загрузки?',
-					answer: 'Загружайте квадратное изображение (соотношение 1:1) размером не менее 512x512 пикселей для лучших результатов. Простые, яркие дизайны работают лучше в маленьких размерах, чем сложные детализированные изображения.'
+					answer:
+						'Загружайте квадратное изображение (соотношение 1:1) размером не менее 512x512 пикселей для лучших результатов. Простые, яркие дизайны работают лучше в маленьких размерах, чем сложные детализированные изображения.'
 				},
 				{
 					question: 'Как внедрить сгенерированные фавиконки?',
-					answer: 'Добавьте файлы фавиконок в корневую папку вашего сайта и включите соответствующие теги <link> в секцию <head> вашего HTML. Инструмент предоставляет примерный HTML код для внедрения.'
+					answer:
+						'Добавьте файлы фавиконок в корневую папку вашего сайта и включите соответствующие теги <link> в секцию <head> вашего HTML. Инструмент предоставляет примерный HTML код для внедрения.'
 				}
 			],
 			he: []

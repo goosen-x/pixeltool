@@ -688,7 +688,7 @@ export default function SystemInfoPage() {
 								</div>
 								<div className='flex items-center justify-between'>
 									<span className='text-sm font-medium'>{t('overview.hostname')}</span>
-									<code className='text-xs bg-muted px-2 py-1 rounded'>{systemInfo.hostname}</code>
+									<code className='inline-code'>{systemInfo.hostname}</code>
 								</div>
 								<div className='flex items-center justify-between'>
 									<span className='text-sm font-medium'>{t('overview.protocol')}</span>
@@ -813,12 +813,12 @@ export default function SystemInfoPage() {
 								</div>
 								<div className='space-y-3'>
 									<div className='flex items-start gap-3'>
-										<div className='mt-1 p-1 bg-orange-500/20 rounded'>
-											<X className='w-4 h-4 text-orange-600' />
+										<div className='mt-1 p-1 bg-blue-500/20 rounded'>
+											<X className='w-4 h-4 text-blue-600' />
 										</div>
 										<div>
-											<h5 className='font-medium text-orange-900 dark:text-orange-100'>{t('hardware.32bit.title')}</h5>
-											<ul className='mt-2 space-y-1 text-sm text-orange-700 dark:text-orange-200'>
+											<h5 className='font-medium text-blue-900 dark:text-blue-100'>{t('hardware.32bit.title')}</h5>
+											<ul className='mt-2 space-y-1 text-sm text-blue-700 dark:text-blue-200'>
 												<li>• {t('hardware.32bit.memory')}</li>
 												<li>• {t('hardware.32bit.performance')}</li>
 												<li>• {t('hardware.32bit.compatibility')}</li>
@@ -989,7 +989,7 @@ export default function SystemInfoPage() {
 										)}
 									</Button>
 								</div>
-								<code className='block p-3 bg-muted/30 rounded-lg text-xs overflow-x-auto'>
+								<code className='inline-code block p-3 overflow-x-auto'>
 									{systemInfo.userAgent}
 								</code>
 							</div>

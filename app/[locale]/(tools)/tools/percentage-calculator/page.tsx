@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 interface CalculationResult {
 	value: number
@@ -22,6 +23,7 @@ interface CalculationResult {
 }
 
 export default function PercentageCalculatorPage() {
+	const t = useTranslations('widgets.percentageCalculator')
 	const [mounted, setMounted] = useState(false)
 
 	// Tab 1: X% of Y
@@ -70,7 +72,11 @@ export default function PercentageCalculatorPage() {
 		setPercentOfResult({
 			value: result,
 			formula: `${percentOfNumber.percent}% × ${percentOfNumber.number} = ${result}`,
-			description: `${percentOfNumber.percent}% of ${percentOfNumber.number} is ${result}`
+			description: t('formulas.percentOf', {
+				percent: percentOfNumber.percent,
+				number: percentOfNumber.number,
+				result: result
+			})
 		})
 	}
 
@@ -79,7 +85,11 @@ export default function PercentageCalculatorPage() {
 		setWhatPercentResult({
 			value: result,
 			formula: `${whatPercent.value} ÷ ${whatPercent.percent}% = ${result}`,
-			description: `If ${whatPercent.value} is ${whatPercent.percent}%, then 100% is ${result}`
+			description: t('formulas.whatPercent', {
+				value: whatPercent.value,
+				percent: whatPercent.percent,
+				result: result
+			})
 		})
 	}
 
@@ -88,7 +98,11 @@ export default function PercentageCalculatorPage() {
 		setFindTotalResult({
 			value: result,
 			formula: `${findTotal.value} ÷ ${findTotal.percent}% × 100 = ${result}`,
-			description: `If ${findTotal.percent}% equals ${findTotal.value}, then 100% equals ${result}`
+			description: t('formulas.findTotal', {
+				percent: findTotal.percent,
+				value: findTotal.value,
+				result: result
+			})
 		})
 	}
 
@@ -98,7 +112,11 @@ export default function PercentageCalculatorPage() {
 		setPercentChangeResult({
 			value: percentageChange,
 			formula: `((${percentChange.to} - ${percentChange.from}) ÷ ${percentChange.from}) × 100 = ${percentageChange.toFixed(2)}%`,
-			description: `Change from ${percentChange.from} to ${percentChange.to} is ${percentageChange.toFixed(2)}%${percentageChange > 0 ? ' increase' : ' decrease'}`
+			description: t('formulas.percentChange', {
+				from: percentChange.from,
+				to: percentChange.to,
+				result: percentageChange.toFixed(2)
+			}) + ' (' + t(`formulas.${percentageChange > 0 ? 'increase' : 'decrease'}`) + ')'
 		})
 	}
 
@@ -108,7 +126,11 @@ export default function PercentageCalculatorPage() {
 		setAddPercentResult({
 			value: result,
 			formula: `${addPercent.number} + (${addPercent.percent}% × ${addPercent.number}) = ${result}`,
-			description: `Adding ${addPercent.percent}% to ${addPercent.number} gives ${result}`
+			description: t('formulas.addPercent', {
+				number: addPercent.number,
+				percent: addPercent.percent,
+				result: result
+			})
 		})
 	}
 
@@ -118,7 +140,11 @@ export default function PercentageCalculatorPage() {
 		setSubtractPercentResult({
 			value: result,
 			formula: `${subtractPercent.number} - (${subtractPercent.percent}% × ${subtractPercent.number}) = ${result}`,
-			description: `Subtracting ${subtractPercent.percent}% from ${subtractPercent.number} gives ${result}`
+			description: t('formulas.subtractPercent', {
+				number: subtractPercent.number,
+				percent: subtractPercent.percent,
+				result: result
+			})
 		})
 	}
 
@@ -187,10 +213,10 @@ export default function PercentageCalculatorPage() {
 			<div className='max-w-6xl mx-auto space-y-8'>
 				<div>
 					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Percentage Calculator
+						{t('title')}
 					</h1>
 					<p className='text-muted-foreground'>
-						Calculate percentages for various scenarios
+						{t('description')}
 					</p>
 				</div>
 				<div className='animate-pulse space-y-8'>
@@ -207,30 +233,30 @@ export default function PercentageCalculatorPage() {
 				<TabsList className='grid w-full grid-cols-2 md:grid-cols-3 gap-2 h-auto'>
 					<TabsTrigger value='percent-of' className='flex items-center gap-2'>
 						<Percent className='w-4 h-4' />
-						<span className='hidden sm:inline'>% of Number</span>
+						<span className='hidden sm:inline'>{t('tabs.percentOf')}</span>
 						<span className='sm:hidden'>% of</span>
 					</TabsTrigger>
 					<TabsTrigger value='what-percent' className='flex items-center gap-2'>
 						<Calculator className='w-4 h-4' />
-						<span className='hidden sm:inline'>Find Base</span>
-						<span className='sm:hidden'>Base</span>
+						<span className='hidden sm:inline'>{t('tabs.whatPercent')}</span>
+						<span className='sm:hidden'>100%</span>
 					</TabsTrigger>
 					<TabsTrigger value='find-total' className='flex items-center gap-2'>
 						<Calculator className='w-4 h-4' />
-						<span className='hidden sm:inline'>Find 100%</span>
-						<span className='sm:hidden'>100%</span>
+						<span className='hidden sm:inline'>{t('tabs.findTotal')}</span>
+						<span className='sm:hidden'>X=Y%</span>
 					</TabsTrigger>
 					<TabsTrigger
 						value='percent-change'
 						className='flex items-center gap-2'
 					>
 						<TrendingUp className='w-4 h-4' />
-						<span className='hidden sm:inline'>% Change</span>
-						<span className='sm:hidden'>Change</span>
+						<span className='hidden sm:inline'>{t('tabs.percentChange')}</span>
+						<span className='sm:hidden'>Δ%</span>
 					</TabsTrigger>
 					<TabsTrigger value='add-percent' className='flex items-center gap-2'>
 						<Plus className='w-4 h-4' />
-						<span className='hidden sm:inline'>Add %</span>
+						<span className='hidden sm:inline'>{t('tabs.addPercent')}</span>
 						<span className='sm:hidden'>+%</span>
 					</TabsTrigger>
 					<TabsTrigger
@@ -238,7 +264,7 @@ export default function PercentageCalculatorPage() {
 						className='flex items-center gap-2'
 					>
 						<Minus className='w-4 h-4' />
-						<span className='hidden sm:inline'>Subtract %</span>
+						<span className='hidden sm:inline'>{t('tabs.subtractPercent')}</span>
 						<span className='sm:hidden'>-%</span>
 					</TabsTrigger>
 				</TabsList>
@@ -246,10 +272,10 @@ export default function PercentageCalculatorPage() {
 				{/* Tab 1: X% of Y */}
 				<TabsContent value='percent-of' className='mt-6'>
 					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>What is X% of Y?</h3>
+						<h3 className='text-lg font-semibold mb-4'>{t('tabs.percentOf')}</h3>
 						<div className='flex flex-col sm:flex-row items-center gap-4'>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent1'>Percentage</Label>
+								<Label htmlFor='percent1'>{t('labels.percent')}</Label>
 								<div className='relative'>
 									<Input
 										id='percent1'
@@ -268,9 +294,9 @@ export default function PercentageCalculatorPage() {
 									</span>
 								</div>
 							</div>
-							<span className='text-muted-foreground'>of</span>
+							<span className='text-muted-foreground'>×</span>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='number1'>Number</Label>
+								<Label htmlFor='number1'>{t('labels.number')}</Label>
 								<Input
 									id='number1'
 									type='number'
@@ -288,7 +314,10 @@ export default function PercentageCalculatorPage() {
 							<div className='mt-6 p-4 bg-muted rounded-lg'>
 								<p className='text-2xl font-bold'>{percentOfResult.value}</p>
 								<p className='text-sm text-muted-foreground mt-1'>
-									{percentOfResult.formula}
+									{t('formula')}: {percentOfResult.formula}
+								</p>
+								<p className='text-sm text-foreground mt-2'>
+									{percentOfResult.description}
 								</p>
 							</div>
 						)}
@@ -299,11 +328,11 @@ export default function PercentageCalculatorPage() {
 				<TabsContent value='what-percent' className='mt-6'>
 					<Card className='p-6'>
 						<h3 className='text-lg font-semibold mb-4'>
-							X is Y% of what number?
+							{t('tabs.whatPercent')}
 						</h3>
 						<div className='flex flex-col sm:flex-row items-center gap-4'>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='value2'>Value</Label>
+								<Label htmlFor='value2'>{t('labels.value')}</Label>
 								<Input
 									id='value2'
 									type='number'
@@ -316,9 +345,9 @@ export default function PercentageCalculatorPage() {
 									}
 								/>
 							</div>
-							<span className='text-muted-foreground'>is</span>
+							<span className='text-muted-foreground'>{t('labels.is')}</span>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent2'>Percentage</Label>
+								<Label htmlFor='percent2'>{t('labels.percent')}</Label>
 								<div className='relative'>
 									<Input
 										id='percent2'
@@ -337,7 +366,7 @@ export default function PercentageCalculatorPage() {
 									</span>
 								</div>
 							</div>
-							<span className='text-muted-foreground'>of what?</span>
+							<span className='text-muted-foreground'>{t('labels.ofWhat')}</span>
 						</div>
 						{whatPercentResult && whatPercent.percent !== 0 && (
 							<div className='mt-6 p-4 bg-muted rounded-lg'>
@@ -356,11 +385,11 @@ export default function PercentageCalculatorPage() {
 				<TabsContent value='find-total' className='mt-6'>
 					<Card className='p-6'>
 						<h3 className='text-lg font-semibold mb-4'>
-							If X% equals Y, what is 100%?
+							{t('tabs.findTotal')}
 						</h3>
 						<div className='flex flex-col sm:flex-row items-center gap-4'>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent3'>Percentage</Label>
+								<Label htmlFor='percent3'>{t('labels.percent')}</Label>
 								<div className='relative'>
 									<Input
 										id='percent3'
@@ -379,9 +408,9 @@ export default function PercentageCalculatorPage() {
 									</span>
 								</div>
 							</div>
-							<span className='text-muted-foreground'>equals</span>
+							<span className='text-muted-foreground'>{t('labels.equals')}</span>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='value3'>Value</Label>
+								<Label htmlFor='value3'>{t('labels.value')}</Label>
 								<Input
 									id='value3'
 									type='number'
@@ -412,11 +441,11 @@ export default function PercentageCalculatorPage() {
 				<TabsContent value='percent-change' className='mt-6'>
 					<Card className='p-6'>
 						<h3 className='text-lg font-semibold mb-4'>
-							What is the percentage change?
+							{t('tabs.percentChange')}
 						</h3>
 						<div className='flex flex-col sm:flex-row items-center gap-4'>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='from4'>From</Label>
+								<Label htmlFor='from4'>{t('labels.from')}</Label>
 								<Input
 									id='from4'
 									type='number'
@@ -429,9 +458,9 @@ export default function PercentageCalculatorPage() {
 									}
 								/>
 							</div>
-							<span className='text-muted-foreground'>to</span>
+							<span className='text-muted-foreground'>{t('labels.to')}</span>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='to4'>To</Label>
+								<Label htmlFor='to4'>{t('labels.toValue')}</Label>
 								<Input
 									id='to4'
 									type='number'
@@ -476,10 +505,10 @@ export default function PercentageCalculatorPage() {
 				{/* Tab 5: Add Percentage */}
 				<TabsContent value='add-percent' className='mt-6'>
 					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>Add X% to a number</h3>
+						<h3 className='text-lg font-semibold mb-4'>{t('tabs.addPercent')}</h3>
 						<div className='flex flex-col sm:flex-row items-center gap-4'>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='number5'>Number</Label>
+								<Label htmlFor='number5'>{t('labels.number')}</Label>
 								<Input
 									id='number5'
 									type='number'
@@ -494,7 +523,7 @@ export default function PercentageCalculatorPage() {
 							</div>
 							<Plus className='w-5 h-5 text-muted-foreground' />
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent5'>Percentage</Label>
+								<Label htmlFor='percent5'>{t('labels.percent')}</Label>
 								<div className='relative'>
 									<Input
 										id='percent5'
@@ -531,11 +560,11 @@ export default function PercentageCalculatorPage() {
 				<TabsContent value='subtract-percent' className='mt-6'>
 					<Card className='p-6'>
 						<h3 className='text-lg font-semibold mb-4'>
-							Subtract X% from a number
+							{t('tabs.subtractPercent')}
 						</h3>
 						<div className='flex flex-col sm:flex-row items-center gap-4'>
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='number6'>Number</Label>
+								<Label htmlFor='number6'>{t('labels.number')}</Label>
 								<Input
 									id='number6'
 									type='number'
@@ -550,7 +579,7 @@ export default function PercentageCalculatorPage() {
 							</div>
 							<Minus className='w-5 h-5 text-muted-foreground' />
 							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent6'>Percentage</Label>
+								<Label htmlFor='percent6'>{t('labels.percent')}</Label>
 								<div className='relative'>
 									<Input
 										id='percent6'
@@ -586,26 +615,26 @@ export default function PercentageCalculatorPage() {
 
 			{/* Usage Examples */}
 			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4'>Common Uses</h3>
+				<h3 className='font-semibold mb-4'>{t('commonUses.title')}</h3>
 				<div className='grid md:grid-cols-2 gap-4 text-sm text-muted-foreground'>
 					<div>
 						<h4 className='font-medium text-foreground mb-2'>
-							Business & Finance
+							{t('commonUses.businessFinance.title')}
 						</h4>
 						<ul className='space-y-1 list-disc list-inside'>
-							<li>Calculate discounts and sale prices</li>
-							<li>Determine tax amounts</li>
-							<li>Find profit margins</li>
-							<li>Calculate commission rates</li>
+							<li>{t('commonUses.businessFinance.discounts')}</li>
+							<li>{t('commonUses.businessFinance.tax')}</li>
+							<li>{t('commonUses.businessFinance.profit')}</li>
+							<li>{t('commonUses.businessFinance.commission')}</li>
 						</ul>
 					</div>
 					<div>
-						<h4 className='font-medium text-foreground mb-2'>Personal Use</h4>
+						<h4 className='font-medium text-foreground mb-2'>{t('commonUses.personalUse.title')}</h4>
 						<ul className='space-y-1 list-disc list-inside'>
-							<li>Calculate tips at restaurants</li>
-							<li>Track weight loss/gain percentage</li>
-							<li>Compare price changes</li>
-							<li>Calculate test scores</li>
+							<li>{t('commonUses.personalUse.tips')}</li>
+							<li>{t('commonUses.personalUse.weight')}</li>
+							<li>{t('commonUses.personalUse.prices')}</li>
+							<li>{t('commonUses.personalUse.scores')}</li>
 						</ul>
 					</div>
 				</div>

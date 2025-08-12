@@ -7,10 +7,12 @@
 	"HomePage": {
 		"hero": {
 			"subtitle": "Powerful online tools for developers and designers. No installation required.",
-			"exploreTools": "Explore Tools"
+			"exploreTools": "Explore Tools",
+			"browseCategories": "Browse Categories"
 		},
 		"features": {
 			"title": "Why Choose PixelTool?",
+			"subtitle": "Professional tools designed for modern developers and designers",
 			"developers": {
 				"title": "For Developers",
 				"description": "Code formatters, validators, generators, and more development tools."
@@ -33,6 +35,11 @@
 			"description": "Join thousands of developers and designers using our tools daily.",
 			"viewAllTools": "View All Tools"
 		}
+	},
+	"NotFound": {
+		"title": "Uh-oh!",
+		"description": "We can't find that page.",
+		"backToHome": "Back to Home Page"
 	},
 	"Header": {
 		"nav": {
@@ -291,6 +298,7 @@
 		"clampCalculator": {
 			"title": "CSS Clamp Calculator",
 			"description": "Create fluid typography and spacing that scales smoothly between viewport sizes",
+			"useCase": "Create responsive typography and spacing that scales between viewport sizes",
 			"values": "Values",
 			"min": "Min",
 			"max": "Max",
@@ -316,6 +324,7 @@
 		"svgEncoder": {
 			"title": "SVG URL Encoder",
 			"description": "Encode SVG for use in CSS background-image property. Drag & drop SVG files or paste code",
+			"useCase": "Encode SVG images for CSS backgrounds without external files",
 			"quotes": "Quotes",
 			"single": "Single",
 			"double": "Double",
@@ -344,6 +353,7 @@
 		"youtubeThumbnail": {
 			"title": "YouTube Thumbnail Grabber",
 			"description": "Extract thumbnail images from any YouTube video in various resolutions",
+			"useCase": "Extract YouTube video thumbnails in different resolutions for content creation",
 			"inputLabel": "Enter YouTube URL or Video ID",
 			"example": "Example",
 			"videoId": "Video ID:",
@@ -372,6 +382,7 @@
 		"htmlTree": {
 			"title": "HTML Tree Visualizer",
 			"description": "Visualize HTML structure as a tree with BEM validation",
+			"useCase": "Visualize HTML structure and validate BEM naming conventions",
 			"htmlInput": "HTML Input",
 			"treeStructure": "Tree Structure",
 			"depth": "Depth",
@@ -393,6 +404,7 @@
 		"flexboxGenerator": {
 			"title": "Flexbox Generator",
 			"description": "Visual tool for creating CSS Flexbox layouts",
+			"useCase": "Visual tool for creating and learning CSS Flexbox layouts",
 			"properties": "Properties",
 			"preview": "Preview",
 			"generatedCss": "Generated CSS",
@@ -414,6 +426,7 @@
 		"gridGenerator": {
 			"title": "Grid Generator",
 			"description": "Visual tool for creating CSS Grid layouts",
+			"useCase": "Visual tool for creating and learning CSS Grid layouts",
 			"properties": "Properties",
 			"preview": "Preview",
 			"generatedCss": "Generated CSS",
@@ -437,6 +450,7 @@
 		"qrGenerator": {
 			"title": "QR Code Generator",
 			"description": "Generate QR codes for URLs, App Store links, and WiFi passwords with customizable colors and sizes",
+			"useCase": "Generate QR codes for URLs, WiFi networks, and mobile app promotion",
 			"settings": "Settings",
 			"preview": "Preview",
 			"download": "Download",
@@ -492,6 +506,7 @@
 		"speedTest": {
 			"title": "Internet Speed Test",
 			"description": "Test your internet connection speed. Press Enter or Space to start the test",
+			"useCase": "Test your internet connection speed and latency",
 			"download": "Download",
 			"upload": "Upload",
 			"ping": "Latency",
@@ -548,6 +563,7 @@
 		"passwordGenerator": {
 			"title": "Password Generator",
 			"description": "Generate strong, secure passwords with customizable options and strength analysis",
+			"useCase": "Generate secure passwords with customizable complexity",
 			"placeholder": "Your generated password",
 			"generate": "Generate New",
 			"copy": "Copy",
@@ -614,6 +630,7 @@
 		"utmBuilder": {
 			"title": "UTM Link Builder",
 			"description": "Create tracking links with UTM parameters for your marketing campaigns",
+			"useCase": "Build UTM-tagged URLs for marketing campaign tracking",
 			"tabs": {
 				"builder": "Builder",
 				"parameters": "Parameters",
@@ -665,15 +682,18 @@
 		},
 		"textToSpeech": {
 			"title": "Text to Speech",
-			"description": "Convert any text to speech with customizable voice settings and multiple languages"
+			"description": "Convert any text to speech with customizable voice settings and multiple languages",
+			"useCase": "Convert text to speech for accessibility, language learning, or content creation"
 		},
 		"emailHtml": {
-			"title": "Email HTML",
-			"description": "Create modern email links with automatic copying instead of outdated mailto: format"
+			"title": "Email Link Generator",
+			"description": "Create HTML email links that copy address to clipboard on click",
+			"useCase": "When you need clickable email links that copy the address to clipboard instead of opening mail clients"
 		},
 		"systemInfo": {
 			"title": "System Info",
 			"description": "Instantly detect system architecture (32/64-bit), screen resolution, and device specifications",
+			"useCase": "Detect system specifications, browser capabilities, and device information",
 			"refresh": "Refresh",
 			"architecture": {
 				"title": "Processor Architecture",
@@ -785,11 +805,13 @@
 		},
 		"jsonTools": {
 			"title": "JSON Tools",
-			"description": "Validate, format, and analyze JSON data with detailed error reporting and structure analysis"
+			"description": "Validate, format, and analyze JSON data with detailed error reporting and structure analysis",
+			"useCase": "Validate, format, and debug JSON data for development and testing"
 		},
 		"jsCssCompressor": {
 			"title": "JS/CSS Compressor",
-			"description": "Online JavaScript and CSS code compression to reduce file sizes for production"
+			"description": "Online JavaScript and CSS code compression to reduce file sizes for production",
+			"useCase": "Compress JavaScript and CSS files to reduce size and improve performance"
 		},
 		"themeSettings": {
 			"title": "Theme Settings",
@@ -806,6 +828,7 @@
 		"cssSpecificity": {
 			"title": "CSS Specificity Calculator",
 			"description": "Analyze CSS selector specificity to understand cascade rules and optimize your stylesheets",
+			"useCase": "Debug CSS conflicts by calculating and comparing selector specificity",
 			"input": "CSS Selectors",
 			"results": "Specificity Analysis",
 			"placeholder": "Enter CSS selectors, one per line or paste complete CSS rules...\n\nExamples:\nbody\n.header\n#main-content\nnav ul li a\n\nOr paste CSS:\n.card '{ color: red; }'\n#header > nav '{ ... }'",
@@ -840,6 +863,7 @@
 		"colorConverter": {
 			"title": "Color Converter",
 			"description": "Convert colors between HEX, RGB, HSL, CMYK, LAB, and other color models",
+			"useCase": "Convert colors between different formats for design and development",
 			"colorModel": "Color Model",
 			"alphaChannel": "Alpha Channel",
 			"backgroundColor": "Background Color (for RGBA → RGB)",
@@ -863,6 +887,7 @@
 		"bezierCurve": {
 			"title": "Bezier Curve Generator",
 			"description": "Create custom cubic-bezier easing functions for CSS animations and transitions",
+			"useCase": "Create custom easing functions for smooth CSS animations",
 			"curveEditor": "Curve Editor",
 			"play": "Play",
 			"pause": "Pause",
@@ -880,6 +905,7 @@
 		"seoMarkdownGenerator": {
 			"title": "SEO Markdown Generator",
 			"description": "Generate SEO-optimized markdown files for your blog posts with proper metadata and structure",
+			"useCase": "Generate SEO-optimized markdown files for blog posts",
 			"articleSettings": "Article Settings",
 			"articleSettingsDesc": "Basic information about your article",
 			"articleTitle": "Article Title",
@@ -917,6 +943,7 @@
 		"teamRandomizer": {
 			"title": "Team Randomizer",
 			"description": "Create random teams quickly and fairly. Great for games, work, or fun activities",
+			"useCase": "Randomly divide people into balanced teams for games or activities",
 			"participantsList": "Participants List",
 			"participantsDesc": "Enter names of all participants (one name per line)",
 			"participantsPlaceholder": "Alice\nBob\nCharlie\nDiana\nEve\nFrank",
@@ -954,6 +981,7 @@
 		"pomodoroTimer": {
 			"title": "Pomodoro Timer",
 			"description": "Master time management with proven technique. 25 minutes work, 5 minutes rest",
+			"useCase": "Improve focus and productivity using the Pomodoro time management technique",
 			"timerSettings": "Timer Settings",
 			"workDuration": "Work Duration",
 			"shortBreak": "Short Break",
@@ -1015,39 +1043,97 @@
 		},
 		"specialSymbolsPicker": {
 			"title": "Special Symbols Picker",
-			"description": "Click to copy special characters and Unicode symbols for any text"
+			"description": "Click to copy special characters and Unicode symbols for any text",
+			"useCase": "Quickly copy special symbols and Unicode characters for use in any text"
 		},
 		"fancyTextGenerator": {
 			"title": "Fancy Text Generator",
-			"description": "Transform your text into beautiful Unicode styles for social media"
+			"description": "Transform your text into beautiful Unicode styles for social media",
+			"useCase": "Create stylized Unicode text for social media posts and profiles"
 		},
 		"randomNumberGenerator": {
 			"title": "Random Number Generator",
-			"description": "Generate cryptographically secure random numbers with no duplicates option"
+			"description": "Generate cryptographically secure random numbers with no duplicates option",
+			"useCase": "Generate secure random numbers for games, sampling, or security purposes"
 		},
 		"percentageCalculator": {
 			"title": "Percentage Calculator",
-			"description": "Calculate percentages for discounts, taxes, tips, and investments"
+			"description": "Calculate percentages for discounts, taxes, tips, and investments",
+			"useCase": "Calculate percentages for discounts, tips, tax amounts, and financial planning",
+			"tabs": {
+				"percentOf": "% of Number",
+				"whatPercent": "Find 100%",
+				"findTotal": "X is Y%",
+				"percentChange": "% Change",
+				"addPercent": "Add %",
+				"subtractPercent": "Subtract %"
+			},
+			"labels": {
+				"percent": "Percent",
+				"number": "Number",
+				"value": "Value",
+				"from": "From",
+				"to": "to",
+				"toValue": "To",
+				"result": "Result",
+				"is": "is",
+				"ofWhat": "of what?",
+				"equals": "equals"
+			},
+			"calculate": "Calculate",
+			"formula": "Formula",
+			"formulas": {
+				"percentOf": "{percent}% of {number} is {result}",
+				"whatPercent": "If {value} is {percent}%, then 100% is {result}",
+				"findTotal": "If {percent}% equals {value}, then 100% equals {result}",
+				"percentChange": "Change from {from} to {to} is {result}%",
+				"increase": "increase",
+				"decrease": "decrease",
+				"addPercent": "{number} + {percent}% = {result}",
+				"subtractPercent": "{number} - {percent}% = {result}"
+			},
+			"commonUses": {
+				"title": "Common Uses",
+				"businessFinance": {
+					"title": "Business & Finance",
+					"discounts": "Calculate discounts and sale prices",
+					"tax": "Determine tax amounts",
+					"profit": "Find profit margins",
+					"commission": "Calculate commission rates"
+				},
+				"personalUse": {
+					"title": "Personal Use",
+					"tips": "Calculate tips at restaurants",
+					"weight": "Track weight loss/gain percentage",
+					"prices": "Compare price changes",
+					"scores": "Calculate test scores"
+				}
+			}
 		},
 		"drawLots": {
 			"title": "Draw Lots",
-			"description": "Digital draw straws - pick names or make random selections fairly"
+			"description": "Digital draw straws - pick names or make random selections fairly",
+			"useCase": "Make fair random selections from a list of options or names"
 		},
 		"mockDataGenerator": {
 			"title": "Mock Data Generator",
-			"description": "Fetch sample data from popular free public APIs for testing"
+			"description": "Fetch sample data from popular free public APIs for testing",
+			"useCase": "Generate realistic test data for development and prototyping"
 		},
 		"randomListGenerator": {
 			"title": "Random List Generator",
-			"description": "Randomly shuffle lists with cryptographically secure randomization"
+			"description": "Randomly shuffle lists with cryptographically secure randomization",
+			"useCase": "Randomly shuffle and reorder lists for fair selection or organization"
 		},
 		"coinFlip": {
 			"title": "Coin Flip",
-			"description": "Flip a coin online with realistic 3D animation"
+			"description": "Flip a coin online with realistic 3D animation",
+			"useCase": "Make binary decisions with a fair virtual coin flip"
 		},
 		"worldTime": {
 			"title": "World Time",
 			"description": "Track time across cities and convert between timezones",
+			"useCase": "Track time across multiple cities and convert between timezones",
 			"localTime": "Local Time",
 			"tabs": {
 				"worldClocks": "World Clocks",
@@ -1085,119 +1171,148 @@
 		},
 		"diceRoller": {
 			"title": "Dice Roller",
-			"description": "Roll virtual dice with realistic 3D animation"
+			"description": "Roll virtual dice with realistic 3D animation",
+			"useCase": "Roll virtual dice for games, decisions, or random number generation"
 		},
 		"socialMediaFormatter": {
 			"title": "Social Media Formatter",
-			"description": "Format text with spaces and line breaks for social media"
+			"description": "Format text with spaces and line breaks for social media",
+			"useCase": "Format text with proper spacing and line breaks for social media posts"
 		},
 		"emojiList": {
 			"title": "Emoji List",
-			"description": "Browse and copy 1800+ emojis organized by categories"
+			"description": "Browse and copy 1800+ emojis organized by categories",
+			"useCase": "Browse and copy 1800+ emojis organized by categories"
 		},
 		"textEmoticons": {
 			"title": "Text Emoticons",
-			"description": "ASCII emoticons and Japanese kaomoji for text expressions"
+			"description": "ASCII emoticons and Japanese kaomoji for text expressions",
+			"useCase": "Find and copy ASCII emoticons and kaomoji for text-based communication"
 		},
 		"jsValidator": {
 			"title": "JavaScript Validator",
-			"description": "Static JavaScript code analysis for syntax errors and quality issues detection"
+			"description": "Static JavaScript code analysis for syntax errors and quality issues detection",
+			"useCase": "Validate JavaScript code for syntax errors and quality issues"
 		},
 		"ageCalculator": {
 			"title": "Age Calculator",
-			"description": "Calculate exact age in years, months, days, hours, and minutes from birthdate"
+			"description": "Calculate exact age in years, months, days, hours, and minutes from birthdate",
+			"useCase": "Calculate precise age and time differences for personal or professional use"
 		},
 		"temperatureConverter": {
 			"title": "Temperature Converter",
-			"description": "Convert between Celsius, Fahrenheit, and Kelvin temperature scales instantly"
+			"description": "Convert between Celsius, Fahrenheit, and Kelvin temperature scales instantly",
+			"useCase": "Convert temperatures between Celsius, Fahrenheit, and Kelvin scales"
 		},
 		"bmiCalculator": {
 			"title": "BMI Calculator",
-			"description": "Calculate Body Mass Index (BMI) with health status interpretation"
+			"description": "Calculate Body Mass Index (BMI) with health status interpretation",
+			"useCase": "Calculate BMI and assess health status based on height and weight"
 		},
 		"textCounter": {
 			"title": "Text Counter",
-			"description": "Count characters, words, sentences, and paragraphs for SEO and social media"
+			"description": "Count characters, words, sentences, and paragraphs for SEO and social media",
+			"useCase": "Count text statistics for SEO optimization and social media character limits"
 		},
 		"timerCountdown": {
 			"title": "Timer & Countdown",
-			"description": "Timer, countdown, and stopwatch with notifications for time management"
+			"description": "Timer, countdown, and stopwatch with notifications for time management",
+			"useCase": "Time management with countdown timers, stopwatch, and notifications"
 		},
 		"currencyConverter": {
 			"title": "Currency Converter",
-			"description": "Convert between currencies with fixed exchange rates"
+			"description": "Convert between currencies with fixed exchange rates",
+			"useCase": "Convert between currencies with fixed exchange rates"
 		},
 		"textDiff": {
 			"title": "Text Difference Tool",
-			"description": "Compare two texts and highlight differences line by line"
+			"description": "Compare two texts and highlight differences line by line",
+			"useCase": "Compare two texts and highlight differences line by line"
 		},
 		"phpSyntaxChecker": {
 			"title": "PHP Syntax Checker",
-			"description": "Check PHP syntax for errors with support for PHP 5, 7, and 8"
+			"description": "Check PHP syntax for errors with support for PHP 5, 7, and 8",
+			"useCase": "Check PHP syntax for errors with support for PHP 5, 7, and 8"
 		},
 		"mysqlSyntaxChecker": {
 			"title": "MySQL Syntax Checker",
-			"description": "Validate MySQL queries and check for syntax errors"
+			"description": "Validate MySQL queries and check for syntax errors",
+			"useCase": "Validate MySQL queries and check for syntax errors"
 		},
 		"regexTester": {
 			"title": "Regex Tester",
-			"description": "Test regular expressions with support for JavaScript, PHP, and Python"
+			"description": "Test regular expressions with support for JavaScript, PHP, and Python",
+			"useCase": "Test and debug regular expressions for text processing and validation"
 		},
 		"javascriptSyntaxChecker": {
 			"title": "JavaScript Syntax Checker",
-			"description": "Check JavaScript/ES6/ES2020+ syntax with JSX support"
+			"description": "Check JavaScript/ES6/ES2020+ syntax with JSX support",
+			"useCase": "Check JavaScript/ES6/ES2020+ syntax with JSX support"
 		},
 		"pxRemConverter": {
 			"title": "PX to REM/EM Converter",
-			"description": "Convert between px, rem, and em CSS units with custom base font size"
+			"description": "Convert between px, rem, and em CSS units with custom base font size",
+			"useCase": "Convert CSS units between pixels, rem, and em for responsive design"
 		},
 		"cssBoxShadow": {
 			"title": "CSS Box Shadow Generator",
-			"description": "Generate CSS box-shadow with visual preview and multiple shadows"
+			"description": "Generate CSS box-shadow with visual preview and multiple shadows",
+			"useCase": "Generate CSS box-shadow with visual preview and multiple shadows"
 		},
 		"cssGradient": {
 			"title": "CSS Gradient Generator",
-			"description": "Create linear, radial, and conic CSS gradients with visual editor"
+			"description": "Create linear, radial, and conic CSS gradients with visual editor",
+			"useCase": "Generate CSS gradients with visual controls for backgrounds and design elements"
 		},
 		"colorContrast": {
 			"title": "Color Contrast Checker",
-			"description": "Check color contrast ratios for WCAG accessibility compliance"
+			"description": "Check color contrast ratios for WCAG accessibility compliance",
+			"useCase": "Check color contrast ratios for WCAG accessibility compliance"
 		},
 		"cssKeyframes": {
 			"title": "CSS Keyframes Generator",
-			"description": "Generate CSS @keyframes animations with visual editor"
+			"description": "Generate CSS @keyframes animations with visual editor",
+			"useCase": "Generate CSS @keyframes animations with visual editor"
 		},
 		"jsonYamlFormatter": {
 			"title": "JSON/YAML Formatter",
-			"description": "Format, validate, and convert between JSON and YAML formats"
+			"description": "Format, validate, and convert between JSON and YAML formats",
+			"useCase": "Format, validate, and convert between JSON and YAML formats"
 		},
 		"base64Encoder": {
 			"title": "Base64 Encoder/Decoder",
-			"description": "Encode and decode data in Base64 format with file support"
+			"description": "Encode and decode data in Base64 format with file support",
+			"useCase": "Encode and decode data in Base64 format with file support"
 		},
 		"jwtDecoder": {
 			"title": "JWT Decoder",
-			"description": "Decode and analyze JSON Web Tokens (JWT) structure"
+			"description": "Decode and analyze JSON Web Tokens (JWT) structure",
+			"useCase": "Decode and analyze JSON Web Tokens (JWT) structure"
 		},
 		"uuidGenerator": {
 			"title": "UUID Generator",
-			"description": "Generate UUID/GUID in various versions (v1, v3, v4, v5)"
+			"description": "Generate UUID/GUID in various versions (v1, v3, v4, v5)",
+			"useCase": "Generate UUID/GUID in various versions (v1, v3, v4, v5)"
 		},
 		"compoundInterest": {
 			"title": "Compound Interest Calculator",
-			"description": "Calculate compound interest with detailed breakdown and charts"
+			"description": "Calculate compound interest with detailed breakdown and charts",
+			"useCase": "Calculate compound interest with detailed breakdown and charts"
 		},
 		"loanCalculator": {
 			"title": "Loan Calculator",
-			"description": "Calculate loan/mortgage payments with amortization schedule"
+			"description": "Calculate loan/mortgage payments with amortization schedule",
+			"useCase": "Calculate loan/mortgage payments with amortization schedule"
 		},
 		"fuelCalculator": {
 			"title": "Fuel Consumption Calculator",
-			"description": "Calculate fuel consumption, cost, and average consumption per 100 km"
+			"description": "Calculate fuel consumption, cost, and average consumption per 100 km",
+			"useCase": "Calculate fuel consumption, costs, and efficiency for vehicle trip planning"
 		},
 		"faviconGenerator": {
 			"title": "Favicon Generator",
-			"description": "Generate favicon files in multiple sizes and formats for web and mobile platforms"
+			"description": "Generate favicon files in multiple sizes and formats for web and mobile platforms",
+			"useCase": "Generate favicon files in multiple sizes and formats for web and mobile platforms"
 		},
 		"search": {
 			"placeholder": "Search tools by name, description, or tags...",
@@ -1238,6 +1353,7 @@
 			},
 			"usageStats": {
 				"title": "Usage Stats",
+				"onlineNow": "Online now",
 				"viewsToday": "Views today",
 				"totalUses": "Total uses",
 				"avgSession": "Avg. session",
@@ -1317,7 +1433,7 @@
 				},
 				"rtlSupport": {
 					"title": "RTL Support",
-					"description": "Full right-to-left layout support for Hebrew and Arabic languages"
+					"description": "Full right-to-left layout support for Arabic languages"
 				},
 				"persistent": {
 					"title": "Persistent Selection",

@@ -194,7 +194,7 @@ export default function FuelConsumptionCalculatorPage() {
     if (consumption <= 5) return { label: 'Отлично', color: 'text-green-600', icon: TreePine }
     if (consumption <= 7) return { label: 'Хорошо', color: 'text-green-500', icon: TreePine }
     if (consumption <= 9) return { label: 'Средне', color: 'text-yellow-600', icon: Gauge }
-    if (consumption <= 12) return { label: 'Высокий', color: 'text-orange-600', icon: Gauge }
+    if (consumption <= 12) return { label: 'Высокий', color: 'text-blue-600', icon: Gauge }
     return { label: 'Очень высокий', color: 'text-red-600', icon: Gauge }
   }
 
@@ -576,8 +576,8 @@ export default function FuelConsumptionCalculatorPage() {
                 </div>
                 <span className="text-muted-foreground">7-9 л/100км</span>
               </div>
-              <div className="flex items-center justify-between p-2 rounded-lg bg-orange-50 dark:bg-orange-950/20">
-                <div className="flex items-center gap-2 text-orange-600">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                <div className="flex items-center gap-2 text-blue-600">
                   <Gauge className="w-4 h-4" />
                   <span className="font-medium">Высокий</span>
                 </div>

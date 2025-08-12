@@ -314,7 +314,7 @@ export default function AgeCalculatorPage() {
               {/* Detailed Statistics */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <div className="text-lg font-bold text-orange-600">
+                  <div className="text-lg font-bold text-blue-600">
                     {formatNumber(ageData.totalDays)}
                   </div>
                   <div className="text-sm text-muted-foreground">дней прожито</div>
@@ -399,7 +399,7 @@ export default function AgeCalculatorPage() {
                   </div>
                 </div>
                 
-                <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-lg border">
+                <div className="p-4 bg-gradient-to-r from-amber-50 to-blue-50 dark:from-amber-950/20 dark:to-blue-950/20 rounded-lg border">
                   <div className="font-medium text-amber-700 dark:text-amber-300 mb-1">
                     Китайский гороскоп
                   </div>

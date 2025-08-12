@@ -58,10 +58,10 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 				<ProjectsSidebar onLinkClick={() => setIsSidebarOpen(false)} />
 			</div>
 			
-			<main className='flex-1 flex flex-col overflow-hidden'>
+			<main className='flex-1 flex flex-col overflow-hidden min-w-0'>
 				<div className='flex-1 flex overflow-hidden'>
-					<div className='flex-1 overflow-y-auto projects-scroll'>
-						<div className='container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
+					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
+						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
 							{/* Add padding on mobile to account for menu button */}
 							<div className='pl-0 lg:pl-0' style={{ paddingLeft: 'calc(env(safe-area-inset-left) + 0px)' }}>
 								{widgetId && <WidgetHeader widgetId={widgetId} />}
@@ -73,8 +73,8 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 							</div>
 						</div>
 					</div>
-					{/* Right sidebar - hidden on mobile and tablets */}
-					<div className="hidden xl:block">
+					{/* Right sidebar - hidden on mobile and tablets, shown on desktop */}
+					<div className="hidden xl:block overflow-y-auto flex-shrink-0">
 						{widgetId && <ProjectsRightSidebar />}
 					</div>
 				</div>

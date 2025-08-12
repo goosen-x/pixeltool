@@ -190,7 +190,7 @@ components:
 export default function JsonYamlFormatterPage() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
-  const [inputFormat, setInputFormat] = useState<Format>('json')
+  const [detectedFormat, setDetectedFormat] = useState<Format | null>(null)
   const [outputFormat, setOutputFormat] = useState<Format>('json')
   const [indentSize, setIndentSize] = useState(2)
   const [sortKeys, setSortKeys] = useState(false)
@@ -205,15 +205,62 @@ export default function JsonYamlFormatterPage() {
       setOutput('')
       setValidation({ valid: true })
       setStats({ lines: 0, size: 0, keys: 0, depth: 0 })
+      setDetectedFormat(null)
     }
-  }, [input, inputFormat, outputFormat, indentSize, sortKeys, minify])
+  }, [input, outputFormat, indentSize, sortKeys, minify])
+
+  const detectFormat = (text: string): Format | null => {
+    const trimmed = text.trim()
+    if (!trimmed) return null
+
+    // Попробуем сначала JSON
+    try {
+      JSON.parse(trimmed)
+      return 'json'
+    } catch {
+      // Если не JSON, проверим признаки YAML
+      const yamlPatterns = [
+        /^---/, // YAML документ начинается с ---
+        /^\w+:\s*$/m, // Ключ с двоеточием
+        /^-\s+/m, // Элемент списка
+        /^\s+\w+:/m, // Вложенный ключ
+        /:\s*\|/m, // Многострочный текст
+        /:\s*>/m // Складываемый текст
+      ]
+      
+      if (yamlPatterns.some(pattern => pattern.test(trimmed))) {
+        return 'yaml'
+      }
+      
+      // Попробуем распарсить как YAML
+      try {
+        parseYAML(trimmed)
+        return 'yaml'
+      } catch {
+        return null
+      }
+    }
+  }
 
   const formatAndValidate = () => {
     try {
       let data: any
+      const format = detectFormat(input)
+      
+      if (!format) {
+        setValidation({
+          valid: false,
+          error: 'Не удалось определить формат. Проверьте синтаксис JSON или YAML.'
+        })
+        setOutput('')
+        setDetectedFormat(null)
+        return
+      }
+      
+      setDetectedFormat(format)
       
       // Парсим входные данные
-      if (inputFormat === 'json') {
+      if (format === 'json') {
         data = JSON.parse(input)
       } else {
         // Простой YAML парсер
@@ -458,15 +505,14 @@ export default function JsonYamlFormatterPage() {
 
   const loadExample = (example: Example) => {
     setInput(example.content)
-    setInputFormat(example.format)
     toast.success(`Загружен пример: ${example.name}`)
   }
 
   const swapFormats = () => {
-    setInputFormat(outputFormat)
-    setOutputFormat(inputFormat)
     if (output) {
       setInput(output)
+      // Выходной формат становится новым форматом вывода
+      setOutputFormat(detectedFormat === 'json' ? 'yaml' : 'json')
     }
   }
 
@@ -475,6 +521,7 @@ export default function JsonYamlFormatterPage() {
     setOutput('')
     setValidation({ valid: true })
     setStats({ lines: 0, size: 0, keys: 0, depth: 0 })
+    setDetectedFormat(null)
     toast.success('Форматтер сброшен')
   }
 
@@ -489,21 +536,22 @@ export default function JsonYamlFormatterPage() {
       {/* Format Selection */}
       <Card className="p-6">
         <div className="flex items-center justify-between">
-          <RadioGroup value={inputFormat} onValueChange={(value: Format) => setInputFormat(value)}>
-            <div className="flex items-center gap-4">
-              <Label className="text-base">Входной формат:</Label>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="json" id="input-json" />
-                <Label htmlFor="input-json">JSON</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="yaml" id="input-yaml" />
-                <Label htmlFor="input-yaml">YAML</Label>
-              </div>
-            </div>
-          </RadioGroup>
+          <div className="flex items-center gap-4">
+            <Label className="text-base">Определенный формат:</Label>
+            {detectedFormat ? (
+              <Badge variant="outline" className="gap-1">
+                <FileJson className="w-3 h-3" />
+                {detectedFormat.toUpperCase()}
+              </Badge>
+            ) : (
+              <Badge variant="secondary" className="gap-1">
+                <AlertCircle className="w-3 h-3" />
+                Автоопределение
+              </Badge>
+            )}
+          </div>
 
-          <Button onClick={swapFormats} variant="outline" size="sm" className="gap-2">
+          <Button onClick={swapFormats} variant="outline" size="sm" className="gap-2" disabled={!output}>
             <ChevronLeft className="w-4 h-4" />
             <ChevronRight className="w-4 h-4" />
             Поменять
@@ -548,7 +596,7 @@ export default function JsonYamlFormatterPage() {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Вставьте ${inputFormat.toUpperCase()} для форматирования...`}
+              placeholder="Вставьте JSON или YAML для форматирования..."
               className={cn(
                 "font-mono text-sm min-h-[400px]",
                 !validation.valid && "border-red-500"

@@ -300,7 +300,7 @@ export default function FaviconGeneratorPage() {
 							</CardHeader>
 							<CardContent className="space-y-2 text-xs text-muted-foreground">
 								<p><strong>HTML:</strong> Add to your &lt;head&gt; section:</p>
-								<code className="block bg-muted p-2 rounded text-xs">
+								<code className="inline-code block">
 									{`<link rel="icon" href="/favicon-32x32.png" sizes="32x32">`}<br/>
 									{`<link rel="icon" href="/favicon-16x16.png" sizes="16x16">`}<br/>
 									{`<link rel="apple-touch-icon" href="/favicon-180x180.png">`}

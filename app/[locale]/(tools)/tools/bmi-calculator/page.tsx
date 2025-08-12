@@ -57,7 +57,7 @@ const BMI_CATEGORIES = [
   { min: 16, max: 18.5, name: 'Недостаточная масса', color: 'text-yellow-600', risk: 'Повышенный' },
   { min: 18.5, max: 25, name: 'Норма', color: 'text-green-600', risk: 'Минимальный' },
   { min: 25, max: 30, name: 'Избыточная масса', color: 'text-yellow-600', risk: 'Повышенный' },
-  { min: 30, max: 35, name: 'Ожирение I степени', color: 'text-orange-600', risk: 'Высокий' },
+  { min: 30, max: 35, name: 'Ожирение I степени', color: 'text-blue-600', risk: 'Высокий' },
   { min: 35, max: 40, name: 'Ожирение II степени', color: 'text-red-600', risk: 'Очень высокий' },
   { min: 40, max: 100, name: 'Ожирение III степени', color: 'text-red-800', risk: 'Крайне высокий' }
 ]
@@ -595,7 +595,7 @@ ${healthMetrics ? `
                         <span className="font-mono font-semibold">{result.calories.mildLoss} ккал</span>
                       </div>
                     </div>
-                    <div className="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                       <div className="flex justify-between items-center">
                         <span className="text-sm">Похудение (-0.5 кг/нед)</span>
                         <span className="font-mono font-semibold">{result.calories.loss} ккал</span>

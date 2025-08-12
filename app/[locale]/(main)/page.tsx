@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/global/Logo'
+import { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ locale: string }>
 }
+
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
@@ -67,7 +69,7 @@ export default async function HomePage({ params }: Props) {
             <Link href={`/${locale}/tools`}>
               <Button size="lg" variant="outline" className="gap-2 text-lg px-8 h-14 rounded-xl">
                 <Terminal className="h-5 w-5" />
-                Browse Categories
+                {t('hero.browseCategories')}
               </Button>
             </Link>
           </div>
@@ -86,7 +88,7 @@ export default async function HomePage({ params }: Props) {
               {t('features.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Professional tools designed for modern developers and designers
+              {t('features.subtitle')}
             </p>
           </div>
           

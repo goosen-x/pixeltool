@@ -29,23 +29,93 @@ const openSans = Open_Sans({
   weight: ['400', '500', '600', '700', '800'],
 })
 
-// todo add metadata
-
-export const metadata: Metadata = {
-	title: 'Web Developer Borisenko Dmitry',
-	description:
-		'Projects and experience in web development: building modern applications using Next.js, Strapi, PostgreSQL, and other technologies.'
+interface Props {
+	children: ReactNode
+	params: Promise<{ locale: string }>
 }
 
-// todo http://localhost:3000/rufd (not found)
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { locale } = await params
+	
+	const metadata = {
+		en: {
+			title: {
+				default: 'PixelTool - Free Online Developer Tools & Utilities',
+				template: '%s | PixelTool'
+			},
+			description: 'Professional web developer tools: CSS generators, color converters, formatters, validators, and 50+ more utilities. No installation required, 100% free.',
+		},
+		ru: {
+			title: {
+				default: 'PixelTool - Бесплатные Онлайн Инструменты для Разработчиков',
+				template: '%s | PixelTool'
+			},
+			description: 'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики и 50+ утилит. Без установки, 100% бесплатно.',
+		}
+	}
+
+	const currentMetadata = metadata[locale as keyof typeof metadata] || metadata.en
+	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+
+	return {
+		metadataBase: new URL(siteUrl),
+		title: currentMetadata.title,
+		description: currentMetadata.description,
+		keywords: locale === 'ru' 
+			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты']
+			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities'],
+		authors: [{ name: 'Dmitry Borisenko' }],
+		creator: 'Dmitry Borisenko',
+		openGraph: {
+			type: 'website',
+			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
+			url: siteUrl,
+			title: currentMetadata.title.default,
+			description: currentMetadata.description,
+			siteName: 'PixelTool',
+			images: [{
+				url: '/og-image.png',
+				width: 1200,
+				height: 630,
+				alt: 'PixelTool - Professional Developer Tools'
+			}],
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title: currentMetadata.title.default,
+			description: currentMetadata.description,
+			images: ['/og-image.png'],
+			creator: '@pixeltool',
+		},
+		alternates: {
+			canonical: siteUrl,
+			languages: {
+				'en': `${siteUrl}/en`,
+				'ru': `${siteUrl}/ru`,
+			}
+		},
+		robots: {
+			index: true,
+			follow: true,
+			googleBot: {
+				index: true,
+				follow: true,
+				'max-video-preview': -1,
+				'max-image-preview': 'large',
+				'max-snippet': -1,
+			},
+		},
+		verification: {
+			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+		},
+	}
+}
 
 export default async function RootLayout({
 	children,
 	params
-}: Readonly<{
-	children: ReactNode
-	params: Promise<{ locale: string }>
-}>) {
+}: Readonly<Props>) {
 	const locale = (await params).locale
 	if (!routing.locales.includes(locale as any)) notFound()
 	const messages = await getMessages()
