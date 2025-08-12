@@ -64,10 +64,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		title: currentMetadata.title,
 		description: currentMetadata.description,
 		keywords: locale === 'ru' 
-			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты']
-			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities'],
-		authors: [{ name: 'Dmitry Borisenko' }],
+			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты', 'инструменты разработчика', 'калькулятор CSS', 'генератор паролей', 'QR код генератор', 'конвертер изображений', 'парсер HTML', 'минификатор кода']
+			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities', 'developer tools', 'CSS calculator', 'password generator', 'QR code generator', 'image converter', 'HTML parser', 'code minifier'],
+		authors: [{ name: 'Dmitry Borisenko', url: 'https://github.com/dmitryborisenko' }],
 		creator: 'Dmitry Borisenko',
+		publisher: 'PixelTool',
+		category: 'technology',
 		openGraph: {
 			type: 'website',
 			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
