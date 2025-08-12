@@ -2,643 +2,469 @@
 
 import { useState, useEffect } from 'react'
 import {
-	Calculator,
-	Percent,
-	TrendingUp,
-	TrendingDown,
-	Plus,
-	Minus
+  Calculator,
+  Percent,
+  TrendingUp,
+  TrendingDown,
+  Plus,
+  Minus,
+  Copy,
+  RefreshCw
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { WidgetShareSection, WidgetTips, WidgetKeyboardShortcuts, ShortcutHint } from '@/components/widgets'
+import { useWidgetKeyboard, commonWidgetShortcuts, type KeyboardShortcut } from '@/lib/hooks/useWidgetKeyboard'
+import { usePercentageCalculator, type CalculationType } from '@/lib/hooks/widgets'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
-
-interface CalculationResult {
-	value: number
-	formula: string
-	description: string
-}
+import { toast } from 'sonner'
 
 export default function PercentageCalculatorPage() {
-	const t = useTranslations('widgets.percentageCalculator')
-	const [mounted, setMounted] = useState(false)
+  const t = useTranslations('widgets.percentageCalculator')
+  const [mounted, setMounted] = useState(false)
 
-	// Tab 1: X% of Y
-	const [percentOfNumber, setPercentOfNumber] = useState({
-		percent: 20,
-		number: 100
-	})
-	const [percentOfResult, setPercentOfResult] =
-		useState<CalculationResult | null>(null)
+  // Use the percentage calculator hook
+  const {
+    activeType,
+    values,
+    results,
+    setActiveType,
+    updateValue,
+    copyResult,
+    reset,
+    loadExample
+  } = usePercentageCalculator()
 
-	// Tab 2: X is Y% of what?
-	const [whatPercent, setWhatPercent] = useState({ value: 20, percent: 10 })
-	const [whatPercentResult, setWhatPercentResult] =
-		useState<CalculationResult | null>(null)
+  // Mounted effect
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-	// Tab 3: X is Y, what is 100%?
-	const [findTotal, setFindTotal] = useState({ percent: 25, value: 50 })
-	const [findTotalResult, setFindTotalResult] =
-		useState<CalculationResult | null>(null)
+  // Keyboard shortcuts
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      ...commonWidgetShortcuts.reset,
+      action: reset
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      shift: true,
+      description: 'Copy result',
+      action: () => copyResult(activeType),
+      enabled: !!results[activeType]
+    },
+    {
+      key: 'e',
+      ctrl: true,
+      description: 'Load example',
+      action: loadExample
+    },
+    {
+      key: '1',
+      ctrl: true,
+      description: 'Percent of number',
+      action: () => setActiveType('percentOfNumber')
+    },
+    {
+      key: '2',
+      ctrl: true,
+      description: 'What percent',
+      action: () => setActiveType('whatPercent')
+    },
+    {
+      key: '3',
+      ctrl: true,
+      description: 'Find total',
+      action: () => setActiveType('findTotal')
+    },
+    {
+      key: '4',
+      ctrl: true,
+      description: 'Percent change',
+      action: () => setActiveType('percentChange')
+    },
+    {
+      key: '5',
+      ctrl: true,
+      description: 'Add percent',
+      action: () => setActiveType('addPercent')
+    },
+    {
+      key: '6',
+      ctrl: true,
+      description: 'Subtract percent',
+      action: () => setActiveType('subtractPercent')
+    }
+  ]
 
-	// Tab 4: Percentage change
-	const [percentChange, setPercentChange] = useState({ from: 100, to: 150 })
-	const [percentChangeResult, setPercentChangeResult] =
-		useState<CalculationResult | null>(null)
+  useWidgetKeyboard({
+    shortcuts,
+    widgetId: 'percentage-calculator',
+    enabled: true
+  })
 
-	// Tab 5: Add percentage
-	const [addPercent, setAddPercent] = useState({ percent: 10, number: 100 })
-	const [addPercentResult, setAddPercentResult] =
-		useState<CalculationResult | null>(null)
+  // Widget tips
+  const percentageTips = [
+    {
+      id: 'quick-switch',
+      title: 'Quick Tab Switch',
+      description: 'Use Ctrl+1 through Ctrl+6 to quickly switch between calculation types',
+      category: 'basic' as const
+    },
+    {
+      id: 'auto-calc',
+      title: 'Automatic Calculation',
+      description: 'Results update automatically as you type - no need to press calculate',
+      category: 'basic' as const
+    },
+    {
+      id: 'example',
+      title: 'Load Examples',
+      description: 'Press Ctrl+E to load example values for the current calculation',
+      category: 'basic' as const,
+      action: {
+        label: 'Load Example',
+        onClick: loadExample
+      }
+    },
+    {
+      id: 'copy',
+      title: 'Copy Results',
+      description: 'Use Ctrl+Shift+C to copy the current result with formula',
+      category: 'basic' as const
+    },
+    {
+      id: 'formulas',
+      title: 'All Formulas Shown',
+      description: 'Each result shows the exact formula used for transparency',
+      category: 'pro' as const
+    }
+  ]
 
-	// Tab 6: Subtract percentage
-	const [subtractPercent, setSubtractPercent] = useState({
-		percent: 10,
-		number: 100
-	})
-	const [subtractPercentResult, setSubtractPercentResult] =
-		useState<CalculationResult | null>(null)
+  if (!mounted) {
+    return null
+  }
 
-	useEffect(() => {
-		setMounted(true)
-	}, [])
+  const tabConfig = [
+    { id: 'percentOfNumber' as CalculationType, label: t('tabs.percentOfNumber'), icon: Calculator },
+    { id: 'whatPercent' as CalculationType, label: t('tabs.whatPercent'), icon: Percent },
+    { id: 'findTotal' as CalculationType, label: t('tabs.findTotal'), icon: TrendingUp },
+    { id: 'percentChange' as CalculationType, label: t('tabs.percentageChange'), icon: TrendingDown },
+    { id: 'addPercent' as CalculationType, label: t('tabs.addPercentage'), icon: Plus },
+    { id: 'subtractPercent' as CalculationType, label: t('tabs.subtractPercentage'), icon: Minus }
+  ]
 
-	// Calculate functions
-	const calculatePercentOfNumber = () => {
-		const result = (percentOfNumber.percent / 100) * percentOfNumber.number
-		setPercentOfResult({
-			value: result,
-			formula: `${percentOfNumber.percent}% × ${percentOfNumber.number} = ${result}`,
-			description: t('formulas.percentOf', {
-				percent: percentOfNumber.percent,
-				number: percentOfNumber.number,
-				result: result
-			})
-		})
-	}
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Tips Section */}
+      <WidgetTips
+        tips={percentageTips}
+        widgetId="percentage-calculator"
+        variant="inline"
+        className="mb-6"
+      />
 
-	const calculateWhatPercent = () => {
-		const result = (whatPercent.value / whatPercent.percent) * 100
-		setWhatPercentResult({
-			value: result,
-			formula: `${whatPercent.value} ÷ ${whatPercent.percent}% = ${result}`,
-			description: t('formulas.whatPercent', {
-				value: whatPercent.value,
-				percent: whatPercent.percent,
-				result: result
-			})
-		})
-	}
+      <Card className="p-8">
+        <Tabs value={activeType} onValueChange={(value) => setActiveType(value as CalculationType)}>
+          <TabsList className="grid grid-cols-2 lg:grid-cols-3 gap-2 h-auto">
+            {tabConfig.map((tab) => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-2 px-3 py-2 text-sm"
+              >
+                <tab.icon className="w-4 h-4" />
+                <span className="hidden sm:inline">{tab.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-	const calculateFindTotal = () => {
-		const result = (findTotal.value / findTotal.percent) * 100
-		setFindTotalResult({
-			value: result,
-			formula: `${findTotal.value} ÷ ${findTotal.percent}% × 100 = ${result}`,
-			description: t('formulas.findTotal', {
-				percent: findTotal.percent,
-				value: findTotal.value,
-				result: result
-			})
-		})
-	}
+          {/* Percent of Number */}
+          <TabsContent value="percentOfNumber" className="space-y-4 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="percentOfPercentage">
+                  {t('inputs.percentage')}
+                </Label>
+                <Input
+                  id="percentOfPercentage"
+                  type="number"
+                  value={values.percentOfPercentage}
+                  onChange={(e) => updateValue('percentOfPercentage', e.target.value)}
+                  placeholder="20"
+                />
+              </div>
+              <div>
+                <Label htmlFor="percentOfValue">
+                  {t('inputs.number')}
+                </Label>
+                <Input
+                  id="percentOfValue"
+                  type="number"
+                  value={values.percentOfValue}
+                  onChange={(e) => updateValue('percentOfValue', e.target.value)}
+                  placeholder="100"
+                />
+              </div>
+            </div>
+            {results.percentOfNumber && (
+              <ResultCard result={results.percentOfNumber} />
+            )}
+          </TabsContent>
 
-	const calculatePercentChange = () => {
-		const change = percentChange.to - percentChange.from
-		const percentageChange = (change / percentChange.from) * 100
-		setPercentChangeResult({
-			value: percentageChange,
-			formula: `((${percentChange.to} - ${percentChange.from}) ÷ ${percentChange.from}) × 100 = ${percentageChange.toFixed(2)}%`,
-			description: t('formulas.percentChange', {
-				from: percentChange.from,
-				to: percentChange.to,
-				result: percentageChange.toFixed(2)
-			}) + ' (' + t(`formulas.${percentageChange > 0 ? 'increase' : 'decrease'}`) + ')'
-		})
-	}
+          {/* What Percent */}
+          <TabsContent value="whatPercent" className="space-y-4 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="whatPercentValue1">
+                  {t('inputs.value')}
+                </Label>
+                <Input
+                  id="whatPercentValue1"
+                  type="number"
+                  value={values.whatPercentValue1}
+                  onChange={(e) => updateValue('whatPercentValue1', e.target.value)}
+                  placeholder="25"
+                />
+              </div>
+              <div>
+                <Label htmlFor="whatPercentValue2">
+                  {t('inputs.of')}
+                </Label>
+                <Input
+                  id="whatPercentValue2"
+                  type="number"
+                  value={values.whatPercentValue2}
+                  onChange={(e) => updateValue('whatPercentValue2', e.target.value)}
+                  placeholder="200"
+                />
+              </div>
+            </div>
+            {results.whatPercent && (
+              <ResultCard result={results.whatPercent} />
+            )}
+          </TabsContent>
 
-	const calculateAddPercent = () => {
-		const addition = (addPercent.percent / 100) * addPercent.number
-		const result = addPercent.number + addition
-		setAddPercentResult({
-			value: result,
-			formula: `${addPercent.number} + (${addPercent.percent}% × ${addPercent.number}) = ${result}`,
-			description: t('formulas.addPercent', {
-				number: addPercent.number,
-				percent: addPercent.percent,
-				result: result
-			})
-		})
-	}
+          {/* Find Total */}
+          <TabsContent value="findTotal" className="space-y-4 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="findTotalValue">
+                  {t('inputs.value')}
+                </Label>
+                <Input
+                  id="findTotalValue"
+                  type="number"
+                  value={values.findTotalValue}
+                  onChange={(e) => updateValue('findTotalValue', e.target.value)}
+                  placeholder="30"
+                />
+              </div>
+              <div>
+                <Label htmlFor="findTotalPercentage">
+                  {t('inputs.isPercentOf')}
+                </Label>
+                <Input
+                  id="findTotalPercentage"
+                  type="number"
+                  value={values.findTotalPercentage}
+                  onChange={(e) => updateValue('findTotalPercentage', e.target.value)}
+                  placeholder="15"
+                />
+              </div>
+            </div>
+            {results.findTotal && (
+              <ResultCard result={results.findTotal} />
+            )}
+          </TabsContent>
 
-	const calculateSubtractPercent = () => {
-		const subtraction = (subtractPercent.percent / 100) * subtractPercent.number
-		const result = subtractPercent.number - subtraction
-		setSubtractPercentResult({
-			value: result,
-			formula: `${subtractPercent.number} - (${subtractPercent.percent}% × ${subtractPercent.number}) = ${result}`,
-			description: t('formulas.subtractPercent', {
-				number: subtractPercent.number,
-				percent: subtractPercent.percent,
-				result: result
-			})
-		})
-	}
+          {/* Percent Change */}
+          <TabsContent value="percentChange" className="space-y-4 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="changeOldValue">
+                  {t('inputs.from')}
+                </Label>
+                <Input
+                  id="changeOldValue"
+                  type="number"
+                  value={values.changeOldValue}
+                  onChange={(e) => updateValue('changeOldValue', e.target.value)}
+                  placeholder="100"
+                />
+              </div>
+              <div>
+                <Label htmlFor="changeNewValue">
+                  {t('inputs.to')}
+                </Label>
+                <Input
+                  id="changeNewValue"
+                  type="number"
+                  value={values.changeNewValue}
+                  onChange={(e) => updateValue('changeNewValue', e.target.value)}
+                  placeholder="125"
+                />
+              </div>
+            </div>
+            {results.percentChange && (
+              <ResultCard result={results.percentChange} />
+            )}
+          </TabsContent>
 
-	// Auto-calculate on input change
-	useEffect(() => {
-		if (
-			mounted &&
-			percentOfNumber.percent !== null &&
-			percentOfNumber.number !== null
-		) {
-			calculatePercentOfNumber()
-		}
-	}, [percentOfNumber, mounted])
+          {/* Add Percent */}
+          <TabsContent value="addPercent" className="space-y-4 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="addSubtractValue">
+                  {t('inputs.value')}
+                </Label>
+                <Input
+                  id="addSubtractValue"
+                  type="number"
+                  value={values.addSubtractValue}
+                  onChange={(e) => updateValue('addSubtractValue', e.target.value)}
+                  placeholder="100"
+                />
+              </div>
+              <div>
+                <Label htmlFor="addSubtractPercentage">
+                  {t('inputs.addPercentage')}
+                </Label>
+                <Input
+                  id="addSubtractPercentage"
+                  type="number"
+                  value={values.addSubtractPercentage}
+                  onChange={(e) => updateValue('addSubtractPercentage', e.target.value)}
+                  placeholder="20"
+                />
+              </div>
+            </div>
+            {results.addPercent && (
+              <ResultCard result={results.addPercent} />
+            )}
+          </TabsContent>
 
-	useEffect(() => {
-		if (
-			mounted &&
-			whatPercent.value !== null &&
-			whatPercent.percent !== null &&
-			whatPercent.percent !== 0
-		) {
-			calculateWhatPercent()
-		}
-	}, [whatPercent, mounted])
+          {/* Subtract Percent */}
+          <TabsContent value="subtractPercent" className="space-y-4 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="subtractValue">
+                  {t('inputs.value')}
+                </Label>
+                <Input
+                  id="subtractValue"
+                  type="number"
+                  value={values.addSubtractValue}
+                  onChange={(e) => updateValue('addSubtractValue', e.target.value)}
+                  placeholder="100"
+                />
+              </div>
+              <div>
+                <Label htmlFor="subtractPercentage">
+                  {t('inputs.subtractPercentage')}
+                </Label>
+                <Input
+                  id="subtractPercentage"
+                  type="number"
+                  value={values.addSubtractPercentage}
+                  onChange={(e) => updateValue('addSubtractPercentage', e.target.value)}
+                  placeholder="20"
+                />
+              </div>
+            </div>
+            {results.subtractPercent && (
+              <ResultCard result={results.subtractPercent} />
+            )}
+          </TabsContent>
+        </Tabs>
 
-	useEffect(() => {
-		if (
-			mounted &&
-			findTotal.percent !== null &&
-			findTotal.value !== null &&
-			findTotal.percent !== 0
-		) {
-			calculateFindTotal()
-		}
-	}, [findTotal, mounted])
+        {/* Action Buttons */}
+        <div className="flex gap-2 mt-6">
+          <Button onClick={loadExample} variant="outline" className="flex-1">
+            {t('buttons.loadExample')}
+            <ShortcutHint 
+              shortcut={{ key: 'e', ctrl: true, description: '', action: loadExample }} 
+              className="ml-2"
+            />
+          </Button>
+          <Button 
+            onClick={() => copyResult(activeType)} 
+            variant="outline" 
+            disabled={!results[activeType]}
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            {t('buttons.copy')}
+          </Button>
+          <Button onClick={reset} variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            {t('buttons.reset')}
+          </Button>
+        </div>
+      </Card>
 
-	useEffect(() => {
-		if (
-			mounted &&
-			percentChange.from !== null &&
-			percentChange.to !== null &&
-			percentChange.from !== 0
-		) {
-			calculatePercentChange()
-		}
-	}, [percentChange, mounted])
+      {/* Info Section */}
+      <Card className="p-6 bg-muted/50">
+        <h3 className="font-semibold mb-4">{t('info.title')}</h3>
+        <div className="grid md:grid-cols-2 gap-6 text-sm">
+          <div>
+            <h4 className="font-medium mb-2">{t('info.commonUses.title')}</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• {t('info.commonUses.item1')}</li>
+              <li>• {t('info.commonUses.item2')}</li>
+              <li>• {t('info.commonUses.item3')}</li>
+              <li>• {t('info.commonUses.item4')}</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">{t('info.formulas.title')}</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• {t('info.formulas.item1')}</li>
+              <li>• {t('info.formulas.item2')}</li>
+              <li>• {t('info.formulas.item3')}</li>
+              <li>• {t('info.formulas.item4')}</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
 
-	useEffect(() => {
-		if (mounted && addPercent.percent !== null && addPercent.number !== null) {
-			calculateAddPercent()
-		}
-	}, [addPercent, mounted])
+      {/* Social Share Section */}
+      <WidgetShareSection
+        widgetTitle="Percentage Calculator"
+        widgetDescription="Calculate percentages, percentage changes, and more with formulas and examples."
+        hashtags={['percentage', 'calculator', 'math', 'finance']}
+        variant="inline"
+      />
+      
+      {/* Keyboard shortcuts */}
+      <WidgetKeyboardShortcuts
+        shortcuts={shortcuts}
+        variant="floating"
+        position="bottom-right"
+      />
+    </div>
+  )
+}
 
-	useEffect(() => {
-		if (
-			mounted &&
-			subtractPercent.percent !== null &&
-			subtractPercent.number !== null
-		) {
-			calculateSubtractPercent()
-		}
-	}, [subtractPercent, mounted])
-
-	if (!mounted) {
-		return (
-			<div className='max-w-6xl mx-auto space-y-8'>
-				<div>
-					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						{t('title')}
-					</h1>
-					<p className='text-muted-foreground'>
-						{t('description')}
-					</p>
-				</div>
-				<div className='animate-pulse space-y-8'>
-					<div className='h-96 bg-muted rounded-lg'></div>
-				</div>
-			</div>
-		)
-	}
-
-	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Calculator Tabs */}
-			<Tabs defaultValue='percent-of' className='w-full'>
-				<TabsList className='grid w-full grid-cols-2 md:grid-cols-3 gap-2 h-auto'>
-					<TabsTrigger value='percent-of' className='flex items-center gap-2'>
-						<Percent className='w-4 h-4' />
-						<span className='hidden sm:inline'>{t('tabs.percentOf')}</span>
-						<span className='sm:hidden'>% of</span>
-					</TabsTrigger>
-					<TabsTrigger value='what-percent' className='flex items-center gap-2'>
-						<Calculator className='w-4 h-4' />
-						<span className='hidden sm:inline'>{t('tabs.whatPercent')}</span>
-						<span className='sm:hidden'>100%</span>
-					</TabsTrigger>
-					<TabsTrigger value='find-total' className='flex items-center gap-2'>
-						<Calculator className='w-4 h-4' />
-						<span className='hidden sm:inline'>{t('tabs.findTotal')}</span>
-						<span className='sm:hidden'>X=Y%</span>
-					</TabsTrigger>
-					<TabsTrigger
-						value='percent-change'
-						className='flex items-center gap-2'
-					>
-						<TrendingUp className='w-4 h-4' />
-						<span className='hidden sm:inline'>{t('tabs.percentChange')}</span>
-						<span className='sm:hidden'>Δ%</span>
-					</TabsTrigger>
-					<TabsTrigger value='add-percent' className='flex items-center gap-2'>
-						<Plus className='w-4 h-4' />
-						<span className='hidden sm:inline'>{t('tabs.addPercent')}</span>
-						<span className='sm:hidden'>+%</span>
-					</TabsTrigger>
-					<TabsTrigger
-						value='subtract-percent'
-						className='flex items-center gap-2'
-					>
-						<Minus className='w-4 h-4' />
-						<span className='hidden sm:inline'>{t('tabs.subtractPercent')}</span>
-						<span className='sm:hidden'>-%</span>
-					</TabsTrigger>
-				</TabsList>
-
-				{/* Tab 1: X% of Y */}
-				<TabsContent value='percent-of' className='mt-6'>
-					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>{t('tabs.percentOf')}</h3>
-						<div className='flex flex-col sm:flex-row items-center gap-4'>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent1'>{t('labels.percent')}</Label>
-								<div className='relative'>
-									<Input
-										id='percent1'
-										type='number'
-										value={percentOfNumber.percent}
-										onChange={e =>
-											setPercentOfNumber({
-												...percentOfNumber,
-												percent: parseFloat(e.target.value) || 0
-											})
-										}
-										className='pr-8'
-									/>
-									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-										%
-									</span>
-								</div>
-							</div>
-							<span className='text-muted-foreground'>×</span>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='number1'>{t('labels.number')}</Label>
-								<Input
-									id='number1'
-									type='number'
-									value={percentOfNumber.number}
-									onChange={e =>
-										setPercentOfNumber({
-											...percentOfNumber,
-											number: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-						</div>
-						{percentOfResult && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<p className='text-2xl font-bold'>{percentOfResult.value}</p>
-								<p className='text-sm text-muted-foreground mt-1'>
-									{t('formula')}: {percentOfResult.formula}
-								</p>
-								<p className='text-sm text-foreground mt-2'>
-									{percentOfResult.description}
-								</p>
-							</div>
-						)}
-					</Card>
-				</TabsContent>
-
-				{/* Tab 2: X is Y% of what? */}
-				<TabsContent value='what-percent' className='mt-6'>
-					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>
-							{t('tabs.whatPercent')}
-						</h3>
-						<div className='flex flex-col sm:flex-row items-center gap-4'>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='value2'>{t('labels.value')}</Label>
-								<Input
-									id='value2'
-									type='number'
-									value={whatPercent.value}
-									onChange={e =>
-										setWhatPercent({
-											...whatPercent,
-											value: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-							<span className='text-muted-foreground'>{t('labels.is')}</span>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent2'>{t('labels.percent')}</Label>
-								<div className='relative'>
-									<Input
-										id='percent2'
-										type='number'
-										value={whatPercent.percent}
-										onChange={e =>
-											setWhatPercent({
-												...whatPercent,
-												percent: parseFloat(e.target.value) || 0
-											})
-										}
-										className='pr-8'
-									/>
-									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-										%
-									</span>
-								</div>
-							</div>
-							<span className='text-muted-foreground'>{t('labels.ofWhat')}</span>
-						</div>
-						{whatPercentResult && whatPercent.percent !== 0 && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<p className='text-2xl font-bold'>
-									{whatPercentResult.value.toFixed(2)}
-								</p>
-								<p className='text-sm text-muted-foreground mt-1'>
-									{whatPercentResult.description}
-								</p>
-							</div>
-						)}
-					</Card>
-				</TabsContent>
-
-				{/* Tab 3: If X% = Y, what is 100%? */}
-				<TabsContent value='find-total' className='mt-6'>
-					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>
-							{t('tabs.findTotal')}
-						</h3>
-						<div className='flex flex-col sm:flex-row items-center gap-4'>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent3'>{t('labels.percent')}</Label>
-								<div className='relative'>
-									<Input
-										id='percent3'
-										type='number'
-										value={findTotal.percent}
-										onChange={e =>
-											setFindTotal({
-												...findTotal,
-												percent: parseFloat(e.target.value) || 0
-											})
-										}
-										className='pr-8'
-									/>
-									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-										%
-									</span>
-								</div>
-							</div>
-							<span className='text-muted-foreground'>{t('labels.equals')}</span>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='value3'>{t('labels.value')}</Label>
-								<Input
-									id='value3'
-									type='number'
-									value={findTotal.value}
-									onChange={e =>
-										setFindTotal({
-											...findTotal,
-											value: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-						</div>
-						{findTotalResult && findTotal.percent !== 0 && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<p className='text-2xl font-bold'>
-									{findTotalResult.value.toFixed(2)}
-								</p>
-								<p className='text-sm text-muted-foreground mt-1'>
-									{findTotalResult.description}
-								</p>
-							</div>
-						)}
-					</Card>
-				</TabsContent>
-
-				{/* Tab 4: Percentage Change */}
-				<TabsContent value='percent-change' className='mt-6'>
-					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>
-							{t('tabs.percentChange')}
-						</h3>
-						<div className='flex flex-col sm:flex-row items-center gap-4'>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='from4'>{t('labels.from')}</Label>
-								<Input
-									id='from4'
-									type='number'
-									value={percentChange.from}
-									onChange={e =>
-										setPercentChange({
-											...percentChange,
-											from: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-							<span className='text-muted-foreground'>{t('labels.to')}</span>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='to4'>{t('labels.toValue')}</Label>
-								<Input
-									id='to4'
-									type='number'
-									value={percentChange.to}
-									onChange={e =>
-										setPercentChange({
-											...percentChange,
-											to: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-						</div>
-						{percentChangeResult && percentChange.from !== 0 && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<div className='flex items-center gap-2'>
-									{percentChangeResult.value > 0 ? (
-										<TrendingUp className='w-6 h-6 text-green-500' />
-									) : (
-										<TrendingDown className='w-6 h-6 text-red-500' />
-									)}
-									<p
-										className={cn(
-											'text-2xl font-bold',
-											percentChangeResult.value > 0
-												? 'text-green-500'
-												: 'text-red-500'
-										)}
-									>
-										{percentChangeResult.value > 0 ? '+' : ''}
-										{percentChangeResult.value.toFixed(2)}%
-									</p>
-								</div>
-								<p className='text-sm text-muted-foreground mt-1'>
-									{percentChangeResult.description}
-								</p>
-							</div>
-						)}
-					</Card>
-				</TabsContent>
-
-				{/* Tab 5: Add Percentage */}
-				<TabsContent value='add-percent' className='mt-6'>
-					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>{t('tabs.addPercent')}</h3>
-						<div className='flex flex-col sm:flex-row items-center gap-4'>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='number5'>{t('labels.number')}</Label>
-								<Input
-									id='number5'
-									type='number'
-									value={addPercent.number}
-									onChange={e =>
-										setAddPercent({
-											...addPercent,
-											number: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-							<Plus className='w-5 h-5 text-muted-foreground' />
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent5'>{t('labels.percent')}</Label>
-								<div className='relative'>
-									<Input
-										id='percent5'
-										type='number'
-										value={addPercent.percent}
-										onChange={e =>
-											setAddPercent({
-												...addPercent,
-												percent: parseFloat(e.target.value) || 0
-											})
-										}
-										className='pr-8'
-									/>
-									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-										%
-									</span>
-								</div>
-							</div>
-						</div>
-						{addPercentResult && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<p className='text-2xl font-bold'>
-									{addPercentResult.value.toFixed(2)}
-								</p>
-								<p className='text-sm text-muted-foreground mt-1'>
-									{addPercentResult.formula}
-								</p>
-							</div>
-						)}
-					</Card>
-				</TabsContent>
-
-				{/* Tab 6: Subtract Percentage */}
-				<TabsContent value='subtract-percent' className='mt-6'>
-					<Card className='p-6'>
-						<h3 className='text-lg font-semibold mb-4'>
-							{t('tabs.subtractPercent')}
-						</h3>
-						<div className='flex flex-col sm:flex-row items-center gap-4'>
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='number6'>{t('labels.number')}</Label>
-								<Input
-									id='number6'
-									type='number'
-									value={subtractPercent.number}
-									onChange={e =>
-										setSubtractPercent({
-											...subtractPercent,
-											number: parseFloat(e.target.value) || 0
-										})
-									}
-								/>
-							</div>
-							<Minus className='w-5 h-5 text-muted-foreground' />
-							<div className='w-full sm:w-auto'>
-								<Label htmlFor='percent6'>{t('labels.percent')}</Label>
-								<div className='relative'>
-									<Input
-										id='percent6'
-										type='number'
-										value={subtractPercent.percent}
-										onChange={e =>
-											setSubtractPercent({
-												...subtractPercent,
-												percent: parseFloat(e.target.value) || 0
-											})
-										}
-										className='pr-8'
-									/>
-									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-										%
-									</span>
-								</div>
-							</div>
-						</div>
-						{subtractPercentResult && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<p className='text-2xl font-bold'>
-									{subtractPercentResult.value.toFixed(2)}
-								</p>
-								<p className='text-sm text-muted-foreground mt-1'>
-									{subtractPercentResult.formula}
-								</p>
-							</div>
-						)}
-					</Card>
-				</TabsContent>
-			</Tabs>
-
-			{/* Usage Examples */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4'>{t('commonUses.title')}</h3>
-				<div className='grid md:grid-cols-2 gap-4 text-sm text-muted-foreground'>
-					<div>
-						<h4 className='font-medium text-foreground mb-2'>
-							{t('commonUses.businessFinance.title')}
-						</h4>
-						<ul className='space-y-1 list-disc list-inside'>
-							<li>{t('commonUses.businessFinance.discounts')}</li>
-							<li>{t('commonUses.businessFinance.tax')}</li>
-							<li>{t('commonUses.businessFinance.profit')}</li>
-							<li>{t('commonUses.businessFinance.commission')}</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium text-foreground mb-2'>{t('commonUses.personalUse.title')}</h4>
-						<ul className='space-y-1 list-disc list-inside'>
-							<li>{t('commonUses.personalUse.tips')}</li>
-							<li>{t('commonUses.personalUse.weight')}</li>
-							<li>{t('commonUses.personalUse.prices')}</li>
-							<li>{t('commonUses.personalUse.scores')}</li>
-						</ul>
-					</div>
-				</div>
-			</Card>
-		</div>
-	)
+function ResultCard({ result }: { result: { result: number; formula: string; explanation: string } }) {
+  return (
+    <Card className="p-4 bg-primary/5 border-primary/20">
+      <div className="space-y-2">
+        <div className="text-3xl font-bold text-primary">
+          {result.result.toFixed(2)}
+          {result.formula.includes('%') && '%'}
+        </div>
+        <div className="text-sm text-muted-foreground font-mono">
+          {result.formula}
+        </div>
+        <div className="text-sm">
+          {result.explanation}
+        </div>
+      </div>
+    </Card>
+  )
 }

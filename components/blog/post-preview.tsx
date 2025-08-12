@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import { OptimizedImage } from '@/components/ui/optimized-image'
 import { Author } from '@/lib/types/author'
 import DateFormatter from './date-formatter'
 import { useLocale } from 'next-intl'
@@ -33,7 +33,7 @@ export function PostPreview({
 			</div>
 			<h3 className='text-3xl mb-3 leading-snug'></h3>
 			<div className='flex items-center gap-4 mb-4'>
-				<Image
+				<OptimizedImage
 					src={author.picture}
 					alt={author.name}
 					className='w-10 h-10 rounded-full object-cover'

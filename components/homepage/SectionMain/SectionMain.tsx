@@ -30,7 +30,7 @@ const item = {
 		y: 0,
 		transition: {
 			duration: 0.6,
-			ease: [0.21, 1.11, 0.81, 0.99]
+			ease: [0.21, 1.11, 0.81, 0.99] as [number, number, number, number]
 		}
 	}
 }

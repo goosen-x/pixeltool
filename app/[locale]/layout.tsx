@@ -14,6 +14,9 @@ import YandexMetrika from '@/components/analytics/YandexMetrika'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegistration'
+import { WebVitals } from '@/components/analytics/WebVitals'
+import { GlobalWidgetSearch } from '@/components/global/GlobalWidgetSearch'
 
 // Font configurations
 const inter = Inter({ 
@@ -62,10 +65,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		title: currentMetadata.title,
 		description: currentMetadata.description,
 		keywords: locale === 'ru' 
-			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты']
-			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities'],
-		authors: [{ name: 'Dmitry Borisenko' }],
+			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты', 'инструменты разработчика', 'калькулятор CSS', 'генератор паролей', 'QR код генератор', 'конвертер изображений', 'парсер HTML', 'минификатор кода']
+			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities', 'developer tools', 'CSS calculator', 'password generator', 'QR code generator', 'image converter', 'HTML parser', 'code minifier'],
+		authors: [{ name: 'Dmitry Borisenko', url: 'https://github.com/dmitryborisenko' }],
 		creator: 'Dmitry Borisenko',
+		publisher: 'PixelTool',
+		category: 'technology',
 		openGraph: {
 			type: 'website',
 			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
@@ -109,6 +114,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
 			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
 		},
+		manifest: '/manifest.json',
+		appleWebApp: {
+			capable: true,
+			statusBarStyle: 'default',
+			title: 'PixelTool',
+		},
+		formatDetection: {
+			telephone: false,
+		},
+		viewport: {
+			width: 'device-width',
+			initialScale: 1,
+			maximumScale: 5,
+		},
 	}
 }
 
@@ -145,7 +164,10 @@ export default async function RootLayout({
 						enableSystem
 					>
 						<YandexMetrika />
+						<ServiceWorkerRegistration />
+						<WebVitals />
 						{children}
+						<GlobalWidgetSearch locale={locale} />
 						<ScrollToTop />
 						<Toaster />
 					</ThemeProvider>

@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import { getWidgetByPath } from '@/lib/constants/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { WidgetAnalyticsWrapper } from '@/components/tools/WidgetAnalyticsWrapper'
 import { Metadata } from 'next'
 import { getMessages } from 'next-intl/server'
 
@@ -95,7 +96,9 @@ export default async function WidgetLayout({ children, params }: Props) {
   
   return (
     <WidgetSEOWrapper widget={widget}>
-      {children}
+      <WidgetAnalyticsWrapper widgetId={widget.id}>
+        {children}
+      </WidgetAnalyticsWrapper>
     </WidgetSEOWrapper>
   )
 }

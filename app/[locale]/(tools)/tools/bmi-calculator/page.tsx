@@ -1,14 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Slider } from '@/components/ui/slider'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { WidgetShareSection, WidgetTips, WidgetKeyboardShortcuts, ShortcutHint } from '@/components/widgets'
+import { useWidgetKeyboard, commonWidgetShortcuts, type KeyboardShortcut } from '@/lib/hooks/useWidgetKeyboard'
+import { useBMICalculator, type ActivityLevel, type Gender, type UnitSystem } from '@/lib/hooks/widgets'
 import { 
   Weight,
   Ruler,
@@ -25,51 +27,6 @@ import {
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
-type UnitSystem = 'metric' | 'imperial'
-type Gender = 'male' | 'female'
-type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very-active'
-
-interface BMIResult {
-  bmi: number
-  category: string
-  categoryColor: string
-  healthRisk: string
-  idealWeight: { min: number; max: number }
-  weightToLose: number
-  weightToGain: number
-  calories: {
-    maintenance: number
-    mildLoss: number
-    loss: number
-    mildGain: number
-    gain: number
-  }
-}
-
-interface HealthMetrics {
-  waistToHeight: number
-  bodyFat: number
-  leanMass: number
-}
-
-const BMI_CATEGORIES = [
-  { min: 0, max: 16, name: 'Выраженный дефицит массы', color: 'text-red-600', risk: 'Очень высокий' },
-  { min: 16, max: 18.5, name: 'Недостаточная масса', color: 'text-yellow-600', risk: 'Повышенный' },
-  { min: 18.5, max: 25, name: 'Норма', color: 'text-green-600', risk: 'Минимальный' },
-  { min: 25, max: 30, name: 'Избыточная масса', color: 'text-yellow-600', risk: 'Повышенный' },
-  { min: 30, max: 35, name: 'Ожирение I степени', color: 'text-blue-600', risk: 'Высокий' },
-  { min: 35, max: 40, name: 'Ожирение II степени', color: 'text-red-600', risk: 'Очень высокий' },
-  { min: 40, max: 100, name: 'Ожирение III степени', color: 'text-red-800', risk: 'Крайне высокий' }
-]
-
-const ACTIVITY_MULTIPLIERS = {
-  sedentary: 1.2,
-  light: 1.375,
-  moderate: 1.55,
-  active: 1.725,
-  'very-active': 1.9
-}
-
 const ACTIVITY_LABELS = {
   sedentary: 'Малоподвижный (мало или нет упражнений)',
   light: 'Легкая активность (1-3 дня в неделю)',
@@ -79,195 +36,137 @@ const ACTIVITY_LABELS = {
 }
 
 export default function BMICalculatorPage() {
-  const [unitSystem, setUnitSystem] = useState<UnitSystem>('metric')
-  const [weight, setWeight] = useState('')
-  const [height, setHeight] = useState('')
-  const [feet, setFeet] = useState('')
-  const [inches, setInches] = useState('')
-  const [age, setAge] = useState('')
-  const [gender, setGender] = useState<Gender>('male')
-  const [activityLevel, setActivityLevel] = useState<ActivityLevel>('moderate')
-  const [waist, setWaist] = useState('')
-  const [neck, setNeck] = useState('')
-  const [hip, setHip] = useState('')
-  const [result, setResult] = useState<BMIResult | null>(null)
-  const [healthMetrics, setHealthMetrics] = useState<HealthMetrics | null>(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  
+  // Use the BMI calculator hook
+  const {
+    input,
+    result,
+    healthMetrics,
+    updateField,
+    calculate,
+    reset: resetCalculator,
+    copyResults,
+    loadExample: loadExampleData,
+    getBMIVisualization
+  } = useBMICalculator()
 
-  useEffect(() => {
-    if (weight && (height || (feet && inches))) {
-      calculateBMI()
-    } else {
-      setResult(null)
-      setHealthMetrics(null)
-    }
-  }, [weight, height, feet, inches, unitSystem, age, gender, activityLevel, waist, neck, hip])
+  // Handle reset with additional UI state
+  const handleReset = () => {
+    resetCalculator()
+    setShowAdvanced(false)
+  }
 
-  const calculateBMI = () => {
-    let weightKg = parseFloat(weight)
-    let heightCm: number
+  // Handle load example with UI state
+  const handleLoadExample = () => {
+    loadExampleData()
+    setShowAdvanced(true)
+  }
 
-    if (unitSystem === 'imperial') {
-      weightKg = weightKg * 0.453592 // lbs to kg
-      const totalInches = parseInt(feet || '0') * 12 + parseInt(inches || '0')
-      heightCm = totalInches * 2.54
-    } else {
-      heightCm = parseFloat(height)
-    }
-
-    const heightM = heightCm / 100
-    const bmi = weightKg / (heightM * heightM)
-
-    const category = BMI_CATEGORIES.find(cat => bmi >= cat.min && bmi < cat.max) || BMI_CATEGORIES[0]
-
-    // Calculate ideal weight range (BMI 18.5-25)
-    const idealWeightMin = 18.5 * heightM * heightM
-    const idealWeightMax = 25 * heightM * heightM
-
-    // Calculate weight difference
-    const weightToLose = Math.max(0, weightKg - idealWeightMax)
-    const weightToGain = Math.max(0, idealWeightMin - weightKg)
-
-    // Calculate BMR and calorie needs
-    const bmr = calculateBMR(weightKg, heightCm, parseInt(age || '30'), gender)
-    const maintenanceCalories = bmr * ACTIVITY_MULTIPLIERS[activityLevel]
-
-    const bmiResult: BMIResult = {
-      bmi,
-      category: category.name,
-      categoryColor: category.color,
-      healthRisk: category.risk,
-      idealWeight: {
-        min: unitSystem === 'imperial' ? idealWeightMin / 0.453592 : idealWeightMin,
-        max: unitSystem === 'imperial' ? idealWeightMax / 0.453592 : idealWeightMax
-      },
-      weightToLose: unitSystem === 'imperial' ? weightToLose / 0.453592 : weightToLose,
-      weightToGain: unitSystem === 'imperial' ? weightToGain / 0.453592 : weightToGain,
-      calories: {
-        maintenance: Math.round(maintenanceCalories),
-        mildLoss: Math.round(maintenanceCalories - 250),
-        loss: Math.round(maintenanceCalories - 500),
-        mildGain: Math.round(maintenanceCalories + 250),
-        gain: Math.round(maintenanceCalories + 500)
+  // Keyboard shortcuts
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      ...commonWidgetShortcuts.submit,
+      action: calculate
+    },
+    {
+      ...commonWidgetShortcuts.reset,
+      action: handleReset
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      shift: true,
+      description: 'Copy results',
+      action: copyResults,
+      enabled: !!result
+    },
+    {
+      key: 'e',
+      ctrl: true,
+      description: 'Load example',
+      action: handleLoadExample
+    },
+    {
+      key: 'a',
+      ctrl: true,
+      description: 'Toggle advanced',
+      action: () => setShowAdvanced(!showAdvanced)
+    },
+    {
+      key: 'u',
+      ctrl: true,
+      description: 'Switch units',
+      action: () => updateField('unitSystem', input.unitSystem === 'metric' ? 'imperial' : 'metric')
+    },
+    {
+      key: '/',
+      description: 'Focus weight input',
+      action: () => {
+        const inputEl = document.querySelector('#weight') as HTMLInputElement
+        inputEl?.focus()
       }
     }
+  ]
 
-    setResult(bmiResult)
+  useWidgetKeyboard({
+    shortcuts,
+    widgetId: 'bmi-calculator',
+    enabled: true
+  })
 
-    // Calculate additional health metrics if provided
-    if (waist && neck) {
-      const waistCm = unitSystem === 'imperial' ? parseFloat(waist) * 2.54 : parseFloat(waist)
-      const neckCm = unitSystem === 'imperial' ? parseFloat(neck) * 2.54 : parseFloat(neck)
-      const hipCm = hip ? (unitSystem === 'imperial' ? parseFloat(hip) * 2.54 : parseFloat(hip)) : 0
-
-      const waistToHeight = waistCm / heightCm
-      const bodyFat = calculateBodyFat(waistCm, neckCm, hipCm, heightCm, gender)
-      const leanMass = weightKg * (1 - bodyFat / 100)
-
-      setHealthMetrics({
-        waistToHeight,
-        bodyFat,
-        leanMass: unitSystem === 'imperial' ? leanMass / 0.453592 : leanMass
-      })
+  // Widget tips
+  const bmiTips = [
+    {
+      id: 'units',
+      title: 'Switch Units Easily',
+      description: 'Toggle between metric and imperial units at any time',
+      category: 'basic' as const
+    },
+    {
+      id: 'advanced',
+      title: 'Advanced Metrics',
+      description: 'Click "Show additional parameters" for body fat percentage calculation',
+      category: 'advanced' as const,
+      action: {
+        label: 'Show Advanced',
+        onClick: () => setShowAdvanced(true)
+      }
+    },
+    {
+      id: 'example',
+      title: 'Quick Example',
+      description: 'Click "Load example" to see sample calculations',
+      category: 'basic' as const,
+      action: {
+        label: 'Load Example',
+        onClick: handleLoadExample
+      }
+    },
+    {
+      id: 'copy',
+      title: 'Copy Results',
+      description: 'Copy your BMI results to share with healthcare providers',
+      category: 'basic' as const
+    },
+    {
+      id: 'accuracy',
+      title: 'BMI Limitations',
+      description: 'BMI doesn\'t distinguish between muscle and fat. Athletes may have high BMI despite low body fat',
+      category: 'pro' as const
     }
-  }
-
-  const calculateBMR = (weight: number, height: number, age: number, gender: Gender): number => {
-    // Mifflin-St Jeor equation
-    if (gender === 'male') {
-      return 10 * weight + 6.25 * height - 5 * age + 5
-    } else {
-      return 10 * weight + 6.25 * height - 5 * age - 161
-    }
-  }
-
-  const calculateBodyFat = (waist: number, neck: number, hip: number, height: number, gender: Gender): number => {
-    // US Navy body fat formula
-    if (gender === 'male') {
-      return 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450
-    } else {
-      return 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450
-    }
-  }
-
-  const getBMIVisualization = (bmi: number): number => {
-    const minBMI = 15
-    const maxBMI = 40
-    const normalized = (bmi - minBMI) / (maxBMI - minBMI)
-    return Math.max(0, Math.min(100, normalized * 100))
-  }
-
-  const copyResults = () => {
-    if (!result) return
-
-    const text = `
-Калькулятор ИМТ - Результаты
-
-ИМТ: ${result.bmi.toFixed(1)}
-Категория: ${result.category}
-Риск для здоровья: ${result.healthRisk}
-
-Идеальный вес: ${result.idealWeight.min.toFixed(1)}-${result.idealWeight.max.toFixed(1)} ${unitSystem === 'metric' ? 'кг' : 'lbs'}
-${result.weightToLose > 0 ? `Рекомендуется снизить вес на: ${result.weightToLose.toFixed(1)} ${unitSystem === 'metric' ? 'кг' : 'lbs'}` : ''}
-${result.weightToGain > 0 ? `Рекомендуется набрать вес: ${result.weightToGain.toFixed(1)} ${unitSystem === 'metric' ? 'кг' : 'lbs'}` : ''}
-
-Калории:
-• Поддержание веса: ${result.calories.maintenance} ккал/день
-• Медленное похудение: ${result.calories.mildLoss} ккал/день
-• Похудение: ${result.calories.loss} ккал/день
-
-${healthMetrics ? `
-Дополнительные показатели:
-• Соотношение талия/рост: ${healthMetrics.waistToHeight.toFixed(2)}
-• Процент жира: ${healthMetrics.bodyFat.toFixed(1)}%
-• Мышечная масса: ${healthMetrics.leanMass.toFixed(1)} ${unitSystem === 'metric' ? 'кг' : 'lbs'}
-` : ''}
-    `.trim()
-
-    navigator.clipboard.writeText(text)
-    toast.success('Результаты скопированы!')
-  }
-
-  const reset = () => {
-    setWeight('')
-    setHeight('')
-    setFeet('')
-    setInches('')
-    setAge('')
-    setWaist('')
-    setNeck('')
-    setHip('')
-    setGender('male')
-    setActivityLevel('moderate')
-    setResult(null)
-    setHealthMetrics(null)
-    setShowAdvanced(false)
-    toast.success('Данные сброшены')
-  }
-
-  const loadExample = () => {
-    if (unitSystem === 'metric') {
-      setWeight('70')
-      setHeight('175')
-      setAge('30')
-      setWaist('80')
-      setNeck('37')
-      if (gender === 'female') setHip('95')
-    } else {
-      setWeight('154')
-      setFeet('5')
-      setInches('9')
-      setAge('30')
-      setWaist('31.5')
-      setNeck('14.5')
-      if (gender === 'female') setHip('37.5')
-    }
-    setShowAdvanced(true)
-    toast.success('Пример загружен')
-  }
+  ]
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+      {/* Tips Section */}
+      <WidgetTips
+        tips={bmiTips}
+        widgetId="bmi-calculator"
+        variant="inline"
+        className="mb-6"
+      />
+      
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Input Form */}
         <Card className="p-6">
@@ -278,8 +177,8 @@ ${healthMetrics ? `
             <div>
               <Label>Система измерения</Label>
               <RadioGroup 
-                value={unitSystem} 
-                onValueChange={(value: UnitSystem) => setUnitSystem(value)}
+                value={input.unitSystem} 
+                onValueChange={(value: UnitSystem) => updateField('unitSystem', value)}
                 className="flex gap-4 mt-1"
               >
                 <div className="flex items-center space-x-2">
@@ -297,14 +196,14 @@ ${healthMetrics ? `
             <div>
               <Label htmlFor="weight" className="flex items-center gap-2">
                 <Weight className="w-4 h-4" />
-                Вес ({unitSystem === 'metric' ? 'кг' : 'lbs'})
+                Вес ({input.unitSystem === 'metric' ? 'кг' : 'lbs'})
               </Label>
               <Input
                 id="weight"
                 type="number"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder={unitSystem === 'metric' ? '70' : '154'}
+                value={input.weight}
+                onChange={(e) => updateField('weight', e.target.value)}
+                placeholder={input.unitSystem === 'metric' ? '70' : '154'}
                 min="1"
                 step="0.1"
                 className="mt-1"
@@ -312,7 +211,7 @@ ${healthMetrics ? `
             </div>
 
             {/* Height */}
-            {unitSystem === 'metric' ? (
+            {input.unitSystem === 'metric' ? (
               <div>
                 <Label htmlFor="height" className="flex items-center gap-2">
                   <Ruler className="w-4 h-4" />
@@ -321,8 +220,8 @@ ${healthMetrics ? `
                 <Input
                   id="height"
                   type="number"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
+                  value={input.height}
+                  onChange={(e) => updateField('height', e.target.value)}
                   placeholder="175"
                   min="50"
                   max="250"
@@ -339,8 +238,8 @@ ${healthMetrics ? `
                   <div className="flex-1">
                     <Input
                       type="number"
-                      value={feet}
-                      onChange={(e) => setFeet(e.target.value)}
+                      value={input.feet}
+                      onChange={(e) => updateField('feet', e.target.value)}
                       placeholder="5"
                       min="3"
                       max="8"
@@ -350,8 +249,8 @@ ${healthMetrics ? `
                   <div className="flex-1">
                     <Input
                       type="number"
-                      value={inches}
-                      onChange={(e) => setInches(e.target.value)}
+                      value={input.inches}
+                      onChange={(e) => updateField('inches', e.target.value)}
                       placeholder="9"
                       min="0"
                       max="11"
@@ -369,8 +268,8 @@ ${healthMetrics ? `
                 <Input
                   id="age"
                   type="number"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  value={input.age}
+                  onChange={(e) => updateField('age', e.target.value)}
                   placeholder="30"
                   min="15"
                   max="100"
@@ -380,7 +279,7 @@ ${healthMetrics ? `
               
               <div>
                 <Label>Пол</Label>
-                <Select value={gender} onValueChange={(value: Gender) => setGender(value)}>
+                <Select value={input.gender} onValueChange={(value: Gender) => updateField('gender', value)}>
                   <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
@@ -395,7 +294,7 @@ ${healthMetrics ? `
             {/* Activity Level */}
             <div>
               <Label htmlFor="activity">Уровень активности</Label>
-              <Select value={activityLevel} onValueChange={(value: ActivityLevel) => setActivityLevel(value)}>
+              <Select value={input.activityLevel} onValueChange={(value: ActivityLevel) => updateField('activityLevel', value)}>
                 <SelectTrigger className="mt-1">
                   <SelectValue />
                 </SelectTrigger>
@@ -422,43 +321,43 @@ ${healthMetrics ? `
               <div className="space-y-4 pt-2">
                 <div>
                   <Label htmlFor="waist">
-                    Обхват талии ({unitSystem === 'metric' ? 'см' : 'дюймы'})
+                    Обхват талии ({input.unitSystem === 'metric' ? 'см' : 'дюймы'})
                   </Label>
                   <Input
                     id="waist"
                     type="number"
-                    value={waist}
-                    onChange={(e) => setWaist(e.target.value)}
-                    placeholder={unitSystem === 'metric' ? '80' : '31.5'}
+                    value={input.waist}
+                    onChange={(e) => updateField('waist', e.target.value)}
+                    placeholder={input.unitSystem === 'metric' ? '80' : '31.5'}
                     className="mt-1"
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="neck">
-                    Обхват шеи ({unitSystem === 'metric' ? 'см' : 'дюймы'})
+                    Обхват шеи ({input.unitSystem === 'metric' ? 'см' : 'дюймы'})
                   </Label>
                   <Input
                     id="neck"
                     type="number"
-                    value={neck}
-                    onChange={(e) => setNeck(e.target.value)}
-                    placeholder={unitSystem === 'metric' ? '37' : '14.5'}
+                    value={input.neck}
+                    onChange={(e) => updateField('neck', e.target.value)}
+                    placeholder={input.unitSystem === 'metric' ? '37' : '14.5'}
                     className="mt-1"
                   />
                 </div>
 
-                {gender === 'female' && (
+                {input.gender === 'female' && (
                   <div>
                     <Label htmlFor="hip">
-                      Обхват бедер ({unitSystem === 'metric' ? 'см' : 'дюймы'})
+                      Обхват бедер ({input.unitSystem === 'metric' ? 'см' : 'дюймы'})
                     </Label>
                     <Input
                       id="hip"
                       type="number"
-                      value={hip}
-                      onChange={(e) => setHip(e.target.value)}
-                      placeholder={unitSystem === 'metric' ? '95' : '37.5'}
+                      value={input.hip}
+                      onChange={(e) => updateField('hip', e.target.value)}
+                      placeholder={input.unitSystem === 'metric' ? '95' : '37.5'}
                       className="mt-1"
                     />
                   </div>
@@ -467,14 +366,18 @@ ${healthMetrics ? `
             )}
 
             <div className="flex gap-2 pt-2">
-              <Button onClick={loadExample} variant="outline" className="flex-1">
+              <Button onClick={handleLoadExample} variant="outline" className="flex-1">
                 Загрузить пример
+                <ShortcutHint 
+                  shortcut={{ key: 'e', ctrl: true, description: '', action: handleLoadExample }} 
+                  className="ml-2"
+                />
               </Button>
               <Button onClick={copyResults} variant="outline" disabled={!result}>
                 <Copy className="w-4 h-4 mr-2" />
                 Копировать
               </Button>
-              <Button onClick={reset} variant="outline">
+              <Button onClick={handleReset} variant="outline">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Сбросить
               </Button>
@@ -539,7 +442,7 @@ ${healthMetrics ? `
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Идеальный вес:</span>
                       <span className="font-medium">
-                        {result.idealWeight.min.toFixed(1)} - {result.idealWeight.max.toFixed(1)} {unitSystem === 'metric' ? 'кг' : 'lbs'}
+                        {result.idealWeight.min.toFixed(1)} - {result.idealWeight.max.toFixed(1)} {input.unitSystem === 'metric' ? 'кг' : 'lbs'}
                       </span>
                     </div>
                     
@@ -547,7 +450,7 @@ ${healthMetrics ? `
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Рекомендуется снизить:</span>
                         <Badge variant="destructive">
-                          -{result.weightToLose.toFixed(1)} {unitSystem === 'metric' ? 'кг' : 'lbs'}
+                          -{result.weightToLose.toFixed(1)} {input.unitSystem === 'metric' ? 'кг' : 'lbs'}
                         </Badge>
                       </div>
                     )}
@@ -556,7 +459,7 @@ ${healthMetrics ? `
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Рекомендуется набрать:</span>
                         <Badge variant="secondary">
-                          +{result.weightToGain.toFixed(1)} {unitSystem === 'metric' ? 'кг' : 'lbs'}
+                          +{result.weightToGain.toFixed(1)} {input.unitSystem === 'metric' ? 'кг' : 'lbs'}
                         </Badge>
                       </div>
                     )}
@@ -648,7 +551,7 @@ ${healthMetrics ? `
                     <div>
                       <span className="text-sm text-muted-foreground">Процент жира в организме</span>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {gender === 'male' ? 'Норма: 10-20%' : 'Норма: 20-30%'}
+                        {input.gender === 'male' ? 'Норма: 10-20%' : 'Норма: 20-30%'}
                       </p>
                     </div>
                     <Badge variant="secondary">
@@ -659,7 +562,7 @@ ${healthMetrics ? `
                   <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
                     <span className="text-sm text-muted-foreground">Мышечная масса</span>
                     <span className="font-mono font-semibold">
-                      {healthMetrics.leanMass.toFixed(1)} {unitSystem === 'metric' ? 'кг' : 'lbs'}
+                      {healthMetrics.leanMass.toFixed(1)} {input.unitSystem === 'metric' ? 'кг' : 'lbs'}
                     </span>
                   </div>
                 </div>
@@ -705,6 +608,21 @@ ${healthMetrics ? `
           </div>
         </div>
       </Card>
+
+      {/* Social Share Section */}
+      <WidgetShareSection
+        widgetTitle="BMI Calculator"
+        widgetDescription="Calculate your Body Mass Index with health insights, ideal weight range, and calorie recommendations."
+        hashtags={['bmi', 'health', 'fitness', 'calculator', 'wellness']}
+        variant="inline"
+      />
+      
+      {/* Keyboard shortcuts */}
+      <WidgetKeyboardShortcuts
+        shortcuts={shortcuts}
+        variant="floating"
+        position="bottom-right"
+      />
     </div>
   )
 }

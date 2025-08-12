@@ -5,10 +5,62 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/global/Logo'
+import { HomePageStructuredData } from '@/components/seo/HomePageStructuredData'
 import { Metadata } from 'next'
 
 interface Props {
   params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  
+  const metadata = {
+    en: {
+      title: 'PixelTool - Free Online Developer Tools & Utilities | 50+ Tools',
+      description: 'Professional web developer tools collection: CSS generators, color converters, formatters, validators, and 50+ more utilities. No installation required, 100% free, works offline.',
+      keywords: 'developer tools, online tools, CSS generator, color converter, code formatter, web development, programming utilities, free tools, password generator, QR code generator'
+    },
+    ru: {
+      title: 'PixelTool - Бесплатные Онлайн Инструменты для Разработчиков | 50+ Инструментов',
+      description: 'Профессиональная коллекция инструментов для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики, валидаторы и 50+ утилит. Без установки, 100% бесплатно, работает офлайн.',
+      keywords: 'инструменты разработчика, онлайн инструменты, CSS генератор, конвертер цветов, форматировщик кода, веб разработка, утилиты программирования, бесплатные инструменты'
+    }
+  }
+  
+  const currentMetadata = metadata[locale as keyof typeof metadata] || metadata.en
+  
+  return {
+    title: currentMetadata.title,
+    description: currentMetadata.description,
+    keywords: currentMetadata.keywords,
+    openGraph: {
+      title: currentMetadata.title,
+      description: currentMetadata.description,
+      type: 'website',
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: 'PixelTool - Professional Developer Tools'
+        }
+      ]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: currentMetadata.title,
+      description: currentMetadata.description,
+      images: ['/og-image.png']
+    },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        'en': '/en',
+        'ru': '/ru'
+      }
+    }
+  }
 }
 
 
@@ -17,8 +69,10 @@ export default async function HomePage({ params }: Props) {
   const t = await getTranslations('HomePage')
   
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      {/* Hero Section */}
+    <>
+      <HomePageStructuredData />
+      <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+        {/* Hero Section */}
       <section className="relative px-4 pt-20 pb-20 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
@@ -197,5 +251,6 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
     </main>
+    </>
   )
 }

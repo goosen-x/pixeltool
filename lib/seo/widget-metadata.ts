@@ -177,5 +177,53 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Протестируйте скорость интернет-соединения. Измерьте скорость загрузки, отдачи и пинг. Бесплатный онлайн тест скорости.',
       keywords: ['тест скорости', 'скорость интернета', 'проверить скорость', 'тест соединения', 'speedtest']
     },
+  },
+  'tip-calculator': {
+    en: {
+      title: 'Tip Calculator - Calculate Gratuity & Split Bills | Free Tool',
+      description: 'Calculate tips for restaurants, bars, and services. Split bills among multiple people. Free tip calculator with customizable percentages and tipping guide.',
+      keywords: ['tip calculator', 'gratuity calculator', 'split bill', 'restaurant tip', 'service tip', 'bill splitter', 'tip percentage']
+    },
+    ru: {
+      title: 'Калькулятор Чаевых - Расчёт и Разделение Счёта | Бесплатно',
+      description: 'Рассчитывайте чаевые для ресторанов, баров и услуг. Делите счета между несколькими людьми. Бесплатный калькулятор с гидом по чаевым.',
+      keywords: ['калькулятор чаевых', 'разделить счёт', 'чаевые в ресторане', 'расчёт чаевых', 'процент чаевых', 'калькулятор счёта']
+    },
+  },
+  'text-case-converter': {
+    en: {
+      title: 'Text Case Converter - Change Letter Case Online | Free Tool',
+      description: 'Convert text between different cases: UPPERCASE, lowercase, camelCase, snake_case, Title Case and more. Free online text case converter with instant results.',
+      keywords: ['text case converter', 'case converter', 'uppercase converter', 'lowercase converter', 'camelcase converter', 'snake case', 'text transformation']
+    },
+    ru: {
+      title: 'Конвертер Регистра Текста - Изменить Регистр Онлайн | Бесплатно',
+      description: 'Конвертируйте текст между разными регистрами: ПРОПИСНЫЕ, строчные, camelCase, snake_case, Заголовочный и другие. Бесплатный онлайн конвертер.',
+      keywords: ['конвертер регистра', 'изменить регистр', 'прописные буквы', 'строчные буквы', 'camelcase', 'snake case', 'преобразование текста']
+    },
+  },
+  'image-size-checker': {
+    en: {
+      title: 'Image Size Checker - Check Dimensions & File Size | Free Tool',
+      description: 'Check image dimensions, file size, and aspect ratio instantly. Analyze multiple images at once. Export data to CSV. Free online image size analyzer.',
+      keywords: ['image size checker', 'image dimensions', 'image analyzer', 'file size checker', 'aspect ratio', 'image properties', 'image info']
+    },
+    ru: {
+      title: 'Проверка Размера Изображений - Размеры и Вес Файла | Бесплатно',
+      description: 'Проверяйте размеры изображений, вес файла и соотношение сторон мгновенно. Анализируйте несколько изображений сразу. Экспорт в CSV.',
+      keywords: ['проверка размера изображений', 'размеры изображения', 'анализатор изображений', 'вес файла', 'соотношение сторон', 'свойства изображения']
+    },
+  },
+  'html-xml-parser': {
+    en: {
+      title: 'HTML/XML Parser - Format, Validate & Minify | Developer Tool',
+      description: 'Parse, format, validate, and minify HTML and XML documents. Extract data from markup. Free online HTML/XML parser with syntax validation.',
+      keywords: ['html parser', 'xml parser', 'html formatter', 'xml validator', 'html minifier', 'markup parser', 'code formatter']
+    },
+    ru: {
+      title: 'HTML/XML Парсер - Форматирование и Валидация | Инструмент',
+      description: 'Парсинг, форматирование, валидация и минификация HTML и XML документов. Извлечение данных из разметки. Бесплатный онлайн парсер.',
+      keywords: ['html парсер', 'xml парсер', 'форматирование html', 'валидатор xml', 'минификатор html', 'парсер разметки', 'форматирование кода']
+    },
   }
 }

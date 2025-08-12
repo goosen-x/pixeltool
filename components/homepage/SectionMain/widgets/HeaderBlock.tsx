@@ -1,6 +1,6 @@
 import { Block } from '@/components/ui/block'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
+import { OptimizedImage } from '@/components/ui/optimized-image'
 import Link from 'next/link'
 import React from 'react'
 import { FiArrowRight } from 'react-icons/fi'
@@ -20,7 +20,7 @@ export const HeaderBlock = () => {
 
 	return (
 		<Block className='col-span-12 row-span-2 md:col-span-8'>
-			<Image
+			<OptimizedImage
 				className='group-hover/block:z-0 mb-4 size-20 rounded-full object-cover group-hover/block:w-32 group-hover/block:h-32 transition-all duration-500'
 				src={avatarImg.src}
 				width={500}

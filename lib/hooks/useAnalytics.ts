@@ -3,22 +3,39 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useLocale } from 'next-intl'
 
-// Generate a session ID that persists for the browser session
+// Generate or retrieve session ID (30 minute sessions)
 const getSessionId = () => {
   if (typeof window === 'undefined') return ''
   
-  let sessionId = sessionStorage.getItem('analytics-session-id')
-  if (!sessionId) {
-    sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36)
-    sessionStorage.setItem('analytics-session-id', sessionId)
+  const SESSION_DURATION = 30 * 60 * 1000 // 30 minutes
+  const now = Date.now()
+  
+  const stored = localStorage.getItem('analytics_session')
+  if (stored) {
+    try {
+      const { id, timestamp } = JSON.parse(stored)
+      if (now - timestamp < SESSION_DURATION) {
+        return id
+      }
+    } catch (e) {
+      // Invalid stored data, generate new
+    }
   }
-  return sessionId
+  
+  // Generate new session ID
+  const newId = `session_${now}_${Math.random().toString(36).substr(2, 9)}`
+  localStorage.setItem('analytics_session', JSON.stringify({
+    id: newId,
+    timestamp: now
+  }))
+  
+  return newId
 }
 
 interface AnalyticsEvent {
   sessionId: string
   widgetId: string
-  eventType: 'view' | 'session_start' | 'session_end' | 'action'
+  eventType: 'view' | 'use' | 'share' | 'favorite' | 'export' | 'session_start' | 'session_end' | 'action'
   locale?: string
   metadata?: Record<string, any>
 }
@@ -104,6 +121,26 @@ export function useAnalytics(widgetId: string) {
     trackEvent('action', { action: actionName, ...metadata })
   }, [trackEvent])
 
+  // Track widget use
+  const trackUse = useCallback((action?: string, metadata?: Record<string, any>) => {
+    trackEvent('use', { action, ...metadata })
+  }, [trackEvent])
+
+  // Track share event
+  const trackShare = useCallback((platform?: string, metadata?: Record<string, any>) => {
+    trackEvent('share', { platform, ...metadata })
+  }, [trackEvent])
+
+  // Track favorite toggle
+  const trackFavorite = useCallback((isFavorite: boolean, metadata?: Record<string, any>) => {
+    trackEvent('favorite', { isFavorite, ...metadata })
+  }, [trackEvent])
+
+  // Track export event
+  const trackExport = useCallback((format?: string, metadata?: Record<string, any>) => {
+    trackEvent('export', { format, ...metadata })
+  }, [trackEvent])
+
   // Auto-track view and session start on mount
   useEffect(() => {
     if (widgetId) {
@@ -137,6 +174,10 @@ export function useAnalytics(widgetId: string) {
     trackEvent,
     trackView,
     trackAction,
+    trackUse,
+    trackShare,
+    trackFavorite,
+    trackExport,
     trackSessionStart,
     trackSessionEnd,
     sessionId: sessionId.current

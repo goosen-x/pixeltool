@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import { WidgetSearch } from '@/components/tools/WidgetSearch'
+import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
@@ -25,13 +25,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 	const metadata = {
 		en: {
 			title: 'Free Online Developer Tools - 50+ Web Tools | PixelTool',
-			description: 'Collection of 50+ free online tools for developers, designers, and content creators. CSS generators, converters, calculators, and more. No registration required.',
-			keywords: 'online tools, developer tools, web tools, css generator, converter, calculator, free tools',
+			description: 'Collection of 50+ free online tools for developers, designers, and content creators. CSS generators, converters, calculators, formatters, validators, and more. No registration required, works offline.',
+			keywords: ['online tools', 'developer tools', 'web tools', 'css generator', 'converter', 'calculator', 'free tools', 'code formatter', 'password generator', 'qr code generator', 'color picker', 'html parser', 'image tools', 'text tools'].join(', '),
 		},
 		ru: {
 			title: 'Бесплатные Онлайн Инструменты - 50+ Утилит | PixelTool',
-			description: 'Коллекция из 50+ бесплатных онлайн инструментов для разработчиков, дизайнеров и создателей контента. CSS генераторы, конвертеры, калькуляторы и многое другое.',
-			keywords: 'онлайн инструменты, инструменты разработчика, веб инструменты, css генератор, конвертер, калькулятор, бесплатные инструменты',
+			description: 'Коллекция из 50+ бесплатных онлайн инструментов для разработчиков, дизайнеров и создателей контента. CSS генераторы, конвертеры, калькуляторы, форматтеры, валидаторы и многое другое. Работает офлайн.',
+			keywords: ['онлайн инструменты', 'инструменты разработчика', 'веб инструменты', 'css генератор', 'конвертер', 'калькулятор', 'бесплатные инструменты', 'форматировщик кода', 'генератор паролей', 'qr код', 'палитра цветов'].join(', '),
 		}
 	}
 	
@@ -73,6 +73,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 				'en': `${baseUrl}/en/tools`,
 				'ru': `${baseUrl}/ru/tools`
 			}
+		},
+		
+		robots: {
+			index: true,
+			follow: true,
+			'max-image-preview': 'large',
+			'max-snippet': -1,
+			'max-video-preview': -1,
 		}
 	}
 }
@@ -89,7 +97,7 @@ export default async function ProjectsPage({
 		<>
 			<ToolsListingStructuredData locale={locale} totalTools={widgets.length} />
 			<section className="container mx-auto px-4 py-8 sm:py-12">
-				<WidgetSearch locale={locale} />
+				<EnhancedWidgetSearch locale={locale} />
 			</section>
 		</>
 	)

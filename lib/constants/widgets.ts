@@ -48,6 +48,7 @@ import {
 	Droplet,
 	Square,
 	Layers,
+	ImageIcon,
 	Circle,
 	Sparkles,
 	FileJson,
@@ -56,7 +57,8 @@ import {
 	TrendingUp,
 	CreditCard,
 	Fuel,
-	Image
+	Image,
+	TerminalSquare
 } from 'lucide-react'
 export interface WidgetFAQ {
 	question: string
@@ -1645,6 +1647,290 @@ export const widgets: Widget[] = [
 					question: 'איך מחשבים מס?',
 					answer:
 						'השתמשו בכרטיסייה "הוסף %". הזינו את המחיר ואת אחוז המס כדי לראות את המחיר הכולל כולל מס.'
+				}
+			]
+		}
+	},
+	{
+		id: 'tip-calculator',
+		icon: DollarSign,
+		category: 'business',
+		translationKey: 'tipCalculator',
+		path: 'tip-calculator',
+		gradient: 'from-emerald-500 to-teal-600',
+		recommendedTools: ['percentage-calculator', 'currency-converter'],
+		difficulty: 'beginner',
+		tags: ['calculator', 'tip', 'gratuity', 'restaurant', 'service', 'money'],
+		useCase:
+			'Calculate tips for restaurants, bars, taxis, and services with bill splitting',
+		metaDescription:
+			'Tip calculator with bill splitting. Calculate gratuity for restaurants, bars, and services.',
+		faqs: {
+			en: [
+				{
+					question: 'What is the standard tip percentage?',
+					answer:
+						'In the US, 15-20% is standard for good service at restaurants. 10-15% for basic service, and 20%+ for excellent service. Tipping customs vary by country.'
+				},
+				{
+					question: 'Should I tip on the pre-tax or post-tax amount?',
+					answer:
+						'Traditionally, tips are calculated on the pre-tax amount. However, many people tip on the total bill for simplicity. Either approach is acceptable.'
+				},
+				{
+					question: 'How does bill splitting work?',
+					answer:
+						'Enter the number of people sharing the bill. The calculator will divide both the tip and total amount equally among all people.'
+				},
+				{
+					question: 'What services typically require tips?',
+					answer:
+						'Common tipping situations include restaurants, bars, hair salons, taxis, food delivery, hotel services, and spa treatments. The percentage varies by service type.'
+				},
+				{
+					question: 'Do I need to tip for takeout orders?',
+					answer:
+						'Tipping for takeout is optional but appreciated. 10% is common for takeout orders, especially for large or complex orders.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какой стандартный процент чаевых?',
+					answer:
+						'В США 15-20% считается стандартом за хорошее обслуживание в ресторанах. 10-15% за базовое обслуживание и 20%+ за отличное. Обычаи чаевых различаются по странам.'
+				},
+				{
+					question: 'Рассчитывать чаевые от суммы с налогом или без?',
+					answer:
+						'Традиционно чаевые рассчитываются от суммы без налога. Однако многие люди дают чаевые от общей суммы для простоты. Оба подхода приемлемы.'
+				},
+				{
+					question: 'Как работает разделение счёта?',
+					answer:
+						'Введите количество людей, делящих счёт. Калькулятор разделит и чаевые, и общую сумму поровну между всеми людьми.'
+				},
+				{
+					question: 'За какие услуги обычно дают чаевые?',
+					answer:
+						'Чаевые обычно дают в ресторанах, барах, парикмахерских, такси, при доставке еды, в отелях и спа-салонах. Процент варьируется в зависимости от типа услуги.'
+				},
+				{
+					question: 'Нужно ли давать чаевые за заказы на вынос?',
+					answer:
+						'Чаевые за заказы на вынос необязательны, но приветствуются. 10% обычно для заказов на вынос, особенно для больших или сложных заказов.'
+				}
+			]
+		}
+	},
+	{
+		id: 'text-case-converter',
+		icon: Type,
+		category: 'content',
+		translationKey: 'textCaseConverter',
+		path: 'text-case-converter',
+		gradient: 'from-indigo-500 to-purple-600',
+		recommendedTools: ['text-counter', 'social-media-formatter', 'fancy-text-generator'],
+		difficulty: 'beginner',
+		tags: ['text', 'case', 'converter', 'uppercase', 'lowercase', 'camelCase', 'snake_case'],
+		useCase:
+			'Convert text between different letter cases and formatting styles',
+		metaDescription:
+			'Text case converter for uppercase, lowercase, camelCase, snake_case, kebab-case, and more formatting styles.',
+		faqs: {
+			en: [
+				{
+					question: 'What is text case conversion?',
+					answer:
+						'Text case conversion is the process of changing the capitalization pattern of text. It includes converting to uppercase, lowercase, and various programming case conventions.'
+				},
+				{
+					question: 'What is Title Case?',
+					answer:
+						"Title Case capitalizes the first letter of each major word while keeping articles, prepositions, and conjunctions lowercase (unless they're the first word)."
+				},
+				{
+					question: "What's the difference between camelCase and PascalCase?",
+					answer:
+						'camelCase starts with a lowercase letter (helloWorld), while PascalCase starts with an uppercase letter (HelloWorld). Both are commonly used in programming.'
+				},
+				{
+					question: 'When should I use snake_case vs kebab-case?',
+					answer:
+						'snake_case uses underscores and is common in Python and Ruby. kebab-case uses hyphens and is popular in URLs and CSS class names.'
+				},
+				{
+					question: 'What is alternating case used for?',
+					answer:
+						"Alternating case (aLtErNaTiNg) alternates between lowercase and uppercase letters. It's mainly used for stylistic purposes or mockery in informal text."
+				}
+			],
+			ru: [
+				{
+					question: 'Что такое преобразование регистра текста?',
+					answer:
+						'Преобразование регистра текста - это процесс изменения шаблона использования заглавных букв в тексте. Включает преобразование в верхний, нижний регистр и различные программистские соглашения.'
+				},
+				{
+					question: 'Что такое заголовочный регистр?',
+					answer:
+						'Заголовочный регистр делает заглавной первую букву каждого значимого слова, оставляя артикли, предлоги и союзы в нижнем регистре (если они не первое слово).'
+				},
+				{
+					question: 'В чем разница между camelCase и PascalCase?',
+					answer:
+						'camelCase начинается со строчной буквы (helloWorld), а PascalCase - с заглавной (HelloWorld). Оба широко используются в программировании.'
+				},
+				{
+					question: 'Когда использовать snake_case или kebab-case?',
+					answer:
+						'snake_case использует подчеркивания и распространен в Python и Ruby. kebab-case использует дефисы и популярен в URL-адресах и CSS-классах.'
+				},
+				{
+					question: 'Для чего используется чередующийся регистр?',
+					answer:
+						'Чередующийся регистр (чЕрЕдУюЩиЙсЯ) чередует строчные и заглавные буквы. В основном используется для стилистических целей или насмешки в неформальном тексте.'
+				}
+			]
+		}
+	},
+	{
+		id: 'image-size-checker',
+		icon: ImageIcon,
+		category: 'multimedia',
+		translationKey: 'imageSizeChecker',
+		path: 'image-size-checker',
+		gradient: 'from-cyan-500 to-blue-600',
+		recommendedTools: ['favicon-generator', 'qr-generator', 'youtube-thumbnail-downloader'],
+		difficulty: 'beginner',
+		tags: ['image', 'size', 'dimensions', 'checker', 'analyzer', 'aspect-ratio'],
+		useCase:
+			'Check image dimensions, file size, and aspect ratio instantly',
+		metaDescription:
+			'Image size checker and analyzer. Check dimensions, file size, format, and aspect ratio of multiple images.',
+		faqs: {
+			en: [
+				{
+					question: 'What image formats are supported?',
+					answer:
+						'The tool supports all common image formats including JPG, PNG, GIF, WebP, SVG, BMP, and TIFF. It can analyze any format your browser can display.'
+				},
+				{
+					question: 'Is there a file size limit?',
+					answer:
+						"There's no hard limit, but very large images (over 50MB) might take longer to process. The tool works entirely in your browser, so performance depends on your device."
+				},
+				{
+					question: 'How is aspect ratio calculated?',
+					answer:
+						'Aspect ratio is calculated by finding the greatest common divisor of width and height, then expressing them as the simplest whole number ratio (e.g., 16:9 instead of 1920:1080).'
+				},
+				{
+					question: 'Can I check multiple images at once?',
+					answer:
+						'Yes! You can select or drag multiple images at once. The tool will process them all and display the results in a grid layout.'
+				},
+				{
+					question: 'Is my image data safe?',
+					answer:
+						'Absolutely. All processing happens locally in your browser. No images are uploaded to any server. Your files remain completely private.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какие форматы изображений поддерживаются?',
+					answer:
+						'Инструмент поддерживает все распространенные форматы изображений включая JPG, PNG, GIF, WebP, SVG, BMP и TIFF. Он может анализировать любой формат, который может отобразить ваш браузер.'
+				},
+				{
+					question: 'Есть ли ограничение на размер файла?',
+					answer:
+						'Жесткого ограничения нет, но очень большие изображения (более 50МБ) могут обрабатываться дольше. Инструмент работает полностью в вашем браузере, поэтому производительность зависит от вашего устройства.'
+				},
+				{
+					question: 'Как рассчитывается соотношение сторон?',
+					answer:
+						'Соотношение сторон рассчитывается путем нахождения наибольшего общего делителя ширины и высоты, затем выражается как простейшее соотношение целых чисел (например, 16:9 вместо 1920:1080).'
+				},
+				{
+					question: 'Можно ли проверить несколько изображений сразу?',
+					answer:
+						'Да! Вы можете выбрать или перетащить несколько изображений одновременно. Инструмент обработает их все и отобразит результаты в виде сетки.'
+				},
+				{
+					question: 'Безопасны ли мои данные изображений?',
+					answer:
+						'Абсолютно. Вся обработка происходит локально в вашем браузере. Никакие изображения не загружаются на сервер. Ваши файлы остаются полностью конфиденциальными.'
+				}
+			]
+		}
+	},
+	{
+		id: 'html-xml-parser',
+		icon: Code,
+		category: 'webdev',
+		translationKey: 'htmlXmlParser',
+		path: 'html-xml-parser',
+		gradient: 'from-amber-500 to-orange-600',
+		recommendedTools: ['json-yaml-formatter', 'javascript-syntax-checker', 'php-syntax-checker'],
+		difficulty: 'intermediate',
+		tags: ['html', 'xml', 'parser', 'formatter', 'validator', 'minify'],
+		useCase:
+			'Parse, format, validate, and minify HTML and XML documents',
+		metaDescription:
+			'HTML/XML parser and formatter. Beautify, minify, validate, and extract data from HTML and XML documents.',
+		faqs: {
+			en: [
+				{
+					question: "What's the difference between HTML and XML parsing?",
+					answer:
+						'HTML is more forgiving and allows certain unclosed tags, while XML requires strict syntax with all tags properly closed and nested. The parser automatically detects the type based on content.'
+				},
+				{
+					question: 'What does the minify option do?',
+					answer:
+						'Minification removes unnecessary whitespace, line breaks, and comments (optionally) to reduce file size. This is useful for production deployments to improve loading times.'
+				},
+				{
+					question: 'How does data extraction work?',
+					answer:
+						'The extract mode traverses the document tree and outputs the path to each element along with its attributes and text content. This is useful for understanding document structure and extracting specific data.'
+				},
+				{
+					question: 'What validation is performed?',
+					answer:
+						'The parser checks for well-formedness: proper tag nesting, closed tags, valid attribute syntax, and proper character encoding. It reports any parsing errors found.'
+				},
+				{
+					question: 'Can it handle large documents?',
+					answer:
+						"Yes, but very large documents (over 10MB) might be slow to process. The parser runs entirely in your browser, so performance depends on your device's capabilities."
+				}
+			],
+			ru: [
+				{
+					question: 'В чем разница между парсингом HTML и XML?',
+					answer:
+						'HTML более снисходителен и позволяет некоторые незакрытые теги, в то время как XML требует строгого синтаксиса со всеми правильно закрытыми и вложенными тегами. Парсер автоматически определяет тип на основе содержимого.'
+				},
+				{
+					question: 'Что делает опция минификации?',
+					answer:
+						'Минификация удаляет ненужные пробелы, переносы строк и комментарии (опционально) для уменьшения размера файла. Это полезно для продакшн развертываний для улучшения времени загрузки.'
+				},
+				{
+					question: 'Как работает извлечение данных?',
+					answer:
+						'Режим извлечения обходит дерево документа и выводит путь к каждому элементу вместе с его атрибутами и текстовым содержимым. Это полезно для понимания структуры документа и извлечения конкретных данных.'
+				},
+				{
+					question: 'Какая валидация выполняется?',
+					answer:
+						'Парсер проверяет правильность формирования: правильную вложенность тегов, закрытые теги, валидный синтаксис атрибутов и правильную кодировку символов. Он сообщает о любых найденных ошибках парсинга.'
+				},
+				{
+					question: 'Может ли он обрабатывать большие документы?',
+					answer:
+						'Да, но очень большие документы (более 10МБ) могут обрабатываться медленно. Парсер работает полностью в вашем браузере, поэтому производительность зависит от возможностей вашего устройства.'
 				}
 			]
 		}
@@ -4547,6 +4833,110 @@ export const widgets: Widget[] = [
 					question: 'Стоит ли регулярно отслеживать расход топлива?',
 					answer:
 						'Да! Регулярное отслеживание помогает рано выявить проблемы (резкое увеличение может указывать на механические проблемы), планировать бюджет на поездки, сравнивать разные маршруты и контролировать эффективность методов экономии топлива.'
+				}
+			],
+			he: []
+		}
+	},
+	{
+		id: 'analytics-dashboard',
+		icon: BarChart3,
+		category: 'analytics',
+		translationKey: 'analyticsDashboard',
+		path: 'analytics-dashboard',
+		gradient: 'from-purple-500 to-indigo-500',
+		recommendedTools: [],
+		difficulty: 'intermediate',
+		tags: ['analytics', 'dashboard', 'statistics', 'metrics', 'usage', 'performance'],
+		useCase: 'Monitor and analyze usage metrics for all widgets in the toolkit',
+		metaDescription: 'Analytics dashboard for tracking widget usage, performance metrics, and user engagement across all tools.',
+		faqs: {
+			en: [
+				{
+					question: 'What metrics are tracked?',
+					answer: 'The dashboard tracks page views, unique sessions, average session duration, hourly usage patterns, and real-time active users for each widget.'
+				},
+				{
+					question: 'How often is the data updated?',
+					answer: 'Analytics data is updated in real-time. Page views and session data are tracked immediately, while aggregated statistics are refreshed every few minutes.'
+				},
+				{
+					question: 'What time periods can I analyze?',
+					answer: 'You can view analytics for the last 24 hours, 7 days, or 30 days. The dashboard automatically adjusts the granularity of data based on the selected timeframe.'
+				},
+				{
+					question: 'Is user privacy protected?',
+					answer: 'Yes, all analytics are completely anonymous. We only track aggregated usage patterns and performance metrics without collecting any personal information.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какие метрики отслеживаются?',
+					answer: 'Панель отслеживает просмотры страниц, уникальные сессии, среднюю длительность сессии, почасовые паттерны использования и активных пользователей в реальном времени для каждого виджета.'
+				},
+				{
+					question: 'Как часто обновляются данные?',
+					answer: 'Аналитические данные обновляются в реальном времени. Просмотры страниц и данные сессий отслеживаются немедленно, а агрегированная статистика обновляется каждые несколько минут.'
+				},
+				{
+					question: 'Какие временные периоды можно анализировать?',
+					answer: 'Вы можете просматривать аналитику за последние 24 часа, 7 дней или 30 дней. Панель автоматически настраивает детализацию данных в зависимости от выбранного периода.'
+				},
+				{
+					question: 'Защищена ли конфиденциальность пользователей?',
+					answer: 'Да, вся аналитика полностью анонимна. Мы отслеживаем только агрегированные паттерны использования и метрики производительности без сбора персональной информации.'
+				}
+			],
+			he: []
+		}
+	},
+	{
+		id: 'ascii-art-generator',
+		icon: TerminalSquare,
+		category: 'webdev',
+		translationKey: 'asciiArtGenerator',
+		path: 'ascii-art-generator',
+		gradient: 'from-green-500 to-emerald-600',
+		recommendedTools: ['text-case-converter', 'emoji-list', 'fancy-text-generator'],
+		difficulty: 'intermediate',
+		tags: ['ascii', 'art', 'text', 'image', 'converter', 'generator', 'creative'],
+		useCase: 'Convert text and images to ASCII art, or use pre-made patterns',
+		metaDescription: 'ASCII art generator - convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.',
+		faqs: {
+			en: [
+				{
+					question: 'What types of ASCII art can I create?',
+					answer: 'You can create text-based ASCII art with different font styles, convert images to ASCII characters, or choose from a library of pre-made patterns including animals, objects, and symbols.'
+				},
+				{
+					question: 'What image formats are supported?',
+					answer: 'The tool supports all common image formats including JPG, PNG, GIF, and WebP. For best results, use images with good contrast and simple subjects.'
+				},
+				{
+					question: 'Can I customize the ASCII output?',
+					answer: 'Yes! For images, you can adjust the width, choose different character sets, and invert brightness. For text, you can select from multiple font styles.'
+				},
+				{
+					question: 'How can I save or share my ASCII art?',
+					answer: 'You can copy the ASCII art to clipboard, download it as a text file, or save it as a PNG image. The image export preserves the monospace formatting.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какие типы ASCII-арта можно создавать?',
+					answer: 'Вы можете создавать текстовый ASCII-арт с разными стилями шрифтов, конвертировать изображения в ASCII-символы или выбирать из библиотеки готовых паттернов, включая животных, объекты и символы.'
+				},
+				{
+					question: 'Какие форматы изображений поддерживаются?',
+					answer: 'Инструмент поддерживает все распространенные форматы изображений, включая JPG, PNG, GIF и WebP. Для лучших результатов используйте изображения с хорошим контрастом и простыми объектами.'
+				},
+				{
+					question: 'Можно ли настроить вывод ASCII?',
+					answer: 'Да! Для изображений можно настроить ширину, выбрать разные наборы символов и инвертировать яркость. Для текста можно выбрать из нескольких стилей шрифтов.'
+				},
+				{
+					question: 'Как сохранить или поделиться ASCII-артом?',
+					answer: 'Вы можете скопировать ASCII-арт в буфер обмена, скачать как текстовый файл или сохранить как изображение PNG. Экспорт изображения сохраняет моноширинное форматирование.'
 				}
 			],
 			he: []
