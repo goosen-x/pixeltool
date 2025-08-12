@@ -1721,6 +1721,10 @@
 			"avgSessionDuration": "Avg Session Duration",
 			"hourlyViews": "Hourly Views",
 			"usageTrends": "Usage Trends"
+		},
+		"asciiArtGenerator": {
+			"title": "ASCII Art Generator",
+			"description": "Convert text and images to ASCII art"
 		}
 	}
 }

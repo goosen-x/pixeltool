@@ -21,6 +21,10 @@
 			"clearFilters": "Очистить фильтры",
 			"noResults": "Инструменты не найдены",
 			"noResultsDescription": "Попробуйте изменить поисковый запрос или очистить фильтры"
+		},
+		"asciiArtGenerator": {
+			"title": "Генератор ASCII-арта",
+			"description": "Конвертируйте текст и изображения в ASCII-арт"
 		}
 	}
 }

@@ -57,7 +57,8 @@ import {
 	TrendingUp,
 	CreditCard,
 	Fuel,
-	Image
+	Image,
+	TerminalSquare
 } from 'lucide-react'
 export interface WidgetFAQ {
 	question: string
@@ -4884,6 +4885,58 @@ export const widgets: Widget[] = [
 				{
 					question: 'Защищена ли конфиденциальность пользователей?',
 					answer: 'Да, вся аналитика полностью анонимна. Мы отслеживаем только агрегированные паттерны использования и метрики производительности без сбора персональной информации.'
+				}
+			],
+			he: []
+		}
+	},
+	{
+		id: 'ascii-art-generator',
+		icon: TerminalSquare,
+		category: 'webdev',
+		translationKey: 'asciiArtGenerator',
+		path: 'ascii-art-generator',
+		gradient: 'from-green-500 to-emerald-600',
+		recommendedTools: ['text-case-converter', 'emoji-list', 'fancy-text-generator'],
+		difficulty: 'intermediate',
+		tags: ['ascii', 'art', 'text', 'image', 'converter', 'generator', 'creative'],
+		useCase: 'Convert text and images to ASCII art, or use pre-made patterns',
+		metaDescription: 'ASCII art generator - convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.',
+		faqs: {
+			en: [
+				{
+					question: 'What types of ASCII art can I create?',
+					answer: 'You can create text-based ASCII art with different font styles, convert images to ASCII characters, or choose from a library of pre-made patterns including animals, objects, and symbols.'
+				},
+				{
+					question: 'What image formats are supported?',
+					answer: 'The tool supports all common image formats including JPG, PNG, GIF, and WebP. For best results, use images with good contrast and simple subjects.'
+				},
+				{
+					question: 'Can I customize the ASCII output?',
+					answer: 'Yes! For images, you can adjust the width, choose different character sets, and invert brightness. For text, you can select from multiple font styles.'
+				},
+				{
+					question: 'How can I save or share my ASCII art?',
+					answer: 'You can copy the ASCII art to clipboard, download it as a text file, or save it as a PNG image. The image export preserves the monospace formatting.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какие типы ASCII-арта можно создавать?',
+					answer: 'Вы можете создавать текстовый ASCII-арт с разными стилями шрифтов, конвертировать изображения в ASCII-символы или выбирать из библиотеки готовых паттернов, включая животных, объекты и символы.'
+				},
+				{
+					question: 'Какие форматы изображений поддерживаются?',
+					answer: 'Инструмент поддерживает все распространенные форматы изображений, включая JPG, PNG, GIF и WebP. Для лучших результатов используйте изображения с хорошим контрастом и простыми объектами.'
+				},
+				{
+					question: 'Можно ли настроить вывод ASCII?',
+					answer: 'Да! Для изображений можно настроить ширину, выбрать разные наборы символов и инвертировать яркость. Для текста можно выбрать из нескольких стилей шрифтов.'
+				},
+				{
+					question: 'Как сохранить или поделиться ASCII-артом?',
+					answer: 'Вы можете скопировать ASCII-арт в буфер обмена, скачать как текстовый файл или сохранить как изображение PNG. Экспорт изображения сохраняет моноширинное форматирование.'
 				}
 			],
 			he: []
