@@ -64,7 +64,7 @@ export default function SpecialSymbolsPickerPage() {
             <Card className="p-6">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">
-                  Search Results for "{searchQuery}"
+                  Search Results for &ldquo;{searchQuery}&rdquo;
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   {filteredSymbols ? filteredSymbols.length : 0} symbols found
@@ -96,8 +96,8 @@ export default function SpecialSymbolsPickerPage() {
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No symbols found for "{searchQuery}"</p>
-                  <p className="text-sm">Try searching for categories like "stars", "hearts", or "arrows"</p>
+                  <p>No symbols found for &ldquo;{searchQuery}&rdquo;</p>
+                  <p className="text-sm">Try searching for categories like &ldquo;stars&rdquo;, &ldquo;hearts&rdquo;, or &ldquo;arrows&rdquo;</p>
                 </div>
               )}
             </Card>
