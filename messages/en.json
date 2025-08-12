@@ -1347,7 +1347,13 @@
 			"results": "{count, plural, =0 {No tools found} =1 {1 tool found} other {# tools found}}",
 			"clearFilters": "Clear filters",
 			"noResults": "No tools found",
-			"noResultsDescription": "Try adjusting your search terms or clearing the filters to see more results."
+			"noResultsDescription": "Try adjusting your search terms or clearing the filters to see more results.",
+			"title": "Search Tools",
+			"navigate": "navigate",
+			"select": "select",
+			"close": "close",
+			"suggested": "Suggested",
+			"suggestedAndFavorites": "Favorites & Recent"
 		},
 		"favorites": {
 			"title": "Your Favorite Tools",

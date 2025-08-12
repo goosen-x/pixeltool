@@ -16,6 +16,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegistration'
 import { WebVitals } from '@/components/analytics/WebVitals'
+import { GlobalWidgetSearch } from '@/components/global/GlobalWidgetSearch'
 
 // Font configurations
 const inter = Inter({ 
@@ -166,6 +167,7 @@ export default async function RootLayout({
 						<ServiceWorkerRegistration />
 						<WebVitals />
 						{children}
+						<GlobalWidgetSearch locale={locale} />
 						<ScrollToTop />
 						<Toaster />
 					</ThemeProvider>
