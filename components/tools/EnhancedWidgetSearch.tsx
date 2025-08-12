@@ -244,7 +244,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 										{suggestion.type === 'history' && (
 											<X
 												className="w-3 h-3 ml-auto text-muted-foreground hover:text-foreground"
-												onClick={(e) => {
+												onClick={(e: React.MouseEvent) => {
 													e.stopPropagation()
 													removeFromHistory(suggestion.value)
 												}}

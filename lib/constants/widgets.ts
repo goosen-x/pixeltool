@@ -4840,7 +4840,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'analytics-dashboard',
 		icon: BarChart3,
-		category: 'productivity',
+		category: 'analytics',
 		translationKey: 'analyticsDashboard',
 		path: 'analytics-dashboard',
 		gradient: 'from-purple-500 to-indigo-500',
