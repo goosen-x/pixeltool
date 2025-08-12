@@ -8,8 +8,13 @@ import {
   WidgetInput, 
   WidgetResult, 
   WidgetInfo,
+  WidgetShareSection,
+  WidgetTips,
+  WidgetTutorial,
+  WidgetKeyboardShortcuts,
   type InputField 
-} from '@/components/widgets/base'
+} from '@/components/widgets'
+import { useWidgetKeyboard, commonWidgetShortcuts, type KeyboardShortcut } from '@/lib/hooks/useWidgetKeyboard'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -36,6 +41,7 @@ export default function AsciiArtGeneratorPage() {
   const [selectedPattern, setSelectedPattern] = useState('')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showTutorial, setShowTutorial] = useState(false)
 
   const config: BaseWidgetConfig = {
     title: 'ASCII Art Generator',
@@ -174,6 +180,10 @@ export default function AsciiArtGeneratorPage() {
   }
 
   const handleCopyAscii = async () => {
+    if (!asciiOutput) {
+      toast.error('No ASCII art to copy')
+      return
+    }
     try {
       await navigator.clipboard.writeText(asciiOutput)
       toast.success('ASCII art copied to clipboard!')
@@ -196,6 +206,169 @@ export default function AsciiArtGeneratorPage() {
     toast.success('Downloaded as image!')
   }
 
+  // Tutorial steps
+  const tutorialSteps = [
+    {
+      id: 'welcome',
+      title: 'Welcome to ASCII Art Generator',
+      description: 'This tool helps you create ASCII art from text, images, or pre-made patterns',
+    },
+    {
+      id: 'tabs',
+      title: 'Choose Your Input Type',
+      description: 'Select Text for text-based art, Image to convert photos, or Patterns for pre-made designs',
+      element: '.tabs-list',
+      position: 'bottom' as const
+    },
+    {
+      id: 'text-input',
+      title: 'Enter Your Text',
+      description: 'Type any text here and choose a font style',
+      element: 'input[name="text"]',
+      position: 'top' as const,
+      action: {
+        type: 'input' as const,
+        target: 'input[name="text"]',
+        value: 'Hello ASCII!'
+      }
+    },
+    {
+      id: 'generate',
+      title: 'Generate ASCII Art',
+      description: 'Click this button to create your ASCII art',
+      element: 'button:has-text("Generate ASCII Art")',
+      position: 'top' as const,
+      action: {
+        type: 'click' as const,
+        target: 'button:has-text("Generate ASCII Art")'
+      }
+    },
+    {
+      id: 'copy',
+      title: 'Copy or Download',
+      description: 'Copy the result to clipboard or download as text/image file',
+      element: '.ascii-output',
+      position: 'top' as const
+    }
+  ]
+
+  // Keyboard shortcuts
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      ...commonWidgetShortcuts.submit,
+      action: () => {
+        if (activeTab === 'text') {
+          const textInput = document.querySelector('input[name="text"]') as HTMLInputElement
+          if (textInput?.value) {
+            handleTextToAscii({ text: textInput.value, font: 'standard' })
+          }
+        }
+      }
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      shift: true,
+      description: 'Copy ASCII art',
+      action: handleCopyAscii,
+      enabled: !!asciiOutput
+    },
+    {
+      key: 'd',
+      ctrl: true,
+      shift: true,
+      description: 'Download as text',
+      action: handleDownloadText,
+      enabled: !!asciiOutput
+    },
+    {
+      key: 'i',
+      ctrl: true,
+      shift: true,
+      description: 'Download as image',
+      action: handleDownloadImage,
+      enabled: !!asciiOutput
+    },
+    {
+      key: '1',
+      ctrl: true,
+      description: 'Text to ASCII tab',
+      action: () => setActiveTab('text')
+    },
+    {
+      key: '2',
+      ctrl: true,
+      description: 'Image to ASCII tab',
+      action: () => setActiveTab('image')
+    },
+    {
+      key: '3',
+      ctrl: true,
+      description: 'Patterns tab',
+      action: () => setActiveTab('patterns')
+    },
+    {
+      key: 'r',
+      ctrl: true,
+      shift: true,
+      description: 'Reset all',
+      action: () => {
+        setAsciiOutput('')
+        setImagePreview(null)
+        setSelectedPattern('')
+        toast.success('Reset complete')
+      }
+    },
+    {
+      key: '/',
+      description: 'Focus text input',
+      action: () => {
+        const input = document.querySelector('input[name="text"]') as HTMLInputElement
+        input?.focus()
+      }
+    }
+  ]
+
+  const { focusElement } = useWidgetKeyboard({
+    shortcuts,
+    widgetId: 'ascii-art-generator',
+    enabled: true
+  })
+
+  // Widget tips
+  const asciiTips = [
+    {
+      id: 'font-styles',
+      title: 'Multiple Font Styles',
+      description: 'Try different font styles for varied artistic effects',
+      category: 'basic' as const
+    },
+    {
+      id: 'image-quality',
+      title: 'Image Quality Tips',
+      description: 'Use high-contrast images with clear subjects for best results',
+      category: 'advanced' as const
+    },
+    {
+      id: 'width-adjustment',
+      title: 'Adjust Width',
+      description: 'Change the width setting to fit your display or use case',
+      category: 'basic' as const
+    },
+    {
+      id: 'keyboard-shortcut',
+      title: 'Quick Generate',
+      description: 'Press Ctrl/Cmd + Enter to quickly generate ASCII art',
+      category: 'shortcut' as const
+    },
+    {
+      id: 'export-options',
+      title: 'Export Options',
+      description: 'Download as PNG for social media or TXT for code comments',
+      category: 'pro' as const
+    }
+  ]
+
   return (
     <WidgetContainer
       config={config}
@@ -211,6 +384,25 @@ export default function AsciiArtGeneratorPage() {
       }}
     >
       <div className="space-y-6">
+        {/* Tips and Tutorial */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start">
+          <WidgetTips
+            tips={asciiTips}
+            widgetId="ascii-art-generator"
+            variant="inline"
+            className="flex-1"
+          />
+          {!showTutorial && (
+            <WidgetTutorial
+              steps={tutorialSteps}
+              widgetId="ascii-art-generator"
+              onComplete={() => {
+                toast.success('Tutorial completed! You\'re ready to create ASCII art')
+                setShowTutorial(false)
+              }}
+            />
+          )}
+        </div>
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="text" className="flex items-center gap-2">
@@ -386,7 +578,20 @@ export default function AsciiArtGeneratorPage() {
             'Some detail will be lost in image conversion'
           ]}
         />
+
+        <WidgetShareSection
+          widgetTitle="ASCII Art Generator"
+          widgetDescription="Convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns."
+          hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
+        />
       </div>
+      
+      {/* Keyboard shortcuts */}
+      <WidgetKeyboardShortcuts
+        shortcuts={shortcuts}
+        variant="floating"
+        position="bottom-right"
+      />
     </WidgetContainer>
   )
 }

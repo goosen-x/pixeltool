@@ -1,12 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { WidgetShareSection, WidgetTips, WidgetKeyboardShortcuts, ShortcutHint } from '@/components/widgets'
+import { useWidgetKeyboard, commonWidgetShortcuts, type KeyboardShortcut } from '@/lib/hooks/useWidgetKeyboard'
+import { useCompoundInterestCalculator, type CompoundingFrequency } from '@/lib/hooks/widgets'
+import { formatCurrency } from '@/lib/utils/currency'
 import { 
   Calculator,
   TrendingUp,
@@ -21,325 +25,262 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// Charts temporarily disabled due to dependency conflicts
-// TODO: Add recharts when dependency issues are resolved
-
-type CompoundingFrequency = 'daily' | 'monthly' | 'quarterly' | 'annually'
-
-interface CalculationResult {
-  finalAmount: number
-  totalInterest: number
-  totalContributions: number
-  effectiveRate: number
-  chartData: ChartDataPoint[]
-  yearlyBreakdown: YearlyBreakdown[]
-}
-
-interface ChartDataPoint {
-  period: string
-  principal: number
-  interest: number
-  total: number
-}
-
-interface YearlyBreakdown {
-  year: number
-  startBalance: number
-  contribution: number
-  interest: number
-  endBalance: number
-}
 
 const COMPOUNDING_FREQUENCIES = {
-  daily: { label: 'Ежедневно', value: 365 },
-  monthly: { label: 'Ежемесячно', value: 12 },
-  quarterly: { label: 'Ежеквартально', value: 4 },
-  annually: { label: 'Ежегодно', value: 1 }
+  daily: { value: 365, label: 'Ежедневно' },
+  monthly: { value: 12, label: 'Ежемесячно' },
+  quarterly: { value: 4, label: 'Ежеквартально' },
+  annually: { value: 1, label: 'Ежегодно' }
 }
 
-const INVESTMENT_EXAMPLES = [
-  { name: 'Консервативный портфель', rate: 5, years: 10, contribution: 1000 },
-  { name: 'Сбалансированный портфель', rate: 8, years: 15, contribution: 2000 },
-  { name: 'Агрессивный портфель', rate: 12, years: 20, contribution: 3000 },
-  { name: 'Пенсионные накопления', rate: 7, years: 30, contribution: 500 }
-]
-
 export default function CompoundInterestCalculatorPage() {
-  const [principal, setPrincipal] = useState<string>('10000')
-  const [interestRate, setInterestRate] = useState<string>('8')
-  const [years, setYears] = useState<string>('10')
-  const [monthlyContribution, setMonthlyContribution] = useState<string>('500')
-  const [compoundingFrequency, setCompoundingFrequency] = useState<CompoundingFrequency>('monthly')
-  const [result, setResult] = useState<CalculationResult | null>(null)
-  const [isCalculating, setIsCalculating] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  
+  // Use compound interest calculator hook
+  const {
+    input,
+    result,
+    isCalculating,
+    updateField,
+    calculate,
+    copyResults,
+    reset,
+    loadExample
+  } = useCompoundInterestCalculator()
 
-  // Auto-calculate when inputs change
-  useEffect(() => {
-    if (principal && interestRate && years) {
-      const timer = setTimeout(() => {
-        calculateCompoundInterest()
-      }, 500)
-      return () => clearTimeout(timer)
+  // Keyboard shortcuts
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      ...commonWidgetShortcuts.submit,
+      action: calculate
+    },
+    {
+      ...commonWidgetShortcuts.reset,
+      action: reset
+    },
+    {
+      key: 'c',
+      ctrl: true,
+      shift: true,
+      description: 'Copy results',
+      action: copyResults,
+      enabled: !!result
+    },
+    {
+      key: 'e',
+      ctrl: true,
+      description: 'Load example',
+      action: loadExample
+    },
+    {
+      key: 'a',
+      ctrl: true,
+      description: 'Toggle advanced',
+      action: () => setShowAdvanced(!showAdvanced)
     }
-  }, [principal, interestRate, years, monthlyContribution, compoundingFrequency])
+  ]
 
-  const calculateCompoundInterest = () => {
-    setIsCalculating(true)
+  useWidgetKeyboard({
+    shortcuts,
+    widgetId: 'compound-interest-calculator',
+    enabled: true
+  })
 
-    setTimeout(() => {
-      try {
-        const P = parseFloat(principal) || 0
-        const r = parseFloat(interestRate) / 100 || 0
-        const t = parseFloat(years) || 0
-        const PMT = parseFloat(monthlyContribution) || 0
-        const n = COMPOUNDING_FREQUENCIES[compoundingFrequency].value
-
-        // Calculate compound interest with monthly contributions
-        let balance = P
-        const chartData: ChartDataPoint[] = []
-        const yearlyBreakdown: YearlyBreakdown[] = []
-        
-        // For chart - show monthly data points
-        for (let month = 0; month <= t * 12; month++) {
-          const yearProgress = month / 12
-          
-          // Calculate current balance with compound interest
-          const compoundBalance = P * Math.pow(1 + r/n, n * yearProgress)
-          
-          // Calculate contribution accumulation with compound interest
-          const contributionBalance = PMT * 12 * ((Math.pow(1 + r/n, n * yearProgress) - 1) / (r/n))
-          
-          balance = compoundBalance + contributionBalance
-          
-          if (month % 3 === 0) { // Show quarterly points
-            chartData.push({
-              period: `${Math.floor(yearProgress)}г ${(month % 12)/3}кв`,
-              principal: P + PMT * month,
-              interest: balance - (P + PMT * month),
-              total: balance
-            })
-          }
-        }
-
-        // Calculate yearly breakdown
-        let currentBalance = P
-        for (let year = 1; year <= t; year++) {
-          const startBalance = currentBalance
-          const yearContribution = PMT * 12
-          
-          // Calculate balance at end of year
-          const endBalance = 
-            startBalance * Math.pow(1 + r/n, n) + 
-            yearContribution * ((Math.pow(1 + r/n, n) - 1) / (r/n))
-          
-          const yearInterest = endBalance - startBalance - yearContribution
-
-          yearlyBreakdown.push({
-            year,
-            startBalance,
-            contribution: yearContribution,
-            interest: yearInterest,
-            endBalance
-          })
-
-          currentBalance = endBalance
-        }
-
-        const finalAmount = balance
-        const totalContributions = P + (PMT * 12 * t)
-        const totalInterest = finalAmount - totalContributions
-        
-        // Calculate effective annual rate
-        const effectiveRate = (Math.pow(1 + r/n, n) - 1) * 100
-
-        setResult({
-          finalAmount,
-          totalInterest,
-          totalContributions,
-          effectiveRate,
-          chartData,
-          yearlyBreakdown
-        })
-      } catch (error) {
-        toast.error('Ошибка при расчете')
-        console.error('Calculation error:', error)
-      } finally {
-        setIsCalculating(false)
+  // Widget tips
+  const compoundInterestTips = [
+    {
+      id: 'power-of-compounding',
+      title: 'Power of Compounding',
+      description: 'The earlier you start, the more powerful compound interest becomes due to time',
+      category: 'basic' as const
+    },
+    {
+      id: 'regular-contributions',
+      title: 'Regular Contributions',
+      description: 'Adding money regularly can dramatically increase your final amount',
+      category: 'basic' as const
+    },
+    {
+      id: 'compounding-frequency',
+      title: 'Compounding Frequency',
+      description: 'More frequent compounding (daily vs annually) increases returns, but the difference is often small',
+      category: 'advanced' as const,
+      action: {
+        label: 'Show Advanced',
+        onClick: () => setShowAdvanced(true)
       }
-    }, 300)
-  }
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value)
-  }
-
-  const formatPercent = (value: number): string => {
-    return `${value.toFixed(2)}%`
-  }
-
-  const loadExample = (example: typeof INVESTMENT_EXAMPLES[0]) => {
-    setPrincipal('100000')
-    setInterestRate(example.rate.toString())
-    setYears(example.years.toString())
-    setMonthlyContribution(example.contribution.toString())
-    toast.success(`Загружен пример: ${example.name}`)
-  }
-
-  const copyResults = () => {
-    if (!result) return
-
-    const text = `
-Калькулятор сложного процента
-
-Начальная сумма: ${formatCurrency(parseFloat(principal))}
-Процентная ставка: ${interestRate}% годовых
-Срок инвестирования: ${years} лет
-Ежемесячное пополнение: ${formatCurrency(parseFloat(monthlyContribution || '0'))}
-Частота капитализации: ${COMPOUNDING_FREQUENCIES[compoundingFrequency].label}
-
-Результаты:
-Итоговая сумма: ${formatCurrency(result.finalAmount)}
-Общий доход: ${formatCurrency(result.totalInterest)}
-Общие взносы: ${formatCurrency(result.totalContributions)}
-Эффективная годовая ставка: ${formatPercent(result.effectiveRate)}
-    `.trim()
-
-    navigator.clipboard.writeText(text)
-    toast.success('Результаты скопированы в буфер обмена!')
-  }
-
-  const reset = () => {
-    setPrincipal('10000')
-    setInterestRate('8')
-    setYears('10')
-    setMonthlyContribution('500')
-    setCompoundingFrequency('monthly')
-    setResult(null)
-    toast.success('Данные сброшены')
-  }
-
-  // CustomTooltip temporarily removed due to dependency conflicts
+    },
+    {
+      id: 'example',
+      title: 'Try Example',
+      description: 'Load a sample calculation to see how $10,000 grows with $500 monthly contributions',
+      category: 'basic' as const,
+      action: {
+        label: 'Load Example',
+        onClick: loadExample
+      }
+    },
+    {
+      id: 'rule-72',
+      title: 'Rule of 72',
+      description: 'Divide 72 by your interest rate to estimate how long it takes to double your money',
+      category: 'pro' as const
+    }
+  ]
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Tips Section */}
+      <WidgetTips
+        tips={compoundInterestTips}
+        widgetId="compound-interest-calculator"
+        variant="inline"
+        className="mb-6"
+      />
+
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Input Form */}
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">Параметры инвестирования</h3>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Calculator className="w-5 h-5" />
+            Параметры расчета
+          </h3>
           
           <div className="space-y-4">
+            {/* Principal */}
             <div>
               <Label htmlFor="principal" className="flex items-center gap-2">
-                <PiggyBank className="w-4 h-4" />
-                Начальная сумма (₽)
+                <DollarSign className="w-4 h-4" />
+                Начальная сумма ($)
               </Label>
               <Input
                 id="principal"
                 type="number"
-                value={principal}
-                onChange={(e) => setPrincipal(e.target.value)}
-                placeholder="100000"
-                min="0"
-                step="1000"
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="rate" className="flex items-center gap-2">
-                <Percent className="w-4 h-4" />
-                Годовая процентная ставка (%)
-              </Label>
-              <Input
-                id="rate"
-                type="number"
-                value={interestRate}
-                onChange={(e) => setInterestRate(e.target.value)}
-                placeholder="8"
-                min="0"
-                max="100"
-                step="0.1"
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="years" className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Срок инвестирования (лет)
-              </Label>
-              <Input
-                id="years"
-                type="number"
-                value={years}
-                onChange={(e) => setYears(e.target.value)}
-                placeholder="10"
-                min="1"
-                max="50"
-                step="1"
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="contribution" className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4" />
-                Ежемесячное пополнение (₽)
-              </Label>
-              <Input
-                id="contribution"
-                type="number"
-                value={monthlyContribution}
-                onChange={(e) => setMonthlyContribution(e.target.value)}
-                placeholder="5000"
+                value={input.principal}
+                onChange={(e) => updateField('principal', e.target.value)}
+                placeholder="10000"
                 min="0"
                 step="100"
                 className="mt-1"
               />
             </div>
 
+            {/* Interest Rate */}
             <div>
-              <Label htmlFor="frequency">Частота капитализации</Label>
-              <Select 
-                value={compoundingFrequency} 
-                onValueChange={(value: CompoundingFrequency) => setCompoundingFrequency(value)}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(COMPOUNDING_FREQUENCIES).map(([key, freq]) => (
-                    <SelectItem key={key} value={key}>
-                      {freq.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="rate" className="flex items-center gap-2">
+                <Percent className="w-4 h-4" />
+                Процентная ставка (% в год)
+              </Label>
+              <Input
+                id="rate"
+                type="number"
+                value={input.rate}
+                onChange={(e) => updateField('rate', e.target.value)}
+                placeholder="7"
+                min="0"
+                max="50"
+                step="0.1"
+                className="mt-1"
+              />
             </div>
 
-            <div className="pt-2 space-y-2">
-              <p className="text-sm text-muted-foreground">Примеры инвестиционных стратегий:</p>
-              <div className="grid grid-cols-2 gap-2">
-                {INVESTMENT_EXAMPLES.map((example, index) => (
-                  <Button
-                    key={index}
-                    onClick={() => loadExample(example)}
-                    variant="outline"
-                    size="sm"
-                    className="text-xs"
-                  >
-                    {example.name}
-                  </Button>
-                ))}
-              </div>
+            {/* Time Period */}
+            <div>
+              <Label htmlFor="time" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Период (лет)
+              </Label>
+              <Input
+                id="time"
+                type="number"
+                value={input.time}
+                onChange={(e) => updateField('time', e.target.value)}
+                placeholder="10"
+                min="1"
+                max="50"
+                className="mt-1"
+              />
             </div>
+
+            {/* Monthly Contribution */}
+            <div>
+              <Label htmlFor="contribution" className="flex items-center gap-2">
+                <PiggyBank className="w-4 h-4" />
+                Регулярный взнос ($)
+              </Label>
+              <Input
+                id="contribution"
+                type="number"
+                value={input.contribution}
+                onChange={(e) => updateField('contribution', e.target.value)}
+                placeholder="500"
+                min="0"
+                step="50"
+                className="mt-1"
+              />
+            </div>
+
+            {/* Advanced Options */}
+            <Button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              variant="outline"
+              className="w-full"
+            >
+              {showAdvanced ? 'Скрыть' : 'Показать'} расширенные настройки
+            </Button>
+
+            {showAdvanced && (
+              <div className="space-y-4 pt-2">
+                {/* Contribution Frequency */}
+                <div>
+                  <Label>Частота взносов</Label>
+                  <Select 
+                    value={input.contributionFrequency} 
+                    onValueChange={(value: CompoundingFrequency) => updateField('contributionFrequency', value)}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(COMPOUNDING_FREQUENCIES).map(([key, freq]) => (
+                        <SelectItem key={key} value={key}>
+                          {freq.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Compounding Frequency */}
+                <div>
+                  <Label>Частота капитализации</Label>
+                  <Select 
+                    value={input.compoundingFrequency} 
+                    onValueChange={(value: CompoundingFrequency) => updateField('compoundingFrequency', value)}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(COMPOUNDING_FREQUENCIES).map(([key, freq]) => (
+                        <SelectItem key={key} value={key}>
+                          {freq.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
 
             <div className="flex gap-2 pt-2">
+              <Button onClick={loadExample} variant="outline" className="flex-1">
+                Загрузить пример
+                <ShortcutHint 
+                  shortcut={{ key: 'e', ctrl: true, description: '', action: loadExample }} 
+                  className="ml-2"
+                />
+              </Button>
               <Button onClick={copyResults} variant="outline" disabled={!result}>
                 <Copy className="w-4 h-4 mr-2" />
                 Копировать
@@ -354,187 +295,139 @@ export default function CompoundInterestCalculatorPage() {
 
         {/* Results */}
         {result && (
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Calculator className="w-5 h-5" />
-              Результаты расчета
-            </h3>
+          <div className="space-y-6">
+            {/* Summary Card */}
+            <Card className="p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                Результаты расчета
+              </h3>
 
-            <div className="space-y-4">
-              {/* Main Result */}
-              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg border">
-                <div className="text-sm text-muted-foreground mb-1">Итоговая сумма</div>
-                <div className="text-3xl font-bold text-green-700 dark:text-green-400">
-                  {formatCurrency(result.finalAmount)}
+              <div className="space-y-4">
+                {/* Final Amount */}
+                <div className="text-center p-4 bg-primary/5 rounded-lg">
+                  <div className="text-3xl font-bold text-primary mb-1">
+                    {formatCurrency(result.finalAmount)}
+                  </div>
+                  <p className="text-sm text-muted-foreground">Итоговая сумма</p>
                 </div>
-                <div className="text-sm text-green-600 dark:text-green-500 mt-1">
-                  +{formatPercent((result.finalAmount / result.totalContributions - 1) * 100)} от вложений
-                </div>
-              </div>
 
-              {/* Breakdown */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                  <div className="text-sm text-muted-foreground">Общие взносы</div>
-                  <div className="text-xl font-semibold text-blue-700 dark:text-blue-400">
-                    {formatCurrency(result.totalContributions)}
+                {/* Key Metrics */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                    <div className="font-semibold text-green-700 dark:text-green-300">
+                      {formatCurrency(result.totalInterest)}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Заработано процентов</p>
+                  </div>
+                  
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                    <div className="font-semibold text-blue-700 dark:text-blue-300">
+                      {formatCurrency(result.totalContributions)}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Общий вклад</p>
                   </div>
                 </div>
-                
+
                 <div className="p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                  <div className="text-sm text-muted-foreground">Общий доход</div>
-                  <div className="text-xl font-semibold text-purple-700 dark:text-purple-400">
-                    {formatCurrency(result.totalInterest)}
-                  </div>
-                </div>
-                
-                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                  <div className="text-sm text-muted-foreground">Эффективная ставка</div>
-                  <div className="text-xl font-semibold text-blue-700 dark:text-blue-400">
-                    {formatPercent(result.effectiveRate)}
-                  </div>
-                </div>
-                
-                <div className="p-3 bg-pink-50 dark:bg-pink-950/20 rounded-lg">
-                  <div className="text-sm text-muted-foreground">Доля процентов</div>
-                  <div className="text-xl font-semibold text-pink-700 dark:text-pink-400">
-                    {formatPercent((result.totalInterest / result.finalAmount) * 100)}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Эффективная ставка:</span>
+                    <Badge variant="secondary">
+                      {result.effectiveRate.toFixed(2)}%
+                    </Badge>
                   </div>
                 </div>
               </div>
+            </Card>
 
-              {/* Monthly Income */}
-              <div className="p-3 bg-muted/50 rounded-lg">
-                <div className="text-sm text-muted-foreground">
-                  Если снимать 4% в год, ежемесячный доход составит:
-                </div>
-                <div className="text-lg font-semibold">
-                  {formatCurrency((result.finalAmount * 0.04) / 12)}
-                </div>
-              </div>
-            </div>
-          </Card>
-        )}
-      </div>
-
-      {/* Chart */}
-      {result && (
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
-            График роста капитала
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="text-sm text-muted-foreground">
-              Показано первые 10 лет роста капитала
-            </div>
-            <div className="space-y-3 max-h-80 overflow-y-auto">
-              {result.chartData.slice(0, 10).map((item, index) => {
-                const maxValue = Math.max(...result.chartData.slice(0, 10).map(d => d.total))
-                const percentage = (item.total / maxValue) * 100
-                return (
-                  <div key={index} className="space-y-2">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="font-medium">Год {item.period}</span>
-                      <div className="text-right">
-                        <div className="font-semibold text-green-600">
-                          {formatCurrency(item.total)}
+            {/* Yearly Breakdown */}
+            {result.yearlyBreakdown.length > 0 && (
+              <Card className="p-6">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Годовая разбивка
+                </h3>
+                
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {result.yearlyBreakdown.map((year) => (
+                    <div
+                      key={year.year}
+                      className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline">{year.year} год</Badge>
+                        <div className="text-sm text-muted-foreground">
+                          +{formatCurrency(year.contribution)} взнос
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          +{formatCurrency(item.interest)} проценты
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold">
+                          {formatCurrency(year.endBalance)}
+                        </div>
+                        <div className="text-xs text-green-600 dark:text-green-400">
+                          +{formatCurrency(year.interest)} процентов
                         </div>
                       </div>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all duration-500"
-                           style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+                  ))}
+                </div>
+              </Card>
+            )}
           </div>
-        </Card>
-      )}
+        )}
+      </div>
 
-      {/* Yearly Breakdown Table */}
-      {result && (
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4">Детализация по годам</h3>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">Год</th>
-                  <th className="text-right p-2">Начальный баланс</th>
-                  <th className="text-right p-2">Взносы</th>
-                  <th className="text-right p-2">Проценты</th>
-                  <th className="text-right p-2">Конечный баланс</th>
-                </tr>
-              </thead>
-              <tbody>
-                {result.yearlyBreakdown.map((year, index) => (
-                  <tr key={index} className="border-b hover:bg-muted/30">
-                    <td className="p-2">{year.year}</td>
-                    <td className="p-2 text-right font-mono">
-                      {formatCurrency(year.startBalance)}
-                    </td>
-                    <td className="p-2 text-right font-mono text-blue-600">
-                      {formatCurrency(year.contribution)}
-                    </td>
-                    <td className="p-2 text-right font-mono text-green-600">
-                      {formatCurrency(year.interest)}
-                    </td>
-                    <td className="p-2 text-right font-mono font-semibold">
-                      {formatCurrency(year.endBalance)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      )}
-
-      {/* Info */}
+      {/* Info Section */}
       <Card className="p-6 bg-muted/50">
         <h3 className="font-semibold mb-4 flex items-center gap-2">
           <Info className="w-4 h-4" />
-          О сложном проценте
+          О сложных процентах
         </h3>
-        <div className="grid md:grid-cols-2 gap-6 text-sm">
-          <div>
-            <h4 className="font-medium mb-2">Формула расчета</h4>
-            <p className="text-muted-foreground mb-2">
-              Сложный процент рассчитывается по формуле:
-            </p>
-            <p className="font-mono bg-background p-2 rounded">
-              A = P(1 + r/n)^(nt) + PMT × ((1 + r/n)^(nt) - 1) / (r/n)
-            </p>
-            <ul className="text-muted-foreground mt-2 space-y-1 text-xs">
-              <li>A - итоговая сумма</li>
-              <li>P - начальная сумма</li>
-              <li>r - годовая ставка</li>
-              <li>n - частота капитализации</li>
-              <li>t - срок в годах</li>
-              <li>PMT - регулярный платеж</li>
-            </ul>
-          </div>
+        <div className="grid md:grid-cols-3 gap-6 text-sm">
           <div>
             <h4 className="font-medium mb-2">Принцип работы</h4>
             <ul className="text-muted-foreground space-y-1">
-              <li>• Проценты начисляются на проценты</li>
-              <li>• Чем чаще капитализация, тем больше доход</li>
-              <li>• Регулярные пополнения значительно увеличивают результат</li>
-              <li>• Время - главный фактор роста капитала</li>
-              <li>• Даже небольшая разница в ставке дает большой эффект на дистанции</li>
+              <li>• Проценты начисляются на основную сумму</li>
+              <li>• Затем проценты начисляются на проценты</li>
+              <li>• Эффект усиливается со временем</li>
+              <li>• Регулярные взносы ускоряют рост</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">Ключевые факторы</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• Время - самый важный фактор</li>
+              <li>• Процентная ставка влияет экспоненциально</li>
+              <li>• Частота капитализации имеет значение</li>
+              <li>• Регулярные взносы удваивают эффект</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">Практические советы</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• Начинайте инвестировать как можно раньше</li>
+              <li>• Регулярно пополняйте счет</li>
+              <li>• Не трогайте накопления без крайней нужды</li>
+              <li>• Реинвестируйте полученную прибыль</li>
             </ul>
           </div>
         </div>
       </Card>
+
+      {/* Social Share Section */}
+      <WidgetShareSection
+        widgetTitle="Compound Interest Calculator"
+        widgetDescription="Calculate the power of compound interest with regular contributions and detailed yearly breakdown."
+        hashtags={['compoundinterest', 'investment', 'finance', 'calculator', 'savings']}
+        variant="inline"
+      />
+      
+      {/* Keyboard shortcuts */}
+      <WidgetKeyboardShortcuts
+        shortcuts={shortcuts}
+        variant="floating"
+        position="bottom-right"
+      />
     </div>
   )
 }

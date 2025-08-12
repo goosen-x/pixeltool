@@ -1,1280 +1,232 @@
 'use client'
 
-import { useState } from 'react'
 import { Copy, Check, Search } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-
-// Symbol categories with their symbols
-const symbolCategories = {
-	popular: {
-		name: 'Popular',
-		symbols: [
-			'ღ',
-			'•',
-			'⁂',
-			'€',
-			'™',
-			'↑',
-			'→',
-			'↓',
-			'⇝',
-			'√',
-			'∞',
-			'░',
-			'▲',
-			'▶',
-			'◀',
-			'●',
-			'☀',
-			'☁',
-			'☂',
-			'☃',
-			'☄',
-			'★',
-			'☆',
-			'☉',
-			'☐',
-			'☑',
-			'☚',
-			'☛',
-			'☜',
-			'☝',
-			'☞',
-			'☟',
-			'☠',
-			'☢',
-			'☣',
-			'☪',
-			'☮',
-			'☯',
-			'☸',
-			'☹',
-			'☺',
-			'☻',
-			'☼',
-			'☽',
-			'☾',
-			'♔',
-			'♕',
-			'♖',
-			'♗',
-			'♘',
-			'♚',
-			'♛',
-			'♜',
-			'♝',
-			'♞',
-			'♟',
-			'♡',
-			'♨',
-			'♩',
-			'♪',
-			'♫',
-			'♬',
-			'✈',
-			'✉',
-			'✎',
-			'✓',
-			'✔',
-			'✘',
-			'✚',
-			'✞',
-			'✟',
-			'✠',
-			'✡',
-			'✦',
-			'✧',
-			'✩',
-			'✪',
-			'✮',
-			'✯',
-			'✹',
-			'✿',
-			'❀',
-			'❁',
-			'❂',
-			'❄',
-			'❅',
-			'❆',
-			'❝',
-			'❞',
-			'❣',
-			'❤',
-			'❥',
-			'❦',
-			'➤'
-		]
-	},
-	chess: {
-		name: 'Chess',
-		symbols: ['♔', '♕', '♖', '♗', '♘', '♙', '♚', '♛', '♜', '♝', '♞', '♟']
-	},
-	music: {
-		name: 'Music',
-		symbols: [
-			'♩',
-			'♪',
-			'♫',
-			'♬',
-			'♭',
-			'♮',
-			'♯',
-			'𝄞',
-			'𝄡',
-			'𝄢',
-			'𝄪',
-			'𝄫',
-			'🎵',
-			'🎶',
-			'🎼',
-			'𓏢'
-		]
-	},
-	weather: {
-		name: 'Weather',
-		symbols: [
-			'ϟ',
-			'☀',
-			'☁',
-			'☂',
-			'☃',
-			'⛆',
-			'⛇',
-			'⛈︎',
-			'☄',
-			'☉',
-			'☼',
-			'☽',
-			'☾',
-			'♁',
-			'♨',
-			'❄',
-			'❅',
-			'❆',
-			'༄',
-			'࿓',
-			'𐓷',
-			'𐓏',
-			'𖤓',
-			'𖣔'
-		]
-	},
-	business: {
-		name: 'Business',
-		symbols: ['©', '®', '℗', '℠', '™', '℡', '℻', '℀', '℁', '℅', '℆']
-	},
-	objects: {
-		name: 'Objects',
-		symbols: [
-			'☏',
-			'✁',
-			'✂',
-			'✃',
-			'✄',
-			'✆',
-			'✇',
-			'✈',
-			'✉',
-			'✎',
-			'✏',
-			'✐',
-			'✑',
-			'✒',
-			'𓍝',
-			'⚐',
-			'⚑',
-			'⚖',
-			'⚗',
-			'⚿',
-			'⛟',
-			'⛨',
-			'⛫',
-			'⛾',
-			'⛿',
-			'⎈',
-			'࿄',
-			'𖠦',
-			'𖠿',
-			'ꗃ',
-			'𓄲',
-			'𓊔',
-			'𖤘',
-			'𖣘',
-			'߷',
-			'𖠚',
-			'𖠜',
-			'𖡡',
-			'𖥣',
-			'𖥔',
-			'𖥠',
-			'⌖',
-			'⊹',
-			'𓊝',
-			'𖠎',
-			'𖡌',
-			'𖣳',
-			'𖤠',
-			'𖥈',
-			'𖥩',
-			'𖧶',
-			'ꚰ',
-			'⛀',
-			'⛁',
-			'⛂',
-			'⛃'
-		]
-	},
-	technical: {
-		name: 'Technical',
-		symbols: [
-			'⏎',
-			'⇧',
-			'⏏',
-			'⌂',
-			'⌘',
-			'⎋',
-			'⊞',
-			'⌨',
-			'↹',
-			'⌥',
-			'⌫',
-			'⎗',
-			'⎘',
-			'⎙',
-			'⎵',
-			'⇥'
-		]
-	},
-	zodiac: {
-		name: 'Zodiac',
-		symbols: [
-			'♓',
-			'♒',
-			'♑',
-			'♐',
-			'♏',
-			'♎',
-			'♍',
-			'♌',
-			'♋',
-			'♊',
-			'♉',
-			'♈',
-			'☉',
-			'☽',
-			'☿',
-			'♀'
-		]
-	},
-	checkmarks: {
-		name: 'Checkmarks',
-		symbols: [
-			'✓',
-			'✔',
-			'✖',
-			'✗',
-			'✘',
-			'∛',
-			'∜',
-			'⍻',
-			'☐',
-			'☑',
-			'☒',
-			'□',
-			'■',
-			'○',
-			'●',
-			'༝',
-			'྾',
-			'∨',
-			'🆅',
-			'🆇',
-			'🅥',
-			'🅧',
-			'⊗'
-		]
-	},
-	cards: {
-		name: 'Card Suits',
-		symbols: ['♡', '♢', '♤', '♧', '♣', '♦', '♥', '♠']
-	},
-	dice: {
-		name: 'Dice',
-		symbols: ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅']
-	},
-	units: {
-		name: 'Units',
-		symbols: [
-			'μ',
-			'°',
-			'℃',
-			'℉',
-			'㎍',
-			'㎎',
-			'㎏',
-			'℥',
-			'㏌',
-			'㎚',
-			'㎛',
-			'㎜',
-			'㎝',
-			'㎞',
-			'²',
-			'³',
-			'㎖',
-			'㎗',
-			'㎘',
-			'㏄',
-			'㏖',
-			'㏒',
-			'㎅',
-			'㎆',
-			'㎇',
-			'㎈',
-			'㎉',
-			'㎐',
-			'㎑',
-			'㎒',
-			'㎓',
-			'㎾',
-			'Ω',
-			'㏑',
-			'㏈',
-			'㏐',
-			'㏂',
-			'㏘',
-			'㎳',
-			'㎭',
-			'㏅',
-			'㎪',
-			'㏗',
-			'′',
-			'″'
-		]
-	},
-	numbers: {
-		name: 'Numbers',
-		symbols: [
-			'Ⅰ',
-			'Ⅱ',
-			'Ⅲ',
-			'Ⅳ',
-			'Ⅴ',
-			'Ⅵ',
-			'Ⅶ',
-			'Ⅷ',
-			'Ⅸ',
-			'Ⅹ',
-			'Ⅺ',
-			'Ⅻ',
-			'①',
-			'②',
-			'③',
-			'④',
-			'⑤',
-			'⑥',
-			'⑦',
-			'⑧',
-			'⑨',
-			'⑩',
-			'❶',
-			'❷',
-			'❸',
-			'❹',
-			'❺',
-			'❻',
-			'❼',
-			'❽',
-			'❾',
-			'❿'
-		]
-	},
-	punctuation: {
-		name: 'Punctuation',
-		symbols: [
-			'˙',
-			'‥',
-			'‧',
-			'‵',
-			'、',
-			'。',
-			'﹐',
-			'﹒',
-			'﹔',
-			'﹕',
-			'！',
-			'＃',
-			'＄',
-			'％',
-			'＆',
-			'＊',
-			'，',
-			'．',
-			'：',
-			'；',
-			'？',
-			'＠',
-			'～',
-			'•',
-			'…',
-			'·',
-			'.',
-			'ᐟ',
-			'¡',
-			'¿',
-			'¦',
-			'¨',
-			'¯',
-			'´',
-			'·',
-			'¸',
-			'º',
-			'‽',
-			'‼',
-			'⁏',
-			'※',
-			'†',
-			'‡',
-			'ˉ',
-			'˘',
-			'⁇',
-			'⁈',
-			'⁉',
-			'ˆ',
-			'⁊',
-			'⸘',
-			'№'
-		]
-	},
-	brackets: {
-		name: 'Brackets',
-		symbols: [
-			'〈',
-			'〉',
-			'《',
-			'》',
-			'「',
-			'」',
-			'『',
-			'』',
-			'【',
-			'】',
-			'〔',
-			'〕',
-			'︵',
-			'︶',
-			'︷',
-			'︸',
-			'︹',
-			'︺',
-			'︻',
-			'︼',
-			'︽',
-			'︾',
-			'︿',
-			'﹀',
-			'﹁',
-			'﹂',
-			'﹃',
-			'﹄',
-			'﹙',
-			'﹚',
-			'﹛',
-			'﹜',
-			'﹝',
-			'﹞',
-			'﹤',
-			'﹥',
-			'（',
-			'）',
-			'＜',
-			'＞',
-			'｛',
-			'｝',
-			'❬',
-			'❭',
-			'❮',
-			'❯',
-			'❰',
-			'❱',
-			'〖',
-			'〗',
-			'〘',
-			'〙',
-			'〚',
-			'〛',
-			'⟨',
-			'⟩',
-			'‹',
-			'›',
-			'«',
-			'»',
-			'｢',
-			'｣'
-		]
-	},
-	hearts: {
-		name: 'Hearts & Love',
-		symbols: [
-			'♡',
-			'♥',
-			'❣',
-			'❤',
-			'❦',
-			'❧',
-			'❥',
-			'☙',
-			'დ',
-			'ღ',
-			'ო',
-			'ᦂ',
-			'ᦦ',
-			'ʚ',
-			'ɞ',
-			'Ꮼ'
-		]
-	},
-	hands: {
-		name: 'Hands',
-		symbols: [
-			'☚',
-			'☛',
-			'☜',
-			'☝',
-			'☞',
-			'☟',
-			'✌',
-			'𓂬',
-			'𓂩',
-			'𓂨',
-			'𓂷',
-			'𓂭',
-			'𓂝',
-			'𓂡',
-			'𓂦',
-			'𓃈',
-			'⍝'
-		]
-	},
-	religious: {
-		name: 'Religious',
-		symbols: [
-			'☤',
-			'☥',
-			'☪',
-			'☫',
-			'☬',
-			'☮',
-			'☭',
-			'☯',
-			'☸',
-			'☽',
-			'☾',
-			'♰',
-			'♱',
-			'⚚',
-			'✡',
-			'卍',
-			'﷽',
-			'✵',
-			'ૐ',
-			'𓉴',
-			'𓉸',
-			'۞',
-			'࿊',
-			'۩',
-			'࿅',
-			'࿉',
-			'࿈'
-		]
-	},
-	crosses: {
-		name: 'Christian Crosses',
-		symbols: [
-			'✝',
-			'✞',
-			'✠',
-			'☦',
-			'✙',
-			'✜',
-			'✟',
-			'✚',
-			'☧',
-			'☨',
-			'☩',
-			'✛',
-			'✢',
-			'⛪',
-			'†',
-			'⚜'
-		]
-	},
-	stars: {
-		name: 'Stars',
-		symbols: [
-			'★',
-			'☆',
-			'✡',
-			'✦',
-			'✧',
-			'⌑',
-			'✩',
-			'✪',
-			'⍟',
-			'❂',
-			'✫',
-			'✬',
-			'✭',
-			'✮',
-			'✯',
-			'✰',
-			'☪',
-			'⚝',
-			'⛤',
-			'⛥',
-			'⛦',
-			'⛧',
-			'⍣',
-			'⋆',
-			'≛',
-			'𓇼',
-			'𓇻',
-			'𓇽',
-			'꙳',
-			'⭑',
-			'⭒',
-			'𖤐',
-			'𖣔',
-			'⟡',
-			'⟢',
-			'⟣',
-			'⊹'
-		]
-	},
-	flowers: {
-		name: 'Flowers',
-		symbols: [
-			'✻',
-			'✼',
-			'✾',
-			'✿',
-			'❀',
-			'❁',
-			'❃',
-			'❇',
-			'❈',
-			'❉',
-			'❊',
-			'✢',
-			'✣',
-			'✤',
-			'✥',
-			'⚜',
-			'ꕥ',
-			'𓇬',
-			'⚘',
-			'𓆸',
-			'𓆹',
-			'𓆼',
-			'𓇊',
-			'𓇚',
-			'𓇕',
-			'𓇗',
-			'𓋇',
-			'𓁙',
-			'𓁋',
-			'֍',
-			'֎',
-			'𓆭',
-			'𓆰',
-			'𓆱',
-			'𓇋',
-			'𓇑',
-			'𓇛',
-			'𓇟',
-			'𓇣',
-			'𖧷',
-			'ꕤ',
-			'𑁍',
-			'᪥',
-			'𖠁',
-			'𖠇',
-			'𖤣',
-			'𖤥',
-			'𖡗',
-			'𖢨',
-			'𖣶',
-			'𖦞',
-			'𖧧',
-			'༗',
-			'𖣂',
-			'𖠺',
-			'𖠻',
-			'𓄟',
-			'𖢔',
-			'𐌙',
-			'𐊵',
-			'𐡘',
-			'𐡙',
-			'𐡚',
-			'꧁',
-			'꧂',
-			'𒂭'
-		]
-	},
-	arrows: {
-		name: 'Arrows',
-		symbols: [
-			'←',
-			'↑',
-			'→',
-			'↓',
-			'↔',
-			'↕',
-			'↖',
-			'↗',
-			'↘',
-			'↙',
-			'⇐',
-			'⇑',
-			'⇒',
-			'⇓',
-			'⇔',
-			'⇕',
-			'⇖',
-			'⇗',
-			'⇘',
-			'⇙',
-			'⬅',
-			'⬆',
-			'⬇',
-			'➡',
-			'⬈',
-			'⬉',
-			'⬊',
-			'⬋',
-			'⬌',
-			'⬍',
-			'⮕',
-			'➔',
-			'➘',
-			'➙',
-			'➚',
-			'➛',
-			'➜',
-			'➝',
-			'➞',
-			'➟',
-			'➠',
-			'➤',
-			'➥',
-			'➦',
-			'➧',
-			'➨',
-			'➩',
-			'➪',
-			'➫',
-			'➬',
-			'➭',
-			'➮',
-			'➯',
-			'➱',
-			'➲',
-			'➳',
-			'➴',
-			'➵',
-			'➶',
-			'➷',
-			'➸',
-			'➹',
-			'➺',
-			'➻',
-			'➼',
-			'➽',
-			'➾'
-		]
-	},
-	squares: {
-		name: 'Squares',
-		symbols: [
-			'∎',
-			'⊞',
-			'⊟',
-			'⊠',
-			'⊡',
-			'▀',
-			'▁',
-			'▂',
-			'▃',
-			'▄',
-			'▅',
-			'▆',
-			'▇',
-			'█',
-			'▉',
-			'▊',
-			'▋',
-			'▌',
-			'▍',
-			'▎',
-			'▏',
-			'▐',
-			'░',
-			'▒',
-			'▓',
-			'▔',
-			'■',
-			'□',
-			'▢',
-			'▣',
-			'▤',
-			'▥',
-			'▦',
-			'▧',
-			'▨',
-			'▩',
-			'▪',
-			'▫',
-			'▬',
-			'▭',
-			'▮',
-			'▯',
-			'◘',
-			'◙',
-			'◚',
-			'◛',
-			'◧',
-			'◨',
-			'◩',
-			'◪',
-			'◫',
-			'❏',
-			'❐',
-			'❑',
-			'❒',
-			'❘',
-			'❙',
-			'❚'
-		]
-	},
-	triangles: {
-		name: 'Triangles',
-		symbols: [
-			'⊿',
-			'▲',
-			'△',
-			'▴',
-			'▵',
-			'▶',
-			'▷',
-			'▸',
-			'▹',
-			'►',
-			'▻',
-			'▼',
-			'▽',
-			'▾',
-			'▿',
-			'◀',
-			'◁',
-			'◂',
-			'◃',
-			'◄',
-			'◅',
-			'◢',
-			'◣',
-			'◤',
-			'◥',
-			'◬',
-			'◭',
-			'◮',
-			'◸',
-			'◹',
-			'◺',
-			'◿',
-			'∇',
-			'∆',
-			'𓇮',
-			'⫷',
-			'⫸'
-		]
-	},
-	circles: {
-		name: 'Circles',
-		symbols: [
-			'⊖',
-			'⊘',
-			'⊙',
-			'⊚',
-			'⊛',
-			'⊜',
-			'⊝',
-			'◉',
-			'○',
-			'◌',
-			'◍',
-			'◎',
-			'●',
-			'◐',
-			'◑',
-			'◒'
-		]
-	},
-	math: {
-		name: 'Math',
-		symbols: [
-			'±',
-			'∓',
-			'×',
-			'÷',
-			'∶',
-			'…',
-			'≤',
-			'≥',
-			'≠',
-			'√',
-			'∛',
-			'∜',
-			'∑',
-			'∏',
-			'∞',
-			'♾',
-			'ℕ',
-			'ℤ',
-			'ℚ',
-			'ℝ',
-			'ℂ',
-			'α',
-			'β',
-			'γ',
-			'δ',
-			'ε',
-			'μ',
-			'φ',
-			'π',
-			'σ',
-			'θ',
-			'∈',
-			'∉',
-			'∅',
-			'∫',
-			'∬',
-			'∭',
-			'∮',
-			'∯',
-			'∂',
-			'∆',
-			'∇',
-			'≈',
-			'≅',
-			'≡',
-			'≟',
-			'∝',
-			'∠'
-		]
-	},
-	fractions: {
-		name: 'Fractions',
-		symbols: [
-			'½',
-			'⅓',
-			'⅔',
-			'¼',
-			'¾',
-			'⅕',
-			'⅖',
-			'⅗',
-			'⅘',
-			'⅙',
-			'⅚',
-			'⅐',
-			'⅛',
-			'⅜',
-			'⅝',
-			'⅞',
-			'⅑',
-			'⅒',
-			'↉',
-			'⅟'
-		]
-	},
-	superscript: {
-		name: 'Superscript',
-		symbols: [
-			'⁰',
-			'¹',
-			'²',
-			'³',
-			'⁴',
-			'⁵',
-			'⁶',
-			'⁷',
-			'⁸',
-			'⁹',
-			'⁺',
-			'⁻',
-			'⁼',
-			'⁽',
-			'⁾',
-			'ⁿ'
-		]
-	},
-	greek: {
-		name: 'Greek',
-		symbols: [
-			'Α',
-			'Β',
-			'Γ',
-			'Δ',
-			'Ε',
-			'Ζ',
-			'Η',
-			'Θ',
-			'Ι',
-			'Κ',
-			'Λ',
-			'Μ',
-			'Ν',
-			'Ξ',
-			'Ο',
-			'Π',
-			'Ρ',
-			'Σ',
-			'Τ',
-			'Υ',
-			'Φ',
-			'Χ',
-			'Ψ',
-			'Ω',
-			'α',
-			'β',
-			'γ',
-			'δ',
-			'ε',
-			'ζ',
-			'η',
-			'θ',
-			'ι',
-			'κ',
-			'λ',
-			'μ',
-			'ν',
-			'ξ',
-			'ο',
-			'π',
-			'ρ',
-			'ς',
-			'σ',
-			'τ',
-			'υ',
-			'φ',
-			'χ',
-			'ψ',
-			'ω'
-		]
-	},
-	currency: {
-		name: 'Currency',
-		symbols: [
-			'$',
-			'¢',
-			'€',
-			'£',
-			'¥',
-			'₩',
-			'₽',
-			'₹',
-			'¤',
-			'₱',
-			'₦',
-			'ƒ',
-			'₮',
-			'৲',
-			'৳',
-			'₨',
-			'௹',
-			'฿',
-			'៛',
-			'₪',
-			'₫',
-			'₭',
-			'₲',
-			'₴',
-			'₵',
-			'﷼',
-			'≋',
-			'₿',
-			'Ł',
-			'Ð',
-			'₳'
-		]
-	}
-}
-
-// Recently used symbols storage
-const STORAGE_KEY = 'recently-used-symbols'
-const MAX_RECENT = 30
+import { useSpecialSymbolsPicker } from '@/lib/hooks/widgets'
+import { useTranslations } from 'next-intl'
 
 export default function SpecialSymbolsPickerPage() {
-	const [searchQuery, setSearchQuery] = useState('')
-	const [copiedSymbol, setCopiedSymbol] = useState<string | null>(null)
-	const [recentSymbols, setRecentSymbols] = useState<string[]>(() => {
-		if (typeof window !== 'undefined') {
-			const stored = localStorage.getItem(STORAGE_KEY)
-			return stored ? JSON.parse(stored) : []
-		}
-		return []
-	})
+  const t = useTranslations('widgets.specialSymbolsPicker')
+  
+  const {
+    searchQuery,
+    copiedSymbol,
+    recentSymbols,
+    filteredSymbols,
+    filteredCategories,
+    symbolCategories,
+    totalSymbolsCount,
+    setSearchQuery,
+    copySymbol,
+    clearRecentSymbols,
+    getCategoryBySymbol
+  } = useSpecialSymbolsPicker({
+    translations: {
+      copied: 'Symbol copied to clipboard!',
+      copyError: 'Failed to copy symbol'
+    }
+  })
 
-	const copySymbol = (symbol: string) => {
-		navigator.clipboard
-			.writeText(symbol)
-			.then(() => {
-				setCopiedSymbol(symbol)
-				toast.success(`Symbol "${symbol}" copied to clipboard`)
+  return (
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Search Bar */}
+      <Card className="p-6">
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search symbols or categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {totalSymbolsCount} symbols available
+          </div>
+        </div>
+      </Card>
 
-				// Update recent symbols
-				const newRecent = [
-					symbol,
-					...recentSymbols.filter(s => s !== symbol)
-				].slice(0, MAX_RECENT)
-				setRecentSymbols(newRecent)
-				localStorage.setItem(STORAGE_KEY, JSON.stringify(newRecent))
+      <Tabs defaultValue="browse" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="browse">Browse Categories</TabsTrigger>
+          <TabsTrigger value="recent">Recent ({recentSymbols.length})</TabsTrigger>
+        </TabsList>
 
-				setTimeout(() => setCopiedSymbol(null), 2000)
-			})
-			.catch(() => {
-				toast.error('Failed to copy symbol')
-			})
-	}
+        {/* Browse Tab */}
+        <TabsContent value="browse" className="space-y-6">
+          {searchQuery ? (
+            // Search Results
+            <Card className="p-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">
+                  Search Results for "{searchQuery}"
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {filteredSymbols ? filteredSymbols.length : 0} symbols found
+                </p>
+              </div>
+              
+              {filteredSymbols && filteredSymbols.length > 0 ? (
+                <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 xl:grid-cols-24 gap-2">
+                  {filteredSymbols.map((symbol, index) => (
+                    <Button
+                      key={`${symbol}-${index}`}
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "h-12 w-12 p-0 text-lg hover:bg-primary hover:text-primary-foreground transition-colors",
+                        copiedSymbol === symbol && "bg-green-100 border-green-300"
+                      )}
+                      onClick={() => copySymbol(symbol)}
+                      title={`Copy "${symbol}" - from ${getCategoryBySymbol(symbol) || 'Unknown'} category`}
+                    >
+                      {copiedSymbol === symbol ? (
+                        <Check className="w-4 h-4 text-green-600" />
+                      ) : (
+                        symbol
+                      )}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>No symbols found for "{searchQuery}"</p>
+                  <p className="text-sm">Try searching for categories like "stars", "hearts", or "arrows"</p>
+                </div>
+              )}
+            </Card>
+          ) : (
+            // Category View
+            <div className="grid gap-6">
+              {filteredCategories && Object.entries(filteredCategories).map(([key, category]) => (
+                <Card key={key} className="p-6">
+                  <div className="mb-4">
+                    <h2 className="text-xl font-semibold">{category.name}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      {category.symbols.length} symbols
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 xl:grid-cols-24 gap-2">
+                    {category.symbols.map((symbol, index) => (
+                      <Button
+                        key={`${key}-${symbol}-${index}`}
+                        variant="outline"
+                        size="sm"
+                        className={cn(
+                          "h-12 w-12 p-0 text-lg hover:bg-primary hover:text-primary-foreground transition-colors",
+                          copiedSymbol === symbol && "bg-green-100 border-green-300"
+                        )}
+                        onClick={() => copySymbol(symbol)}
+                        title={`Copy "${symbol}"`}
+                      >
+                        {copiedSymbol === symbol ? (
+                          <Check className="w-4 h-4 text-green-600" />
+                        ) : (
+                          symbol
+                        )}
+                      </Button>
+                    ))}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
 
-	const clearRecent = () => {
-		setRecentSymbols([])
-		localStorage.removeItem(STORAGE_KEY)
-		toast.success('Recently used symbols cleared')
-	}
+        {/* Recent Tab */}
+        <TabsContent value="recent" className="space-y-6">
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-semibold">Recently Used Symbols</h2>
+                <p className="text-sm text-muted-foreground">
+                  Your last {recentSymbols.length} used symbols
+                </p>
+              </div>
+              {recentSymbols.length > 0 && (
+                <Button
+                  onClick={clearRecentSymbols}
+                  variant="outline"
+                  size="sm"
+                >
+                  Clear All
+                </Button>
+              )}
+            </div>
+            
+            {recentSymbols.length > 0 ? (
+              <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 xl:grid-cols-24 gap-2">
+                {recentSymbols.map((symbol, index) => (
+                  <Button
+                    key={`recent-${symbol}-${index}`}
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "h-12 w-12 p-0 text-lg hover:bg-primary hover:text-primary-foreground transition-colors",
+                      copiedSymbol === symbol && "bg-green-100 border-green-300"
+                    )}
+                    onClick={() => copySymbol(symbol)}
+                    title={`Copy "${symbol}" - from ${getCategoryBySymbol(symbol) || 'Unknown'} category`}
+                  >
+                    {copiedSymbol === symbol ? (
+                      <Check className="w-4 h-4 text-green-600" />
+                    ) : (
+                      symbol
+                    )}
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <Copy className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No recently used symbols</p>
+                <p className="text-sm">Start copying symbols to see them here</p>
+              </div>
+            )}
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-	// Filter symbols based on search
-	const filteredCategories = Object.entries(symbolCategories).reduce(
-		(acc, [key, category]) => {
-			if (!searchQuery) {
-				(acc as any)[key] = category
-			} else {
-				const filteredSymbols = category.symbols.filter(
-					symbol =>
-						symbol.includes(searchQuery) ||
-						category.name.toLowerCase().includes(searchQuery.toLowerCase())
-				)
-				if (filteredSymbols.length > 0) {
-					(acc as any)[key] = { ...category, symbols: filteredSymbols }
-				}
-			}
-			return acc
-		},
-		{} as typeof symbolCategories
-	)
-
-	const SymbolButton = ({ symbol }: { symbol: string }) => (
-		<button
-			onClick={() => copySymbol(symbol)}
-			className={cn(
-				'relative group p-3 rounded-lg border transition-all',
-				'hover:bg-accent hover:border-accent hover:scale-110',
-				'focus:outline-none focus:ring-2 focus:ring-accent',
-				copiedSymbol === symbol
-					? 'bg-green-500/10 border-green-500'
-					: 'bg-card border-border'
-			)}
-			title={`Click to copy: ${symbol}`}
-		>
-			<span className='text-2xl block'>{symbol}</span>
-			<div
-				className={cn(
-					'absolute inset-0 rounded-lg flex items-center justify-center',
-					'bg-background/90 transition-opacity',
-					copiedSymbol === symbol ? 'opacity-100' : 'opacity-0'
-				)}
-			>
-				<Check className='w-4 h-4 text-green-500' />
-			</div>
-		</button>
-	)
-
-	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Search */}
-			<div className='relative'>
-				<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
-				<Input
-					placeholder='Search symbols...'
-					value={searchQuery}
-					onChange={e => setSearchQuery(e.target.value)}
-					className='pl-10'
-				/>
-			</div>
-
-			{/* Recently Used */}
-			{recentSymbols.length > 0 && !searchQuery && (
-				<Card className='p-6'>
-					<div className='flex items-center justify-between mb-4'>
-						<h2 className='text-lg font-semibold'>Recently Used</h2>
-						<Button variant='ghost' size='sm' onClick={clearRecent}>
-							Clear
-						</Button>
-					</div>
-					<div className='grid grid-cols-10 sm:grid-cols-12 md:grid-cols-15 gap-2'>
-						{recentSymbols.map((symbol, index) => (
-							<SymbolButton key={`${symbol}-${index}`} symbol={symbol} />
-						))}
-					</div>
-				</Card>
-			)}
-
-			{/* Categories */}
-			<Tabs defaultValue='popular' className='space-y-4'>
-				<TabsList className='w-full flex-wrap h-auto p-1 gap-1'>
-					{Object.entries(filteredCategories).map(([key, category]) => (
-						<TabsTrigger
-							key={key}
-							value={key}
-							className='data-[state=active]:bg-accent data-[state=active]:text-accent-foreground'
-						>
-							{category.name}
-						</TabsTrigger>
-					))}
-				</TabsList>
-
-				{Object.entries(filteredCategories).map(([key, category]) => (
-					<TabsContent key={key} value={key} className='mt-4'>
-						<Card className='p-6'>
-							<h2 className='text-lg font-semibold mb-4'>
-								{category.name} Symbols
-							</h2>
-							<div className='grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-15 gap-2'>
-								{category.symbols.map((symbol, index) => (
-									<SymbolButton key={`${symbol}-${index}`} symbol={symbol} />
-								))}
-							</div>
-						</Card>
-					</TabsContent>
-				))}
-			</Tabs>
-
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-2'>How to Use</h3>
-				<ul className='space-y-1 text-sm text-muted-foreground'>
-					<li>• Click any symbol to copy it to your clipboard</li>
-					<li>• Recently used symbols appear at the top for quick access</li>
-					<li>• Use the search bar to find specific symbols</li>
-					<li>• Symbols work in any application that supports Unicode</li>
-				</ul>
-			</Card>
-		</div>
-	)
+      {/* Info Section */}
+      <Card className="p-6 bg-muted/50">
+        <h3 className="font-semibold mb-3">About Special Symbols</h3>
+        <div className="grid md:grid-cols-3 gap-6 text-sm">
+          <div>
+            <h4 className="font-medium mb-2">Usage Tips</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• Click any symbol to copy it instantly</li>
+              <li>• Use search to find symbols quickly</li>
+              <li>• Recent symbols are saved locally</li>
+              <li>• Works with any text editor or app</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">Categories</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• {Object.keys(symbolCategories).length} different categories</li>
+              <li>• Popular symbols for quick access</li>
+              <li>• Mathematical and technical symbols</li>
+              <li>• Decorative and artistic symbols</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-2">Compatibility</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• Works in all modern browsers</li>
+              <li>• Compatible with social media</li>
+              <li>• Supports Unicode standards</li>
+              <li>• Cross-platform symbol support</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
 }

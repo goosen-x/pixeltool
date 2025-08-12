@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,454 +16,51 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
 	Clock,
 	Globe,
-	Calendar,
 	Sun,
 	Moon,
 	Plus,
 	X,
 	ArrowRight,
 	MapPin,
-	Sunrise,
-	Sunset,
 	CalendarDays,
 	Timer,
 	Sparkles,
 	CloudMoon,
 	CloudSun,
-	HardDrive
+	HardDrive,
+	Sunrise
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
-
-interface Timezone {
-	name: string
-	offset: string
-	cities: string[]
-	abbr: string
-}
-
-interface CityTime {
-	id: string
-	city: string
-	timezone: string
-	time: string
-	date: string
-	offset: string
-	isDST: boolean
-	isDay: boolean
-	hour: number
-	minute: number
-	second: number
-}
-
-interface TimeConversion {
-	fromTime: string
-	fromDate: string
-	fromTimezone: string
-	toTimezone: string
-	result: {
-		time: string
-		date: string
-		dayDifference: number
-	} | null
-}
-
-const popularTimezones: Timezone[] = [
-	{
-		name: 'UTC',
-		offset: '+00:00',
-		cities: ['London (Winter)', 'Reykjavik', 'Accra'],
-		abbr: 'UTC'
-	},
-	{
-		name: 'Europe/London',
-		offset: '+00:00',
-		cities: ['London', 'Dublin', 'Lisbon'],
-		abbr: 'GMT'
-	},
-	{
-		name: 'Europe/Paris',
-		offset: '+01:00',
-		cities: ['Paris', 'Berlin', 'Rome'],
-		abbr: 'CET'
-	},
-	{
-		name: 'Europe/Moscow',
-		offset: '+03:00',
-		cities: ['Moscow', 'Istanbul', 'Riyadh'],
-		abbr: 'MSK'
-	},
-	{
-		name: 'Asia/Dubai',
-		offset: '+04:00',
-		cities: ['Dubai', 'Muscat', 'Tbilisi'],
-		abbr: 'GST'
-	},
-	{
-		name: 'Asia/Kolkata',
-		offset: '+05:30',
-		cities: ['Mumbai', 'Delhi', 'Bangalore'],
-		abbr: 'IST'
-	},
-	{
-		name: 'Asia/Shanghai',
-		offset: '+08:00',
-		cities: ['Beijing', 'Shanghai', 'Hong Kong'],
-		abbr: 'CST'
-	},
-	{
-		name: 'Asia/Tokyo',
-		offset: '+09:00',
-		cities: ['Tokyo', 'Seoul', 'Osaka'],
-		abbr: 'JST'
-	},
-	{
-		name: 'Australia/Sydney',
-		offset: '+11:00',
-		cities: ['Sydney', 'Melbourne', 'Canberra'],
-		abbr: 'AEDT'
-	},
-	{
-		name: 'Pacific/Auckland',
-		offset: '+13:00',
-		cities: ['Auckland', 'Wellington'],
-		abbr: 'NZDT'
-	},
-	{
-		name: 'America/New_York',
-		offset: '-05:00',
-		cities: ['New York', 'Toronto', 'Miami'],
-		abbr: 'EST'
-	},
-	{
-		name: 'America/Chicago',
-		offset: '-06:00',
-		cities: ['Chicago', 'Houston', 'Mexico City'],
-		abbr: 'CST'
-	},
-	{
-		name: 'America/Denver',
-		offset: '-07:00',
-		cities: ['Denver', 'Phoenix', 'Calgary'],
-		abbr: 'MST'
-	},
-	{
-		name: 'America/Los_Angeles',
-		offset: '-08:00',
-		cities: ['Los Angeles', 'San Francisco', 'Seattle'],
-		abbr: 'PST'
-	},
-	{
-		name: 'America/Sao_Paulo',
-		offset: '-03:00',
-		cities: ['São Paulo', 'Rio de Janeiro', 'Buenos Aires'],
-		abbr: 'BRT'
-	}
-]
-
-const allTimezones = Intl.supportedValuesOf('timeZone')
-
-// Analog Clock Component
-function AnalogClock({ hour, minute, second, size = 100 }: { hour: number; minute: number; second: number; size?: number }) {
-	const hourAngle = (hour % 12) * 30 + minute * 0.5
-	const minuteAngle = minute * 6 + second * 0.1
-	const secondAngle = second * 6
-
-	return (
-		<svg width={size} height={size} viewBox="0 0 100 100" className="transform -rotate-90">
-			{/* Clock face */}
-			<circle cx="50" cy="50" r="48" fill="currentColor" className="text-background" />
-			<circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" className="text-border" />
-			
-			{/* Hour markers */}
-			{[...Array(12)].map((_, i) => {
-				const angle = i * 30
-				const isMainHour = i % 3 === 0
-				const length = isMainHour ? 5 : 3
-				const x1 = 50 + 40 * Math.cos((angle - 90) * Math.PI / 180)
-				const y1 = 50 + 40 * Math.sin((angle - 90) * Math.PI / 180)
-				const x2 = 50 + (40 - length) * Math.cos((angle - 90) * Math.PI / 180)
-				const y2 = 50 + (40 - length) * Math.sin((angle - 90) * Math.PI / 180)
-				
-				return (
-					<line
-						key={i}
-						x1={x1}
-						y1={y1}
-						x2={x2}
-						y2={y2}
-						stroke="currentColor"
-						strokeWidth={isMainHour ? 2 : 1}
-						className="text-muted-foreground"
-					/>
-				)
-			})}
-			
-			{/* Hour hand */}
-			<line
-				x1="50"
-				y1="50"
-				x2={50 + 25 * Math.cos((hourAngle - 90) * Math.PI / 180)}
-				y2={50 + 25 * Math.sin((hourAngle - 90) * Math.PI / 180)}
-				stroke="currentColor"
-				strokeWidth="3"
-				strokeLinecap="round"
-				className="text-foreground"
-			/>
-			
-			{/* Minute hand */}
-			<line
-				x1="50"
-				y1="50"
-				x2={50 + 35 * Math.cos((minuteAngle - 90) * Math.PI / 180)}
-				y2={50 + 35 * Math.sin((minuteAngle - 90) * Math.PI / 180)}
-				stroke="currentColor"
-				strokeWidth="2"
-				strokeLinecap="round"
-				className="text-foreground"
-			/>
-			
-			{/* Second hand */}
-			<line
-				x1="50"
-				y1="50"
-				x2={50 + 38 * Math.cos((secondAngle - 90) * Math.PI / 180)}
-				y2={50 + 38 * Math.sin((secondAngle - 90) * Math.PI / 180)}
-				stroke="currentColor"
-				strokeWidth="1"
-				strokeLinecap="round"
-				className="text-red-500"
-			/>
-			
-			{/* Center dot */}
-			<circle cx="50" cy="50" r="3" fill="currentColor" className="text-foreground" />
-		</svg>
-	)
-}
+import { useWorldTime } from '@/lib/hooks/widgets'
+import { AnalogClock } from '@/components/ui/analog-clock'
 
 export default function WorldTimePage() {
 	const t = useTranslations('widgets.worldTime')
-	const [mounted, setMounted] = useState(false)
-	const [currentTime, setCurrentTime] = useState(new Date())
-	const [selectedCities, setSelectedCities] = useState<CityTime[]>([])
-	const [conversion, setConversion] = useState<TimeConversion>({
-		fromTime: '',
-		fromDate: '',
-		fromTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-		toTimezone: 'UTC',
-		result: null
+	
+	const {
+		mounted,
+		currentTime,
+		selectedCities,
+		conversion,
+		searchTerm,
+		activeTab,
+		filteredTimezones,
+		setSearchTerm,
+		setActiveTab,
+		addCity,
+		removeCity,
+		convertTime,
+		updateConversion,
+		popularTimezones
+	} = useWorldTime({
+		translations: {
+			alreadyAdded: t('toast.alreadyAdded'),
+			cityAdded: t('toast.cityAdded'),
+			enterTimeDate: t('toast.enterTimeDate'),
+			invalidDateTime: t('toast.invalidDateTime')
+		}
 	})
-	const [searchTerm, setSearchTerm] = useState('')
-	const [activeTab, setActiveTab] = useState('clocks')
-
-	useEffect(() => {
-		setMounted(true)
-		// Set default conversion time
-		const now = new Date()
-		setConversion(prev => ({
-			...prev,
-			fromTime: now.toTimeString().slice(0, 5),
-			fromDate: now.toISOString().slice(0, 10)
-		}))
-	}, [])
-
-	useEffect(() => {
-		if (!mounted) return
-		
-		// Load saved cities
-		const saved = localStorage.getItem('worldTimeCities')
-		if (saved) {
-			const cities = JSON.parse(saved)
-			updateCityTimes(cities)
-		} else {
-			// Add default cities
-			const defaultCities = [
-				{ city: 'New York', timezone: 'America/New_York' },
-				{ city: 'London', timezone: 'Europe/London' },
-				{ city: 'Tokyo', timezone: 'Asia/Tokyo' }
-			]
-			defaultCities.forEach(city => addCity(city.city, city.timezone))
-		}
-	}, [mounted])
-
-	useEffect(() => {
-		const timer = setInterval(() => {
-			const now = new Date()
-			setCurrentTime(now)
-			updateCityTimes(selectedCities)
-		}, 1000)
-
-		return () => clearInterval(timer)
-	}, [selectedCities])
-
-	const updateCityTimes = (cities: any[]) => {
-		const updated = cities.map(city => {
-			const now = new Date()
-			const formatter = new Intl.DateTimeFormat('en-US', {
-				timeZone: city.timezone,
-				hour: '2-digit',
-				minute: '2-digit',
-				second: '2-digit',
-				hour12: false
-			})
-			const dateFormatter = new Intl.DateTimeFormat('en-US', {
-				timeZone: city.timezone,
-				weekday: 'short',
-				month: 'short',
-				day: 'numeric'
-			})
-
-			const time = formatter.format(now)
-			const [hourStr, minuteStr, secondStr] = time.split(':')
-			const hour = parseInt(hourStr)
-			const minute = parseInt(minuteStr)
-			const second = parseInt(secondStr)
-			const isDay = hour >= 6 && hour < 18
-
-			const offset = getTimezoneOffset(city.timezone)
-
-			return {
-				...city,
-				time,
-				date: dateFormatter.format(now),
-				offset,
-				isDay,
-				isDST: isDaylightSavingTime(city.timezone),
-				hour,
-				minute,
-				second
-			}
-		})
-		setSelectedCities(updated)
-	}
-
-	const getTimezoneOffset = (timezone: string): string => {
-		const now = new Date()
-		const formatter = new Intl.DateTimeFormat('en-US', {
-			timeZone: timezone,
-			timeZoneName: 'short'
-		})
-		const parts = formatter.formatToParts(now)
-		const offsetPart = parts.find(part => part.type === 'timeZoneName')
-
-		// Try to extract offset from timezone data
-		const date = new Date()
-		const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
-		const tzDate = new Date(
-			date.toLocaleString('en-US', { timeZone: timezone })
-		)
-		const offset = (tzDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60)
-
-		const sign = offset >= 0 ? '+' : '-'
-		const absOffset = Math.abs(offset)
-		const hours = Math.floor(absOffset)
-		const minutes = (absOffset - hours) * 60
-
-		return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
-	}
-
-	const isDaylightSavingTime = (timezone: string): boolean => {
-		const now = new Date()
-		const jan = new Date(now.getFullYear(), 0, 1)
-		const jul = new Date(now.getFullYear(), 6, 1)
-
-		const janOffset = getTimezoneOffset(timezone)
-		const julOffset = getTimezoneOffset(timezone)
-
-		return janOffset !== julOffset
-	}
-
-	const addCity = (cityName: string, timezone: string) => {
-		if (selectedCities.some(c => c.timezone === timezone)) {
-			toast.error(t('toast.alreadyAdded'))
-			return
-		}
-
-		const newCity = {
-			id: crypto.randomUUID(),
-			city: cityName,
-			timezone,
-			time: '',
-			date: '',
-			offset: '',
-			isDST: false,
-			isDay: true,
-			hour: 0,
-			minute: 0,
-			second: 0
-		}
-
-		const updated = [...selectedCities, newCity]
-		updateCityTimes(updated)
-		localStorage.setItem(
-			'worldTimeCities',
-			JSON.stringify(updated.map(c => ({ city: c.city, timezone: c.timezone })))
-		)
-		toast.success(t('toast.cityAdded').replace('{city}', cityName))
-	}
-
-	const removeCity = (id: string) => {
-		const updated = selectedCities.filter(c => c.id !== id)
-		setSelectedCities(updated)
-		localStorage.setItem(
-			'worldTimeCities',
-			JSON.stringify(updated.map(c => ({ city: c.city, timezone: c.timezone })))
-		)
-	}
-
-	const convertTime = () => {
-		if (!conversion.fromTime || !conversion.fromDate) {
-			toast.error(t('toast.enterTimeDate'))
-			return
-		}
-
-		try {
-			const fromDateTime = new Date(
-				`${conversion.fromDate}T${conversion.fromTime}:00`
-			)
-
-			// Create date in source timezone
-			const formatter = new Intl.DateTimeFormat('en-US', {
-				timeZone: conversion.toTimezone,
-				year: 'numeric',
-				month: '2-digit',
-				day: '2-digit',
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			})
-
-			const parts = formatter.formatToParts(fromDateTime)
-			const getPart = (type: string) =>
-				parts.find(p => p.type === type)?.value || ''
-
-			const resultTime = `${getPart('hour')}:${getPart('minute')}`
-			const resultDate = `${getPart('year')}-${getPart('month')}-${getPart('day')}`
-
-			// Calculate day difference
-			const fromDate = new Date(conversion.fromDate)
-			const toDate = new Date(resultDate)
-			const dayDiff = Math.round(
-				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-			)
-
-			setConversion(prev => ({
-				...prev,
-				result: {
-					time: resultTime,
-					date: resultDate,
-					dayDifference: dayDiff
-				}
-			}))
-		} catch (error) {
-			toast.error(t('toast.invalidDateTime'))
-		}
-	}
-
-	const filteredTimezones = allTimezones.filter(tz =>
-		tz.toLowerCase().includes(searchTerm.toLowerCase())
-	)
 
 	if (!mounted) {
 		return null
@@ -661,12 +257,7 @@ export default function WorldTimePage() {
 													id='from-time'
 													type='time'
 													value={conversion.fromTime}
-													onChange={e =>
-														setConversion(prev => ({
-															...prev,
-															fromTime: e.target.value
-														}))
-													}
+													onChange={e => updateConversion({ fromTime: e.target.value })}
 													className='pl-10'
 												/>
 											</div>
@@ -675,12 +266,7 @@ export default function WorldTimePage() {
 												<Input
 													type='date'
 													value={conversion.fromDate}
-													onChange={e =>
-														setConversion(prev => ({
-															...prev,
-															fromDate: e.target.value
-														}))
-													}
+													onChange={e => updateConversion({ fromDate: e.target.value })}
 													className='pl-10'
 												/>
 											</div>
@@ -691,9 +277,7 @@ export default function WorldTimePage() {
 										<Label htmlFor='from-timezone'>{t('fromTimezone')}</Label>
 										<Select
 											value={conversion.fromTimezone}
-											onValueChange={value =>
-												setConversion(prev => ({ ...prev, fromTimezone: value }))
-											}
+											onValueChange={value => updateConversion({ fromTimezone: value })}
 										>
 											<SelectTrigger id='from-timezone' className='mt-2'>
 												<SelectValue />
@@ -722,9 +306,7 @@ export default function WorldTimePage() {
 										<Label htmlFor='to-timezone'>{t('toTimezone')}</Label>
 										<Select
 											value={conversion.toTimezone}
-											onValueChange={value =>
-												setConversion(prev => ({ ...prev, toTimezone: value }))
-											}
+											onValueChange={value => updateConversion({ toTimezone: value })}
 										>
 											<SelectTrigger id='to-timezone' className='mt-2'>
 												<SelectValue />
