@@ -15,7 +15,12 @@
 			"select": "выбрать",
 			"close": "закрыть",
 			"suggested": "Рекомендуемые",
-			"suggestedAndFavorites": "Избранные и недавние"
+			"suggestedAndFavorites": "Избранные и недавние",
+			"allCategories": "Все категории",
+			"results": "Найдено инструментов: {count}",
+			"clearFilters": "Очистить фильтры",
+			"noResults": "Инструменты не найдены",
+			"noResultsDescription": "Попробуйте изменить поисковый запрос или очистить фильтры"
 		}
 	}
 }
