@@ -1120,6 +1120,32 @@
 			"description": "Fetch sample data from popular free public APIs for testing",
 			"useCase": "Generate realistic test data for development and prototyping"
 		},
+		"tipCalculator": {
+			"title": "Tip Calculator",
+			"description": "Calculate tips and split bills for restaurants and services",
+			"useCase": "Calculate gratuity amounts and split bills among multiple people",
+			"inputSection": "Bill Details",
+			"billAmount": "Bill Amount",
+			"tipPercentage": "Tip Percentage",
+			"customTip": "Custom tip %",
+			"numberOfPeople": "Number of People",
+			"results": "Calculation Results",
+			"resultsDescription": "Tip and total amounts",
+			"tipAmount": "Tip Amount",
+			"totalWithTip": "Total with Tip",
+			"perPerson": "Per Person",
+			"tipPerPerson": "Tip per person",
+			"totalPerPerson": "Total per person",
+			"originalBill": "Original Bill",
+			"tip": "Tip",
+			"total": "Total",
+			"tipGuide": {
+				"title": "Tipping Guide",
+				"basic": "Basic service",
+				"good": "Good service",
+				"excellent": "Excellent service"
+			}
+		},
 		"randomListGenerator": {
 			"title": "Random List Generator",
 			"description": "Randomly shuffle lists with cryptographically secure randomization",

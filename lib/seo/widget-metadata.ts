@@ -177,5 +177,17 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
       description: 'Протестируйте скорость интернет-соединения. Измерьте скорость загрузки, отдачи и пинг. Бесплатный онлайн тест скорости.',
       keywords: ['тест скорости', 'скорость интернета', 'проверить скорость', 'тест соединения', 'speedtest']
     },
+  },
+  'tip-calculator': {
+    en: {
+      title: 'Tip Calculator - Calculate Gratuity & Split Bills | Free Tool',
+      description: 'Calculate tips for restaurants, bars, and services. Split bills among multiple people. Free tip calculator with customizable percentages and tipping guide.',
+      keywords: ['tip calculator', 'gratuity calculator', 'split bill', 'restaurant tip', 'service tip', 'bill splitter', 'tip percentage']
+    },
+    ru: {
+      title: 'Калькулятор Чаевых - Расчёт и Разделение Счёта | Бесплатно',
+      description: 'Рассчитывайте чаевые для ресторанов, баров и услуг. Делите счета между несколькими людьми. Бесплатный калькулятор с гидом по чаевым.',
+      keywords: ['калькулятор чаевых', 'разделить счёт', 'чаевые в ресторане', 'расчёт чаевых', 'процент чаевых', 'калькулятор счёта']
+    },
   }
 }

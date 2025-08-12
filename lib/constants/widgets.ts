@@ -1650,6 +1650,77 @@ export const widgets: Widget[] = [
 		}
 	},
 	{
+		id: 'tip-calculator',
+		icon: DollarSign,
+		category: 'business',
+		translationKey: 'tipCalculator',
+		path: 'tip-calculator',
+		gradient: 'from-emerald-500 to-teal-600',
+		recommendedTools: ['percentage-calculator', 'currency-converter'],
+		difficulty: 'beginner',
+		tags: ['calculator', 'tip', 'gratuity', 'restaurant', 'service', 'money'],
+		useCase:
+			'Calculate tips for restaurants, bars, taxis, and services with bill splitting',
+		metaDescription:
+			'Tip calculator with bill splitting. Calculate gratuity for restaurants, bars, and services.',
+		faqs: {
+			en: [
+				{
+					question: 'What is the standard tip percentage?',
+					answer:
+						'In the US, 15-20% is standard for good service at restaurants. 10-15% for basic service, and 20%+ for excellent service. Tipping customs vary by country.'
+				},
+				{
+					question: 'Should I tip on the pre-tax or post-tax amount?',
+					answer:
+						'Traditionally, tips are calculated on the pre-tax amount. However, many people tip on the total bill for simplicity. Either approach is acceptable.'
+				},
+				{
+					question: 'How does bill splitting work?',
+					answer:
+						'Enter the number of people sharing the bill. The calculator will divide both the tip and total amount equally among all people.'
+				},
+				{
+					question: 'What services typically require tips?',
+					answer:
+						'Common tipping situations include restaurants, bars, hair salons, taxis, food delivery, hotel services, and spa treatments. The percentage varies by service type.'
+				},
+				{
+					question: 'Do I need to tip for takeout orders?',
+					answer:
+						'Tipping for takeout is optional but appreciated. 10% is common for takeout orders, especially for large or complex orders.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какой стандартный процент чаевых?',
+					answer:
+						'В США 15-20% считается стандартом за хорошее обслуживание в ресторанах. 10-15% за базовое обслуживание и 20%+ за отличное. Обычаи чаевых различаются по странам.'
+				},
+				{
+					question: 'Рассчитывать чаевые от суммы с налогом или без?',
+					answer:
+						'Традиционно чаевые рассчитываются от суммы без налога. Однако многие люди дают чаевые от общей суммы для простоты. Оба подхода приемлемы.'
+				},
+				{
+					question: 'Как работает разделение счёта?',
+					answer:
+						'Введите количество людей, делящих счёт. Калькулятор разделит и чаевые, и общую сумму поровну между всеми людьми.'
+				},
+				{
+					question: 'За какие услуги обычно дают чаевые?',
+					answer:
+						'Чаевые обычно дают в ресторанах, барах, парикмахерских, такси, при доставке еды, в отелях и спа-салонах. Процент варьируется в зависимости от типа услуги.'
+				},
+				{
+					question: 'Нужно ли давать чаевые за заказы на вынос?',
+					answer:
+						'Чаевые за заказы на вынос необязательны, но приветствуются. 10% обычно для заказов на вынос, особенно для больших или сложных заказов.'
+				}
+			]
+		}
+	},
+	{
 		id: 'random-list-generator',
 		icon: List,
 		category: 'content',
