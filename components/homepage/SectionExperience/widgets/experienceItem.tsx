@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { OptimizedImage } from '@/components/ui/optimized-image'
 import Link from 'next/link'
 import { TbWorld } from 'react-icons/tb'
 import { FaLocationDot } from 'react-icons/fa6'
@@ -41,7 +41,7 @@ export const ExperienceItem = ({ itemData }: Props) => {
 			</p>
 			{images.length > 0 &&
 				images.map((src, idx) => (
-					<Image
+					<OptimizedImage
 						className='rounded-lg object-cover  h-52 w-full '
 						src={src}
 						alt='hero template'

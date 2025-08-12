@@ -14,6 +14,8 @@ import YandexMetrika from '@/components/analytics/YandexMetrika'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegistration'
+import { WebVitals } from '@/components/analytics/WebVitals'
 
 // Font configurations
 const inter = Inter({ 
@@ -109,6 +111,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
 			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
 		},
+		manifest: '/manifest.json',
+		appleWebApp: {
+			capable: true,
+			statusBarStyle: 'default',
+			title: 'PixelTool',
+		},
+		formatDetection: {
+			telephone: false,
+		},
+		viewport: {
+			width: 'device-width',
+			initialScale: 1,
+			maximumScale: 5,
+		},
 	}
 }
 
@@ -145,6 +161,8 @@ export default async function RootLayout({
 						enableSystem
 					>
 						<YandexMetrika />
+						<ServiceWorkerRegistration />
+						<WebVitals />
 						{children}
 						<ScrollToTop />
 						<Toaster />

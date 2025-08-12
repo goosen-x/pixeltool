@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import { OptimizedImage } from '@/components/ui/optimized-image'
 import logo from '@/public/images/logo.png'
 
 export const LogoLink = () => {
@@ -8,7 +8,7 @@ export const LogoLink = () => {
 			href='/'
 			className='flex items-center gap-2 text-lg font-semibold md:text-base'
 		>
-			<Image
+			<OptimizedImage
 				className='w-10 h-10 rounded-full border-4'
 				width={100}
 				height={100}

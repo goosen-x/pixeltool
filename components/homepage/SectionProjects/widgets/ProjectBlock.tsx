@@ -3,8 +3,8 @@
 import { Block } from '@/components/ui/block'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import Link from 'next/link'
+import { OptimizedImage } from '@/components/ui/optimized-image'
 import { FaGithub } from 'react-icons/fa'
 import { ProjectDataType } from '../types'
 import { TbWorld } from 'react-icons/tb'
@@ -43,12 +43,12 @@ export const ProjectBlock = ({ project }: Props) => {
 				className='pb-0 rounded-t-2xl overflow-hidden relative cursor-pointer hover:bg-card/50 transition-bg duration-300'
 				onClick={() => setOpen(true)}
 			>
-				<Image
+				<OptimizedImage
 					className='mx-auto object-cover object-top h-64 w-[85%] group p-0  rounded-t-lg group-hover/block:scale-105 group-hover/block:rotate-1 transition-all duration-300'
 					src={project.image}
 					width={1000}
 					height={2000}
-					alt='Project screenshot'
+					alt={t(`projects.${project.name}.name`)}
 				/>
 			</Block>
 			<div className='flex justify-between items-center gap-4 my-4'>

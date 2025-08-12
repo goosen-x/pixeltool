@@ -1518,6 +1518,171 @@
 			"macOS/iOS (high-quality voices)",
 			"Android (Google voices)",
 			"Modern browsers (Chrome, Safari, Firefox)"
-		]
+		],
+		"textCaseConverter": {
+			"title": "Text Case Converter",
+			"description": "Convert text between different letter cases and formatting styles",
+			"useCase": "Transform text to uppercase, lowercase, camelCase, snake_case, and more",
+			"input": "Input Text",
+			"output": "Converted Text",
+			"placeholder": "Enter or paste your text here...",
+			"outputPlaceholder": "Converted text will appear here...",
+			"settings": "Conversion Settings",
+			"caseType": "Case Type",
+			"convert": "Convert",
+			"copy": "Copy",
+			"download": "Download",
+			"clear": "Clear",
+			"copied": "Copied to clipboard!",
+			"downloaded": "File downloaded!",
+			"examples": "Examples",
+			"originalText": "Original text:",
+			"cases": {
+				"uppercase": "UPPERCASE",
+				"lowercase": "lowercase",
+				"capitalize": "Capitalize Each Word",
+				"title": "Title Case",
+				"sentence": "Sentence case",
+				"camelCase": "camelCase",
+				"PascalCase": "PascalCase",
+				"snake_case": "snake_case",
+				"kebab-case": "kebab-case",
+				"alternating": "aLtErNaTiNg CaSe",
+				"inverse": "iNVERSE cASE"
+			},
+			"faqs": [
+				{
+					"question": "What is text case conversion?",
+					"answer": "Text case conversion is the process of changing the capitalization pattern of text. It includes converting to uppercase, lowercase, and various programming case conventions."
+				},
+				{
+					"question": "What is Title Case?",
+					"answer": "Title Case capitalizes the first letter of each major word while keeping articles, prepositions, and conjunctions lowercase (unless they're the first word)."
+				},
+				{
+					"question": "What's the difference between camelCase and PascalCase?",
+					"answer": "camelCase starts with a lowercase letter (helloWorld), while PascalCase starts with an uppercase letter (HelloWorld). Both are commonly used in programming."
+				},
+				{
+					"question": "When should I use snake_case vs kebab-case?",
+					"answer": "snake_case uses underscores and is common in Python and Ruby. kebab-case uses hyphens and is popular in URLs and CSS class names."
+				},
+				{
+					"question": "What is alternating case used for?",
+					"answer": "Alternating case (aLtErNaTiNg) alternates between lowercase and uppercase letters. It's mainly used for stylistic purposes or mockery in informal text."
+				}
+			]
+		},
+		"imageSizeChecker": {
+			"title": "Image Size Checker",
+			"description": "Check dimensions, file size, and aspect ratio of images instantly",
+			"useCase": "Analyze image properties including dimensions, file size, format, and aspect ratio",
+			"uploadArea": "Upload Images",
+			"dragDrop": "Drag and drop images here",
+			"or": "or",
+			"browseFiles": "Browse Files",
+			"supportedFormats": "Supports JPG, PNG, GIF, WebP, SVG, and more",
+			"results": "Results",
+			"exportCSV": "Export CSV",
+			"clearAll": "Clear All",
+			"dimensions": "Dimensions",
+			"aspectRatio": "Aspect Ratio",
+			"fileSize": "File Size",
+			"format": "Format",
+			"noImages": "Please select image files",
+			"errorProcessing": "Error processing",
+			"imagesProcessed": "images processed successfully",
+			"exported": "Data exported to CSV",
+			"commonAspectRatios": "Common Aspect Ratios",
+			"photography": "Photography",
+			"socialMedia": "Social Media",
+			"square": "Square",
+			"traditional": "Traditional",
+			"classic35mm": "Classic 35mm",
+			"widescreen": "Widescreen",
+			"post": "Post",
+			"story": "Story",
+			"thumbnail": "Thumbnail",
+			"header": "Header",
+			"faqs": [
+				{
+					"question": "What image formats are supported?",
+					"answer": "The tool supports all common image formats including JPG, PNG, GIF, WebP, SVG, BMP, and TIFF. It can analyze any format your browser can display."
+				},
+				{
+					"question": "Is there a file size limit?",
+					"answer": "There's no hard limit, but very large images (over 50MB) might take longer to process. The tool works entirely in your browser, so performance depends on your device."
+				},
+				{
+					"question": "How is aspect ratio calculated?",
+					"answer": "Aspect ratio is calculated by finding the greatest common divisor of width and height, then expressing them as the simplest whole number ratio (e.g., 16:9 instead of 1920:1080)."
+				},
+				{
+					"question": "Can I check multiple images at once?",
+					"answer": "Yes! You can select or drag multiple images at once. The tool will process them all and display the results in a grid layout."
+				},
+				{
+					"question": "Is my image data safe?",
+					"answer": "Absolutely. All processing happens locally in your browser. No images are uploaded to any server. Your files remain completely private."
+				}
+			]
+		},
+		"htmlXmlParser": {
+			"title": "HTML/XML Parser",
+			"description": "Parse, format, validate, and minify HTML and XML documents",
+			"useCase": "Format, minify, validate HTML/XML code and extract data from documents",
+			"input": "Input Code",
+			"output": "Output",
+			"placeholder": "Paste your HTML or XML code here...",
+			"outputPlaceholder": "Processed output will appear here...",
+			"settings": "Parser Settings",
+			"mode": "Processing Mode",
+			"modes": {
+				"format": "Format & Beautify",
+				"minify": "Minify",
+				"validate": "Validate Only",
+				"extract": "Extract Data"
+			},
+			"indentSize": "Indent Size",
+			"spaces": "spaces",
+			"preserveComments": "Preserve Comments",
+			"process": "Process",
+			"processing": "Processing...",
+			"copy": "Copy",
+			"download": "Download",
+			"copied": "Copied to clipboard!",
+			"downloaded": "File downloaded!",
+			"emptyInput": "Please enter HTML or XML code",
+			"valid": "Valid",
+			"invalid": "Invalid",
+			"errors": "Errors",
+			"validDocument": "Document is valid!",
+			"elements": "Elements",
+			"attributes": "Attributes",
+			"textNodes": "Text Nodes",
+			"comments": "Comments",
+			"faqs": [
+				{
+					"question": "What's the difference between HTML and XML parsing?",
+					"answer": "HTML is more forgiving and allows certain unclosed tags, while XML requires strict syntax with all tags properly closed and nested. The parser automatically detects the type based on content."
+				},
+				{
+					"question": "What does the minify option do?",
+					"answer": "Minification removes unnecessary whitespace, line breaks, and comments (optionally) to reduce file size. This is useful for production deployments to improve loading times."
+				},
+				{
+					"question": "How does data extraction work?",
+					"answer": "The extract mode traverses the document tree and outputs the path to each element along with its attributes and text content. This is useful for understanding document structure and extracting specific data."
+				},
+				{
+					"question": "What validation is performed?",
+					"answer": "The parser checks for well-formedness: proper tag nesting, closed tags, valid attribute syntax, and proper character encoding. It reports any parsing errors found."
+				},
+				{
+					"question": "Can it handle large documents?",
+					"answer": "Yes, but very large documents (over 10MB) might be slow to process. The parser runs entirely in your browser, so performance depends on your device's capabilities."
+				}
+			]
+		}
 	}
 }
