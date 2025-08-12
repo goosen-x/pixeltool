@@ -48,6 +48,7 @@ import {
 	Droplet,
 	Square,
 	Layers,
+	ImageIcon,
 	Circle,
 	Sparkles,
 	FileJson,

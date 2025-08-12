@@ -1349,6 +1349,12 @@
 			"noResults": "No tools found",
 			"noResultsDescription": "Try adjusting your search terms or clearing the filters to see more results."
 		},
+		"favorites": {
+			"title": "Your Favorite Tools",
+			"clearAll": "Clear all",
+			"empty": "No favorite tools yet",
+			"emptyDescription": "Click the heart icon on any tool to add it to your favorites"
+		},
 		"rightSidebar": {
 			"widgetInfo": {
 				"title": "Widget Info",

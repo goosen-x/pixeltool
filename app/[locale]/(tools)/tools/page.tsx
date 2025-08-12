@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import { WidgetSearch } from '@/components/tools/WidgetSearch'
+import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
@@ -97,7 +97,7 @@ export default async function ProjectsPage({
 		<>
 			<ToolsListingStructuredData locale={locale} totalTools={widgets.length} />
 			<section className="container mx-auto px-4 py-8 sm:py-12">
-				<WidgetSearch locale={locale} />
+				<EnhancedWidgetSearch locale={locale} />
 			</section>
 		</>
 	)
