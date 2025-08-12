@@ -8,6 +8,7 @@ export * from './useWorldTime'
 export * from './useSpecialSymbolsPicker'
 export * from './useFancyTextGenerator'
 export * from './useSystemInfo'
+export * from './useCSSGradientGenerator'
 
 // Generic widget hooks
 export * from './useCalculator'

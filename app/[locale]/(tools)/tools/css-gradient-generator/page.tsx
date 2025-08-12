@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,431 +7,196 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Palette,
   Copy,
   RefreshCw,
   Plus,
   Trash2,
-  Move,
   Sparkles,
   Download,
   Sliders,
-  Maximize2,
-  RotateCw
+  RotateCw,
+  Search
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-
-type GradientType = 'linear' | 'radial' | 'conic'
-type LinearDirection = 'to top' | 'to bottom' | 'to left' | 'to right' | 'to top left' | 'to top right' | 'to bottom left' | 'to bottom right' | 'custom'
-type RadialShape = 'circle' | 'ellipse'
-type RadialSize = 'closest-side' | 'farthest-side' | 'closest-corner' | 'farthest-corner'
-
-interface ColorStop {
-  id: string
-  color: string
-  position: number
-  opacity: number
-}
-
-interface GradientSettings {
-  type: GradientType
-  linearDirection: LinearDirection
-  linearAngle: number
-  radialShape: RadialShape
-  radialSize: RadialSize
-  radialPositionX: number
-  radialPositionY: number
-  conicAngle: number
-  conicPositionX: number
-  conicPositionY: number
-  repeating: boolean
-  colorStops: ColorStop[]
-}
-
-interface PresetGradient {
-  name: string
-  category: string
-  settings: Partial<GradientSettings>
-}
-
-const PRESET_GRADIENTS: PresetGradient[] = [
-  {
-    name: 'Закат',
-    category: 'nature',
-    settings: {
-      type: 'linear',
-      linearDirection: 'to bottom',
-      colorStops: [
-        { id: '1', color: '#ff6b6b', position: 0, opacity: 100 },
-        { id: '2', color: '#feca57', position: 50, opacity: 100 },
-        { id: '3', color: '#48dbfb', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Океан',
-    category: 'nature',
-    settings: {
-      type: 'linear',
-      linearDirection: 'to bottom right',
-      colorStops: [
-        { id: '1', color: '#0575e6', position: 0, opacity: 100 },
-        { id: '2', color: '#021b79', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Радуга',
-    category: 'nature',
-    settings: {
-      type: 'linear',
-      linearDirection: 'to right',
-      colorStops: [
-        { id: '1', color: '#ff0000', position: 0, opacity: 100 },
-        { id: '2', color: '#ff8800', position: 17, opacity: 100 },
-        { id: '3', color: '#ffff00', position: 33, opacity: 100 },
-        { id: '4', color: '#00ff00', position: 50, opacity: 100 },
-        { id: '5', color: '#00ffff', position: 67, opacity: 100 },
-        { id: '6', color: '#0000ff', position: 83, opacity: 100 },
-        { id: '7', color: '#ff00ff', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Пламя',
-    category: 'effects',
-    settings: {
-      type: 'radial',
-      radialShape: 'ellipse',
-      radialSize: 'farthest-corner',
-      colorStops: [
-        { id: '1', color: '#ffeb3b', position: 0, opacity: 100 },
-        { id: '2', color: '#ff9800', position: 40, opacity: 100 },
-        { id: '3', color: '#f44336', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Северное сияние',
-    category: 'effects',
-    settings: {
-      type: 'linear',
-      linearDirection: 'to top right',
-      colorStops: [
-        { id: '1', color: '#667eea', position: 0, opacity: 100 },
-        { id: '2', color: '#764ba2', position: 50, opacity: 100 },
-        { id: '3', color: '#f093fb', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Металлик',
-    category: 'material',
-    settings: {
-      type: 'linear',
-      linearDirection: 'to bottom',
-      colorStops: [
-        { id: '1', color: '#c0c0c0', position: 0, opacity: 100 },
-        { id: '2', color: '#ffffff', position: 50, opacity: 100 },
-        { id: '3', color: '#c0c0c0', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Стекло',
-    category: 'material',
-    settings: {
-      type: 'linear',
-      linearDirection: 'to bottom',
-      colorStops: [
-        { id: '1', color: '#ffffff', position: 0, opacity: 20 },
-        { id: '2', color: '#ffffff', position: 50, opacity: 10 },
-        { id: '3', color: '#000000', position: 100, opacity: 5 }
-      ]
-    }
-  },
-  {
-    name: 'Коническая радуга',
-    category: 'conic',
-    settings: {
-      type: 'conic',
-      conicAngle: 0,
-      colorStops: [
-        { id: '1', color: '#ff0000', position: 0, opacity: 100 },
-        { id: '2', color: '#ffff00', position: 17, opacity: 100 },
-        { id: '3', color: '#00ff00', position: 33, opacity: 100 },
-        { id: '4', color: '#00ffff', position: 50, opacity: 100 },
-        { id: '5', color: '#0000ff', position: 67, opacity: 100 },
-        { id: '6', color: '#ff00ff', position: 83, opacity: 100 },
-        { id: '7', color: '#ff0000', position: 100, opacity: 100 }
-      ]
-    }
-  },
-  {
-    name: 'Спиннер',
-    category: 'conic',
-    settings: {
-      type: 'conic',
-      conicAngle: 0,
-      colorStops: [
-        { id: '1', color: '#3b82f6', position: 0, opacity: 100 },
-        { id: '2', color: '#3b82f6', position: 25, opacity: 100 },
-        { id: '3', color: '#ffffff', position: 25, opacity: 100 },
-        { id: '4', color: '#ffffff', position: 100, opacity: 100 }
-      ]
-    }
-  }
-]
-
-const CATEGORY_LABELS = {
-  nature: 'Природа',
-  effects: 'Эффекты',
-  material: 'Материалы',
-  conic: 'Конические'
-}
+import { useCSSGradientGenerator } from '@/lib/hooks/widgets'
+import { useTranslations } from 'next-intl'
 
 export default function CSSGradientGeneratorPage() {
-  const [settings, setSettings] = useState<GradientSettings>({
-    type: 'linear',
-    linearDirection: 'to bottom',
-    linearAngle: 180,
-    radialShape: 'ellipse',
-    radialSize: 'farthest-corner',
-    radialPositionX: 50,
-    radialPositionY: 50,
-    conicAngle: 0,
-    conicPositionX: 50,
-    conicPositionY: 50,
-    repeating: false,
-    colorStops: [
-      { id: '1', color: '#3b82f6', position: 0, opacity: 100 },
-      { id: '2', color: '#8b5cf6', position: 100, opacity: 100 }
-    ]
+  const t = useTranslations('widgets.cssGradientGenerator')
+  
+  const {
+    settings,
+    selectedStopId,
+    selectedStop,
+    activeCategory,
+    searchQuery,
+    exportFormat,
+    gradientCSS,
+    categories,
+    filteredGradients,
+    setSelectedStopId,
+    setActiveCategory,
+    setSearchQuery,
+    setExportFormat,
+    updateGradientType,
+    updateLinearDirection,
+    updateLinearAngle,
+    updateRadialShape,
+    updateRadialSize,
+    updateRadialPosition,
+    updateConicAngle,
+    updateConicPosition,
+    toggleRepeating,
+    addColorStop,
+    removeColorStop,
+    updateSelectedStop,
+    applyPresetGradient,
+    generateRandom,
+    copyCSS,
+    exportGradient,
+    resetGradient
+  } = useCSSGradientGenerator({
+    translations: {
+      copied: 'CSS copied to clipboard!',
+      copyError: 'Failed to copy CSS',
+      gradientApplied: 'Gradient applied!',
+      colorStopAdded: 'Color stop added',
+      colorStopRemoved: 'Color stop removed',
+      gradientRandomized: 'Random gradient generated'
+    }
   })
 
-  const [selectedStopId, setSelectedStopId] = useState<string>('1')
-
-  const selectedStop = settings.colorStops.find(s => s.id === selectedStopId)
-
-  const generateGradientCSS = (): string => {
-    const { type, colorStops, repeating } = settings
-    const prefix = repeating ? 'repeating-' : ''
-
-    const stops = colorStops
-      .sort((a, b) => a.position - b.position)
-      .map(stop => {
-        const rgba = hexToRgba(stop.color, stop.opacity / 100)
-        return `${rgba} ${stop.position}%`
-      })
-      .join(', ')
-
-    switch (type) {
-      case 'linear': {
-        const direction = settings.linearDirection === 'custom' 
-          ? `${settings.linearAngle}deg`
-          : settings.linearDirection
-        return `${prefix}linear-gradient(${direction}, ${stops})`
-      }
-
-      case 'radial': {
-        const { radialShape, radialSize, radialPositionX, radialPositionY } = settings
-        const position = `at ${radialPositionX}% ${radialPositionY}%`
-        return `${prefix}radial-gradient(${radialShape} ${radialSize} ${position}, ${stops})`
-      }
-
-      case 'conic': {
-        const { conicAngle, conicPositionX, conicPositionY } = settings
-        const from = `from ${conicAngle}deg`
-        const position = `at ${conicPositionX}% ${conicPositionY}%`
-        return `${prefix}conic-gradient(${from} ${position}, ${stops})`
-      }
-    }
-  }
-
-  const hexToRgba = (hex: string, alpha: number): string => {
-    const r = parseInt(hex.slice(1, 3), 16)
-    const g = parseInt(hex.slice(3, 5), 16)
-    const b = parseInt(hex.slice(5, 7), 16)
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
-  }
-
-  const updateSettings = (updates: Partial<GradientSettings>) => {
-    setSettings(prev => ({ ...prev, ...updates }))
-  }
-
-  const updateColorStop = (id: string, updates: Partial<ColorStop>) => {
-    setSettings(prev => ({
-      ...prev,
-      colorStops: prev.colorStops.map(stop =>
-        stop.id === id ? { ...stop, ...updates } : stop
-      )
-    }))
-  }
-
-  const addColorStop = () => {
-    const newStop: ColorStop = {
-      id: Date.now().toString(),
-      color: '#000000',
-      position: 50,
-      opacity: 100
-    }
-    setSettings(prev => ({
-      ...prev,
-      colorStops: [...prev.colorStops, newStop]
-    }))
-    setSelectedStopId(newStop.id)
-    toast.success('Цветовая остановка добавлена')
-  }
-
-  const deleteColorStop = (id: string) => {
-    if (settings.colorStops.length <= 2) {
-      toast.error('Минимум 2 цвета необходимо для градиента')
-      return
-    }
-    
-    setSettings(prev => ({
-      ...prev,
-      colorStops: prev.colorStops.filter(s => s.id !== id)
-    }))
-    
-    if (selectedStopId === id) {
-      setSelectedStopId(settings.colorStops.find(s => s.id !== id)?.id || '')
-    }
-    toast.success('Цветовая остановка удалена')
-  }
-
-  const copyGradientCSS = () => {
-    const css = `background: ${generateGradientCSS()};`
-    navigator.clipboard.writeText(css)
-    toast.success('CSS код скопирован!')
-  }
-
-  const copyFullCSS = () => {
-    const gradient = generateGradientCSS()
-    const css = `.element {
-  background: ${gradient};
-  
-  /* Fallback для старых браузеров */
-  background: ${settings.colorStops[0].color};
-  background: -webkit-${gradient};
-  background: -moz-${gradient};
-  background: -o-${gradient};
-}`
-    navigator.clipboard.writeText(css)
-    toast.success('Полный CSS код скопирован!')
-  }
-
-  const loadPreset = (preset: PresetGradient) => {
-    setSettings(prev => ({
-      ...prev,
-      ...preset.settings,
-      colorStops: preset.settings.colorStops || prev.colorStops
-    }))
-    setSelectedStopId(preset.settings.colorStops?.[0]?.id || '1')
-    toast.success(`Загружен пресет: ${preset.name}`)
-  }
-
-  const reset = () => {
-    setSettings({
-      type: 'linear',
-      linearDirection: 'to bottom',
-      linearAngle: 180,
-      radialShape: 'ellipse',
-      radialSize: 'farthest-corner',
-      radialPositionX: 50,
-      radialPositionY: 50,
-      conicAngle: 0,
-      conicPositionX: 50,
-      conicPositionY: 50,
-      repeating: false,
-      colorStops: [
-        { id: '1', color: '#3b82f6', position: 0, opacity: 100 },
-        { id: '2', color: '#8b5cf6', position: 100, opacity: 100 }
-      ]
-    })
-    setSelectedStopId('1')
-    toast.success('Настройки сброшены')
-  }
-
-  const randomGradient = () => {
-    const randomColor = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')
-    const numStops = Math.floor(Math.random() * 3) + 2
-    
-    const colorStops: ColorStop[] = []
-    for (let i = 0; i < numStops; i++) {
-      colorStops.push({
-        id: Date.now().toString() + i,
-        color: randomColor(),
-        position: Math.round((100 / (numStops - 1)) * i),
-        opacity: 100
-      })
-    }
-
-    setSettings(prev => ({
-      ...prev,
-      colorStops
-    }))
-    setSelectedStopId(colorStops[0].id)
-    toast.success('Случайный градиент создан!')
-  }
-
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div className="grid lg:grid-cols-2 gap-6">
+    <div className="max-w-6xl mx-auto space-y-8">
+      {/* Header Actions */}
+      <div className="flex flex-wrap gap-2 justify-between items-center">
+        <h1 className="text-2xl font-bold">CSS Gradient Generator</h1>
+        <div className="flex gap-2">
+          <Button onClick={generateRandom} variant="outline" size="sm" className="gap-2">
+            <Sparkles className="w-4 h-4" />
+            Random
+          </Button>
+          <Button onClick={resetGradient} variant="outline" size="sm" className="gap-2">
+            <RefreshCw className="w-4 h-4" />
+            Reset
+          </Button>
+        </div>
+      </div>
+
+      {/* Preview */}
+      <Card className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label className="text-base font-semibold">Preview</Label>
+            <div className="flex gap-2">
+              <Select value={exportFormat} onValueChange={(value) => setExportFormat(value as 'css' | 'scss' | 'tailwind')}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="css">CSS</SelectItem>
+                  <SelectItem value="scss">SCSS</SelectItem>
+                  <SelectItem value="tailwind">Tailwind</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button onClick={copyCSS} className="gap-2">
+                <Copy className="w-4 h-4" />
+                Copy CSS
+              </Button>
+            </div>
+          </div>
+
+          {/* Gradient Preview */}
+          <div 
+            className="w-full h-48 rounded-lg border shadow-inner relative overflow-hidden"
+            style={{ background: gradientCSS }}
+          >
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2220%22%20height=%2220%22%20viewBox=%220%200%2020%2020%22%3E%3Cg%20fill=%22%239C92AC%22%20fill-opacity=%220.1%22%3E%3Cpolygon%20points=%220,0%2010,10%200,20%22/%3E%3Cpolygon%20points=%2210,0%2020,0%2020,10%22/%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+          </div>
+
+          {/* CSS Output */}
+          <div className="relative">
+            <code className="block p-3 bg-muted rounded-lg text-sm font-mono overflow-x-auto">
+              background: {gradientCSS};
+            </code>
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid lg:grid-cols-3 gap-8">
         {/* Controls */}
-        <div className="space-y-6">
+        <div className="lg:col-span-2 space-y-6">
           {/* Gradient Type */}
           <Card className="p-6">
-            <h3 className="font-semibold mb-4">Тип градиента</h3>
-            
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {(['linear', 'radial', 'conic'] as GradientType[]).map(type => (
-                <Button
-                  key={type}
-                  onClick={() => updateSettings({ type })}
-                  variant={settings.type === type ? 'default' : 'outline'}
-                  className="capitalize"
-                >
-                  {type === 'linear' ? 'Линейный' : type === 'radial' ? 'Радиальный' : 'Конический'}
-                </Button>
-              ))}
-            </div>
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">Gradient Type</Label>
+              
+              <div className="grid grid-cols-3 gap-2">
+                {(['linear', 'radial', 'conic'] as const).map((type) => (
+                  <Button
+                    key={type}
+                    onClick={() => updateGradientType(type)}
+                    variant={settings.type === type ? 'default' : 'outline'}
+                    size="sm"
+                    className="capitalize"
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </div>
 
-            {/* Type-specific settings */}
-            {settings.type === 'linear' && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="repeating"
+                  checked={settings.repeating}
+                  onChange={toggleRepeating}
+                  className="rounded"
+                />
+                <Label htmlFor="repeating">Repeating</Label>
+              </div>
+            </div>
+          </Card>
+
+          {/* Type-specific Settings */}
+          {settings.type === 'linear' && (
+            <Card className="p-6">
               <div className="space-y-4">
+                <Label className="text-base font-semibold">Linear Settings</Label>
+                
                 <div>
-                  <Label>Направление</Label>
+                  <Label>Direction</Label>
                   <Select 
                     value={settings.linearDirection} 
-                    onValueChange={(value: LinearDirection) => updateSettings({ linearDirection: value })}
+                    onValueChange={updateLinearDirection}
                   >
                     <SelectTrigger className="mt-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="to top">Вверх</SelectItem>
-                      <SelectItem value="to bottom">Вниз</SelectItem>
-                      <SelectItem value="to left">Влево</SelectItem>
-                      <SelectItem value="to right">Вправо</SelectItem>
-                      <SelectItem value="to top left">Вверх влево</SelectItem>
-                      <SelectItem value="to top right">Вверх вправо</SelectItem>
-                      <SelectItem value="to bottom left">Вниз влево</SelectItem>
-                      <SelectItem value="to bottom right">Вниз вправо</SelectItem>
-                      <SelectItem value="custom">Произвольный угол</SelectItem>
+                      <SelectItem value="to top">To Top</SelectItem>
+                      <SelectItem value="to bottom">To Bottom</SelectItem>
+                      <SelectItem value="to left">To Left</SelectItem>
+                      <SelectItem value="to right">To Right</SelectItem>
+                      <SelectItem value="to top left">To Top Left</SelectItem>
+                      <SelectItem value="to top right">To Top Right</SelectItem>
+                      <SelectItem value="to bottom left">To Bottom Left</SelectItem>
+                      <SelectItem value="to bottom right">To Bottom Right</SelectItem>
+                      <SelectItem value="custom">Custom Angle</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 {settings.linearDirection === 'custom' && (
                   <div>
-                    <Label>Угол (градусы)</Label>
+                    <Label>Angle (degrees)</Label>
                     <div className="flex items-center gap-2 mt-1">
                       <Slider
                         value={[settings.linearAngle]}
-                        onValueChange={(value) => updateSettings({ linearAngle: value[0] })}
+                        onValueChange={(value) => updateLinearAngle(value[0])}
                         min={0}
                         max={360}
                         step={1}
@@ -443,387 +207,352 @@ export default function CSSGradientGeneratorPage() {
                   </div>
                 )}
               </div>
-            )}
+            </Card>
+          )}
 
-            {settings.type === 'radial' && (
+          {settings.type === 'radial' && (
+            <Card className="p-6">
               <div className="space-y-4">
+                <Label className="text-base font-semibold">Radial Settings</Label>
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>Форма</Label>
-                    <Select 
-                      value={settings.radialShape} 
-                      onValueChange={(value: RadialShape) => updateSettings({ radialShape: value })}
-                    >
+                    <Label>Shape</Label>
+                    <Select value={settings.radialShape} onValueChange={updateRadialShape}>
                       <SelectTrigger className="mt-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="circle">Круг</SelectItem>
-                        <SelectItem value="ellipse">Эллипс</SelectItem>
+                        <SelectItem value="circle">Circle</SelectItem>
+                        <SelectItem value="ellipse">Ellipse</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label>Размер</Label>
-                    <Select 
-                      value={settings.radialSize} 
-                      onValueChange={(value: RadialSize) => updateSettings({ radialSize: value })}
-                    >
+                    <Label>Size</Label>
+                    <Select value={settings.radialSize} onValueChange={updateRadialSize}>
                       <SelectTrigger className="mt-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="closest-side">Ближайшая сторона</SelectItem>
-                        <SelectItem value="farthest-side">Дальняя сторона</SelectItem>
-                        <SelectItem value="closest-corner">Ближайший угол</SelectItem>
-                        <SelectItem value="farthest-corner">Дальний угол</SelectItem>
+                        <SelectItem value="closest-side">Closest Side</SelectItem>
+                        <SelectItem value="farthest-side">Farthest Side</SelectItem>
+                        <SelectItem value="closest-corner">Closest Corner</SelectItem>
+                        <SelectItem value="farthest-corner">Farthest Corner</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Позиция X (%)</Label>
-                    <div className="flex items-center gap-2 mt-1">
+                <div>
+                  <Label>Position</Label>
+                  <div className="grid grid-cols-2 gap-2 mt-1">
+                    <div>
+                      <Label className="text-xs">X: {settings.radialPositionX}%</Label>
                       <Slider
                         value={[settings.radialPositionX]}
-                        onValueChange={(value) => updateSettings({ radialPositionX: value[0] })}
+                        onValueChange={(value) => updateRadialPosition(value[0], settings.radialPositionY)}
                         min={0}
                         max={100}
                         step={1}
-                        className="flex-1"
                       />
-                      <span className="text-sm w-10 text-right">{settings.radialPositionX}%</span>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label>Позиция Y (%)</Label>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div>
+                      <Label className="text-xs">Y: {settings.radialPositionY}%</Label>
                       <Slider
                         value={[settings.radialPositionY]}
-                        onValueChange={(value) => updateSettings({ radialPositionY: value[0] })}
+                        onValueChange={(value) => updateRadialPosition(settings.radialPositionX, value[0])}
                         min={0}
                         max={100}
                         step={1}
-                        className="flex-1"
                       />
-                      <span className="text-sm w-10 text-right">{settings.radialPositionY}%</span>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
+            </Card>
+          )}
 
-            {settings.type === 'conic' && (
+          {settings.type === 'conic' && (
+            <Card className="p-6">
               <div className="space-y-4">
+                <Label className="text-base font-semibold">Conic Settings</Label>
+                
                 <div>
-                  <Label>Начальный угол</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Slider
-                      value={[settings.conicAngle]}
-                      onValueChange={(value) => updateSettings({ conicAngle: value[0] })}
-                      min={0}
-                      max={360}
-                      step={1}
-                      className="flex-1"
-                    />
-                    <span className="text-sm w-12 text-right">{settings.conicAngle}°</span>
-                  </div>
+                  <Label>Start Angle: {settings.conicAngle}°</Label>
+                  <Slider
+                    value={[settings.conicAngle]}
+                    onValueChange={(value) => updateConicAngle(value[0])}
+                    min={0}
+                    max={360}
+                    step={1}
+                    className="mt-1"
+                  />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Позиция X (%)</Label>
-                    <div className="flex items-center gap-2 mt-1">
+                <div>
+                  <Label>Position</Label>
+                  <div className="grid grid-cols-2 gap-2 mt-1">
+                    <div>
+                      <Label className="text-xs">X: {settings.conicPositionX}%</Label>
                       <Slider
                         value={[settings.conicPositionX]}
-                        onValueChange={(value) => updateSettings({ conicPositionX: value[0] })}
+                        onValueChange={(value) => updateConicPosition(value[0], settings.conicPositionY)}
                         min={0}
                         max={100}
                         step={1}
-                        className="flex-1"
                       />
-                      <span className="text-sm w-10 text-right">{settings.conicPositionX}%</span>
                     </div>
-                  </div>
-
-                  <div>
-                    <Label>Позиция Y (%)</Label>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div>
+                      <Label className="text-xs">Y: {settings.conicPositionY}%</Label>
                       <Slider
                         value={[settings.conicPositionY]}
-                        onValueChange={(value) => updateSettings({ conicPositionY: value[0] })}
+                        onValueChange={(value) => updateConicPosition(settings.conicPositionX, value[0])}
                         min={0}
                         max={100}
                         step={1}
-                        className="flex-1"
                       />
-                      <span className="text-sm w-10 text-right">{settings.conicPositionY}%</span>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
-
-            <div className="flex items-center space-x-2 mt-4 pt-4 border-t">
-              <input
-                id="repeating"
-                type="checkbox"
-                checked={settings.repeating}
-                onChange={(e) => updateSettings({ repeating: e.target.checked })}
-                className="rounded border-gray-300"
-              />
-              <Label htmlFor="repeating">Повторяющийся градиент</Label>
-            </div>
-          </Card>
+            </Card>
+          )}
 
           {/* Color Stops */}
           <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Цветовые остановки</h3>
-              <Button onClick={addColorStop} size="sm">
-                <Plus className="w-4 h-4 mr-2" />
-                Добавить
-              </Button>
-            </div>
-
-            <div className="space-y-2 mb-4">
-              {settings.colorStops
-                .sort((a, b) => a.position - b.position)
-                .map((stop) => (
-                  <div
-                    key={stop.id}
-                    className={cn(
-                      "flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-colors",
-                      selectedStopId === stop.id ? "bg-primary/10 border-primary" : "hover:bg-muted/50"
-                    )}
-                    onClick={() => setSelectedStopId(stop.id)}
-                  >
-                    <div
-                      className="w-8 h-8 rounded border flex-shrink-0"
-                      style={{ backgroundColor: hexToRgba(stop.color, stop.opacity / 100) }}
-                    />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{stop.position}%</div>
-                      <div className="text-xs text-muted-foreground">{stop.color}</div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteColorStop(stop.id)
-                      }}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))
-              }
-            </div>
-
-            {selectedStop && (
-              <div className="space-y-4 pt-4 border-t">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Цвет</Label>
-                    <div className="flex gap-2 mt-1">
-                      <Input
-                        type="color"
-                        value={selectedStop.color}
-                        onChange={(e) => updateColorStop(selectedStop.id, { color: e.target.value })}
-                        className="w-20 h-10 p-1"
-                      />
-                      <Input
-                        type="text"
-                        value={selectedStop.color}
-                        onChange={(e) => updateColorStop(selectedStop.id, { color: e.target.value })}
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label>Позиция (%)</Label>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Slider
-                        value={[selectedStop.position]}
-                        onValueChange={(value) => updateColorStop(selectedStop.id, { position: value[0] })}
-                        min={0}
-                        max={100}
-                        step={1}
-                        className="flex-1"
-                      />
-                      <span className="text-sm w-10 text-right">{selectedStop.position}%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <Label>Прозрачность</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Slider
-                      value={[selectedStop.opacity]}
-                      onValueChange={(value) => updateColorStop(selectedStop.id, { opacity: value[0] })}
-                      min={0}
-                      max={100}
-                      step={1}
-                      className="flex-1"
-                    />
-                    <span className="text-sm w-10 text-right">{selectedStop.opacity}%</span>
-                  </div>
-                </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold">Color Stops</Label>
+                <Button onClick={addColorStop} size="sm" className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  Add Stop
+                </Button>
               </div>
-            )}
+
+              <div className="space-y-3">
+                {settings.colorStops
+                  .sort((a, b) => a.position - b.position)
+                  .map((stop) => (
+                    <div
+                      key={stop.id}
+                      className={cn(
+                        "p-3 rounded-lg border cursor-pointer transition-colors",
+                        selectedStopId === stop.id
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      )}
+                      onClick={() => setSelectedStopId(stop.id)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-8 h-8 rounded border"
+                          style={{ backgroundColor: stop.color }}
+                        />
+                        <div className="flex-1 space-y-2">
+                          <div className="grid grid-cols-3 gap-2">
+                            <div>
+                              <Label className="text-xs">Color</Label>
+                              <Input
+                                type="color"
+                                value={stop.color}
+                                onChange={(e) => updateSelectedStop({ color: e.target.value })}
+                                className="h-8"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs">Position: {stop.position}%</Label>
+                              <Slider
+                                value={[stop.position]}
+                                onValueChange={(value) => updateSelectedStop({ position: value[0] })}
+                                min={0}
+                                max={100}
+                                step={1}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs">Opacity: {stop.opacity}%</Label>
+                              <Slider
+                                value={[stop.opacity]}
+                                onValueChange={(value) => updateSelectedStop({ opacity: value[0] })}
+                                min={0}
+                                max={100}
+                                step={1}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        {settings.colorStops.length > 2 && (
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              removeColorStop(stop.id)
+                            }}
+                            size="sm"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
           </Card>
         </div>
 
-        {/* Preview */}
+        {/* Presets */}
         <div className="space-y-6">
-          {/* Preview Box */}
           <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Предпросмотр</h3>
-              <div className="flex gap-2">
-                <Button onClick={randomGradient} variant="outline" size="sm">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Случайный
-                </Button>
-                <Button onClick={reset} variant="outline" size="sm">
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Сбросить
-                </Button>
-              </div>
-            </div>
-
             <div className="space-y-4">
-              <div
-                className="h-64 rounded-lg border"
-                style={{ background: generateGradientCSS() }}
-              />
+              <Label className="text-base font-semibold">Presets</Label>
+              
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search gradients..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div
-                  className="h-20 rounded border"
-                  style={{ background: generateGradientCSS() }}
-                />
-                <div
-                  className="h-20 rounded-full border"
-                  style={{ background: generateGradientCSS() }}
-                />
-                <div
-                  className="h-20 rounded-lg border flex items-center justify-center text-white font-semibold"
-                  style={{ background: generateGradientCSS() }}
+              {/* Categories */}
+              <div className="flex flex-wrap gap-1">
+                <Button
+                  onClick={() => setActiveCategory('all')}
+                  variant={activeCategory === 'all' ? 'default' : 'outline'}
+                  size="sm"
                 >
-                  Текст
-                </div>
+                  All
+                </Button>
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    variant={activeCategory === category ? 'default' : 'outline'}
+                    size="sm"
+                    className="capitalize"
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Gradient List */}
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {filteredGradients.map((gradient) => (
+                  <button
+                    key={gradient.name}
+                    onClick={() => applyPresetGradient(gradient)}
+                    className="w-full p-3 text-left rounded-lg border hover:border-primary/50 transition-colors group"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-sm">{gradient.name}</span>
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {gradient.category}
+                        </Badge>
+                      </div>
+                      <div
+                        className="w-full h-6 rounded"
+                        style={{
+                          background: gradient.settings.colorStops
+                            ? `linear-gradient(to right, ${gradient.settings.colorStops
+                                .sort((a, b) => (a.position || 0) - (b.position || 0))
+                                .map(stop => `${stop.color} ${stop.position || 0}%`)
+                                .join(', ')})`
+                            : 'linear-gradient(to right, #3b82f6, #8b5cf6)'
+                        }}
+                      />
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
           </Card>
 
-          {/* CSS Code */}
+          {/* Export Options */}
           <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">CSS код</h3>
-              <div className="flex gap-2">
-                <Button onClick={copyGradientCSS} size="sm">
-                  <Copy className="w-4 h-4 mr-2" />
-                  Копировать
-                </Button>
-                <Button onClick={copyFullCSS} size="sm" variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Полный CSS
-                </Button>
-              </div>
-            </div>
-
-            <div className="bg-muted p-4 rounded-lg">
-              <code className="text-sm font-mono break-all">
-                background: {generateGradientCSS()};
-              </code>
-            </div>
-          </Card>
-
-          {/* Presets */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              Готовые пресеты
-            </h3>
-            
             <div className="space-y-4">
-              {Object.entries(CATEGORY_LABELS).map(([category, label]) => (
-                <div key={category}>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-2">{label}</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {PRESET_GRADIENTS
-                      .filter(preset => preset.category === category)
-                      .map((preset, index) => (
-                        <Button
-                          key={index}
-                          onClick={() => loadPreset(preset)}
-                          variant="outline"
-                          size="sm"
-                          className="h-auto p-2"
-                        >
-                          <div className="w-full">
-                            <div
-                              className="w-full h-12 rounded mb-2"
-                              style={{
-                                background: generateGradientCSS.call({
-                                  settings: { ...settings, ...preset.settings }
-                                })
-                              }}
-                            />
-                            <span className="text-xs">{preset.name}</span>
-                          </div>
-                        </Button>
-                      ))
-                    }
-                  </div>
-                </div>
-              ))}
+              <Label className="text-base font-semibold">Export</Label>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => exportGradient('css')}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  CSS
+                </Button>
+                <Button
+                  onClick={() => exportGradient('scss')}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  SCSS
+                </Button>
+                <Button
+                  onClick={() => exportGradient('tailwind')}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Tailwind
+                </Button>
+                <Button
+                  onClick={() => exportGradient('json')}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  JSON
+                </Button>
+              </div>
             </div>
           </Card>
         </div>
       </div>
 
-      {/* Tips */}
+      {/* Info Section */}
       <Card className="p-6 bg-muted/50">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <Sliders className="w-4 h-4" />
-          Советы по градиентам
-        </h3>
+        <h3 className="font-semibold mb-3">About CSS Gradients</h3>
         <div className="grid md:grid-cols-3 gap-6 text-sm">
           <div>
-            <h4 className="font-medium mb-2">Типы градиентов</h4>
+            <h4 className="font-medium mb-2">Gradient Types</h4>
             <ul className="text-muted-foreground space-y-1">
-              <li>• <strong>Linear</strong> - прямолинейный переход</li>
-              <li>• <strong>Radial</strong> - круговой/эллиптический</li>
-              <li>• <strong>Conic</strong> - конический (круговая диаграмма)</li>
-              <li>• <strong>Repeating</strong> - повторяющийся паттерн</li>
+              <li>• <strong>Linear</strong> - straight line transition</li>
+              <li>• <strong>Radial</strong> - circular/elliptical</li>
+              <li>• <strong>Conic</strong> - conic (pie chart style)</li>
+              <li>• <strong>Repeating</strong> - repeating pattern</li>
             </ul>
           </div>
           <div>
-            <h4 className="font-medium mb-2">Оптимизация</h4>
+            <h4 className="font-medium mb-2">Optimization</h4>
             <ul className="text-muted-foreground space-y-1">
-              <li>• Используйте 2-3 цвета для чистых переходов</li>
-              <li>• Добавляйте прозрачность для наложений</li>
-              <li>• Повторяющиеся градиенты для паттернов</li>
-              <li>• CSS переменные для динамических цветов</li>
+              <li>• Use 2-3 colors for clean transitions</li>
+              <li>• Add transparency for overlays</li>
+              <li>• Repeating gradients for patterns</li>
+              <li>• CSS variables for dynamic colors</li>
             </ul>
           </div>
           <div>
-            <h4 className="font-medium mb-2">Применение</h4>
+            <h4 className="font-medium mb-2">Applications</h4>
             <ul className="text-muted-foreground space-y-1">
-              <li>• Фоны для секций и кнопок</li>
-              <li>• Оверлеи для изображений</li>
-              <li>• Декоративные элементы</li>
-              <li>• Индикаторы прогресса</li>
+              <li>• Backgrounds for sections and buttons</li>
+              <li>• Image overlays</li>
+              <li>• Decorative elements</li>
+              <li>• Progress indicators</li>
             </ul>
           </div>
         </div>
