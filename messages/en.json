@@ -1689,6 +1689,32 @@
 					"answer": "Yes, but very large documents (over 10MB) might be slow to process. The parser runs entirely in your browser, so performance depends on your device's capabilities."
 				}
 			]
+		},
+		"analyticsDashboard": {
+			"title": "Widget Analytics Dashboard",
+			"description": "Track usage and performance metrics for all your widgets",
+			"totalViews": "Total Views",
+			"totalSessions": "Total Sessions",
+			"avgDuration": "Avg Duration",
+			"onlineNow": "Online Now",
+			"timeframePeriod": "Last {timeframe}",
+			"uniqueUsers": "Unique users",
+			"perSession": "Per session",
+			"activeUsers": "Active users",
+			"topWidgets": "Top Widgets",
+			"views": "views",
+			"widgetAnalytics": "Widget Analytics",
+			"trends": "Trends",
+			"last24Hours": "Last 24 hours",
+			"last7Days": "Last 7 days",
+			"last30Days": "Last 30 days",
+			"selectWidget": "Select a Widget",
+			"performance": "Performance Metrics",
+			"viewsToday": "Views Today",
+			"uniqueSessions": "Unique Sessions",
+			"avgSessionDuration": "Avg Session Duration",
+			"hourlyViews": "Hourly Views",
+			"usageTrends": "Usage Trends"
 		}
 	}
 }

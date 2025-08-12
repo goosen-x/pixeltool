@@ -4836,6 +4836,58 @@ export const widgets: Widget[] = [
 			],
 			he: []
 		}
+	},
+	{
+		id: 'analytics-dashboard',
+		icon: BarChart3,
+		category: 'productivity',
+		translationKey: 'analyticsDashboard',
+		path: 'analytics-dashboard',
+		gradient: 'from-purple-500 to-indigo-500',
+		recommendedTools: [],
+		difficulty: 'intermediate',
+		tags: ['analytics', 'dashboard', 'statistics', 'metrics', 'usage', 'performance'],
+		useCase: 'Monitor and analyze usage metrics for all widgets in the toolkit',
+		metaDescription: 'Analytics dashboard for tracking widget usage, performance metrics, and user engagement across all tools.',
+		faqs: {
+			en: [
+				{
+					question: 'What metrics are tracked?',
+					answer: 'The dashboard tracks page views, unique sessions, average session duration, hourly usage patterns, and real-time active users for each widget.'
+				},
+				{
+					question: 'How often is the data updated?',
+					answer: 'Analytics data is updated in real-time. Page views and session data are tracked immediately, while aggregated statistics are refreshed every few minutes.'
+				},
+				{
+					question: 'What time periods can I analyze?',
+					answer: 'You can view analytics for the last 24 hours, 7 days, or 30 days. The dashboard automatically adjusts the granularity of data based on the selected timeframe.'
+				},
+				{
+					question: 'Is user privacy protected?',
+					answer: 'Yes, all analytics are completely anonymous. We only track aggregated usage patterns and performance metrics without collecting any personal information.'
+				}
+			],
+			ru: [
+				{
+					question: 'Какие метрики отслеживаются?',
+					answer: 'Панель отслеживает просмотры страниц, уникальные сессии, среднюю длительность сессии, почасовые паттерны использования и активных пользователей в реальном времени для каждого виджета.'
+				},
+				{
+					question: 'Как часто обновляются данные?',
+					answer: 'Аналитические данные обновляются в реальном времени. Просмотры страниц и данные сессий отслеживаются немедленно, а агрегированная статистика обновляется каждые несколько минут.'
+				},
+				{
+					question: 'Какие временные периоды можно анализировать?',
+					answer: 'Вы можете просматривать аналитику за последние 24 часа, 7 дней или 30 дней. Панель автоматически настраивает детализацию данных в зависимости от выбранного периода.'
+				},
+				{
+					question: 'Защищена ли конфиденциальность пользователей?',
+					answer: 'Да, вся аналитика полностью анонимна. Мы отслеживаем только агрегированные паттерны использования и метрики производительности без сбора персональной информации.'
+				}
+			],
+			he: []
+		}
 	}
 ]
 

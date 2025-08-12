@@ -20,6 +20,7 @@ import {
 import Link from 'next/link'
 import { widgets, widgetCategories, type Widget } from '@/lib/constants/widgets'
 import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
+import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
 import {
