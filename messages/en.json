@@ -8,7 +8,8 @@
 		"hero": {
 			"subtitle": "Powerful online tools for developers and designers. No installation required.",
 			"exploreTools": "Explore Tools",
-			"browseCategories": "Browse Categories"
+			"browseCategories": "Browse Categories",
+			"liveAndFree": "Live & Always Free"
 		},
 		"features": {
 			"title": "Why Choose PixelTool?",
@@ -34,6 +35,43 @@
 			"title": "Ready to boost your productivity?",
 			"description": "Join thousands of developers and designers using our tools daily.",
 			"viewAllTools": "View All Tools"
+		},
+		"widgetsCarousel": {
+			"badge": "Popular Tools",
+			"title": "Explore Our Most Used Tools",
+			"description": "From CSS generators to security utilities, discover professional tools that thousands of developers use daily",
+			"tryNow": "Try Now",
+			"live": "Live Tool",
+			"viewAll": "View All Tools"
+		},
+		"whyChoose": {
+			"title": "Why Choose PixelTool?",
+			"subtitle": "We've created a platform that saves time for developers and designers by providing all the necessary tools in one place",
+			"trustedBy": "Trusted by Developers",
+			"feature1": {
+				"title": "Lightning Fast",
+				"description": "All tools work directly in your browser without delays. No downloads, installations, or waiting.",
+				"point1": "0ms delay",
+				"point2": "Offline mode"
+			},
+			"feature2": {
+				"title": "100% Free",
+				"description": "No hidden fees, subscriptions, or limitations. All tools are available for free forever.",
+				"point1": "No registration",
+				"point2": "No limits"
+			},
+			"feature3": {
+				"title": "50+ Tools",
+				"description": "From CSS generators to image converters - everything a modern developer needs.",
+				"point1": "New ones every week",
+				"point2": "Open Source"
+			},
+			"stats": {
+				"activeUsers": "Happy developers",
+				"monthlyUsage": "Tasks completed",
+				"countries": "Countries reached",
+				"satisfaction": "Satisfaction rating"
+			}
 		}
 	},
 	"NotFound": {
@@ -54,7 +92,8 @@
 			"btnText": "DOWNLOAD CV",
 			"href": "/cv/CV_Borisenko_Dmitry_Frontend_En.pdf",
 			"filename": "CV_Borisenko_Dmitry_Frontend_En.pdf"
-		}
+		},
+		"search": "Search"
 	},
 	"Feedback": {
 		"title": "Feedback",
@@ -286,8 +325,8 @@
 	},
 	"widgets": {
 		"tools": "Tools",
-		"title": "Mini Projects",
-		"description": "Interactive tools and demos",
+		"title": "Developer Tools",
+		"description": "Professional tools for developers and designers. No installation required.",
 		"mainPage": {
 			"main": "Main",
 			"techstack": "Tech Stack",
@@ -1340,6 +1379,31 @@
 			"description": "Generate favicon files in multiple sizes and formats for web and mobile platforms",
 			"useCase": "Generate favicon files in multiple sizes and formats for web and mobile platforms"
 		},
+		"textCaseConverter": {
+			"title": "Text Case Converter",
+			"description": "Convert text between different letter cases and formatting styles",
+			"useCase": "Transform text to uppercase, lowercase, camelCase, snake_case, and more"
+		},
+		"imageSizeChecker": {
+			"title": "Image Size Checker",
+			"description": "Check image dimensions, file size, and format details",
+			"useCase": "Analyze image properties and dimensions for web optimization"
+		},
+		"asciiArtGenerator": {
+			"title": "ASCII Art Generator",
+			"description": "Convert text and images to ASCII art",
+			"useCase": "Generate ASCII art from text and images for creative projects"
+		},
+		"htmlXmlParser": {
+			"title": "HTML/XML Parser",
+			"description": "Parse and format HTML/XML documents with syntax highlighting",
+			"useCase": "Parse, validate, and format HTML/XML code for development"
+		},
+		"analyticsDashboard": {
+			"title": "Analytics Dashboard",
+			"description": "View website analytics and performance metrics",
+			"useCase": "Monitor website traffic, performance, and user engagement metrics"
+		},
 		"search": {
 			"placeholder": "Search tools by name, description, or tags...",
 			"categories": "Categories",
@@ -1407,6 +1471,15 @@
 			"donation": {
 				"buyMeCoffee": "Buy me a coffee"
 			}
+		},
+		"categories": {
+			"webdev": "Web Development",
+			"business": "Business & Finance",
+			"content": "Content Creation",
+			"security": "Security & Privacy",
+			"multimedia": "Multimedia",
+			"analytics": "Analytics & Data",
+			"lifestyle": "Health & Lifestyle"
 		}
 	},
 	"settings": {

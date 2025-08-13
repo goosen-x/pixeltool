@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -25,10 +24,17 @@ import {
 	Maximize2,
 	Braces,
 	AlertCircle,
-	Info
+	Info,
+	Code2,
+	Settings2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { useTranslations } from 'next-intl'
 
 interface JSONError {
 	message: string
@@ -79,10 +85,11 @@ const JSON_EXAMPLES = [
 ]
 
 export default function JSONToolsPage() {
+	const t = useTranslations('widgets.jsonTools')
 	const [input, setInput] = useState('')
 	const [analysis, setAnalysis] = useState<JSONAnalysis | null>(null)
 	const [indentSize, setIndentSize] = useState('2')
-	const [activeTab, setActiveTab] = useState('validator')
+	const [activeTab, setActiveTab] = useState('formatted')
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
@@ -148,7 +155,7 @@ export default function JSONToolsPage() {
 				column = lines[lines.length - 1].length + 1
 			}
 
-			const result: JSONAnalysis = {
+			setAnalysis({
 				isValid: false,
 				error: {
 					message: errorMessage,
@@ -171,15 +178,13 @@ export default function JSONToolsPage() {
 					totalKeys: 0,
 					maxDepth: 0
 				}
-			}
-
-			setAnalysis(result)
+			})
+		} finally {
+			setIsLoading(false)
 		}
-
-		setIsLoading(false)
 	}
 
-	const analyzeStructure = (obj: any, depth = 0): JSONAnalysis['structure'] => {
+	const analyzeStructure = (data: any, depth = 0): any => {
 		let structure = {
 			objects: 0,
 			arrays: 0,
@@ -191,519 +196,360 @@ export default function JSONToolsPage() {
 			maxDepth: depth
 		}
 
-		if (obj === null) {
+		if (data === null) {
 			structure.nulls++
-		} else if (typeof obj === 'boolean') {
+		} else if (typeof data === 'boolean') {
 			structure.booleans++
-		} else if (typeof obj === 'number') {
+		} else if (typeof data === 'number') {
 			structure.numbers++
-		} else if (typeof obj === 'string') {
+		} else if (typeof data === 'string') {
 			structure.strings++
-		} else if (Array.isArray(obj)) {
+		} else if (Array.isArray(data)) {
 			structure.arrays++
-			for (const item of obj) {
-				const childStructure = analyzeStructure(item, depth + 1)
-				structure.objects += childStructure.objects
-				structure.arrays += childStructure.arrays
-				structure.strings += childStructure.strings
-				structure.numbers += childStructure.numbers
-				structure.booleans += childStructure.booleans
-				structure.nulls += childStructure.nulls
-				structure.totalKeys += childStructure.totalKeys
-				structure.maxDepth = Math.max(
-					structure.maxDepth,
-					childStructure.maxDepth
-				)
-			}
-		} else if (typeof obj === 'object') {
+			structure.maxDepth = Math.max(structure.maxDepth, depth)
+			data.forEach(item => {
+				const subStructure = analyzeStructure(item, depth + 1)
+				mergeStructures(structure, subStructure)
+			})
+		} else if (typeof data === 'object') {
 			structure.objects++
-			const keys = Object.keys(obj)
-			structure.totalKeys += keys.length
-
-			for (const key of keys) {
-				const childStructure = analyzeStructure(obj[key], depth + 1)
-				structure.objects += childStructure.objects
-				structure.arrays += childStructure.arrays
-				structure.strings += childStructure.strings
-				structure.numbers += childStructure.numbers
-				structure.booleans += childStructure.booleans
-				structure.nulls += childStructure.nulls
-				structure.totalKeys += childStructure.totalKeys
-				structure.maxDepth = Math.max(
-					structure.maxDepth,
-					childStructure.maxDepth
-				)
-			}
+			structure.maxDepth = Math.max(structure.maxDepth, depth)
+			structure.totalKeys += Object.keys(data).length
+			Object.values(data).forEach(value => {
+				const subStructure = analyzeStructure(value, depth + 1)
+				mergeStructures(structure, subStructure)
+			})
 		}
 
 		return structure
 	}
 
-	const formatBytes = (bytes: number): string => {
-		if (bytes === 0) return '0 Bytes'
-		const k = 1024
-		const sizes = ['Bytes', 'KB', 'MB', 'GB']
-		const i = Math.floor(Math.log(bytes) / Math.log(k))
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+	const mergeStructures = (target: any, source: any) => {
+		target.objects += source.objects
+		target.arrays += source.arrays
+		target.strings += source.strings
+		target.numbers += source.numbers
+		target.booleans += source.booleans
+		target.nulls += source.nulls
+		target.totalKeys += source.totalKeys
+		target.maxDepth = Math.max(target.maxDepth, source.maxDepth)
 	}
 
-	const copyToClipboard = (text: string, label: string) => {
+	const handleCopy = (text: string, label: string) => {
 		navigator.clipboard.writeText(text)
-		toast.success(`${label} скопирован в буфер обмена!`)
+		toast.success(`${label} copied to clipboard`)
 	}
 
-	const downloadJSON = (content: string, filename: string) => {
-		const blob = new Blob([content], { type: 'application/json' })
+	const handleDownload = (text: string, filename: string) => {
+		const blob = new Blob([text], { type: 'application/json' })
 		const url = URL.createObjectURL(blob)
 		const a = document.createElement('a')
 		a.href = url
 		a.download = filename
-		document.body.appendChild(a)
 		a.click()
-		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-		toast.success(`${filename} загружен!`)
+		toast.success(`Downloaded ${filename}`)
 	}
 
-	const loadExample = (example: (typeof JSON_EXAMPLES)[0]) => {
-		setInput(example.data)
-		toast.success(`Загружен пример: ${example.name}`)
-	}
-
-	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0]
+	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
 		if (file) {
 			const reader = new FileReader()
-			reader.onload = e => {
+			reader.onload = (e) => {
 				const content = e.target?.result as string
 				setInput(content)
-				toast.success(`Файл ${file.name} загружен!`)
 			}
 			reader.readAsText(file)
 		}
 	}
 
-	const clearInput = () => {
-		setInput('')
-		setAnalysis(null)
-		toast.success('Поле очищено')
+	const loadExample = (example: string) => {
+		setInput(example)
+	}
+
+	const formatBytes = (bytes: number) => {
+		if (bytes === 0) return '0 B'
+		const k = 1024
+		const sizes = ['B', 'KB', 'MB']
+		const i = Math.floor(Math.log(bytes) / Math.log(k))
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 	}
 
 	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Quick Actions */}
-			<Card className='p-4'>
-				<div className='flex items-center gap-4 flex-wrap'>
-					<div className='flex items-center gap-2'>
-						<Label htmlFor='file-upload' className='cursor-pointer'>
-							<Button variant='outline' size='sm' asChild>
-								<span>
-									<Upload className='w-4 h-4 mr-2' />
-									Загрузить файл
-								</span>
-							</Button>
-						</Label>
-						<input
-							id='file-upload'
-							type='file'
-							accept='.json,.txt'
-							onChange={handleFileUpload}
-							className='hidden'
-						/>
-					</div>
-
-					<Select
-						onValueChange={value =>
-							loadExample(JSON_EXAMPLES.find(e => e.name === value)!)
-						}
-					>
-						<SelectTrigger className='w-40'>
-							<SelectValue placeholder='Примеры' />
-						</SelectTrigger>
-						<SelectContent>
-							{JSON_EXAMPLES.map(example => (
-								<SelectItem key={example.name} value={example.name}>
-									{example.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					<Button onClick={clearInput} variant='outline' size='sm'>
-						Очистить
-					</Button>
-
-					<div className='flex items-center gap-2 ml-auto'>
-						<Label htmlFor='indent-size' className='text-sm'>
-							Отступ:
-						</Label>
-						<Select value={indentSize} onValueChange={setIndentSize}>
-							<SelectTrigger className='w-16'>
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value='2'>2</SelectItem>
-								<SelectItem value='4'>4</SelectItem>
-								<SelectItem value='8'>8</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
-			</Card>
-
-			{/* Main Content */}
-			<div className='grid lg:grid-cols-2 gap-8'>
+		<WidgetLayout>
+			<div className="grid gap-6 lg:grid-cols-2">
 				{/* Input Section */}
-				<Card className='p-6'>
-					<div className='flex items-center justify-between mb-4'>
-						<h3 className='font-semibold flex items-center gap-2'>
-							<Braces className='w-4 h-4' />
-							JSON Данные
-						</h3>
+				<WidgetSection icon={Code2} title={t('sections.input')}>
+					<div className="space-y-4">
+						<WidgetInput label="JSON Input" className="h-full">
+							<Textarea
+								value={input}
+								onChange={(e) => setInput(e.target.value)}
+								placeholder="Paste your JSON here..."
+								className="min-h-[300px] font-mono text-sm"
+								spellCheck={false}
+							/>
+						</WidgetInput>
+
+						{/* Validation Status */}
 						{analysis && (
-							<Badge variant={analysis.isValid ? 'default' : 'destructive'}>
-								{analysis.isValid ? (
-									<CheckCircle className='w-3 h-3 mr-1' />
-								) : (
-									<XCircle className='w-3 h-3 mr-1' />
-								)}
-								{analysis.isValid ? 'Валидный' : 'Ошибка'}
-							</Badge>
-						)}
-					</div>
-
-					<Textarea
-						value={input}
-						onChange={e => setInput(e.target.value)}
-						placeholder='Вставьте или введите JSON данные здесь...'
-						className='min-h-[400px] font-mono text-sm'
-					/>
-
-					{analysis && !analysis.isValid && analysis.error && (
-						<div className='mt-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg'>
-							<div className='flex items-start gap-2'>
-								<AlertCircle className='w-4 h-4 text-red-600 mt-0.5' />
-								<div>
-									<p className='text-sm font-medium text-red-800 dark:text-red-200'>
-										JSON Ошибка
-									</p>
-									<p className='text-sm text-red-700 dark:text-red-300 mt-1'>
-										{analysis.error.message}
-									</p>
-									{analysis.error.line && analysis.error.column && (
-										<p className='text-xs text-red-600 dark:text-red-400 mt-1'>
-											Строка {analysis.error.line}, Колонка{' '}
-											{analysis.error.column}
-										</p>
+							<div className={cn(
+								"p-3 rounded-xl border",
+								analysis.isValid 
+									? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800"
+									: "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800"
+							)}>
+								<div className="flex items-center gap-2">
+									{analysis.isValid ? (
+										<>
+											<CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+											<span className="text-sm font-medium text-green-700 dark:text-green-300">
+												Valid JSON
+											</span>
+										</>
+									) : (
+										<>
+											<XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+											<span className="text-sm font-medium text-red-700 dark:text-red-300">
+												Invalid JSON
+											</span>
+										</>
 									)}
 								</div>
+								{analysis.error && (
+									<div className="mt-2 text-sm text-red-600 dark:text-red-400">
+										<p className="font-mono">{analysis.error.message}</p>
+										{analysis.error.line && analysis.error.column && (
+											<p className="mt-1">
+												Line {analysis.error.line}, Column {analysis.error.column}
+											</p>
+										)}
+									</div>
+								)}
+							</div>
+						)}
+
+						<div className="flex items-center gap-2 mt-4">
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => setInput('')}
+								disabled={!input}
+							>
+								Clear
+							</Button>
+							<label>
+								<Button variant="outline" size="sm" asChild>
+									<span>
+										<Upload className="h-4 w-4 mr-2" />
+										Upload
+									</span>
+								</Button>
+								<input
+									type="file"
+									accept=".json"
+									onChange={handleFileUpload}
+									className="hidden"
+								/>
+							</label>
+						</div>
+
+						{/* Examples */}
+						<div className="space-y-2">
+							<Label className="text-sm text-muted-foreground">Examples</Label>
+							<div className="grid grid-cols-2 gap-2">
+								{JSON_EXAMPLES.map((example, index) => (
+									<Button
+										key={index}
+										variant="outline"
+										size="sm"
+										onClick={() => loadExample(example.data)}
+										className="justify-start text-xs"
+									>
+										<FileText className="h-3 w-3 mr-1" />
+										{example.name}
+									</Button>
+								))}
 							</div>
 						</div>
-					)}
+					</div>
+				</WidgetSection>
 
-					{input && (
-						<div className='mt-4 text-xs text-muted-foreground'>
-							Размер: {formatBytes(analysis?.size.original || 0)}
-						</div>
-					)}
-				</Card>
-
-				{/* Results Section */}
-				<Card className='p-6'>
-					{!analysis ? (
-						<div className='flex items-center justify-center h-[400px] text-muted-foreground'>
-							<div className='text-center'>
-								<FileText className='w-12 h-12 mx-auto mb-3 opacity-50' />
-								<p>Введите JSON данные для анализа</p>
-							</div>
-						</div>
-					) : (
-						<Tabs value={activeTab} onValueChange={setActiveTab}>
-							<TabsList className='grid grid-cols-3 w-full'>
-								<TabsTrigger value='validator'>
-									<CheckCircle className='w-4 h-4 mr-2' />
-									Валидация
+				{/* Output Section */}
+				<WidgetSection icon={Braces} title={t('sections.output')}>
+					{analysis && analysis.isValid ? (
+						<Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
+							<TabsList className="grid w-full grid-cols-3">
+								<TabsTrigger value="formatted">
+									<Maximize2 className="h-4 w-4 mr-2" />
+									Formatted
 								</TabsTrigger>
-								<TabsTrigger value='formatted' disabled={!analysis.isValid}>
-									<Maximize2 className='w-4 h-4 mr-2' />
-									Форматирование
+								<TabsTrigger value="minified">
+									<Minimize2 className="h-4 w-4 mr-2" />
+									Minified
 								</TabsTrigger>
-								<TabsTrigger value='minified' disabled={!analysis.isValid}>
-									<Minimize2 className='w-4 h-4 mr-2' />
-									Сжатие
+								<TabsTrigger value="analysis">
+									<Info className="h-4 w-4 mr-2" />
+									Analysis
 								</TabsTrigger>
 							</TabsList>
 
-							<TabsContent value='validator' className='space-y-4'>
-								<div className='space-y-4'>
-									{/* Validation Status */}
-									<div
-										className={cn(
-											'p-4 rounded-lg border',
-											analysis.isValid
-												? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
-												: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
-										)}
+							<TabsContent value="formatted" className="space-y-4">
+								<WidgetOutput>
+									<pre className="text-sm font-mono overflow-auto">
+										<code>{analysis.formatted}</code>
+									</pre>
+								</WidgetOutput>
+								<div className="flex items-center gap-2 mt-4">
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => handleCopy(analysis.formatted!, 'Formatted JSON')}
 									>
-										<div className='flex items-center gap-2'>
-											{analysis.isValid ? (
-												<CheckCircle className='w-5 h-5 text-green-600' />
-											) : (
-												<XCircle className='w-5 h-5 text-red-600' />
-											)}
-											<p
-												className={cn(
-													'font-medium',
-													analysis.isValid
-														? 'text-green-800 dark:text-green-200'
-														: 'text-red-800 dark:text-red-200'
-												)}
-											>
-												{analysis.isValid
-													? 'JSON валидный'
-													: 'JSON содержит ошибки'}
-											</p>
+										<Copy className="h-4 w-4 mr-2" />
+										Copy
+									</Button>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => handleDownload(analysis.formatted!, 'formatted.json')}
+									>
+										<Download className="h-4 w-4 mr-2" />
+										Download
+									</Button>
+								</div>
+							</TabsContent>
+
+							<TabsContent value="minified" className="space-y-4">
+								<WidgetOutput>
+									<pre className="text-sm font-mono overflow-auto break-all">
+										<code>{analysis.minified}</code>
+									</pre>
+								</WidgetOutput>
+								<div className="flex items-center gap-2 mt-4">
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => handleCopy(analysis.minified!, 'Minified JSON')}
+									>
+										<Copy className="h-4 w-4 mr-2" />
+										Copy
+									</Button>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => handleDownload(analysis.minified!, 'minified.json')}
+									>
+										<Download className="h-4 w-4 mr-2" />
+										Download
+									</Button>
+								</div>
+							</TabsContent>
+
+							<TabsContent value="analysis" className="space-y-4">
+								<div className="space-y-4">
+									{/* Size Analysis */}
+									<div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50">
+										<h4 className="font-medium text-sm mb-3">Size Analysis</h4>
+										<div className="space-y-2">
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Original</span>
+												<Badge variant="secondary">
+													{formatBytes(analysis.size.original)}
+												</Badge>
+											</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Formatted</span>
+												<Badge variant="secondary">
+													{formatBytes(analysis.size.formatted)}
+												</Badge>
+											</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Minified</span>
+												<Badge variant="secondary">
+													{formatBytes(analysis.size.minified)}
+												</Badge>
+											</div>
+											<div className="flex justify-between items-center pt-2 border-t">
+												<span className="text-sm font-medium">Compression</span>
+												<Badge className="bg-gradient-to-r from-primary to-accent text-white">
+													{Math.round((1 - analysis.size.minified / analysis.size.original) * 100)}%
+												</Badge>
+											</div>
 										</div>
 									</div>
 
 									{/* Structure Analysis */}
-									{analysis.isValid && (
-										<div className='grid grid-cols-2 gap-4'>
-											<div className='space-y-3'>
-												<h4 className='font-medium text-sm'>Структура</h4>
-												<div className='space-y-2 text-sm'>
-													<div className='flex justify-between'>
-														<span>Объекты:</span>
-														<Badge variant='outline'>
-															{analysis.structure.objects}
-														</Badge>
-													</div>
-													<div className='flex justify-between'>
-														<span>Массивы:</span>
-														<Badge variant='outline'>
-															{analysis.structure.arrays}
-														</Badge>
-													</div>
-													<div className='flex justify-between'>
-														<span>Ключи:</span>
-														<Badge variant='outline'>
-															{analysis.structure.totalKeys}
-														</Badge>
-													</div>
-													<div className='flex justify-between'>
-														<span>Глубина:</span>
-														<Badge variant='outline'>
-															{analysis.structure.maxDepth}
-														</Badge>
-													</div>
-												</div>
+									<div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50">
+										<h4 className="font-medium text-sm mb-3">Structure Analysis</h4>
+										<div className="grid grid-cols-2 gap-3">
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Objects</span>
+												<Badge variant="outline">{analysis.structure.objects}</Badge>
 											</div>
-
-											<div className='space-y-3'>
-												<h4 className='font-medium text-sm'>Типы данных</h4>
-												<div className='space-y-2 text-sm'>
-													<div className='flex justify-between'>
-														<span>Строки:</span>
-														<Badge variant='outline'>
-															{analysis.structure.strings}
-														</Badge>
-													</div>
-													<div className='flex justify-between'>
-														<span>Числа:</span>
-														<Badge variant='outline'>
-															{analysis.structure.numbers}
-														</Badge>
-													</div>
-													<div className='flex justify-between'>
-														<span>Boolean:</span>
-														<Badge variant='outline'>
-															{analysis.structure.booleans}
-														</Badge>
-													</div>
-													<div className='flex justify-between'>
-														<span>Null:</span>
-														<Badge variant='outline'>
-															{analysis.structure.nulls}
-														</Badge>
-													</div>
-												</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Arrays</span>
+												<Badge variant="outline">{analysis.structure.arrays}</Badge>
+											</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Strings</span>
+												<Badge variant="outline">{analysis.structure.strings}</Badge>
+											</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Numbers</span>
+												<Badge variant="outline">{analysis.structure.numbers}</Badge>
+											</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Booleans</span>
+												<Badge variant="outline">{analysis.structure.booleans}</Badge>
+											</div>
+											<div className="flex justify-between items-center">
+												<span className="text-sm text-muted-foreground">Nulls</span>
+												<Badge variant="outline">{analysis.structure.nulls}</Badge>
+											</div>
+											<div className="flex justify-between items-center col-span-2 pt-2 border-t">
+												<span className="text-sm text-muted-foreground">Total Keys</span>
+												<Badge variant="outline">{analysis.structure.totalKeys}</Badge>
+											</div>
+											<div className="flex justify-between items-center col-span-2">
+												<span className="text-sm text-muted-foreground">Max Depth</span>
+												<Badge variant="outline">{analysis.structure.maxDepth}</Badge>
 											</div>
 										</div>
-									)}
-
-									{/* Size Information */}
-									<div className='p-4 bg-muted/30 rounded-lg'>
-										<h4 className='font-medium text-sm mb-3'>
-											Информация о размере
-										</h4>
-										<div className='space-y-2 text-sm'>
-											<div className='flex justify-between'>
-												<span>Исходный:</span>
-												<span>{formatBytes(analysis.size.original)}</span>
-											</div>
-											{analysis.isValid && (
-												<>
-													<div className='flex justify-between'>
-														<span>Форматированный:</span>
-														<span>{formatBytes(analysis.size.formatted)}</span>
-													</div>
-													<div className='flex justify-between'>
-														<span>Сжатый:</span>
-														<span className='text-green-600'>
-															{formatBytes(analysis.size.minified)}
-															<span className='text-xs ml-1'>
-																(-
-																{Math.round(
-																	(1 -
-																		analysis.size.minified /
-																			analysis.size.original) *
-																		100
-																)}
-																%)
-															</span>
-														</span>
-													</div>
-												</>
-											)}
-										</div>
 									</div>
-								</div>
-							</TabsContent>
-
-							<TabsContent value='formatted' className='space-y-4'>
-								<div className='flex items-center justify-between'>
-									<h4 className='font-medium'>Форматированный JSON</h4>
-									<div className='flex gap-2'>
-										<Button
-											onClick={() =>
-												copyToClipboard(
-													analysis.formatted!,
-													'Форматированный JSON'
-												)
-											}
-											size='sm'
-											variant='outline'
-										>
-											<Copy className='w-4 h-4 mr-2' />
-											Копировать
-										</Button>
-										<Button
-											onClick={() =>
-												downloadJSON(analysis.formatted!, 'formatted.json')
-											}
-											size='sm'
-											variant='outline'
-										>
-											<Download className='w-4 h-4 mr-2' />
-											Скачать
-										</Button>
-									</div>
-								</div>
-								<Textarea
-									value={analysis.formatted || ''}
-									readOnly
-									className='min-h-[400px] font-mono text-sm'
-								/>
-								<div className='text-xs text-muted-foreground'>
-									Размер: {formatBytes(analysis.size.formatted)} ({indentSize}{' '}
-									пробела отступ)
-								</div>
-							</TabsContent>
-
-							<TabsContent value='minified' className='space-y-4'>
-								<div className='flex items-center justify-between'>
-									<h4 className='font-medium'>Сжатый JSON</h4>
-									<div className='flex gap-2'>
-										<Button
-											onClick={() =>
-												copyToClipboard(analysis.minified!, 'Сжатый JSON')
-											}
-											size='sm'
-											variant='outline'
-										>
-											<Copy className='w-4 h-4 mr-2' />
-											Копировать
-										</Button>
-										<Button
-											onClick={() =>
-												downloadJSON(analysis.minified!, 'minified.json')
-											}
-											size='sm'
-											variant='outline'
-										>
-											<Download className='w-4 h-4 mr-2' />
-											Скачать
-										</Button>
-									</div>
-								</div>
-								<Textarea
-									value={analysis.minified || ''}
-									readOnly
-									className='min-h-[400px] font-mono text-sm'
-								/>
-								<div className='text-xs text-muted-foreground flex items-center gap-4'>
-									<span>Размер: {formatBytes(analysis.size.minified)}</span>
-									<Badge variant='secondary' className='text-xs'>
-										Экономия:{' '}
-										{Math.round(
-											(1 - analysis.size.minified / analysis.size.original) *
-												100
-										)}
-										%
-									</Badge>
 								</div>
 							</TabsContent>
 						</Tabs>
+					) : (
+						<div className="flex items-center justify-center h-[400px] text-muted-foreground">
+							<div className="text-center space-y-3">
+								<Braces className="h-12 w-12 mx-auto opacity-20" />
+								<p className="text-sm">
+									{analysis?.error ? 'Fix JSON errors to see output' : 'Enter JSON to see output'}
+								</p>
+							</div>
+						</div>
 					)}
-				</Card>
+				</WidgetSection>
 			</div>
 
-			{/* Info Section */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4'>О JSON инструментах</h3>
-				<div className='grid md:grid-cols-2 gap-6 text-sm'>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='font-medium mb-1 flex items-center gap-2'>
-								<Info className='w-4 h-4' />
-								Что такое JSON?
-							</h4>
-							<p className='text-muted-foreground'>
-								JSON (JavaScript Object Notation) - это легкий текстовый формат
-								обмена данными. Он широко используется в веб-разработке для
-								передачи данных между сервером и клиентом.
-							</p>
-						</div>
-						<div>
-							<h4 className='font-medium mb-1'>Зачем валидировать JSON?</h4>
-							<p className='text-muted-foreground'>
-								Невалидный JSON может привести к ошибкам в приложении. Валидация
-								помогает обнаружить синтаксические ошибки до их попадания в
-								production.
-							</p>
-						</div>
-					</div>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='font-medium mb-1'>Форматирование vs Сжатие</h4>
-							<p className='text-muted-foreground'>
-								<strong>Форматирование</strong> добавляет отступы и переносы
-								строк для читаемости.
-								<strong>Сжатие</strong> удаляет лишние пробелы для уменьшения
-								размера файла.
-							</p>
-						</div>
-						<div>
-							<h4 className='font-medium mb-1'>Анализ структуры</h4>
-							<p className='text-muted-foreground'>
-								Инструмент анализирует структуру JSON, подсчитывает количество
-								объектов, массивов, различных типов данных и показывает глубину
-								вложенности.
-							</p>
-						</div>
-					</div>
+			{/* Settings Section */}
+			<WidgetSection icon={Settings2} title={t('sections.settings')} className="mt-6">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<WidgetInput label="Indent Size">
+						<Select value={indentSize} onValueChange={setIndentSize}>
+							<SelectTrigger>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="2">2 spaces</SelectItem>
+								<SelectItem value="4">4 spaces</SelectItem>
+								<SelectItem value="\t">Tab</SelectItem>
+							</SelectContent>
+						</Select>
+					</WidgetInput>
 				</div>
-			</Card>
-		</div>
+			</WidgetSection>
+		</WidgetLayout>
 	)
 }

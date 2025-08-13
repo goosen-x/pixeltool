@@ -5,8 +5,7 @@ import { Type, Image, Download, Copy, Palette, FileText } from 'lucide-react'
 import { toast } from 'sonner'
 import { 
   WidgetContainer, 
-  WidgetInput, 
-  WidgetResult, 
+  WidgetForm, 
   WidgetInfo,
   WidgetShareSection,
   WidgetTips,
@@ -420,7 +419,7 @@ export default function AsciiArtGeneratorPage() {
           </TabsList>
 
           <TabsContent value="text" className="mt-6">
-            <WidgetInput
+            <WidgetForm
               fields={textFields}
               onSubmit={handleTextToAscii}
               submitLabel="Generate ASCII Art"
@@ -462,7 +461,7 @@ export default function AsciiArtGeneratorPage() {
             </Card>
 
             {imagePreview && (
-              <WidgetInput
+              <WidgetForm
                 fields={imageFields}
                 onSubmit={handleImageToAscii}
                 submitLabel="Update ASCII Art"

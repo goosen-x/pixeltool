@@ -8,24 +8,38 @@ const getSessionId = () => {
   if (typeof window === 'undefined') return ''
   
   const SESSION_KEY = 'analytics_session_id'
+  const TAB_KEY = 'analytics_tab_id'
   const SESSION_DURATION = 30 * 60 * 1000 // 30 minutes
   
-  const stored = sessionStorage.getItem(SESSION_KEY)
+  // Get or generate tab ID (unique per tab)
+  let tabId = sessionStorage.getItem(TAB_KEY)
+  if (!tabId) {
+    tabId = Math.random().toString(36).substring(2) + '_tab_' + Date.now().toString(36)
+    sessionStorage.setItem(TAB_KEY, tabId)
+  }
+  
+  // Get or generate session ID (shared across tabs, but we'll append tab ID)
+  const stored = localStorage.getItem(SESSION_KEY)
+  let sessionId = ''
+  
   if (stored) {
     const { id, timestamp } = JSON.parse(stored)
     if (Date.now() - timestamp < SESSION_DURATION) {
-      return id
+      sessionId = id
     }
   }
   
-  // Generate new session ID
-  const newId = Math.random().toString(36).substring(2) + Date.now().toString(36)
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-    id: newId,
-    timestamp: Date.now()
-  }))
+  if (!sessionId) {
+    // Generate new session ID
+    sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36)
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      id: sessionId,
+      timestamp: Date.now()
+    }))
+  }
   
-  return newId
+  // Combine session ID with tab ID for unique identification
+  return `${sessionId}_${tabId}`
 }
 
 interface AnalyticsTrackerProps {
@@ -73,11 +87,12 @@ export function AnalyticsTracker({ widgetId }: AnalyticsTrackerProps) {
     // Track initial view
     trackEvent('view')
     
-    // Track session start
-    const isNewSession = !sessionStorage.getItem('session_started')
+    // Track session start (per tab)
+    const TAB_SESSION_KEY = `session_started_${sessionId}`
+    const isNewSession = !sessionStorage.getItem(TAB_SESSION_KEY)
     if (isNewSession) {
       trackEvent('session_start')
-      sessionStorage.setItem('session_started', 'true')
+      sessionStorage.setItem(TAB_SESSION_KEY, 'true')
     }
     
     // Track session end on page unload

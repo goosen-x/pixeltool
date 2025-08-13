@@ -23,7 +23,7 @@ export function HomePageStructuredData() {
     "author": {
       "@type": "Person",
       "name": "Dmitry Borisenko",
-      "url": "https://github.com/dmitryborisenko"
+      "url": "https://github.com/goosen-x/pixeltool"
     },
     "publisher": {
       "@type": "Organization",

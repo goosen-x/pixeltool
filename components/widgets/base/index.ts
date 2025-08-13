@@ -1,5 +1,5 @@
 export { WidgetContainer } from './WidgetContainer'
 export { WidgetInfo } from './WidgetInfo'
 export { WidgetResult } from './WidgetResult'
-export { WidgetInput } from './WidgetInput'
-export type { InputField } from './WidgetInput'
+export { WidgetInput as WidgetFormLegacy } from './WidgetInput'
+export type { InputField as InputFieldLegacy } from './WidgetInput'

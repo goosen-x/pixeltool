@@ -2,15 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react'
 import QRCode from 'qrcode'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
-import { Download, Copy, Link, Wifi, Smartphone, QrCode } from 'lucide-react'
+import { Download, Copy, Link, Wifi, Smartphone, QrCode, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 
@@ -140,14 +143,31 @@ export default function QRGeneratorPage() {
 		generateQR()
 	}, [qrType, url, qrSize, darkColor, lightColor, errorCorrection, wifiConfig, appStoreConfig])
 
+	// Keyboard shortcuts
+	const shortcuts = [
+		{
+			key: 'd',
+			meta: true,
+			action: downloadQR,
+			description: t('download')
+		},
+		{
+			key: 'c',
+			meta: true,
+			action: copyQRAsImage,
+			description: t('copy')
+		}
+	]
+
 	return (
-		<div className="grid gap-6 lg:grid-cols-3">
+		<WidgetLayout>
+			<div className="grid lg:grid-cols-3 gap-6">
 				{/* Settings */}
-				<Card className="lg:col-span-2">
-					<CardHeader>
-						<CardTitle>{t('settings')}</CardTitle>
-					</CardHeader>
-					<CardContent>
+				<div className="lg:col-span-2">
+					<WidgetSection
+						icon={<Settings className="w-5 h-5" />}
+						title={t('settings.title')}
+					>
 						<Tabs value={qrType} onValueChange={(v) => setQrType(v as QRType)}>
 							<TabsList className="grid w-full grid-cols-3">
 								<TabsTrigger value="url">
@@ -383,41 +403,33 @@ export default function QRGeneratorPage() {
 								</Select>
 							</div>
 						</div>
-					</CardContent>
-				</Card>
+					</WidgetSection>
+				</div>
 
 				{/* Preview */}
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<QrCode className="w-5 h-5" />
-							{t('preview')}
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="flex flex-col items-center space-y-4">
-						<div className="p-4 bg-white rounded-lg">
+				<div>
+					<WidgetSection icon={QrCode} title={t('preview')} className="flex flex-col items-center space-y-6">
+						<div className="p-6 bg-white rounded-2xl shadow-lg">
 							<canvas ref={canvasRef} />
 						</div>
-						<div className="flex gap-2 w-full">
+						<div className="flex gap-2">
 							<Button
-								onClick={downloadQR}
-								className="flex-1"
 								variant="outline"
+								onClick={downloadQR}
 							>
 								<Download className="w-4 h-4 mr-2" />
 								{t('download')}
 							</Button>
 							<Button
 								onClick={copyQRAsImage}
-								className="flex-1 hover:bg-accent hover:text-white"
-								variant="outline"
 							>
 								<Copy className="w-4 h-4 mr-2" />
 								{t('copy')}
 							</Button>
 						</div>
-					</CardContent>
-				</Card>
-		</div>
+					</WidgetSection>
+				</div>
+			</div>
+		</WidgetLayout>
 	)
 }

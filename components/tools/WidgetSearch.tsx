@@ -97,26 +97,6 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 
 	return (
 		<div className="space-y-6">
-			{/* Hero Section */}
-			<div className="text-center max-w-4xl mx-auto">
-				{/* Title with badge */}
-				<div className="flex items-center justify-center gap-3 mb-3">
-					<Badge variant="outline" className="py-1 px-3">
-						<Sparkles className="w-3 h-3 mr-1.5" />
-						<span className="text-xs">59 {t('tools')}</span>
-					</Badge>
-				</div>
-				
-				<h1 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold mb-2">
-					<span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-						{t('title')}
-					</span>
-				</h1>
-				
-				<p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-					{t('description')}
-				</p>
-			</div>
 
 			{/* Search Controls */}
 			<div className="bg-gradient-to-br from-background to-muted/20 rounded-2xl p-4 md:p-6 space-y-4 border border-border/50 shadow-sm backdrop-blur-sm">

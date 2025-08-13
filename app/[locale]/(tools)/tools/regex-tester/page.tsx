@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -277,10 +280,13 @@ export default function RegexTesterPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <WidgetLayout>
       {/* Flavor Selection */}
-      <Card className="p-6">
-        <Label className="text-base mb-3 block">Выберите язык</Label>
+      <WidgetSection
+        icon={<Globe className="h-5 w-5" />}
+        title="Выбор языка"
+        description="Выберите язык программирования для генерации кода"
+      >
         <RadioGroup value={flavor} onValueChange={(value: RegexFlavor) => setFlavor(value)}>
           <div className="grid grid-cols-3 gap-4">
             {(['javascript', 'php', 'python'] as RegexFlavor[]).map((lang) => {
@@ -304,16 +310,18 @@ export default function RegexTesterPage() {
             })}
           </div>
         </RadioGroup>
-      </Card>
+      </WidgetSection>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main Editor */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="p-6">
+          <WidgetSection
+            icon={<Regex className="h-5 w-5" />}
+            title="Тестер регулярных выражений"
+          >
             <div className="space-y-4">
               {/* Pattern Input */}
-              <div>
-                <Label htmlFor="pattern">Регулярное выражение</Label>
+              <WidgetInput label="Регулярное выражение">
                 <div className="relative mt-1">
                   <Input
                     id="pattern"
@@ -336,11 +344,10 @@ export default function RegexTesterPage() {
                 {error && (
                   <p className="text-sm text-red-500 mt-1">{error}</p>
                 )}
-              </div>
+              </WidgetInput>
 
               {/* Flags */}
-              <div>
-                <Label>Флаги</Label>
+              <WidgetInput label="Флаги">
                 <div className="flex flex-wrap gap-2 mt-2">
                   {REGEX_FLAGS[flavor].map(({ flag, name, description }) => (
                     <Button
@@ -355,11 +362,10 @@ export default function RegexTesterPage() {
                     </Button>
                   ))}
                 </div>
-              </div>
+              </WidgetInput>
 
               {/* Test Text */}
-              <div>
-                <Label htmlFor="test-text">Тестовый текст</Label>
+              <WidgetInput label="Тестовый текст">
                 <Textarea
                   id="test-text"
                   value={testText}
@@ -368,54 +374,65 @@ export default function RegexTesterPage() {
                   className="font-mono mt-1"
                   rows={6}
                 />
-              </div>
+              </WidgetInput>
 
               {/* Results */}
               {testText && (
-                <div>
-                  <Label>Результат</Label>
-                  <div 
-                    className="mt-1 p-4 rounded-lg bg-muted font-mono text-sm whitespace-pre-wrap break-all"
-                    dangerouslySetInnerHTML={{ __html: highlightedText }}
-                  />
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-sm text-muted-foreground">
-                      Найдено совпадений: <strong>{matches.length}</strong>
-                    </span>
+                <WidgetOutput
+                  gradientFrom="from-green-500/10"
+                  gradientTo="to-blue-500/10"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Результат</span>
+                      <Badge variant="secondary">
+                        Совпадений: {matches.length}
+                      </Badge>
+                    </div>
+                    <div 
+                      className="p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border"
+                      dangerouslySetInnerHTML={{ __html: highlightedText }}
+                    />
                   </div>
-                </div>
+                </WidgetOutput>
               )}
 
               {/* Replace Mode */}
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="replace-mode"
-                  checked={showReplace}
-                  onCheckedChange={setShowReplace}
-                />
-                <Label htmlFor="replace-mode">Режим замены</Label>
-              </div>
+              <WidgetInput label="Режим замены">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="replace-mode"
+                    checked={showReplace}
+                    onCheckedChange={setShowReplace}
+                  />
+                  <Label htmlFor="replace-mode">Включить режим замены</Label>
+                </div>
+              </WidgetInput>
 
               {showReplace && (
                 <>
-                  <div>
-                    <Label htmlFor="replace-pattern">Заменить на</Label>
+                  <WidgetInput label="Заменить на">
                     <Input
                       id="replace-pattern"
                       value={replacePattern}
                       onChange={(e) => setReplacePattern(e.target.value)}
                       placeholder="Например: $1 или \1"
-                      className="font-mono mt-1"
+                      className="font-mono"
                     />
-                  </div>
+                  </WidgetInput>
 
                   {replacedText && (
-                    <div>
-                      <Label>Результат замены</Label>
-                      <div className="mt-1 p-4 rounded-lg bg-muted font-mono text-sm whitespace-pre-wrap break-all">
-                        {replacedText}
+                    <WidgetOutput
+                      gradientFrom="from-purple-500/10"
+                      gradientTo="to-pink-500/10"
+                    >
+                      <div className="space-y-2">
+                        <span className="text-sm font-medium">Результат замены</span>
+                        <div className="p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border">
+                          {replacedText}
+                        </div>
                       </div>
-                    </div>
+                    </WidgetOutput>
                   )}
                 </>
               )}
@@ -436,15 +453,14 @@ export default function RegexTesterPage() {
                 </Button>
               </div>
             </div>
-          </Card>
+          </WidgetSection>
 
           {/* Match Details */}
           {matches.length > 0 && (
-            <Card className="p-6">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Search className="w-5 h-5" />
-                Детали совпадений
-              </h3>
+            <WidgetSection
+              icon={<Search className="h-5 w-5" />}
+              title="Детали совпадений"
+            >
               <div className="space-y-2">
                 {matches.map((match, index) => (
                   <div key={index} className="p-3 rounded-lg bg-muted/50 font-mono text-sm">
@@ -470,18 +486,17 @@ export default function RegexTesterPage() {
                   </div>
                 ))}
               </div>
-            </Card>
+            </WidgetSection>
           )}
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Common Patterns */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Lightbulb className="w-5 h-5" />
-              Готовые шаблоны
-            </h3>
+          <WidgetSection
+            icon={<Lightbulb className="h-5 w-5" />}
+            title="Готовые шаблоны"
+          >
             <div className="space-y-4">
               {['validation', 'numbers', 'text', 'html', 'code'].map(category => (
                 <div key={category}>
@@ -510,14 +525,13 @@ export default function RegexTesterPage() {
                 </div>
               ))}
             </div>
-          </Card>
+          </WidgetSection>
 
           {/* Quick Reference */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              Справочник
-            </h3>
+          <WidgetSection
+            icon={<BookOpen className="h-5 w-5" />}
+            title="Справочник"
+          >
             <div className="space-y-3 text-sm">
               <div>
                 <h4 className="font-medium mb-1">Символьные классы</h4>
@@ -556,14 +570,13 @@ export default function RegexTesterPage() {
                 </div>
               </div>
             </div>
-          </Card>
+          </WidgetSection>
 
           {/* Tips */}
-          <Card className="p-6 bg-muted/50">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <Info className="w-4 h-4" />
-              Советы
-            </h3>
+          <WidgetSection
+            icon={<Info className="h-5 w-5" />}
+            title="Советы"
+          >
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Используйте группы для извлечения частей текста</li>
               <li>• Флаг &apos;g&apos; для поиска всех совпадений</li>
@@ -571,9 +584,9 @@ export default function RegexTesterPage() {
               <li>• Тестируйте на разных примерах текста</li>
               <li>• Именованные группы упрощают работу с результатами</li>
             </ul>
-          </Card>
+          </WidgetSection>
         </div>
       </div>
-    </div>
+    </WidgetLayout>
   )
 }

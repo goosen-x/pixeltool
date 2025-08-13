@@ -161,23 +161,6 @@ export const widgets: Widget[] = [
 					answer:
 						'Используйте инструменты разработчика в браузере для изменения размера viewport и наблюдения за масштабированием. Живой превью в калькуляторе показывает, как будет выглядеть текст при разных размерах экрана.'
 				}
-			],
-			he: [
-				{
-					question: 'מהי פונקציית CSS clamp()?',
-					answer:
-						'פונקציית CSS clamp() מאפשרת להגדיר ערך שמתאים את עצמו בין מינימום למקסימום, מושלם לטיפוגרפיה רספונסיבית.'
-				},
-				{
-					question: 'איך מחשבים את הערכים האידיאליים?',
-					answer:
-						'הזן את גודל הגופן המינימלי והמקסימלי יחד עם רוחב התצוגה. המחשבון יטפל בחישובים המורכבים עבורך.'
-				},
-				{
-					question: 'מתי להשתמש ב-clamp() במקום media queries?',
-					answer:
-						'השתמש ב-clamp() לשינוי גודל חלק ונזיל בין גדלי מסך. Media queries טובים יותר לשינויים חדים בנקודות עצירה ספציפיות או שינויי פריסה.'
-				}
 			]
 		}
 	},
@@ -215,13 +198,23 @@ export const widgets: Widget[] = [
 					question: 'How do I center content with Flexbox?',
 					answer:
 						'Set justify-content: center for horizontal centering and align-items: center for vertical centering on the flex container.'
+				},
+				{
+					question: 'Can I nest Flexbox containers?',
+					answer:
+						'Yes, you can nest Flexbox containers to create complex layouts. Each child can also be a flex container with its own rules.'
+				},
+				{
+					question: 'What are the main Flexbox properties?',
+					answer:
+						'Some key properties include display: flex, flex-direction, justify-content, align-items, flex-wrap, and align-self.'
 				}
 			],
 			ru: [
 				{
 					question: 'Что такое CSS Flexbox?',
 					answer:
-						'Flexbox - это модель компоновки CSS, которая позволяет располагать элементы в гибком контейнере с мощными опциями выравнивания.'
+						'Flexbox — это модель компоновки CSS, которая позволяет располагать элементы в гибком контейнере с мощными опциями выравнивания.'
 				},
 				{
 					question: 'Когда использовать Flexbox вместо Grid?',
@@ -232,23 +225,16 @@ export const widgets: Widget[] = [
 					question: 'Как центрировать контент с помощью Flexbox?',
 					answer:
 						'Установите justify-content: center для горизонтального центрирования и align-items: center для вертикального на flex-контейнере.'
-				}
-			],
-			he: [
-				{
-					question: 'מה זה CSS Flexbox?',
-					answer:
-						'Flexbox הוא מודל פריסה של CSS המאפשר לסדר אלמנטים במכל גמיש עם אפשרויות יישור חזקות.'
 				},
 				{
-					question: 'מתי להשתמש ב-Flexbox במקום Grid?',
+					question: 'Можно ли вкладывать Flexbox-контейнеры?',
 					answer:
-						'השתמש ב-Flexbox לפריסות חד-ממדיות (שורה או עמודה) וב-Grid לפריסות דו-ממדיות. Flexbox מושלם לסרגלי ניווט, פריסות כרטיסים ומרכוז תוכן.'
+						'Да, можно. Вложенные flex-контейнеры позволяют создавать сложные макеты, где каждый дочерний элемент также может иметь свои flex-правила.'
 				},
 				{
-					question: 'איך ממרכזים תוכן עם Flexbox?',
+					question: 'Какие основные свойства Flexbox?',
 					answer:
-						'הגדר justify-content: center למרכוז אופקי ו-align-items: center למרכוז אנכי על מכל ה-flex.'
+						'Ключевые свойства: display: flex, flex-direction, justify-content, align-items, flex-wrap и align-self.'
 				}
 			]
 		}
@@ -1729,9 +1715,21 @@ export const widgets: Widget[] = [
 		translationKey: 'textCaseConverter',
 		path: 'text-case-converter',
 		gradient: 'from-indigo-500 to-purple-600',
-		recommendedTools: ['text-counter', 'social-media-formatter', 'fancy-text-generator'],
+		recommendedTools: [
+			'text-counter',
+			'social-media-formatter',
+			'fancy-text-generator'
+		],
 		difficulty: 'beginner',
-		tags: ['text', 'case', 'converter', 'uppercase', 'lowercase', 'camelCase', 'snake_case'],
+		tags: [
+			'text',
+			'case',
+			'converter',
+			'uppercase',
+			'lowercase',
+			'camelCase',
+			'snake_case'
+		],
 		useCase:
 			'Convert text between different letter cases and formatting styles',
 		metaDescription:
@@ -1800,11 +1798,21 @@ export const widgets: Widget[] = [
 		translationKey: 'imageSizeChecker',
 		path: 'image-size-checker',
 		gradient: 'from-cyan-500 to-blue-600',
-		recommendedTools: ['favicon-generator', 'qr-generator', 'youtube-thumbnail-downloader'],
+		recommendedTools: [
+			'favicon-generator',
+			'qr-generator',
+			'youtube-thumbnail-downloader'
+		],
 		difficulty: 'beginner',
-		tags: ['image', 'size', 'dimensions', 'checker', 'analyzer', 'aspect-ratio'],
-		useCase:
-			'Check image dimensions, file size, and aspect ratio instantly',
+		tags: [
+			'image',
+			'size',
+			'dimensions',
+			'checker',
+			'analyzer',
+			'aspect-ratio'
+		],
+		useCase: 'Check image dimensions, file size, and aspect ratio instantly',
 		metaDescription:
 			'Image size checker and analyzer. Check dimensions, file size, format, and aspect ratio of multiple images.',
 		faqs: {
@@ -1871,11 +1879,14 @@ export const widgets: Widget[] = [
 		translationKey: 'htmlXmlParser',
 		path: 'html-xml-parser',
 		gradient: 'from-amber-500 to-orange-600',
-		recommendedTools: ['json-yaml-formatter', 'javascript-syntax-checker', 'php-syntax-checker'],
+		recommendedTools: [
+			'json-yaml-formatter',
+			'javascript-syntax-checker',
+			'php-syntax-checker'
+		],
 		difficulty: 'intermediate',
 		tags: ['html', 'xml', 'parser', 'formatter', 'validator', 'minify'],
-		useCase:
-			'Parse, format, validate, and minify HTML and XML documents',
+		useCase: 'Parse, format, validate, and minify HTML and XML documents',
 		metaDescription:
 			'HTML/XML parser and formatter. Beautify, minify, validate, and extract data from HTML and XML documents.',
 		faqs: {
@@ -4847,44 +4858,60 @@ export const widgets: Widget[] = [
 		gradient: 'from-purple-500 to-indigo-500',
 		recommendedTools: [],
 		difficulty: 'intermediate',
-		tags: ['analytics', 'dashboard', 'statistics', 'metrics', 'usage', 'performance'],
+		tags: [
+			'analytics',
+			'dashboard',
+			'statistics',
+			'metrics',
+			'usage',
+			'performance'
+		],
 		useCase: 'Monitor and analyze usage metrics for all widgets in the toolkit',
-		metaDescription: 'Analytics dashboard for tracking widget usage, performance metrics, and user engagement across all tools.',
+		metaDescription:
+			'Analytics dashboard for tracking widget usage, performance metrics, and user engagement across all tools.',
 		faqs: {
 			en: [
 				{
 					question: 'What metrics are tracked?',
-					answer: 'The dashboard tracks page views, unique sessions, average session duration, hourly usage patterns, and real-time active users for each widget.'
+					answer:
+						'The dashboard tracks page views, unique sessions, average session duration, hourly usage patterns, and real-time active users for each widget.'
 				},
 				{
 					question: 'How often is the data updated?',
-					answer: 'Analytics data is updated in real-time. Page views and session data are tracked immediately, while aggregated statistics are refreshed every few minutes.'
+					answer:
+						'Analytics data is updated in real-time. Page views and session data are tracked immediately, while aggregated statistics are refreshed every few minutes.'
 				},
 				{
 					question: 'What time periods can I analyze?',
-					answer: 'You can view analytics for the last 24 hours, 7 days, or 30 days. The dashboard automatically adjusts the granularity of data based on the selected timeframe.'
+					answer:
+						'You can view analytics for the last 24 hours, 7 days, or 30 days. The dashboard automatically adjusts the granularity of data based on the selected timeframe.'
 				},
 				{
 					question: 'Is user privacy protected?',
-					answer: 'Yes, all analytics are completely anonymous. We only track aggregated usage patterns and performance metrics without collecting any personal information.'
+					answer:
+						'Yes, all analytics are completely anonymous. We only track aggregated usage patterns and performance metrics without collecting any personal information.'
 				}
 			],
 			ru: [
 				{
 					question: 'Какие метрики отслеживаются?',
-					answer: 'Панель отслеживает просмотры страниц, уникальные сессии, среднюю длительность сессии, почасовые паттерны использования и активных пользователей в реальном времени для каждого виджета.'
+					answer:
+						'Панель отслеживает просмотры страниц, уникальные сессии, среднюю длительность сессии, почасовые паттерны использования и активных пользователей в реальном времени для каждого виджета.'
 				},
 				{
 					question: 'Как часто обновляются данные?',
-					answer: 'Аналитические данные обновляются в реальном времени. Просмотры страниц и данные сессий отслеживаются немедленно, а агрегированная статистика обновляется каждые несколько минут.'
+					answer:
+						'Аналитические данные обновляются в реальном времени. Просмотры страниц и данные сессий отслеживаются немедленно, а агрегированная статистика обновляется каждые несколько минут.'
 				},
 				{
 					question: 'Какие временные периоды можно анализировать?',
-					answer: 'Вы можете просматривать аналитику за последние 24 часа, 7 дней или 30 дней. Панель автоматически настраивает детализацию данных в зависимости от выбранного периода.'
+					answer:
+						'Вы можете просматривать аналитику за последние 24 часа, 7 дней или 30 дней. Панель автоматически настраивает детализацию данных в зависимости от выбранного периода.'
 				},
 				{
 					question: 'Защищена ли конфиденциальность пользователей?',
-					answer: 'Да, вся аналитика полностью анонимна. Мы отслеживаем только агрегированные паттерны использования и метрики производительности без сбора персональной информации.'
+					answer:
+						'Да, вся аналитика полностью анонимна. Мы отслеживаем только агрегированные паттерны использования и метрики производительности без сбора персональной информации.'
 				}
 			],
 			he: []
@@ -4897,46 +4924,67 @@ export const widgets: Widget[] = [
 		translationKey: 'asciiArtGenerator',
 		path: 'ascii-art-generator',
 		gradient: 'from-green-500 to-emerald-600',
-		recommendedTools: ['text-case-converter', 'emoji-list', 'fancy-text-generator'],
+		recommendedTools: [
+			'text-case-converter',
+			'emoji-list',
+			'fancy-text-generator'
+		],
 		difficulty: 'intermediate',
-		tags: ['ascii', 'art', 'text', 'image', 'converter', 'generator', 'creative'],
+		tags: [
+			'ascii',
+			'art',
+			'text',
+			'image',
+			'converter',
+			'generator',
+			'creative'
+		],
 		useCase: 'Convert text and images to ASCII art, or use pre-made patterns',
-		metaDescription: 'ASCII art generator - convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.',
+		metaDescription:
+			'ASCII art generator - convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.',
 		faqs: {
 			en: [
 				{
 					question: 'What types of ASCII art can I create?',
-					answer: 'You can create text-based ASCII art with different font styles, convert images to ASCII characters, or choose from a library of pre-made patterns including animals, objects, and symbols.'
+					answer:
+						'You can create text-based ASCII art with different font styles, convert images to ASCII characters, or choose from a library of pre-made patterns including animals, objects, and symbols.'
 				},
 				{
 					question: 'What image formats are supported?',
-					answer: 'The tool supports all common image formats including JPG, PNG, GIF, and WebP. For best results, use images with good contrast and simple subjects.'
+					answer:
+						'The tool supports all common image formats including JPG, PNG, GIF, and WebP. For best results, use images with good contrast and simple subjects.'
 				},
 				{
 					question: 'Can I customize the ASCII output?',
-					answer: 'Yes! For images, you can adjust the width, choose different character sets, and invert brightness. For text, you can select from multiple font styles.'
+					answer:
+						'Yes! For images, you can adjust the width, choose different character sets, and invert brightness. For text, you can select from multiple font styles.'
 				},
 				{
 					question: 'How can I save or share my ASCII art?',
-					answer: 'You can copy the ASCII art to clipboard, download it as a text file, or save it as a PNG image. The image export preserves the monospace formatting.'
+					answer:
+						'You can copy the ASCII art to clipboard, download it as a text file, or save it as a PNG image. The image export preserves the monospace formatting.'
 				}
 			],
 			ru: [
 				{
 					question: 'Какие типы ASCII-арта можно создавать?',
-					answer: 'Вы можете создавать текстовый ASCII-арт с разными стилями шрифтов, конвертировать изображения в ASCII-символы или выбирать из библиотеки готовых паттернов, включая животных, объекты и символы.'
+					answer:
+						'Вы можете создавать текстовый ASCII-арт с разными стилями шрифтов, конвертировать изображения в ASCII-символы или выбирать из библиотеки готовых паттернов, включая животных, объекты и символы.'
 				},
 				{
 					question: 'Какие форматы изображений поддерживаются?',
-					answer: 'Инструмент поддерживает все распространенные форматы изображений, включая JPG, PNG, GIF и WebP. Для лучших результатов используйте изображения с хорошим контрастом и простыми объектами.'
+					answer:
+						'Инструмент поддерживает все распространенные форматы изображений, включая JPG, PNG, GIF и WebP. Для лучших результатов используйте изображения с хорошим контрастом и простыми объектами.'
 				},
 				{
 					question: 'Можно ли настроить вывод ASCII?',
-					answer: 'Да! Для изображений можно настроить ширину, выбрать разные наборы символов и инвертировать яркость. Для текста можно выбрать из нескольких стилей шрифтов.'
+					answer:
+						'Да! Для изображений можно настроить ширину, выбрать разные наборы символов и инвертировать яркость. Для текста можно выбрать из нескольких стилей шрифтов.'
 				},
 				{
 					question: 'Как сохранить или поделиться ASCII-артом?',
-					answer: 'Вы можете скопировать ASCII-арт в буфер обмена, скачать как текстовый файл или сохранить как изображение PNG. Экспорт изображения сохраняет моноширинное форматирование.'
+					answer:
+						'Вы можете скопировать ASCII-арт в буфер обмена, скачать как текстовый файл или сохранить как изображение PNG. Экспорт изображения сохраняет моноширинное форматирование.'
 				}
 			],
 			he: []
