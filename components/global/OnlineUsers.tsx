@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Users, Activity } from 'lucide-react'
 
 export const OnlineUsers = () => {
-	const [onlineCount, setOnlineCount] = useState(0)
+	const [onlineCount, setOnlineCount] = useState(1)
 	const [isBlinking, setIsBlinking] = useState(true)
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -21,8 +21,9 @@ export const OnlineUsers = () => {
 				})
 				if (response.ok) {
 					const data = await response.json()
-					setOnlineCount(data.onlineUsers)
-					console.log('🔄 Online users updated:', data.onlineUsers)
+					// Ensure minimum of 1 user (current user)
+					setOnlineCount(Math.max(1, data.onlineUsers))
+					console.log('🔄 Online users updated:', Math.max(1, data.onlineUsers))
 					
 					// Добавляем эффект мигания при обновлении
 					setIsBlinking(true)
@@ -30,8 +31,8 @@ export const OnlineUsers = () => {
 				}
 			} catch (error) {
 				console.error('Failed to fetch online users:', error)
-				// Fallback to a reasonable number if API fails
-				setOnlineCount(Math.floor(Math.random() * 20) + 5)
+				// Fallback to a reasonable number if API fails (minimum 1)
+				setOnlineCount(Math.max(1, Math.floor(Math.random() * 20) + 5))
 			} finally {
 				setIsLoading(false)
 			}

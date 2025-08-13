@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react'
 import { useLocale } from 'next-intl'
+import { useCookieConsent } from './useCookieConsent'
 
 // Generate or retrieve session ID (30 minute sessions)
 const getSessionId = () => {
@@ -42,6 +43,7 @@ interface AnalyticsEvent {
 
 export function useAnalytics(widgetId: string) {
   const locale = useLocale()
+  const { hasConsent } = useCookieConsent()
   const sessionStartTime = useRef<number>(Date.now())
   const sessionId = useRef<string>('')
   const hasTrackedView = useRef<boolean>(false)
@@ -54,6 +56,12 @@ export function useAnalytics(widgetId: string) {
   // Track analytics event
   const trackEvent = useCallback(async (eventType: AnalyticsEvent['eventType'], metadata?: Record<string, any>) => {
     try {
+      // Check if user has given consent for analytics
+      if (!hasConsent) {
+        console.log('📊 Analytics blocked: User has not given consent')
+        return
+      }
+
       if (!sessionId.current) return
 
       const event: AnalyticsEvent = {
@@ -92,7 +100,7 @@ export function useAnalytics(widgetId: string) {
     } catch (error) {
       console.warn('Analytics tracking error:', error)
     }
-  }, [widgetId, locale])
+  }, [widgetId, locale, hasConsent])
 
   // Track page view
   const trackView = useCallback(() => {
@@ -143,19 +151,30 @@ export function useAnalytics(widgetId: string) {
 
   // Auto-track view and session start on mount
   useEffect(() => {
-    if (widgetId) {
-      trackView()
-      trackSessionStart()
+    if (widgetId && !hasTrackedView.current) {
+      // Track view only once
+      trackEvent('view')
+      hasTrackedView.current = true
+      
+      // Track session start
+      sessionStartTime.current = Date.now()
+      trackEvent('session_start')
 
       // Track session end on page unload
       const handleBeforeUnload = () => {
-        trackSessionEnd()
+        const sessionDuration = Date.now() - sessionStartTime.current
+        trackEvent('session_end', { 
+          sessionDuration: Math.round(sessionDuration / 1000) // in seconds
+        })
       }
 
       // Track session end on visibility change (when tab becomes hidden)
       const handleVisibilityChange = () => {
         if (document.hidden) {
-          trackSessionEnd()
+          const sessionDuration = Date.now() - sessionStartTime.current
+          trackEvent('session_end', { 
+            sessionDuration: Math.round(sessionDuration / 1000) // in seconds
+          })
         }
       }
 
@@ -165,10 +184,13 @@ export function useAnalytics(widgetId: string) {
       return () => {
         window.removeEventListener('beforeunload', handleBeforeUnload)
         document.removeEventListener('visibilitychange', handleVisibilityChange)
-        trackSessionEnd()
+        const sessionDuration = Date.now() - sessionStartTime.current
+        trackEvent('session_end', { 
+          sessionDuration: Math.round(sessionDuration / 1000) // in seconds
+        })
       }
     }
-  }, [widgetId, trackView, trackSessionStart, trackSessionEnd])
+  }, [widgetId, trackEvent])
 
   return {
     trackEvent,

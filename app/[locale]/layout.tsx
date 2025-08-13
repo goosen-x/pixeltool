@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { Footer } from '@/components/layout'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { Inter, Open_Sans } from 'next/font/google'
+import { interFont, openSansFont } from '@/lib/fonts/fonts'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
@@ -17,22 +17,9 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegistration'
 import { WebVitals } from '@/components/analytics/WebVitals'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
+import { CookieConsent } from '@/components/global/CookieConsent'
 
-// Font configurations
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-  fallback: ['system-ui', 'arial'],
-})
-
-const openSans = Open_Sans({ 
-  subsets: ['latin'],
-  variable: '--font-heading',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
-  fallback: ['system-ui', 'arial'],
-})
+// Fonts are now imported from lib/fonts/fonts.ts
 
 interface Props {
 	children: ReactNode
@@ -149,8 +136,8 @@ export default async function RootLayout({
 			lang={locale}
 			className={cn(
 				"scroll-smooth scroll-pt-24",
-				inter.variable,
-				openSans.variable
+				interFont.variable,
+				openSansFont.variable
 			)}
 			suppressHydrationWarning
 		>
@@ -158,7 +145,7 @@ export default async function RootLayout({
 				<body
 					className={cn(
 						'min-h-screen bg-background font-sans antialiased',
-						inter.className
+						interFont.className
 					)}
 				>
 					<ThemeProvider
@@ -173,6 +160,7 @@ export default async function RootLayout({
 						{children}
 						<ScrollToTop />
 						<Toaster />
+						<CookieConsent />
 					</ThemeProvider>
 				</body>
 			</NextIntlClientProvider>

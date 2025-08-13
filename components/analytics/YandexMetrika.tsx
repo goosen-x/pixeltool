@@ -1,9 +1,14 @@
+'use client'
+
 import Script from 'next/script'
+import { useCookieConsent } from '@/lib/hooks/useCookieConsent'
 
 const YandexMetrika = () => {
 	const metrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID
+	const { hasConsent, isLoading } = useCookieConsent()
 
-	if (!metrikaId) {
+	// Don't load Yandex Metrika if user hasn't consented or while checking consent
+	if (!metrikaId || !hasConsent || isLoading) {
 		return null
 	}
 

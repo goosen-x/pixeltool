@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
@@ -21,6 +19,11 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { useTranslations } from 'next-intl'
 
 type TemperatureUnit = 'celsius' | 'fahrenheit' | 'kelvin' | 'rankine' | 'reaumur'
 
@@ -39,12 +42,13 @@ interface ConversionResult {
   reaumur: number
 }
 
-const TEMPERATURE_UNITS: Record<TemperatureUnit, TemperatureValue> = {
-  celsius: { unit: 'celsius', value: 0, symbol: '°C', name: 'Цельсий' },
-  fahrenheit: { unit: 'fahrenheit', value: 0, symbol: '°F', name: 'Фаренгейт' },
-  kelvin: { unit: 'kelvin', value: 0, symbol: 'K', name: 'Кельвин' },
-  rankine: { unit: 'rankine', value: 0, symbol: '°R', name: 'Ранкин' },
-  reaumur: { unit: 'reaumur', value: 0, symbol: '°Ré', name: 'Реомюр' }
+// Temperature units symbols only (names will come from translations)
+const TEMPERATURE_SYMBOLS: Record<TemperatureUnit, string> = {
+  celsius: '°C',
+  fahrenheit: '°F',
+  kelvin: 'K',
+  rankine: '°R',
+  reaumur: '°Ré'
 }
 
 const TEMPERATURE_REFERENCES = [
@@ -70,6 +74,7 @@ const QUICK_CONVERSIONS = [
 ]
 
 export default function TemperatureConverterPage() {
+  const t = useTranslations('widgets.temperatureConverter')
   const [inputValue, setInputValue] = useState<string>('')
   const [fromUnit, setFromUnit] = useState<TemperatureUnit>('celsius')
   const [result, setResult] = useState<ConversionResult | null>(null)
@@ -129,7 +134,7 @@ export default function TemperatureConverterPage() {
 
         setResult(conversionResult)
       } catch (error) {
-        toast.error('Ошибка при конвертации температуры')
+        toast.error(t('toast.conversionError'))
         console.error('Temperature conversion error:', error)
       } finally {
         setIsConverting(false)
@@ -145,7 +150,7 @@ export default function TemperatureConverterPage() {
 
   const copyToClipboard = (value: string, unit: string) => {
     navigator.clipboard.writeText(`${value}${unit}`)
-    toast.success('Скопировано в буфер обмена!')
+    toast.success(t('toast.copied'))
   }
 
   const copyAllResults = () => {
@@ -175,14 +180,14 @@ export default function TemperatureConverterPage() {
   const loadQuickConversion = (celsius: number) => {
     setInputValue(celsius.toString())
     setFromUnit('celsius')
-    toast.success('Загружено значение')
+    toast.success(t('toast.valueLoaded'))
   }
 
   const resetAll = () => {
     setInputValue('')
     setResult(null)
     setFromUnit('celsius')
-    toast.success('Сброшено')
+    toast.success(t('toast.reset'))
   }
 
   const getTemperatureColor = (celsius: number): string => {
@@ -226,59 +231,83 @@ export default function TemperatureConverterPage() {
       .slice(0, 3)
   }
 
+  // Helper functions for translation keys
+  const getTemperatureDescriptionKey = (celsius: number): string => {
+    if (celsius < -100) return 'extremelyCold'
+    if (celsius < -50) return 'veryCold'
+    if (celsius < 0) return 'belowZero'
+    if (celsius < 10) return 'cold'
+    if (celsius < 20) return 'cool'
+    if (celsius < 25) return 'comfortable'
+    if (celsius < 30) return 'warm'
+    if (celsius < 40) return 'hot'
+    if (celsius < 100) return 'veryHot'
+    if (celsius < 200) return 'boiling'
+    return 'extremelyHot'
+  }
+
+  const getReferencesKey = (name: string): string => {
+    const keyMap: Record<string, string> = {
+      'Абсолютный ноль': 'absoluteZero',
+      'Температура жидкого азота': 'liquidNitrogen', 
+      'Сухой лед (сублимация)': 'dryIce',
+      'Замерзание воды': 'waterFreeze',
+      'Комнатная температура': 'roomTemp',
+      'Температура человека': 'bodyTemp',
+      'Кипение воды': 'waterBoil',
+      'Температура пара': 'steam',
+      'Температура духовки': 'oven',
+      'Температура пайки': 'soldering'
+    }
+    return keyMap[name] || name.toLowerCase()
+  }
+
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <WidgetLayout>
       {/* Input Form */}
-      <Card className="p-6">
+      <WidgetSection title={t('sections.input')}>
         <div className="grid md:grid-cols-3 gap-6 items-end">
-          <div>
-            <Label htmlFor="temperature-input" className="mb-2 block">
-              Температура
-            </Label>
+          <WidgetInput label={t('inputs.temperature.label')} description={t('inputs.temperature.description')}>
             <Input
-              id="temperature-input"
               type="number"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Введите значение"
+              placeholder={t('inputs.temperature.placeholder')}
               className="text-lg"
               step="any"
             />
-          </div>
+          </WidgetInput>
 
-          <div>
-            <Label htmlFor="from-unit" className="mb-2 block">
-              Единица измерения
-            </Label>
+          <WidgetInput label={t('inputs.unit.label')} description={t('inputs.unit.description')}>
             <Select value={fromUnit} onValueChange={(value: TemperatureUnit) => setFromUnit(value)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(TEMPERATURE_UNITS).map((unit) => (
-                  <SelectItem key={unit.unit} value={unit.unit}>
-                    {unit.name} ({unit.symbol})
+                {(['celsius', 'fahrenheit', 'kelvin', 'rankine', 'reaumur'] as TemperatureUnit[]).map((unit) => (
+                  <SelectItem key={unit} value={unit}>
+                    {t(`units.${unit}`)} ({TEMPERATURE_SYMBOLS[unit]})
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </WidgetInput>
 
           <div className="flex gap-2">
             <Button onClick={swapUnits} variant="outline" size="sm">
               <ArrowRightLeft className="w-4 h-4 mr-2" />
-              Поменять
+              {t('actions.swap')}
             </Button>
             <Button onClick={resetAll} variant="outline" size="sm">
               <RefreshCw className="w-4 h-4 mr-2" />
-              Сброс
+              {t('actions.reset')}
             </Button>
           </div>
         </div>
 
         {/* Quick conversions */}
         <div className="mt-6">
-          <Label className="mb-3 block text-sm">Быстрые значения:</Label>
+          <label className="mb-3 block text-sm font-medium">{t('sections.quickValues')}</label>
           <div className="flex gap-2 flex-wrap">
             {QUICK_CONVERSIONS.map((quick, index) => (
               <Button
@@ -287,139 +316,121 @@ export default function TemperatureConverterPage() {
                 variant="outline"
                 size="sm"
               >
-                {quick.name}
+                {t(`quickValues.${quick.name.toLowerCase().replace(' ', '')}`)}
               </Button>
             ))}
           </div>
         </div>
-      </Card>
+      </WidgetSection>
 
       {/* Results */}
       {result && (
-        <>
-          {/* Main conversion display */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-lg flex items-center gap-2">
-                <Thermometer className="w-5 h-5" />
-                Результат конвертации
-              </h3>
-              <Button onClick={copyAllResults} variant="outline" size="sm">
-                <Copy className="w-4 h-4 mr-2" />
-                Копировать все
-              </Button>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(result).map(([unit, value]) => {
-                const unitInfo = TEMPERATURE_UNITS[unit as TemperatureUnit]
-                const formattedValue = formatTemperature(value, unit as TemperatureUnit)
-                const colorClass = unit === 'celsius' ? getTemperatureColor(value) : 'text-foreground'
-                
-                return (
-                  <div
-                    key={unit}
-                    className={cn(
-                      "p-4 rounded-lg border transition-colors",
-                      fromUnit === unit 
-                        ? "bg-primary/10 border-primary/20" 
-                        : "bg-muted/30 hover:bg-muted/50"
-                    )}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {unitInfo.name}
-                      </span>
-                      <Button
-                        onClick={() => copyToClipboard(formattedValue, unitInfo.symbol)}
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                      >
-                        <Copy className="w-3 h-3" />
-                      </Button>
-                    </div>
-                    <div className={cn("text-2xl font-bold", colorClass)}>
-                      {formattedValue}{unitInfo.symbol}
-                    </div>
+        <WidgetSection title={t('sections.results')}>
+          <WidgetOutput>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(result).map(([unit, value]) => {
+              const symbol = TEMPERATURE_SYMBOLS[unit as TemperatureUnit]
+              const formattedValue = formatTemperature(value, unit as TemperatureUnit)
+              const colorClass = unit === 'celsius' ? getTemperatureColor(value) : 'text-foreground'
+              
+              return (
+                <div
+                  key={unit}
+                  className={cn(
+                    "p-4 rounded-lg border transition-colors",
+                    fromUnit === unit 
+                      ? "bg-primary/10 border-primary/20" 
+                      : "bg-muted/30 hover:bg-muted/50"
+                  )}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {t(`units.${unit}`)}
+                    </span>
+                    <Button
+                      onClick={() => copyToClipboard(formattedValue, symbol)}
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                    >
+                      <Copy className="w-3 h-3" />
+                    </Button>
                   </div>
-                )
-              })}
-            </div>
-          </Card>
-
-          {/* Temperature context */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              {getTemperatureIcon(result.celsius)}
-              Контекст температуры
-            </h3>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border">
-                <div className="flex items-center gap-3 mb-2">
-                  {getTemperatureIcon(result.celsius)}
-                  <span className={cn("font-semibold", getTemperatureColor(result.celsius))}>
-                    {getTemperatureDescription(result.celsius)}
-                  </span>
+                  <div className={cn("text-2xl font-bold", colorClass)}>
+                    {formattedValue}{symbol}
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {Math.abs(result.celsius) < 273.15 
-                    ? `На ${(273.15 + result.celsius).toFixed(1)}K выше абсолютного нуля`
-                    : 'Выше абсолютного нуля'
-                  }
-                </p>
-              </div>
+              )
+            })}
+          </div>
+          </WidgetOutput>
+        </WidgetSection>
+      )}
 
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium">Ближайшие референсные точки:</h4>
-                {getRelevantReferences(result.celsius).map((ref, index) => (
-                  <div key={index} className="flex items-center justify-between text-sm p-2 bg-muted/30 rounded">
-                    <span>{ref.name}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {ref.diff < 0.1 ? 'Точно' : `±${ref.diff.toFixed(1)}°C`}
-                    </Badge>
-                  </div>
-                ))}
+      {/* Context Section */}
+      {result && (
+        <WidgetSection 
+          title={t('sections.context')}
+        >
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border">
+              <div className="flex items-center gap-3 mb-2">
+                {getTemperatureIcon(result.celsius)}
+                <span className={cn("font-semibold", getTemperatureColor(result.celsius))}>
+                  {t(`descriptions.${getTemperatureDescriptionKey(result.celsius)}`)}
+                </span>
               </div>
+              <p className="text-sm text-muted-foreground">
+                {Math.abs(result.celsius) < 273.15 
+                  ? t('context.aboveAbsoluteZero', { value: (273.15 + result.celsius).toFixed(1) })
+                  : t('context.aboveAbsoluteZero')
+                }
+              </p>
             </div>
-          </Card>
-        </>
+
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium">{t('sections.referencePoints')}</h4>
+              {getRelevantReferences(result.celsius).map((ref, index) => (
+                <div key={index} className="flex items-center justify-between text-sm p-2 bg-muted/30 rounded">
+                  <span>{t(`references.${getReferencesKey(ref.name)}`)}</span>
+                  <Badge variant="outline" className="text-xs">
+                    {ref.diff < 0.1 ? t('context.exactly') : `±${ref.diff.toFixed(1)}°C`}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        </WidgetSection>
       )}
 
       {!result && !isConverting && (
-        <Card className="p-6">
+        <WidgetSection title={t('sections.placeholder')}>
           <div className="flex items-center justify-center h-40 text-muted-foreground">
             <div className="text-center">
               <Thermometer className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Введите температуру для конвертации</p>
+              <p>{t('placeholder.enterTemperature')}</p>
             </div>
           </div>
-        </Card>
+        </WidgetSection>
       )}
 
       {/* Reference table */}
-      <Card className="p-6">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <Zap className="w-4 h-4" />
-          Референсные температуры
-        </h3>
-
+      <WidgetSection title={t('sections.references')}>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b">
-                <th className="text-left p-2">Явление</th>
+                <th className="text-left p-2">{t('table.phenomenon')}</th>
                 <th className="text-right p-2">°C</th>
                 <th className="text-right p-2">°F</th>
                 <th className="text-right p-2">K</th>
-                <th className="text-left p-2">Описание</th>
+                <th className="text-left p-2">{t('table.description')}</th>
               </tr>
             </thead>
             <tbody>
               {TEMPERATURE_REFERENCES.map((ref, index) => (
                 <tr key={index} className="border-b border-muted/30">
-                  <td className="p-2 font-medium">{ref.name}</td>
+                  <td className="p-2 font-medium">{t(`references.${getReferencesKey(ref.name)}`)}</td>
                   <td className={cn("p-2 text-right font-mono", getTemperatureColor(ref.celsius))}>
                     {ref.celsius}°C
                   </td>
@@ -429,33 +440,29 @@ export default function TemperatureConverterPage() {
                   <td className="p-2 text-right font-mono">
                     {formatTemperature(ref.celsius + 273.15, 'kelvin')}K
                   </td>
-                  <td className="p-2 text-muted-foreground">{ref.description}</td>
+                  <td className="p-2 text-muted-foreground">{t(`referenceDescriptions.${getReferencesKey(ref.name)}`)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </Card>
+      </WidgetSection>
 
       {/* Info */}
-      <Card className="p-6 bg-muted/50">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <Info className="w-4 h-4" />
-          О температурных шкалах
-        </h3>
+      <WidgetSection title={t('sections.about')}>
         <div className="grid md:grid-cols-2 gap-6 text-sm">
           <div className="space-y-3">
             <div>
-              <h4 className="font-medium mb-1">Основные шкалы</h4>
+              <h4 className="font-medium mb-1">{t('info.mainScales')}</h4>
               <ul className="text-muted-foreground space-y-1">
-                <li>• <strong>Цельсий (°C)</strong> - метрическая система, ноль при замерзании воды</li>
-                <li>• <strong>Фаренгейт (°F)</strong> - имперская система, США</li>
-                <li>• <strong>Кельвин (K)</strong> - абсолютная шкала, научные расчеты</li>
-                <li>• <strong>Ранкин (°R)</strong> - абсолютная шкала Фаренгейта</li>
+                <li>• <strong>{t('info.celsiusDesc')}</strong></li>
+                <li>• <strong>{t('info.fahrenheitDesc')}</strong></li>
+                <li>• <strong>{t('info.kelvinDesc')}</strong></li>
+                <li>• <strong>{t('info.rankineDesc')}</strong></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium mb-1">Формулы конвертации</h4>
+              <h4 className="font-medium mb-1">{t('info.formulas')}</h4>
               <ul className="text-muted-foreground space-y-1 font-mono text-xs">
                 <li>• °F = (°C × 9/5) + 32</li>
                 <li>• K = °C + 273.15</li>
@@ -466,26 +473,26 @@ export default function TemperatureConverterPage() {
           </div>
           <div className="space-y-3">
             <div>
-              <h4 className="font-medium mb-1">Практическое применение</h4>
+              <h4 className="font-medium mb-1">{t('info.applications')}</h4>
               <ul className="text-muted-foreground space-y-1">
-                <li>• Кулинария и выпечка</li>
-                <li>• Научные исследования</li>
-                <li>• Медицинские измерения</li>
-                <li>• Инженерные расчеты</li>
+                <li>• {t('info.cooking')}</li>
+                <li>• {t('info.science')}</li>
+                <li>• {t('info.medical')}</li>
+                <li>• {t('info.engineering')}</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium mb-1">Интересные факты</h4>
+              <h4 className="font-medium mb-1">{t('info.facts')}</h4>
               <ul className="text-muted-foreground space-y-1">
-                <li>• Абсолютный ноль: -273.15°C или 0K</li>
-                <li>• Температура поверхности Солнца: ~5,500°C</li>
-                <li>• Самая низкая измеренная на Земле: -89.2°C</li>
-                <li>• Самая высокая измеренная на Земле: 56.7°C</li>
+                <li>• {t('info.absoluteZero')}</li>
+                <li>• {t('info.sunSurface')}</li>
+                <li>• {t('info.coldestEarth')}</li>
+                <li>• {t('info.hottestEarth')}</li>
               </ul>
             </div>
           </div>
         </div>
-      </Card>
-    </div>
+      </WidgetSection>
+    </WidgetLayout>
   )
 }
