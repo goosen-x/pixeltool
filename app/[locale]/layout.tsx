@@ -17,8 +17,7 @@ import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegi
 import { WebVitals } from '@/components/analytics/WebVitals'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
-
-// Fonts are now imported from lib/fonts/fonts.ts
+import { interFont, openSansFont } from '@/lib/fonts/fonts'
 
 interface Props {
 	children: ReactNode

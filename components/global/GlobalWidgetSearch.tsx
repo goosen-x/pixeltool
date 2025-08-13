@@ -27,6 +27,7 @@ import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
+import { safeTranslate } from '@/lib/utils/safe-translations'
 
 interface GlobalWidgetSearchProps {
   locale: string
@@ -51,14 +52,19 @@ export function GlobalWidgetSearch({ locale, open: controlledOpen, onOpenChange 
 
   // Convert widgets to searchable items
   const searchableWidgets = useMemo(() => {
-    return widgets.map(widget => ({
-      widget,
-      title: t(`${widget.translationKey}.title`),
-      description: t(`${widget.translationKey}.description`),
-      category: widgetCategories[widget.category as keyof typeof widgetCategories],
-      isFavorite: favorites.includes(widget.id),
-      path: `/${locale}/tools/${widget.path}`
-    }))
+    return widgets.map(widget => {
+      const title = safeTranslate(t, `${widget.translationKey}.title`, widget.translationKey)
+      const description = safeTranslate(t, `${widget.translationKey}.description`, `Widget: ${widget.translationKey}`)
+      
+      return {
+        widget,
+        title,
+        description,
+        category: widgetCategories[widget.category as keyof typeof widgetCategories],
+        isFavorite: favorites.includes(widget.id),
+        path: `/${locale}/tools/${widget.path}`
+      }
+    })
   }, [t, favorites, locale])
 
   // Filter widgets based on search
