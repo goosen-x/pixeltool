@@ -82,9 +82,9 @@ export default function ColorContrastCheckerPage() {
   // Calculate contrast ratio whenever colors change
   useEffect(() => {
     calculateContrast()
-  }, [foreground, background, calculateContrast])
+  }, [calculateContrast])
 
-  const calculateContrast = () => {
+  const calculateContrast = useCallback(() => {
     const ratio = getContrastRatio(foreground, background)
     const isLargeText = fontSize >= 18 || (fontSize >= 14 && fontWeight === 'bold')
 
@@ -105,7 +105,7 @@ export default function ColorContrastCheckerPage() {
     } else {
       setSuggestions({ foreground: [], background: [] })
     }
-  }
+  }, [foreground, background, fontSize, fontWeight, generateSuggestions])
 
   const getContrastRatio = (color1: string, color2: string): number => {
     const lum1 = getLuminance(color1)
@@ -143,7 +143,7 @@ export default function ColorContrastCheckerPage() {
     }).join('')
   }
 
-  const generateSuggestions = () => {
+  const generateSuggestions = useCallback(() => {
     const foregroundSuggestions: ColorSuggestion[] = []
     const backgroundSuggestions: ColorSuggestion[] = []
 
@@ -193,7 +193,7 @@ export default function ColorContrastCheckerPage() {
       foreground: foregroundSuggestions.slice(0, 4),
       background: backgroundSuggestions.slice(0, 4)
     })
-  }
+  }, [background, foreground])
 
   const swapColors = () => {
     const temp = foreground

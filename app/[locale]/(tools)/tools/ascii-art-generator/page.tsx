@@ -148,7 +148,7 @@ export default function AsciiArtGeneratorPage() {
       return
     }
 
-    const img = new Image()
+    const img = new window.Image()
     img.onload = () => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')!
