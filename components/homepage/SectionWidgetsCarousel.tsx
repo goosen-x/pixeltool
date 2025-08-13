@@ -95,13 +95,13 @@ export function SectionWidgetsCarousel() {
 				</div>
 
 				{/* Carousel Container */}
-				<div className='relative'>
+				<div className='relative px-8'>
 					{/* Navigation Buttons */}
 					<Button
 						variant='outline'
 						size='icon'
 						onClick={handlePrevious}
-						className='absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-1/2 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm border-border/50 hover:bg-background hover:border-primary/50 shadow-lg transition-all'
+						className='absolute left-0 top-1/2 -translate-y-1/2 z-20 -translate-x-1/2 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm border-border/50 hover:bg-background hover:border-primary/50 shadow-lg transition-all'
 					>
 						<ChevronLeft className='h-5 w-5' />
 					</Button>
@@ -109,13 +109,13 @@ export function SectionWidgetsCarousel() {
 						variant='outline'
 						size='icon'
 						onClick={handleNext}
-						className='absolute right-0 top-1/2 -translate-y-1/2 z-10 translate-x-1/2 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm border-border/50 hover:bg-background hover:border-primary/50 shadow-lg transition-all'
+						className='absolute right-0 top-1/2 -translate-y-1/2 z-20 translate-x-1/2 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm border-border/50 hover:bg-background hover:border-primary/50 shadow-lg transition-all'
 					>
 						<ChevronRight className='h-5 w-5' />
 					</Button>
 
 					{/* Carousel Items */}
-					<div ref={containerRef} className='overflow-hidden'>
+					<div ref={containerRef} className='overflow-hidden py-4'>
 						<div
 							className='flex transition-transform duration-500 ease-out gap-6'
 							style={{

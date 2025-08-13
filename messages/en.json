@@ -6,10 +6,24 @@
 	},
 	"HomePage": {
 		"hero": {
-			"subtitle": "Powerful online tools for developers and designers. No installation required.",
+			"subtitle": "Professional tools for developers, designers, and digital creators. Everything you need, right in your browser",
+			"subtitle2": "Professional tools for developers, designers, and digital creators. Everything you need, right in your browser",
 			"exploreTools": "Explore Tools",
+			"viewOnGitHub": "View on GitHub",
 			"browseCategories": "Browse Categories",
-			"liveAndFree": "Live & Always Free"
+			"liveAndFree": "Live & Always Free",
+			"features": {
+				"professionalTools": "50+ Professional Tools",
+				"noInstallation": "No Installation Required", 
+				"freeForever": "100% Free Forever",
+				"lightningFast": "Lightning Fast"
+			},
+			"stats": {
+				"toolsAvailable": "Tools Available",
+				"happyUsers": "Happy Users",
+				"uptime": "Uptime",
+				"alwaysFree": "Always Free"
+			}
 		},
 		"features": {
 			"title": "Why Choose PixelTool?",
@@ -324,6 +338,41 @@
 		}
 	},
 	"widgets": {
+		"rightSidebar": {
+			"widgetInfo": {
+				"title": "Widget Info",
+				"difficulty": "Difficulty",
+				"category": "Category", 
+				"tags": "Tags",
+				"difficultyLevels": {
+					"beginner": "Beginner",
+					"intermediate": "Intermediate", 
+					"advanced": "Advanced"
+				}
+			},
+			"quickActions": {
+				"title": "Quick Actions",
+				"share": "Share Widget"
+			},
+			"useCase": {
+				"title": "Use Case"
+			},
+			"usageStats": {
+				"title": "Usage Stats",
+				"onlineNow": "Online now",
+				"viewsToday": "Views today",
+				"totalUses": "Total uses",
+				"avgSession": "Avg. session",
+				"noData": "No data available"
+			},
+			"feedback": {
+				"title": "Feedback",
+				"helpText": "Help us improve this tool"
+			},
+			"relatedTools": {
+				"title": "Related Tools"
+			}
+		},
 		"tools": "Tools",
 		"title": "Developer Tools",
 		"description": "Professional tools for developers and designers. No installation required.",
@@ -1093,7 +1142,61 @@
 		"randomNumberGenerator": {
 			"title": "Random Number Generator",
 			"description": "Generate cryptographically secure random numbers with no duplicates option",
-			"useCase": "Generate secure random numbers for games, sampling, or security purposes"
+			"useCase": "Generate secure random numbers for games, sampling, or security purposes",
+			"sections": {
+				"settings": "Generator Settings",
+				"result": "Generated Numbers",
+				"history": "History",
+				"about": "About This Generator"
+			},
+			"inputs": {
+				"minimum": {
+					"label": "Minimum",
+					"description": "Smallest number to generate",
+					"placeholder": "0"
+				},
+				"maximum": {
+					"label": "Maximum",
+					"description": "Largest number to generate",
+					"placeholder": "10"
+				},
+				"count": {
+					"label": "Count",
+					"description": "How many numbers to generate",
+					"placeholder": "5"
+				},
+				"unique": "No duplicates"
+			},
+			"actions": {
+				"generate": "Generate",
+				"downloadAll": "Download All"
+			},
+			"result": {
+				"generatedAt": "Generated at:"
+			},
+			"validation": {
+				"minRange": "Minimum value must be between 0 and 999,999",
+				"maxRange": "Maximum value must be between 0 and 999,999",
+				"minGreaterThanMax": "Minimum value cannot be greater than maximum value",
+				"countRange": "Count must be between 1 and 1,000",
+				"uniqueCount": "Cannot generate {count} unique numbers in range {min}-{max}",
+				"generationFailed": "Failed to generate numbers"
+			},
+			"toast": {
+				"copied": "Numbers copied to clipboard",
+				"copyFailed": "Failed to copy numbers",
+				"downloaded": "Results downloaded"
+			},
+			"info": {
+				"description": "This random number generator (RNG) uses the Web Crypto API to generate cryptographically secure random numbers, suitable for most cryptographic applications.",
+				"cryptoApi": "Unlike Math.random() or the Mersenne Twister algorithm, crypto.getRandomValues() provides true randomness from the operating system's entropy source.",
+				"features": {
+					"range": "Range: 0 to 999,999",
+					"maxResults": "Maximum results: 1,000 numbers",
+					"noDuplicates": "No duplicates option available",
+					"timestamps": "Timestamps from your system clock"
+				}
+			}
 		},
 		"percentageCalculator": {
 			"title": "Percentage Calculator",
@@ -1262,12 +1365,317 @@
 		"ageCalculator": {
 			"title": "Age Calculator",
 			"description": "Calculate exact age in years, months, days, hours, and minutes from birthdate",
-			"useCase": "Calculate precise age and time differences for personal or professional use"
+			"useCase": "Calculate precise age and time differences for personal or professional use",
+			"sections": {
+				"input": "Birth Date",
+				"results": "Your Age",
+				"placeholder": "Enter Date",
+				"about": "About Age Calculator"
+			},
+			"inputs": {
+				"birthDate": {
+					"label": "Birth Date",
+					"description": "Select your date of birth",
+					"placeholder": "Select date"
+				}
+			},
+			"actions": {
+				"calculate": "Calculate",
+				"calculating": "Calculating..."
+			},
+			"timeUnits": {
+				"years": "years old",
+				"months": "months",
+				"days": "days"
+			},
+			"statistics": {
+				"totalDays": "days lived",
+				"totalWeeks": "weeks",
+				"totalHours": "hours",
+				"totalMinutes": "minutes"
+			},
+			"additionalInfo": {
+				"nextBirthday": "Next Birthday",
+				"lifeStage": "Life Stage",
+				"zodiacSign": "Zodiac Sign",
+				"chineseZodiac": "Chinese Zodiac"
+			},
+			"birthdayStatus": {
+				"today": "Today!",
+				"tomorrow": "Tomorrow!",
+				"inDays": "In {days} days"
+			},
+			"chineseZodiacPrefix": "Year of the",
+			"placeholder": {
+				"enterDate": "Enter your birth date to calculate age",
+				"description": "Learn your exact age in various time units"
+			},
+			"validation": {
+				"dateRequired": "Please enter your birth date"
+			},
+			"toast": {
+				"calculated": "Age calculated!",
+				"calculationError": "Error calculating age",
+				"copied": "Copied to clipboard!",
+				"reset": "Data reset"
+			},
+			"info": {
+				"whatCalculated": "What is calculated",
+				"interestingFacts": "Interesting facts",
+				"features": {
+					"exactAge": "Exact age in years, months and days",
+					"totalTime": "Total days, weeks, hours lived",
+					"nextBirthday": "Time until next birthday",
+					"zodiacSigns": "Zodiac sign and Chinese horoscope",
+					"leapYears": "Leap years are taken into account",
+					"lifeStage": "Life stage is determined",
+					"dayOfWeek": "Day of week for next birthday",
+					"realTime": "All calculations in real time"
+				}
+			}
+		},
+		"bingoGenerator": {
+			"title": "Bingo Generator",
+			"description": "Create custom bingo cards for meetings, travel, or any occasion with shareable links",
+			"useCase": "Generate custom bingo cards for entertainment, meetings, or team building activities",
+			"sections": {
+				"settings": "Bingo Settings",
+				"items": "Bingo Items",
+				"itemsDescription": "Add items that will appear on your bingo card. You need at least as many items as cells in your grid.",
+				"bingoCard": "Your Bingo Card",
+				"about": "About Bingo Generator"
+			},
+			"inputs": {
+				"gridSize": {
+					"label": "Grid Size",
+					"description": "Choose the size of your bingo grid (3x3 to 7x7)"
+				},
+				"templates": {
+					"label": "Quick Templates",
+					"description": "Load pre-made bingo templates"
+				},
+				"bingoItem": {
+					"placeholder": "Enter bingo item..."
+				}
+			},
+			"templates": {
+				"meeting": {
+					"name": "Meeting Bingo",
+					"items": [
+						"Someone joins late",
+						"Can you hear me?",
+						"Sorry, you were muted",
+						"Let's circle back on this",
+						"Can you see my screen?",
+						"I'll send a follow-up email",
+						"We're running over time",
+						"Let's take this offline",
+						"Can everyone mute please?",
+						"You're breaking up",
+						"Next slide please",
+						"I think we lost John",
+						"Can you repeat that?",
+						"I have a hard stop at...",
+						"Who just joined?",
+						"Sorry, I was on mute",
+						"Let's give it a few more minutes",
+						"Can you make that bigger?",
+						"I can't see anything",
+						"We'll follow up on this",
+						"Is [name] on the call?",
+						"Can you hear the echo?",
+						"Technical difficulties",
+						"Let's park that for now",
+						"I need to drop off"
+					]
+				},
+				"travel": {
+					"name": "Travel Bingo",
+					"items": [
+						"Delayed flight",
+						"Lost luggage",
+						"Crying baby on plane",
+						"Overpriced airport food",
+						"Long security line",
+						"Passport check drama",
+						"Someone cuts in line",
+						"Turbulence announcement",
+						"Can't find gate",
+						"WiFi doesn't work",
+						"Uncomfortable seat",
+						"Snoring passenger",
+						"Flight attendant joke",
+						"Emergency exit row",
+						"Boarding announcement repeat",
+						"Someone brings too much carry-on",
+						"Plane sits on tarmac",
+						"Weather delay",
+						"Connecting flight stress",
+						"Airport shopping spree",
+						"Expensive parking",
+						"Rental car upgrade pitch",
+						"Hotel room not ready",
+						"Tourist with huge camera",
+						"Map reading confusion"
+					]
+				}
+			},
+			"actions": {
+				"addItem": "Add Item",
+				"shuffle": "Shuffle Grid",
+				"reset": "Reset Progress",
+				"share": "Share Card",
+				"export": "Export"
+			},
+			"status": {
+				"bingo": "BINGO!",
+				"inProgress": "In Progress"
+			},
+			"freeSpace": "FREE",
+			"congratulations": {
+				"title": "BINGO!",
+				"message": "Congratulations! You got a line!"
+			},
+			"toast": {
+				"templateLoaded": "Template loaded successfully",
+				"gridReset": "Progress reset",
+				"gridShuffled": "Grid shuffled",
+				"shareUrlCopied": "Share URL copied to clipboard",
+				"exported": "Bingo card exported",
+				"invalidShareUrl": "Invalid share URL"
+			},
+			"info": {
+				"howToPlay": "How to Play",
+				"features": {
+					"title": "Features",
+					"createGrid": "Create custom bingo grids (3x3 to 7x7)",
+					"clickCells": "Click cells to mark them as completed",
+					"getLine": "Get a line (row, column, or diagonal) to win",
+					"shareProgress": "Share your progress with others",
+					"customTemplates": "Pre-made templates for common scenarios",
+					"shareableLinks": "Shareable links to save and restore progress",
+					"exportOptions": "Export as text file",
+					"progressTracking": "Real-time progress tracking"
+				}
+			}
 		},
 		"temperatureConverter": {
 			"title": "Temperature Converter",
 			"description": "Convert between Celsius, Fahrenheit, and Kelvin temperature scales instantly",
-			"useCase": "Convert temperatures between Celsius, Fahrenheit, and Kelvin scales"
+			"useCase": "Convert temperatures between Celsius, Fahrenheit, and Kelvin scales",
+			"sections": {
+				"input": "Temperature Input",
+				"results": "Conversion Results",
+				"context": "Temperature Context",
+				"quickValues": "Quick Values",
+				"references": "Reference Temperatures",
+				"about": "About Temperature Scales",
+				"referencePoints": "Nearest Reference Points",
+				"placeholder": "Enter Temperature"
+			},
+			"inputs": {
+				"temperature": {
+					"label": "Temperature",
+					"description": "Enter temperature value",
+					"placeholder": "Enter value"
+				},
+				"unit": {
+					"label": "Unit",
+					"description": "Select temperature scale",
+					"placeholder": "Select unit"
+				}
+			},
+			"units": {
+				"celsius": "Celsius",
+				"fahrenheit": "Fahrenheit", 
+				"kelvin": "Kelvin",
+				"rankine": "Rankine",
+				"reaumur": "Réaumur"
+			},
+			"actions": {
+				"swap": "Swap",
+				"reset": "Reset"
+			},
+			"quickValues": {
+				"ноль": "Zero Celsius",
+				"комнатная": "Room Temp",
+				"телочеловека": "Body Temp",
+				"кипениеводы": "Boiling Water",
+				"духовка": "Oven",
+				"нольфаренгейта": "Zero Fahrenheit"
+			},
+			"descriptions": {
+				"extremelyCold": "Extremely Cold",
+				"veryCold": "Very Cold",
+				"belowZero": "Below Zero",
+				"cold": "Cold",
+				"cool": "Cool",
+				"comfortable": "Comfortable",
+				"warm": "Warm",
+				"hot": "Hot",
+				"veryHot": "Very Hot",
+				"boiling": "Boiling",
+				"extremelyHot": "Extremely Hot"
+			},
+			"context": {
+				"aboveAbsoluteZero": "{value}K above absolute zero",
+				"exactly": "Exactly"
+			},
+			"references": {
+				"absoluteZero": "Absolute Zero",
+				"liquidNitrogen": "Liquid Nitrogen Temperature",
+				"dryIce": "Dry Ice (Sublimation)",
+				"waterFreeze": "Water Freezing Point",
+				"roomTemp": "Room Temperature",
+				"bodyTemp": "Human Body Temperature",
+				"waterBoil": "Water Boiling Point",
+				"steam": "Steam Temperature",
+				"oven": "Oven Temperature",
+				"soldering": "Soldering Temperature"
+			},
+			"referenceDescriptions": {
+				"absoluteZero": "Theoretically lowest possible temperature",
+				"liquidNitrogen": "Nitrogen boiling at standard pressure",
+				"dryIce": "CO₂ transition from solid to gas",
+				"waterFreeze": "Water freezing point at standard pressure",
+				"roomTemp": "Comfortable indoor temperature",
+				"bodyTemp": "Normal human body temperature",
+				"waterBoil": "Water boiling point at standard pressure",
+				"steam": "Water vapor at atmospheric pressure",
+				"oven": "Average baking temperature",
+				"soldering": "Solder melting point"
+			},
+			"table": {
+				"phenomenon": "Phenomenon",
+				"description": "Description"
+			},
+			"info": {
+				"mainScales": "Main Scales",
+				"formulas": "Conversion Formulas",
+				"applications": "Practical Applications",
+				"facts": "Interesting Facts",
+				"celsiusDesc": "Celsius (°C) - metric system, zero at water freezing",
+				"fahrenheitDesc": "Fahrenheit (°F) - imperial system, USA",
+				"kelvinDesc": "Kelvin (K) - absolute scale, scientific calculations",
+				"rankineDesc": "Rankine (°R) - absolute Fahrenheit scale",
+				"cooking": "Cooking and baking",
+				"science": "Scientific research",
+				"medical": "Medical measurements",
+				"engineering": "Engineering calculations",
+				"absoluteZero": "Absolute zero: -273.15°C or 0K",
+				"sunSurface": "Sun's surface temperature: ~5,500°C",
+				"coldestEarth": "Coldest measured on Earth: -89.2°C",
+				"hottestEarth": "Hottest measured on Earth: 56.7°C"
+			},
+			"toast": {
+				"copied": "Copied to clipboard!",
+				"conversionError": "Temperature conversion error",
+				"valueLoaded": "Value loaded",
+				"reset": "Reset"
+			},
+			"placeholder": {
+				"enterTemperature": "Enter temperature for conversion"
+			}
 		},
 		"bmiCalculator": {
 			"title": "BMI Calculator",
@@ -1799,5 +2207,68 @@
 			"title": "ASCII Art Generator",
 			"description": "Convert text and images to ASCII art"
 		}
+	},
+	"Footer": {
+		"badge": "50+ Professional Tools",
+		"title": "PixelTool", 
+		"description": "Professional developer tools, right in your browser",
+		"heroDescription": "The ultimate toolkit for developers, designers, and digital creators. Everything you need, right in your browser",
+		"exploreTools": "Explore Tools",
+		"starOnGitHub": "Star on GitHub",
+		"stats": {
+			"professionalTools": "Professional Tools",
+			"activeDevelopers": "Active Developers",
+			"uptime": "Uptime",
+			"forever": "Forever"
+		},
+		"categories": {
+			"developerTools": "Developer Tools",
+			"designTools": "Design Tools",
+			"productivity": "Productivity"
+		},
+		"tools": {
+			"colorConverter": "Color Converter",
+			"jsonFormatter": "JSON Formatter",
+			"base64Encoder": "Base64 Encoder",
+			"regexTester": "Regex Tester",
+			"gradientGenerator": "Gradient Generator",
+			"shadowGenerator": "Shadow Generator",
+			"paletteCreator": "Palette Creator",
+			"faviconGenerator": "Favicon Generator",
+			"passwordGenerator": "Password Generator",
+			"loremIpsum": "Lorem Ipsum",
+			"qrCodeGenerator": "QR Code Generator",
+			"urlShortener": "URL Shortener"
+		},
+		"newsletter": {
+			"badge": "Join the Community",
+			"title": "Stay ahead of the curve",
+			"description": "Get notified about new tools, features, and updates. Join 10,000+ developers who trust us",
+			"placeholder": "your@email.com",
+			"subscribe": "Subscribe"
+		},
+		"legal": {
+			"copyright": "© {year} PixelTool. All rights reserved.",
+			"privacyPolicy": "Privacy Policy",
+			"termsOfService": "Terms of Service",
+			"apiDocs": "API Documentation",
+			"craftedWith": "Crafted with",
+			"by": "by",
+			"author": "Dmitry Borisenko"
+		},
+		"shortcuts": {
+			"title": "Shortcuts:",
+			"copy": "Ctrl+C Copy",
+			"clear": "Ctrl+X Clear",
+			"save": "Ctrl+S Save"
+		}
+	},
+	"cookieConsent": {
+		"title": "We use cookies",
+		"description": "We use cookies to improve your experience and analyze site usage.",
+		"moreInfo": "By continuing to use this site, you agree to our use of cookies.",
+		"accept": "Accept",
+		"decline": "Decline",
+		"close": "Close"
 	}
 }

@@ -1,10 +1,10 @@
 import { NotFoundImage } from '@/components/svg/NotFoundImage'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 
-export default function NotFound() {
-	const t = useTranslations('NotFound')
+export default async function NotFound() {
+	const t = await getTranslations('NotFound')
 	
 	return (
 		<div className='grid h-screen place-content-center bg-background px-4'>

@@ -2,6 +2,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+
 /* Tektur Font for special headings */
 @font-face {
   font-family: 'Tektur';

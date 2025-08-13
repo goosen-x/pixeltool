@@ -1,15 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dices, Copy, Check, RefreshCw, Download } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Dices, Copy, Check, Download, History, Shuffle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { Input } from '@/components/ui/input'
+import { useTranslations } from 'next-intl'
 
 interface GeneratedResult {
 	numbers: number[]
@@ -62,6 +65,7 @@ function generateRandomNumbers(
 }
 
 export default function RandomNumberGeneratorPage() {
+	const t = useTranslations('widgets.randomNumberGenerator')
 	const [min, setMin] = useState(1)
 	const [max, setMax] = useState(10)
 	const [count, setCount] = useState(5)
@@ -79,19 +83,19 @@ export default function RandomNumberGeneratorPage() {
 
 	const validate = (): string | null => {
 		if (min < 0 || min > 999999) {
-			return 'Minimum value must be between 0 and 999,999'
+			return t('validation.minRange')
 		}
 		if (max < 0 || max > 999999) {
-			return 'Maximum value must be between 0 and 999,999'
+			return t('validation.maxRange')
 		}
 		if (min > max) {
-			return 'Minimum value cannot be greater than maximum value'
+			return t('validation.minGreaterThanMax')
 		}
 		if (count < 1 || count > 1000) {
-			return 'Count must be between 1 and 1000'
+			return t('validation.countRange')
 		}
 		if (unique && count > max - min + 1) {
-			return `Cannot generate ${count} unique numbers in range ${min}-${max}`
+			return t('validation.uniqueCount', { count, min, max })
 		}
 		return null
 	}
@@ -114,7 +118,7 @@ export default function RandomNumberGeneratorPage() {
 			setResults([newResult, ...results.slice(0, 9)]) // Keep last 10 results
 		} catch (err) {
 			setError(
-				err instanceof Error ? err.message : 'Failed to generate numbers'
+				err instanceof Error ? err.message : t('validation.generationFailed')
 			)
 		}
 	}
@@ -123,10 +127,10 @@ export default function RandomNumberGeneratorPage() {
 		try {
 			await navigator.clipboard.writeText(numbers.join('    '))
 			setCopiedId(id)
-			toast.success('Numbers copied to clipboard')
+			toast.success(t('toast.copied'))
 			setTimeout(() => setCopiedId(null), 2000)
 		} catch (err) {
-			toast.error('Failed to copy numbers')
+			toast.error(t('toast.copyFailed'))
 		}
 	}
 
@@ -145,7 +149,7 @@ export default function RandomNumberGeneratorPage() {
 		a.download = `random-numbers-${new Date().toISOString().split('T')[0]}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success('Results downloaded')
+		toast.success(t('toast.downloaded'))
 	}
 
 	if (!mounted) {
@@ -155,62 +159,58 @@ export default function RandomNumberGeneratorPage() {
 	const latestResult = results[0]
 
 	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Generator Settings */}
-			<Card className='p-6'>
-				<div className='grid md:grid-cols-3 gap-6'>
-					<div>
-						<Label htmlFor='min'>Minimum</Label>
+		<WidgetLayout>
+			{/* Input Section */}
+			<WidgetSection title={t('sections.settings')}>
+				<div className='grid md:grid-cols-3 gap-4'>
+					<WidgetInput label={t('inputs.minimum.label')} description={t('inputs.minimum.description')}>
 						<Input
-							id='min'
 							type='number'
 							value={min}
 							onChange={e => setMin(parseInt(e.target.value) || 0)}
 							min={0}
 							max={999999}
-							className='mt-1'
+							placeholder={t('inputs.minimum.placeholder')}
 						/>
-					</div>
-					<div>
-						<Label htmlFor='max'>Maximum</Label>
+					</WidgetInput>
+					
+					<WidgetInput label={t('inputs.maximum.label')} description={t('inputs.maximum.description')}>
 						<Input
-							id='max'
 							type='number'
 							value={max}
 							onChange={e => setMax(parseInt(e.target.value) || 0)}
 							min={0}
 							max={999999}
-							className='mt-1'
+							placeholder={t('inputs.maximum.placeholder')}
 						/>
-					</div>
-					<div>
-						<Label htmlFor='count'>Count</Label>
+					</WidgetInput>
+					
+					<WidgetInput label={t('inputs.count.label')} description={t('inputs.count.description')}>
 						<Input
-							id='count'
 							type='number'
 							value={count}
 							onChange={e => setCount(parseInt(e.target.value) || 1)}
 							min={1}
 							max={1000}
-							className='mt-1'
+							placeholder={t('inputs.count.placeholder')}
 						/>
-					</div>
+					</WidgetInput>
 				</div>
 
-				<div className='mt-6 flex items-center justify-between'>
+				<div className='flex items-center justify-between mt-6'>
 					<div className='flex items-center space-x-2'>
 						<Switch id='unique' checked={unique} onCheckedChange={setUnique} />
-						<Label htmlFor='unique' className='cursor-pointer'>
-							No duplicates
-						</Label>
+						<label htmlFor='unique' className='text-sm font-medium cursor-pointer'>
+							{t('inputs.unique')}
+						</label>
 					</div>
 
 					<Button onClick={handleGenerate} className='gap-2'>
-						<Dices className='w-4 h-4' />
-						Generate
+						<Shuffle className='w-4 h-4' />
+						{t('actions.generate')}
 					</Button>
 				</div>
-			</Card>
+			</WidgetSection>
 
 			{/* Error Display */}
 			{error && (
@@ -219,36 +219,10 @@ export default function RandomNumberGeneratorPage() {
 				</Alert>
 			)}
 
-			{/* Latest Result */}
+			{/* Output Section */}
 			{latestResult && (
-				<Card className='p-6'>
-					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-lg font-semibold'>Generated Numbers</h3>
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={() =>
-								copyToClipboard(latestResult.numbers, latestResult.id)
-							}
-							className={cn(
-								copiedId === latestResult.id &&
-									'bg-green-500/10 border-green-500'
-							)}
-						>
-							{copiedId === latestResult.id ? (
-								<>
-									<Check className='w-4 h-4 mr-1' />
-									Copied
-								</>
-							) : (
-								<>
-									<Copy className='w-4 h-4 mr-1' />
-									Copy
-								</>
-							)}
-						</Button>
-					</div>
-
+				<WidgetSection title={t('sections.result')}>
+					<WidgetOutput>
 					<div className='bg-muted rounded-lg p-6 text-center'>
 						<div className='flex flex-wrap justify-center gap-4 mb-4'>
 							{latestResult.numbers.map((num, index) => (
@@ -261,23 +235,25 @@ export default function RandomNumberGeneratorPage() {
 							))}
 						</div>
 						<p className='text-sm text-muted-foreground'>
-							{latestResult.timestamp.toLocaleString()}
+							{t('result.generatedAt')} {latestResult.timestamp.toLocaleString()}
 						</p>
 					</div>
-				</Card>
+				</WidgetOutput>
+				</WidgetSection>
 			)}
 
-			{/* History */}
+			{/* History Section */}
 			{results.length > 1 && (
-				<Card className='p-6'>
-					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-lg font-semibold'>History</h3>
+				<WidgetSection 
+					title={t('sections.history')}
+				>
+					<div className="flex justify-between items-center mb-4">
+						<h3 className="text-sm font-medium">{t('sections.allResults')}</h3>
 						<Button variant='outline' size='sm' onClick={downloadResults}>
 							<Download className='w-4 h-4 mr-1' />
-							Download All
+							{t('actions.downloadAll')}
 						</Button>
 					</div>
-
 					<div className='space-y-3'>
 						{results.slice(1).map(result => (
 							<div
@@ -310,31 +286,22 @@ export default function RandomNumberGeneratorPage() {
 							</div>
 						))}
 					</div>
-				</Card>
+				</WidgetSection>
 			)}
 
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4'>About This Generator</h3>
-				<div className='space-y-2 text-sm text-muted-foreground'>
-					<p>
-						This random number generator (RNG) uses the Web Crypto API to
-						generate cryptographically secure random numbers, suitable for most
-						cryptographic applications.
-					</p>
-					<p>
-						Unlike Math.random() or the Mersenne Twister algorithm,
-						crypto.getRandomValues() provides true randomness from the operating
-						system&apos;s entropy source.
-					</p>
-					<ul className='list-disc list-inside space-y-1 mt-2'>
-						<li>Range: 0 to 999,999</li>
-						<li>Maximum results: 1,000 numbers</li>
-						<li>No duplicates option available</li>
-						<li>Timestamps from your system clock</li>
+			{/* Info Section */}
+			<WidgetSection title={t('sections.about')}>
+				<div className='space-y-3 text-sm text-muted-foreground'>
+					<p>{t('info.description')}</p>
+					<p>{t('info.cryptoApi')}</p>
+					<ul className='list-disc list-inside space-y-1 mt-3'>
+						<li>{t('info.features.range')}</li>
+						<li>{t('info.features.maxResults')}</li>
+						<li>{t('info.features.noDuplicates')}</li>
+						<li>{t('info.features.timestamps')}</li>
 					</ul>
 				</div>
-			</Card>
-		</div>
+			</WidgetSection>
+		</WidgetLayout>
 	)
 }

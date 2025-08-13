@@ -117,17 +117,17 @@ export default async function HomePage({ params }: Props) {
               {t('hero.subtitle')}
             </p>
             <p className="text-lg sm:text-xl text-muted-foreground/80 max-w-2xl mx-auto">
-              Professional tools for developers, designers, and digital creators. Everything you need, right in your browser.
+              {t('hero.subtitle2')}
             </p>
           </div>
           
           {/* Enhanced feature badges */}
           <div className="flex flex-wrap gap-4 justify-center mb-12">
             {[
-              { icon: Sparkles, label: '50+ Professional Tools', color: 'from-primary to-accent' },
-              { icon: Zap, label: 'No Installation Required', color: 'from-yellow-500 to-orange-500' },
-              { icon: Globe, label: '100% Free Forever', color: 'from-green-500 to-emerald-500' },
-              { icon: Zap, label: 'Lightning Fast', color: 'from-blue-500 to-cyan-500' }
+              { icon: Sparkles, label: t('hero.features.professionalTools'), color: 'from-primary to-accent' },
+              { icon: Zap, label: t('hero.features.noInstallation'), color: 'from-yellow-500 to-orange-500' },
+              { icon: Globe, label: t('hero.features.freeForever'), color: 'from-green-500 to-emerald-500' },
+              { icon: Zap, label: t('hero.features.lightningFast'), color: 'from-blue-500 to-cyan-500' }
             ].map((item, idx) => (
               <div key={idx} className="group px-6 py-3 rounded-2xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105">
                 <div className="flex items-center gap-3">
@@ -152,7 +152,7 @@ export default async function HomePage({ params }: Props) {
             <Link href="https://github.com/goosen-x/pixeltool" target="_blank">
               <Button size="lg" variant="outline" className="gap-3 text-xl px-10 h-16 rounded-2xl bg-background/95 backdrop-blur-sm border-border hover:border-primary hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary/10 dark:hover:text-primary transition-all duration-300">
                 <Code2 className="h-6 w-6" />
-                View on GitHub
+                {t('hero.viewOnGitHub')}
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
@@ -161,10 +161,10 @@ export default async function HomePage({ params }: Props) {
           {/* Stats section */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-4xl mx-auto">
             {[
-              { number: '50+', label: 'Tools Available' },
-              { number: '2.5K+', label: 'Happy Users' },
-              { number: '99.9%', label: 'Uptime' },
-              { number: '0$', label: 'Always Free' }
+              { number: '50+', label: t('hero.stats.toolsAvailable') },
+              { number: '2.5K+', label: t('hero.stats.happyUsers') },
+              { number: '99.9%', label: t('hero.stats.uptime') },
+              { number: '0$', label: t('hero.stats.alwaysFree') }
             ].map((stat, idx) => (
               <div key={idx} className="text-center p-6 rounded-2xl bg-background/40 backdrop-blur-sm border border-border/30 hover:border-primary/30 transition-all duration-300 group">
                 <div className="text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">

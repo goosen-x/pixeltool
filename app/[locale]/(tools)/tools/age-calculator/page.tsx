@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { 
   Calendar,
@@ -18,6 +16,11 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { useTranslations } from 'next-intl'
 
 interface AgeData {
   years: number
@@ -77,6 +80,7 @@ const DAY_NAMES = [
 ]
 
 export default function AgeCalculatorPage() {
+  const t = useTranslations('widgets.ageCalculator')
   const [birthDate, setBirthDate] = useState('')
   const [ageData, setAgeData] = useState<AgeData | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
@@ -180,7 +184,7 @@ export default function AgeCalculatorPage() {
 
   const handleCalculate = () => {
     if (!birthDate) {
-      toast.error('Пожалуйста, введите дату рождения')
+      toast.error(t('validation.dateRequired'))
       return
     }
 
@@ -191,9 +195,9 @@ export default function AgeCalculatorPage() {
         const birth = new Date(birthDate)
         const result = calculateAge(birth)
         setAgeData(result)
-        toast.success('Возраст рассчитан!')
+        toast.success(t('toast.calculated'))
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Ошибка при расчете возраста')
+        toast.error(error instanceof Error ? error.message : t('toast.calculationError'))
         setAgeData(null)
       } finally {
         setIsCalculating(false)
@@ -203,7 +207,7 @@ export default function AgeCalculatorPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-    toast.success('Скопировано в буфер обмена!')
+    toast.success(t('toast.copied'))
   }
 
   const formatAgeText = (data: AgeData): string => {
@@ -217,7 +221,7 @@ export default function AgeCalculatorPage() {
   const reset = () => {
     setBirthDate('')
     setAgeData(null)
-    toast.success('Данные сброшены')
+    toast.success(t('toast.reset'))
   }
 
   const formatNumber = (num: number): string => {
@@ -237,23 +241,24 @@ export default function AgeCalculatorPage() {
   }, [birthDate])
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <WidgetLayout>
       {/* Input Section */}
-      <Card className="p-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex-1 min-w-64">
-            <Label htmlFor="birthdate">Дата рождения</Label>
+      <WidgetSection title={t('sections.input')}>
+        <div className="grid md:grid-cols-2 gap-6 items-end">
+          <WidgetInput 
+            label={t('inputs.birthDate.label')} 
+            description={t('inputs.birthDate.description')}
+          >
             <Input
-              id="birthdate"
               type="date"
               value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
-              className="mt-1"
               max={new Date().toISOString().split('T')[0]}
+              placeholder={t('inputs.birthDate.placeholder')}
             />
-          </div>
+          </WidgetInput>
           
-          <div className="flex items-end gap-2">
+          <div className="flex gap-2">
             <Button 
               onClick={handleCalculate}
               disabled={isCalculating || !birthDate}
@@ -262,12 +267,12 @@ export default function AgeCalculatorPage() {
               {isCalculating ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
-                  Расчет...
+                  {t('actions.calculating')}
                 </>
               ) : (
                 <>
                   <Calendar className="w-4 h-4" />
-                  Рассчитать
+                  {t('actions.calculate')}
                 </>
               )}
             </Button>
@@ -277,183 +282,163 @@ export default function AgeCalculatorPage() {
             </Button>
           </div>
         </div>
-      </Card>
+      </WidgetSection>
 
       {/* Results */}
       {ageData && (
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Main Age Info */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Gift className="w-5 h-5 text-green-500" />
-              Ваш возраст
-            </h3>
-            
-            <div className="space-y-4">
-              {/* Main Age Display */}
-              <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg border">
-                <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
-                  {ageData.years}
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  {ageData.years === 1 ? 'год' : ageData.years < 5 ? 'года' : 'лет'}
-                </div>
-                
-                <div className="flex justify-center gap-6 mt-4 text-sm">
-                  <div className="text-center">
-                    <div className="font-semibold">{ageData.months}</div>
-                    <div className="text-muted-foreground">месяцев</div>
+        <WidgetSection title={t('sections.results')}>
+          <WidgetOutput>
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Main Age Info */}
+              <div className="space-y-4">
+                <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg border">
+                  <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+                    {ageData.years}
                   </div>
-                  <div className="text-center">
-                    <div className="font-semibold">{ageData.days}</div>
-                    <div className="text-muted-foreground">дней</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {t('timeUnits.years', { count: ageData.years })}
+                  </div>
+                  
+                  <div className="flex justify-center gap-6 mt-4 text-sm">
+                    <div className="text-center">
+                      <div className="font-semibold">{ageData.months}</div>
+                      <div className="text-muted-foreground">{t('timeUnits.months')}</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold">{ageData.days}</div>
+                      <div className="text-muted-foreground">{t('timeUnits.days')}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-muted/30 rounded-lg">
+                    <div className="text-lg font-bold text-blue-600">
+                      {formatNumber(ageData.totalDays)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{t('statistics.totalDays')}</div>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-muted/30 rounded-lg">
+                    <div className="text-lg font-bold text-purple-600">
+                      {formatNumber(ageData.totalWeeks)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{t('statistics.totalWeeks')}</div>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-muted/30 rounded-lg">
+                    <div className="text-lg font-bold text-green-600">
+                      {formatNumber(ageData.totalHours)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{t('statistics.totalHours')}</div>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-muted/30 rounded-lg">
+                    <div className="text-lg font-bold text-blue-600">
+                      {formatNumber(ageData.totalMinutes)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{t('statistics.totalMinutes')}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Detailed Statistics */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <div className="text-lg font-bold text-blue-600">
-                    {formatNumber(ageData.totalDays)}
+              {/* Additional Info */}
+              <div className="space-y-4">
+                {/* Next Birthday */}
+                <div className="p-4 bg-gradient-to-r from-pink-50 to-red-50 dark:from-pink-950/20 dark:to-red-950/20 rounded-lg border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Cake className="w-4 h-4 text-pink-500" />
+                    <span className="font-medium">{t('additionalInfo.nextBirthday')}</span>
                   </div>
-                  <div className="text-sm text-muted-foreground">дней прожито</div>
-                </div>
-                
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <div className="text-lg font-bold text-purple-600">
-                    {formatNumber(ageData.totalWeeks)}
+                  <div className="text-lg font-bold text-pink-600 dark:text-pink-400">
+                    {ageData.nextBirthday.daysUntil === 0 ? t('birthdayStatus.today') : 
+                     ageData.nextBirthday.daysUntil === 1 ? t('birthdayStatus.tomorrow') : 
+                     t('birthdayStatus.inDays', { days: ageData.nextBirthday.daysUntil })}
                   </div>
-                  <div className="text-sm text-muted-foreground">недель</div>
-                </div>
-                
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <div className="text-lg font-bold text-green-600">
-                    {formatNumber(ageData.totalHours)}
+                  <div className="text-sm text-muted-foreground">
+                    {ageData.nextBirthday.date.toLocaleDateString('ru-RU')} ({ageData.nextBirthday.dayOfWeek})
                   </div>
-                  <div className="text-sm text-muted-foreground">часов</div>
                 </div>
-                
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <div className="text-lg font-bold text-blue-600">
-                    {formatNumber(ageData.totalMinutes)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">минут</div>
-                </div>
-              </div>
 
-              <Button 
-                onClick={() => copyToClipboard(formatAgeText(ageData))}
-                variant="outline"
-                className="w-full"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Скопировать информацию о возрасте
-              </Button>
-            </div>
-          </Card>
-
-          {/* Additional Info */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-500" />
-              Дополнительная информация
-            </h3>
-            
-            <div className="space-y-4">
-              {/* Next Birthday */}
-              <div className="p-4 bg-gradient-to-r from-pink-50 to-red-50 dark:from-pink-950/20 dark:to-red-950/20 rounded-lg border">
-                <div className="flex items-center gap-2 mb-2">
-                  <Cake className="w-4 h-4 text-pink-500" />
-                  <span className="font-medium">Следующий день рождения</span>
-                </div>
-                <div className="text-lg font-bold text-pink-600 dark:text-pink-400">
-                  {ageData.nextBirthday.daysUntil === 0 ? 'Сегодня!' : 
-                   ageData.nextBirthday.daysUntil === 1 ? 'Завтра!' : 
-                   `Через ${ageData.nextBirthday.daysUntil} дней`}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {ageData.nextBirthday.date.toLocaleDateString('ru-RU')} ({ageData.nextBirthday.dayOfWeek})
-                </div>
-              </div>
-
-              {/* Life Stage */}
-              <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 rounded-lg border">
-                <div className="flex items-center gap-2 mb-2">
-                  <Heart className="w-4 h-4 text-green-500" />
-                  <span className="font-medium">Жизненный этап</span>
-                </div>
-                <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                  {ageData.lifeStage}
-                </div>
-              </div>
-
-              {/* Zodiac Signs */}
-              <div className="grid grid-cols-1 gap-3">
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 rounded-lg border">
-                  <div className="font-medium text-purple-700 dark:text-purple-300 mb-1">
-                    Знак зодиака
+                {/* Life Stage */}
+                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 rounded-lg border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Heart className="w-4 h-4 text-green-500" />
+                    <span className="font-medium">{t('additionalInfo.lifeStage')}</span>
                   </div>
-                  <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
-                    {ageData.zodiacSign}
+                  <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                    {ageData.lifeStage}
                   </div>
                 </div>
-                
-                <div className="p-4 bg-gradient-to-r from-amber-50 to-blue-50 dark:from-amber-950/20 dark:to-blue-950/20 rounded-lg border">
-                  <div className="font-medium text-amber-700 dark:text-amber-300 mb-1">
-                    Китайский гороскоп
+
+                {/* Zodiac Signs */}
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 rounded-lg border">
+                    <div className="font-medium text-purple-700 dark:text-purple-300 mb-1">
+                      {t('additionalInfo.zodiacSign')}
+                    </div>
+                    <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
+                      {ageData.zodiacSign}
+                    </div>
                   </div>
-                  <div className="text-lg font-bold text-amber-600 dark:text-amber-400">
-                    Год {ageData.chineseZodiac}
+                  
+                  <div className="p-4 bg-gradient-to-r from-amber-50 to-blue-50 dark:from-amber-950/20 dark:to-blue-950/20 rounded-lg border">
+                    <div className="font-medium text-amber-700 dark:text-amber-300 mb-1">
+                      {t('additionalInfo.chineseZodiac')}
+                    </div>
+                    <div className="text-lg font-bold text-amber-600 dark:text-amber-400">
+                      {t('chineseZodiacPrefix')} {ageData.chineseZodiac}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </Card>
-        </div>
+          </WidgetOutput>
+        </WidgetSection>
       )}
 
       {/* Empty State */}
       {!ageData && !isCalculating && (
-        <Card className="p-12">
-          <div className="text-center text-muted-foreground">
-            <Calendar className="w-16 h-16 mx-auto mb-4 opacity-50" />
-            <p className="text-lg">Введите дату рождения для расчета возраста</p>
-            <p className="text-sm mt-2">
-              Узнайте свой точный возраст в различных единицах времени
-            </p>
+        <WidgetSection title={t('sections.placeholder')}>
+          <div className="flex items-center justify-center h-40 text-muted-foreground">
+            <div className="text-center">
+              <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
+              <p>{t('placeholder.enterDate')}</p>
+              <p className="text-sm mt-2 opacity-75">
+                {t('placeholder.description')}
+              </p>
+            </div>
           </div>
-        </Card>
+        </WidgetSection>
       )}
 
       {/* Info */}
-      <Card className="p-6 bg-muted/50">
-        <h3 className="font-semibold mb-4">О калькуляторе возраста</h3>
+      <WidgetSection title={t('sections.about')}>
         <div className="grid md:grid-cols-2 gap-6 text-sm">
           <div className="space-y-3">
             <div>
-              <h4 className="font-medium mb-1">Что рассчитывается</h4>
+              <h4 className="font-medium mb-1">{t('info.whatCalculated')}</h4>
               <ul className="text-muted-foreground space-y-1">
-                <li>• Точный возраст в годах, месяцах и днях</li>
-                <li>• Общее количество прожитых дней, недель, часов</li>
-                <li>• Время до следующего дня рождения</li>
-                <li>• Знак зодиака и китайский гороскоп</li>
+                <li>• {t('info.features.exactAge')}</li>
+                <li>• {t('info.features.totalTime')}</li>
+                <li>• {t('info.features.nextBirthday')}</li>
+                <li>• {t('info.features.zodiacSigns')}</li>
               </ul>
             </div>
           </div>
           <div className="space-y-3">
             <div>
-              <h4 className="font-medium mb-1">Интересные факты</h4>
+              <h4 className="font-medium mb-1">{t('info.interestingFacts')}</h4>
               <ul className="text-muted-foreground space-y-1">
-                <li>• Учитываются високосные годы</li>
-                <li>• Определяется жизненный этап</li>
-                <li>• Показывается день недели для следующего ДР</li>
-                <li>• Все расчеты выполняются в реальном времени</li>
+                <li>• {t('info.features.leapYears')}</li>
+                <li>• {t('info.features.lifeStage')}</li>
+                <li>• {t('info.features.dayOfWeek')}</li>
+                <li>• {t('info.features.realTime')}</li>
               </ul>
             </div>
           </div>
         </div>
-      </Card>
-    </div>
+      </WidgetSection>
+    </WidgetLayout>
   )
 }

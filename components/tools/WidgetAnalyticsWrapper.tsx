@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 
 interface WidgetAnalyticsWrapperProps {
@@ -9,12 +8,8 @@ interface WidgetAnalyticsWrapperProps {
 }
 
 export function WidgetAnalyticsWrapper({ widgetId, children }: WidgetAnalyticsWrapperProps) {
-  const { trackView } = useAnalytics(widgetId)
-  
-  useEffect(() => {
-    // Track page view when widget is loaded
-    trackView()
-  }, [trackView])
+  // useAnalytics already tracks view on mount, no need to track again
+  useAnalytics(widgetId)
   
   return <>{children}</>
 }
