@@ -903,15 +903,18 @@
 		},
 		"themeSettings": {
 			"title": "Theme Settings",
-			"description": "Customize the appearance of the site with theme preferences and color modes"
+			"description": "Customize the appearance of the site with theme preferences and color modes",
+			"useCase": "Personalize interface appearance with theme and color scheme customization"
 		},
 		"languageSettings": {
 			"title": "Language Settings",
-			"description": "Change the display language and regional preferences for the interface"
+			"description": "Change the display language and regional preferences for the interface",
+			"useCase": "Change interface language and regional settings for localization"
 		},
 		"fontSettings": {
 			"title": "Font Settings",
-			"description": "Choose your preferred font for better readability with full language support"
+			"description": "Choose your preferred font for better readability with full language support",
+			"useCase": "Customize fonts for improved readability and interface accessibility"
 		},
 		"cssSpecificity": {
 			"title": "CSS Specificity Calculator",
@@ -946,7 +949,8 @@
 		},
 		"themeTransitions": {
 			"title": "Theme Transitions",
-			"description": "Experiment with different theme transition animations"
+			"description": "Experiment with different theme transition animations",
+			"useCase": "Customize animations for switching between light and dark themes"
 		},
 		"colorConverter": {
 			"title": "Color Converter",
