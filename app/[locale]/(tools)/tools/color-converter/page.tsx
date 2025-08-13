@@ -114,7 +114,7 @@ export default function ColorConverterPage() {
     <WidgetLayout>
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Input Section */}
-        <WidgetSection icon={Palette} title={t('sections.input')}>
+        <WidgetSection icon={<Palette className="w-5 h-5" />} title={t('sections.input')}>
           <div className="space-y-4">
             {/* Color Preview */}
             <div className="grid grid-cols-2 gap-4">
@@ -287,7 +287,7 @@ export default function ColorConverterPage() {
         </WidgetSection>
 
         {/* Output Section */}
-        <WidgetSection icon={Layers} title={t('sections.output')}>
+        <WidgetSection icon={<Layers className="w-5 h-5" />} title={t('sections.output')}>
           <WidgetOutput>
             <div className="space-y-4">
               {/* HEX Values */}
@@ -471,7 +471,7 @@ export default function ColorConverterPage() {
       </div>
 
       {/* Settings Section */}
-      <WidgetSection icon={Settings2} title={t('sections.settings')} className="mt-6">
+      <WidgetSection icon={<Settings2 className="w-5 h-5" />} title={t('sections.settings')} className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Precision */}
           <WidgetInput label={t('precision')}>

@@ -952,6 +952,11 @@
 			"title": "Color Converter",
 			"description": "Convert colors between HEX, RGB, HSL, CMYK, LAB, and other color models",
 			"useCase": "Convert colors between different formats for design and development",
+			"sections": {
+				"input": "Color Input",
+				"output": "Color Conversions",
+				"settings": "Settings"
+			},
 			"colorModel": "Color Model",
 			"alphaChannel": "Alpha Channel",
 			"backgroundColor": "Background Color (for RGBA → RGB)",
