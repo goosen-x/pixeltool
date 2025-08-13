@@ -14,7 +14,7 @@
 			"liveAndFree": "Live & Always Free",
 			"features": {
 				"professionalTools": "50+ Professional Tools",
-				"noInstallation": "No Installation Required", 
+				"noInstallation": "No Installation Required",
 				"freeForever": "100% Free Forever",
 				"lightningFast": "Lightning Fast"
 			},
@@ -295,21 +295,6 @@
 			}
 		}
 	},
-	"Footer": {
-		"slogan": "Every line of code is a step towards perfection. I'm ready to take on your challenge and turn it into a successful project.",
-		"copyright": "Created by Borisenko Dmitry",
-		"description": "A collection of 50+ professional tools for developers and designers. Converters, generators, formatters - all in one place.",
-		"shortcuts": {
-			"title": "Shortcuts:",
-			"copy": "⌘C Copy",
-			"clear": "⌘K Clear",
-			"save": "⌘S Save"
-		},
-		"support": {
-			"title": "Support",
-			"buyMeCoffee": "Buy me a coffee"
-		}
-	},
 	"projectsPage": {
 		"title": "Professional Tools",
 		"description": "50+ free tools for developers and designers",
@@ -342,20 +327,29 @@
 			"widgetInfo": {
 				"title": "Widget Info",
 				"difficulty": "Difficulty",
-				"category": "Category", 
-				"tags": "Tags",
 				"difficultyLevels": {
 					"beginner": "Beginner",
-					"intermediate": "Intermediate", 
+					"intermediate": "Intermediate",
 					"advanced": "Advanced"
-				}
+				},
+				"category": "Category",
+				"tags": "Tags"
+			},
+			"categories": {
+				"webdev": "Web Development",
+				"business": "Business & Finance",
+				"content": "Content Creation",
+				"security": "Security & Privacy",
+				"multimedia": "Multimedia",
+				"analytics": "Analytics & Data",
+				"lifestyle": "Health & Lifestyle"
 			},
 			"quickActions": {
 				"title": "Quick Actions",
 				"share": "Share Widget"
 			},
 			"useCase": {
-				"title": "Use Case"
+				"title": "When to Use"
 			},
 			"usageStats": {
 				"title": "Usage Stats",
@@ -371,6 +365,9 @@
 			},
 			"relatedTools": {
 				"title": "Related Tools"
+			},
+			"donation": {
+				"buyMeCoffee": "Buy me a coffee"
 			}
 		},
 		"tools": "Tools",
@@ -1592,7 +1589,7 @@
 			},
 			"units": {
 				"celsius": "Celsius",
-				"fahrenheit": "Fahrenheit", 
+				"fahrenheit": "Fahrenheit",
 				"kelvin": "Kelvin",
 				"rankine": "Rankine",
 				"reaumur": "Réaumur"
@@ -1802,6 +1799,63 @@
 			"description": "Check image dimensions, file size, and format details",
 			"useCase": "Analyze image properties and dimensions for web optimization"
 		},
+		"htmlXmlParser": {
+			"title": "HTML/XML Parser",
+			"description": "Parse, format, validate, and minify HTML and XML documents",
+			"useCase": "Format, minify, validate HTML/XML code and extract data from documents",
+			"input": "Input Code",
+			"output": "Output",
+			"placeholder": "Paste your HTML or XML code here...",
+			"outputPlaceholder": "Processed output will appear here...",
+			"settings": "Parser Settings",
+			"mode": "Processing Mode",
+			"modes": {
+				"format": "Format & Beautify",
+				"minify": "Minify",
+				"validate": "Validate Only",
+				"extract": "Extract Data"
+			},
+			"indentSize": "Indent Size",
+			"spaces": "spaces",
+			"preserveComments": "Preserve Comments",
+			"process": "Process",
+			"processing": "Processing...",
+			"copy": "Copy",
+			"download": "Download",
+			"copied": "Copied to clipboard!",
+			"downloaded": "File downloaded!",
+			"emptyInput": "Please enter HTML or XML code",
+			"valid": "Valid",
+			"invalid": "Invalid",
+			"errors": "Errors",
+			"validDocument": "Document is valid!",
+			"elements": "Elements",
+			"attributes": "Attributes",
+			"textNodes": "Text Nodes",
+			"comments": "Comments",
+			"faqs": [
+				{
+					"question": "What's the difference between HTML and XML parsing?",
+					"answer": "HTML is more forgiving and allows certain unclosed tags, while XML requires strict syntax with all tags properly closed and nested. The parser automatically detects the type based on content."
+				},
+				{
+					"question": "What does the minify option do?",
+					"answer": "Minification removes unnecessary whitespace, line breaks, and comments (optionally) to reduce file size. This is useful for production deployments to improve loading times."
+				},
+				{
+					"question": "How does data extraction work?",
+					"answer": "The extract mode traverses the document tree and outputs the path to each element along with its attributes and text content. This is useful for understanding document structure and extracting specific data."
+				},
+				{
+					"question": "What validation is performed?",
+					"answer": "The parser checks for well-formedness: proper tag nesting, closed tags, valid attribute syntax, and proper character encoding. It reports any parsing errors found."
+				},
+				{
+					"question": "Can it handle large documents?",
+					"answer": "Yes, but very large documents (over 10MB) might be slow to process. The parser runs entirely in your browser, so performance depends on your device's capabilities."
+				}
+			]
+		},
 		"asciiArtGenerator": {
 			"title": "ASCII Art Generator",
 			"description": "Convert text and images to ASCII art",
@@ -1832,53 +1886,6 @@
 			"clearAll": "Clear all",
 			"empty": "No favorite tools yet",
 			"emptyDescription": "Click the heart icon on any tool to add it to your favorites"
-		},
-		"rightSidebar": {
-			"widgetInfo": {
-				"title": "Widget Info",
-				"difficulty": "Difficulty",
-				"difficultyLevels": {
-					"beginner": "Beginner",
-					"intermediate": "Intermediate",
-					"advanced": "Advanced"
-				},
-				"category": "Category",
-				"tags": "Tags"
-			},
-			"categories": {
-				"webdev": "Web Development",
-				"business": "Business & Finance",
-				"content": "Content Creation",
-				"security": "Security & Privacy",
-				"multimedia": "Multimedia",
-				"analytics": "Analytics & Data",
-				"lifestyle": "Health & Lifestyle"
-			},
-			"quickActions": {
-				"title": "Quick Actions",
-				"share": "Share Widget"
-			},
-			"useCase": {
-				"title": "When to Use"
-			},
-			"usageStats": {
-				"title": "Usage Stats",
-				"onlineNow": "Online now",
-				"viewsToday": "Views today",
-				"totalUses": "Total uses",
-				"avgSession": "Avg. session",
-				"noData": "No data available"
-			},
-			"feedback": {
-				"title": "Feedback",
-				"helpText": "Help us improve this tool"
-			},
-			"relatedTools": {
-				"title": "Related Tools"
-			},
-			"donation": {
-				"buyMeCoffee": "Buy me a coffee"
-			}
 		},
 		"categories": {
 			"webdev": "Web Development",
@@ -2120,63 +2127,6 @@
 				}
 			]
 		},
-		"htmlXmlParser": {
-			"title": "HTML/XML Parser",
-			"description": "Parse, format, validate, and minify HTML and XML documents",
-			"useCase": "Format, minify, validate HTML/XML code and extract data from documents",
-			"input": "Input Code",
-			"output": "Output",
-			"placeholder": "Paste your HTML or XML code here...",
-			"outputPlaceholder": "Processed output will appear here...",
-			"settings": "Parser Settings",
-			"mode": "Processing Mode",
-			"modes": {
-				"format": "Format & Beautify",
-				"minify": "Minify",
-				"validate": "Validate Only",
-				"extract": "Extract Data"
-			},
-			"indentSize": "Indent Size",
-			"spaces": "spaces",
-			"preserveComments": "Preserve Comments",
-			"process": "Process",
-			"processing": "Processing...",
-			"copy": "Copy",
-			"download": "Download",
-			"copied": "Copied to clipboard!",
-			"downloaded": "File downloaded!",
-			"emptyInput": "Please enter HTML or XML code",
-			"valid": "Valid",
-			"invalid": "Invalid",
-			"errors": "Errors",
-			"validDocument": "Document is valid!",
-			"elements": "Elements",
-			"attributes": "Attributes",
-			"textNodes": "Text Nodes",
-			"comments": "Comments",
-			"faqs": [
-				{
-					"question": "What's the difference between HTML and XML parsing?",
-					"answer": "HTML is more forgiving and allows certain unclosed tags, while XML requires strict syntax with all tags properly closed and nested. The parser automatically detects the type based on content."
-				},
-				{
-					"question": "What does the minify option do?",
-					"answer": "Minification removes unnecessary whitespace, line breaks, and comments (optionally) to reduce file size. This is useful for production deployments to improve loading times."
-				},
-				{
-					"question": "How does data extraction work?",
-					"answer": "The extract mode traverses the document tree and outputs the path to each element along with its attributes and text content. This is useful for understanding document structure and extracting specific data."
-				},
-				{
-					"question": "What validation is performed?",
-					"answer": "The parser checks for well-formedness: proper tag nesting, closed tags, valid attribute syntax, and proper character encoding. It reports any parsing errors found."
-				},
-				{
-					"question": "Can it handle large documents?",
-					"answer": "Yes, but very large documents (over 10MB) might be slow to process. The parser runs entirely in your browser, so performance depends on your device's capabilities."
-				}
-			]
-		},
 		"analyticsDashboard": {
 			"title": "Widget Analytics Dashboard",
 			"description": "Track usage and performance metrics for all your widgets",
@@ -2210,7 +2160,7 @@
 	},
 	"Footer": {
 		"badge": "50+ Professional Tools",
-		"title": "PixelTool", 
+		"title": "PixelTool",
 		"description": "Professional developer tools, right in your browser",
 		"heroDescription": "The ultimate toolkit for developers, designers, and digital creators. Everything you need, right in your browser",
 		"exploreTools": "Explore Tools",

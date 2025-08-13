@@ -5,7 +5,6 @@ import type { Metadata } from 'next'
 import { Footer } from '@/components/layout'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { interFont, openSansFont } from '@/lib/fonts/fonts'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
@@ -28,35 +27,69 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { locale } = await params
-	
+
 	const metadata = {
 		en: {
 			title: {
 				default: 'PixelTool - Free Online Developer Tools & Utilities',
 				template: '%s | PixelTool'
 			},
-			description: 'Professional web developer tools: CSS generators, color converters, formatters, validators, and 50+ more utilities. No installation required, 100% free.',
+			description:
+				'Professional web developer tools: CSS generators, color converters, formatters, validators, and 50+ more utilities. No installation required, 100% free.'
 		},
 		ru: {
 			title: {
 				default: 'PixelTool - Бесплатные Онлайн Инструменты для Разработчиков',
 				template: '%s | PixelTool'
 			},
-			description: 'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики и 50+ утилит. Без установки, 100% бесплатно.',
+			description:
+				'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики и 50+ утилит. Без установки, 100% бесплатно.'
 		}
 	}
 
-	const currentMetadata = metadata[locale as keyof typeof metadata] || metadata.en
+	const currentMetadata =
+		metadata[locale as keyof typeof metadata] || metadata.en
 	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
 	return {
 		metadataBase: new URL(siteUrl),
 		title: currentMetadata.title,
 		description: currentMetadata.description,
-		keywords: locale === 'ru' 
-			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты', 'инструменты разработчика', 'калькулятор CSS', 'генератор паролей', 'QR код генератор', 'конвертер изображений', 'парсер HTML', 'минификатор кода']
-			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities', 'developer tools', 'CSS calculator', 'password generator', 'QR code generator', 'image converter', 'HTML parser', 'code minifier'],
-		authors: [{ name: 'Dmitry Borisenko', url: 'https://github.com/goosen-x/pixeltool' }],
+		keywords:
+			locale === 'ru'
+				? [
+						'онлайн инструменты',
+						'веб разработка',
+						'CSS генератор',
+						'конвертер цветов',
+						'форматировщик кода',
+						'бесплатные утилиты',
+						'инструменты разработчика',
+						'калькулятор CSS',
+						'генератор паролей',
+						'QR код генератор',
+						'конвертер изображений',
+						'парсер HTML',
+						'минификатор кода'
+					]
+				: [
+						'online tools',
+						'web development',
+						'CSS generator',
+						'color converter',
+						'code formatter',
+						'free utilities',
+						'developer tools',
+						'CSS calculator',
+						'password generator',
+						'QR code generator',
+						'image converter',
+						'HTML parser',
+						'code minifier'
+					],
+		authors: [
+			{ name: 'Dmitry Borisenko', url: 'https://github.com/goosen-x/pixeltool' }
+		],
 		creator: 'Dmitry Borisenko',
 		publisher: 'PixelTool',
 		category: 'technology',
@@ -67,25 +100,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			title: currentMetadata.title.default,
 			description: currentMetadata.description,
 			siteName: 'PixelTool',
-			images: [{
-				url: '/og-image.png',
-				width: 1200,
-				height: 630,
-				alt: 'PixelTool - Professional Developer Tools'
-			}],
+			images: [
+				{
+					url: '/og-image.png',
+					width: 1200,
+					height: 630,
+					alt: 'PixelTool - Professional Developer Tools'
+				}
+			]
 		},
 		twitter: {
 			card: 'summary_large_image',
 			title: currentMetadata.title.default,
 			description: currentMetadata.description,
 			images: ['/og-image.png'],
-			creator: '@pixeltool',
+			creator: '@pixeltool'
 		},
 		alternates: {
 			canonical: siteUrl,
 			languages: {
-				'en': `${siteUrl}/en`,
-				'ru': `${siteUrl}/ru`,
+				en: `${siteUrl}/en`,
+				ru: `${siteUrl}/ru`
 			}
 		},
 		robots: {
@@ -96,29 +131,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 				follow: true,
 				'max-video-preview': -1,
 				'max-image-preview': 'large',
-				'max-snippet': -1,
-			},
+				'max-snippet': -1
+			}
 		},
 		verification: {
 			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
-			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION
 		},
 		manifest: '/manifest.json',
 		appleWebApp: {
 			capable: true,
 			statusBarStyle: 'default',
-			title: 'PixelTool',
+			title: 'PixelTool'
 		},
 		formatDetection: {
-			telephone: false,
-		},
+			telephone: false
+		}
 	}
 }
 
 export const viewport = {
 	width: 'device-width',
 	initialScale: 1,
-	maximumScale: 5,
+	maximumScale: 5
 }
 
 export default async function RootLayout({
@@ -135,7 +170,7 @@ export default async function RootLayout({
 		<html
 			lang={locale}
 			className={cn(
-				"scroll-smooth scroll-pt-24",
+				'scroll-smooth scroll-pt-24',
 				interFont.variable,
 				openSansFont.variable
 			)}
@@ -148,11 +183,7 @@ export default async function RootLayout({
 						interFont.className
 					)}
 				>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-					>
+					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 						<NavigationProgress />
 						<YandexMetrika />
 						<ServiceWorkerRegistration />

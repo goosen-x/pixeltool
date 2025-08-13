@@ -68,3 +68,36 @@ This is a modern Next.js 15 portfolio website with internationalization support 
 ### Testing & Quality
 
 Currently no test suite is configured. Use `npm run lint` to ensure code quality before committing changes.
+
+## Translation System
+
+The project uses a type-safe translation system. When adding new widgets or modifying translations:
+
+### Quick Commands
+
+```bash
+npm run translations:check  # Validate all translations
+npm run validate:translations  # Check for missing translations
+npm run generate:types  # Generate TypeScript types from translations
+```
+
+### Adding a New Widget
+
+1. Add widget to `/lib/constants/widgets.ts`
+2. Add translations to BOTH `/messages/en.json` and `/messages/ru.json`:
+   - Widget translations go in the `widgets` section
+   - Each widget needs: `title`, `description`, `useCase` + widget-specific fields
+3. Run `npm run translations:check` to validate
+4. Use type-safe hooks in your component:
+   ```typescript
+   import { useTranslations } from 'next-intl'
+   const t = useTranslations('widgets.myWidget')
+   ```
+
+### Common Issues
+
+- **MISSING_MESSAGE errors**: Widget translations are missing or in wrong location
+- **Duplicate keys in JSON**: Remove duplicate widget entries, keep only one
+- **Translation validation fails**: Ensure both language files have same structure
+
+See `/docs/TRANSLATIONS.md` for detailed documentation.
