@@ -1807,6 +1807,11 @@
 			"description": "Convert text and images to ASCII art",
 			"useCase": "Generate ASCII art from text and images for creative projects"
 		},
+		"htmlXmlParser": {
+			"title": "HTML/XML Parser",
+			"description": "Parse and format HTML/XML documents with syntax highlighting",
+			"useCase": "Parse, validate, and format HTML/XML code for development"
+		},
 		"analyticsDashboard": {
 			"title": "Analytics Dashboard",
 			"description": "View website analytics and performance metrics",
