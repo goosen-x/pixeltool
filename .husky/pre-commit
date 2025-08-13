@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+# Run linting
+echo "🔍 Running ESLint..."
+npm run lint
+
+# Check if lint failed
+if [ $? -ne 0 ]; then
+  echo "❌ Linting failed. Please fix ESLint errors before committing."
+  exit 1
+fi
+
+# Run translation validation
+echo "🌐 Validating translations..."
+npm run validate:translations
+
+# Check if validation failed
+if [ $? -ne 0 ]; then
+  echo "❌ Translation validation failed. Please fix missing translations before committing."
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"

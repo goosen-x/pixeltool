@@ -87,7 +87,6 @@ export interface Translations {
     notepad?: WidgetBriefTranslation
     bingoGenerator?: WidgetBriefTranslation
     textToSpeech?: WidgetBriefTranslation
-    emailHtml?: WidgetBriefTranslation
     htmlEntityEncoder?: WidgetBriefTranslation
     diffChecker?: WidgetBriefTranslation
     javascriptSyntaxChecker?: WidgetBriefTranslation

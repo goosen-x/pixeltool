@@ -93,6 +93,14 @@
 		"description": "We can't find that page.",
 		"backToHome": "Back to Home Page"
 	},
+	"Error": {
+		"title": "Something went wrong!",
+		"description": "An error occurred on the server. Please try again later.",
+		"errorDetails": "Error details:",
+		"errorId": "Error ID:",
+		"tryAgain": "Try again",
+		"goHome": "Go home"
+	},
 	"Header": {
 		"nav": {
 			"main": "Main",
@@ -769,11 +777,6 @@
 			"title": "Text to Speech",
 			"description": "Convert any text to speech with customizable voice settings and multiple languages",
 			"useCase": "Convert text to speech for accessibility, language learning, or content creation"
-		},
-		"emailHtml": {
-			"title": "Email Link Generator",
-			"description": "Create HTML email links that copy address to clipboard on click",
-			"useCase": "When you need clickable email links that copy the address to clipboard instead of opening mail clients"
 		},
 		"systemInfo": {
 			"title": "System Info",

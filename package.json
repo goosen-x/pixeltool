@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbo",
+		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
@@ -12,7 +12,8 @@
 		"test:coverage": "vitest run --coverage",
 		"validate:translations": "npx tsx scripts/validate-translations.ts",
 		"generate:types": "npx tsx scripts/generate-translation-types.ts",
-		"translations:check": "npm run generate:types && npm run validate:translations"
+		"translations:check": "npm run generate:types && npm run validate:translations",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@formatjs/intl-localematcher": "^0.5.4",
@@ -107,6 +108,7 @@
 		"@vitest/ui": "^3.2.4",
 		"eslint": "^8",
 		"eslint-config-next": "14.1.4",
+		"husky": "^9.1.7",
 		"jsdom": "^26.1.0",
 		"postcss": "^8",
 		"tailwindcss": "^4.1.11",

@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-13T14:36:55.678Z
+// Generated on: 2025-08-13T14:57:26.914Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -770,11 +770,6 @@ export interface GeneratedTranslations {
       }
     }
     textToSpeech?: {
-      title: string
-      description: string
-      useCase: string
-    }
-    emailHtml?: {
       title: string
       description: string
       useCase: string
@@ -2111,7 +2106,7 @@ export interface GeneratedTranslations {
 }
 
 // All widget names from translation file
-export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'emailHtml' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'pomodoroTimer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
+export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'pomodoroTimer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
 
 // Runtime validation helper
 export const WIDGET_NAMES = [
@@ -2129,7 +2124,6 @@ export const WIDGET_NAMES = [
   'passwordGenerator',
   'utmBuilder',
   'textToSpeech',
-  'emailHtml',
   'systemInfo',
   'jsonTools',
   'jsCssCompressor',
