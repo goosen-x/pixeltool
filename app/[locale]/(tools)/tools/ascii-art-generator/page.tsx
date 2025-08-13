@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Type, Image, Download, Copy, Palette, FileText } from 'lucide-react'
+import { Type, Image as ImageIcon, Download, Copy, Palette, FileText } from 'lucide-react'
+import Image from 'next/image'
 import { toast } from 'sonner'
 import { 
   WidgetContainer, 
@@ -147,7 +148,7 @@ export default function AsciiArtGeneratorPage() {
       return
     }
 
-    const img = new Image()
+    const img = new window.Image()
     img.onload = () => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')!
@@ -409,7 +410,7 @@ export default function AsciiArtGeneratorPage() {
               Text to ASCII
             </TabsTrigger>
             <TabsTrigger value="image" className="flex items-center gap-2">
-              <Image className="w-4 h-4" />
+              <ImageIcon className="w-4 h-4" />
               Image to ASCII
             </TabsTrigger>
             <TabsTrigger value="patterns" className="flex items-center gap-2">
@@ -450,9 +451,11 @@ export default function AsciiArtGeneratorPage() {
                 {imagePreview && (
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">Preview:</p>
-                    <img 
+                    <Image 
                       src={imagePreview} 
                       alt="Uploaded image preview" 
+                      width={300}
+                      height={200}
                       className="max-w-xs rounded-lg border"
                     />
                   </div>

@@ -3,13 +3,24 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbo",
+		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"validate:translations": "npx tsx scripts/validate-translations.ts",
+		"generate:types": "npx tsx scripts/generate-translation-types.ts",
+		"translations:check": "npm run generate:types && npm run validate:translations",
+		"check:security": "npx tsx scripts/check-security.ts",
+		"check:imports": "npx tsx scripts/check-imports.ts",
+		"check:bundle": "npx tsx scripts/check-bundle-size.ts",
+		"check:all": "npm run check:security && npm run check:imports && npm run check:bundle",
+		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+		"typecheck": "tsc --noEmit",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@formatjs/intl-localematcher": "^0.5.4",
@@ -104,8 +115,10 @@
 		"@vitest/ui": "^3.2.4",
 		"eslint": "^8",
 		"eslint-config-next": "14.1.4",
+		"husky": "^9.1.7",
 		"jsdom": "^26.1.0",
 		"postcss": "^8",
+		"prettier": "^3.6.2",
 		"tailwindcss": "^4.1.11",
 		"typescript": "^5",
 		"vitest": "^3.2.4"

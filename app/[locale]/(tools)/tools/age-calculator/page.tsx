@@ -238,7 +238,7 @@ export default function AgeCalculatorPage() {
     } else {
       setAgeData(null)
     }
-  }, [birthDate])
+  }, [birthDate, handleCalculate])
 
   return (
     <WidgetLayout>

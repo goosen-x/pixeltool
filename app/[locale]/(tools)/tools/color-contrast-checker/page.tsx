@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -79,34 +79,7 @@ export default function ColorContrastCheckerPage() {
     background: ColorSuggestion[]
   }>({ foreground: [], background: [] })
 
-  // Calculate contrast ratio whenever colors change
-  useEffect(() => {
-    calculateContrast()
-  }, [foreground, background])
-
-  const calculateContrast = () => {
-    const ratio = getContrastRatio(foreground, background)
-    const isLargeText = fontSize >= 18 || (fontSize >= 14 && fontWeight === 'bold')
-
-    const contrastResult: ContrastResult = {
-      ratio,
-      normalTextAA: ratio >= WCAG_GUIDELINES.normalTextAA,
-      normalTextAAA: ratio >= WCAG_GUIDELINES.normalTextAAA,
-      largeTextAA: ratio >= WCAG_GUIDELINES.largeTextAA,
-      largeTextAAA: ratio >= WCAG_GUIDELINES.largeTextAAA,
-      uiComponentAA: ratio >= WCAG_GUIDELINES.uiComponentAA
-    }
-
-    setResult(contrastResult)
-
-    // Generate suggestions if contrast fails
-    if (!contrastResult.normalTextAA) {
-      generateSuggestions()
-    } else {
-      setSuggestions({ foreground: [], background: [] })
-    }
-  }
-
+  // Helper functions
   const getContrastRatio = (color1: string, color2: string): number => {
     const lum1 = getLuminance(color1)
     const lum2 = getLuminance(color2)
@@ -128,7 +101,7 @@ export default function ColorContrastCheckerPage() {
   }
 
   const hexToRgb = (hex: string): [number, number, number] | null => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    const result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex)
     return result ? [
       parseInt(result[1], 16),
       parseInt(result[2], 16),
@@ -143,7 +116,7 @@ export default function ColorContrastCheckerPage() {
     }).join('')
   }
 
-  const generateSuggestions = () => {
+  const generateSuggestions = useCallback(() => {
     const foregroundSuggestions: ColorSuggestion[] = []
     const backgroundSuggestions: ColorSuggestion[] = []
 
@@ -193,7 +166,35 @@ export default function ColorContrastCheckerPage() {
       foreground: foregroundSuggestions.slice(0, 4),
       background: backgroundSuggestions.slice(0, 4)
     })
-  }
+  }, [background, foreground])
+
+  const calculateContrast = useCallback(() => {
+    const ratio = getContrastRatio(foreground, background)
+    const isLargeText = fontSize >= 18 || (fontSize >= 14 && fontWeight === 'bold')
+
+    const contrastResult: ContrastResult = {
+      ratio,
+      normalTextAA: ratio >= WCAG_GUIDELINES.normalTextAA,
+      normalTextAAA: ratio >= WCAG_GUIDELINES.normalTextAAA,
+      largeTextAA: ratio >= WCAG_GUIDELINES.largeTextAA,
+      largeTextAAA: ratio >= WCAG_GUIDELINES.largeTextAAA,
+      uiComponentAA: ratio >= WCAG_GUIDELINES.uiComponentAA
+    }
+
+    setResult(contrastResult)
+
+    // Generate suggestions if contrast fails
+    if (!contrastResult.normalTextAA) {
+      generateSuggestions()
+    } else {
+      setSuggestions({ foreground: [], background: [] })
+    }
+  }, [foreground, background, fontSize, fontWeight, generateSuggestions])
+
+  // Calculate contrast ratio whenever colors change
+  useEffect(() => {
+    calculateContrast()
+  }, [calculateContrast])
 
   const swapColors = () => {
     const temp = foreground

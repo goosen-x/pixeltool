@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -110,37 +110,7 @@ export default function BingoGeneratorPage() {
     }
   ]
 
-  // Initialize grid on load and when size changes
-  useEffect(() => {
-    generateBingoGrid()
-  }, [gridSize, bingoItems])
-
-  // Load shared bingo from URL parameters
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const sharedData = params.get('data')
-    
-    if (sharedData) {
-      try {
-        const decodedData = JSON.parse(atob(sharedData))
-        setGridSize(decodedData.size || 5)
-        setBingoItems(decodedData.items || [''])
-        if (decodedData.completed) {
-          // Apply completed state after grid generation
-          setTimeout(() => {
-            setBingoGrid(prev => prev.map(cell => ({
-              ...cell,
-              isCompleted: decodedData.completed.includes(cell.id)
-            })))
-          }, 100)
-        }
-      } catch (error) {
-        toast.error(t('toast.invalidShareUrl'))
-      }
-    }
-  }, [])
-
-  const generateBingoGrid = () => {
+  const generateBingoGrid = useCallback(() => {
     const totalCells = gridSize * gridSize
     const centerIndex = Math.floor(totalCells / 2)
     const isCenterFree = gridSize % 2 === 1
@@ -180,7 +150,37 @@ export default function BingoGeneratorPage() {
     }
 
     setBingoGrid(newGrid)
-  }
+  }, [gridSize, bingoItems, t])
+
+  // Initialize grid on load and when size changes
+  useEffect(() => {
+    generateBingoGrid()
+  }, [generateBingoGrid])
+
+  // Load shared bingo from URL parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sharedData = params.get('data')
+    
+    if (sharedData) {
+      try {
+        const decodedData = JSON.parse(atob(sharedData))
+        setGridSize(decodedData.size || 5)
+        setBingoItems(decodedData.items || [''])
+        if (decodedData.completed) {
+          // Apply completed state after grid generation
+          setTimeout(() => {
+            setBingoGrid(prev => prev.map(cell => ({
+              ...cell,
+              isCompleted: decodedData.completed.includes(cell.id)
+            })))
+          }, 100)
+        }
+      } catch (error) {
+        toast.error(t('toast.invalidShareUrl'))
+      }
+    }
+  }, [t])
 
   const addBingoItem = () => {
     setBingoItems([...bingoItems, ''])

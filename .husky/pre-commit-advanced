@@ -1,0 +1,114 @@
+#!/usr/bin/env sh
+
+# Advanced pre-commit hook with comprehensive checks
+# To use this, rename to 'pre-commit' and make executable
+
+# Configuration - set these to control which checks run
+CHECK_TRANSLATIONS=true
+CHECK_TYPESCRIPT=true
+CHECK_LINT=true
+CHECK_BUILD=true
+CHECK_FORMATTING=true
+CHECK_SECURITY=false      # Set to true for security scanning
+CHECK_IMPORTS=false       # Set to true for import analysis
+CHECK_BUNDLE_SIZE=false   # Set to true for bundle analysis (requires build)
+
+echo "🚀 Running advanced pre-commit checks..."
+echo "───────────────────────────────────────"
+
+# 1. Translation validation (блокирует коммит)
+if [ "$CHECK_TRANSLATIONS" = true ]; then
+  echo "🌐 Validating translations..."
+  npm run validate:translations
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ Translation validation failed. Please fix missing translations before committing."
+    echo "💡 Tip: Run 'npm run validate:translations' to see all missing translations"
+    exit 1
+  fi
+  echo "✅ Translation validation passed!"
+  echo ""
+fi
+
+# 2. TypeScript type checking (блокирует коммит)
+if [ "$CHECK_TYPESCRIPT" = true ]; then
+  echo "🔧 Running TypeScript type check..."
+  npm run typecheck
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ TypeScript type check failed. Please fix type errors before committing."
+    exit 1
+  fi
+  echo "✅ TypeScript type check passed!"
+  echo ""
+fi
+
+# 3. Security checks (блокирует коммит при высоком приоритете)
+if [ "$CHECK_SECURITY" = true ]; then
+  echo "🔒 Running security checks..."
+  npm run check:security
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ High-priority security issues found. Please review and fix before committing."
+    exit 1
+  fi
+  echo "✅ Security check passed!"
+  echo ""
+fi
+
+# 4. ESLint (предупреждения, не блокирует)
+if [ "$CHECK_LINT" = true ]; then
+  echo "🔍 Running ESLint..."
+  npm run lint || echo "⚠️  Found ESLint warnings, but allowing commit to proceed"
+  echo ""
+fi
+
+# 5. Prettier formatting check (предупреждения, не блокирует)
+if [ "$CHECK_FORMATTING" = true ]; then
+  if command -v npx >/dev/null 2>&1; then
+    echo "💅 Checking code formatting..."
+    npm run format:check || {
+      echo "⚠️  Code formatting issues found. Consider running 'npm run format' to fix them."
+      echo "💡 Tip: This is just a warning, commit will proceed"
+    }
+    echo ""
+  fi
+fi
+
+# 6. Build check (блокирует коммит при ошибках сборки)
+if [ "$CHECK_BUILD" = true ]; then
+  echo "🏗️  Testing build process..."
+  npm run build
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ Build failed. Please fix build errors before committing."
+    exit 1
+  fi
+  echo "✅ Build check passed!"
+  echo ""
+fi
+
+# 7. Import analysis (предупреждения, не блокирует)
+if [ "$CHECK_IMPORTS" = true ]; then
+  echo "🔗 Analyzing imports..."
+  npm run check:imports || echo "💡 Consider reviewing import suggestions"
+  echo ""
+fi
+
+# 8. Bundle size check (предупреждения, не блокирует)
+if [ "$CHECK_BUNDLE_SIZE" = true ]; then
+  echo "📦 Checking bundle size..."
+  npm run check:bundle || echo "💡 Consider reviewing bundle size"
+  echo ""
+fi
+
+echo "───────────────────────────────────────"
+echo "🎉 All critical checks passed! Ready to commit."
+echo ""
+echo "📊 Commit Summary:"
+echo "   ✅ Translations: validated"
+echo "   ✅ TypeScript: type-safe"
+echo "   ✅ Build: successful"
+[ "$CHECK_SECURITY" = true ] && echo "   🔒 Security: scanned"
+[ "$CHECK_FORMATTING" = true ] && echo "   💅 Formatting: checked"
+echo ""

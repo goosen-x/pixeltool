@@ -1,0 +1,2197 @@
+// Auto-generated translation types from en.json
+// Generated on: 2025-08-13T18:05:54.477Z
+// DO NOT EDIT MANUALLY - Run npm run generate:types instead
+
+export interface GeneratedTranslations {
+  Locale: string
+  MetaData: {
+    title: string
+    description: string
+  }
+  HomePage: {
+    hero: {
+      subtitle: string
+      subtitle2: string
+      exploreTools: string
+      viewOnGitHub: string
+      browseCategories: string
+      liveAndFree: string
+      features: {
+        professionalTools: string
+        noInstallation: string
+        freeForever: string
+        lightningFast: string
+      }
+      stats: {
+        toolsAvailable: string
+        happyUsers: string
+        uptime: string
+        alwaysFree: string
+      }
+    }
+    features: {
+      title: string
+      subtitle: string
+      developers: {
+        title: string
+        description: string
+      }
+      designers: {
+        title: string
+        description: string
+      }
+      fast: {
+        title: string
+        description: string
+      }
+      accessible: {
+        title: string
+        description: string
+      }
+    }
+    cta: {
+      title: string
+      description: string
+      viewAllTools: string
+    }
+    widgetsCarousel: {
+      badge: string
+      title: string
+      description: string
+      tryNow: string
+      live: string
+      viewAll: string
+    }
+    whyChoose: {
+      title: string
+      subtitle: string
+      trustedBy: string
+      feature1: {
+        title: string
+        description: string
+        point1: string
+        point2: string
+      }
+      feature2: {
+        title: string
+        description: string
+        point1: string
+        point2: string
+      }
+      feature3: {
+        title: string
+        description: string
+        point1: string
+        point2: string
+      }
+      stats: {
+        activeUsers: string
+        monthlyUsage: string
+        countries: string
+        satisfaction: string
+      }
+    }
+  }
+  NotFound: {
+    title: string
+    description: string
+    backToHome: string
+  }
+  Error: {
+    title: string
+    description: string
+    errorDetails: string
+    errorId: string
+    tryAgain: string
+    goHome: string
+  }
+  Header: {
+    nav: {
+      main: string
+      techstack: string
+      tools: string
+      experience: string
+      contact: string
+      blog: string
+    }
+    cv: {
+      btnText: string
+      href: string
+      filename: string
+    }
+    search: string
+  }
+  Feedback: {
+    title: string
+    description: string
+    tabs: {
+      bug: string
+      feature: string
+      general: string
+    }
+    descriptions: {
+      bug: string
+      feature: string
+      general: string
+    }
+    placeholders: {
+      bug: {
+        title: string
+        description: string
+      }
+      feature: {
+        title: string
+        description: string
+      }
+      general: {
+        title: string
+        description: string
+      }
+      email: string
+    }
+    actions: {
+      submit: string
+    }
+    states: {
+      sending: string
+    }
+    validation: {
+      required: string
+    }
+    success: {
+      submitted: string
+    }
+    error: {
+      failed: string
+    }
+  }
+  SectionMain: {
+    language: string
+    job: string
+    name: string
+    contact: string
+    email: {
+      subject: string
+      body: string
+    }
+    location: string
+    markedText: string
+    aboutFirst: string
+    aboutSecond: string
+    subscribeTitle: string
+    subscribePlaceholder: string
+    subscribeButton: string
+  }
+  SectionTechStack: {
+    title: string
+    frontend: string
+    backend: string
+    other: string
+    devops: string
+  }
+  SectionProjects: {
+    title: string
+    about: string
+    moreButton: string
+    projects: {
+      komponenta: {
+        name: string
+        company: string
+        description: string
+      }
+      mba: {
+        name: string
+        company: string
+        description: string
+      }
+      digitalDyatel: {
+        name: string
+        company: string
+        description: string
+      }
+      healthshop: {
+        name: string
+        company: string
+        description: string
+      }
+    }
+  }
+  SectionExperience: {
+    title: string
+    companies: {
+      mba: {
+        title: string
+        job: string
+        company: string
+        city: string
+        companyUrl: string
+        description: string
+      }
+      dobrostock: {
+        title: string
+        job: string
+        company: string
+        city: string
+        companyUrl: string
+        description: string
+      }
+      inspro: {
+        title: string
+        job: string
+        company: string
+        city: string
+        companyUrl: string
+        description: string
+      }
+      mbloq: {
+        title: string
+        job: string
+        company: string
+        city: string
+        companyUrl: string
+        description: string
+      }
+    }
+  }
+  SectionBlog: {
+    title: string
+    description: string
+  }
+  blog: {
+    title: string
+    noPosts: string
+  }
+  contact: {
+    title: string
+    subtitle: string
+    email: {
+      subject: string
+    }
+    form: {
+      title: string
+      description: string
+      fields: {
+        name: string
+        email: string
+        subject: string
+        message: string
+      }
+      placeholders: {
+        name: string
+        email: string
+        subject: string
+        message: string
+      }
+      submit: string
+      sending: string
+      success: {
+        title: string
+        message: string
+      }
+    }
+    info: {
+      title: string
+      description: string
+      email: string
+      telegram: string
+      location: string
+      locationValue: string
+      timezone: string
+      social: string
+      availability: {
+        title: string
+        status: string
+        remote: string
+        freelance: string
+        fulltime: string
+      }
+    }
+  }
+  projectsPage: {
+    title: string
+    description: string
+    mainPageSections: string
+    categories: {
+      "css-tools": {
+        title: string
+        description: string
+      }
+      "media-tools": {
+        title: string
+        description: string
+      }
+      "dev-tools": {
+        title: string
+        description: string
+      }
+      productivity: {
+        title: string
+        description: string
+      }
+      settings: {
+        title: string
+        description: string
+      }
+    }
+  }
+  widgets: {
+    rightSidebar: {
+      widgetInfo: {
+        title: string
+        difficulty: string
+        difficultyLevels: {
+          beginner: string
+          intermediate: string
+          advanced: string
+        }
+        category: string
+        tags: string
+      }
+      categories: {
+        webdev: string
+        business: string
+        content: string
+        security: string
+        multimedia: string
+        analytics: string
+        lifestyle: string
+      }
+      quickActions: {
+        title: string
+        share: string
+      }
+      useCase: {
+        title: string
+      }
+      usageStats: {
+        title: string
+        onlineNow: string
+        viewsToday: string
+        totalUses: string
+        avgSession: string
+        noData: string
+      }
+      feedback: {
+        title: string
+        helpText: string
+      }
+      relatedTools: {
+        title: string
+      }
+      donation: {
+        buyMeCoffee: string
+      }
+    }
+    tools: string
+    title: string
+    description: string
+    mainPage: {
+      main: string
+      techstack: string
+      projects: string
+      experience: string
+      blog: string
+    }
+    clampCalculator: {
+      title: string
+      description: string
+      useCase: string
+      values: string
+      min: string
+      max: string
+      viewport: string
+      result: string
+      liveExample: string
+      liveExampleText: string
+      errors: {
+        title: string
+        viewportValues: string
+        minMax: string
+        minMaxViewport: string
+        allFields: string
+      }
+      tooltips: {
+        negative: string
+      }
+      toast: {
+        copied: string
+        copyError: string
+      }
+    }
+    svgEncoder: {
+      title: string
+      description: string
+      useCase: string
+      quotes: string
+      single: string
+      double: string
+      insertSvg: string
+      takeEncoded: string
+      readyForCss: string
+      preview: string
+      background: string
+      white: string
+      silver: string
+      black: string
+      example: string
+      placeholder: string
+      encodedPlaceholder: string
+      cssPlaceholder: string
+      dropFile: string
+      editHint: string
+      toast: {
+        encodedCopied: string
+        cssCopied: string
+        copyError: string
+        fileLoaded: string
+        invalidFile: string
+      }
+    }
+    youtubeThumbnail: {
+      title: string
+      description: string
+      useCase: string
+      inputLabel: string
+      example: string
+      videoId: string
+      supportedFormats: string
+      resolution: {
+        max: string
+        standard: string
+        high: string
+        medium: string
+        default: string
+      }
+      alternativeUrls: string
+      thumbnail: string
+      copyUrl: string
+      errors: {
+        invalid: string
+      }
+      notAvailable: string
+      toast: {
+        copied: string
+        copyError: string
+        downloaded: string
+        downloadError: string
+      }
+    }
+    htmlTree: {
+      title: string
+      description: string
+      useCase: string
+      htmlInput: string
+      treeStructure: string
+      depth: string
+      loadExample: string
+      placeholder: string
+      emptyState: string
+      bemWarnings: string
+      warnings: {
+        blockNotFound: string
+        baseNotFound: string
+      }
+      toast: {
+        parsed: string
+        parsedWithWarnings: string
+        parseError: string
+        exampleLoaded: string
+      }
+    }
+    flexboxGenerator: {
+      title: string
+      description: string
+      useCase: string
+      properties: string
+      preview: string
+      generatedCss: string
+      reset: string
+      copy: string
+      direction: string
+      justifyContent: string
+      alignItems: string
+      flexWrap: string
+      alignContent: string
+      gap: string
+      items: string
+      showNumbers: string
+      toast: {
+        copied: string
+        copyError: string
+      }
+    }
+    gridGenerator: {
+      title: string
+      description: string
+      useCase: string
+      properties: string
+      preview: string
+      generatedCss: string
+      reset: string
+      copy: string
+      columns: string
+      rows: string
+      gap: string
+      rowGap: string
+      columnGap: string
+      justifyItems: string
+      alignItems: string
+      autoFlow: string
+      items: string
+      showNumbers: string
+      toast: {
+        copied: string
+        copyError: string
+      }
+    }
+    qrGenerator: {
+      title: string
+      description: string
+      useCase: string
+      settings: string
+      preview: string
+      download: string
+      copy: string
+      types: {
+        url: string
+        appStore: string
+        wifi: string
+      }
+      url: {
+        label: string
+        placeholder: string
+      }
+      appStore: {
+        platform: string
+        appId: string
+        universal: string
+        iosAppId: string
+        androidAppId: string
+        iosHint: string
+        androidHint: string
+        universalHint: string
+      }
+      wifi: {
+        networkName: string
+        networkNamePlaceholder: string
+        password: string
+        passwordPlaceholder: string
+        security: string
+        noPassword: string
+        hidden: string
+      }
+      qrSettings: string
+      size: string
+      darkColor: string
+      lightColor: string
+      errorCorrection: string
+      errorLevels: {
+        L: string
+        M: string
+        Q: string
+        H: string
+      }
+      toast: {
+        emptyData: string
+        generated: string
+        generateError: string
+        downloaded: string
+        copied: string
+        copyError: string
+      }
+    }
+    speedTest: {
+      title: string
+      description: string
+      useCase: string
+      download: string
+      upload: string
+      ping: string
+      client: string
+      server: string
+      start: string
+      cancel: string
+      tabs: {
+        test: string
+        status: string
+        history: string
+      }
+      phase: {
+        idle: string
+        ping: string
+        download: string
+        upload: string
+        complete: string
+      }
+      info: {
+        title: string
+        description: string
+        recommendations: string
+      }
+      status: {
+        title: string
+        connectionType: string
+        quality: string
+        excellent: string
+        good: string
+        fair: string
+        poor: string
+        capable: string
+        activities: {
+          browsing: string
+          streaming720p: string
+          streaming1080p: string
+          streaming4k: string
+          gaming: string
+        }
+        noData: string
+      }
+      history: {
+        title: string
+        clear: string
+        empty: string
+      }
+      toast: {
+        testComplete: string
+        testError: string
+        historyCleared: string
+      }
+    }
+    passwordGenerator: {
+      title: string
+      description: string
+      useCase: string
+      placeholder: string
+      generate: string
+      copy: string
+      tabs: {
+        random: string
+        passphrase: string
+        history: string
+      }
+      strength: {
+        label: string
+        veryWeak: string
+        weak: string
+        medium: string
+        strong: string
+        veryStrong: string
+      }
+      options: {
+        title: string
+        length: string
+        characterTypes: string
+        uppercase: string
+        lowercase: string
+        numbers: string
+        symbols: string
+        exclusions: string
+        excludeSimilar: string
+        excludeAmbiguous: string
+      }
+      passphrase: {
+        title: string
+        description: string
+        words: string
+        placeholder: string
+        hint: string
+        generate: string
+      }
+      tips: {
+        title: string
+        length: string
+        unique: string
+        manager: string
+        personal: string
+        reuse: string
+      }
+      history: {
+        title: string
+        download: string
+        clear: string
+        empty: string
+      }
+      errors: {
+        noCharset: string
+        notEnoughWords: string
+      }
+      toast: {
+        generated: string
+        passphraseGenerated: string
+        copied: string
+        copyError: string
+        historyCleared: string
+        downloaded: string
+      }
+    }
+    utmBuilder: {
+      title: string
+      description: string
+      useCase: string
+      tabs: {
+        builder: string
+        parameters: string
+        history: string
+      }
+      form: {
+        title: string
+        url: string
+        preset: string
+        presetPlaceholder: string
+        custom: string
+        source: string
+        sourceHint: string
+        medium: string
+        mediumHint: string
+        campaign: string
+        campaignHint: string
+        content: string
+        contentHint: string
+        term: string
+        termHint: string
+      }
+      result: {
+        title: string
+        empty: string
+        copy: string
+        save: string
+        qr: string
+        test: string
+        parameters: string
+      }
+      parameters: {
+        hint: string
+      }
+      history: {
+        title: string
+        download: string
+        clear: string
+        empty: string
+      }
+      toast: {
+        copied: string
+        copyError: string
+        saved: string
+        historyCleared: string
+        downloaded: string
+        qrError: string
+      }
+    }
+    textToSpeech?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    systemInfo: {
+      title: string
+      description: string
+      useCase: string
+      refresh: string
+      architecture: {
+        title: string
+        supports64bit: string
+        supports32bit: string
+        recommended: string
+      }
+      display: {
+        title: string
+        retina: string
+        standard: string
+        logical: string
+        physical: string
+        cssPixels: string
+        actualPixels: string
+        pixelRatio: string
+        colorDepth: string
+        orientation: string
+        density: string
+        screenInfo: string
+        screenSize: string
+      }
+      device: {
+        title: string
+        type: {
+          desktop: string
+          tablet: string
+          mobile: string
+          unknown: string
+        }
+        screenSize: string
+        touchEnabled: string
+      }
+      tabs: {
+        overview: string
+        hardware: string
+        display: string
+        browser: string
+        features: string
+      }
+      overview: {
+        systemOverview: string
+        os: string
+        browser: string
+        platform: string
+        language: string
+        networkInfo: string
+        status: string
+        online: string
+        offline: string
+        hostname: string
+        protocol: string
+        timezone: string
+        pixelRatio: string
+        languages: string
+        colorDepth: string
+        touchPoints: string
+      }
+      hardware: {
+        processorInfo: string
+        architecture: string
+        architectureDesc: string
+        platform: string
+        platformDesc: string
+        whatIsArchitecture: string
+        "64bit": {
+          title: string
+          memory: string
+          performance: string
+          compatibility: string
+          security: string
+        }
+        "32bit": {
+          title: string
+          memory: string
+          performance: string
+          compatibility: string
+          deprecated: string
+        }
+      }
+      browser: {
+        information: string
+        browser: string
+        os: string
+        version: string
+        languages: string
+      }
+      features: {
+        browserFeatures: string
+        storage: string
+        privacy: string
+        touch: string
+        touchSupport: string
+        multitouch: string
+        points: string
+        enabled: string
+        disabled: string
+        notSet: string
+        detected: string
+        notDetected: string
+        supported: string
+        notSupported: string
+      }
+      toast: {
+        copied: string
+        copyError: string
+        refreshed: string
+      }
+    }
+    jsonTools?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    jsCssCompressor?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    themeSettings?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    languageSettings?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    fontSettings?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    cssSpecificity: {
+      title: string
+      description: string
+      useCase: string
+      input: string
+      results: string
+      placeholder: string
+      analyze: string
+      loadExample: string
+      sortByWeight: string
+      sortByOrder: string
+      weight: string
+      emptyState: string
+      howItWorks: {
+        title: string
+        description: string
+        calculation: string
+        inline: string
+        id: string
+        class: string
+        element: string
+        examples: string
+      }
+      toast: {
+        analyzed: string
+        copied: string
+        emptyInput: string
+        noSelectors: string
+        exampleLoaded: string
+      }
+    }
+    themeTransitions?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    colorConverter: {
+      title: string
+      description: string
+      useCase: string
+      sections: {
+        input: string
+        output: string
+        settings: string
+      }
+      colorModel: string
+      alphaChannel: string
+      backgroundColor: string
+      precision: string
+      preview: string
+      previewWithAlpha: string
+      allConversions: string
+      helpTitle: string
+      help: {
+        hex: string
+        rgb: string
+        rgba: string
+        hsl: string
+        cmyk: string
+        lab: string
+      }
+      toast: {
+        copied: string
+      }
+    }
+    bezierCurve: {
+      title: string
+      description: string
+      useCase: string
+      curveEditor: string
+      play: string
+      pause: string
+      reset: string
+      duration: string
+      presets: string
+      custom: string
+      controlPoints: string
+      cssOutput: string
+      preview: string
+      toast: {
+        copied: string
+      }
+    }
+    seoMarkdownGenerator: {
+      title: string
+      description: string
+      useCase: string
+      articleSettings: string
+      articleSettingsDesc: string
+      articleTitle: string
+      titlePlaceholder: string
+      articleExcerpt: string
+      excerptPlaceholder: string
+      keywords: string
+      keywordsPlaceholder: string
+      authorName: string
+      authorPlaceholder: string
+      category: string
+      categoryPlaceholder: string
+      contentType: string
+      contentStructure: string
+      contentStructureDesc: string
+      contentOutline: string
+      outlinePlaceholder: string
+      includeTableOfContents: string
+      includeFAQ: string
+      includeRelatedLinks: string
+      generateMarkdown: string
+      preview: string
+      noPreview: string
+      copied: string
+      downloaded: string
+      faq: {
+        q1: string
+        a1: string
+        q2: string
+        a2: string
+        q3: string
+        a3: string
+      }
+    }
+    teamRandomizer: {
+      title: string
+      description: string
+      useCase: string
+      participantsList: string
+      participantsDesc: string
+      participantsPlaceholder: string
+      teamSettings: string
+      numberOfTeams: string
+      teamSize: string
+      teamSizeDesc: string
+      generateTeams: string
+      regenerateTeams: string
+      resetAll: string
+      results: string
+      noResults: string
+      team: string
+      member: string
+      members: string
+      totalParticipants: string
+      emptyTeam: string
+      exportTeams: string
+      copyToClipboard: string
+      teamsExported: string
+      validationErrors: {
+        minParticipants: string
+        minTeams: string
+        maxTeams: string
+        teamSizeInvalid: string
+        teamSizeTooLarge: string
+      }
+      tips: {
+        title: string
+        fairDistribution: string
+        remainders: string
+        regenerate: string
+      }
+    }
+    pomodoroTimer: {
+      title: string
+      description: string
+      useCase: string
+      timerSettings: string
+      workDuration: string
+      shortBreak: string
+      longBreak: string
+      pomodorosUntilLongBreak: string
+      minutes: string
+      currentSession: string
+      work: string
+      break: string
+      longBreakSession: string
+      start: string
+      pause: string
+      resume: string
+      reset: string
+      skip: string
+      sessionComplete: string
+      takeABreak: string
+      backToWork: string
+      statistics: string
+      todayStats: string
+      completedPomodoros: string
+      totalFocusTime: string
+      totalBreakTime: string
+      currentStreak: string
+      hours: string
+      hour: string
+      minute: string
+      settings: {
+        title: string
+        soundEnabled: string
+        autoStartBreaks: string
+        autoStartPomodoros: string
+        showNotifications: string
+        save: string
+        cancel: string
+        show: string
+        hide: string
+        saved: string
+      }
+      goals: {
+        title: string
+        setGoal: string
+        goal: string
+        progress: string
+      }
+      notifications: {
+        workComplete: string
+        breakComplete: string
+        longBreakComplete: string
+        goalReached: string
+      }
+      tips: {
+        title: string
+        tip1: string
+        tip2: string
+        tip3: string
+        tip4: string
+      }
+    }
+    specialSymbolsPicker?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    fancyTextGenerator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    randomNumberGenerator: {
+      title: string
+      description: string
+      useCase: string
+      sections: {
+        settings: string
+        result: string
+        history: string
+        about: string
+      }
+      inputs: {
+        minimum: {
+          label: string
+          description: string
+          placeholder: string
+        }
+        maximum: {
+          label: string
+          description: string
+          placeholder: string
+        }
+        count: {
+          label: string
+          description: string
+          placeholder: string
+        }
+        unique: string
+      }
+      actions: {
+        generate: string
+        downloadAll: string
+      }
+      result: {
+        generatedAt: string
+      }
+      validation: {
+        minRange: string
+        maxRange: string
+        minGreaterThanMax: string
+        countRange: string
+        uniqueCount: string
+        generationFailed: string
+      }
+      toast: {
+        copied: string
+        copyFailed: string
+        downloaded: string
+      }
+      info: {
+        description: string
+        cryptoApi: string
+        features: {
+          range: string
+          maxResults: string
+          noDuplicates: string
+          timestamps: string
+        }
+      }
+    }
+    percentageCalculator: {
+      title: string
+      description: string
+      useCase: string
+      tabs: {
+        percentOf: string
+        whatPercent: string
+        findTotal: string
+        percentChange: string
+        addPercent: string
+        subtractPercent: string
+      }
+      labels: {
+        percent: string
+        number: string
+        value: string
+        from: string
+        to: string
+        toValue: string
+        result: string
+        is: string
+        ofWhat: string
+        equals: string
+      }
+      calculate: string
+      formula: string
+      formulas: {
+        percentOf: string
+        whatPercent: string
+        findTotal: string
+        percentChange: string
+        increase: string
+        decrease: string
+        addPercent: string
+        subtractPercent: string
+      }
+      commonUses: {
+        title: string
+        businessFinance: {
+          title: string
+          discounts: string
+          tax: string
+          profit: string
+          commission: string
+        }
+        personalUse: {
+          title: string
+          tips: string
+          weight: string
+          prices: string
+          scores: string
+        }
+      }
+    }
+    drawLots?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    mockDataGenerator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    tipCalculator: {
+      title: string
+      description: string
+      useCase: string
+      inputSection: string
+      billAmount: string
+      tipPercentage: string
+      customTip: string
+      numberOfPeople: string
+      results: string
+      resultsDescription: string
+      tipAmount: string
+      totalWithTip: string
+      perPerson: string
+      tipPerPerson: string
+      totalPerPerson: string
+      originalBill: string
+      tip: string
+      total: string
+      tipGuide: {
+        title: string
+        basic: string
+        good: string
+        excellent: string
+      }
+    }
+    randomListGenerator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    coinFlip?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    worldTime: {
+      title: string
+      description: string
+      useCase: string
+      localTime: string
+      tabs: {
+        worldClocks: string
+        converter: string
+      }
+      worldClocks: string
+      addCity: string
+      addMoreCities: string
+      timezoneConverter: string
+      fromTime: string
+      fromDate: string
+      fromTimezone: string
+      toTimezone: string
+      searchTimezone: string
+      convertTime: string
+      result: string
+      day: string
+      about: {
+        title: string
+        accurate: string
+        accurateDesc: string
+        dst: string
+        dstDesc: string
+        popular: string
+        popularDesc: string
+        storage: string
+        storageDesc: string
+      }
+      toast: {
+        alreadyAdded: string
+        cityAdded: string
+        enterTimeDate: string
+        invalidDateTime: string
+      }
+    }
+    diceRoller?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    socialMediaFormatter?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    emojiList?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    textEmoticons?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    jsValidator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    ageCalculator: {
+      title: string
+      description: string
+      useCase: string
+      sections: {
+        input: string
+        results: string
+        placeholder: string
+        about: string
+      }
+      inputs: {
+        birthDate: {
+          label: string
+          description: string
+          placeholder: string
+        }
+      }
+      actions: {
+        calculate: string
+        calculating: string
+      }
+      timeUnits: {
+        years: string
+        months: string
+        days: string
+      }
+      statistics: {
+        totalDays: string
+        totalWeeks: string
+        totalHours: string
+        totalMinutes: string
+      }
+      additionalInfo: {
+        nextBirthday: string
+        lifeStage: string
+        zodiacSign: string
+        chineseZodiac: string
+      }
+      birthdayStatus: {
+        today: string
+        tomorrow: string
+        inDays: string
+      }
+      chineseZodiacPrefix: string
+      placeholder: {
+        enterDate: string
+        description: string
+      }
+      validation: {
+        dateRequired: string
+      }
+      toast: {
+        calculated: string
+        calculationError: string
+        copied: string
+        reset: string
+      }
+      info: {
+        whatCalculated: string
+        interestingFacts: string
+        features: {
+          exactAge: string
+          totalTime: string
+          nextBirthday: string
+          zodiacSigns: string
+          leapYears: string
+          lifeStage: string
+          dayOfWeek: string
+          realTime: string
+        }
+      }
+    }
+    bingoGenerator: {
+      title: string
+      description: string
+      useCase: string
+      sections: {
+        settings: string
+        items: string
+        itemsDescription: string
+        bingoCard: string
+        about: string
+      }
+      inputs: {
+        gridSize: {
+          label: string
+          description: string
+        }
+        templates: {
+          label: string
+          description: string
+        }
+        bingoItem: {
+          placeholder: string
+        }
+      }
+      templates: {
+        meeting: {
+          name: string
+          items: string[]
+        }
+        travel: {
+          name: string
+          items: string[]
+        }
+      }
+      actions: {
+        addItem: string
+        shuffle: string
+        reset: string
+        share: string
+        export: string
+      }
+      status: {
+        bingo: string
+        inProgress: string
+      }
+      freeSpace: string
+      congratulations: {
+        title: string
+        message: string
+      }
+      toast: {
+        templateLoaded: string
+        gridReset: string
+        gridShuffled: string
+        shareUrlCopied: string
+        exported: string
+        invalidShareUrl: string
+      }
+      info: {
+        howToPlay: string
+        features: {
+          title: string
+          createGrid: string
+          clickCells: string
+          getLine: string
+          shareProgress: string
+          customTemplates: string
+          shareableLinks: string
+          exportOptions: string
+          progressTracking: string
+        }
+      }
+    }
+    temperatureConverter: {
+      title: string
+      description: string
+      useCase: string
+      sections: {
+        input: string
+        results: string
+        context: string
+        quickValues: string
+        references: string
+        about: string
+        referencePoints: string
+        placeholder: string
+      }
+      inputs: {
+        temperature: {
+          label: string
+          description: string
+          placeholder: string
+        }
+        unit: {
+          label: string
+          description: string
+          placeholder: string
+        }
+      }
+      units: {
+        celsius: string
+        fahrenheit: string
+        kelvin: string
+        rankine: string
+        reaumur: string
+      }
+      actions: {
+        swap: string
+        reset: string
+      }
+      quickValues: {
+        "ноль": string
+        "комнатная": string
+        "телочеловека": string
+        "кипениеводы": string
+        "духовка": string
+        "нольфаренгейта": string
+      }
+      descriptions: {
+        extremelyCold: string
+        veryCold: string
+        belowZero: string
+        cold: string
+        cool: string
+        comfortable: string
+        warm: string
+        hot: string
+        veryHot: string
+        boiling: string
+        extremelyHot: string
+      }
+      context: {
+        aboveAbsoluteZero: string
+        exactly: string
+      }
+      references: {
+        absoluteZero: string
+        liquidNitrogen: string
+        dryIce: string
+        waterFreeze: string
+        roomTemp: string
+        bodyTemp: string
+        waterBoil: string
+        steam: string
+        oven: string
+        soldering: string
+      }
+      referenceDescriptions: {
+        absoluteZero: string
+        liquidNitrogen: string
+        dryIce: string
+        waterFreeze: string
+        roomTemp: string
+        bodyTemp: string
+        waterBoil: string
+        steam: string
+        oven: string
+        soldering: string
+      }
+      table: {
+        phenomenon: string
+        description: string
+      }
+      info: {
+        mainScales: string
+        formulas: string
+        applications: string
+        facts: string
+        celsiusDesc: string
+        fahrenheitDesc: string
+        kelvinDesc: string
+        rankineDesc: string
+        cooking: string
+        science: string
+        medical: string
+        engineering: string
+        absoluteZero: string
+        sunSurface: string
+        coldestEarth: string
+        hottestEarth: string
+      }
+      toast: {
+        copied: string
+        conversionError: string
+        valueLoaded: string
+        reset: string
+      }
+      placeholder: {
+        enterTemperature: string
+      }
+    }
+    bmiCalculator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    textCounter?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    timerCountdown?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    currencyConverter?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    textDiff?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    phpSyntaxChecker?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    mysqlSyntaxChecker?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    regexTester?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    javascriptSyntaxChecker?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    pxRemConverter?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    cssBoxShadow?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    cssGradient?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    colorContrast?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    cssKeyframes?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    jsonYamlFormatter?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    base64Encoder?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    jwtDecoder?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    uuidGenerator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    compoundInterest?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    loanCalculator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    fuelCalculator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    faviconGenerator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    textCaseConverter?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    imageSizeChecker?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    htmlXmlParser: {
+      title: string
+      description: string
+      useCase: string
+      input: string
+      output: string
+      placeholder: string
+      outputPlaceholder: string
+      settings: string
+      mode: string
+      modes: {
+        format: string
+        minify: string
+        validate: string
+        extract: string
+      }
+      indentSize: string
+      spaces: string
+      preserveComments: string
+      process: string
+      processing: string
+      copy: string
+      download: string
+      copied: string
+      downloaded: string
+      emptyInput: string
+      valid: string
+      invalid: string
+      errors: string
+      validDocument: string
+      elements: string
+      attributes: string
+      textNodes: string
+      comments: string
+      faqs: {
+        question: string
+        answer: string
+      }[]
+    }
+    asciiArtGenerator?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    analyticsDashboard?: {
+      title: string
+      description: string
+      useCase: string
+    }
+    search: {
+      placeholder: string
+      categories: string
+      allCategories: string
+      results: string
+      clearFilters: string
+      noResults: string
+      noResultsDescription: string
+      title: string
+      navigate: string
+      select: string
+      close: string
+      suggested: string
+      suggestedAndFavorites: string
+    }
+    favorites: {
+      title: string
+      clearAll: string
+      empty: string
+      emptyDescription: string
+    }
+    categories: {
+      webdev: string
+      business: string
+      content: string
+      security: string
+      multimedia: string
+      analytics: string
+      lifestyle: string
+    }
+  }
+  settings: {
+    themeTransition: {
+      title: string
+      types: {
+        fade: string
+        circle: string
+        slide: string
+        flip: string
+        blur: string
+        none: string
+      }
+    }
+  }
+  Settings: {
+    title: string
+    description: string
+    tabs: {
+      appearance: string
+      language: string
+    }
+    theme: {
+      title: string
+      description: string
+      options: {
+        light: {
+          label: string
+          description: string
+        }
+        dark: {
+          label: string
+          description: string
+        }
+        system: {
+          label: string
+          description: string
+        }
+      }
+    }
+    transition: {
+      title: string
+      description: string
+      notSupported: string
+      options: {
+        fade: string
+        scale: string
+        slide: string
+        circle: string
+        none: string
+      }
+    }
+    language: {
+      title: string
+      description: string
+      inDevelopment: string
+      features: {
+        title: string
+        autoTranslation: {
+          title: string
+          description: string
+        }
+        rtlSupport: {
+          title: string
+          description: string
+        }
+        persistent: {
+          title: string
+          description: string
+        }
+      }
+    }
+    footer: string
+  }
+  textToSpeech: {
+    title: string
+    description: string
+    enterText: string
+    placeholder: string
+    speak: string
+    resume: string
+    pause: string
+    stop: string
+    settings: string
+    voice: string
+    selectVoice: string
+    speed: string
+    pitch: string
+    volume: string
+    currentVoice: string
+    local: string
+    history: string
+    recentlyUsed: string
+    clear: string
+    clearAll: string
+    bookmarks: string
+    quickExamples: string
+    about: string
+    aboutDescription: string
+    whenToUse: string
+    platformSupport: string
+    tip: string
+    toast: {
+      enterText: string
+      speechFailed: string
+      enterTextBookmark: string
+      bookmarkAdded: string
+      historyCleared: string
+      bookmarkDeleted: string
+      copied: string
+    }
+    uses: string[]
+    platforms: string[]
+    textCaseConverter: {
+      title: string
+      description: string
+      useCase: string
+      input: string
+      output: string
+      placeholder: string
+      outputPlaceholder: string
+      settings: string
+      caseType: string
+      convert: string
+      copy: string
+      download: string
+      clear: string
+      copied: string
+      downloaded: string
+      examples: string
+      originalText: string
+      cases: {
+        uppercase: string
+        lowercase: string
+        capitalize: string
+        title: string
+        sentence: string
+        camelCase: string
+        PascalCase: string
+        snake_case: string
+        "kebab-case": string
+        alternating: string
+        inverse: string
+      }
+      faqs: {
+        question: string
+        answer: string
+      }[]
+    }
+    imageSizeChecker: {
+      title: string
+      description: string
+      useCase: string
+      uploadArea: string
+      dragDrop: string
+      or: string
+      browseFiles: string
+      supportedFormats: string
+      results: string
+      exportCSV: string
+      clearAll: string
+      dimensions: string
+      aspectRatio: string
+      fileSize: string
+      format: string
+      noImages: string
+      errorProcessing: string
+      imagesProcessed: string
+      exported: string
+      commonAspectRatios: string
+      photography: string
+      socialMedia: string
+      square: string
+      traditional: string
+      classic35mm: string
+      widescreen: string
+      post: string
+      story: string
+      thumbnail: string
+      header: string
+      faqs: {
+        question: string
+        answer: string
+      }[]
+    }
+    analyticsDashboard: {
+      title: string
+      description: string
+      totalViews: string
+      totalSessions: string
+      avgDuration: string
+      onlineNow: string
+      timeframePeriod: string
+      uniqueUsers: string
+      perSession: string
+      activeUsers: string
+      topWidgets: string
+      views: string
+      widgetAnalytics: string
+      trends: string
+      last24Hours: string
+      last7Days: string
+      last30Days: string
+      selectWidget: string
+      performance: string
+      viewsToday: string
+      uniqueSessions: string
+      avgSessionDuration: string
+      hourlyViews: string
+      usageTrends: string
+    }
+    asciiArtGenerator: {
+      title: string
+      description: string
+    }
+  }
+  Footer: {
+    badge: string
+    title: string
+    description: string
+    heroDescription: string
+    exploreTools: string
+    starOnGitHub: string
+    stats: {
+      professionalTools: string
+      activeDevelopers: string
+      uptime: string
+      forever: string
+    }
+    categories: {
+      developerTools: string
+      designTools: string
+      productivity: string
+    }
+    tools: {
+      colorConverter: string
+      jsonFormatter: string
+      base64Encoder: string
+      regexTester: string
+      gradientGenerator: string
+      shadowGenerator: string
+      paletteCreator: string
+      faviconGenerator: string
+      passwordGenerator: string
+      loremIpsum: string
+      qrCodeGenerator: string
+      urlShortener: string
+    }
+    newsletter: {
+      badge: string
+      title: string
+      description: string
+      placeholder: string
+      subscribe: string
+    }
+    legal: {
+      copyright: string
+      privacyPolicy: string
+      termsOfService: string
+      apiDocs: string
+      craftedWith: string
+      by: string
+      author: string
+    }
+    shortcuts: {
+      title: string
+      copy: string
+      clear: string
+      save: string
+    }
+  }
+  cookieConsent: {
+    title: string
+    description: string
+    moreInfo: string
+    accept: string
+    decline: string
+    close: string
+  }
+}
+
+// All widget names from translation file
+export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'pomodoroTimer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
+
+// Runtime validation helper
+export const WIDGET_NAMES = [
+  'title',
+  'description',
+  'mainPage',
+  'clampCalculator',
+  'svgEncoder',
+  'youtubeThumbnail',
+  'htmlTree',
+  'flexboxGenerator',
+  'gridGenerator',
+  'qrGenerator',
+  'speedTest',
+  'passwordGenerator',
+  'utmBuilder',
+  'textToSpeech',
+  'systemInfo',
+  'jsonTools',
+  'jsCssCompressor',
+  'themeSettings',
+  'languageSettings',
+  'fontSettings',
+  'cssSpecificity',
+  'themeTransitions',
+  'colorConverter',
+  'bezierCurve',
+  'seoMarkdownGenerator',
+  'teamRandomizer',
+  'pomodoroTimer',
+  'specialSymbolsPicker',
+  'fancyTextGenerator',
+  'randomNumberGenerator',
+  'percentageCalculator',
+  'drawLots',
+  'mockDataGenerator',
+  'tipCalculator',
+  'randomListGenerator',
+  'coinFlip',
+  'worldTime',
+  'diceRoller',
+  'socialMediaFormatter',
+  'emojiList',
+  'textEmoticons',
+  'jsValidator',
+  'ageCalculator',
+  'bingoGenerator',
+  'temperatureConverter',
+  'bmiCalculator',
+  'textCounter',
+  'timerCountdown',
+  'currencyConverter',
+  'textDiff',
+  'phpSyntaxChecker',
+  'mysqlSyntaxChecker',
+  'regexTester',
+  'javascriptSyntaxChecker',
+  'pxRemConverter',
+  'cssBoxShadow',
+  'cssGradient',
+  'colorContrast',
+  'cssKeyframes',
+  'jsonYamlFormatter',
+  'base64Encoder',
+  'jwtDecoder',
+  'uuidGenerator',
+  'compoundInterest',
+  'loanCalculator',
+  'fuelCalculator',
+  'faviconGenerator',
+  'textCaseConverter',
+  'imageSizeChecker',
+  'htmlXmlParser',
+  'asciiArtGenerator',
+  'analyticsDashboard',
+] as const

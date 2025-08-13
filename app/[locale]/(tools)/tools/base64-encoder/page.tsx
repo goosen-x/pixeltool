@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -113,16 +113,7 @@ export default function Base64EncoderPage() {
     compressionRatio: 0
   })
 
-  useEffect(() => {
-    if (input && dataType === 'text') {
-      processText()
-    } else if (!input) {
-      setOutput('')
-      setStats({ inputSize: 0, outputSize: 0, compressionRatio: 0 })
-    }
-  }, [input, mode, urlSafe, addLineBreaks, dataType])
-
-  const processText = () => {
+  const processText = useCallback(() => {
     try {
       let result = ''
       
@@ -192,7 +183,16 @@ export default function Base64EncoderPage() {
         toast.error('Невалидная Base64 строка')
       }
     }
-  }
+  }, [input, mode, urlSafe, addLineBreaks, dataType])
+
+  useEffect(() => {
+    if (input && dataType === 'text') {
+      processText()
+    } else if (!input) {
+      setOutput('')
+      setStats({ inputSize: 0, outputSize: 0, compressionRatio: 0 })
+    }
+  }, [input, mode, urlSafe, addLineBreaks, dataType, processText])
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
