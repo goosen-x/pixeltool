@@ -82,7 +82,7 @@ export default function ColorContrastCheckerPage() {
   // Calculate contrast ratio whenever colors change
   useEffect(() => {
     calculateContrast()
-  }, [foreground, background])
+  }, [foreground, background, calculateContrast])
 
   const calculateContrast = () => {
     const ratio = getContrastRatio(foreground, background)

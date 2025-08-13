@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -113,7 +113,7 @@ export default function BingoGeneratorPage() {
   // Initialize grid on load and when size changes
   useEffect(() => {
     generateBingoGrid()
-  }, [gridSize, bingoItems])
+  }, [gridSize, bingoItems, generateBingoGrid])
 
   // Load shared bingo from URL parameters
   useEffect(() => {
@@ -138,9 +138,9 @@ export default function BingoGeneratorPage() {
         toast.error(t('toast.invalidShareUrl'))
       }
     }
-  }, [])
+  }, [t])
 
-  const generateBingoGrid = () => {
+  const generateBingoGrid = useCallback(() => {
     const totalCells = gridSize * gridSize
     const centerIndex = Math.floor(totalCells / 2)
     const isCenterFree = gridSize % 2 === 1
@@ -180,7 +180,7 @@ export default function BingoGeneratorPage() {
     }
 
     setBingoGrid(newGrid)
-  }
+  }, [gridSize, bingoItems, t])
 
   const addBingoItem = () => {
     setBingoItems([...bingoItems, ''])
