@@ -28,12 +28,12 @@ async function fixWidgetImports() {
         /import\s*{\s*([^}]+)\s*}\s*from\s*['"]@\/components\/tools\/WidgetLayout['"]/g,
         (match, imports) => {
           // Parse the imports
-          const importList = imports.split(',').map(i => i.trim())
+          const importList = imports.split(',').map((i: string) => i.trim())
           
           // Generate new import statements
           const newImports = importList
-            .filter(imp => ['WidgetLayout', 'WidgetSection', 'WidgetInput', 'WidgetOutput'].includes(imp))
-            .map(imp => `import { ${imp} } from '@/components/widgets/${imp}'`)
+            .filter((imp: string) => ['WidgetLayout', 'WidgetSection', 'WidgetInput', 'WidgetOutput'].includes(imp))
+            .map((imp: string) => `import { ${imp} } from '@/components/widgets/${imp}'`)
             .join('\n')
           
           return newImports

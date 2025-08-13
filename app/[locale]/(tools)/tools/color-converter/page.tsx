@@ -118,24 +118,26 @@ export default function ColorConverterPage() {
           <div className="space-y-4">
             {/* Color Preview */}
             <div className="grid grid-cols-2 gap-4">
-              <WidgetInput label={t('preview')}>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">{t('preview')}</Label>
                 <div
                   className="h-24 rounded-xl border-2 border-border/50 transition-colors"
                   style={{ backgroundColor: hexValue }}
                 />
-              </WidgetInput>
-              <WidgetInput label={t('previewWithAlpha')}>
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">{t('previewWithAlpha')}</Label>
                 <div className="h-24 rounded-xl border-2 border-border/50 bg-checkered relative overflow-hidden">
                   <div
                     className="absolute inset-0"
                     style={{ backgroundColor: `rgba(${rgbValue.r}, ${rgbValue.g}, ${rgbValue.b}, ${alpha})` }}
                   />
                 </div>
-              </WidgetInput>
+              </div>
             </div>
 
             {/* HEX Input */}
-            <WidgetInput label="HEX" className="group">
+            <WidgetInput label="HEX">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-mono text-muted-foreground">#</span>
                 <Input

@@ -13,6 +13,25 @@ import { cn } from '@/lib/utils'
 import { Upload, X } from 'lucide-react'
 import { ReactNode } from 'react'
 
+export interface WidgetInputProps {
+  label: string
+  description?: string
+  className?: string
+  children?: React.ReactNode
+}
+
+export function WidgetInput({ label, description, className, children }: WidgetInputProps) {
+  return (
+    <div className={cn("space-y-2", className)}>
+      <Label className="text-sm font-medium">{label}</Label>
+      {description && (
+        <p className="text-xs text-muted-foreground">{description}</p>
+      )}
+      {children}
+    </div>
+  )
+}
+
 export interface InputField {
   name: string
   label: string
@@ -32,7 +51,7 @@ export interface InputField {
   icon?: ReactNode
 }
 
-interface WidgetInputProps {
+export interface WidgetFormProps {
   fields: InputField[]
   onSubmit?: (data: Record<string, any>) => void
   onChange?: (name: string, value: any) => void
@@ -44,7 +63,7 @@ interface WidgetInputProps {
   layout?: 'vertical' | 'horizontal' | 'grid'
 }
 
-export function WidgetInput({
+export function WidgetForm({
   fields,
   onSubmit,
   onChange,
@@ -54,7 +73,7 @@ export function WidgetInput({
   loading = false,
   className,
   layout = 'vertical'
-}: WidgetInputProps) {
+}: WidgetFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (onSubmit) {

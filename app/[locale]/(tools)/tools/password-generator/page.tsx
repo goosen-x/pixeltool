@@ -307,7 +307,7 @@ export default function PasswordGeneratorPage() {
 			meta: true,
 			action: () => {
 				setPassword('')
-				setPassphraseOptions({ ...passphraseOptions, words: [] })
+				setCustomWords('')
 			},
 			description: 'Clear'
 		}

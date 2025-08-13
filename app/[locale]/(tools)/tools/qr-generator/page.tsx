@@ -6,22 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Label } from '@/components/ui/label'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
-import {
-	WidgetPrimaryButton,
-	WidgetSecondaryButton,
-	WidgetIconButton,
-	WidgetButtonGroup
-} from '@/components/tools/WidgetButtons'
-import {
-	WidgetInput,
-	WidgetTextarea,
-	WidgetCodeInput
-} from '@/components/tools/WidgetInputs'
-import { KeyboardShortcuts } from '@/components/tools/KeyboardShortcuts'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
-import { Download, Copy, Link, Wifi, Smartphone, QrCode } from 'lucide-react'
+import { Download, Copy, Link, Wifi, Smartphone, QrCode, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 
@@ -169,17 +161,13 @@ export default function QRGeneratorPage() {
 
 	return (
 		<WidgetLayout>
-			<KeyboardShortcuts shortcuts={shortcuts} />
-			{/* Hero Section */}
-			<WidgetHero 
-				title={t('title')}
-				description={t('description')}
-			/>
-
-			<WidgetGrid>
+			<div className="grid lg:grid-cols-3 gap-6">
 				{/* Settings */}
-				<WidgetCard fullWidth className="lg:col-span-2">
-					<WidgetSection>
+				<div className="lg:col-span-2">
+					<WidgetSection
+						icon={<Settings className="w-5 h-5" />}
+						title={t('settings.title')}
+					>
 						<Tabs value={qrType} onValueChange={(v) => setQrType(v as QRType)}>
 							<TabsList className="grid w-full grid-cols-3">
 								<TabsTrigger value="url">
@@ -199,7 +187,7 @@ export default function QRGeneratorPage() {
 							<TabsContent value="url" className="space-y-4">
 								<div>
 									<Label htmlFor="url">{t('url.label')}</Label>
-									<WidgetWidgetInput
+									<Input
 										id="url"
 										type="url"
 										placeholder={t('url.placeholder')}
@@ -246,7 +234,7 @@ export default function QRGeneratorPage() {
 									<>
 										<div>
 											<Label htmlFor="iosId">{t('appStore.iosAppId')}</Label>
-											<WidgetInput
+											<Input
 												id="iosId"
 												placeholder="363590051"
 												value={appStoreConfig.appId}
@@ -258,7 +246,7 @@ export default function QRGeneratorPage() {
 										</div>
 										<div>
 											<Label htmlFor="androidId">{t('appStore.androidAppId')}</Label>
-											<WidgetInput
+											<Input
 												id="androidId"
 												placeholder="com.netflix.mediaclient"
 												value={appStoreConfig.androidId || ''}
@@ -277,7 +265,7 @@ export default function QRGeneratorPage() {
 								) : (
 									<div>
 										<Label htmlFor="appId">{t('appStore.appId')}</Label>
-										<WidgetInput
+										<Input
 											id="appId"
 											placeholder={appStoreConfig.platform === 'ios' ? '363590051' : 'com.example.app'}
 											value={appStoreConfig.platform === 'ios' ? appStoreConfig.appId : (appStoreConfig.androidId || appStoreConfig.appId)}
@@ -302,7 +290,7 @@ export default function QRGeneratorPage() {
 							<TabsContent value="wifi" className="space-y-4">
 								<div>
 									<Label htmlFor="ssid">{t('wifi.networkName')}</Label>
-									<WidgetInput
+									<Input
 										id="ssid"
 										placeholder={t('wifi.networkNamePlaceholder')}
 										value={wifiConfig.ssid}
@@ -311,7 +299,7 @@ export default function QRGeneratorPage() {
 								</div>
 								<div>
 									<Label htmlFor="password">{t('wifi.password')}</Label>
-									<WidgetInput
+									<Input
 										id="password"
 										type="password"
 										placeholder={t('wifi.passwordPlaceholder')}
@@ -364,14 +352,14 @@ export default function QRGeneratorPage() {
 								<div>
 									<Label htmlFor="darkColor">{t('darkColor')}</Label>
 									<div className="flex gap-2">
-										<WidgetInput
+										<Input
 											id="darkColor"
 											type="color"
 											value={darkColor}
 											onChange={(e) => setDarkColor(e.target.value)}
 											className="w-16 h-10 p-1"
 										/>
-										<WidgetInput
+										<Input
 											value={darkColor}
 											onChange={(e) => setDarkColor(e.target.value)}
 											placeholder="#000000"
@@ -381,14 +369,14 @@ export default function QRGeneratorPage() {
 								<div>
 									<Label htmlFor="lightColor">{t('lightColor')}</Label>
 									<div className="flex gap-2">
-										<WidgetInput
+										<Input
 											id="lightColor"
 											type="color"
 											value={lightColor}
 											onChange={(e) => setLightColor(e.target.value)}
 											className="w-16 h-10 p-1"
 										/>
-										<WidgetInput
+										<Input
 											value={lightColor}
 											onChange={(e) => setLightColor(e.target.value)}
 											placeholder="#FFFFFF"
@@ -416,35 +404,32 @@ export default function QRGeneratorPage() {
 							</div>
 						</div>
 					</WidgetSection>
-				</WidgetCard>
+				</div>
 
 				{/* Preview */}
-				<WidgetCard>
-					<WidgetSection className="flex flex-col items-center space-y-6">
-						<h3 className="text-lg font-semibold flex items-center gap-2">
-							<QrCode className="w-5 h-5" />
-							{t('preview')}
-						</h3>
+				<div>
+					<WidgetSection icon={QrCode} title={t('preview')} className="flex flex-col items-center space-y-6">
 						<div className="p-6 bg-white rounded-2xl shadow-lg">
 							<canvas ref={canvasRef} />
 						</div>
-						<WidgetButtonGroup>
-							<WidgetSecondaryButton
+						<div className="flex gap-2">
+							<Button
+								variant="outline"
 								onClick={downloadQR}
-								icon={<Download className="w-5 h-5" />}
 							>
+								<Download className="w-4 h-4 mr-2" />
 								{t('download')}
-							</WidgetSecondaryButton>
-							<WidgetPrimaryButton
+							</Button>
+							<Button
 								onClick={copyQRAsImage}
-								icon={<Copy className="w-5 h-5" />}
 							>
+								<Copy className="w-4 h-4 mr-2" />
 								{t('copy')}
-							</WidgetPrimaryButton>
-						</WidgetButtonGroup>
+							</Button>
+						</div>
 					</WidgetSection>
-				</WidgetCard>
-			</WidgetGrid>
+				</div>
+			</div>
 		</WidgetLayout>
 	)
 }

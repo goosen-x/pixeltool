@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useCSSGradientGenerator } from '@/lib/hooks/widgets'
+import { generateGradientCSS, DEFAULT_GRADIENT_SETTINGS } from '@/lib/data/css-gradient-data'
 import { useTranslations } from 'next-intl'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
@@ -167,7 +168,7 @@ export default function CSSGradientGeneratorPage() {
               <div className="space-y-4">
                 <WidgetInput label={t('controls.direction')}>
                   <div className="grid grid-cols-3 gap-2">
-                    {(['to-top', 'to-right', 'to-bottom', 'to-left', 'to-top-right', 'to-bottom-right'] as const).map((dir) => (
+                    {(['to top', 'to right', 'to bottom', 'to left', 'to top right', 'to bottom right'] as const).map((dir) => (
                       <Button
                         key={dir}
                         onClick={() => updateLinearDirection(dir)}
@@ -178,7 +179,7 @@ export default function CSSGradientGeneratorPage() {
                           settings.linearDirection === dir && "bg-gradient-to-r from-primary to-accent text-white"
                         )}
                       >
-                        {dir.replace(/-/g, ' ')}
+                        {dir}
                       </Button>
                     ))}
                   </div>
@@ -418,12 +419,12 @@ export default function CSSGradientGeneratorPage() {
 
           {/* Preset Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {filteredGradients.map((preset) => (
+            {filteredGradients.map((preset, index) => (
               <button
-                key={preset.id}
+                key={index}
                 onClick={() => applyPresetGradient(preset)}
                 className="group relative h-20 rounded-xl overflow-hidden border-2 border-border/50 hover:border-primary transition-all hover:scale-105"
-                style={{ background: preset.gradient }}
+                style={{ background: generateGradientCSS({ ...DEFAULT_GRADIENT_SETTINGS, ...preset.settings }) }}
               >
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                 <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
