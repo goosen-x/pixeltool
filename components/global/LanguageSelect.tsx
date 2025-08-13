@@ -40,23 +40,27 @@ export const LanguageSelect = ({ className, locale }: Props) => {
 	return (
 		<div className={cn('shrink-0', className)}>
 			<Select value={locale} onValueChange={handleLanguageChange}>
-				<SelectTrigger className='h-8'>
+				<SelectTrigger className='h-10 px-3 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300'>
 					<SelectValue aria-label={locale}>
-						{LOCALES.find(LOCALE => LOCALE.value === locale)?.flag}
+						<span className='flex items-center gap-2'>
+							<span className='text-lg'>{LOCALES.find(LOCALE => LOCALE.value === locale)?.flag}</span>
+						</span>
 					</SelectValue>
 				</SelectTrigger>
-				<SelectPortal>
-					<SelectContent>
-						<SelectViewport>
-							{LOCALES.map(LOCALE => (
-								<SelectItem value={LOCALE.value} key={LOCALE.key}>
-									<SelectItemText>{LOCALE.key}</SelectItemText>
-									<SelectItemIndicator>…</SelectItemIndicator>
-								</SelectItem>
-							))}
-						</SelectViewport>
-					</SelectContent>
-				</SelectPortal>
+				<SelectContent className='rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl'>
+					{LOCALES.map(LOCALE => (
+						<SelectItem 
+							value={LOCALE.value} 
+							key={LOCALE.key}
+							className='rounded-lg hover:bg-muted/80 cursor-pointer transition-colors'
+						>
+							<span className='flex items-center gap-3 py-1'>
+								<span className='text-lg'>{LOCALE.flag}</span>
+								<span className='text-sm font-medium'>{LOCALE.key}</span>
+							</span>
+						</SelectItem>
+					))}
+				</SelectContent>
 			</Select>
 		</div>
 	)

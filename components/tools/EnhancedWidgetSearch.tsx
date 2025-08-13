@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/popover"
 import { FavoriteButton } from './FavoriteButton'
 import { FavoriteWidgets } from './FavoriteWidgets'
+import { ToolCard } from './ToolCard'
 
 interface WidgetSearchProps {
 	locale: string
@@ -151,45 +152,37 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 				inputRef.current?.focus()
 			}
 			// Escape to clear search
-			if (e.key === 'Escape' && searchQuery) {
-				clearSearch()
+			if (e.key === 'Escape') {
+				if (searchQuery || selectedCategory) {
+					clearSearch()
+				}
+			}
+			// Cmd/Ctrl + / to cycle through categories
+			if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+				e.preventDefault()
+				const categories = ['', ...Object.keys(widgetCategories)]
+				const currentIndex = categories.indexOf(selectedCategory)
+				const nextIndex = (currentIndex + 1) % categories.length
+				setSelectedCategory(categories[nextIndex])
 			}
 		}
 
 		window.addEventListener('keydown', handleKeyDown)
 		return () => window.removeEventListener('keydown', handleKeyDown)
-	}, [searchQuery])
+	}, [searchQuery, selectedCategory])
 
 	const hasActiveFilters = searchQuery !== '' || selectedCategory !== ''
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-8">
 			{/* Favorite Widgets */}
 			<FavoriteWidgets locale={locale} />
 
-			{/* Hero Section */}
-			<div className="text-center max-w-4xl mx-auto">
-				{/* Title with badge */}
-				<div className="flex items-center justify-center gap-3 mb-3">
-					<Badge variant="outline" className="py-1 px-3">
-						<Sparkles className="w-3 h-3 mr-1.5" />
-						<span className="text-xs">{widgets.length} {t('tools')}</span>
-					</Badge>
-				</div>
-				
-				<h1 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold mb-2">
-					<span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-						{t('title')}
-					</span>
-				</h1>
-				
-				<p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-					{t('description')}
-				</p>
-			</div>
 
 			{/* Search Controls */}
-			<div className="bg-gradient-to-br from-background to-muted/20 rounded-2xl p-4 md:p-6 space-y-4 border border-border/50 shadow-sm backdrop-blur-sm">
+			<div className="relative">
+				<div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl" />
+				<div className="relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50 shadow-xl">
 				{/* Search Input with Suggestions */}
 				<Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
 					<PopoverTrigger asChild>
@@ -209,7 +202,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 										handleSearch(searchQuery)
 									}
 								}}
-								className="pl-12 pr-24 h-12 text-base rounded-xl border-border/50 bg-background/50 backdrop-blur-sm focus:bg-background transition-colors"
+								className="pl-12 pr-24 h-14 text-base rounded-2xl border-border/50 bg-background/80 backdrop-blur-sm focus:bg-background transition-all duration-300 shadow-sm hover:shadow-md"
 							/>
 							<div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
 								{searchQuery && (
@@ -222,9 +215,9 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 										<X className="w-4 h-4" />
 									</Button>
 								)}
-								<Badge variant="secondary" className="text-xs">
-									<Command className="w-3 h-3 mr-1" />K
-								</Badge>
+								<kbd className="hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground">
+									<span className="text-xs">⌘</span>K
+								</kbd>
 							</div>
 						</div>
 					</PopoverTrigger>
@@ -274,7 +267,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 						variant={selectedCategory === '' ? 'default' : 'outline'}
 						size="sm"
 						onClick={() => setSelectedCategory('')}
-						className="rounded-full px-3 py-1.5 text-xs font-medium transition-all"
+						className="rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105"
 					>
 						{searchT('allCategories')}
 					</Button>
@@ -285,7 +278,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 							variant={selectedCategory === key ? 'default' : 'outline'}
 							size="sm"
 							onClick={() => setSelectedCategory(key)}
-							className="rounded-full px-3 py-1.5 text-xs font-medium transition-all"
+							className="rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105"
 						>
 							{title}
 						</Button>
@@ -326,6 +319,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 					</div>
 				</div>
 			</div>
+			</div>
 
 			{/* Results */}
 			{filteredWidgets.length === 0 ? (
@@ -347,10 +341,10 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 					{Object.entries(groupedWidgets).map(([category, projects]) => (
 						<section key={category}>
 							<div className="flex items-center gap-3 mb-6">
-								<h2 className="text-2xl font-heading font-bold">
+								<h2 className="text-2xl font-heading font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
 									{widgetCategories[category as keyof typeof widgetCategories]}
 								</h2>
-								<Badge variant="outline" className="font-medium">
+								<Badge variant="secondary" className="font-medium px-3 py-1">
 									{projects.length}
 								</Badge>
 							</div>
@@ -358,45 +352,13 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 							{viewMode === 'grid' ? (
 								<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-300">
 									{projects.map((project) => (
-										<Link 
-											key={project.id} 
-											href={`/${locale}/tools/${project.path}`}
-											className="block group"
-										>
-											<Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-border/50 bg-gradient-to-br from-background to-muted/10 relative">
-												<FavoriteButton 
-													widgetId={project.id} 
-													className="absolute top-2 right-2 z-10"
-												/>
-												<CardHeader>
-													<div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${project.gradient} flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg`}>
-														{project.icon}
-													</div>
-													<CardTitle className="text-lg font-heading transition-all duration-300 group-hover:text-primary pr-8">
-														{searchQuery ? highlightText(project.title, searchQuery) : project.title}
-													</CardTitle>
-												</CardHeader>
-												<CardContent>
-													<p className="text-sm text-muted-foreground mb-3">
-														{searchQuery ? highlightText(project.description, searchQuery) : project.description}
-													</p>
-													{project.tags.length > 0 && (
-														<div className="flex flex-wrap gap-1">
-															{project.tags.slice(0, 3).map(tag => (
-																<Badge key={tag} variant="secondary" className="text-xs">
-																	{searchQuery ? highlightText(tag, searchQuery) : tag}
-																</Badge>
-															))}
-															{project.tags.length > 3 && (
-																<Badge variant="outline" className="text-xs">
-																	+{project.tags.length - 3}
-																</Badge>
-															)}
-														</div>
-													)}
-												</CardContent>
-											</Card>
-										</Link>
+										<ToolCard
+											key={project.id}
+											widget={project.widget}
+											locale={locale}
+											searchQuery={searchQuery}
+											showFavoriteButton={true}
+										/>
 									))}
 								</div>
 							) : (
@@ -407,7 +369,8 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 											href={`/${locale}/tools/${project.path}`}
 											className="block group"
 										>
-											<Card className="transition-all duration-300 hover:shadow-lg border-border/50 bg-gradient-to-br from-background to-muted/10 relative">
+											<Card className="transition-all duration-300 hover:shadow-xl border-border/50 bg-background/60 backdrop-blur-sm relative group overflow-hidden">
+												<div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 												<CardContent className="p-5">
 													<div className="flex items-center gap-4">
 														<div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} flex items-center justify-center text-white group-hover:scale-110 transition-all duration-300 shadow-md`}>

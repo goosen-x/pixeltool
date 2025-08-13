@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { 
   Lock,
   Unlock,
@@ -25,7 +27,11 @@ import {
   Download,
   Sparkles,
   Info,
-  Loader2
+  Loader2,
+  Settings,
+  FileInput,
+  FileOutput,
+  Zap
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -293,9 +299,13 @@ export default function Base64EncoderPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <WidgetLayout>
       {/* Mode Selection */}
-      <Card className="p-6">
+      <WidgetSection
+        icon={<Settings className="h-5 w-5" />}
+        title="Настройки"
+        description="Выберите режим работы"
+      >
         <div className="space-y-4">
           <div>
             <Label className="text-base mb-3 block">Режим работы</Label>
@@ -381,12 +391,15 @@ export default function Base64EncoderPage() {
             </div>
           )}
         </div>
-      </Card>
+      </WidgetSection>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Input */}
         <div className="space-y-4">
-          <Card className="p-6">
+          <WidgetSection
+            icon={<FileInput className="h-5 w-5" />}
+            title="Входные данные"
+          >
             <div className="flex items-center justify-between mb-4">
               <Label className="text-base">
                 {mode === 'encode' ? 'Исходные данные' : 'Base64 данные'}
@@ -438,14 +451,18 @@ export default function Base64EncoderPage() {
                       : 'Введите текст для кодирования...'
                     : 'Вставьте Base64 строку для декодирования...'
                 }
-                className="font-mono text-sm min-h-[300px]"
+                rows={12}
+                className="font-mono"
               />
             )}
-          </Card>
+          </WidgetSection>
 
           {/* Statistics */}
           {(input || file) && (
-            <Card className="p-6">
+            <WidgetOutput
+              gradientFrom="from-primary/10"
+              gradientTo="to-accent/10"
+            >
               <h3 className="font-semibold mb-4">Статистика</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
@@ -468,13 +485,16 @@ export default function Base64EncoderPage() {
                   </div>
                 </div>
               </div>
-            </Card>
+            </WidgetOutput>
           )}
         </div>
 
         {/* Output */}
         <div className="space-y-4">
-          <Card className="p-6">
+          <WidgetSection
+            icon={<FileOutput className="h-5 w-5" />}
+            title={mode === 'encode' ? 'Base64 результат' : 'Декодированные данные'}
+          >
             <div className="flex items-center justify-between mb-4">
               <Label className="text-base">
                 {mode === 'encode' ? 'Base64 результат' : 'Декодированные данные'}
@@ -483,16 +503,16 @@ export default function Base64EncoderPage() {
                 {output && (
                   <>
                     <Button
+                      size="icon"
+                      variant="ghost"
                       onClick={() => copyToClipboard(output)}
-                      size="sm"
-                      variant="outline"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
                     <Button
+                      size="icon"
+                      variant="ghost"
                       onClick={downloadOutput}
-                      size="sm"
-                      variant="outline"
                     >
                       <Download className="w-4 h-4" />
                     </Button>
@@ -514,41 +534,47 @@ export default function Base64EncoderPage() {
                     ? 'Base64 результат появится здесь...'
                     : 'Декодированный текст появится здесь...'
                 }
-                className="font-mono text-sm min-h-[300px] bg-muted/50"
+                rows={12}
+                className="font-mono"
               />
             )}
-          </Card>
+          </WidgetSection>
 
           {/* Actions */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4">Действия</h3>
+          <WidgetSection
+            icon={<Zap className="h-5 w-5" />}
+            title="Действия"
+          >
             <div className="space-y-2">
               <Button
                 onClick={swapInputOutput}
-                variant="outline"
-                className="w-full gap-2"
+                className="w-full"
                 disabled={!output}
+                variant="outline"
               >
-                <ArrowUpDown className="w-4 h-4" />
+                <ArrowUpDown className="w-5 h-5 mr-2" />
                 Поменять местами и {mode === 'encode' ? 'декодировать' : 'кодировать'}
               </Button>
               <Button
                 onClick={reset}
+                className="w-full"
                 variant="outline"
-                className="w-full gap-2"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-5 h-5 mr-2" />
                 Очистить все
               </Button>
             </div>
-          </Card>
+          </WidgetSection>
         </div>
       </div>
 
       {/* Examples and Tips */}
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Card className="p-6">
+          <WidgetSection
+            icon={<Sparkles className="h-5 w-5" />}
+            title="Примеры использования"
+          >
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
               Примеры
@@ -559,8 +585,8 @@ export default function Base64EncoderPage() {
                 <Button
                   key={index}
                   onClick={() => loadExample(example)}
-                  variant="outline"
                   className="h-auto p-4 justify-start text-left"
+                  variant="outline"
                 >
                   <div className="w-full">
                     <div className="font-medium">{example.name}</div>
@@ -576,11 +602,14 @@ export default function Base64EncoderPage() {
                 </Button>
               ))}
             </div>
-          </Card>
+          </WidgetSection>
         </div>
 
         <div className="space-y-6">
-          <Card className="p-6">
+          <WidgetSection
+            icon={<Info className="h-5 w-5" />}
+            title="Информация"
+          >
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <Info className="w-4 h-4" />
               О Base64
@@ -607,9 +636,9 @@ export default function Base64EncoderPage() {
                 </ul>
               </div>
             </div>
-          </Card>
+          </WidgetSection>
         </div>
       </div>
-    </div>
+    </WidgetLayout>
   )
 }

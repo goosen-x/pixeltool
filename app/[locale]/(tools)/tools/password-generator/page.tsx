@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
@@ -9,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { 
 	Copy, 
 	RefreshCw, 
@@ -20,10 +20,19 @@ import {
 	EyeOff,
 	History,
 	Download,
-	Zap
+	Zap,
+	Keyboard,
+	Lock,
+	Settings,
+	Trash2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { KeyboardShortcuts } from '@/components/tools/KeyboardShortcuts'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 
 interface PasswordOptions {
 	length: number
@@ -255,10 +264,10 @@ export default function PasswordGeneratorPage() {
 	}
 
 	const getStrengthColor = (score: number) => {
-		if (score >= 80) return 'text-green-600'
-		if (score >= 60) return 'text-yellow-600'
-		if (score >= 40) return 'text-orange-600'
-		return 'text-red-600'
+		if (score >= 80) return 'text-green-600 dark:text-green-400'
+		if (score >= 60) return 'text-yellow-600 dark:text-yellow-400'
+		if (score >= 40) return 'text-orange-600 dark:text-orange-400'
+		return 'text-red-600 dark:text-red-400'
 	}
 
 	const getStrengthLabel = (score: number) => {
@@ -279,25 +288,55 @@ export default function PasswordGeneratorPage() {
 		setStrength(calculateStrength(password))
 	}, [password, calculateStrength])
 
+	// Keyboard shortcuts
+	const shortcuts = [
+		{
+			key: 'c',
+			meta: true,
+			action: copyToClipboard,
+			description: t('copy')
+		},
+		{
+			key: 'r',
+			meta: true,
+			action: () => activeTab === 'random' ? generatePassword() : generatePassphrase(),
+			description: t('generate')
+		},
+		{
+			key: 'k',
+			meta: true,
+			action: () => {
+				setPassword('')
+				setPassphraseOptions({ ...passphraseOptions, words: [] })
+			},
+			description: 'Clear'
+		}
+	]
+
 	return (
-		<>
+		<WidgetLayout>
+			<KeyboardShortcuts shortcuts={shortcuts} />
+			
 			{/* Main Password Display */}
-			<Card className="max-w-2xl mx-auto">
-				<CardContent className="pt-6">
-					<div className="space-y-4">
+			<WidgetOutput
+				gradientFrom="from-primary/20"
+				gradientTo="to-accent/20"
+			>
+					<div className="space-y-6">
 						<div className="relative">
 							<Input
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								type={showPassword ? 'text' : 'password'}
-								className="pr-24 font-mono text-lg"
+								className="pr-28 pl-4 font-mono text-xl h-14 rounded-2xl bg-background/80 border-border/50 focus:bg-background transition-all duration-300"
 								placeholder={t('placeholder')}
 							/>
-							<div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+							<div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
 								<Button
 									size="icon"
 									variant="ghost"
 									onClick={() => setShowPassword(!showPassword)}
+									className="h-9 w-9"
 								>
 									{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
 								</Button>
@@ -306,7 +345,7 @@ export default function PasswordGeneratorPage() {
 									variant="ghost"
 									onClick={copyToClipboard}
 									disabled={!password}
-									className="hover:bg-accent hover:text-white"
+									className="h-9 w-9 hover:bg-primary hover:text-primary-foreground transition-colors"
 								>
 									<Copy className="w-4 h-4" />
 								</Button>
@@ -321,34 +360,38 @@ export default function PasswordGeneratorPage() {
 									{getStrengthLabel(strength)} ({strength}%)
 								</span>
 							</div>
-							<Progress value={strength} className="h-2" />
+							<Progress 
+								value={strength} 
+								className="h-2"
+							/>
 						</div>
 
 						{/* Quick Actions */}
-						<div className="flex gap-2">
+						<div className="flex gap-3">
 							<Button 
 								onClick={() => activeTab === 'random' ? generatePassword() : generatePassphrase()}
-								className="flex-1"
+								size="lg"
+								className="flex-1 h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
 							>
-								<RefreshCw className="w-4 h-4 mr-2" />
+								<RefreshCw className="w-5 h-5 mr-2" />
 								{t('generate')}
 							</Button>
 							<Button
 								variant="outline"
+								size="lg"
 								onClick={copyToClipboard}
 								disabled={!password}
-								className="hover:bg-accent hover:text-white"
+								className="h-12 bg-background/80 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
 							>
-								<Copy className="w-4 h-4 mr-2" />
+								<Copy className="w-5 h-5 mr-2" />
 								{t('copy')}
 							</Button>
 						</div>
 					</div>
-				</CardContent>
-			</Card>
+			</WidgetOutput>
 
-			<Tabs value={activeTab} onValueChange={setActiveTab}>
-				<TabsList className="grid w-full grid-cols-3">
+			<Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-4xl mx-auto">
+				<TabsList className="grid w-full grid-cols-3 h-12 bg-muted/50 backdrop-blur-sm">
 					<TabsTrigger value="random">
 						<Shield className="w-4 h-4 mr-2" />
 						{t('tabs.random')}
@@ -363,33 +406,42 @@ export default function PasswordGeneratorPage() {
 					</TabsTrigger>
 				</TabsList>
 
-				<TabsContent value="random" className="space-y-6">
+				<TabsContent value="random" className="mt-6 space-y-6">
 					<div className="grid gap-6 lg:grid-cols-2">
 						{/* Options */}
-						<Card>
-							<CardHeader>
-								<CardTitle>{t('options.title')}</CardTitle>
-							</CardHeader>
-							<CardContent className="space-y-6">
+						<WidgetSection
+							icon={<Settings className="h-5 w-5" />}
+							title={t('options.title')}
+							description={t('options.description')}
+						>
+							<div className="space-y-6">
 								{/* Length */}
-								<div className="space-y-2">
-									<div className="flex items-center justify-between">
-										<Label>{t('options.length')}</Label>
-										<span className="text-sm font-medium">{options.length}</span>
+								<WidgetInput
+									label={t('options.length')}
+									description={t('options.lengthDescription')}
+								>
+									<div className="space-y-2">
+										<div className="flex items-center justify-between mb-2">
+											<span className="text-sm text-muted-foreground">4</span>
+											<span className="text-lg font-semibold">{options.length}</span>
+											<span className="text-sm text-muted-foreground">64</span>
+										</div>
+										<Slider
+											value={[options.length]}
+											onValueChange={([value]) => setOptions({ ...options, length: value })}
+											min={4}
+											max={64}
+											step={1}
+										/>
 									</div>
-									<Slider
-										value={[options.length]}
-										onValueChange={([value]) => setOptions({ ...options, length: value })}
-										min={4}
-										max={64}
-										step={1}
-									/>
-								</div>
+								</WidgetInput>
 
 								{/* Character Types */}
-								<div className="space-y-3">
-									<Label>{t('options.characterTypes')}</Label>
-									<div className="space-y-2">
+								<WidgetInput
+									label={t('options.characterTypes')}
+									description={t('options.characterTypesDescription')}
+								>
+									<div className="space-y-3">
 										<div className="flex items-center justify-between">
 											<Label htmlFor="uppercase" className="font-normal cursor-pointer">
 												{t('options.uppercase')} (A-Z)
@@ -431,12 +483,14 @@ export default function PasswordGeneratorPage() {
 											/>
 										</div>
 									</div>
-								</div>
+								</WidgetInput>
 
 								{/* Exclusions */}
-								<div className="space-y-3">
-									<Label>{t('options.exclusions')}</Label>
-									<div className="space-y-2">
+								<WidgetInput
+									label={t('options.exclusions')}
+									description={t('options.exclusionsDescription')}
+								>
+									<div className="space-y-3">
 										<div className="flex items-center justify-between">
 											<Label htmlFor="similar" className="font-normal cursor-pointer">
 												{t('options.excludeSimilar')} (il1Lo0O)
@@ -458,19 +512,16 @@ export default function PasswordGeneratorPage() {
 											/>
 										</div>
 									</div>
-								</div>
-							</CardContent>
-						</Card>
+								</WidgetInput>
+							</div>
+						</WidgetSection>
 
 						{/* Tips */}
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<AlertTriangle className="w-5 h-5" />
-									{t('tips.title')}
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
+						<WidgetSection
+							icon={<AlertTriangle className="h-5 w-5" />}
+							title={t('tips.title')}
+							description={t('tips.description')}
+						>
 								<ul className="space-y-2 text-sm text-muted-foreground">
 									<li className="flex items-start gap-2">
 										<Check className="w-4 h-4 text-green-600 mt-0.5" />
@@ -493,20 +544,17 @@ export default function PasswordGeneratorPage() {
 										{t('tips.reuse')}
 									</li>
 								</ul>
-							</CardContent>
-						</Card>
+						</WidgetSection>
 					</div>
 				</TabsContent>
 
-				<TabsContent value="passphrase" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle>{t('passphrase.title')}</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<p className="text-sm text-muted-foreground">
-								{t('passphrase.description')}
-							</p>
+				<TabsContent value="passphrase" className="mt-6 space-y-6">
+					<WidgetSection
+						icon={<Zap className="h-5 w-5" />}
+						title={t('passphrase.title')}
+						description={t('passphrase.description')}
+					>
+						<div className="space-y-4">
 							<div className="space-y-2">
 								<Label>{t('passphrase.words')}</Label>
 								<textarea
@@ -523,15 +571,19 @@ export default function PasswordGeneratorPage() {
 								<Zap className="w-4 h-4 mr-2" />
 								{t('passphrase.generate')}
 							</Button>
-						</CardContent>
-					</Card>
+						</div>
+					</WidgetSection>
 				</TabsContent>
 
-				<TabsContent value="history" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle className="flex items-center justify-between">
-								<span>{t('history.title')}</span>
+				<TabsContent value="history" className="mt-6 space-y-6">
+					<WidgetSection
+						icon={<History className="h-5 w-5" />}
+						title={t('history.title')}
+						description={t('history.description')}
+					>
+						<div className="space-y-4">
+							<div className="flex items-center justify-between">
+								<span className="text-sm text-muted-foreground">{t('history.count', { count: history.length })}</span>
 								<div className="flex gap-2">
 									{history.length > 0 && (
 										<>
@@ -554,9 +606,7 @@ export default function PasswordGeneratorPage() {
 										</>
 									)}
 								</div>
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
+							</div>
 							{history.length > 0 ? (
 								<div className="space-y-2">
 									{history.map((item, index) => (
@@ -596,10 +646,11 @@ export default function PasswordGeneratorPage() {
 									{t('history.empty')}
 								</p>
 							)}
-						</CardContent>
-					</Card>
+						</div>
+					</WidgetSection>
 				</TabsContent>
 			</Tabs>
-		</>
+
+		</WidgetLayout>
 	)
 }

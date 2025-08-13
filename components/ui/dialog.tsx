@@ -16,13 +16,18 @@ const DialogClose = DialogPrimitive.Close
 const DialogOverlay = React.forwardRef<
 	React.ElementRef<typeof DialogPrimitive.Overlay>,
 	React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
+>(({ className, style, ...props }, ref) => (
 	<DialogPrimitive.Overlay
 		ref={ref}
 		className={cn(
-			'grid place-items-center overflow-auto fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+			'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm',
+			'transition-opacity duration-300',
 			className
 		)}
+		style={{
+			...style,
+			animation: 'fadeIn 300ms cubic-bezier(0.25, 1, 0.5, 1) forwards'
+		}}
 		{...props}
 	/>
 ))
@@ -37,9 +42,13 @@ const DialogContent = React.forwardRef<
 			<DialogPrimitive.Content
 				ref={ref}
 				className={cn(
-					' z-50 grid w-full max-w-[1000px] relative gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
+					'fixed left-[50%] top-[50%] z-50 grid w-full max-w-[1000px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg sm:rounded-lg',
+					'transition-all duration-300',
 					className
 				)}
+				style={{
+					animation: 'contentShow 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards'
+				}}
 				{...props}
 			>
 				{children}

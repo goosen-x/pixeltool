@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,6 +29,10 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 
 type UUIDVersion = 'v4' | 'v1' | 'v3' | 'v5' | 'nil'
 type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces' | 'base64'
@@ -313,17 +316,21 @@ export default function UUIDGeneratorPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <WidgetLayout>
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main Generator */}
         <div className="lg:col-span-2 space-y-6">
           {/* Settings */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4">Настройки генератора</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <Label className="text-base mb-3 block">Версия UUID</Label>
+          <WidgetSection
+            icon={<Fingerprint className="h-5 w-5" />}
+            title="Настройки генератора"
+            description="Выберите версию и формат UUID"
+          >
+            <div className="space-y-6">
+              <WidgetInput
+                label="Версия UUID"
+                description="Выберите версию генерации UUID"
+              >
                 <RadioGroup value={version} onValueChange={(value: UUIDVersion) => setVersion(value)}>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <div className="flex items-center space-x-2">
@@ -363,12 +370,14 @@ export default function UUIDGeneratorPage() {
                     </div>
                   </div>
                 </RadioGroup>
-              </div>
+              </WidgetInput>
 
               {(version === 'v3' || version === 'v5') && (
                 <>
-                  <div>
-                    <Label htmlFor="namespace">Namespace</Label>
+                  <WidgetInput
+                    label="Namespace"
+                    description="Выберите пространство имен для хеширования"
+                  >
                     <Select value={namespace} onValueChange={setNamespace}>
                       <SelectTrigger>
                         <SelectValue />
@@ -380,23 +389,27 @@ export default function UUIDGeneratorPage() {
                         <SelectItem value="X500">X500</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="name">Name String</Label>
+                  </WidgetInput>
+                  <WidgetInput
+                    label="Name String"
+                    description="Строка для генерации UUID"
+                  >
                     <Input
                       id="name"
                       value={nameString}
                       onChange={(e) => setNameString(e.target.value)}
                       placeholder="example.com"
                     />
-                  </div>
+                  </WidgetInput>
                 </>
               )}
 
-              <div>
-                <Label>Формат вывода</Label>
+              <WidgetInput
+                label="Формат вывода"
+                description="Выберите формат отображения UUID"
+              >
                 <Select value={format} onValueChange={(value: UUIDFormat) => setFormat(value)}>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -412,11 +425,13 @@ export default function UUIDGeneratorPage() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </WidgetInput>
 
-              <div>
-                <Label>Количество UUID</Label>
-                <div className="flex items-center gap-4 mt-2">
+              <WidgetInput
+                label="Количество UUID"
+                description="Сколько UUID сгенерировать (1-100)"
+              >
+                <div className="flex items-center gap-4">
                   <Button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     size="icon"
@@ -440,12 +455,15 @@ export default function UUIDGeneratorPage() {
                   </Button>
                   <span className="w-12 text-right font-mono">{quantity}</span>
                 </div>
-              </div>
+              </WidgetInput>
             </div>
-          </Card>
+          </WidgetSection>
 
           {/* Generated UUIDs */}
-          <Card className="p-6">
+          <WidgetOutput
+            gradientFrom="from-primary/10"
+            gradientTo="to-accent/10"
+          >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">Сгенерированные UUID</h3>
               <div className="flex gap-2">
@@ -527,17 +545,17 @@ export default function UUIDGeneratorPage() {
                 Очистить историю
               </Button>
             )}
-          </Card>
+          </WidgetOutput>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
           {/* UUID Validator */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Валидатор UUID
-            </h3>
+          <WidgetSection
+            icon={<Shield className="h-5 w-5" />}
+            title="Валидатор UUID"
+            description="Проверка валидности UUID"
+          >
             
             <div className="space-y-4">
               <Input
@@ -574,14 +592,15 @@ export default function UUIDGeneratorPage() {
                 </div>
               )}
             </div>
-          </Card>
+          </WidgetSection>
 
           {/* Info */}
-          <Card className="p-6 bg-muted/50">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <Info className="w-4 h-4" />
-              О UUID
-            </h3>
+          <WidgetSection
+            icon={<Info className="h-5 w-5" />}
+            title="О UUID"
+            description="Информация о типах UUID"
+            className="bg-muted/50"
+          >
             <div className="space-y-3 text-sm text-muted-foreground">
               <div>
                 <h4 className="font-medium text-foreground mb-1">Version 1</h4>
@@ -603,9 +622,9 @@ export default function UUIDGeneratorPage() {
                 <p className="mt-1">M - версия, N - вариант</p>
               </div>
             </div>
-          </Card>
+          </WidgetSection>
         </div>
       </div>
-    </div>
+    </WidgetLayout>
   )
 }

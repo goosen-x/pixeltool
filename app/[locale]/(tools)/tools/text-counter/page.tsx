@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -24,10 +23,15 @@ import {
   Linkedin,
   Instagram,
   Globe,
-  Search
+  Search,
+  Edit3
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 
 interface TextStats {
   characters: number
@@ -303,16 +307,18 @@ SEO-оптимизация требует особого внимания к д�
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <WidgetLayout>
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Text Input */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Label htmlFor="text-input" className="text-base">
-                Введите или вставьте текст
-              </Label>
-              <div className="flex gap-2">
+          <WidgetSection
+            icon={<Edit3 className="h-5 w-5" />}
+            title="Введите или вставьте текст"
+            description="Анализ количества символов, слов и других параметров текста"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
                 <Button onClick={loadExample} variant="outline" size="sm">
                   Пример
                 </Button>
@@ -362,14 +368,15 @@ SEO-оптимизация требует особого внимания к д�
                 </span>
               </div>
             </div>
-          </Card>
+            </div>
+          </WidgetSection>
 
           {/* Platform Limits */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Globe className="w-5 h-5" />
-              Лимиты платформ
-            </h3>
+          <WidgetSection
+            icon={<Globe className="h-5 w-5" />}
+            title="Лимиты платформ"
+            description="Проверьте соответствие текста ограничениям социальных сетей и SEO"
+          >
 
             <div className="space-y-3">
               {PLATFORM_LIMITS.map((platform) => {
@@ -407,16 +414,19 @@ SEO-оптимизация требует особого внимания к д�
                 )
               })}
             </div>
-          </Card>
+          </WidgetSection>
         </div>
 
         {/* Statistics */}
         <div className="space-y-6">
           {/* Detailed Stats */}
-          <Card className="p-6">
+          <WidgetOutput
+            gradientFrom="from-primary/10"
+            gradientTo="to-accent/10"
+          >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
+                <BarChart3 className="w-5 h-5 text-primary" />
                 Подробная статистика
               </h3>
               <Button onClick={copyStats} variant="outline" size="sm">
@@ -499,13 +509,16 @@ SEO-оптимизация требует особого внимания к д�
                 </div>
               </div>
             </div>
-          </Card>
+          </WidgetOutput>
 
           {/* Word Analysis */}
           {stats.words > 0 && (
-            <Card className="p-6">
+            <WidgetOutput
+              gradientFrom="from-accent/10"
+              gradientTo="to-primary/10"
+            >
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5" />
+                <Zap className="w-5 h-5 text-accent" />
                 Анализ слов
               </h3>
 
@@ -537,12 +550,16 @@ SEO-оптимизация требует особого внимания к д�
                   </div>
                 )}
               </div>
-            </Card>
+            </WidgetOutput>
           )}
 
           {/* Selected Platform Info */}
           {selectedPlatform && (
-            <Card className="p-6 border-primary">
+            <WidgetOutput
+              gradientFrom="from-primary/10"
+              gradientTo="to-accent/10"
+              className="border-primary"
+            >
               <div className="flex items-center gap-2 mb-3">
                 <selectedPlatform.icon className={cn("w-5 h-5", selectedPlatform.color)} />
                 <h4 className="font-semibold">{selectedPlatform.name}</h4>
@@ -569,17 +586,18 @@ SEO-оптимизация требует особого внимания к д�
                   </span>
                 </div>
               </div>
-            </Card>
+            </WidgetOutput>
           )}
         </div>
       </div>
 
       {/* Tips */}
-      <Card className="p-6 bg-muted/50">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4" />
-          Советы по оптимизации текста
-        </h3>
+      <WidgetSection
+        icon={<AlertCircle className="h-5 w-5" />}
+        title="Советы по оптимизации текста"
+        description="Рекомендации для различных платформ и целей"
+        className="bg-muted/50"
+      >
         <div className="grid md:grid-cols-3 gap-6 text-sm">
           <div>
             <h4 className="font-medium mb-2">SEO оптимизация</h4>
@@ -609,7 +627,7 @@ SEO-оптимизация требует особого внимания к д�
             </ul>
           </div>
         </div>
-      </Card>
-    </div>
+      </WidgetSection>
+    </WidgetLayout>
   )
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { WidgetSkeleton, WidgetSkeletonSimple } from './WidgetSkeleton'
+import { ProgressBar } from '@/components/ui/progress-bar'
 
 interface WidgetWrapperProps {
   children: React.ReactNode
@@ -61,7 +62,12 @@ export function WidgetWrapper({ children, simple = false }: WidgetWrapperProps) 
   }, [pathname])
 
   if (isLoading) {
-    return simple ? <WidgetSkeletonSimple /> : <WidgetSkeleton />
+    return (
+      <>
+        <ProgressBar isLoading={true} />
+        {simple ? <WidgetSkeletonSimple /> : <WidgetSkeleton />}
+      </>
+    )
   }
 
   if (!showContent) {
@@ -69,11 +75,14 @@ export function WidgetWrapper({ children, simple = false }: WidgetWrapperProps) 
   }
 
   return (
-    <div 
-      key={pathname}
-      className="widget-fade-in"
-    >
-      {children}
-    </div>
+    <>
+      <ProgressBar isLoading={isLoading} />
+      <div 
+        key={pathname}
+        className="widget-fade-in"
+      >
+        {children}
+      </div>
+    </>
   )
 }

@@ -16,20 +16,22 @@ import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegistration'
 import { WebVitals } from '@/components/analytics/WebVitals'
-import { GlobalWidgetSearch } from '@/components/global/GlobalWidgetSearch'
+import { NavigationProgress } from '@/components/ui/navigation-progress'
 
 // Font configurations
 const inter = Inter({ 
-  subsets: ['latin', 'cyrillic'],
+  subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
+  fallback: ['system-ui', 'arial'],
 })
 
 const openSans = Open_Sans({ 
-  subsets: ['latin', 'cyrillic'],
+  subsets: ['latin'],
   variable: '--font-heading',
   display: 'swap',
   weight: ['400', '500', '600', '700', '800'],
+  fallback: ['system-ui', 'arial'],
 })
 
 interface Props {
@@ -67,7 +69,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		keywords: locale === 'ru' 
 			? ['онлайн инструменты', 'веб разработка', 'CSS генератор', 'конвертер цветов', 'форматировщик кода', 'бесплатные утилиты', 'инструменты разработчика', 'калькулятор CSS', 'генератор паролей', 'QR код генератор', 'конвертер изображений', 'парсер HTML', 'минификатор кода']
 			: ['online tools', 'web development', 'CSS generator', 'color converter', 'code formatter', 'free utilities', 'developer tools', 'CSS calculator', 'password generator', 'QR code generator', 'image converter', 'HTML parser', 'code minifier'],
-		authors: [{ name: 'Dmitry Borisenko', url: 'https://github.com/dmitryborisenko' }],
+		authors: [{ name: 'Dmitry Borisenko', url: 'https://github.com/goosen-x/pixeltool' }],
 		creator: 'Dmitry Borisenko',
 		publisher: 'PixelTool',
 		category: 'technology',
@@ -123,12 +125,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		formatDetection: {
 			telephone: false,
 		},
-		viewport: {
-			width: 'device-width',
-			initialScale: 1,
-			maximumScale: 5,
-		},
 	}
+}
+
+export const viewport = {
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 5,
 }
 
 export default async function RootLayout({
@@ -163,11 +166,11 @@ export default async function RootLayout({
 						defaultTheme="system"
 						enableSystem
 					>
+						<NavigationProgress />
 						<YandexMetrika />
 						<ServiceWorkerRegistration />
 						<WebVitals />
 						{children}
-						<GlobalWidgetSearch locale={locale} />
 						<ScrollToTop />
 						<Toaster />
 					</ThemeProvider>

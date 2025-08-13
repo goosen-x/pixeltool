@@ -16,8 +16,8 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 	// Avoid hydration mismatch by not rendering until mounted
 	if (!mounted) {
 		return (
-			<button className={cn('p-2 rounded-lg bg-muted/50 animate-pulse', className)}>
-				<div className="w-4 h-4" />
+			<button className={cn('h-10 w-10 rounded-xl bg-background/50 animate-pulse border border-border/50', className)}>
+				<div className="w-5 h-5" />
 			</button>
 		)
 	}
@@ -26,15 +26,15 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 		<button
 			onClick={(e) => setTheme(theme === 'dark' ? 'light' : 'dark', e)}
 			className={cn(
-				'p-2 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors',
+				'h-10 w-10 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 flex items-center justify-center group',
 				className
 			)}
 			aria-label="Toggle theme"
 		>
 			{theme === 'dark' ? (
-				<Sun className="w-4 h-4 text-muted-foreground" />
+				<Sun className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
 			) : (
-				<Moon className="w-4 h-4 text-muted-foreground" />
+				<Moon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
 			)}
 		</button>
 	)

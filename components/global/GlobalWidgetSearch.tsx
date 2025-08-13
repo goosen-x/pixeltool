@@ -30,13 +30,19 @@ import { cn } from '@/lib/utils'
 
 interface GlobalWidgetSearchProps {
   locale: string
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function GlobalWidgetSearch({ locale }: GlobalWidgetSearchProps) {
+export function GlobalWidgetSearch({ locale, open: controlledOpen, onOpenChange }: GlobalWidgetSearchProps) {
   const router = useRouter()
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
+  
+  // Use controlled state if provided, otherwise use internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
   
   const t = useTranslations('widgets')
   const searchT = useTranslations('widgets.search')
@@ -148,15 +154,17 @@ export function GlobalWidgetSearch({ locale }: GlobalWidgetSearchProps) {
 
   return (
     <>
-      {/* Floating search button */}
-      <Button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-8 left-8 rounded-full shadow-lg z-40 h-14 w-14 p-0"
-        size="icon"
-        variant="default"
-      >
-        <Search className="w-6 h-6" />
-      </Button>
+      {/* Show floating search button only if not controlled */}
+      {controlledOpen === undefined && (
+        <Button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-8 left-8 rounded-full shadow-lg z-40 h-14 w-14 p-0"
+          size="icon"
+          variant="default"
+        >
+          <Search className="w-6 h-6" />
+        </Button>
+      )}
 
       {/* Search dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -166,16 +174,16 @@ export function GlobalWidgetSearch({ locale }: GlobalWidgetSearchProps) {
           </DialogHeader>
           
           {/* Search input */}
-          <div className="flex items-center border-b px-4">
+          <div className="flex items-center border-b px-4 pr-12 h-14">
             <Search className="w-5 h-5 text-muted-foreground" />
             <Input
               placeholder={searchT('placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 border-0 focus-visible:ring-0 text-base px-3"
+              className="flex-1 border-0 focus-visible:ring-0 text-base px-3 h-full"
               autoFocus
             />
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2 shrink-0">
               <Command className="w-3 h-3 mr-1" />K
             </Badge>
           </div>

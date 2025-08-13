@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
+import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { WidgetInput } from '@/components/widgets/WidgetInput'
+import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -262,17 +265,17 @@ export default function CSSBoxShadowGeneratorPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <WidgetLayout>
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-6">
           {/* Shadow Layers */}
-          <Card className="p-6">
+          <WidgetSection
+            icon={<Layers className="w-5 w-5" />}
+            title="Слои теней"
+          >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Layers className="w-4 h-4" />
-                Слои теней
-              </h3>
+              <div></div>
               <Button onClick={addShadow} size="sm">
                 <Plus className="w-4 h-4 mr-2" />
                 Добавить
@@ -323,12 +326,14 @@ export default function CSSBoxShadowGeneratorPage() {
                 </div>
               ))}
             </div>
-          </Card>
+          </WidgetSection>
 
           {/* Shadow Settings */}
           {selectedShadow && (
-            <Card className="p-6">
-              <h3 className="font-semibold mb-4">Настройки тени</h3>
+            <WidgetSection
+              icon={<Move className="w-5 h-5" />}
+              title="Настройки тени"
+            >
               
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -445,15 +450,14 @@ export default function CSSBoxShadowGeneratorPage() {
                   <Label htmlFor="inset">Внутренняя тень (inset)</Label>
                 </div>
               </div>
-            </Card>
+            </WidgetSection>
           )}
 
           {/* Box Settings */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Palette className="w-4 h-4" />
-              Настройки элемента
-            </h3>
+          <WidgetSection
+            icon={<Palette className="w-5 h-5" />}
+            title="Настройки элемента"
+          >
             
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -530,15 +534,18 @@ export default function CSSBoxShadowGeneratorPage() {
                 </div>
               </div>
             </div>
-          </Card>
+          </WidgetSection>
         </div>
 
         {/* Preview */}
         <div className="space-y-6">
           {/* Preview Box */}
-          <Card className="p-6">
+          <WidgetSection
+            icon={<Eye className="w-5 h-5" />}
+            title="Предпросмотр"
+          >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Предпросмотр</h3>
+              <div></div>
               <div className="flex gap-2">
                 <Button
                   onClick={() => setShowCode(!showCode)}
@@ -593,14 +600,13 @@ export default function CSSBoxShadowGeneratorPage() {
                 </div>
               </div>
             )}
-          </Card>
+          </WidgetSection>
 
           {/* Presets */}
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              Готовые пресеты
-            </h3>
+          <WidgetSection
+            icon={<Sparkles className="w-5 h-5" />}
+            title="Готовые пресеты"
+          >
             
             <div className="space-y-4">
               {Object.entries(CATEGORY_LABELS).map(([category, label]) => (
@@ -639,16 +645,15 @@ export default function CSSBoxShadowGeneratorPage() {
                 </div>
               ))}
             </div>
-          </Card>
+          </WidgetSection>
         </div>
       </div>
 
       {/* Tips */}
-      <Card className="p-6 bg-muted/50">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <Sparkles className="w-4 h-4" />
-          Советы по использованию теней
-        </h3>
+      <WidgetSection
+        icon={<Code2 className="w-5 h-5" />}
+        title="Советы по CSS тени"
+      >
         <div className="grid md:grid-cols-3 gap-6 text-sm">
           <div>
             <h4 className="font-medium mb-2">Основы теней</h4>
@@ -678,7 +683,7 @@ export default function CSSBoxShadowGeneratorPage() {
             </ul>
           </div>
         </div>
-      </Card>
-    </div>
+      </WidgetSection>
+    </WidgetLayout>
   )
 }

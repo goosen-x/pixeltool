@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { usePathname } from 'next/navigation'
 
 // Generate or get session ID
 const getSessionId = () => {
@@ -42,14 +41,8 @@ const getSessionId = () => {
   return `${sessionId}_${tabId}`
 }
 
-interface AnalyticsTrackerProps {
-  widgetId: string
-}
-
-export function AnalyticsTracker({ widgetId }: AnalyticsTrackerProps) {
-  const pathname = usePathname()
+export function HomePageTracker() {
   const trackedRef = useRef(false)
-  const sessionIdRef = useRef('')
   
   useEffect(() => {
     // Only track once per page load
@@ -58,10 +51,9 @@ export function AnalyticsTracker({ widgetId }: AnalyticsTrackerProps) {
     
     // Get or create session ID
     const sessionId = getSessionId()
-    sessionIdRef.current = sessionId
     
-    // Track page view
-    const trackEvent = async (eventType: string, metadata = {}) => {
+    // Track homepage view
+    const trackEvent = async () => {
       try {
         await fetch('/api/analytics/track', {
           method: 'POST',
@@ -69,65 +61,31 @@ export function AnalyticsTracker({ widgetId }: AnalyticsTrackerProps) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            widgetId,
+            widgetId: 'homepage',
             sessionId,
-            eventType,
+            eventType: 'view',
             metadata: {
-              ...metadata,
-              pathname,
+              pathname: '/',
               timestamp: new Date().toISOString()
             }
           })
         })
       } catch (error) {
-        console.error('Failed to track analytics:', error)
+        console.error('Failed to track homepage analytics:', error)
       }
     }
     
-    // Track initial view
-    trackEvent('view')
+    trackEvent()
     
-    // Track session start (per tab)
-    const TAB_SESSION_KEY = `session_started_${sessionId}`
-    const isNewSession = !sessionStorage.getItem(TAB_SESSION_KEY)
-    if (isNewSession) {
-      trackEvent('session_start')
-      sessionStorage.setItem(TAB_SESSION_KEY, 'true')
-    }
-    
-    // Track session end on page unload
-    const handleUnload = () => {
-      trackEvent('session_end')
-    }
-    
-    window.addEventListener('beforeunload', handleUnload)
-    
-    // Track time spent on page
-    let startTime = Date.now()
-    const trackTimeSpent = () => {
-      const timeSpent = Math.round((Date.now() - startTime) / 1000)
-      if (timeSpent > 5) { // Only track if spent more than 5 seconds
-        trackEvent('time_spent', { seconds: timeSpent })
-      }
-    }
-    
-    // Track when page becomes hidden
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        trackTimeSpent()
-      } else {
-        startTime = Date.now() // Reset when page becomes visible again
-      }
-    }
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    // Send heartbeat every 20 seconds to show we're still online
+    const heartbeatInterval = setInterval(() => {
+      trackEvent()
+    }, 20000)
     
     return () => {
-      window.removeEventListener('beforeunload', handleUnload)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      trackTimeSpent()
+      clearInterval(heartbeatInterval)
     }
-  }, [widgetId, pathname])
+  }, [])
   
   return null
 }
