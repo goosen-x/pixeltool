@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pre-commit Configuration",
+  "description": "Configuration for pre-commit hooks",
+  "type": "object",
+  "properties": {
+    "checks": {
+      "type": "object",
+      "properties": {
+        "translations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate translation completeness (blocking)"
+        },
+        "typescript": {
+          "type": "boolean", 
+          "default": true,
+          "description": "TypeScript type checking (blocking)"
+        },
+        "lint": {
+          "type": "boolean",
+          "default": true,
+          "description": "ESLint code quality check (warning only)"
+        },
+        "build": {
+          "type": "boolean",
+          "default": true,
+          "description": "Build process validation (blocking)"
+        },
+        "formatting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prettier code formatting check (warning only)"
+        },
+        "security": {
+          "type": "boolean",
+          "default": false,
+          "description": "Security vulnerability scan (blocking for high severity)"
+        },
+        "imports": {
+          "type": "boolean",
+          "default": false,
+          "description": "Import analysis and optimization suggestions (warning only)"
+        },
+        "bundleSize": {
+          "type": "boolean",
+          "default": false,
+          "description": "Bundle size analysis (warning only)"
+        },
+        "tests": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run test suite (blocking)"
+        },
+        "coverage": {
+          "type": "boolean",
+          "default": false,
+          "description": "Code coverage threshold check (warning only)"
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "properties": {
+        "bundleSizeLimit": {
+          "type": "integer",
+          "default": 2097152,
+          "description": "Maximum bundle size in bytes (2MB default)"
+        },
+        "chunkSizeLimit": {
+          "type": "integer", 
+          "default": 524288,
+          "description": "Maximum chunk size in bytes (512KB default)"
+        },
+        "coverageThreshold": {
+          "type": "integer",
+          "default": 80,
+          "description": "Minimum code coverage percentage"
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "properties": {
+        "ignore": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "node_modules/**",
+            ".next/**", 
+            "dist/**",
+            "**/*.d.ts",
+            "coverage/**"
+          ],
+          "description": "Paths to ignore during checks"
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/*.{ts,tsx,js,jsx}",
+            "**/*.{json,md,css}"
+          ],
+          "description": "File patterns to include in checks"
+        }
+      }
+    }
+  }
+}

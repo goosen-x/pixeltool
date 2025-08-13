@@ -24,6 +24,11 @@ class TranslationTypeGenerator {
     return '  '.repeat(level)
   }
   
+  private needsQuotes(key: string): boolean {
+    // Check if key contains special characters that require quotes
+    return /[^a-zA-Z0-9_$]/.test(key) || /^\d/.test(key)
+  }
+  
   private generateTypeForValue(value: any, key: string, level: number = 0): string {
     if (value === null) return 'null'
     if (value === undefined) return 'undefined'
@@ -64,7 +69,9 @@ class TranslationTypeGenerator {
             'description' in objValue && 
             'useCase' in objValue
           
-          lines.push(`${this.indent(level + 1)}${objKey}${isOptional ? '?' : ''}: ${valueType}`)
+          // Wrap keys with special characters in quotes
+          const formattedKey = this.needsQuotes(objKey) ? `"${objKey}"` : objKey
+          lines.push(`${this.indent(level + 1)}${formattedKey}${isOptional ? '?' : ''}: ${valueType}`)
         }
         
         lines.push(`${this.indent(level)}}`)
@@ -88,7 +95,8 @@ class TranslationTypeGenerator {
     
     for (const [key, value] of Object.entries(this.enTranslations)) {
       const valueType = this.generateTypeForValue(value, key, 1)
-      this.output.push(`  ${key}: ${valueType}`)
+      const formattedKey = this.needsQuotes(key) ? `"${key}"` : key
+      this.output.push(`  ${formattedKey}: ${valueType}`)
     }
     
     this.output.push('}')

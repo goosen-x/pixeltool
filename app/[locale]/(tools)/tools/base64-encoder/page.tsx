@@ -113,15 +113,6 @@ export default function Base64EncoderPage() {
     compressionRatio: 0
   })
 
-  useEffect(() => {
-    if (input && dataType === 'text') {
-      processText()
-    } else if (!input) {
-      setOutput('')
-      setStats({ inputSize: 0, outputSize: 0, compressionRatio: 0 })
-    }
-  }, [input, mode, urlSafe, addLineBreaks, dataType, processText])
-
   const processText = useCallback(() => {
     try {
       let result = ''
@@ -193,6 +184,15 @@ export default function Base64EncoderPage() {
       }
     }
   }, [input, mode, urlSafe, addLineBreaks, dataType])
+
+  useEffect(() => {
+    if (input && dataType === 'text') {
+      processText()
+    } else if (!input) {
+      setOutput('')
+      setStats({ inputSize: 0, outputSize: 0, compressionRatio: 0 })
+    }
+  }, [input, mode, urlSafe, addLineBreaks, dataType, processText])
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]

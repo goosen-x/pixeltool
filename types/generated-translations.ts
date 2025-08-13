@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-13T14:57:26.914Z
+// Generated on: 2025-08-13T18:05:54.477Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -96,6 +96,14 @@ export interface GeneratedTranslations {
     title: string
     description: string
     backToHome: string
+  }
+  Error: {
+    title: string
+    description: string
+    errorDetails: string
+    errorId: string
+    tryAgain: string
+    goHome: string
   }
   Header: {
     nav: {
@@ -304,15 +312,15 @@ export interface GeneratedTranslations {
     description: string
     mainPageSections: string
     categories: {
-      css-tools: {
+      "css-tools": {
         title: string
         description: string
       }
-      media-tools: {
+      "media-tools": {
         title: string
         description: string
       }
-      dev-tools: {
+      "dev-tools": {
         title: string
         description: string
       }
@@ -843,14 +851,14 @@ export interface GeneratedTranslations {
         platform: string
         platformDesc: string
         whatIsArchitecture: string
-        64bit: {
+        "64bit": {
           title: string
           memory: string
           performance: string
           compatibility: string
           security: string
         }
-        32bit: {
+        "32bit": {
           title: string
           memory: string
           performance: string
@@ -897,17 +905,20 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    themeSettings: {
+    themeSettings?: {
       title: string
       description: string
+      useCase: string
     }
-    languageSettings: {
+    languageSettings?: {
       title: string
       description: string
+      useCase: string
     }
-    fontSettings: {
+    fontSettings?: {
       title: string
       description: string
+      useCase: string
     }
     cssSpecificity: {
       title: string
@@ -940,9 +951,10 @@ export interface GeneratedTranslations {
         exampleLoaded: string
       }
     }
-    themeTransitions: {
+    themeTransitions?: {
       title: string
       description: string
+      useCase: string
     }
     colorConverter: {
       title: string
@@ -1546,12 +1558,12 @@ export interface GeneratedTranslations {
         reset: string
       }
       quickValues: {
-        ноль: string
-        комнатная: string
-        телочеловека: string
-        кипениеводы: string
-        духовка: string
-        нольфаренгейта: string
+        "ноль": string
+        "комнатная": string
+        "телочеловека": string
+        "кипениеводы": string
+        "духовка": string
+        "нольфаренгейта": string
       }
       descriptions: {
         extremelyCold: string
@@ -1964,7 +1976,7 @@ export interface GeneratedTranslations {
         camelCase: string
         PascalCase: string
         snake_case: string
-        kebab-case: string
+        "kebab-case": string
         alternating: string
         inverse: string
       }

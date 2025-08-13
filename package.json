@@ -13,6 +13,13 @@
 		"validate:translations": "npx tsx scripts/validate-translations.ts",
 		"generate:types": "npx tsx scripts/generate-translation-types.ts",
 		"translations:check": "npm run generate:types && npm run validate:translations",
+		"check:security": "npx tsx scripts/check-security.ts",
+		"check:imports": "npx tsx scripts/check-imports.ts",
+		"check:bundle": "npx tsx scripts/check-bundle-size.ts",
+		"check:all": "npm run check:security && npm run check:imports && npm run check:bundle",
+		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+		"typecheck": "tsc --noEmit",
 		"prepare": "husky"
 	},
 	"dependencies": {
@@ -111,6 +118,7 @@
 		"husky": "^9.1.7",
 		"jsdom": "^26.1.0",
 		"postcss": "^8",
+		"prettier": "^3.6.2",
 		"tailwindcss": "^4.1.11",
 		"typescript": "^5",
 		"vitest": "^3.2.4"

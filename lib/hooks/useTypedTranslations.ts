@@ -36,25 +36,24 @@ export function useWidgetCommonTranslations() {
   }
 }
 
-// Development-only runtime validation
-export function validateWidgetTranslation(widgetName: string) {
+// Development-only runtime validation hook
+export function useValidateWidgetTranslation(widgetName: string) {
+  const t = useTranslations(`widgets.${widgetName}`)
+  
   if (process.env.NODE_ENV === 'development') {
-    try {
-      const t = useTranslations(`widgets.${widgetName}`)
-      const requiredKeys = ['title', 'description', 'useCase']
-      
-      for (const key of requiredKeys) {
-        try {
-          const value = t(key)
-          if (!value) {
-            console.warn(`Missing translation: widgets.${widgetName}.${key}`)
-          }
-        } catch (error) {
-          console.error(`Translation error: widgets.${widgetName}.${key}`, error)
+    const requiredKeys = ['title', 'description', 'useCase']
+    
+    for (const key of requiredKeys) {
+      try {
+        const value = t(key)
+        if (!value) {
+          console.warn(`Missing translation: widgets.${widgetName}.${key}`)
         }
+      } catch (error) {
+        console.error(`Translation error: widgets.${widgetName}.${key}`, error)
       }
-    } catch (error) {
-      console.error(`Widget translation validation failed for: ${widgetName}`, error)
     }
   }
+  
+  return t
 }

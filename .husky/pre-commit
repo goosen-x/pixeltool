@@ -13,6 +13,39 @@ fi
 
 echo "✅ Translation validation passed!"
 
+# TypeScript type checking (блокирует коммит при ошибках типов)
+echo "🔧 Running TypeScript type check..."
+npx tsc --noEmit
+
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript type check failed. Please fix type errors before committing."
+  exit 1
+fi
+
+echo "✅ TypeScript type check passed!"
+
 # Run linting (только показываем предупреждения, но не блокируем)
 echo "🔍 Running ESLint (showing warnings only)..."
 npm run lint || echo "⚠️  Found ESLint warnings, but allowing commit to proceed"
+
+# Check build (проверяем что проект собирается)
+echo "🏗️  Testing build process..."
+npm run build
+
+if [ $? -ne 0 ]; then
+  echo "❌ Build failed. Please fix build errors before committing."
+  exit 1
+fi
+
+echo "✅ Build check passed!"
+
+# Prettier formatting check (не исправляем, только проверяем)
+if command -v npx >/dev/null 2>&1; then
+  echo "💅 Checking code formatting..."
+  npx prettier --check "**/*.{ts,tsx,js,jsx,json,css,md}" 2>/dev/null || {
+    echo "⚠️  Code formatting issues found. Consider running 'npx prettier --write .' to fix them."
+    echo "💡 Tip: This is just a warning, commit will proceed"
+  }
+fi
+
+echo "🎉 All critical checks passed! Ready to commit."

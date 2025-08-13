@@ -110,36 +110,6 @@ export default function BingoGeneratorPage() {
     }
   ]
 
-  // Initialize grid on load and when size changes
-  useEffect(() => {
-    generateBingoGrid()
-  }, [gridSize, bingoItems, generateBingoGrid])
-
-  // Load shared bingo from URL parameters
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const sharedData = params.get('data')
-    
-    if (sharedData) {
-      try {
-        const decodedData = JSON.parse(atob(sharedData))
-        setGridSize(decodedData.size || 5)
-        setBingoItems(decodedData.items || [''])
-        if (decodedData.completed) {
-          // Apply completed state after grid generation
-          setTimeout(() => {
-            setBingoGrid(prev => prev.map(cell => ({
-              ...cell,
-              isCompleted: decodedData.completed.includes(cell.id)
-            })))
-          }, 100)
-        }
-      } catch (error) {
-        toast.error(t('toast.invalidShareUrl'))
-      }
-    }
-  }, [t])
-
   const generateBingoGrid = useCallback(() => {
     const totalCells = gridSize * gridSize
     const centerIndex = Math.floor(totalCells / 2)
@@ -181,6 +151,36 @@ export default function BingoGeneratorPage() {
 
     setBingoGrid(newGrid)
   }, [gridSize, bingoItems, t])
+
+  // Initialize grid on load and when size changes
+  useEffect(() => {
+    generateBingoGrid()
+  }, [generateBingoGrid])
+
+  // Load shared bingo from URL parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sharedData = params.get('data')
+    
+    if (sharedData) {
+      try {
+        const decodedData = JSON.parse(atob(sharedData))
+        setGridSize(decodedData.size || 5)
+        setBingoItems(decodedData.items || [''])
+        if (decodedData.completed) {
+          // Apply completed state after grid generation
+          setTimeout(() => {
+            setBingoGrid(prev => prev.map(cell => ({
+              ...cell,
+              isCompleted: decodedData.completed.includes(cell.id)
+            })))
+          }, 100)
+        }
+      } catch (error) {
+        toast.error(t('toast.invalidShareUrl'))
+      }
+    }
+  }, [t])
 
   const addBingoItem = () => {
     setBingoItems([...bingoItems, ''])
