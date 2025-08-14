@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTranslations, useLocale } from 'next-intl'
-import { ArrowRight } from 'lucide-react'
 import { widgets, getWidgetById, getRecommendedWidgets } from '@/lib/constants/widgets'
+import { ToolCard } from '@/components/tools/ToolCard'
 
 interface RelatedToolsProps {
   currentTool: string
@@ -36,34 +35,29 @@ export function RelatedTools({ currentTool, category = 'css' }: RelatedToolsProp
   }
 
   return (
-    <Card className="mt-8">
+    <Card className="mt-8 border-border/50 bg-background/60 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-lg">
+        <CardTitle className="text-xl font-heading bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
           {locale === 'ru' ? 'Похожие инструменты' : 'Related Tools'}
         </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          {locale === 'ru' 
+            ? 'Другие полезные инструменты из той же категории'
+            : 'Other useful tools from the same category'
+          }
+        </p>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {relatedTools.map((widget) => {
-            const Icon = widget.icon
-            const title = t(`${widget.translationKey}.title` as any)
-            
-            return (
-              <Link
-                key={widget.id}
-                href={`/${locale}/tools/${widget.path}`}
-                className="group flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/50"
-              >
-                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${widget.gradient} flex items-center justify-center text-white flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium leading-tight">{title}</p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1" />
-              </Link>
-            )
-          })}
+        <div className="grid gap-6 md:grid-cols-3">
+          {relatedTools.map((widget) => (
+            <ToolCard
+              key={widget.id}
+              widget={widget}
+              locale={locale}
+              showFavoriteButton={false}
+              className="h-full"
+            />
+          ))}
         </div>
       </CardContent>
     </Card>
