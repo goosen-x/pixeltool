@@ -29,6 +29,7 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { useWidgetKeyboard, generatorShortcuts } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function CSSGradientGeneratorPage() {
   const t = useTranslations('widgets.cssGradientGenerator')
@@ -73,6 +74,44 @@ export default function CSSGradientGeneratorPage() {
       colorStopRemoved: t('toast.colorStopRemoved'),
       gradientRandomized: t('toast.gradientRandomized')
     }
+  })
+
+  // Keyboard shortcuts
+  useWidgetKeyboard({
+    widgetId: 'css-gradient-generator',
+    shortcuts: [
+      {
+        key: 'g',
+        ctrl: true,
+        description: 'Generate random gradient',
+        action: generateRandom
+      },
+      {
+        key: 'r',
+        ctrl: true,
+        description: 'Reset gradient',
+        action: resetGradient
+      },
+      {
+        key: 'c',
+        ctrl: true,
+        shift: true,
+        description: 'Copy CSS',
+        action: copyCSS
+      },
+      {
+        key: 'e',
+        ctrl: true,
+        description: 'Export gradient',
+        action: () => exportGradient('css')
+      },
+      {
+        key: 'a',
+        ctrl: true,
+        description: 'Add color stop',
+        action: addColorStop
+      }
+    ]
   })
 
   return (
