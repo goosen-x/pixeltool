@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
+import { KeyboardShortcutInfo } from '@/components/widgets'
 import {
 	Users,
 	Shuffle,
@@ -86,6 +87,32 @@ export default function TeamRandomizerPage() {
 			.filter(name => name.length > 0)
 		setParticipants(parsed)
 	}, [participantsInput])
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Ctrl/Cmd + G to generate teams
+			if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+				e.preventDefault()
+				generateTeams()
+			}
+			// Ctrl/Cmd + R to reset
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				resetAll()
+			}
+			// Ctrl/Cmd + Shift + C to copy results
+			if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+				e.preventDefault()
+				if (teams.length > 0) {
+					copyTeamsToClipboard()
+				}
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [teams])
 
 	// Validate inputs
 	const validateInputs = (): string[] => {
@@ -381,6 +408,9 @@ export default function TeamRandomizerPage() {
 							</div>
 						</CardContent>
 					</Card>
+
+					{/* Keyboard Shortcuts */}
+					<KeyboardShortcutInfo />
 				</div>
 			</div>
 		</div>

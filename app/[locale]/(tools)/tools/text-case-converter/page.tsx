@@ -9,6 +9,7 @@ import { Copy, Download, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
+import { useWidgetKeyboard, createConverterShortcuts } from '@/lib/hooks/widgets'
 
 type CaseType = 
   | 'uppercase'
@@ -129,6 +130,16 @@ export default function TextCaseConverterPage() {
     setInput('')
     setOutput('')
   }, [])
+
+  // Keyboard shortcuts
+  useWidgetKeyboard({
+    widgetId: 'text-case-converter',
+    shortcuts: createConverterShortcuts({
+      convert: handleConvert,
+      copy: handleCopy,
+      reset: handleClear
+    })
+  })
 
   return (
     <WidgetWrapper>

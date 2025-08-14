@@ -35,6 +35,7 @@ import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { useTranslations } from 'next-intl'
+import { useWidgetKeyboard, editorShortcuts } from '@/lib/hooks/useWidgetKeyboard'
 
 interface JSONError {
 	message: string
@@ -90,6 +91,65 @@ export default function JSONToolsPage() {
 	const [analysis, setAnalysis] = useState<JSONAnalysis | null>(null)
 	const [indentSize, setIndentSize] = useState('2')
 	const [activeTab, setActiveTab] = useState('formatted')
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'json-tools',
+		shortcuts: [
+			{
+				key: 'f',
+				ctrl: true,
+				shift: true,
+				description: 'Format JSON',
+				action: () => {
+					if (input.trim()) {
+						analyzeJSON(input)
+						setActiveTab('formatted')
+					}
+				}
+			},
+			{
+				key: 'm',
+				ctrl: true,
+				description: 'Minify JSON',
+				action: () => {
+					if (input.trim()) {
+						analyzeJSON(input)
+						setActiveTab('minified')
+					}
+				}
+			},
+			{
+				key: 'c',
+				ctrl: true,
+				shift: true,
+				description: 'Copy result',
+				action: () => {
+					if (analysis && analysis.isValid) {
+						const text = activeTab === 'formatted' ? analysis.formatted! : analysis.minified!
+						handleCopy(text, `${activeTab === 'formatted' ? 'Formatted' : 'Minified'} JSON`)
+					}
+				}
+			},
+			{
+				key: 'd',
+				ctrl: true,
+				description: 'Download result',
+				action: () => {
+					if (analysis && analysis.isValid) {
+						const text = activeTab === 'formatted' ? analysis.formatted! : analysis.minified!
+						handleDownload(text, `${activeTab}.json`)
+					}
+				}
+			},
+			{
+				key: 'k',
+				ctrl: true,
+				description: 'Clear input',
+				action: () => setInput('')
+			}
+		]
+	})
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {

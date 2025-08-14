@@ -53,16 +53,59 @@ export function useAnalytics(widgetId: string) {
     sessionId.current = getSessionId()
   }, [])
 
-  // Track analytics event
+  // Batch analytics events to reduce requests
+  const eventQueue = useRef<AnalyticsEvent[]>([])
+  const flushTimeout = useRef<NodeJS.Timeout | undefined>(undefined)
+  const lastEventTime = useRef<number>(0)
+  const isFlushingRef = useRef<boolean>(false)
+
+  // Flush queue to server
+  const flushEvents = useCallback(async () => {
+    if (eventQueue.current.length === 0 || isFlushingRef.current) return
+
+    isFlushingRef.current = true
+    const events = [...eventQueue.current]
+    eventQueue.current = []
+
+    try {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📊 Flushing analytics events:', events.length)
+      }
+      
+      await fetch('/api/analytics/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ events }),
+      })
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Analytics tracking failed:', error)
+      }
+      // Re-add failed events to queue for retry (but limit retries)
+      if (events.length < 10) {
+        eventQueue.current.unshift(...events)
+      }
+    } finally {
+      isFlushingRef.current = false
+    }
+  }, [])
+
+  // Track analytics event with debouncing
   const trackEvent = useCallback(async (eventType: AnalyticsEvent['eventType'], metadata?: Record<string, any>) => {
     try {
       // Check if user has given consent for analytics
-      if (!hasConsent) {
-        console.log('📊 Analytics blocked: User has not given consent')
+      if (!hasConsent || !sessionId.current) return
+
+      const now = Date.now()
+      
+      // Debounce rapid identical events (within 500ms)
+      if (eventType === 'action' && now - lastEventTime.current < 500) {
         return
       }
-
-      if (!sessionId.current) return
+      
+      lastEventTime.current = now
 
       const event: AnalyticsEvent = {
         sessionId: sessionId.current,
@@ -78,29 +121,26 @@ export function useAnalytics(widgetId: string) {
         }
       }
 
-      // Send to API (don't await to avoid blocking)
-      console.log('📊 Sending analytics event:', event)
-      fetch('/api/analytics/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(event),
-      })
-        .then(res => {
-          console.log('📊 Analytics response:', res.status)
-          return res.json()
-        })
-        .then(data => {
-          console.log('📊 Analytics data:', data)
-        })
-        .catch(error => {
-          console.warn('Analytics tracking failed:', error)
-        })
+      // Add to queue
+      eventQueue.current.push(event)
+
+      // Clear existing timeout
+      if (flushTimeout.current) {
+        clearTimeout(flushTimeout.current)
+      }
+
+      // Flush after 2 seconds of inactivity or when queue reaches 10 events
+      if (eventQueue.current.length >= 10) {
+        flushEvents()
+      } else {
+        flushTimeout.current = setTimeout(flushEvents, 2000)
+      }
     } catch (error) {
-      console.warn('Analytics tracking error:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Analytics tracking error:', error)
+      }
     }
-  }, [widgetId, locale, hasConsent])
+  }, [widgetId, locale, hasConsent, flushEvents])
 
   // Track page view
   const trackView = useCallback(() => {
@@ -162,6 +202,10 @@ export function useAnalytics(widgetId: string) {
 
       // Track session end on page unload
       const handleBeforeUnload = () => {
+        // Flush remaining events before page unload
+        if (eventQueue.current.length > 0) {
+          flushEvents()
+        }
         const sessionDuration = Date.now() - sessionStartTime.current
         trackEvent('session_end', { 
           sessionDuration: Math.round(sessionDuration / 1000) // in seconds
@@ -171,6 +215,10 @@ export function useAnalytics(widgetId: string) {
       // Track session end on visibility change (when tab becomes hidden)
       const handleVisibilityChange = () => {
         if (document.hidden) {
+          // Flush remaining events when tab becomes hidden
+          if (eventQueue.current.length > 0) {
+            flushEvents()
+          }
           const sessionDuration = Date.now() - sessionStartTime.current
           trackEvent('session_end', { 
             sessionDuration: Math.round(sessionDuration / 1000) // in seconds
@@ -184,13 +232,19 @@ export function useAnalytics(widgetId: string) {
       return () => {
         window.removeEventListener('beforeunload', handleBeforeUnload)
         document.removeEventListener('visibilitychange', handleVisibilityChange)
+        
+        // Flush any remaining events on cleanup
+        if (eventQueue.current.length > 0) {
+          flushEvents()
+        }
+        
         const sessionDuration = Date.now() - sessionStartTime.current
         trackEvent('session_end', { 
           sessionDuration: Math.round(sessionDuration / 1000) // in seconds
         })
       }
     }
-  }, [widgetId, trackEvent])
+  }, [widgetId, trackEvent, flushEvents])
 
   return {
     trackEvent,

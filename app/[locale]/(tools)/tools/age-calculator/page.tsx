@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
+import { KeyboardShortcutInfo } from '@/components/widgets'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { useTranslations } from 'next-intl'
@@ -84,6 +85,32 @@ export default function AgeCalculatorPage() {
   const [birthDate, setBirthDate] = useState('')
   const [ageData, setAgeData] = useState<AgeData | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + Enter to calculate
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        handleCalculate()
+      }
+      // Ctrl/Cmd + R to reset
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault()
+        reset()
+      }
+      // Ctrl/Cmd + Shift + C to copy results
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+        e.preventDefault()
+        if (ageData) {
+          copyToClipboard(formatAgeText(ageData))
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [ageData])
 
   const getZodiacSign = (date: Date): string => {
     const month = date.getMonth() + 1
@@ -438,6 +465,11 @@ export default function AgeCalculatorPage() {
             </div>
           </div>
         </div>
+      </WidgetSection>
+
+      {/* Keyboard Shortcuts */}
+      <WidgetSection title="Keyboard Shortcuts">
+        <KeyboardShortcutInfo />
       </WidgetSection>
     </WidgetLayout>
   )

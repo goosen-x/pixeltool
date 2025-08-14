@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { useWidgetKeyboard } from '@/lib/hooks/widgets'
 
 interface Shadow {
   id: string
@@ -152,7 +153,7 @@ export default function CSSBoxShadowGeneratorPage() {
 
   const selectedShadow = shadows.find(s => s.id === selectedShadowId)
 
-  const generateCSS = (): string => {
+  const generateCSS = useCallback((): string => {
     const enabledShadows = shadows.filter(s => s.enabled)
     if (enabledShadows.length === 0) return 'none'
 
@@ -164,7 +165,7 @@ export default function CSSBoxShadowGeneratorPage() {
         return `${insetStr}${offsetX}px ${offsetY}px ${blur}px ${spread}px ${rgba}`
       })
       .join(', ')
-  }
+  }, [shadows])
 
   const hexToRgba = (hex: string, alpha: number): string => {
     const r = parseInt(hex.slice(1, 3), 16)
@@ -179,7 +180,7 @@ export default function CSSBoxShadowGeneratorPage() {
     ))
   }
 
-  const addShadow = () => {
+  const addShadow = useCallback(() => {
     const newId = Date.now().toString()
     const newShadow: Shadow = {
       id: newId,
@@ -195,7 +196,7 @@ export default function CSSBoxShadowGeneratorPage() {
     setShadows(prev => [...prev, newShadow])
     setSelectedShadowId(newId)
     toast.success('Новая тень добавлена')
-  }
+  }, [])
 
   const deleteShadow = (id: string) => {
     if (shadows.length === 1) {
@@ -210,11 +211,11 @@ export default function CSSBoxShadowGeneratorPage() {
     toast.success('Тень удалена')
   }
 
-  const copyCSSCode = () => {
+  const copyCSSCode = useCallback(() => {
     const css = `box-shadow: ${generateCSS()};`
     navigator.clipboard.writeText(css)
     toast.success('CSS код скопирован!')
-  }
+  }, [generateCSS])
 
   const copyFullCSS = () => {
     const css = `.element {
@@ -226,7 +227,7 @@ export default function CSSBoxShadowGeneratorPage() {
     toast.success('Полный CSS код скопирован!')
   }
 
-  const loadPreset = (preset: PresetShadow) => {
+  const loadPreset = useCallback((preset: PresetShadow) => {
     const newShadows: Shadow[] = preset.shadows.map((shadow, index) => ({
       ...shadow,
       id: Date.now().toString() + index,
@@ -235,9 +236,14 @@ export default function CSSBoxShadowGeneratorPage() {
     setShadows(newShadows)
     setSelectedShadowId(newShadows[0].id)
     toast.success(`Загружен пресет: ${preset.name}`)
-  }
+  }, [])
 
-  const reset = () => {
+  const generateRandomShadow = useCallback(() => {
+    const randomPreset = PRESET_SHADOWS[Math.floor(Math.random() * PRESET_SHADOWS.length)]
+    loadPreset(randomPreset)
+  }, [loadPreset])
+
+  const reset = useCallback(() => {
     setShadows([
       {
         id: '1',
@@ -257,12 +263,44 @@ export default function CSSBoxShadowGeneratorPage() {
     setBorderRadius(8)
     setBoxSize(200)
     toast.success('Настройки сброшены')
-  }
+  }, [])
 
   const downloadAsImage = () => {
     // In a real implementation, this would use canvas to create an image
     toast.info('Функция экспорта в разработке')
   }
+
+  // Keyboard shortcuts
+  useWidgetKeyboard({
+    widgetId: 'css-box-shadow-generator',
+    shortcuts: [
+      {
+        key: 'g',
+        ctrl: true,
+        description: 'Generate random shadow',
+        action: generateRandomShadow
+      },
+      {
+        key: 'r',
+        ctrl: true,
+        description: 'Reset',
+        action: reset
+      },
+      {
+        key: 'c',
+        ctrl: true,
+        shift: true,
+        description: 'Copy CSS',
+        action: copyCSSCode
+      },
+      {
+        key: 'l',
+        ctrl: true,
+        description: 'Add layer',
+        action: addShadow
+      }
+    ]
+  })
 
   return (
     <WidgetLayout>

@@ -13,6 +13,7 @@ import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { Input } from '@/components/ui/input'
 import { useTranslations } from 'next-intl'
+import { KeyboardShortcutInfo } from '@/components/widgets'
 
 interface GeneratedResult {
 	numbers: number[]
@@ -80,6 +81,46 @@ export default function RandomNumberGeneratorPage() {
 		// Generate initial result
 		handleGenerate()
 	}, [])
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Ctrl/Cmd + G to generate
+			if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+				e.preventDefault()
+				handleGenerate()
+			}
+			// Ctrl/Cmd + R to regenerate
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				handleGenerate()
+			}
+			// Ctrl/Cmd + Shift + C to copy latest result
+			if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+				e.preventDefault()
+				if (results[0]) {
+					copyToClipboard(results[0].numbers, results[0].id)
+				}
+			}
+			// Ctrl/Cmd + D to download
+			if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+				e.preventDefault()
+				if (results.length > 0) {
+					downloadResults()
+				}
+			}
+			// U to toggle unique
+			if (e.key === 'u' || e.key === 'U') {
+				if (document.activeElement?.tagName !== 'INPUT') {
+					e.preventDefault()
+					setUnique(!unique)
+				}
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [results, unique])
 
 	const validate = (): string | null => {
 		if (min < 0 || min > 999999) {
@@ -301,6 +342,11 @@ export default function RandomNumberGeneratorPage() {
 						<li>{t('info.features.timestamps')}</li>
 					</ul>
 				</div>
+			</WidgetSection>
+
+			{/* Keyboard Shortcuts */}
+			<WidgetSection title="Keyboard Shortcuts">
+				<KeyboardShortcutInfo />
 			</WidgetSection>
 		</WidgetLayout>
 	)

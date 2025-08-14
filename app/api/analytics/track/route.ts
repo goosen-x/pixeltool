@@ -2,80 +2,86 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
-  console.log('📊 Analytics track endpoint called')
-  
   try {
     const body = await request.json()
-    console.log('📊 Track request:', body)
-    const {
-      widgetId,
-      sessionId,
-      eventType = 'view',
-      locale,
-      metadata = {}
-    } = body
     
-    if (!widgetId || !sessionId) {
+    // Handle both single events and batched events
+    const events = body.events || [body]
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 Analytics track endpoint called with', events.length, 'events')
+    }
+    
+    if (!Array.isArray(events) || events.length === 0) {
       return NextResponse.json(
-        { error: 'Widget ID and Session ID are required' },
+        { error: 'No events provided' },
         { status: 400 }
       )
     }
     
     // Get referrer from request headers
     const referrer = request.headers.get('referer') || null
+    const defaultUserAgent = request.headers.get('user-agent') || null
     
-    // Extract user agent from metadata or use request header
-    const userAgent = metadata.userAgent || request.headers.get('user-agent') || null
-    
-    // Prepare event data
-    const eventData = {
-      widget_id: widgetId,
-      session_id: sessionId,
-      event_type: eventType,
-      user_agent: userAgent,
-      referrer: referrer,
-      metadata: {
-        ...metadata,
-        locale
+    // Prepare all event data for batch insert
+    const eventDataArray = events.map(event => {
+      const {
+        widgetId,
+        sessionId,
+        eventType = 'view',
+        locale,
+        metadata = {}
+      } = event
+      
+      if (!widgetId || !sessionId) {
+        throw new Error('Widget ID and Session ID are required for all events')
       }
+      
+      return {
+        widget_id: widgetId,
+        session_id: sessionId,
+        event_type: eventType,
+        user_agent: metadata.userAgent || defaultUserAgent,
+        referrer: referrer,
+        metadata: {
+          ...metadata,
+          locale
+        }
+      }
+    })
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 Inserting', eventDataArray.length, 'events')
     }
     
-    console.log('📊 Inserting event data:', eventData)
-    
-    // Track the event
+    // Track all events in a single batch insert
     const { data, error } = await supabaseServer
       .from('usage_events')
-      .insert(eventData)
+      .insert(eventDataArray)
       .select()
-      .single()
     
     if (error) {
       console.error('Analytics tracking error:', error)
-      console.error('Error details:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
-      })
       // Don't fail the request - analytics should not break the app
       return NextResponse.json({
         success: false,
-        error: error.message || 'Failed to track event'
+        error: error.message || 'Failed to track events',
+        processed: 0
       })
     }
     
     return NextResponse.json({
       success: true,
-      eventId: data?.id,
-      sessionId: sessionId
+      processed: data?.length || 0,
+      eventIds: data?.map(d => d.id) || []
     })
   } catch (error) {
     console.error('Analytics tracking error:', error)
     // Don't fail the request - analytics should not break the app
     return NextResponse.json({
       success: false,
-      error: 'Failed to track event'
+      error: 'Failed to track events',
+      processed: 0
     })
   }
 }
