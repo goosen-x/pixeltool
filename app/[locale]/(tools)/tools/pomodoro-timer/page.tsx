@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Progress } from '@/components/ui/progress'
 import { toast } from 'sonner'
+import { KeyboardShortcutInfo } from '@/components/widgets'
 import {
 	Timer,
 	Play,
@@ -123,6 +124,35 @@ export default function PomodoroTimerPage() {
 			}
 		}
 	}, [])
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Space to start/pause
+			if (e.code === 'Space') {
+				e.preventDefault()
+				toggleTimer()
+			}
+			// Ctrl/Cmd + R to reset
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				resetTimer()
+			}
+			// Ctrl/Cmd + N to next session (skip)
+			if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+				e.preventDefault()
+				skipSession()
+			}
+			// Ctrl/Cmd + S to toggle settings
+			if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+				e.preventDefault()
+				setShowSettings(!showSettings)
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [showSettings])
 
 	// Timer logic
 	useEffect(() => {
@@ -709,6 +739,9 @@ export default function PomodoroTimerPage() {
 							<p>• {t('tips.tip4')}</p>
 						</CardContent>
 					</Card>
+
+					{/* Keyboard Shortcuts */}
+					<KeyboardShortcutInfo />
 				</div>
 			</div>
 		</div>

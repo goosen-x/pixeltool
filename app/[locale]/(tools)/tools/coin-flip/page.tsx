@@ -17,6 +17,7 @@ import { RotateCcw, Coins, History } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import { KeyboardShortcutInfo } from '@/components/widgets'
 
 interface FlipResult {
 	id: string
@@ -103,6 +104,32 @@ export default function CoinFlipPage() {
 			updateCounts(parsed)
 		}
 	}, [])
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Space to flip coin
+			if (e.code === 'Space') {
+				e.preventDefault()
+				flipCoin()
+			}
+			// Ctrl/Cmd + T to change coin type
+			if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+				e.preventDefault()
+				const currentIndex = coinTypes.findIndex(c => c.id === selectedCoin.id)
+				const nextIndex = (currentIndex + 1) % coinTypes.length
+				setSelectedCoin(coinTypes[nextIndex])
+			}
+			// Ctrl/Cmd + R to reset (clear history)
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				clearHistory()
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [selectedCoin])
 
 	const updateCounts = (history: FlipResult[]) => {
 		const heads = history.filter(h => h.result === 'heads').length
@@ -479,6 +506,9 @@ export default function CoinFlipPage() {
 					</p>
 				</div>
 			</Card>
+
+			{/* Keyboard Shortcuts */}
+			<KeyboardShortcutInfo />
 		</div>
 	)
 }

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
+import { YandexGoals } from '@/lib/analytics/yandex-goals'
 
 interface FavoriteButtonProps {
   widgetId: string
@@ -33,6 +34,8 @@ export function FavoriteButton({
         const newFavoriteState = !isFav
         toggleFavorite(widgetId)
         trackFavorite(newFavoriteState)
+        // Track Yandex goal
+        YandexGoals.toolFavorited(widgetId, newFavoriteState)
       }}
       className={cn(
         'transition-all',

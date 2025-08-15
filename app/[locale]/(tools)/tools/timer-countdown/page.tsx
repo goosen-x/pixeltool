@@ -120,6 +120,39 @@ export default function TimerCountdownPage() {
     }
   }, [notificationEnabled])
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Space to start/pause
+      if (e.code === 'Space') {
+        e.preventDefault()
+        if (!isRunning) {
+          startTimer()
+        } else if (isPaused) {
+          resumeTimer()
+        } else {
+          pauseTimer()
+        }
+      }
+      // Ctrl/Cmd + R to reset
+      if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault()
+        resetTimer()
+      }
+      // Ctrl/Cmd + M to change mode
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault()
+        const modes: TimerMode[] = ['countdown', 'stopwatch', 'pomodoro']
+        const currentIndex = modes.indexOf(mode)
+        const nextIndex = (currentIndex + 1) % modes.length
+        handleModeChange(modes[nextIndex])
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [isRunning, isPaused, mode])
+
   useEffect(() => {
     if (isRunning && !isPaused) {
       intervalRef.current = setInterval(() => {

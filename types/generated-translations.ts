@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-13T18:05:54.477Z
+// Generated on: 2025-08-14T03:27:56.940Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -2105,6 +2105,8 @@ export interface GeneratedTranslations {
       copy: string
       clear: string
       save: string
+      rollDice: string
+      setDiceCount: string
     }
   }
   cookieConsent: {

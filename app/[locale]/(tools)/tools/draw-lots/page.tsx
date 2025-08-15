@@ -45,6 +45,34 @@ export default function DrawLotsPage() {
 		setMounted(true)
 	}, [])
 
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Space to draw card
+			if (e.code === 'Space' && !isDrawing) {
+				e.preventDefault()
+				startDrawing()
+			}
+			// Enter to reveal a random card (if cards are available and none selected)
+			if (e.key === 'Enter' && isDrawing && !selectedLot && lots.length > 0) {
+				e.preventDefault()
+				const availableLots = lots.filter(lot => !lot.isRevealed)
+				if (availableLots.length > 0) {
+					const randomLot = availableLots[Math.floor(Math.random() * availableLots.length)]
+					revealLot(randomLot.id)
+				}
+			}
+			// Ctrl/Cmd + R to reset
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				reset()
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [isDrawing, selectedLot, lots])
+
 	const startDrawing = () => {
 		const lines = inputText
 			.trim()

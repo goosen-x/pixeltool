@@ -17,6 +17,7 @@ import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegi
 import { WebVitals } from '@/components/analytics/WebVitals'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
+import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { interFont, openSansFont } from '@/lib/fonts/fonts'
 
 interface Props {
@@ -185,6 +186,7 @@ export default async function RootLayout({
 					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 						<NavigationProgress />
 						<YandexMetrika />
+						<GlobalGoalsTracker />
 						<ServiceWorkerRegistration />
 						<WebVitals />
 						{children}

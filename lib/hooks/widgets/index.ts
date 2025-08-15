@@ -15,6 +15,9 @@ export * from './useCalculator'
 export * from './useConverter'
 export * from './useGenerator'
 
+// Shortcut templates
+export * from './shortcutTemplates'
+
 // Re-export for convenience
 export { useEmoji } from '../useEmoji'
 export { useWidgetKeyboard } from '../useWidgetKeyboard'

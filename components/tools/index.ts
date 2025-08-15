@@ -1,1 +1,7 @@
 export { WidgetSearch } from './WidgetSearch'
+export { ToolCard } from './ToolCard'
+export { DiceFace } from './DiceFace'
+export { FavoriteButton } from './FavoriteButton'
+export { FavoriteWidgets } from './FavoriteWidgets'
+export { EnhancedWidgetSearch } from './EnhancedWidgetSearch'
+export { AnalyticsDashboard } from './AnalyticsDashboard'
