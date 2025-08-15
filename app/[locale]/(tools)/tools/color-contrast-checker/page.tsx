@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -69,6 +70,7 @@ const WCAG_GUIDELINES = {
 }
 
 export default function ColorContrastCheckerPage() {
+  const t = useTranslations('tools.colorContrastChecker')
   const [foreground, setForeground] = useState('#000000')
   const [background, setBackground] = useState('#ffffff')
   const [fontSize, setFontSize] = useState(16)
@@ -263,10 +265,10 @@ export default function ColorContrastCheckerPage() {
   }
 
   const getContrastLevel = (ratio: number): { label: string; color: string } => {
-    if (ratio >= 7) return { label: 'Отличный', color: 'text-green-600' }
-    if (ratio >= 4.5) return { label: 'Хороший', color: 'text-blue-600' }
-    if (ratio >= 3) return { label: 'Минимальный', color: 'text-yellow-600' }
-    return { label: 'Недостаточный', color: 'text-red-600' }
+    if (ratio >= 7) return { label: 'AAA', color: 'text-green-600' }
+    if (ratio >= 4.5) return { label: 'AA', color: 'text-blue-600' }
+    if (ratio >= 3) return { label: 'AA Large', color: 'text-yellow-600' }
+    return { label: 'Fail', color: 'text-red-600' }
   }
 
   return (
@@ -274,14 +276,14 @@ export default function ColorContrastCheckerPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Color Inputs */}
         <Card className="p-6">
-          <h3 className="font-semibold mb-4">Выбор цветов</h3>
+          <h3 className="font-semibold mb-4">{t('sections.colorInput')}</h3>
           
           <div className="space-y-6">
             {/* Foreground Color */}
             <div>
               <Label htmlFor="foreground" className="flex items-center gap-2">
                 <Type className="w-4 h-4" />
-                Цвет текста (передний план)
+                {t('inputs.foreground')}
               </Label>
               <div className="flex gap-2 mt-2">
                 <Input
@@ -295,7 +297,7 @@ export default function ColorContrastCheckerPage() {
                   type="text"
                   value={foreground}
                   onChange={(e) => setForeground(e.target.value)}
-                  placeholder="#000000"
+                  placeholder={t('inputs.foregroundPlaceholder')}
                   className="flex-1 font-mono"
                 />
               </div>

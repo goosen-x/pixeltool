@@ -981,6 +981,69 @@
 				"copied": "Color value copied to clipboard"
 			}
 		},
+		"colorContrastChecker": {
+			"title": "Color Contrast Checker",
+			"description": "Check color contrast ratios for WCAG accessibility compliance",
+			"useCase": "Check color contrast ratios for WCAG accessibility compliance",
+			"sections": {
+				"colorInput": "Color Input",
+				"contrastResults": "Contrast Results",
+				"wcagCompliance": "WCAG Compliance",
+				"previewText": "Preview Text",
+				"colorExamples": "Common Color Combinations",
+				"quickActions": "Quick Actions"
+			},
+			"inputs": {
+				"foreground": "Foreground Color",
+				"background": "Background Color",
+				"foregroundPlaceholder": "#000000",
+				"backgroundPlaceholder": "#FFFFFF"
+			},
+			"results": {
+				"contrastRatio": "Contrast Ratio",
+				"normalText": "Normal Text",
+				"largeText": "Large Text",
+				"uiComponents": "UI Components",
+				"pass": "Pass",
+				"fail": "Fail",
+				"levelAA": "Level AA",
+				"levelAAA": "Level AAA"
+			},
+			"actions": {
+				"swapColors": "Swap Colors",
+				"randomColors": "Random Colors",
+				"copyRatio": "Copy Ratio",
+				"copyCSS": "Copy CSS",
+				"suggestFix": "Suggest Fix"
+			},
+			"preview": {
+				"normalText": "This is normal text (14px)",
+				"largeText": "This is large text (18px)",
+				"boldText": "This is bold text (14px bold)",
+				"sampleParagraph": "The quick brown fox jumps over the lazy dog. This sentence contains all letters of the alphabet and is commonly used for font and readability testing."
+			},
+			"messages": {
+				"ratioCopied": "Contrast ratio copied to clipboard",
+				"cssCopied": "CSS code copied to clipboard",
+				"colorCopied": "Color copied to clipboard",
+				"invalidColor": "Please enter a valid color",
+				"selectBothColors": "Please select both foreground and background colors"
+			},
+			"tooltips": {
+				"normalTextAA": "Normal text needs 4.5:1 for AA compliance",
+				"normalTextAAA": "Normal text needs 7:1 for AAA compliance",
+				"largeTextAA": "Large text needs 3:1 for AA compliance",
+				"largeTextAAA": "Large text needs 4.5:1 for AAA compliance",
+				"uiComponents": "UI components need 3:1 contrast ratio"
+			},
+			"examples": {
+				"blackOnWhite": "Black on White",
+				"whiteOnBlack": "White on Black",
+				"darkGrayOnLight": "Dark Gray on Light",
+				"blueOnWhite": "Blue on White",
+				"greenOnWhite": "Green on White"
+			}
+		},
 		"bezierCurve": {
 			"title": "Bezier Curve Generator",
 			"description": "Create custom cubic-bezier easing functions for CSS animations and transitions",
