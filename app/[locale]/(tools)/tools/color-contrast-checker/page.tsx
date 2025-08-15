@@ -70,7 +70,7 @@ const WCAG_GUIDELINES = {
 }
 
 export default function ColorContrastCheckerPage() {
-  const t = useTranslations('tools.colorContrastChecker')
+  const t = useTranslations('widgets.colorContrastChecker')
   const [foreground, setForeground] = useState('#000000')
   const [background, setBackground] = useState('#ffffff')
   const [fontSize, setFontSize] = useState(16)
