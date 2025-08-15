@@ -28,6 +28,7 @@ import { useFavorites } from '@/lib/hooks/useFavorites'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
 import { safeTranslate } from '@/lib/utils/safe-translations'
+import { YandexGoals } from '@/lib/analytics/yandex-goals'
 
 interface GlobalWidgetSearchProps {
   locale: string
@@ -153,6 +154,8 @@ export function GlobalWidgetSearch({ locale, open: controlledOpen, onOpenChange 
   const handleSelect = useCallback((item: typeof searchableWidgets[0]) => {
     if (searchQuery.trim()) {
       addToHistory(searchQuery)
+      // Track search goal
+      YandexGoals.toolSearched(searchQuery)
     }
     router.push(item.path)
     setOpen(false)
