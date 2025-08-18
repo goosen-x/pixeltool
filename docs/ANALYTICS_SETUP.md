@@ -2,7 +2,8 @@
 
 ## Current Status
 
-The analytics system is designed to track widget usage, but currently returns **mock data** when the database tables are not available.
+The analytics system is designed to track widget usage, but currently returns
+**mock data** when the database tables are not available.
 
 ## How It Works
 
@@ -13,6 +14,7 @@ The analytics system is designed to track widget usage, but currently returns **
 ## Mock Data
 
 When the `usage_events` table doesn't exist, the system returns:
+
 - **Views Today**: 50-500 (consistent per widget)
 - **Total Views**: 1,000-50,000
 - **Unique Sessions**: Based on widget ID
@@ -38,12 +40,12 @@ To track real events, you can call the track API:
 ```typescript
 // Track a widget view
 await fetch('/api/analytics/track', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    widgetId: 'css-clamp-calculator',
-    eventType: 'view'
-  })
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({
+		widgetId: 'css-clamp-calculator',
+		eventType: 'view'
+	})
 })
 ```
 
@@ -64,6 +66,7 @@ await fetch('/api/analytics/track', {
 ## Privacy Considerations
 
 If you implement real analytics:
+
 - Only track anonymous sessions
 - Don't collect personal data
 - Add privacy policy

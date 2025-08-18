@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server'
 
 export default async function NotFound() {
 	const t = await getTranslations('NotFound')
-	
+
 	return (
 		<div className='grid h-screen place-content-center bg-background px-4'>
 			<div className='text-center'>

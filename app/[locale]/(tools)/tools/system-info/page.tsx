@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-	Monitor, 
-	Smartphone, 
-	Eye, 
-	Copy, 
-	RefreshCw, 
+import {
+	Monitor,
+	Smartphone,
+	Eye,
+	Copy,
+	RefreshCw,
 	Globe,
 	HardDrive,
 	Wifi,
@@ -29,7 +29,7 @@ import { useTranslations } from 'next-intl'
 
 export default function SystemInfoPage() {
 	const t = useTranslations('widgets.systemInfo')
-	
+
 	const {
 		mounted,
 		systemInfo,
@@ -56,15 +56,17 @@ export default function SystemInfoPage() {
 	return (
 		<div className='max-w-6xl mx-auto space-y-8'>
 			{/* Quick Actions */}
-			<div className="flex justify-end">
-				<Button 
-					onClick={refresh} 
-					variant='outline' 
-					size='sm' 
+			<div className='flex justify-end'>
+				<Button
+					onClick={refresh}
+					variant='outline'
+					size='sm'
 					className={`transition-all duration-300 ${isRefreshing ? 'scale-105' : 'hover:scale-105'}`}
 					disabled={isRefreshing}
 				>
-					<RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+					<RefreshCw
+						className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`}
+					/>
 					{t('refresh')}
 				</Button>
 			</div>
@@ -78,7 +80,9 @@ export default function SystemInfoPage() {
 						<div className='mb-4 p-3 bg-blue-500/10 rounded-xl w-fit mx-auto'>
 							<CircuitBoard className='w-8 h-8 text-blue-600' />
 						</div>
-						<h3 className='font-semibold text-lg mb-3 text-center'>{t('architecture.title')}</h3>
+						<h3 className='font-semibold text-lg mb-3 text-center'>
+							{t('architecture.title')}
+						</h3>
 						<div className='text-3xl font-bold text-center mb-3 bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent'>
 							{systemInfo.architecture}
 						</div>
@@ -104,13 +108,17 @@ export default function SystemInfoPage() {
 						<div className='mb-4 p-3 bg-green-500/10 rounded-xl w-fit mx-auto'>
 							<Monitor className='w-8 h-8 text-green-600' />
 						</div>
-						<h3 className='font-semibold text-lg mb-3 text-center'>{t('display.title')}</h3>
+						<h3 className='font-semibold text-lg mb-3 text-center'>
+							{t('display.title')}
+						</h3>
 						<div className='text-3xl font-bold text-center mb-3 bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent'>
 							{deviceInfo.logicalResolution}
 						</div>
 						<p className='text-sm text-muted-foreground text-center'>
 							{deviceInfo.isRetina
-								? t('display.retina', { resolution: deviceInfo.actualResolution })
+								? t('display.retina', {
+										resolution: deviceInfo.actualResolution
+									})
 								: t('display.standard')}
 						</p>
 						{deviceInfo.isRetina && (
@@ -130,7 +138,9 @@ export default function SystemInfoPage() {
 						<div className='mb-4 p-3 bg-purple-500/10 rounded-xl w-fit mx-auto'>
 							<Smartphone className='w-8 h-8 text-purple-600' />
 						</div>
-						<h3 className='font-semibold text-lg mb-3 text-center'>{t('device.title')}</h3>
+						<h3 className='font-semibold text-lg mb-3 text-center'>
+							{t('device.title')}
+						</h3>
 						<div className='text-xl font-bold text-center mb-3 bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent'>
 							{deviceInfo.brand && deviceInfo.model
 								? getDeviceName()
@@ -153,25 +163,40 @@ export default function SystemInfoPage() {
 			</div>
 
 			{/* Detailed Information Tabs */}
-			<Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
+			<Tabs value={activeTab} onValueChange={setActiveTab} className='mt-8'>
 				<TabsList className='grid grid-cols-5 w-full p-1 h-auto'>
-					<TabsTrigger value='overview' className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+					<TabsTrigger
+						value='overview'
+						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+					>
 						<Eye className='w-4 h-4 mr-2' />
 						{t('tabs.overview')}
 					</TabsTrigger>
-					<TabsTrigger value='hardware' className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+					<TabsTrigger
+						value='hardware'
+						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+					>
 						<CircuitBoard className='w-4 h-4 mr-2' />
 						{t('tabs.hardware')}
 					</TabsTrigger>
-					<TabsTrigger value='display' className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+					<TabsTrigger
+						value='display'
+						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+					>
 						<Monitor className='w-4 h-4 mr-2' />
 						{t('tabs.display')}
 					</TabsTrigger>
-					<TabsTrigger value='browser' className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+					<TabsTrigger
+						value='browser'
+						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+					>
 						<Chrome className='w-4 h-4 mr-2' />
 						{t('tabs.browser')}
 					</TabsTrigger>
-					<TabsTrigger value='features' className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+					<TabsTrigger
+						value='features'
+						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+					>
 						<Shield className='w-4 h-4 mr-2' />
 						{t('tabs.features')}
 					</TabsTrigger>
@@ -190,7 +215,9 @@ export default function SystemInfoPage() {
 							</CardHeader>
 							<CardContent className='pt-6 space-y-4'>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.os')}</span>
+									<span className='text-sm font-medium'>
+										{t('overview.os')}
+									</span>
 									<div className='flex items-center gap-2'>
 										<Badge variant='secondary'>
 											{deviceInfo.os} {deviceInfo.osVersion || ''}
@@ -198,19 +225,26 @@ export default function SystemInfoPage() {
 									</div>
 								</div>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.browser')}</span>
+									<span className='text-sm font-medium'>
+										{t('overview.browser')}
+									</span>
 									<div className='flex items-center gap-2'>
 										<Badge variant='secondary'>
-											{deviceInfo.browser} {deviceInfo.browserVersion?.split('.')[0] || ''}
+											{deviceInfo.browser}{' '}
+											{deviceInfo.browserVersion?.split('.')[0] || ''}
 										</Badge>
 									</div>
 								</div>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.platform')}</span>
+									<span className='text-sm font-medium'>
+										{t('overview.platform')}
+									</span>
 									<Badge variant='outline'>{systemInfo.platform}</Badge>
 								</div>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.language')}</span>
+									<span className='text-sm font-medium'>
+										{t('overview.language')}
+									</span>
 									<Badge variant='outline'>{systemInfo.language}</Badge>
 								</div>
 							</CardContent>
@@ -226,23 +260,39 @@ export default function SystemInfoPage() {
 							</CardHeader>
 							<CardContent className='pt-6 space-y-4'>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.status')}</span>
-									<Badge variant={systemInfo.onlineStatus ? 'default' : 'secondary'}>
-										{systemInfo.onlineStatus ? t('overview.online') : t('overview.offline')}
+									<span className='text-sm font-medium'>
+										{t('overview.status')}
+									</span>
+									<Badge
+										variant={systemInfo.onlineStatus ? 'default' : 'secondary'}
+									>
+										{systemInfo.onlineStatus
+											? t('overview.online')
+											: t('overview.offline')}
 									</Badge>
 								</div>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.hostname')}</span>
+									<span className='text-sm font-medium'>
+										{t('overview.hostname')}
+									</span>
 									<code className='inline-code'>{systemInfo.hostname}</code>
 								</div>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.protocol')}</span>
-									<Badge variant={systemInfo.protocol === 'https:' ? 'default' : 'secondary'}>
+									<span className='text-sm font-medium'>
+										{t('overview.protocol')}
+									</span>
+									<Badge
+										variant={
+											systemInfo.protocol === 'https:' ? 'default' : 'secondary'
+										}
+									>
 										{systemInfo.protocol}
 									</Badge>
 								</div>
 								<div className='flex items-center justify-between'>
-									<span className='text-sm font-medium'>{t('overview.timezone')}</span>
+									<span className='text-sm font-medium'>
+										{t('overview.timezone')}
+									</span>
 									<Badge variant='outline'>{systemInfo.timezone}</Badge>
 								</div>
 							</CardContent>
@@ -253,23 +303,37 @@ export default function SystemInfoPage() {
 					<div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
 						<Card className='p-4 text-center hover:shadow-md transition-shadow'>
 							<Gauge className='w-8 h-8 mx-auto mb-2 text-orange-500' />
-							<p className='text-sm font-medium text-muted-foreground'>{t('overview.pixelRatio')}</p>
-							<p className='text-2xl font-bold'>{systemInfo.devicePixelRatio}x</p>
+							<p className='text-sm font-medium text-muted-foreground'>
+								{t('overview.pixelRatio')}
+							</p>
+							<p className='text-2xl font-bold'>
+								{systemInfo.devicePixelRatio}x
+							</p>
 						</Card>
 						<Card className='p-4 text-center hover:shadow-md transition-shadow'>
 							<Languages className='w-8 h-8 mx-auto mb-2 text-green-500' />
-							<p className='text-sm font-medium text-muted-foreground'>{t('overview.languages')}</p>
-							<p className='text-2xl font-bold'>{systemInfo.languages.length}</p>
+							<p className='text-sm font-medium text-muted-foreground'>
+								{t('overview.languages')}
+							</p>
+							<p className='text-2xl font-bold'>
+								{systemInfo.languages.length}
+							</p>
 						</Card>
 						<Card className='p-4 text-center hover:shadow-md transition-shadow'>
 							<HardDrive className='w-8 h-8 mx-auto mb-2 text-blue-500' />
-							<p className='text-sm font-medium text-muted-foreground'>{t('overview.colorDepth')}</p>
+							<p className='text-sm font-medium text-muted-foreground'>
+								{t('overview.colorDepth')}
+							</p>
 							<p className='text-2xl font-bold'>{systemInfo.colorDepth} bit</p>
 						</Card>
 						<Card className='p-4 text-center hover:shadow-md transition-shadow'>
 							<Fingerprint className='w-8 h-8 mx-auto mb-2 text-purple-500' />
-							<p className='text-sm font-medium text-muted-foreground'>{t('overview.touchPoints')}</p>
-							<p className='text-2xl font-bold'>{systemInfo.maxTouchPoints || 0}</p>
+							<p className='text-sm font-medium text-muted-foreground'>
+								{t('overview.touchPoints')}
+							</p>
+							<p className='text-2xl font-bold'>
+								{systemInfo.maxTouchPoints || 0}
+							</p>
 						</Card>
 					</div>
 				</TabsContent>
@@ -285,15 +349,30 @@ export default function SystemInfoPage() {
 								<div className='group relative p-4 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl hover:from-muted/50 hover:to-muted/30 transition-all'>
 									<div className='flex items-center justify-between'>
 										<div>
-											<p className='font-medium'>{t('hardware.architecture')}</p>
-											<p className='text-sm text-muted-foreground'>{t('hardware.architectureDesc')}</p>
+											<p className='font-medium'>
+												{t('hardware.architecture')}
+											</p>
+											<p className='text-sm text-muted-foreground'>
+												{t('hardware.architectureDesc')}
+											</p>
 										</div>
 										<div className='flex items-center gap-2'>
-											<Badge variant={systemInfo.architecture.includes('64') ? 'default' : 'secondary'}>
+											<Badge
+												variant={
+													systemInfo.architecture.includes('64')
+														? 'default'
+														: 'secondary'
+												}
+											>
 												{systemInfo.architecture}
 											</Badge>
 											<Button
-												onClick={() => copyToClipboard(systemInfo.architecture, t('hardware.architecture'))}
+												onClick={() =>
+													copyToClipboard(
+														systemInfo.architecture,
+														t('hardware.architecture')
+													)
+												}
 												size='icon'
 												variant='ghost'
 												className='opacity-0 group-hover:opacity-100 transition-opacity'
@@ -312,12 +391,19 @@ export default function SystemInfoPage() {
 									<div className='flex items-center justify-between'>
 										<div>
 											<p className='font-medium'>{t('hardware.platform')}</p>
-											<p className='text-sm text-muted-foreground'>{t('hardware.platformDesc')}</p>
+											<p className='text-sm text-muted-foreground'>
+												{t('hardware.platformDesc')}
+											</p>
 										</div>
 										<div className='flex items-center gap-2'>
 											<Badge variant='outline'>{systemInfo.platform}</Badge>
 											<Button
-												onClick={() => copyToClipboard(systemInfo.platform, t('hardware.platform'))}
+												onClick={() =>
+													copyToClipboard(
+														systemInfo.platform,
+														t('hardware.platform')
+													)
+												}
 												size='icon'
 												variant='ghost'
 												className='opacity-0 group-hover:opacity-100 transition-opacity'
@@ -338,7 +424,9 @@ export default function SystemInfoPage() {
 					{/* Architecture Explanation */}
 					<Card className='overflow-hidden'>
 						<div className='bg-gradient-to-r from-blue-500/10 to-blue-600/5 p-6'>
-							<h4 className='font-semibold text-lg mb-4'>{t('hardware.whatIsArchitecture')}</h4>
+							<h4 className='font-semibold text-lg mb-4'>
+								{t('hardware.whatIsArchitecture')}
+							</h4>
 							<div className='grid md:grid-cols-2 gap-6'>
 								<div className='space-y-3'>
 									<div className='flex items-start gap-3'>
@@ -346,7 +434,9 @@ export default function SystemInfoPage() {
 											<Check className='w-4 h-4 text-blue-600' />
 										</div>
 										<div>
-											<h5 className='font-medium text-blue-900 dark:text-blue-100'>{t('hardware.64bit.title')}</h5>
+											<h5 className='font-medium text-blue-900 dark:text-blue-100'>
+												{t('hardware.64bit.title')}
+											</h5>
 											<ul className='mt-2 space-y-1 text-sm text-blue-700 dark:text-blue-200'>
 												<li>• {t('hardware.64bit.memory')}</li>
 												<li>• {t('hardware.64bit.performance')}</li>
@@ -362,7 +452,9 @@ export default function SystemInfoPage() {
 											<X className='w-4 h-4 text-blue-600' />
 										</div>
 										<div>
-											<h5 className='font-medium text-blue-900 dark:text-blue-100'>{t('hardware.32bit.title')}</h5>
+											<h5 className='font-medium text-blue-900 dark:text-blue-100'>
+												{t('hardware.32bit.title')}
+											</h5>
 											<ul className='mt-2 space-y-1 text-sm text-blue-700 dark:text-blue-200'>
 												<li>• {t('hardware.32bit.memory')}</li>
 												<li>• {t('hardware.32bit.performance')}</li>
@@ -384,28 +476,36 @@ export default function SystemInfoPage() {
 						<div className='grid md:grid-cols-2 gap-6'>
 							<Card className='overflow-hidden'>
 								<CardHeader className='bg-gradient-to-r from-green-500/10 to-green-600/5'>
-									<CardTitle className='text-base'>{t('display.logical')}</CardTitle>
+									<CardTitle className='text-base'>
+										{t('display.logical')}
+									</CardTitle>
 								</CardHeader>
 								<CardContent className='pt-6'>
 									<div className='text-center'>
 										<p className='text-3xl font-bold text-green-600 mb-2'>
 											{deviceInfo.logicalResolution}
 										</p>
-										<p className='text-sm text-muted-foreground'>{t('display.cssPixels')}</p>
+										<p className='text-sm text-muted-foreground'>
+											{t('display.cssPixels')}
+										</p>
 									</div>
 								</CardContent>
 							</Card>
 
 							<Card className='overflow-hidden'>
 								<CardHeader className='bg-gradient-to-r from-blue-500/10 to-blue-600/5'>
-									<CardTitle className='text-base'>{t('display.physical')}</CardTitle>
+									<CardTitle className='text-base'>
+										{t('display.physical')}
+									</CardTitle>
 								</CardHeader>
 								<CardContent className='pt-6'>
 									<div className='text-center'>
 										<p className='text-3xl font-bold text-blue-600 mb-2'>
 											{deviceInfo.actualResolution}
 										</p>
-										<p className='text-sm text-muted-foreground'>{t('display.actualPixels')}</p>
+										<p className='text-sm text-muted-foreground'>
+											{t('display.actualPixels')}
+										</p>
 									</div>
 								</CardContent>
 							</Card>
@@ -415,8 +515,12 @@ export default function SystemInfoPage() {
 						<div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
 							<Card className='p-4 text-center'>
 								<Gauge className='w-6 h-6 mx-auto mb-2 text-orange-500' />
-								<p className='text-xs font-medium text-muted-foreground mb-1'>{t('display.pixelRatio')}</p>
-								<p className='text-xl font-bold'>{systemInfo.devicePixelRatio}x</p>
+								<p className='text-xs font-medium text-muted-foreground mb-1'>
+									{t('display.pixelRatio')}
+								</p>
+								<p className='text-xl font-bold'>
+									{systemInfo.devicePixelRatio}x
+								</p>
 								<Badge variant='outline' className='mt-2 text-xs'>
 									{deviceInfo.isRetina ? 'Retina' : 'Standard'}
 								</Badge>
@@ -424,7 +528,9 @@ export default function SystemInfoPage() {
 
 							<Card className='p-4 text-center'>
 								<Monitor className='w-6 h-6 mx-auto mb-2 text-purple-500' />
-								<p className='text-xs font-medium text-muted-foreground mb-1'>{t('display.colorDepth')}</p>
+								<p className='text-xs font-medium text-muted-foreground mb-1'>
+									{t('display.colorDepth')}
+								</p>
 								<p className='text-xl font-bold'>{systemInfo.colorDepth} bit</p>
 								<Badge variant='outline' className='mt-2 text-xs'>
 									{Math.pow(2, systemInfo.colorDepth).toLocaleString()}
@@ -433,8 +539,12 @@ export default function SystemInfoPage() {
 
 							<Card className='p-4 text-center'>
 								<Smartphone className='w-6 h-6 mx-auto mb-2 text-green-500' />
-								<p className='text-xs font-medium text-muted-foreground mb-1'>{t('display.orientation')}</p>
-								<p className='text-sm font-bold'>{systemInfo.orientation.split('-')[0]}</p>
+								<p className='text-xs font-medium text-muted-foreground mb-1'>
+									{t('display.orientation')}
+								</p>
+								<p className='text-sm font-bold'>
+									{systemInfo.orientation.split('-')[0]}
+								</p>
 								<Badge variant='outline' className='mt-2 text-xs'>
 									{systemInfo.orientation}
 								</Badge>
@@ -443,9 +553,13 @@ export default function SystemInfoPage() {
 							{deviceInfo.ppi && (
 								<Card className='p-4 text-center'>
 									<CircuitBoard className='w-6 h-6 mx-auto mb-2 text-blue-500' />
-									<p className='text-xs font-medium text-muted-foreground mb-1'>{t('display.density')}</p>
+									<p className='text-xs font-medium text-muted-foreground mb-1'>
+										{t('display.density')}
+									</p>
 									<p className='text-xl font-bold'>{deviceInfo.ppi}</p>
-									<Badge variant='outline' className='mt-2 text-xs'>PPI</Badge>
+									<Badge variant='outline' className='mt-2 text-xs'>
+										PPI
+									</Badge>
 								</Card>
 							)}
 						</div>
@@ -454,11 +568,15 @@ export default function SystemInfoPage() {
 						{deviceInfo.screenSize && (
 							<Card>
 								<CardHeader>
-									<CardTitle className='text-base'>{t('display.screenInfo')}</CardTitle>
+									<CardTitle className='text-base'>
+										{t('display.screenInfo')}
+									</CardTitle>
 								</CardHeader>
 								<CardContent>
 									<div className='flex items-center justify-between'>
-										<span className='text-sm font-medium'>{t('display.screenSize')}</span>
+										<span className='text-sm font-medium'>
+											{t('display.screenSize')}
+										</span>
 										<Badge variant='secondary'>{deviceInfo.screenSize}</Badge>
 									</div>
 								</CardContent>
@@ -523,7 +641,9 @@ export default function SystemInfoPage() {
 								<div className='flex items-center justify-between'>
 									<p className='font-medium'>User Agent</p>
 									<Button
-										onClick={() => copyToClipboard(systemInfo.userAgent, 'User Agent')}
+										onClick={() =>
+											copyToClipboard(systemInfo.userAgent, 'User Agent')
+										}
 										size='sm'
 										variant='ghost'
 									>
@@ -600,7 +720,11 @@ export default function SystemInfoPage() {
 								<div className='grid md:grid-cols-2 gap-4'>
 									<div className='p-4 bg-muted/30 rounded-lg'>
 										<p className='text-sm font-medium mb-1'>Do Not Track</p>
-										<Badge variant={systemInfo.doNotTrack === '1' ? 'default' : 'secondary'}>
+										<Badge
+											variant={
+												systemInfo.doNotTrack === '1' ? 'default' : 'secondary'
+											}
+										>
 											{systemInfo.doNotTrack === '1'
 												? t('features.enabled')
 												: systemInfo.doNotTrack === '0'
@@ -610,8 +734,12 @@ export default function SystemInfoPage() {
 									</div>
 									<div className='p-4 bg-muted/30 rounded-lg'>
 										<p className='text-sm font-medium mb-1'>WebDriver</p>
-										<Badge variant={systemInfo.webdriver ? 'destructive' : 'default'}>
-											{systemInfo.webdriver ? t('features.detected') : t('features.notDetected')}
+										<Badge
+											variant={systemInfo.webdriver ? 'destructive' : 'default'}
+										>
+											{systemInfo.webdriver
+												? t('features.detected')
+												: t('features.notDetected')}
 										</Badge>
 									</div>
 								</div>
@@ -625,14 +753,24 @@ export default function SystemInfoPage() {
 								</h4>
 								<div className='grid md:grid-cols-2 gap-4'>
 									<div className='p-4 bg-muted/30 rounded-lg'>
-										<p className='text-sm font-medium mb-1'>{t('features.touchSupport')}</p>
-										<Badge variant={systemInfo.touchSupport ? 'default' : 'secondary'}>
-											{systemInfo.touchSupport ? t('features.supported') : t('features.notSupported')}
+										<p className='text-sm font-medium mb-1'>
+											{t('features.touchSupport')}
+										</p>
+										<Badge
+											variant={
+												systemInfo.touchSupport ? 'default' : 'secondary'
+											}
+										>
+											{systemInfo.touchSupport
+												? t('features.supported')
+												: t('features.notSupported')}
 										</Badge>
 									</div>
 									{systemInfo.touchSupport && (
 										<div className='p-4 bg-muted/30 rounded-lg'>
-											<p className='text-sm font-medium mb-1'>{t('features.multitouch')}</p>
+											<p className='text-sm font-medium mb-1'>
+												{t('features.multitouch')}
+											</p>
 											<Badge variant='default'>
 												{systemInfo.maxTouchPoints} {t('features.points')}
 											</Badge>

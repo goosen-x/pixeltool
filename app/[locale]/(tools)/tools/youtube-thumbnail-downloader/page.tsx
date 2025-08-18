@@ -60,7 +60,7 @@ export default function YouTubeThumbnailPage() {
 
 	const extractVideoId = (url: string) => {
 		setError('')
-		
+
 		// Reset if empty
 		if (!url) {
 			setVideoId('')
@@ -134,37 +134,38 @@ export default function YouTubeThumbnailPage() {
 
 	return (
 		<>
-			<Card className="p-6 mb-6">
-				<Label htmlFor="youtube-url" className="text-base font-semibold mb-2 block">
+			<Card className='p-6 mb-6'>
+				<Label
+					htmlFor='youtube-url'
+					className='text-base font-semibold mb-2 block'
+				>
 					{t('inputLabel')}
 				</Label>
-				<div className="flex gap-2">
+				<div className='flex gap-2'>
 					<Input
-						id="youtube-url"
-						type="text"
+						id='youtube-url'
+						type='text'
 						value={url}
-						onChange={(e) => handleUrlChange(e.target.value)}
-						placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-						className="flex-1"
+						onChange={e => handleUrlChange(e.target.value)}
+						placeholder='e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+						className='flex-1'
 					/>
 					<Button
-						variant="outline"
+						variant='outline'
 						onClick={() => handleUrlChange(exampleUrls[0])}
 					>
 						{t('example')}
 					</Button>
 				</div>
-				{error && (
-					<p className="text-sm text-destructive mt-2">{error}</p>
-				)}
-				<div className="mt-3 space-y-1">
-					<p className="text-sm text-muted-foreground">{t('supportedFormats')}</p>
-					<ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+				{error && <p className='text-sm text-destructive mt-2'>{error}</p>}
+				<div className='mt-3 space-y-1'>
+					<p className='text-sm text-muted-foreground'>
+						{t('supportedFormats')}
+					</p>
+					<ul className='text-sm text-muted-foreground list-disc list-inside space-y-1'>
 						{exampleUrls.map((example, index) => (
 							<li key={index}>
-								<code className="inline-code">
-									{example}
-								</code>
+								<code className='inline-code'>{example}</code>
 							</li>
 						))}
 					</ul>
@@ -173,83 +174,87 @@ export default function YouTubeThumbnailPage() {
 
 			{videoId && (
 				<>
-					<div className="mb-6">
-						<Card className="p-4">
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-2">
-									<Youtube className="w-5 h-5 text-red-500" />
-									<span className="font-medium">{t('videoId')}</span>
-									<code className="inline-code">
-										{videoId}
-									</code>
+					<div className='mb-6'>
+						<Card className='p-4'>
+							<div className='flex items-center justify-between'>
+								<div className='flex items-center gap-2'>
+									<Youtube className='w-5 h-5 text-red-500' />
+									<span className='font-medium'>{t('videoId')}</span>
+									<code className='inline-code'>{videoId}</code>
 								</div>
 								<Button
-									size="sm"
-									variant="outline"
+									size='sm'
+									variant='outline'
 									onClick={() => copyToClipboard(videoId)}
-									className="hover:bg-accent hover:text-white"
+									className='hover:bg-accent hover:text-white'
 								>
 									{copiedUrl === videoId ? (
-										<Check className="h-4 w-4 text-green-500" />
+										<Check className='h-4 w-4 text-green-500' />
 									) : (
-										<Copy className="h-4 w-4" />
+										<Copy className='h-4 w-4' />
 									)}
 								</Button>
 							</div>
 						</Card>
 					</div>
 
-					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-						{thumbnailTypes.map((type) => {
+					<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+						{thumbnailTypes.map(type => {
 							const imageUrl = type.getUrl(videoId)
 							const nameKey = `resolution.${type.quality === 'maxresdefault' ? 'max' : type.quality === 'sddefault' ? 'standard' : type.quality === 'hqdefault' ? 'high' : type.quality === 'mqdefault' ? 'medium' : 'default'}`
 							return (
-								<Card key={type.quality} className="overflow-hidden">
-									<div className="relative aspect-video bg-muted">
+								<Card key={type.quality} className='overflow-hidden'>
+									<div className='relative aspect-video bg-muted'>
 										<Image
 											src={imageUrl}
 											alt={`${t(nameKey)} thumbnail`}
 											fill
-											className="object-cover"
+											className='object-cover'
 											unoptimized
-											onError={(e) => {
+											onError={e => {
 												const target = e.target as HTMLImageElement
 												target.style.display = 'none'
 												const parent = target.parentElement
 												if (parent) {
 													const errorDiv = document.createElement('div')
-													errorDiv.className = 'absolute inset-0 flex items-center justify-center text-muted-foreground'
+													errorDiv.className =
+														'absolute inset-0 flex items-center justify-center text-muted-foreground'
 													errorDiv.textContent = t('notAvailable')
 													parent.appendChild(errorDiv)
 												}
 											}}
 										/>
 									</div>
-									<div className="p-4">
-										<h3 className="font-semibold">{t(nameKey)}</h3>
-										<p className="text-sm text-muted-foreground mb-3">
+									<div className='p-4'>
+										<h3 className='font-semibold'>{t(nameKey)}</h3>
+										<p className='text-sm text-muted-foreground mb-3'>
 											{type.width} × {type.height}
 										</p>
-										<div className="flex gap-2">
+										<div className='flex gap-2'>
 											<Button
-												size="sm"
-												variant="outline"
-												className="flex-1 hover:bg-accent hover:text-white"
+												size='sm'
+												variant='outline'
+												className='flex-1 hover:bg-accent hover:text-white'
 												onClick={() => copyToClipboard(imageUrl)}
 											>
 												{copiedUrl === imageUrl ? (
-													<Check className="h-4 w-4 text-green-500" />
+													<Check className='h-4 w-4 text-green-500' />
 												) : (
-													<Copy className="h-4 w-4" />
+													<Copy className='h-4 w-4' />
 												)}
-												<span className="ml-1">{t('copyUrl')}</span>
+												<span className='ml-1'>{t('copyUrl')}</span>
 											</Button>
 											<Button
-												size="sm"
-												variant="outline"
-												onClick={() => downloadImage(imageUrl, `${videoId}-${type.quality}.jpg`)}
+												size='sm'
+												variant='outline'
+												onClick={() =>
+													downloadImage(
+														imageUrl,
+														`${videoId}-${type.quality}.jpg`
+													)
+												}
 											>
-												<Download className="h-4 w-4" />
+												<Download className='h-4 w-4' />
 											</Button>
 										</div>
 									</div>
@@ -258,24 +263,24 @@ export default function YouTubeThumbnailPage() {
 						})}
 					</div>
 
-					<Card className="mt-6 p-6">
-						<h3 className="font-semibold mb-4">{t('alternativeUrls')}</h3>
-						<div className="space-y-3">
+					<Card className='mt-6 p-6'>
+						<h3 className='font-semibold mb-4'>{t('alternativeUrls')}</h3>
+						<div className='space-y-3'>
 							<div>
-								<p className="text-sm font-medium mb-1">{t('thumbnail')} 1:</p>
-								<code className="inline-code block overflow-x-auto">
+								<p className='text-sm font-medium mb-1'>{t('thumbnail')} 1:</p>
+								<code className='inline-code block overflow-x-auto'>
 									{`https://img.youtube.com/vi/${videoId}/1.jpg`}
 								</code>
 							</div>
 							<div>
-								<p className="text-sm font-medium mb-1">{t('thumbnail')} 2:</p>
-								<code className="inline-code block overflow-x-auto">
+								<p className='text-sm font-medium mb-1'>{t('thumbnail')} 2:</p>
+								<code className='inline-code block overflow-x-auto'>
 									{`https://img.youtube.com/vi/${videoId}/2.jpg`}
 								</code>
 							</div>
 							<div>
-								<p className="text-sm font-medium mb-1">{t('thumbnail')} 3:</p>
-								<code className="inline-code block overflow-x-auto">
+								<p className='text-sm font-medium mb-1'>{t('thumbnail')} 3:</p>
+								<code className='inline-code block overflow-x-auto'>
 									{`https://img.youtube.com/vi/${videoId}/3.jpg`}
 								</code>
 							</div>

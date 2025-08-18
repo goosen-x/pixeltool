@@ -4,9 +4,13 @@ import { generateRandomColor } from '@/lib/helpers/generateRandomColor'
 import { useState, useEffect } from 'react'
 
 export const NotFoundImage = () => {
-	const [color, setColor] = useState(generateRandomColor())
+	// Use a default color to prevent hydration mismatch
+	const [color, setColor] = useState('#a7a599')
 
 	useEffect(() => {
+		// Set initial random color only on client
+		setColor(generateRandomColor())
+
 		const interval = setInterval(() => {
 			setColor(generateRandomColor())
 		}, 3000)

@@ -8,69 +8,69 @@ interface WidgetButtonProps extends ButtonProps {
 }
 
 // Primary action button with gradient
-export function WidgetPrimaryButton({ 
-	children, 
-	icon, 
-	className, 
-	size = "lg",
-	...props 
+export function WidgetPrimaryButton({
+	children,
+	icon,
+	className,
+	size = 'lg',
+	...props
 }: WidgetButtonProps) {
 	return (
 		<Button
 			size={size}
 			className={cn(
-				"h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90",
-				"transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105",
+				'h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90',
+				'transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105',
 				className
 			)}
 			{...props}
 		>
-			{icon && <span className="mr-2">{icon}</span>}
+			{icon && <span className='mr-2'>{icon}</span>}
 			{children}
 		</Button>
 	)
 }
 
 // Secondary button with outline
-export function WidgetSecondaryButton({ 
-	children, 
-	icon, 
+export function WidgetSecondaryButton({
+	children,
+	icon,
 	className,
-	size = "lg", 
-	...props 
+	size = 'lg',
+	...props
 }: WidgetButtonProps) {
 	return (
 		<Button
-			variant="outline"
+			variant='outline'
 			size={size}
 			className={cn(
-				"h-12 bg-background/80",
-				"hover:bg-primary hover:text-primary-foreground hover:border-primary",
-				"transition-all duration-300",
+				'h-12 bg-background/80',
+				'hover:bg-primary hover:text-primary-foreground hover:border-primary',
+				'transition-all duration-300',
 				className
 			)}
 			{...props}
 		>
-			{icon && <span className="mr-2">{icon}</span>}
+			{icon && <span className='mr-2'>{icon}</span>}
 			{children}
 		</Button>
 	)
 }
 
 // Icon button for actions
-export function WidgetIconButton({ 
-	children, 
-	className, 
-	...props 
+export function WidgetIconButton({
+	children,
+	className,
+	...props
 }: ButtonProps) {
 	return (
 		<Button
-			size="icon"
-			variant="ghost"
+			size='icon'
+			variant='ghost'
 			className={cn(
-				"h-9 w-9",
-				"hover:bg-primary hover:text-primary-foreground",
-				"transition-colors",
+				'h-9 w-9',
+				'hover:bg-primary hover:text-primary-foreground',
+				'transition-colors',
 				className
 			)}
 			{...props}
@@ -81,16 +81,12 @@ export function WidgetIconButton({
 }
 
 // Button group wrapper
-export function WidgetButtonGroup({ 
-	children, 
-	className 
-}: { 
+export function WidgetButtonGroup({
+	children,
+	className
+}: {
 	children: ReactNode
-	className?: string 
+	className?: string
 }) {
-	return (
-		<div className={cn("flex gap-3", className)}>
-			{children}
-		</div>
-	)
+	return <div className={cn('flex gap-3', className)}>{children}</div>
 }

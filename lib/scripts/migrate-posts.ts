@@ -18,9 +18,11 @@ async function migratePosts() {
 		// Get all authors
 		const authors = await getAllAuthors()
 		const defaultAuthor = authors.find(a => a.name === 'Dmitry Borisenko')
-		
+
 		if (!defaultAuthor) {
-			console.error('Default author not found. Please run database schema first.')
+			console.error(
+				'Default author not found. Please run database schema first.'
+			)
 			return
 		}
 

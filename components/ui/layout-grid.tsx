@@ -37,14 +37,11 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
 							selected?.id === card.id
 								? 'rounded-lg cursor-pointer absolute inset-0 h-1/2 w-full md:w-1/2 m-auto z-50 flex justify-center items-center flex-wrap flex-col'
 								: lastSelected?.id === card.id
-								? 'z-40 bg-white rounded-xl h-full w-full'
-								: 'bg-white rounded-xl h-full w-full'
+									? 'z-40 bg-white rounded-xl h-full w-full'
+									: 'bg-white rounded-xl h-full w-full'
 						)}
 					>
-						<motion.div
-							layout
-							style={{ width: '100%', height: '100%' }}
-						>
+						<motion.div layout style={{ width: '100%', height: '100%' }}>
 							{selected?.id === card.id && <SelectedCard selected={selected} />}
 							<BlurImage card={card} />
 						</motion.div>
@@ -79,7 +76,11 @@ const BlurImage = ({ card }: { card: Card }) => {
 				'object-cover object-top absolute inset-0 h-full w-full transition duration-200',
 				loaded ? 'blur-none' : 'blur-md'
 			)}
-			alt='thumbnail'
+			alt={
+				typeof card.content === 'string'
+					? card.content
+					: `Card ${card.id} thumbnail`
+			}
 		/>
 	)
 }

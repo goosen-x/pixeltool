@@ -1,6 +1,7 @@
 # Social Sharing Migration Guide
 
-This guide explains how to add social sharing functionality to existing widgets in the portfolio project.
+This guide explains how to add social sharing functionality to existing widgets
+in the portfolio project.
 
 ## Components Overview
 
@@ -20,18 +21,18 @@ Add the `WidgetShareSection` component at the end of your widget page:
 import { WidgetShareSection } from '@/components/widgets'
 
 export default function YourWidgetPage() {
-  return (
-    <div>
-      {/* Your widget content */}
-      
-      <WidgetShareSection
-        widgetTitle="Your Widget Title"
-        widgetDescription="Short description of what your widget does"
-        hashtags={['tag1', 'tag2', 'tag3']}
-        variant="inline"
-      />
-    </div>
-  )
+	return (
+		<div>
+			{/* Your widget content */}
+
+			<WidgetShareSection
+				widgetTitle='Your Widget Title'
+				widgetDescription='Short description of what your widget does'
+				hashtags={['tag1', 'tag2', 'tag3']}
+				variant='inline'
+			/>
+		</div>
+	)
 }
 ```
 
@@ -41,10 +42,10 @@ For a more prominent display, use the card variant:
 
 ```tsx
 <WidgetShareSection
-  widgetTitle="Your Widget Title"
-  widgetDescription="Short description of what your widget does"
-  hashtags={['tag1', 'tag2', 'tag3']}
-  variant="card"
+	widgetTitle='Your Widget Title'
+	widgetDescription='Short description of what your widget does'
+	hashtags={['tag1', 'tag2', 'tag3']}
+	variant='card'
 />
 ```
 
@@ -56,15 +57,12 @@ The easiest way is to wrap your widget with `WidgetLayout`:
 import { WidgetLayout } from '@/components/widgets'
 
 export default function YourWidgetPage() {
-  return (
-    <WidgetLayout>
-      {/* Your widget content */}
-    </WidgetLayout>
-  )
+	return <WidgetLayout>{/* Your widget content */}</WidgetLayout>
 }
 ```
 
-This automatically adds sharing based on widget metadata from `lib/constants/widgets.ts`.
+This automatically adds sharing based on widget metadata from
+`lib/constants/widgets.ts`.
 
 ### 4. Custom Share Data
 
@@ -72,13 +70,13 @@ Override default sharing data:
 
 ```tsx
 <WidgetLayout
-  customShareData={{
-    title: "Custom Title",
-    description: "Custom description",
-    hashtags: ["custom", "tags"]
-  }}
+	customShareData={{
+		title: 'Custom Title',
+		description: 'Custom description',
+		hashtags: ['custom', 'tags']
+	}}
 >
-  {/* Your widget content */}
+	{/* Your widget content */}
 </WidgetLayout>
 ```
 
@@ -91,55 +89,58 @@ import { useWidgetShare } from '@/lib/hooks/useWidgetShare'
 import { SocialShareButtons } from '@/components/widgets'
 
 export default function YourWidgetPage() {
-  const { shareNative, copyLink, shareToPlatform, canShare } = useWidgetShare({
-    title: "Widget Title",
-    description: "Widget description"
-  })
+	const { shareNative, copyLink, shareToPlatform, canShare } = useWidgetShare({
+		title: 'Widget Title',
+		description: 'Widget description'
+	})
 
-  return (
-    <div>
-      {/* Your widget content */}
-      
-      <SocialShareButtons
-        data={{
-          title: "Widget Title",
-          description: "Widget description",
-          hashtags: ["tag1", "tag2"]
-        }}
-        onShare={(platform) => {
-          // Custom tracking or analytics
-          console.log(`Shared on ${platform}`)
-        }}
-      />
-    </div>
-  )
+	return (
+		<div>
+			{/* Your widget content */}
+
+			<SocialShareButtons
+				data={{
+					title: 'Widget Title',
+					description: 'Widget description',
+					hashtags: ['tag1', 'tag2']
+				}}
+				onShare={platform => {
+					// Custom tracking or analytics
+					console.log(`Shared on ${platform}`)
+				}}
+			/>
+		</div>
+	)
 }
 ```
 
 ## Examples
 
 ### BMI Calculator Implementation
+
 ```tsx
 <WidgetShareSection
-  widgetTitle="BMI Calculator"
-  widgetDescription="Calculate your Body Mass Index with health insights"
-  hashtags={['bmi', 'health', 'fitness', 'calculator']}
-  variant="inline"
+	widgetTitle='BMI Calculator'
+	widgetDescription='Calculate your Body Mass Index with health insights'
+	hashtags={['bmi', 'health', 'fitness', 'calculator']}
+	variant='inline'
 />
 ```
 
 ### ASCII Art Generator Implementation
+
 ```tsx
 <WidgetShareSection
-  widgetTitle="ASCII Art Generator"
-  widgetDescription="Convert text and images to ASCII art"
-  hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
+	widgetTitle='ASCII Art Generator'
+	widgetDescription='Convert text and images to ASCII art'
+	hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
 />
 ```
 
 ## Supported Platforms
 
 The sharing component supports:
+
 - Twitter/X
 - Facebook
 - LinkedIn
@@ -160,6 +161,7 @@ The sharing component supports:
 ## Keyboard Shortcuts
 
 The sharing functionality includes a keyboard shortcut:
+
 - **Ctrl/Cmd + Shift + S**: Opens native share dialog (if supported)
 
 ## Checklist for Migration
@@ -174,6 +176,7 @@ The sharing functionality includes a keyboard shortcut:
 ## Migration Priority
 
 Prioritize widgets by usage/popularity:
+
 1. High-traffic tools (Password Generator, UUID Generator, etc.)
 2. Calculator tools (Loan, Percentage, etc.)
 3. Developer tools (JSON Formatter, Base64 Encoder, etc.)

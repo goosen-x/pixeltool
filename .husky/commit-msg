@@ -1,0 +1,73 @@
+#!/usr/bin/env sh
+
+echo "📝 Validating commit message format..."
+
+commit_message=$(cat "$1")
+
+# Check if commit message is too short
+if [ ${#commit_message} -lt 10 ]; then
+  echo "❌ Commit message too short (minimum 10 characters)"
+  echo "💡 Example: 'feat: add password strength indicator widget'"
+  exit 1
+fi
+
+# Check if commit message is too long
+if [ ${#commit_message} -gt 100 ]; then
+  echo "❌ Commit message too long (maximum 100 characters)"
+  echo "💡 Use body for detailed explanations"
+  exit 1
+fi
+
+# Conventional commits validation
+if echo "$commit_message" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|ci|perf|build|revert)(\(.+\))?: .{3,}"; then
+  echo "✅ Conventional commit format detected"
+  
+  # Check for widget-related commits
+  if echo "$commit_message" | grep -qi "widget"; then
+    echo "🎯 Widget-related commit detected"
+    echo "📋 Ensure you've completed widget checklist:"
+    echo "   - Bilingual translations (EN/RU)"
+    echo "   - Keyboard shortcuts"
+    echo "   - Mobile responsiveness"
+    echo "   - SEO metadata"
+    echo "   - Analytics tracking"
+  fi
+  
+  echo "✅ Commit message validation passed!"
+  exit 0
+fi
+
+# Check for Russian commit messages (allow them)
+if echo "$commit_message" | grep -q '[а-яё]'; then
+  echo "🇷🇺 Russian commit message detected - allowed"
+  exit 0
+fi
+
+# Check for common patterns
+if echo "$commit_message" | grep -qiE "^(add|update|fix|remove|improve|implement|create): "; then
+  echo "✅ Standard commit format detected"
+  exit 0
+fi
+
+# If none of the patterns match, show error
+echo "❌ Invalid commit message format"
+echo ""
+echo "📋 Accepted formats:"
+echo "   1. Conventional commits: feat: add new widget"
+echo "   2. Standard format: add: new password generator"
+echo "   3. Russian messages: исправить: баг в виджете"
+echo ""
+echo "🔤 Types for conventional commits:"
+echo "   feat:     New feature"
+echo "   fix:      Bug fix"
+echo "   docs:     Documentation"
+echo "   style:    Code style (formatting)"
+echo "   refactor: Code refactoring"
+echo "   test:     Adding tests"
+echo "   chore:    Maintenance tasks"
+echo "   perf:     Performance improvements"
+echo ""
+echo "💡 Your message: '$commit_message'"
+echo ""
+
+exit 1

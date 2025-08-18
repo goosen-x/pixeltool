@@ -5,7 +5,7 @@ import type { BlogPost } from '../types/database'
 // Convert database BlogPost to Post format
 function convertDbPostToPost(dbPost: BlogPost): Post {
 	const primaryAuthor = dbPost.authors?.[0]
-	
+
 	// Calculate reading time based on content length (rough estimate)
 	const wordsPerMinute = 200
 	const wordCount = dbPost.content.split(/\s+/).length
@@ -31,7 +31,13 @@ function convertDbPostToPost(dbPost: BlogPost): Post {
 	}
 }
 
-export async function getLatestPosts({ limit = 6, locale = 'en' }: { limit?: number; locale?: string }): Promise<Post[]> {
+export async function getLatestPosts({
+	limit = 6,
+	locale = 'en'
+}: {
+	limit?: number
+	locale?: string
+}): Promise<Post[]> {
 	try {
 		const dbPosts = await getLatestPublishedPosts(locale, limit)
 		return dbPosts.map(convertDbPostToPost)

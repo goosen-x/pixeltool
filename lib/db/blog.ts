@@ -1,21 +1,28 @@
 import { sql } from './connection'
 import { safeQuery } from './safe-query'
-import type { BlogPost, Author, CreateBlogPostData, UpdateBlogPostData } from '../types/database'
+import type {
+	BlogPost,
+	Author,
+	CreateBlogPostData,
+	UpdateBlogPostData
+} from '../types/database'
 
 // Get all published blog posts with authors
-export async function getAllPublishedPosts(locale: string = 'en'): Promise<BlogPost[]> {
+export async function getAllPublishedPosts(
+	locale: string = 'en'
+): Promise<BlogPost[]> {
 	try {
 		// Check if database is configured
 		if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
 			console.warn('Database URL not configured, returning empty posts')
 			return []
 		}
-		
+
 		// Add timeout wrapper
 		const timeoutPromise = new Promise<never>((_, reject) => {
 			setTimeout(() => reject(new Error('Query timeout')), 2000)
 		})
-		
+
 		const queryPromise = sql`
 			SELECT 
 				bp.*,
@@ -43,7 +50,11 @@ export async function getAllPublishedPosts(locale: string = 'en'): Promise<BlogP
 			authors: post.authors?.filter(Boolean) || []
 		})) as BlogPost[]
 	} catch (error: any) {
-		if (error?.message?.includes('timeout') || error?.message?.includes('TimeoutError') || error?.message?.includes('Query timeout')) {
+		if (
+			error?.message?.includes('timeout') ||
+			error?.message?.includes('TimeoutError') ||
+			error?.message?.includes('Query timeout')
+		) {
 			console.warn('Database connection timeout - returning empty posts')
 		} else {
 			console.error('Error fetching published posts:', error)
@@ -53,19 +64,22 @@ export async function getAllPublishedPosts(locale: string = 'en'): Promise<BlogP
 }
 
 // Get latest published blog posts with limit
-export async function getLatestPublishedPosts(locale: string = 'en', limit: number = 6): Promise<BlogPost[]> {
+export async function getLatestPublishedPosts(
+	locale: string = 'en',
+	limit: number = 6
+): Promise<BlogPost[]> {
 	try {
 		// Check if database is configured
 		if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
 			console.warn('Database URL not configured, returning empty posts')
 			return []
 		}
-		
+
 		// Add timeout wrapper
 		const timeoutPromise = new Promise<never>((_, reject) => {
 			setTimeout(() => reject(new Error('Query timeout')), 2000)
 		})
-		
+
 		const queryPromise = sql`
 			SELECT 
 				bp.*,
@@ -94,7 +108,11 @@ export async function getLatestPublishedPosts(locale: string = 'en', limit: numb
 			authors: post.authors?.filter(Boolean) || []
 		})) as BlogPost[]
 	} catch (error: any) {
-		if (error?.message?.includes('timeout') || error?.message?.includes('TimeoutError') || error?.message?.includes('Query timeout')) {
+		if (
+			error?.message?.includes('timeout') ||
+			error?.message?.includes('TimeoutError') ||
+			error?.message?.includes('Query timeout')
+		) {
 			console.warn('Database connection timeout - returning empty posts')
 		} else {
 			console.error('Error fetching latest posts:', error)
@@ -104,19 +122,22 @@ export async function getLatestPublishedPosts(locale: string = 'en', limit: numb
 }
 
 // Get blog post by slug
-export async function getPostBySlug(slug: string, locale: string = 'en'): Promise<BlogPost | null> {
+export async function getPostBySlug(
+	slug: string,
+	locale: string = 'en'
+): Promise<BlogPost | null> {
 	try {
 		// Check if database is configured
 		if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
 			console.warn('Database URL not configured, returning null for post')
 			return null
 		}
-		
+
 		// Add timeout wrapper
 		const timeoutPromise = new Promise<never>((_, reject) => {
 			setTimeout(() => reject(new Error('Query timeout')), 2000)
 		})
-		
+
 		const queryPromise = sql`
 			SELECT 
 				bp.*,
@@ -150,7 +171,11 @@ export async function getPostBySlug(slug: string, locale: string = 'en'): Promis
 			authors: post.authors?.filter(Boolean) || []
 		} as BlogPost
 	} catch (error: any) {
-		if (error?.message?.includes('timeout') || error?.message?.includes('TimeoutError') || error?.message?.includes('Query timeout')) {
+		if (
+			error?.message?.includes('timeout') ||
+			error?.message?.includes('TimeoutError') ||
+			error?.message?.includes('Query timeout')
+		) {
 			console.warn('Database connection timeout when fetching post by slug')
 		} else {
 			console.error('Error fetching post by slug:', error)
@@ -160,7 +185,9 @@ export async function getPostBySlug(slug: string, locale: string = 'en'): Promis
 }
 
 // Create a new blog post
-export async function createBlogPost(data: CreateBlogPostData): Promise<BlogPost | null> {
+export async function createBlogPost(
+	data: CreateBlogPostData
+): Promise<BlogPost | null> {
 	try {
 		const {
 			slug,
@@ -203,7 +230,9 @@ export async function createBlogPost(data: CreateBlogPostData): Promise<BlogPost
 }
 
 // Update blog post
-export async function updateBlogPost(data: UpdateBlogPostData): Promise<BlogPost | null> {
+export async function updateBlogPost(
+	data: UpdateBlogPostData
+): Promise<BlogPost | null> {
 	try {
 		const { id, ...updateData } = data
 		const setClause = []

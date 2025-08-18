@@ -21,7 +21,7 @@ type Props = {
 export function ProjectsLayoutWrapper({ children }: Props) {
 	const pathname = usePathname()
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-	
+
 	// Extract widget path from URL: /en/projects/widget-name -> widget-name
 	const widgetPath = pathname.split('/').pop()
 	const widget = widgetPath ? getWidgetByPath(widgetPath) : null
@@ -34,36 +34,45 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 		<div className='flex h-full relative'>
 			{/* Mobile menu button */}
 			<Button
-				variant="outline"
-				size="icon"
-				className="fixed top-4 left-4 z-40 lg:hidden bg-background shadow-md hover:shadow-lg border-border"
+				variant='outline'
+				size='icon'
+				className='fixed top-4 left-4 z-40 lg:hidden bg-background shadow-md hover:shadow-lg border-border'
 				onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 			>
-				{isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+				{isSidebarOpen ? (
+					<X className='h-5 w-5' />
+				) : (
+					<Menu className='h-5 w-5' />
+				)}
 			</Button>
 
 			{/* Mobile overlay */}
 			{isSidebarOpen && (
-				<div 
-					className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+				<div
+					className='fixed inset-0 bg-black/50 z-30 lg:hidden'
 					onClick={() => setIsSidebarOpen(false)}
 				/>
 			)}
 
 			{/* Sidebar - hidden on mobile, shown on desktop */}
-			<div className={cn(
-				"fixed lg:relative inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:transform-none",
-				isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-			)}>
+			<div
+				className={cn(
+					'fixed lg:relative inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:transform-none',
+					isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+				)}
+			>
 				<ProjectsSidebar onLinkClick={() => setIsSidebarOpen(false)} />
 			</div>
-			
+
 			<main className='flex-1 flex flex-col overflow-hidden min-w-0'>
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
 						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
 							{/* Add padding on mobile to account for menu button */}
-							<div className='pl-0 lg:pl-0' style={{ paddingLeft: 'calc(env(safe-area-inset-left) + 0px)' }}>
+							<div
+								className='pl-0 lg:pl-0'
+								style={{ paddingLeft: 'calc(env(safe-area-inset-left) + 0px)' }}
+							>
 								{widgetId && <WidgetHeader widgetId={widgetId} />}
 								<WidgetWrapper>
 									{children}
@@ -74,7 +83,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 						</div>
 					</div>
 					{/* Right sidebar - hidden on mobile and tablets, shown on desktop */}
-					<div className="hidden xl:block overflow-y-auto flex-shrink-0">
+					<div className='hidden xl:block overflow-y-auto flex-shrink-0'>
 						{widgetId && <ProjectsRightSidebar />}
 					</div>
 				</div>

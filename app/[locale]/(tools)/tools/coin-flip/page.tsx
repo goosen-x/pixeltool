@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -91,6 +91,13 @@ export default function CoinFlipPage() {
 	const [headsCount, setHeadsCount] = useState(0)
 	const [tailsCount, setTailsCount] = useState(0)
 
+	const updateCounts = useCallback((history: FlipResult[]) => {
+		const heads = history.filter(h => h.result === 'heads').length
+		const tails = history.filter(h => h.result === 'tails').length
+		setHeadsCount(heads)
+		setTailsCount(tails)
+	}, [])
+
 	useEffect(() => {
 		setMounted(true)
 		// Load history from localStorage
@@ -103,42 +110,9 @@ export default function CoinFlipPage() {
 			setFlipHistory(parsed)
 			updateCounts(parsed)
 		}
-	}, [])
+	}, [updateCounts])
 
-	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to flip coin
-			if (e.code === 'Space') {
-				e.preventDefault()
-				flipCoin()
-			}
-			// Ctrl/Cmd + T to change coin type
-			if ((e.ctrlKey || e.metaKey) && e.key === 't') {
-				e.preventDefault()
-				const currentIndex = coinTypes.findIndex(c => c.id === selectedCoin.id)
-				const nextIndex = (currentIndex + 1) % coinTypes.length
-				setSelectedCoin(coinTypes[nextIndex])
-			}
-			// Ctrl/Cmd + R to reset (clear history)
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				clearHistory()
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [selectedCoin])
-
-	const updateCounts = (history: FlipResult[]) => {
-		const heads = history.filter(h => h.result === 'heads').length
-		const tails = history.filter(h => h.result === 'tails').length
-		setHeadsCount(heads)
-		setTailsCount(tails)
-	}
-
-	const flipCoin = () => {
+	const flipCoin = useCallback(() => {
 		if (isFlipping) return
 
 		setIsFlipping(true)
@@ -187,15 +161,48 @@ export default function CoinFlipPage() {
 					result === 'heads' ? selectedCoin.headsIcon : selectedCoin.tailsIcon
 			})
 		}, duration)
-	}
+	}, [
+		isFlipping,
+		animationSpeed,
+		rotation,
+		selectedCoin,
+		flipHistory,
+		updateCounts
+	])
 
-	const clearHistory = () => {
+	const clearHistory = useCallback(() => {
 		setFlipHistory([])
 		setHeadsCount(0)
 		setTailsCount(0)
 		localStorage.removeItem('coinFlipHistory')
 		toast.success('History cleared')
-	}
+	}, [])
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Space to flip coin
+			if (e.code === 'Space') {
+				e.preventDefault()
+				flipCoin()
+			}
+			// Ctrl/Cmd + T to change coin type
+			if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+				e.preventDefault()
+				const currentIndex = coinTypes.findIndex(c => c.id === selectedCoin.id)
+				const nextIndex = (currentIndex + 1) % coinTypes.length
+				setSelectedCoin(coinTypes[nextIndex])
+			}
+			// Ctrl/Cmd + R to reset (clear history)
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				clearHistory()
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [selectedCoin, flipCoin, clearHistory])
 
 	const getAnimationDuration = () => {
 		switch (animationSpeed) {

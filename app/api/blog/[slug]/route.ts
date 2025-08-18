@@ -11,9 +11,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 		const { slug } = await params
 		const { searchParams } = new URL(request.url)
 		const locale = searchParams.get('locale') || 'en'
-		
+
 		const post = await getPostBySlug(slug, locale)
-		
+
 		if (!post) {
 			return NextResponse.json(
 				{
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 				{ status: 404 }
 			)
 		}
-		
+
 		return NextResponse.json({
 			success: true,
 			data: post
@@ -43,8 +43,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
 	try {
 		const { slug } = await params
-		const body = await request.json() as Partial<UpdateBlogPostData>
-		
+		const body = (await request.json()) as Partial<UpdateBlogPostData>
+
 		// First get the post to find its ID
 		const existingPost = await getPostBySlug(slug, 'en')
 		if (!existingPost) {
@@ -56,14 +56,14 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 				{ status: 404 }
 			)
 		}
-		
+
 		const updateData: UpdateBlogPostData = {
 			...body,
 			id: existingPost.id
 		}
-		
+
 		const post = await updateBlogPost(updateData)
-		
+
 		if (!post) {
 			return NextResponse.json(
 				{
@@ -73,7 +73,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 				{ status: 500 }
 			)
 		}
-		
+
 		return NextResponse.json({
 			success: true,
 			data: post
@@ -93,7 +93,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
 	try {
 		const { slug } = await params
-		
+
 		// First get the post to find its ID
 		const existingPost = await getPostBySlug(slug, 'en')
 		if (!existingPost) {
@@ -105,9 +105,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 				{ status: 404 }
 			)
 		}
-		
+
 		const success = await deleteBlogPost(existingPost.id)
-		
+
 		if (!success) {
 			return NextResponse.json(
 				{
@@ -117,7 +117,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 				{ status: 500 }
 			)
 		}
-		
+
 		return NextResponse.json({
 			success: true,
 			message: 'Post deleted successfully'

@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
 		// Read the uploaded data to measure speed
 		const data = await request.arrayBuffer()
 		const size = data.byteLength
-		
+
 		// Return success with size info
 		return NextResponse.json({
 			success: true,

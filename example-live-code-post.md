@@ -154,23 +154,26 @@ Regular code blocks still work as before:
 ```javascript
 // This is a regular code block without live preview
 function greet(name) {
-  return `Hello, ${name}!`;
+	return `Hello, ${name}!`
 }
 
-console.log(greet('World'));
+console.log(greet('World'))
 ```
 
 ## Usage Instructions
 
-To create a live code example in your blog posts, use the `:live` suffix after the language identifier:
+To create a live code example in your blog posts, use the `:live` suffix after
+the language identifier:
 
 - `html:live` for HTML code
-- `css:live` for CSS code  
+- `css:live` for CSS code
 - `js:live` for JavaScript code
 
 You can include a title by adding a comment at the beginning:
+
 ```
 // title: Your Example Title
 ```
 
-The live examples will be rendered with an interactive preview where readers can see the result and switch between viewing the code and the preview.
+The live examples will be rendered with an interactive preview where readers can
+see the result and switch between viewing the code and the preview.

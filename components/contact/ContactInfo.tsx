@@ -17,24 +17,24 @@ export default function ContactInfo({ locale }: Props) {
 			icon: Mail,
 			label: t('email'),
 			value: 'dmitryborisenko.msk@gmail.com',
-			href: 'mailto:dmitryborisenko.msk@gmail.com',
+			href: 'mailto:dmitryborisenko.msk@gmail.com'
 		},
 		{
 			icon: Phone,
 			label: t('telegram'),
 			value: '@borisenko_dmitry',
-			href: 'https://t.me/borisenko_dmitry',
+			href: 'https://t.me/borisenko_dmitry'
 		},
 		{
 			icon: MapPin,
 			label: t('location'),
-			value: t('locationValue'),
+			value: t('locationValue')
 		},
 		{
 			icon: Clock,
 			label: t('timezone'),
-			value: 'GMT+3 (Moscow)',
-		},
+			value: 'GMT+3 (Moscow)'
+		}
 	]
 
 	const socialLinks = [
@@ -42,26 +42,26 @@ export default function ContactInfo({ locale }: Props) {
 			name: 'GitHub',
 			icon: FaGithub,
 			href: 'https://github.com/goosen-x',
-			color: 'hover:text-gray-900 dark:hover:text-gray-100',
+			color: 'hover:text-gray-900 dark:hover:text-gray-100'
 		},
 		{
 			name: 'LinkedIn',
 			icon: FaLinkedin,
 			href: 'https://www.linkedin.com/in/dmitry-borisenko-9a8144128/',
-			color: 'hover:text-blue-600 dark:hover:text-blue-400',
+			color: 'hover:text-blue-600 dark:hover:text-blue-400'
 		},
 		{
 			name: 'Telegram',
 			icon: FaTelegram,
 			href: 'https://t.me/borisenko_dmitry',
-			color: 'hover:text-blue-500 dark:hover:text-blue-400',
+			color: 'hover:text-blue-500 dark:hover:text-blue-400'
 		},
 		{
 			name: 'Twitter/X',
 			icon: FaXTwitter,
 			href: 'https://x.com/Brsnk_Dmtr',
-			color: 'hover:text-gray-900 dark:hover:text-gray-100',
-		},
+			color: 'hover:text-gray-900 dark:hover:text-gray-100'
+		}
 	]
 
 	return (
@@ -83,7 +83,11 @@ export default function ContactInfo({ locale }: Props) {
 								<a
 									href={item.href}
 									target={item.href.startsWith('mailto:') ? '_self' : '_blank'}
-									rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+									rel={
+										item.href.startsWith('mailto:')
+											? undefined
+											: 'noopener noreferrer'
+									}
 									className='text-muted-foreground hover:text-primary transition-colors'
 								>
 									{item.value}
@@ -98,11 +102,9 @@ export default function ContactInfo({ locale }: Props) {
 
 			{/* Social Media */}
 			<div>
-				<h3 className='font-semibold text-foreground mb-4'>
-					{t('social')}
-				</h3>
+				<h3 className='font-semibold text-foreground mb-4'>{t('social')}</h3>
 				<div className='flex gap-4'>
-					{socialLinks.map((social) => (
+					{socialLinks.map(social => (
 						<a
 							key={social.name}
 							href={social.href}
@@ -122,9 +124,7 @@ export default function ContactInfo({ locale }: Props) {
 				<h3 className='font-semibold text-foreground mb-2'>
 					{t('availability.title')}
 				</h3>
-				<p className='text-muted-foreground mb-4'>
-					{t('availability.status')}
-				</p>
+				<p className='text-muted-foreground mb-4'>{t('availability.status')}</p>
 				<div className='space-y-2 text-sm text-muted-foreground'>
 					<div className='flex items-center gap-2'>
 						<div className='w-2 h-2 bg-green-500 rounded-full'></div>

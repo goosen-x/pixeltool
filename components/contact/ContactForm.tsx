@@ -22,7 +22,7 @@ export default function ContactForm() {
 			name: formData.get('name'),
 			email: formData.get('email'),
 			subject: formData.get('subject'),
-			message: formData.get('message'),
+			message: formData.get('message')
 		}
 
 		try {
@@ -46,9 +46,7 @@ export default function ContactForm() {
 				<h3 className='text-xl font-semibold text-foreground mb-2'>
 					{t('success.title')}
 				</h3>
-				<p className='text-muted-foreground'>
-					{t('success.message')}
-				</p>
+				<p className='text-muted-foreground'>{t('success.message')}</p>
 			</div>
 		)
 	}

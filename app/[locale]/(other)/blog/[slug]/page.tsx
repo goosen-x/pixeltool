@@ -69,18 +69,18 @@ export async function generateStaticParams() {
 		// Generate static params for both locales
 		const englishPosts = await getAllPosts('en')
 		const russianPosts = await getAllPosts('ru')
-		
+
 		const params = [
-			...englishPosts.map(post => ({ 
-				locale: 'en', 
-				slug: post.slug 
+			...englishPosts.map(post => ({
+				locale: 'en',
+				slug: post.slug
 			})),
-			...russianPosts.map(post => ({ 
-				locale: 'ru', 
-				slug: post.slug 
+			...russianPosts.map(post => ({
+				locale: 'ru',
+				slug: post.slug
 			}))
 		]
-		
+
 		console.log(`Generated static params for ${params.length} blog posts`)
 		return params
 	} catch (error) {

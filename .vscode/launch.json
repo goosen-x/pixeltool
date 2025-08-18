@@ -1,0 +1,37 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug Next.js",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/next",
+			"args": ["dev"],
+			"console": "integratedTerminal",
+			"env": {
+				"NODE_OPTIONS": "--inspect"
+			}
+		},
+		{
+			"name": "Debug Jest Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/jest",
+			"args": ["--runInBand"],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"disableOptimisticBPs": true
+		},
+		{
+			"name": "Attach to Chrome",
+			"port": 9222,
+			"request": "attach",
+			"type": "chrome",
+			"webRoot": "${workspaceFolder}",
+			"sourceMapPathOverrides": {
+				"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+				"webpack:///./src/*": "${workspaceFolder}/src/*"
+			}
+		}
+	]
+}

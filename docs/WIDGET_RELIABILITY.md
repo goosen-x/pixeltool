@@ -68,7 +68,8 @@ npx tsx lib/scripts/check-database.ts
 
 ## Monitoring
 
-The system logs database issues only in development mode to avoid noise in production.
+The system logs database issues only in development mode to avoid noise in
+production.
 
 To monitor database availability:
 

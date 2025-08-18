@@ -44,7 +44,8 @@ export default function CSSSpecificityPage() {
 		}
 
 		// Remove spaces around combinators
-		let cleanSelector = selector.trim()
+		let cleanSelector = selector
+			.trim()
 			.replace(/\s*([>+~])\s*/g, ' $1 ')
 			.replace(/\s+/g, ' ')
 
@@ -62,12 +63,13 @@ export default function CSSSpecificityPage() {
 		cleanSelector = cleanSelector.replace(pseudoElementRegex, '')
 
 		// Handle special pseudo-classes with their own specificity rules
-		let additionalSpecificity = [0, 0, 0, 0]
+		const additionalSpecificity = [0, 0, 0, 0]
 
 		// Extract and handle :is(), :not(), :has(), :where()
-		const functionalPseudoRegex = /:(is|not|has|where)\(([^()]+(?:\([^()]*\))*)\)/g
-		const functionalPseudos: Array<{type: string, content: string}> = []
-		
+		const functionalPseudoRegex =
+			/:(is|not|has|where)\(([^()]+(?:\([^()]*\))*)\)/g
+		const functionalPseudos: Array<{ type: string; content: string }> = []
+
 		while ((match = functionalPseudoRegex.exec(cleanSelector)) !== null) {
 			functionalPseudos.push({
 				type: match[1],
@@ -76,7 +78,7 @@ export default function CSSSpecificityPage() {
 		}
 
 		// Process each functional pseudo-class
-		functionalPseudos.forEach(({type, content}) => {
+		functionalPseudos.forEach(({ type, content }) => {
 			if (type === 'where') {
 				// :where() always has zero specificity
 				parts.pseudoClasses.push(`:${type}`)
@@ -85,14 +87,25 @@ export default function CSSSpecificityPage() {
 				parts.pseudoClasses.push(`:${type}`)
 				const selectors = content.split(',').map(s => s.trim())
 				let maxSpecificity = [0, 0, 0, 0]
-				
+
 				selectors.forEach(sel => {
 					const subSpec = calculateSpecificity(sel)
-					if (subSpec.weight > maxSpecificity[0] * 1000000 + maxSpecificity[1] * 10000 + maxSpecificity[2] * 100 + maxSpecificity[3]) {
-						maxSpecificity = subSpec.specificity.slice() as [number, number, number, number]
+					if (
+						subSpec.weight >
+						maxSpecificity[0] * 1000000 +
+							maxSpecificity[1] * 10000 +
+							maxSpecificity[2] * 100 +
+							maxSpecificity[3]
+					) {
+						maxSpecificity = subSpec.specificity.slice() as [
+							number,
+							number,
+							number,
+							number
+						]
 					}
 				})
-				
+
 				// Add the specificity of the most specific argument
 				additionalSpecificity[1] += maxSpecificity[1]
 				additionalSpecificity[2] += maxSpecificity[2]
@@ -134,7 +147,7 @@ export default function CSSSpecificityPage() {
 		}
 
 		// Remove all the above to count remaining elements
-		let elementsOnly = cleanSelector
+		const elementsOnly = cleanSelector
 			.replace(idRegex, '')
 			.replace(classRegex, '')
 			.replace(attrRegex, '')
@@ -152,12 +165,22 @@ export default function CSSSpecificityPage() {
 		const specificity: [number, number, number, number] = [
 			parts.inline,
 			parts.ids.length + additionalSpecificity[1],
-			parts.classes.length + parts.attributes.length + parts.pseudoClasses.length + additionalSpecificity[2] - (functionalPseudos.filter(p => p.type === 'where').length),
-			parts.elements.length + parts.pseudoElements.length + additionalSpecificity[3]
+			parts.classes.length +
+				parts.attributes.length +
+				parts.pseudoClasses.length +
+				additionalSpecificity[2] -
+				functionalPseudos.filter(p => p.type === 'where').length,
+			parts.elements.length +
+				parts.pseudoElements.length +
+				additionalSpecificity[3]
 		]
 
 		// Calculate weight for sorting
-		const weight = specificity[0] * 1000000 + specificity[1] * 10000 + specificity[2] * 100 + specificity[3]
+		const weight =
+			specificity[0] * 1000000 +
+			specificity[1] * 10000 +
+			specificity[2] * 100 +
+			specificity[3]
 
 		return {
 			selector: selector.trim(),
@@ -182,14 +205,18 @@ export default function CSSSpecificityPage() {
 
 		for (const line of lines) {
 			const trimmed = line.trim()
-			
+
 			// Skip empty lines
 			if (!trimmed) {
 				continue
 			}
 
 			// Skip comments
-			if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.includes('*/')) {
+			if (
+				trimmed.startsWith('//') ||
+				trimmed.startsWith('/*') ||
+				trimmed.includes('*/')
+			) {
 				continue
 			}
 
@@ -212,11 +239,14 @@ export default function CSSSpecificityPage() {
 					selectors.push(trimmed.slice(0, -1).trim())
 				} else {
 					// Check if this line looks like a CSS property
-					const looksLikeProperty = trimmed.includes(': ') || 
-						trimmed.match(/^\d/) || 
-						trimmed.match(/^(margin|padding|border|background|color|font|width|height|display|position|top|left|right|bottom)/i) ||
+					const looksLikeProperty =
+						trimmed.includes(': ') ||
+						trimmed.match(/^\d/) ||
+						trimmed.match(
+							/^(margin|padding|border|background|color|font|width|height|display|position|top|left|right|bottom)/i
+						) ||
 						trimmed.endsWith(';')
-					
+
 					if (!looksLikeProperty) {
 						// This is a selector on its own line
 						selectors.push(trimmed)
@@ -226,15 +256,19 @@ export default function CSSSpecificityPage() {
 		}
 
 		// Remove duplicates and empty selectors
-		const uniqueSelectors = [...new Set(selectors.filter(sel => sel.length > 0))]
+		const uniqueSelectors = [
+			...new Set(selectors.filter(sel => sel.length > 0))
+		]
 
 		if (uniqueSelectors.length === 0) {
 			toast.error(t('toast.noSelectors'))
 			return
 		}
 
-		const newResults = uniqueSelectors.map(selector => calculateSpecificity(selector))
-		
+		const newResults = uniqueSelectors.map(selector =>
+			calculateSpecificity(selector)
+		)
+
 		// Sort results
 		if (sortBy === 'weight') {
 			newResults.sort((a, b) => b.weight - a.weight)
@@ -245,10 +279,13 @@ export default function CSSSpecificityPage() {
 	}
 
 	const copyResults = () => {
-		const text = results.map(r => 
-			`${r.selector} - Specificity: ${r.specificityString} (Weight: ${r.weight})`
-		).join('\n')
-		
+		const text = results
+			.map(
+				r =>
+					`${r.selector} - Specificity: ${r.specificityString} (Weight: ${r.weight})`
+			)
+			.join('\n')
+
 		navigator.clipboard.writeText(text)
 		toast.success(t('toast.copied'))
 	}
@@ -281,17 +318,13 @@ div.container > p::first-line
 
 	return (
 		<>
-			<div className="grid gap-6 lg:grid-cols-2">
+			<div className='grid gap-6 lg:grid-cols-2'>
 				{/* Input */}
 				<Card>
 					<CardHeader>
-						<CardTitle className="flex items-center justify-between">
+						<CardTitle className='flex items-center justify-between'>
 							{t('input')}
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={loadExample}
-							>
+							<Button variant='outline' size='sm' onClick={loadExample}>
 								{t('loadExample')}
 							</Button>
 						</CardTitle>
@@ -300,23 +333,23 @@ div.container > p::first-line
 						<Textarea
 							placeholder={t('placeholder')}
 							value={input}
-							onChange={(e) => setInput(e.target.value)}
+							onChange={e => setInput(e.target.value)}
 							rows={12}
-							className="font-mono"
+							className='font-mono'
 						/>
-						<div className="flex gap-2 mt-4">
-							<Button onClick={analyzeSelectors} className="flex-1">
-								<BarChart3 className="w-4 h-4 mr-2" />
+						<div className='flex gap-2 mt-4'>
+							<Button onClick={analyzeSelectors} className='flex-1'>
+								<BarChart3 className='w-4 h-4 mr-2' />
 								{t('analyze')}
 							</Button>
 							<Button
-								variant="outline"
+								variant='outline'
 								onClick={() => {
 									setInput('')
 									setResults([])
 								}}
 							>
-								<Trash2 className="w-4 h-4" />
+								<Trash2 className='w-4 h-4' />
 							</Button>
 						</div>
 					</CardContent>
@@ -325,24 +358,26 @@ div.container > p::first-line
 				{/* Results */}
 				<Card>
 					<CardHeader>
-						<CardTitle className="flex items-center justify-between">
+						<CardTitle className='flex items-center justify-between'>
 							{t('results')}
 							{results.length > 0 && (
-								<div className="flex gap-2">
+								<div className='flex gap-2'>
 									<Button
-										variant="outline"
-										size="sm"
-										onClick={() => setSortBy(sortBy === 'order' ? 'weight' : 'order')}
+										variant='outline'
+										size='sm'
+										onClick={() =>
+											setSortBy(sortBy === 'order' ? 'weight' : 'order')
+										}
 									>
 										{t(sortBy === 'order' ? 'sortByWeight' : 'sortByOrder')}
 									</Button>
 									<Button
-										variant="outline"
-										size="sm"
+										variant='outline'
+										size='sm'
 										onClick={copyResults}
-										className="hover:bg-accent hover:text-white"
+										className='hover:bg-accent hover:text-white'
 									>
-										<Copy className="w-4 h-4" />
+										<Copy className='w-4 h-4' />
 									</Button>
 								</div>
 							)}
@@ -350,65 +385,93 @@ div.container > p::first-line
 					</CardHeader>
 					<CardContent>
 						{results.length > 0 ? (
-							<div className="space-y-3 max-h-[500px] overflow-y-auto">
+							<div className='space-y-3 max-h-[500px] overflow-y-auto'>
 								{results.map((result, index) => (
-									<div
-										key={index}
-										className="p-3 border rounded-lg space-y-2"
-									>
-										<div className="flex items-start justify-between gap-2">
-											<code className="text-sm font-mono break-all">{result.selector}</code>
-											<Badge className={cn("font-mono shrink-0", getSpecificityColor(result.weight))}>
+									<div key={index} className='p-3 border rounded-lg space-y-2'>
+										<div className='flex items-start justify-between gap-2'>
+											<code className='text-sm font-mono break-all'>
+												{result.selector}
+											</code>
+											<Badge
+												className={cn(
+													'font-mono shrink-0',
+													getSpecificityColor(result.weight)
+												)}
+											>
 												{result.specificityString}
 											</Badge>
 										</div>
-										
+
 										{/* Breakdown */}
-										<div className="flex flex-wrap gap-2 text-xs">
+										<div className='flex flex-wrap gap-2 text-xs'>
 											{result.parts.inline > 0 && (
-												<Badge variant="secondary">inline style</Badge>
+												<Badge variant='secondary'>inline style</Badge>
 											)}
 											{result.parts.ids.map((id, i) => (
-												<Badge key={`id-${i}`} variant="secondary" className="font-mono">
+												<Badge
+													key={`id-${i}`}
+													variant='secondary'
+													className='font-mono'
+												>
 													{id}
 												</Badge>
 											))}
 											{result.parts.classes.map((cls, i) => (
-												<Badge key={`class-${i}`} variant="secondary" className="font-mono">
+												<Badge
+													key={`class-${i}`}
+													variant='secondary'
+													className='font-mono'
+												>
 													{cls}
 												</Badge>
 											))}
 											{result.parts.attributes.map((attr, i) => (
-												<Badge key={`attr-${i}`} variant="secondary" className="font-mono">
+												<Badge
+													key={`attr-${i}`}
+													variant='secondary'
+													className='font-mono'
+												>
 													{attr}
 												</Badge>
 											))}
 											{result.parts.pseudoClasses.map((pc, i) => (
-												<Badge key={`pc-${i}`} variant="secondary" className="font-mono">
+												<Badge
+													key={`pc-${i}`}
+													variant='secondary'
+													className='font-mono'
+												>
 													{pc}
 												</Badge>
 											))}
 											{result.parts.elements.map((el, i) => (
-												<Badge key={`el-${i}`} variant="secondary" className="font-mono">
+												<Badge
+													key={`el-${i}`}
+													variant='secondary'
+													className='font-mono'
+												>
 													{el}
 												</Badge>
 											))}
 											{result.parts.pseudoElements.map((pe, i) => (
-												<Badge key={`pe-${i}`} variant="secondary" className="font-mono">
+												<Badge
+													key={`pe-${i}`}
+													variant='secondary'
+													className='font-mono'
+												>
 													{pe}
 												</Badge>
 											))}
 										</div>
 
-										<div className="text-xs text-muted-foreground">
+										<div className='text-xs text-muted-foreground'>
 											{t('weight')}: {result.weight}
 										</div>
 									</div>
 								))}
 							</div>
 						) : (
-							<div className="text-center py-12 text-muted-foreground">
-								<BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+							<div className='text-center py-12 text-muted-foreground'>
+								<BarChart3 className='w-12 h-12 mx-auto mb-4 opacity-50' />
 								<p>{t('emptyState')}</p>
 							</div>
 						)}
@@ -419,55 +482,61 @@ div.container > p::first-line
 			{/* Info */}
 			<Card>
 				<CardHeader>
-					<CardTitle className="flex items-center gap-2">
-						<Info className="w-5 h-5" />
+					<CardTitle className='flex items-center gap-2'>
+						<Info className='w-5 h-5' />
 						{t('howItWorks.title')}
 					</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-4">
-					<p className="text-sm text-muted-foreground">{t('howItWorks.description')}</p>
-					
-					<div className="grid gap-4 md:grid-cols-2">
-						<div className="space-y-2">
-							<h4 className="font-medium text-sm">{t('howItWorks.calculation')}</h4>
-							<div className="space-y-1 text-sm">
-								<div className="flex items-center gap-2">
-									<Badge className="font-mono">1-0-0-0</Badge>
+				<CardContent className='space-y-4'>
+					<p className='text-sm text-muted-foreground'>
+						{t('howItWorks.description')}
+					</p>
+
+					<div className='grid gap-4 md:grid-cols-2'>
+						<div className='space-y-2'>
+							<h4 className='font-medium text-sm'>
+								{t('howItWorks.calculation')}
+							</h4>
+							<div className='space-y-1 text-sm'>
+								<div className='flex items-center gap-2'>
+									<Badge className='font-mono'>1-0-0-0</Badge>
 									<span>{t('howItWorks.inline')}</span>
 								</div>
-								<div className="flex items-center gap-2">
-									<Badge className="font-mono">0-1-0-0</Badge>
+								<div className='flex items-center gap-2'>
+									<Badge className='font-mono'>0-1-0-0</Badge>
 									<span>{t('howItWorks.id')}</span>
 								</div>
-								<div className="flex items-center gap-2">
-									<Badge className="font-mono">0-0-1-0</Badge>
+								<div className='flex items-center gap-2'>
+									<Badge className='font-mono'>0-0-1-0</Badge>
 									<span>{t('howItWorks.class')}</span>
 								</div>
-								<div className="flex items-center gap-2">
-									<Badge className="font-mono">0-0-0-1</Badge>
+								<div className='flex items-center gap-2'>
+									<Badge className='font-mono'>0-0-0-1</Badge>
 									<span>{t('howItWorks.element')}</span>
 								</div>
 							</div>
 						</div>
 
-						<div className="space-y-2">
-							<h4 className="font-medium text-sm">{t('howItWorks.examples')}</h4>
-							<div className="space-y-1 text-sm font-mono">
-								<div className="flex items-center justify-between">
+						<div className='space-y-2'>
+							<h4 className='font-medium text-sm'>
+								{t('howItWorks.examples')}
+							</h4>
+							<div className='space-y-1 text-sm font-mono'>
+								<div className='flex items-center justify-between'>
 									<span>body</span>
-									<Badge variant="secondary">0-0-0-1</Badge>
+									<Badge variant='secondary'>0-0-0-1</Badge>
 								</div>
-								<div className="flex items-center justify-between">
+								<div className='flex items-center justify-between'>
 									<span>.header</span>
-									<Badge variant="secondary">0-0-1-0</Badge>
+									<Badge variant='secondary'>0-0-1-0</Badge>
 								</div>
-								<div className="flex items-center justify-between">
+								<div className='flex items-center justify-between'>
 									<span>#main</span>
-									<Badge variant="secondary">0-1-0-0</Badge>
+									<Badge variant='secondary'>0-1-0-0</Badge>
 								</div>
-								<div className="flex items-center justify-between">
+								<div className='flex items-center justify-between'>
 									<span>#nav .active</span>
-									<Badge variant="secondary">0-1-1-0</Badge>
+									<Badge variant='secondary'>0-1-1-0</Badge>
 								</div>
 							</div>
 						</div>

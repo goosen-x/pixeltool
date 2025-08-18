@@ -12,33 +12,33 @@ interface WidgetTextareaProps extends TextareaProps {
 }
 
 // Styled input with modern design
-export function WidgetInput({ 
-	className, 
+export function WidgetInput({
+	className,
 	icon,
 	actions,
-	...props 
+	...props
 }: WidgetInputProps) {
 	if (icon || actions) {
 		return (
-			<div className="relative">
+			<div className='relative'>
 				{icon && (
-					<div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+					<div className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
 						{icon}
 					</div>
 				)}
 				<Input
 					className={cn(
-						"h-14 text-lg rounded-2xl",
-						"bg-background/80 border-border/50",
-						"focus:bg-background transition-all duration-300",
-						icon && "pl-12",
-						actions && "pr-28",
+						'h-14 text-lg rounded-2xl',
+						'bg-background/80 border-border/50',
+						'focus:bg-background transition-all duration-300',
+						icon && 'pl-12',
+						actions && 'pr-28',
 						className
 					)}
 					{...props}
 				/>
 				{actions && (
-					<div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2">
+					<div className='absolute right-3 top-1/2 -translate-y-1/2 flex gap-2'>
 						{actions}
 					</div>
 				)}
@@ -49,9 +49,9 @@ export function WidgetInput({
 	return (
 		<Input
 			className={cn(
-				"h-14 text-lg rounded-2xl",
-				"bg-background/80 border-border/50",
-				"focus:bg-background transition-all duration-300",
+				'h-14 text-lg rounded-2xl',
+				'bg-background/80 border-border/50',
+				'focus:bg-background transition-all duration-300',
 				className
 			)}
 			{...props}
@@ -60,27 +60,25 @@ export function WidgetInput({
 }
 
 // Styled textarea with modern design
-export function WidgetTextarea({ 
+export function WidgetTextarea({
 	className,
 	actions,
-	...props 
+	...props
 }: WidgetTextareaProps) {
 	if (actions) {
 		return (
-			<div className="relative">
+			<div className='relative'>
 				<Textarea
 					className={cn(
-						"min-h-[120px] text-lg rounded-2xl resize-none",
-						"bg-background/80 border-border/50",
-						"focus:bg-background transition-all duration-300",
-						"pr-16",
+						'min-h-[120px] text-lg rounded-2xl resize-none',
+						'bg-background/80 border-border/50',
+						'focus:bg-background transition-all duration-300',
+						'pr-16',
 						className
 					)}
 					{...props}
 				/>
-				<div className="absolute right-3 top-3 flex gap-2">
-					{actions}
-				</div>
+				<div className='absolute right-3 top-3 flex gap-2'>{actions}</div>
 			</div>
 		)
 	}
@@ -88,9 +86,9 @@ export function WidgetTextarea({
 	return (
 		<Textarea
 			className={cn(
-				"min-h-[120px] text-lg rounded-2xl resize-none",
-				"bg-background/80 border-border/50",
-				"focus:bg-background transition-all duration-300",
+				'min-h-[120px] text-lg rounded-2xl resize-none',
+				'bg-background/80 border-border/50',
+				'focus:bg-background transition-all duration-300',
 				className
 			)}
 			{...props}
@@ -100,19 +98,17 @@ export function WidgetTextarea({
 
 // Code/Mono input
 export function WidgetCodeInput({ className, ...props }: WidgetInputProps) {
-	return (
-		<WidgetInput
-			className={cn("font-mono", className)}
-			{...props}
-		/>
-	)
+	return <WidgetInput className={cn('font-mono', className)} {...props} />
 }
 
 // Code/Mono textarea
-export function WidgetCodeTextarea({ className, ...props }: WidgetTextareaProps) {
+export function WidgetCodeTextarea({
+	className,
+	...props
+}: WidgetTextareaProps) {
 	return (
 		<WidgetTextarea
-			className={cn("font-mono text-base", className)}
+			className={cn('font-mono text-base', className)}
 			{...props}
 		/>
 	)

@@ -1,0 +1,339 @@
+# Claude Code Rules - Senior Developer Configuration
+# Автоматические исправления и рефакторинг для React/Next.js портфолио
+
+## 🎯 Core Development Principles
+
+### TypeScript First
+- NEVER use 'any' type - always define proper interfaces
+- ALWAYS prefer type assertions over 'as any'
+- USE generic types for reusable components
+- DEFINE return types for all functions
+
+### React Best Practices
+- DEFAULT to Server Components (no 'use client' unless needed)
+- USE composition over inheritance
+- IMPLEMENT proper error boundaries
+- PREFER custom hooks over component logic
+- ALWAYS include dependencies in useEffect/useCallback arrays
+
+### Performance Rules
+- OPTIMIZE images with Next.js Image component
+- IMPLEMENT code splitting for large components
+- USE React.memo for expensive renders
+- MINIMIZE re-renders with proper dependency arrays
+- CACHE expensive calculations with useMemo
+
+## 🔧 Auto-Fix Patterns
+
+### Import Organization
+```typescript
+// ✅ CORRECT ORDER
+import React from 'react'
+import { NextPage } from 'next'
+import { useTranslations } from 'next-intl'
+
+import { Button } from '@/components/ui/button'
+import { WidgetContainer } from '@/components/widgets/base'
+import { useAnalytics } from '@/lib/hooks'
+
+import type { WidgetProps } from '@/lib/types'
+```
+
+### Component Structure
+```typescript
+// ✅ PREFERRED PATTERN
+interface ComponentProps {
+  title: string
+  description?: string
+}
+
+export default function Component({ title, description }: ComponentProps) {
+  const t = useTranslations('namespace')
+  
+  return (
+    <WidgetContainer>
+      <h1>{t('title')}</h1>
+      {description && <p>{description}</p>}
+    </WidgetContainer>
+  )
+}
+```
+
+### Hook Dependencies Auto-Fix
+- ALWAYS include all dependencies in useEffect/useCallback
+- WRAP functions in useCallback if used in dependencies
+- USE functional updates for setState when depending on previous state
+
+### Translation Patterns
+- NEVER hardcode text strings
+- ALWAYS use useTranslations hook
+- DEFINE proper translation keys structure
+- INCLUDE fallbacks for missing translations
+
+## 🛡️ Security & Quality Rules
+
+### XSS Prevention
+- NEVER use dangerouslySetInnerHTML without sanitization
+- VALIDATE all user inputs with Zod schemas
+- SANITIZE data before rendering
+- USE proper escaping for dynamic content
+
+### Performance Monitoring
+- TRACK Core Web Vitals automatically
+- MONITOR bundle size on every build
+- CHECK for unused dependencies
+- OPTIMIZE critical rendering path
+
+## 🎨 Code Style Enforcement
+
+### File Naming
+- USE kebab-case for file names
+- PREFER index.ts for barrel exports
+- NAME test files with .test.tsx suffix
+- ORGANIZE by feature, not by file type
+
+### Component Architecture
+- CREATE reusable base components
+- IMPLEMENT consistent prop interfaces
+- USE compound component patterns
+- FOLLOW atomic design principles
+
+## 🚀 Automation Rules
+
+### Pre-commit Actions
+1. AUTO-FIX ESLint warnings
+2. FORMAT code with Prettier
+3. GENERATE translation types
+4. VALIDATE TypeScript compilation
+5. CHECK security vulnerabilities
+
+### Build Optimizations
+- ANALYZE bundle size automatically
+- OPTIMIZE images and fonts
+- MINIFY and compress assets
+- GENERATE service worker
+
+## 📊 Widget-Specific Rules
+
+### 🎯 NEW WIDGET CREATION CHECKLIST
+
+#### 🌐 Internationalization (MANDATORY)
+- ✅ ADD translations to BOTH `/messages/en.json` AND `/messages/ru.json`
+- ✅ REQUIRED translation keys:
+  ```json
+  "widgets": {
+    "widgetName": {
+      "title": "Widget Title",
+      "description": "Short widget description",
+      "useCase": "When to use this widget",
+      "placeholder": "Input placeholder text",
+      "button": "Action button text",
+      "result": "Result label",
+      "error": "Error message",
+      "success": "Success message",
+      "seo": {
+        "title": "SEO Page Title",
+        "description": "SEO Meta Description"
+      }
+    }
+  }
+  ```
+- ✅ USE useTranslations('widgets.widgetName') in component
+- ✅ NEVER hardcode text strings
+
+#### ⌨️ Keyboard Shortcuts (MANDATORY)
+- ✅ IMPLEMENT Enter key for primary action
+- ✅ ADD Escape key to clear/reset
+- ✅ INCLUDE Ctrl+C/Cmd+C for copy functionality
+- ✅ ADD Tab navigation support
+- ✅ REGISTER shortcuts with useWidgetKeyboard hook:
+  ```typescript
+  useWidgetKeyboard({
+    'Enter': handlePrimaryAction,
+    'Escape': handleReset,
+    'ctrl+c': handleCopy
+  })
+  ```
+
+#### 📱 Mobile Responsive Design (MANDATORY)
+- ✅ USE responsive Tailwind classes (sm:, md:, lg:)
+- ✅ ENSURE touch-friendly button sizes (min 44px)
+- ✅ IMPLEMENT proper text scaling
+- ✅ TEST on mobile viewport (320px+)
+- ✅ OPTIMIZE input fields for mobile keyboards
+
+#### 🎨 Design Consistency (MANDATORY)
+- ✅ USE WidgetContainer component from '@/components/widgets/base'
+- ✅ FOLLOW existing color scheme (text-foreground, bg-background)
+- ✅ IMPLEMENT consistent spacing (p-4, gap-4, space-y-4)
+- ✅ USE shadcn/ui components (Button, Input, Card, etc.)
+- ✅ MAINTAIN visual hierarchy with proper headings
+
+#### 🔍 SEO Optimization (MANDATORY)
+- ✅ EXPORT metadata function with proper title/description
+- ✅ INCLUDE structured data (widget schema)
+- ✅ ADD FAQ section with common questions
+- ✅ IMPLEMENT breadcrumbs navigation
+- ✅ USE semantic HTML elements (main, section, article)
+
+#### ⚡ Performance & Functionality (MANDATORY)
+- ✅ IMPLEMENT proper loading states
+- ✅ ADD error handling with user-friendly messages
+- ✅ USE debouncing for real-time inputs
+- ✅ OPTIMIZE expensive calculations with useMemo
+- ✅ TRACK user interactions with analytics
+
+### Widget Structure Template
+```typescript
+// ✅ COMPLETE WIDGET PATTERN
+'use client'
+
+import { useState, useCallback, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
+
+import { WidgetContainer, WidgetInput, WidgetResult } from '@/components/widgets/base'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useAnalytics } from '@/lib/hooks'
+import { useWidgetKeyboard } from '@/lib/hooks'
+
+export default function WidgetName() {
+  const t = useTranslations('widgets.widgetName')
+  const { trackEvent } = useAnalytics()
+  
+  // State management
+  const [input, setInput] = useState('')
+  const [result, setResult] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  
+  // Main functionality
+  const handleProcess = useCallback(async () => {
+    if (!input.trim()) return
+    
+    setIsLoading(true)
+    try {
+      // Widget logic here
+      const processed = processInput(input)
+      setResult(processed)
+      trackEvent('widget_used', { widget: 'widgetName' })
+    } catch (error) {
+      console.error('Widget error:', error)
+      // Handle error
+    } finally {
+      setIsLoading(false)
+    }
+  }, [input, trackEvent])
+  
+  // Keyboard shortcuts
+  useWidgetKeyboard({
+    'Enter': handleProcess,
+    'Escape': () => setInput(''),
+    'ctrl+c': () => navigator.clipboard.writeText(result)
+  })
+  
+  // Expensive calculations
+  const processedData = useMemo(() => {
+    return input ? expensiveCalculation(input) : null
+  }, [input])
+  
+  return (
+    <WidgetContainer>
+      <WidgetInput>
+        <div className="space-y-4">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={t('placeholder')}
+            className="w-full"
+          />
+          <Button 
+            onClick={handleProcess}
+            disabled={!input.trim() || isLoading}
+            className="w-full sm:w-auto"
+          >
+            {isLoading ? 'Processing...' : t('button')}
+          </Button>
+        </div>
+      </WidgetInput>
+      
+      <WidgetResult>
+        {result && (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">{t('result')}</h3>
+            <div className="p-4 bg-muted rounded-md">
+              {result}
+            </div>
+          </div>
+        )}
+      </WidgetResult>
+    </WidgetContainer>
+  )
+}
+
+// SEO Metadata
+export async function generateMetadata() {
+  return {
+    title: t('seo.title'),
+    description: t('seo.description'),
+    keywords: 'relevant, keywords, here'
+  }
+}
+```
+
+### Error Handling
+- IMPLEMENT error boundaries for all widgets
+- PROVIDE meaningful error messages in both languages
+- LOG errors for debugging with proper context
+- FALLBACK to safe states on errors
+
+## 🌐 Internationalization Rules
+
+### Translation Keys
+- USE hierarchical structure (widgets.toolName.property)
+- INCLUDE context in key names
+- PROVIDE both EN and RU translations
+- VALIDATE completeness automatically
+
+### Locale-Aware Components
+- SUPPORT RTL languages if needed
+- FORMAT dates and numbers properly
+- HANDLE currency and units correctly
+- RESPECT locale-specific formats
+
+## 🔍 Code Review Automation
+
+### Quality Gates
+- REQUIRE 100% TypeScript coverage
+- ENFORCE 0 ESLint errors
+- MAINTAIN test coverage > 80%
+- VALIDATE accessibility standards
+
+### Documentation Requirements
+- DOCUMENT all public APIs
+- INCLUDE usage examples
+- MAINTAIN up-to-date README
+- PROVIDE migration guides
+
+## 🎯 Project-Specific Patterns
+
+### Next.js App Router
+- USE proper route grouping
+- IMPLEMENT loading and error pages
+- OPTIMIZE metadata and SEO
+- HANDLE dynamic imports properly
+
+### Database Integration
+- USE type-safe database queries
+- IMPLEMENT proper connection pooling
+- HANDLE migrations safely
+- VALIDATE schema consistency
+
+### Analytics Integration
+- TRACK user interactions automatically
+- RESPECT privacy settings
+- IMPLEMENT proper event naming
+- MONITOR performance metrics
+
+---
+
+This configuration ensures senior-level code quality and development practices for the React/Next.js portfolio project.

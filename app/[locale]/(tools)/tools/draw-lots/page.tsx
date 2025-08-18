@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Shuffle, RotateCcw, Edit2, Check, X } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -45,35 +45,7 @@ export default function DrawLotsPage() {
 		setMounted(true)
 	}, [])
 
-	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to draw card
-			if (e.code === 'Space' && !isDrawing) {
-				e.preventDefault()
-				startDrawing()
-			}
-			// Enter to reveal a random card (if cards are available and none selected)
-			if (e.key === 'Enter' && isDrawing && !selectedLot && lots.length > 0) {
-				e.preventDefault()
-				const availableLots = lots.filter(lot => !lot.isRevealed)
-				if (availableLots.length > 0) {
-					const randomLot = availableLots[Math.floor(Math.random() * availableLots.length)]
-					revealLot(randomLot.id)
-				}
-			}
-			// Ctrl/Cmd + R to reset
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				reset()
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [isDrawing, selectedLot, lots])
-
-	const startDrawing = () => {
+	const startDrawing = useCallback(() => {
 		const lines = inputText
 			.trim()
 			.split('\n')
@@ -90,7 +62,6 @@ export default function DrawLotsPage() {
 		}
 
 		setError(null)
-		setSelectedLot(null)
 
 		// Create lot objects with random order
 		const lotObjects: Lot[] = lines.map((value, index) => ({
@@ -104,27 +75,59 @@ export default function DrawLotsPage() {
 		const shuffledLots = shuffleArray(lotObjects)
 		setLots(shuffledLots)
 		setIsDrawing(true)
-	}
+	}, [inputText])
 
-	const revealLot = (lotId: string) => {
-		if (selectedLot) return // Only one lot can be selected
+	const revealLot = useCallback(
+		(lotId: string) => {
+			if (selectedLot) return // Only one lot can be selected
 
-		setLots(prev =>
-			prev.map(lot => (lot.id === lotId ? { ...lot, isRevealed: true } : lot))
-		)
+			setLots(prev =>
+				prev.map(lot => (lot.id === lotId ? { ...lot, isRevealed: true } : lot))
+			)
 
-		const lot = lots.find(l => l.id === lotId)
-		if (lot) {
-			setSelectedLot(lot.value)
-		}
-	}
+			const lot = lots.find(l => l.id === lotId)
+			if (lot) {
+				setSelectedLot(lot.value)
+			}
+		},
+		[selectedLot, lots]
+	)
 
-	const reset = () => {
+	const reset = useCallback(() => {
 		setLots([])
 		setIsDrawing(false)
 		setSelectedLot(null)
 		setError(null)
-	}
+	}, [])
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Space to draw card
+			if (e.code === 'Space' && !isDrawing) {
+				e.preventDefault()
+				startDrawing()
+			}
+			// Enter to reveal a random card (if cards are available and none selected)
+			if (e.key === 'Enter' && isDrawing && !selectedLot && lots.length > 0) {
+				e.preventDefault()
+				const availableLots = lots.filter(lot => !lot.isRevealed)
+				if (availableLots.length > 0) {
+					const randomLot =
+						availableLots[Math.floor(Math.random() * availableLots.length)]
+					revealLot(randomLot.id)
+				}
+			}
+			// Ctrl/Cmd + R to reset
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				reset()
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [isDrawing, selectedLot, lots, startDrawing, revealLot, reset])
 
 	const saveTitle = () => {
 		setPageTitle(tempTitle.trim() || 'Draw Lots')
@@ -193,7 +196,9 @@ export default function DrawLotsPage() {
 						<h3 className='font-semibold mb-3'>How to Use</h3>
 						<ol className='space-y-2 text-sm text-muted-foreground'>
 							<li>1. Enter items (names, options, tasks, etc.) one per line</li>
-							<li>2. Click &quot;Start Drawing&quot; to create randomized cards</li>
+							<li>
+								2. Click &quot;Start Drawing&quot; to create randomized cards
+							</li>
 							<li>3. Click any card to reveal what was drawn</li>
 							<li>4. Only one card can be selected per draw</li>
 						</ol>
@@ -330,9 +335,9 @@ export default function DrawLotsPage() {
 						tasks, or any situation where you need an unbiased random selection.
 					</p>
 					<p className='text-xs mt-4'>
-						This tool is provided &quot;as is&quot; without warranties. Please follow
-						local laws and regulations. Users are responsible for their use of
-						this tool.
+						This tool is provided &quot;as is&quot; without warranties. Please
+						follow local laws and regulations. Users are responsible for their
+						use of this tool.
 					</p>
 				</div>
 			</Card>

@@ -37,7 +37,7 @@ import { AnalogClock } from '@/components/ui/analog-clock'
 
 export default function WorldTimePage() {
 	const t = useTranslations('widgets.worldTime')
-	
+
 	const {
 		mounted,
 		currentTime,
@@ -82,10 +82,10 @@ export default function WorldTimePage() {
 								<div className='text-5xl font-mono font-bold tracking-tight'>
 									{currentTime.toLocaleTimeString('en-US', { hour12: false })}
 								</div>
-								<AnalogClock 
-									hour={currentTime.getHours()} 
-									minute={currentTime.getMinutes()} 
-									second={currentTime.getSeconds()} 
+								<AnalogClock
+									hour={currentTime.getHours()}
+									minute={currentTime.getMinutes()}
+									second={currentTime.getSeconds()}
 									size={120}
 								/>
 							</div>
@@ -116,20 +116,24 @@ export default function WorldTimePage() {
 			</Card>
 
 			{/* Tabbed Interface */}
-			<Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-				<TabsList className="grid w-full grid-cols-2">
-					<TabsTrigger value="clocks" className="gap-2">
-						<Clock className="w-4 h-4" />
+			<Tabs
+				value={activeTab}
+				onValueChange={setActiveTab}
+				className='space-y-6'
+			>
+				<TabsList className='grid w-full grid-cols-2'>
+					<TabsTrigger value='clocks' className='gap-2'>
+						<Clock className='w-4 h-4' />
 						{t('tabs.worldClocks')}
 					</TabsTrigger>
-					<TabsTrigger value="converter" className="gap-2">
-						<Timer className="w-4 h-4" />
+					<TabsTrigger value='converter' className='gap-2'>
+						<Timer className='w-4 h-4' />
 						{t('tabs.converter')}
 					</TabsTrigger>
 				</TabsList>
 
 				{/* World Clocks Tab */}
-				<TabsContent value="clocks" className="space-y-6">
+				<TabsContent value='clocks' className='space-y-6'>
 					<div className='flex items-center justify-between'>
 						<h2 className='text-2xl font-semibold flex items-center gap-2'>
 							<Sparkles className='w-6 h-6 text-primary' />
@@ -146,7 +150,10 @@ export default function WorldTimePage() {
 							</SelectTrigger>
 							<SelectContent>
 								{popularTimezones.map((tz, index) => (
-									<SelectItem key={`popular-${tz.name}-${index}`} value={tz.name}>
+									<SelectItem
+										key={`popular-${tz.name}-${index}`}
+										value={tz.name}
+									>
 										<span className='flex items-center gap-2'>
 											<Globe className='w-4 h-4' />
 											{tz.cities[0]} ({tz.abbr})
@@ -159,17 +166,19 @@ export default function WorldTimePage() {
 
 					<div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
 						{selectedCities.map((city, index) => (
-							<Card 
-								key={city.id} 
+							<Card
+								key={city.id}
 								className='relative group overflow-hidden hover:shadow-lg transition-all duration-300'
 								style={{ animationDelay: `${index * 100}ms` }}
 							>
-								<div className={cn(
-									'absolute inset-0 bg-gradient-to-br transition-opacity duration-300',
-									city.isDay 
-										? 'from-blue-100/50 to-blue-200/30 dark:from-blue-900/20 dark:to-blue-800/10' 
-										: 'from-blue-100/50 to-purple-100/30 dark:from-blue-900/20 dark:to-purple-900/10'
-								)} />
+								<div
+									className={cn(
+										'absolute inset-0 bg-gradient-to-br transition-opacity duration-300',
+										city.isDay
+											? 'from-blue-100/50 to-blue-200/30 dark:from-blue-900/20 dark:to-blue-800/10'
+											: 'from-blue-100/50 to-purple-100/30 dark:from-blue-900/20 dark:to-purple-900/10'
+									)}
+								/>
 
 								<CardContent className='relative p-6'>
 									<Button
@@ -180,11 +189,15 @@ export default function WorldTimePage() {
 									>
 										<X className='w-4 h-4' />
 									</Button>
-									
+
 									<div className='flex items-start justify-between mb-4'>
 										<div>
-											<h3 className='font-semibold text-xl mb-1'>{city.city}</h3>
-											<p className='text-sm text-muted-foreground'>{city.date}</p>
+											<h3 className='font-semibold text-xl mb-1'>
+												{city.city}
+											</h3>
+											<p className='text-sm text-muted-foreground'>
+												{city.date}
+											</p>
 										</div>
 										<div className='text-3xl mr-10'>
 											{city.isDay ? (
@@ -194,7 +207,7 @@ export default function WorldTimePage() {
 											)}
 										</div>
 									</div>
-									
+
 									<div className='flex items-center justify-between'>
 										<div>
 											<div className='text-3xl font-mono font-bold'>
@@ -211,9 +224,9 @@ export default function WorldTimePage() {
 												)}
 											</div>
 										</div>
-										<AnalogClock 
-											hour={city.hour} 
-											minute={city.minute} 
+										<AnalogClock
+											hour={city.hour}
+											minute={city.minute}
 											second={city.second}
 											size={80}
 										/>
@@ -221,14 +234,16 @@ export default function WorldTimePage() {
 								</CardContent>
 							</Card>
 						))}
-						
+
 						{/* Add City Card */}
 						{selectedCities.length < 12 && (
 							<Card className='border-dashed border-2 hover:border-primary transition-colors cursor-pointer'>
 								<CardContent className='p-6 flex items-center justify-center h-full'>
 									<div className='text-center'>
 										<Plus className='w-12 h-12 mx-auto mb-3 text-muted-foreground' />
-										<p className='text-sm text-muted-foreground'>{t('addMoreCities')}</p>
+										<p className='text-sm text-muted-foreground'>
+											{t('addMoreCities')}
+										</p>
 									</div>
 								</CardContent>
 							</Card>
@@ -237,7 +252,7 @@ export default function WorldTimePage() {
 				</TabsContent>
 
 				{/* Timezone Converter Tab */}
-				<TabsContent value="converter" className="space-y-6">
+				<TabsContent value='converter' className='space-y-6'>
 					<Card>
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
@@ -257,7 +272,9 @@ export default function WorldTimePage() {
 													id='from-time'
 													type='time'
 													value={conversion.fromTime}
-													onChange={e => updateConversion({ fromTime: e.target.value })}
+													onChange={e =>
+														updateConversion({ fromTime: e.target.value })
+													}
 													className='pl-10'
 												/>
 											</div>
@@ -266,7 +283,9 @@ export default function WorldTimePage() {
 												<Input
 													type='date'
 													value={conversion.fromDate}
-													onChange={e => updateConversion({ fromDate: e.target.value })}
+													onChange={e =>
+														updateConversion({ fromDate: e.target.value })
+													}
 													className='pl-10'
 												/>
 											</div>
@@ -277,7 +296,9 @@ export default function WorldTimePage() {
 										<Label htmlFor='from-timezone'>{t('fromTimezone')}</Label>
 										<Select
 											value={conversion.fromTimezone}
-											onValueChange={value => updateConversion({ fromTimezone: value })}
+											onValueChange={value =>
+												updateConversion({ fromTimezone: value })
+											}
 										>
 											<SelectTrigger id='from-timezone' className='mt-2'>
 												<SelectValue />
@@ -291,7 +312,7 @@ export default function WorldTimePage() {
 														className='mb-2'
 													/>
 												</div>
-												{filteredTimezones.slice(0, 20).map((tz) => (
+												{filteredTimezones.slice(0, 20).map(tz => (
 													<SelectItem key={tz} value={tz}>
 														{tz}
 													</SelectItem>
@@ -306,14 +327,19 @@ export default function WorldTimePage() {
 										<Label htmlFor='to-timezone'>{t('toTimezone')}</Label>
 										<Select
 											value={conversion.toTimezone}
-											onValueChange={value => updateConversion({ toTimezone: value })}
+											onValueChange={value =>
+												updateConversion({ toTimezone: value })
+											}
 										>
 											<SelectTrigger id='to-timezone' className='mt-2'>
 												<SelectValue />
 											</SelectTrigger>
 											<SelectContent>
 												{popularTimezones.map((tz, index) => (
-													<SelectItem key={`to-${tz.name}-${index}`} value={tz.name}>
+													<SelectItem
+														key={`to-${tz.name}-${index}`}
+														value={tz.name}
+													>
 														{tz.cities[0]} ({tz.abbr})
 													</SelectItem>
 												))}
@@ -332,7 +358,9 @@ export default function WorldTimePage() {
 								<div className='mt-6 p-6 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl'>
 									<div className='flex items-center justify-between'>
 										<div>
-											<p className='text-sm text-muted-foreground mb-2'>{t('result')}</p>
+											<p className='text-sm text-muted-foreground mb-2'>
+												{t('result')}
+											</p>
 											<p className='text-4xl font-mono font-bold mb-2'>
 												{conversion.result.time}
 											</p>

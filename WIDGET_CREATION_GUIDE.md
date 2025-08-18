@@ -5,14 +5,17 @@
 ### 1. Создание основных файлов
 
 #### 1.1 Страница виджета
+
 - Путь: `/app/[locale]/(tools)/tools/[widget-slug]/page.tsx`
 - Использовать `'use client'` директиву
 - Импортировать `useTranslations` из `next-intl`
 - Все тексты через `t('key')`, никаких хардкод строк
 
 #### 1.2 Константы виджета
+
 - Файл: `/lib/constants/widgets.ts`
 - Добавить объект виджета в массив `widgets`:
+
 ```typescript
 {
   id: 'widget-id',
@@ -37,28 +40,31 @@
 ### 2. Переводы
 
 #### 2.1 Файлы переводов
+
 - `/messages/en.json`
 - `/messages/ru.json`
 
 #### 2.2 Структура переводов
+
 ```json
 {
-  "widgets": {
-    "widgetId": {
-      "title": "Widget Title",
-      "description": "Widget description",
-      "useCase": "Use case description",
-      // Все ключи из компонента
-      "placeholder": "Enter value",
-      "button": "Calculate",
-      "result": "Result",
-      // и т.д.
-    }
-  }
+	"widgets": {
+		"widgetId": {
+			"title": "Widget Title",
+			"description": "Widget description",
+			"useCase": "Use case description",
+			// Все ключи из компонента
+			"placeholder": "Enter value",
+			"button": "Calculate",
+			"result": "Result"
+			// и т.д.
+		}
+	}
 }
 ```
 
 #### 2.3 Обязательные переводы
+
 - `title` - заголовок виджета
 - `description` - описание виджета
 - `useCase` - сценарий использования
@@ -69,21 +75,23 @@
 ### 3. SEO оптимизация
 
 #### 3.1 Метаданные страницы
+
 ```typescript
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params
-  const metadata = widgetMetadata['widget-id']?.[locale as 'en' | 'ru']
-  
-  return {
-    title: metadata?.title || 'Default Title',
-    description: metadata?.description || 'Default description',
-    keywords: metadata?.keywords?.join(', '),
-    // ...
-  }
+	const { locale } = await params
+	const metadata = widgetMetadata['widget-id']?.[locale as 'en' | 'ru']
+
+	return {
+		title: metadata?.title || 'Default Title',
+		description: metadata?.description || 'Default description',
+		keywords: metadata?.keywords?.join(', ')
+		// ...
+	}
 }
 ```
 
 #### 3.2 SEO метаданные в widget-metadata.ts
+
 ```typescript
 'widget-id': {
   en: {
@@ -102,6 +110,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 ### 4. FAQ секция
 
 #### 4.1 Требования к FAQ
+
 - Минимум 5 вопросов и ответов
 - Вопросы должны покрывать:
   - Что делает инструмент
@@ -111,15 +120,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   - Преимущества использования
 
 #### 4.2 Добавление FAQ в компонент
+
 ```tsx
-{widgetId && <WidgetFAQ widgetId={widgetId} />}
+{
+	widgetId && <WidgetFAQ widgetId={widgetId} />
+}
 ```
 
 ### 5. Компоненты и стилизация
 
 #### 5.1 Обязательные импорты
+
 ```typescript
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -127,21 +146,21 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 ```
 
 #### 5.2 Структура компонента
+
 ```tsx
-<Card className="relative z-10">
-  <CardHeader>
-    <CardTitle>{t('title')}</CardTitle>
-    <CardDescription>{t('description')}</CardDescription>
-  </CardHeader>
-  <CardContent>
-    {/* Форма/контент */}
-  </CardContent>
+<Card className='relative z-10'>
+	<CardHeader>
+		<CardTitle>{t('title')}</CardTitle>
+		<CardDescription>{t('description')}</CardDescription>
+	</CardHeader>
+	<CardContent>{/* Форма/контент */}</CardContent>
 </Card>
 ```
 
 ### 6. Проверка перед коммитом
 
 #### 6.1 Чеклист
+
 - [ ] Все строки переведены (нет хардкода)
 - [ ] FAQ содержит минимум 5 вопросов
 - [ ] SEO метаданные заполнены для en и ru
@@ -152,6 +171,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 - [ ] Добавлена обработка ошибок
 
 #### 6.2 Команды проверки
+
 ```bash
 npm run lint
 npm run build
@@ -169,6 +189,7 @@ npm run build
 ### 8. Примеры хороших виджетов
 
 Используйте как образец:
+
 - `/app/[locale]/(tools)/tools/css-clamp-calculator/page.tsx`
 - `/app/[locale]/(tools)/tools/password-generator/page.tsx`
 - `/app/[locale]/(tools)/tools/percentage-calculator/page.tsx`
@@ -183,6 +204,7 @@ npm run build
 ### 10. Команда для нового виджета
 
 При создании нового виджета следуй этому порядку:
+
 1. Создай страницу компонента
 2. Добавь в widgets.ts с полным описанием и FAQ
 3. Добавь переводы в messages (en.json, ru.json)

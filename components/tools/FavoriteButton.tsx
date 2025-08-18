@@ -8,48 +8,43 @@ import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { YandexGoals } from '@/lib/analytics/yandex-goals'
 
 interface FavoriteButtonProps {
-  widgetId: string
-  className?: string
-  variant?: 'default' | 'ghost' | 'outline'
-  size?: 'default' | 'sm' | 'lg' | 'icon'
+	widgetId: string
+	className?: string
+	variant?: 'default' | 'ghost' | 'outline'
+	size?: 'default' | 'sm' | 'lg' | 'icon'
 }
 
-export function FavoriteButton({ 
-  widgetId, 
-  className,
-  variant = 'ghost',
-  size = 'icon'
+export function FavoriteButton({
+	widgetId,
+	className,
+	variant = 'ghost',
+	size = 'icon'
 }: FavoriteButtonProps) {
-  const { isFavorite, toggleFavorite } = useFavorites()
-  const { trackFavorite } = useAnalytics(widgetId)
-  const isFav = isFavorite(widgetId)
+	const { favorites, toggleFavorite } = useFavorites()
+	const { trackFavorite } = useAnalytics(widgetId)
+	const isFav = favorites.includes(widgetId)
 
-  return (
-    <Button
-      variant={variant}
-      size={size}
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        const newFavoriteState = !isFav
-        toggleFavorite(widgetId)
-        trackFavorite(newFavoriteState)
-        // Track Yandex goal
-        YandexGoals.toolFavorited(widgetId, newFavoriteState)
-      }}
-      className={cn(
-        'transition-all',
-        isFav && 'text-red-500 hover:text-red-600',
-        className
-      )}
-      aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-    >
-      <Heart 
-        className={cn(
-          'w-4 h-4',
-          isFav && 'fill-current'
-        )} 
-      />
-    </Button>
-  )
+	return (
+		<Button
+			variant={variant}
+			size={size}
+			onClick={e => {
+				e.preventDefault()
+				e.stopPropagation()
+				const newFavoriteState = !isFav
+				toggleFavorite(widgetId)
+				trackFavorite(newFavoriteState)
+				// Track Yandex goal
+				YandexGoals.toolFavorited(widgetId, newFavoriteState)
+			}}
+			className={cn(
+				'transition-all',
+				isFav && 'text-red-500 hover:text-red-600',
+				className
+			)}
+			aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+		>
+			<Heart className={cn('w-4 h-4', isFav && 'fill-current')} />
+		</Button>
+	)
 }

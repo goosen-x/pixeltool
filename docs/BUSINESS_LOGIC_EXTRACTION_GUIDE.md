@@ -1,10 +1,12 @@
 # Business Logic Extraction Guide
 
-This guide explains how to extract business logic from widget pages into reusable hooks, following best practices for maintainability and testability.
+This guide explains how to extract business logic from widget pages into
+reusable hooks, following best practices for maintainability and testability.
 
 ## Overview
 
 Business logic extraction involves:
+
 1. Moving calculations and state management to custom hooks
 2. Separating UI components from business logic
 3. Creating reusable, testable functions
@@ -41,28 +43,28 @@ For widgets that perform calculations:
 import { useCalculator } from '@/lib/hooks/widgets'
 
 const calculator = useCalculator({
-  fields: {
-    principal: '',
-    rate: '',
-    time: ''
-  },
-  calculate: (fields) => {
-    const p = parseFloat(fields.principal)
-    const r = parseFloat(fields.rate) / 100
-    const t = parseFloat(fields.time)
-    
-    return {
-      interest: p * r * t,
-      total: p + (p * r * t)
-    }
-  },
-  validate: (fields) => {
-    const errors: Record<string, string> = {}
-    if (!fields.principal) errors.principal = 'Required'
-    if (!fields.rate) errors.rate = 'Required'
-    return errors
-  },
-  autoCalculate: true
+	fields: {
+		principal: '',
+		rate: '',
+		time: ''
+	},
+	calculate: fields => {
+		const p = parseFloat(fields.principal)
+		const r = parseFloat(fields.rate) / 100
+		const t = parseFloat(fields.time)
+
+		return {
+			interest: p * r * t,
+			total: p + p * r * t
+		}
+	},
+	validate: fields => {
+		const errors: Record<string, string> = {}
+		if (!fields.principal) errors.principal = 'Required'
+		if (!fields.rate) errors.rate = 'Required'
+		return errors
+	},
+	autoCalculate: true
 })
 ```
 
@@ -74,18 +76,18 @@ For unit conversion widgets:
 import { useConverter } from '@/lib/hooks/widgets'
 
 const converter = useConverter({
-  categories: [
-    {
-      id: 'length',
-      name: 'Length',
-      baseUnit: 'meter',
-      units: [
-        { id: 'meter', name: 'Meter', symbol: 'm', factor: 1 },
-        { id: 'kilometer', name: 'Kilometer', symbol: 'km', factor: 1000 }
-      ]
-    }
-  ],
-  precision: 6
+	categories: [
+		{
+			id: 'length',
+			name: 'Length',
+			baseUnit: 'meter',
+			units: [
+				{ id: 'meter', name: 'Meter', symbol: 'm', factor: 1 },
+				{ id: 'kilometer', name: 'Kilometer', symbol: 'km', factor: 1000 }
+			]
+		}
+	],
+	precision: 6
 })
 ```
 
@@ -97,15 +99,15 @@ For widgets that generate values:
 import { useGenerator } from '@/lib/hooks/widgets'
 
 const generator = useGenerator({
-  generate: async (options) => {
-    // Generate logic here
-    return generatedValue
-  },
-  validate: (options) => {
-    if (!options.length) return 'Length is required'
-    return null
-  },
-  maxHistory: 20
+	generate: async options => {
+		// Generate logic here
+		return generatedValue
+	},
+	validate: options => {
+		if (!options.length) return 'Length is required'
+		return null
+	},
+	maxHistory: 20
 })
 ```
 
@@ -114,6 +116,7 @@ const generator = useGenerator({
 ### Step 1: Identify Business Logic
 
 Look for:
+
 - State management
 - Calculations
 - Validations
@@ -125,17 +128,17 @@ Look for:
 ```typescript
 // lib/hooks/widgets/useMyWidget.ts
 export function useMyWidget() {
-  const [state, setState] = useState()
-  
-  const calculate = useCallback(() => {
-    // Business logic here
-  }, [dependencies])
-  
-  return {
-    state,
-    calculate,
-    // ... other exports
-  }
+	const [state, setState] = useState()
+
+	const calculate = useCallback(() => {
+		// Business logic here
+	}, [dependencies])
+
+	return {
+		state,
+		calculate
+		// ... other exports
+	}
 }
 ```
 
@@ -143,13 +146,13 @@ export function useMyWidget() {
 
 ```typescript
 export interface MyWidgetInput {
-  field1: string
-  field2: number
+	field1: string
+	field2: number
 }
 
 export interface MyWidgetResult {
-  result: number
-  formatted: string
+	result: number
+	formatted: string
 }
 ```
 
@@ -160,7 +163,7 @@ export interface MyWidgetResult {
 export default function MyWidget() {
   const [value, setValue] = useState('')
   // ... lots of logic
-  
+
   return <div>...</div>
 }
 
@@ -169,7 +172,7 @@ import { useMyWidget } from '@/lib/hooks/widgets'
 
 export default function MyWidget() {
   const { state, calculate } = useMyWidget()
-  
+
   return <div>...</div>
 }
 ```
@@ -183,22 +186,22 @@ export default function MyWidget() {
 // After: 300 lines in hook + 400 lines in component
 
 export function useBMICalculator() {
-  // All calculation logic
-  const calculateBMI = useCallback(() => {
-    // BMI formula
-  }, [])
-  
-  const calculateBodyFat = useCallback(() => {
-    // Body fat formula
-  }, [])
-  
-  return {
-    input,
-    result,
-    updateField,
-    calculate,
-    reset
-  }
+	// All calculation logic
+	const calculateBMI = useCallback(() => {
+		// BMI formula
+	}, [])
+
+	const calculateBodyFat = useCallback(() => {
+		// Body fat formula
+	}, [])
+
+	return {
+		input,
+		result,
+		updateField,
+		calculate,
+		reset
+	}
 }
 ```
 
@@ -206,23 +209,23 @@ export function useBMICalculator() {
 
 ```typescript
 export function usePercentageCalculator() {
-  // Different calculation types
-  const calculatePercentOfNumber = useCallback(() => {
-    const result = (value * percentage) / 100
-    return result
-  }, [value, percentage])
-  
-  // Auto-calculate on input change
-  useEffect(() => {
-    calculate()
-  }, [inputs])
-  
-  return {
-    activeType,
-    results,
-    updateValue,
-    copyResult
-  }
+	// Different calculation types
+	const calculatePercentOfNumber = useCallback(() => {
+		const result = (value * percentage) / 100
+		return result
+	}, [value, percentage])
+
+	// Auto-calculate on input change
+	useEffect(() => {
+		calculate()
+	}, [inputs])
+
+	return {
+		activeType,
+		results,
+		updateValue,
+		copyResult
+	}
 }
 ```
 
@@ -235,7 +238,7 @@ Extract calculations as pure functions:
 ```typescript
 // Good
 export const calculateBMI = (weightKg: number, heightM: number): number => {
-  return weightKg / (heightM * heightM)
+	return weightKg / (heightM * heightM)
 }
 
 // Use in hook
@@ -248,11 +251,11 @@ Use useCallback and useMemo appropriately:
 
 ```typescript
 const expensiveCalculation = useMemo(() => {
-  return performExpensiveOperation(data)
+	return performExpensiveOperation(data)
 }, [data])
 
 const handleCalculate = useCallback(() => {
-  // Calculation logic
+	// Calculation logic
 }, [dependencies])
 ```
 
@@ -262,14 +265,14 @@ Include proper error handling:
 
 ```typescript
 const calculate = useCallback(() => {
-  try {
-    const result = performCalculation()
-    setResult(result)
-    return { success: true, result }
-  } catch (error) {
-    toast.error('Calculation failed')
-    return { success: false, error }
-  }
+	try {
+		const result = performCalculation()
+		setResult(result)
+		return { success: true, result }
+	} catch (error) {
+		toast.error('Calculation failed')
+		return { success: false, error }
+	}
 }, [])
 ```
 
@@ -279,9 +282,9 @@ Use TypeScript generics:
 
 ```typescript
 export function useWidget<TInput, TResult>(
-  config: WidgetConfig<TInput, TResult>
+	config: WidgetConfig<TInput, TResult>
 ) {
-  // Type-safe implementation
+	// Type-safe implementation
 }
 ```
 
@@ -292,14 +295,14 @@ Keep related state together:
 ```typescript
 // Good
 const [formData, setFormData] = useState({
-  field1: '',
-  field2: '',
-  field3: ''
+	field1: '',
+	field2: '',
+	field3: ''
 })
 
 // Update single field
 const updateField = (name: string, value: any) => {
-  setFormData(prev => ({ ...prev, [name]: value }))
+	setFormData(prev => ({ ...prev, [name]: value }))
 }
 ```
 
@@ -313,16 +316,16 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { useBMICalculator } from '@/lib/hooks/widgets'
 
 describe('useBMICalculator', () => {
-  it('calculates BMI correctly', () => {
-    const { result } = renderHook(() => useBMICalculator())
-    
-    act(() => {
-      result.current.updateField('weight', '70')
-      result.current.updateField('height', '175')
-    })
-    
-    expect(result.current.result?.bmi).toBeCloseTo(22.86)
-  })
+	it('calculates BMI correctly', () => {
+		const { result } = renderHook(() => useBMICalculator())
+
+		act(() => {
+			result.current.updateField('weight', '70')
+			result.current.updateField('height', '175')
+		})
+
+		expect(result.current.result?.bmi).toBeCloseTo(22.86)
+	})
 })
 ```
 
@@ -345,9 +348,9 @@ describe('useBMICalculator', () => {
 
 ```typescript
 useEffect(() => {
-  if (hasRequiredInputs()) {
-    calculate()
-  }
+	if (hasRequiredInputs()) {
+		calculate()
+	}
 }, [inputs, calculate])
 ```
 
@@ -357,7 +360,7 @@ useEffect(() => {
 const [history, setHistory] = useState<Result[]>([])
 
 const addToHistory = (result: Result) => {
-  setHistory(prev => [result, ...prev].slice(0, MAX_HISTORY))
+	setHistory(prev => [result, ...prev].slice(0, MAX_HISTORY))
 }
 ```
 
@@ -365,9 +368,9 @@ const addToHistory = (result: Result) => {
 
 ```typescript
 const copyResult = useCallback(() => {
-  const text = formatResult(result)
-  navigator.clipboard.writeText(text)
-  toast.success('Copied!')
+	const text = formatResult(result)
+	navigator.clipboard.writeText(text)
+	toast.success('Copied!')
 }, [result])
 ```
 
@@ -375,16 +378,17 @@ const copyResult = useCallback(() => {
 
 ```typescript
 const reset = useCallback(() => {
-  setInput(defaultValues)
-  setResult(null)
-  setErrors({})
-  toast.success('Reset complete')
+	setInput(defaultValues)
+	setResult(null)
+	setErrors({})
+	toast.success('Reset complete')
 }, [defaultValues])
 ```
 
 ## Conclusion
 
 Extracting business logic improves:
+
 - Code organization
 - Reusability
 - Testability

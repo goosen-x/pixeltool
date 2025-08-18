@@ -38,87 +38,87 @@ import {
 
 // Patterns to replace
 const REPLACEMENTS = [
-  // Replace max-w-* mx-auto with WidgetLayout
-  {
-    pattern: /<div className="max-w-\w+ mx-auto[\s\S]*?">/,
-    replacement: '<WidgetLayout>'
-  },
-  // Replace Card with WidgetCard
-  {
-    pattern: /<Card className=".*?">/,
-    replacement: '<WidgetCard>'
-  },
-  // Replace regular buttons with widget buttons
-  {
-    pattern: /<Button\s+onClick={([^}]+)}\s*>/,
-    replacement: '<WidgetPrimaryButton onClick={$1}>'
-  },
-  {
-    pattern: /<Button\s+variant="outline"/,
-    replacement: '<WidgetSecondaryButton'
-  },
-  // Update Textarea with WidgetTextarea
-  {
-    pattern: /<Textarea/,
-    replacement: '<WidgetTextarea'
-  },
-  // Update Input with WidgetInput
-  {
-    pattern: /<Input/,
-    replacement: '<WidgetInput'
-  }
+	// Replace max-w-* mx-auto with WidgetLayout
+	{
+		pattern: /<div className="max-w-\w+ mx-auto[\s\S]*?">/,
+		replacement: '<WidgetLayout>'
+	},
+	// Replace Card with WidgetCard
+	{
+		pattern: /<Card className=".*?">/,
+		replacement: '<WidgetCard>'
+	},
+	// Replace regular buttons with widget buttons
+	{
+		pattern: /<Button\s+onClick={([^}]+)}\s*>/,
+		replacement: '<WidgetPrimaryButton onClick={$1}>'
+	},
+	{
+		pattern: /<Button\s+variant="outline"/,
+		replacement: '<WidgetSecondaryButton'
+	},
+	// Update Textarea with WidgetTextarea
+	{
+		pattern: /<Textarea/,
+		replacement: '<WidgetTextarea'
+	},
+	// Update Input with WidgetInput
+	{
+		pattern: /<Input/,
+		replacement: '<WidgetInput'
+	}
 ]
 
 function processFile(filePath: string) {
-  try {
-    let content = readFileSync(filePath, 'utf8')
-    
-    // Skip if already updated
-    if (content.includes('WidgetLayout')) {
-      console.log(`✓ Already updated: ${filePath}`)
-      return
-    }
+	try {
+		let content = readFileSync(filePath, 'utf8')
 
-    // Add imports after 'use client'
-    if (!content.includes('@/components/tools/WidgetLayout')) {
-      content = content.replace(
-        "'use client'",
-        `'use client'\n\n${NEW_IMPORTS}`
-      )
-    }
+		// Skip if already updated
+		if (content.includes('WidgetLayout')) {
+			console.log(`✓ Already updated: ${filePath}`)
+			return
+		}
 
-    // Apply replacements
-    REPLACEMENTS.forEach(({ pattern, replacement }) => {
-      content = content.replace(pattern, replacement)
-    })
+		// Add imports after 'use client'
+		if (!content.includes('@/components/tools/WidgetLayout')) {
+			content = content.replace(
+				"'use client'",
+				`'use client'\n\n${NEW_IMPORTS}`
+			)
+		}
 
-    // Write back
-    writeFileSync(filePath, content)
-    console.log(`✅ Updated: ${filePath}`)
-  } catch (error) {
-    console.error(`❌ Error processing ${filePath}:`, error)
-  }
+		// Apply replacements
+		REPLACEMENTS.forEach(({ pattern, replacement }) => {
+			content = content.replace(pattern, replacement)
+		})
+
+		// Write back
+		writeFileSync(filePath, content)
+		console.log(`✅ Updated: ${filePath}`)
+	} catch (error) {
+		console.error(`❌ Error processing ${filePath}:`, error)
+	}
 }
 
 function processDirectory(dir: string) {
-  const entries = readdirSync(dir)
-  
-  entries.forEach(entry => {
-    const fullPath = join(dir, entry)
-    const stat = statSync(fullPath)
-    
-    if (stat.isDirectory() && !entry.startsWith('.')) {
-      // Look for page.tsx in subdirectory
-      const pagePath = join(fullPath, 'page.tsx')
-      try {
-        if (statSync(pagePath).isFile()) {
-          processFile(pagePath)
-        }
-      } catch (e) {
-        // No page.tsx in this directory
-      }
-    }
-  })
+	const entries = readdirSync(dir)
+
+	entries.forEach(entry => {
+		const fullPath = join(dir, entry)
+		const stat = statSync(fullPath)
+
+		if (stat.isDirectory() && !entry.startsWith('.')) {
+			// Look for page.tsx in subdirectory
+			const pagePath = join(fullPath, 'page.tsx')
+			try {
+				if (statSync(pagePath).isFile()) {
+					processFile(pagePath)
+				}
+			} catch (e) {
+				// No page.tsx in this directory
+			}
+		}
+	})
 }
 
 // Run the script

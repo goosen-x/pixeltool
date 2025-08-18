@@ -72,7 +72,8 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 							left: 0,
 							right: 0,
 							width: '2px',
-							background: 'linear-gradient(to top, rgb(168, 85, 247) 0%, rgb(59, 130, 246) 10%, transparent)',
+							background:
+								'linear-gradient(to top, rgb(168, 85, 247) 0%, rgb(59, 130, 246) 10%, transparent)',
 							borderRadius: '9999px'
 						}}
 					/>

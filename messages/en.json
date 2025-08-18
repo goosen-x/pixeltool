@@ -13,7 +13,7 @@
 			"browseCategories": "Browse Categories",
 			"liveAndFree": "Live & Always Free",
 			"features": {
-				"professionalTools": "50+ Professional Tools",
+				"professionalTools": "Professional Tools",
 				"noInstallation": "No Installation Required",
 				"freeForever": "100% Free Forever",
 				"lightningFast": "Lightning Fast"
@@ -56,7 +56,8 @@
 			"description": "From CSS generators to security utilities, discover professional tools that thousands of developers use daily",
 			"tryNow": "Try Now",
 			"live": "Live Tool",
-			"viewAll": "View All Tools"
+			"viewAll": "View All Tools",
+			"swipeHint": "Swipe to browse"
 		},
 		"whyChoose": {
 			"title": "Why Choose PixelTool?",
@@ -108,14 +109,16 @@
 			"tools": "Tools",
 			"experience": "Experience",
 			"contact": "Contact",
-			"blog": "Blog"
+			"blog": "Blog",
+			"menu": "Menu"
 		},
 		"cv": {
 			"btnText": "DOWNLOAD CV",
 			"href": "/cv/CV_Borisenko_Dmitry_Frontend_En.pdf",
 			"filename": "CV_Borisenko_Dmitry_Frontend_En.pdf"
 		},
-		"search": "Search"
+		"search": "Search",
+		"settings": "Settings"
 	},
 	"Feedback": {
 		"title": "Feedback",
@@ -1330,6 +1333,62 @@
 			"description": "Digital draw straws - pick names or make random selections fairly",
 			"useCase": "Make fair random selections from a list of options or names"
 		},
+		"emailValidator": {
+			"title": "Email Validator",
+			"description": "Validate email addresses with syntax, domain, and disposable checks",
+			"useCase": "Verify email addresses for authenticity and deliverability",
+			"placeholder": "Enter email address",
+			"bulkPlaceholder": "Enter email addresses, one per line...",
+			"validate": "Validate",
+			"validateAll": "Validate All",
+			"tabs": {
+				"single": "Single Email",
+				"bulk": "Bulk Validation"
+			},
+			"emailCount": "{{count}} emails",
+			"results": "Validation Results",
+			"export": "Export CSV",
+			"copied": "Copied to clipboard",
+			"exported": "Results exported",
+			"suggestion": "Did you mean",
+			"quality": {
+				"high": "High Quality",
+				"medium": "Medium Quality",
+				"low": "Low Quality"
+			},
+			"checks": {
+				"syntax": "Syntax",
+				"syntaxDesc": "Valid email format",
+				"domain": "Domain",
+				"domainDesc": "Domain has MX records",
+				"disposable": "Not Disposable",
+				"disposableDesc": "Not a temporary email",
+				"roleEmail": "Not Role-based",
+				"roleEmailDesc": "Not a generic role address"
+			},
+			"flags": {
+				"disposable": "Disposable",
+				"role": "Role-based",
+				"free": "Free Provider"
+			},
+			"stats": {
+				"valid": "Valid",
+				"invalid": "Invalid",
+				"disposable": "Disposable",
+				"avgScore": "Avg Score"
+			},
+			"errors": {
+				"emptyEmail": "Please enter an email address",
+				"emptyBulk": "Please enter email addresses",
+				"tooMany": "Maximum 100 emails at once",
+				"invalid": "Invalid email address",
+				"validationFailed": "Validation failed"
+			},
+			"success": {
+				"valid": "Email is valid",
+				"bulk": "Validated {{valid}} of {{total}} emails"
+			}
+		},
 		"mockDataGenerator": {
 			"title": "Mock Data Generator",
 			"description": "Fetch sample data from popular free public APIs for testing",
@@ -1838,7 +1897,14 @@
 		"uuidGenerator": {
 			"title": "UUID Generator",
 			"description": "Generate UUID/GUID in various versions (v1, v3, v4, v5)",
-			"useCase": "Generate UUID/GUID in various versions (v1, v3, v4, v5)"
+			"useCase": "Generate UUID/GUID in various versions (v1, v3, v4, v5)",
+			"shortcuts": {
+				"generate": "Generate new UUID",
+				"copy": "Copy last UUID",
+				"copyAll": "Copy all UUIDs",
+				"download": "Download UUIDs",
+				"clear": "Clear history"
+			}
 		},
 		"compoundInterest": {
 			"title": "Compound Interest Calculator",

@@ -1,14 +1,17 @@
 # Translation System Documentation
 
-This project uses a type-safe translation system built on top of `next-intl` with additional validation and type generation.
+This project uses a type-safe translation system built on top of `next-intl`
+with additional validation and type generation.
 
 ## Overview
 
 The translation system provides:
+
 - **Type Safety**: Auto-generated TypeScript types from translation JSON files
 - **Validation**: Runtime and build-time validation of translation completeness
 - **Safe Access**: Utilities to safely access translations with fallbacks
-- **Structure Enforcement**: Ensures consistent structure across all language files
+- **Structure Enforcement**: Ensures consistent structure across all language
+  files
 
 ## File Structure
 
@@ -34,31 +37,33 @@ The translation system provides:
 Each widget requires translations in two places:
 
 1. **Brief Definition** (in `widgets` section):
+
 ```json
 {
-  "widgets": {
-    "myWidget": {
-      "title": "My Widget",
-      "description": "Short description",
-      "useCase": "When to use this widget"
-    }
-  }
+	"widgets": {
+		"myWidget": {
+			"title": "My Widget",
+			"description": "Short description",
+			"useCase": "When to use this widget"
+		}
+	}
 }
 ```
 
 2. **Full Definition** (later in the file with all widget-specific fields):
+
 ```json
 {
-  "widgets": {
-    "myWidget": {
-      "title": "My Widget",
-      "description": "Short description", 
-      "useCase": "When to use this widget",
-      "input": "Input Label",
-      "output": "Output Label",
-      // ... other widget-specific fields
-    }
-  }
+	"widgets": {
+		"myWidget": {
+			"title": "My Widget",
+			"description": "Short description",
+			"useCase": "When to use this widget",
+			"input": "Input Label",
+			"output": "Output Label"
+			// ... other widget-specific fields
+		}
+	}
 }
 ```
 
@@ -105,7 +110,7 @@ import { useWidgetTranslations } from '@/lib/hooks/useTypedTranslations'
 
 export function MyWidget() {
   const { t, title, description, useCase } = useWidgetTranslations('myWidget')
-  
+
   return (
     <div>
       <h1>{title()}</h1>
@@ -119,19 +124,25 @@ export function MyWidget() {
 ## Available Commands
 
 ### Validate Translations
+
 Check for missing translations and structural issues:
+
 ```bash
 npm run validate:translations
 ```
 
 ### Generate Types
+
 Generate TypeScript types from translation files:
+
 ```bash
 npm run generate:types
 ```
 
 ### Check All
+
 Run both type generation and validation:
+
 ```bash
 npm run translations:check
 ```
@@ -140,7 +151,8 @@ npm run translations:check
 
 The validation script checks for:
 
-1. **Required Fields**: All widgets must have `title`, `description`, and `useCase`
+1. **Required Fields**: All widgets must have `title`, `description`, and
+   `useCase`
 2. **Language Parity**: All keys in English must exist in Russian
 3. **No Duplicates**: Warns about widgets defined multiple times
 4. **Structure Consistency**: Ensures both languages have the same structure
@@ -150,41 +162,52 @@ The validation script checks for:
 Use the provided utilities for safe translation access:
 
 ```typescript
-import { safeTranslation, getWidgetTranslation } from '@/lib/utils/safe-translations'
+import {
+	safeTranslation,
+	getWidgetTranslation
+} from '@/lib/utils/safe-translations'
 
 // Safe access with fallback
-const title = safeTranslation(translations, 'widgets.myWidget.title', 'Default Title')
+const title = safeTranslation(
+	translations,
+	'widgets.myWidget.title',
+	'Default Title'
+)
 
 // Get validated widget translation
 const widget = getWidgetTranslation(translations, 'myWidget')
 if (widget) {
-  console.log(widget.title, widget.description, widget.useCase)
+	console.log(widget.title, widget.description, widget.useCase)
 }
 ```
 
 ## Best Practices
 
 1. **Always run validation** after adding/modifying translations:
+
    ```bash
    npm run translations:check
    ```
 
 2. **Use type-safe hooks** instead of raw `useTranslations`:
+
    ```typescript
    // Good
    const { t } = useWidgetTranslations('myWidget')
-   
+
    // Avoid
    const t = useTranslations('widgets.myWidget')
    ```
 
-3. **Add translations for both languages** at the same time to avoid validation errors
+3. **Add translations for both languages** at the same time to avoid validation
+   errors
 
 4. **Use meaningful keys** that describe the content, not the UI element:
+
    ```json
    // Good
    "invalidEmailError": "Please enter a valid email address"
-   
+
    // Avoid
    "redText": "Please enter a valid email address"
    ```
@@ -194,24 +217,34 @@ if (widget) {
 ## Common Issues
 
 ### MISSING_MESSAGE Error
+
 This occurs when a translation key is not found. Check:
+
 1. The widget is defined in the correct section
 2. The key exists in both language files
 3. There are no typos in the translation key
 
 ### Duplicate Widget Definitions
+
 If a widget appears in multiple places:
+
 1. Keep the full definition with all fields
 2. Remove any duplicate brief definitions
 
 ### Type Errors
+
 If TypeScript complains about translation types:
+
 1. Run `npm run generate:types` to update generated types
 2. Ensure your widget name is added to the type definitions
 
 ## Future Improvements
 
-1. **Automatic Translation Generation**: Script to scaffold all required translations for a new widget
-2. **Translation Coverage Report**: Visual report showing translation completion percentage
-3. **Hot Reload for Translations**: Automatically reload translations in development
-4. **Translation Key Autocomplete**: VSCode extension for translation key suggestions
+1. **Automatic Translation Generation**: Script to scaffold all required
+   translations for a new widget
+2. **Translation Coverage Report**: Visual report showing translation completion
+   percentage
+3. **Hot Reload for Translations**: Automatically reload translations in
+   development
+4. **Translation Key Autocomplete**: VSCode extension for translation key
+   suggestions

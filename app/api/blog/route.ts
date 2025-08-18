@@ -6,9 +6,9 @@ export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url)
 		const locale = searchParams.get('locale') || 'en'
-		
+
 		const posts = await getAllPublishedPosts(locale)
-		
+
 		return NextResponse.json({
 			success: true,
 			data: posts
@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
 	try {
-		const body = await request.json() as CreateBlogPostData
-		
+		const body = (await request.json()) as CreateBlogPostData
+
 		// Validate required fields
 		if (!body.slug || !body.title || !body.content) {
 			return NextResponse.json(
@@ -39,9 +39,9 @@ export async function POST(request: NextRequest) {
 				{ status: 400 }
 			)
 		}
-		
+
 		const post = await createBlogPost(body)
-		
+
 		if (!post) {
 			return NextResponse.json(
 				{
@@ -51,11 +51,14 @@ export async function POST(request: NextRequest) {
 				{ status: 500 }
 			)
 		}
-		
-		return NextResponse.json({
-			success: true,
-			data: post
-		}, { status: 201 })
+
+		return NextResponse.json(
+			{
+				success: true,
+				data: post
+			},
+			{ status: 201 }
+		)
 	} catch (error) {
 		console.error('Error creating post:', error)
 		return NextResponse.json(

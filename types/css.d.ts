@@ -1,11 +1,11 @@
 declare module '*.css' {
-  const content: { [className: string]: string }
-  export default content
+	const content: { [className: string]: string }
+	export default content
 }
 
 declare module 'prismjs/themes/prism-tomorrow.css' {
-  const content: any
-  export default content
+	const content: any
+	export default content
 }
 
 declare module 'prismjs/components/prism-javascript'

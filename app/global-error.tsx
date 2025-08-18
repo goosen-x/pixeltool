@@ -6,7 +6,7 @@ import { AlertTriangle } from 'lucide-react'
 
 export default function GlobalError({
 	error,
-	reset,
+	reset
 }: {
 	error: Error & { digest?: string }
 	reset: () => void
@@ -28,7 +28,7 @@ export default function GlobalError({
 						<h1 className='mb-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
 							Critical Error
 						</h1>
-						
+
 						<p className='mb-4 text-gray-600'>
 							A critical error occurred. Our team has been notified.
 						</p>
@@ -41,12 +41,15 @@ export default function GlobalError({
 						)}
 
 						<div className='flex gap-4 justify-center'>
-							<Button onClick={reset} className='bg-blue-600 hover:bg-blue-700 text-white'>
+							<Button
+								onClick={reset}
+								className='bg-blue-600 hover:bg-blue-700 text-white'
+							>
 								Try again
 							</Button>
-							<Button 
-								className='bg-gray-200 hover:bg-gray-300 text-gray-900' 
-								onClick={() => window.location.href = '/'}
+							<Button
+								className='bg-gray-200 hover:bg-gray-300 text-gray-900'
+								onClick={() => (window.location.href = '/')}
 							>
 								Go home
 							</Button>

@@ -4,7 +4,14 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
-import { Home, Layers, FolderOpen, Briefcase, BookOpen, Mail } from 'lucide-react'
+import {
+	Home,
+	Layers,
+	FolderOpen,
+	Briefcase,
+	BookOpen,
+	Mail
+} from 'lucide-react'
 
 interface ScrollSpyProps {
 	className?: string
@@ -72,7 +79,8 @@ export const ScrollSpy = ({ className }: ScrollSpyProps) => {
 		const element = document.getElementById(sectionId)
 		if (element) {
 			const headerOffset = 300 // Larger offset for better section visibility
-			const elementPosition = element.getBoundingClientRect().top + window.scrollY
+			const elementPosition =
+				element.getBoundingClientRect().top + window.scrollY
 			const offsetPosition = elementPosition - headerOffset
 
 			window.scrollTo({
@@ -99,74 +107,78 @@ export const ScrollSpy = ({ className }: ScrollSpyProps) => {
 						exit={{ opacity: 0, x: -20 }}
 						transition={{ duration: 0.3 }}
 					>
-					<nav className={cn(
-						"bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl transition-all duration-300",
-						isExpanded ? "p-3" : "p-2"
-					)}>
-						<ul className="space-y-1">
-							{sections.map((section) => (
-								<li key={section.id}>
-									<button
-										onClick={() => handleClick(section.id)}
-										className={cn(
-											'flex items-center text-sm transition-all duration-300 w-full',
-											'hover:bg-accent/10 rounded-lg group',
-											'focus:outline-none focus:ring-2 focus:ring-accent/20',
-											isExpanded ? 'gap-3 p-2' : 'gap-0 p-1.5 justify-center'
-										)}
-									>
-										<section.icon 
+						<nav
+							className={cn(
+								'bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl transition-all duration-300',
+								isExpanded ? 'p-3' : 'p-2'
+							)}
+						>
+							<ul className='space-y-1'>
+								{sections.map(section => (
+									<li key={section.id}>
+										<button
+											onClick={() => handleClick(section.id)}
 											className={cn(
-												'transition-all duration-300 flex-shrink-0',
-												isExpanded ? 'w-4 h-4' : 'w-5 h-5',
-												activeSection === section.id
-													? 'text-accent'
-													: 'text-muted-foreground/50 group-hover:text-muted-foreground'
+												'flex items-center text-sm transition-all duration-300 w-full',
+												'hover:bg-accent/10 rounded-lg group',
+												'focus:outline-none focus:ring-2 focus:ring-accent/20',
+												isExpanded ? 'gap-3 p-2' : 'gap-0 p-1.5 justify-center'
 											)}
-										/>
-										<AnimatePresence mode="wait">
-											{isExpanded && (
-												<motion.div
-													initial={{ opacity: 0, width: 0 }}
-													animate={{ opacity: 1, width: 'auto' }}
-													exit={{ opacity: 0, width: 0 }}
-													transition={{ duration: 0.2 }}
-													style={{
-														overflow: 'hidden',
-														flex: 1
-													}}
-												>
-													<span className={cn(
-														'text-left flex-1 overflow-hidden whitespace-nowrap block',
-														activeSection === section.id
-															? 'text-foreground font-medium'
-															: 'text-muted-foreground group-hover:text-foreground/80'
-													)}>
-														{section.label}
-													</span>
-												</motion.div>
-											)}
-										</AnimatePresence>
-										{isExpanded && (
-											<div className="relative flex items-center justify-center">
-												<span
-													className={cn(
-														'w-1.5 h-1.5 rounded-full transition-all duration-300',
-														activeSection === section.id
-															? 'bg-accent'
-															: 'bg-transparent'
-													)}
-												/>
-												{activeSection === section.id && (
-													<span className="absolute w-3 h-3 rounded-full border-2 border-accent/30 animate-ping" />
+										>
+											<section.icon
+												className={cn(
+													'transition-all duration-300 flex-shrink-0',
+													isExpanded ? 'w-4 h-4' : 'w-5 h-5',
+													activeSection === section.id
+														? 'text-accent'
+														: 'text-muted-foreground/50 group-hover:text-muted-foreground'
 												)}
-											</div>
-										)}
-									</button>
-								</li>
-							))}
-						</ul>
-					</nav>
+											/>
+											<AnimatePresence mode='wait'>
+												{isExpanded && (
+													<motion.div
+														initial={{ opacity: 0, width: 0 }}
+														animate={{ opacity: 1, width: 'auto' }}
+														exit={{ opacity: 0, width: 0 }}
+														transition={{ duration: 0.2 }}
+														style={{
+															overflow: 'hidden',
+															flex: 1
+														}}
+													>
+														<span
+															className={cn(
+																'text-left flex-1 overflow-hidden whitespace-nowrap block',
+																activeSection === section.id
+																	? 'text-foreground font-medium'
+																	: 'text-muted-foreground group-hover:text-foreground/80'
+															)}
+														>
+															{section.label}
+														</span>
+													</motion.div>
+												)}
+											</AnimatePresence>
+											{isExpanded && (
+												<div className='relative flex items-center justify-center'>
+													<span
+														className={cn(
+															'w-1.5 h-1.5 rounded-full transition-all duration-300',
+															activeSection === section.id
+																? 'bg-accent'
+																: 'bg-transparent'
+														)}
+													/>
+													{activeSection === section.id && (
+														<span className='absolute w-3 h-3 rounded-full border-2 border-accent/30 animate-ping' />
+													)}
+												</div>
+											)}
+										</button>
+									</li>
+								))}
+							</ul>
+						</nav>
 					</motion.div>
 				</div>
 			)}

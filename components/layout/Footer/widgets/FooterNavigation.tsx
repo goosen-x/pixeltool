@@ -28,9 +28,10 @@ export const FooterNavigation = () => {
 				<div className='flex flex-col gap-2'>
 					{links.map(link => {
 						const Icon = link.icon
-						const isActive = pathname === link.href || 
+						const isActive =
+							pathname === link.href ||
 							(link.href !== `/${locale}` && pathname.startsWith(link.href))
-						
+
 						return (
 							<Link
 								key={link.title}
@@ -39,30 +40,38 @@ export const FooterNavigation = () => {
 								className='group flex items-center gap-2 relative'
 							>
 								<div className='relative'>
-									<div className={`
+									<div
+										className={`
 										absolute inset-0 rounded-lg opacity-0 scale-110 
 										bg-gradient-to-br from-accent/20 to-accent/5 
 										group-hover:opacity-100 group-hover:scale-100 
 										transition-all duration-300 blur-sm
-									`} />
-									<div className={`
+									`}
+									/>
+									<div
+										className={`
 										relative p-1.5 rounded-lg border 
-										${isActive 
-											? 'border-accent bg-accent/10 text-accent' 
-											: 'border-border/50 text-muted-foreground group-hover:border-accent/50 group-hover:text-accent'
+										${
+											isActive
+												? 'border-accent bg-accent/10 text-accent'
+												: 'border-border/50 text-muted-foreground group-hover:border-accent/50 group-hover:text-accent'
 										}
 										transition-all duration-300
-									`}>
+									`}
+									>
 										<Icon className='w-3.5 h-3.5' />
 									</div>
 								</div>
-								<span className={`
+								<span
+									className={`
 									text-xs font-medium transition-all duration-300 whitespace-nowrap
-									${isActive 
-										? 'text-foreground' 
-										: 'text-muted-foreground group-hover:text-foreground'
+									${
+										isActive
+											? 'text-foreground'
+											: 'text-muted-foreground group-hover:text-foreground'
 									}
-								`}>
+								`}
+								>
 									{link.title}
 								</span>
 							</Link>
@@ -78,9 +87,9 @@ export const FooterNavigation = () => {
 				</h3>
 				<div className='flex flex-col gap-2'>
 					<a
-						href="https://www.buymeacoffee.com/yourname"
-						target="_blank"
-						rel="noopener noreferrer"
+						href='https://www.buymeacoffee.com/yourname'
+						target='_blank'
+						rel='noopener noreferrer'
 						className='group flex items-center gap-2 relative'
 					>
 						<div className='relative'>

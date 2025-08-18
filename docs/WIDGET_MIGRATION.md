@@ -4,7 +4,9 @@ This guide explains how to migrate widget data from constants to the database.
 
 ## Overview
 
-The widget system has been updated to support database storage while maintaining backward compatibility with the existing constants. The system automatically falls back to constants if the database is not available.
+The widget system has been updated to support database storage while maintaining
+backward compatibility with the existing constants. The system automatically
+falls back to constants if the database is not available.
 
 ## Migration Steps
 
@@ -31,6 +33,7 @@ npx tsx lib/scripts/migrate-widgets-to-db.ts
 ```
 
 This script will:
+
 - Create the necessary database tables
 - Migrate all widget data from constants
 - Migrate all FAQ data
@@ -39,6 +42,7 @@ This script will:
 ### 3. Verify Migration
 
 The migration script will output statistics showing:
+
 - Number of widgets migrated
 - Number of translations created
 - Number of FAQs migrated
@@ -58,11 +62,14 @@ The migration creates the following tables:
 
 The new system uses a hybrid approach:
 
-1. **Check Database** - On each request, the system checks if the database is ready
+1. **Check Database** - On each request, the system checks if the database is
+   ready
 2. **Use Database** - If available, data is fetched from the database
-3. **Fallback to Constants** - If not available, the system uses the existing constants
+3. **Fallback to Constants** - If not available, the system uses the existing
+   constants
 
 This ensures the application continues to work even if:
+
 - The database is not set up
 - There's a database connection issue
 - You're running locally without a database

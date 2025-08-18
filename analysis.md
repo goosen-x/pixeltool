@@ -3,7 +3,7 @@
 ## Translation Keys from widgets.ts:
 
 1. clampCalculator ✅ (has useCase)
-2. flexboxGenerator ✅ (has useCase) 
+2. flexboxGenerator ✅ (has useCase)
 3. gridGenerator ✅ (has useCase)
 4. cssSpecificity ✅ (has useCase)
 5. bezierCurve ✅ (has useCase)
@@ -65,11 +65,13 @@
 ## Analysis:
 
 ### Missing useCase in BOTH English and Russian:
+
 - **faviconGenerator** (completely missing useCase)
 
 ### Missing useCase in English only (present in Russian):
+
 - jsValidator
-- ageCalculator  
+- ageCalculator
 - temperatureConverter
 - bmiCalculator
 - textCounter

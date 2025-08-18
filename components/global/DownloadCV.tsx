@@ -99,7 +99,8 @@ export const DownloadCV = () => {
 						position: 'absolute',
 						inset: 0,
 						zIndex: 0,
-						background: 'linear-gradient(to top, transparent 0%, transparent 40%, hsl(var(--accent)) 50%, transparent 60%, transparent 100%)'
+						background:
+							'linear-gradient(to top, transparent 0%, transparent 40%, hsl(var(--accent)) 50%, transparent 60%, transparent 100%)'
 					}}
 				/>
 			</a>

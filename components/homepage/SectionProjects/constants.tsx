@@ -1,12 +1,21 @@
 import { BiLogoJavascript, BiLogoTypescript } from 'react-icons/bi'
 import { ProjectDataType } from './types'
-import { FaCss3Alt, FaHtml5, FaNodeJs, FaSass } from 'react-icons/fa'
-import { SiExpress, SiNextdotjs, SiStrapi } from 'react-icons/si'
+import {
+	FaCss3Alt,
+	FaHtml5,
+	FaNodeJs,
+	FaSass,
+	FaShieldAlt
+} from 'react-icons/fa'
+import {
+	SiExpress,
+	SiNextdotjs,
+	SiStrapi,
+	SiPrisma,
+	SiTailwindcss
+} from 'react-icons/si'
 import { TbAlpha } from 'react-icons/tb'
 import { GrGraphQl } from 'react-icons/gr'
-import { FaShieldAlt } from 'react-icons/fa'
-import { SiPrisma } from 'react-icons/si'
-import { SiTailwindcss } from 'react-icons/si'
 import { BsFilterCircleFill } from 'react-icons/bs'
 import { IoLogoVercel } from 'react-icons/io5'
 
