@@ -1,37 +1,35 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import {
 	Timer,
 	Play,
 	Pause,
 	RotateCcw,
 	Bell,
-	BellOff,
-	Clock,
-	Calendar,
-	Zap,
 	Volume2,
-	VolumeX,
-	Settings,
+	Clock,
 	Target,
+	Zap,
 	Coffee,
-	Dumbbell,
-	BookOpen,
 	Briefcase,
-	BarChart3,
-	Info
+	Brain,
+	ChevronUp,
+	ChevronDown,
+	Settings2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+import { WidgetContainer } from '@/components/widgets/base'
 
 type TimerMode = 'countdown' | 'stopwatch' | 'pomodoro'
 type PomodoroPhase = 'work' | 'shortBreak' | 'longBreak'
@@ -54,38 +52,26 @@ interface TimerPreset {
 	name: string
 	icon: any
 	duration: number // in seconds
-	category: string
+	color: string
 }
 
 const TIMER_PRESETS: TimerPreset[] = [
-	{ name: '30 секунд', icon: Zap, duration: 30, category: 'quick' },
-	{ name: '1 минута', icon: Clock, duration: 60, category: 'quick' },
-	{ name: '2 минуты', icon: Clock, duration: 120, category: 'quick' },
-	{ name: '5 минут', icon: Coffee, duration: 300, category: 'quick' },
-	{ name: '10 минут', icon: Coffee, duration: 600, category: 'break' },
-	{ name: '15 минут', icon: Coffee, duration: 900, category: 'break' },
-	{ name: '20 минут', icon: Target, duration: 1200, category: 'focus' },
-	{ name: '25 минут', icon: Target, duration: 1500, category: 'focus' },
-	{ name: '30 минут', icon: Briefcase, duration: 1800, category: 'work' },
-	{ name: '45 минут', icon: BookOpen, duration: 2700, category: 'work' },
-	{ name: '1 час', icon: Briefcase, duration: 3600, category: 'work' },
-	{ name: '1.5 часа', icon: Dumbbell, duration: 5400, category: 'work' }
-]
-
-const ALARM_SOUNDS = [
-	{ id: 'bell', name: 'Колокольчик', url: '/sounds/bell.mp3' },
-	{ id: 'chime', name: 'Перезвон', url: '/sounds/chime.mp3' },
-	{ id: 'alarm', name: 'Будильник', url: '/sounds/alarm.mp3' },
-	{ id: 'notification', name: 'Уведомление', url: '/sounds/notification.mp3' }
+	{ name: '1m', icon: Zap, duration: 60, color: 'text-yellow-600' },
+	{ name: '5m', icon: Coffee, duration: 300, color: 'text-orange-600' },
+	{ name: '10m', icon: Coffee, duration: 600, color: 'text-green-600' },
+	{ name: '15m', icon: Brain, duration: 900, color: 'text-blue-600' },
+	{ name: '25m', icon: Target, duration: 1500, color: 'text-purple-600' },
+	{ name: '45m', icon: Briefcase, duration: 2700, color: 'text-pink-600' }
 ]
 
 export default function TimerCountdownPage() {
+	const t = useTranslations('widgets.timerCountdown')
 	const [mode, setMode] = useState<TimerMode>('countdown')
 	const [isRunning, setIsRunning] = useState(false)
 	const [isPaused, setIsPaused] = useState(false)
 	const [time, setTime] = useState<TimerState>({
 		hours: 0,
-		minutes: 0,
+		minutes: 5,
 		seconds: 0,
 		milliseconds: 0
 	})
@@ -96,9 +82,8 @@ export default function TimerCountdownPage() {
 		milliseconds: 0
 	})
 	const [soundEnabled, setSoundEnabled] = useState(true)
-	const [notificationEnabled, setNotificationEnabled] = useState(true)
-	const [selectedSound, setSelectedSound] = useState('bell')
 	const [showMilliseconds, setShowMilliseconds] = useState(false)
+	const [showSettings, setShowSettings] = useState(false)
 
 	// Pomodoro specific
 	const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>('work')
@@ -113,74 +98,73 @@ export default function TimerCountdownPage() {
 	const intervalRef = useRef<NodeJS.Timeout | null>(null)
 	const audioRef = useRef<HTMLAudioElement | null>(null)
 
-	useEffect(() => {
-		// Request notification permission
-		if (
-			notificationEnabled &&
-			'Notification' in window &&
-			Notification.permission === 'default'
-		) {
-			Notification.requestPermission()
-		}
-	}, [notificationEnabled])
+	const config = {
+		title: t('title'),
+		description: t('description'),
+		icon: <Clock className='w-6 h-6 text-primary' />,
+		category: t('category')
+	}
 
-	// Keyboard shortcuts
+	// Initialize audio
 	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to start/pause
-			if (e.code === 'Space') {
-				e.preventDefault()
-				if (!isRunning) {
-					startTimer()
-				} else if (isPaused) {
-					resumeTimer()
-				} else {
-					pauseTimer()
-				}
-			}
-			// Ctrl/Cmd + R to reset
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				resetTimer()
-			}
-			// Ctrl/Cmd + M to change mode
-			if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
-				e.preventDefault()
-				const modes: TimerMode[] = ['countdown', 'stopwatch', 'pomodoro']
-				const currentIndex = modes.indexOf(mode)
-				const nextIndex = (currentIndex + 1) % modes.length
-				handleModeChange(modes[nextIndex])
-			}
-		}
+		audioRef.current = new Audio('/notification.mp3')
+		audioRef.current.volume = 0.5
+	}, [])
 
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [isRunning, isPaused, mode])
-
-	useEffect(() => {
-		if (isRunning && !isPaused) {
-			intervalRef.current = setInterval(
-				() => {
-					updateTimer()
-				},
-				showMilliseconds ? 10 : 1000
-			)
+	const handlePomodoroPhaseComplete = useCallback(() => {
+		if (pomodoroPhase === 'work') {
+			if (pomodoroSession % pomodoroSettings.sessionsUntilLongBreak === 0) {
+				setPomodoroPhase('longBreak')
+				setTime({
+					hours: 0,
+					minutes: pomodoroSettings.longBreakDuration,
+					seconds: 0,
+					milliseconds: 0
+				})
+				toast.success(t('longBreakTime'))
+			} else {
+				setPomodoroPhase('shortBreak')
+				setTime({
+					hours: 0,
+					minutes: pomodoroSettings.shortBreakDuration,
+					seconds: 0,
+					milliseconds: 0
+				})
+				toast.success(t('shortBreakTime'))
+			}
 		} else {
-			if (intervalRef.current) {
-				clearInterval(intervalRef.current)
-			}
+			setPomodoroPhase('work')
+			setPomodoroSession(prev => prev + 1)
+			setTime({
+				hours: 0,
+				minutes: pomodoroSettings.workDuration,
+				seconds: 0,
+				milliseconds: 0
+			})
+			toast.success(t('workTime'))
+		}
+	}, [pomodoroPhase, pomodoroSession, pomodoroSettings, t])
+
+	const handleTimerComplete = useCallback(() => {
+		setIsRunning(false)
+		setIsPaused(false)
+
+		// Play sound
+		if (soundEnabled && audioRef.current) {
+			audioRef.current.play().catch(err => console.error('Error playing sound:', err))
 		}
 
-		return () => {
-			if (intervalRef.current) {
-				clearInterval(intervalRef.current)
-			}
+		// Handle Pomodoro phase transitions
+		if (mode === 'pomodoro') {
+			handlePomodoroPhaseComplete()
+		} else {
+			toast.success(t('timerComplete'))
 		}
-	}, [isRunning, isPaused, mode, showMilliseconds])
+	}, [mode, soundEnabled, t, handlePomodoroPhaseComplete])
 
-	const updateTimer = () => {
+	const updateTimer = useCallback(() => {
 		setTime(prevTime => {
-			if (mode === 'countdown') {
+			if (mode === 'countdown' || mode === 'pomodoro') {
 				// Countdown logic
 				let { hours, minutes, seconds, milliseconds } = prevTime
 
@@ -204,13 +188,12 @@ export default function TimerCountdownPage() {
 				}
 
 				if (hours < 0) {
-					// Timer finished
 					handleTimerComplete()
 					return { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }
 				}
 
 				return { hours, minutes, seconds, milliseconds }
-			} else if (mode === 'stopwatch') {
+			} else {
 				// Stopwatch logic
 				let { hours, minutes, seconds, milliseconds } = prevTime
 
@@ -234,94 +217,32 @@ export default function TimerCountdownPage() {
 				}
 
 				return { hours, minutes, seconds, milliseconds }
-			} else {
-				// Pomodoro logic - uses countdown
-				return prevTime // Return unchanged for now
 			}
 		})
-	}
+	}, [mode, showMilliseconds, handleTimerComplete])
 
-	const handleTimerComplete = () => {
-		setIsRunning(false)
-		setIsPaused(false)
-
-		// Play sound
-		if (soundEnabled && audioRef.current) {
-			audioRef.current
-				.play()
-				.catch(err => console.error('Error playing sound:', err))
-		}
-
-		// Show notification
-		if (
-			notificationEnabled &&
-			'Notification' in window &&
-			Notification.permission === 'granted'
-		) {
-			new Notification('Таймер завершен!', {
-				body:
-					mode === 'pomodoro'
-						? `${pomodoroPhase === 'work' ? 'Рабочая сессия' : 'Перерыв'} завершен!`
-						: 'Время истекло!',
-				icon: '/icon.png'
-			})
-		}
-
-		// Handle Pomodoro phase transitions
-		if (mode === 'pomodoro') {
-			handlePomodoroPhaseComplete()
+	// Timer logic
+	useEffect(() => {
+		if (isRunning && !isPaused) {
+			intervalRef.current = setInterval(() => {
+				updateTimer()
+			}, showMilliseconds ? 10 : 1000)
 		} else {
-			toast.success('Таймер завершен!')
-		}
-	}
-
-	const handlePomodoroPhaseComplete = () => {
-		if (pomodoroPhase === 'work') {
-			if (pomodoroSession % pomodoroSettings.sessionsUntilLongBreak === 0) {
-				setPomodoroPhase('longBreak')
-				setInitialTime({
-					hours: 0,
-					minutes: pomodoroSettings.longBreakDuration,
-					seconds: 0,
-					milliseconds: 0
-				})
-				toast.success('Время для длинного перерыва!')
-			} else {
-				setPomodoroPhase('shortBreak')
-				setInitialTime({
-					hours: 0,
-					minutes: pomodoroSettings.shortBreakDuration,
-					seconds: 0,
-					milliseconds: 0
-				})
-				toast.success('Время для короткого перерыва!')
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current)
 			}
-		} else {
-			setPomodoroPhase('work')
-			setPomodoroSession(prev => prev + 1)
-			setInitialTime({
-				hours: 0,
-				minutes: pomodoroSettings.workDuration,
-				seconds: 0,
-				milliseconds: 0
-			})
-			toast.success('Время работать!')
 		}
 
-		// Reset timer with new duration
-		setTime({
-			hours: initialTime.hours,
-			minutes: initialTime.minutes,
-			seconds: initialTime.seconds,
-			milliseconds: 0
-		})
-	}
+		return () => {
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current)
+			}
+		}
+	}, [isRunning, isPaused, mode, showMilliseconds, updateTimer])
 
 	const startTimer = () => {
-		if (mode === 'countdown' || mode === 'pomodoro') {
-			if (time.hours === 0 && time.minutes === 0 && time.seconds === 0) {
-				setTime({ ...initialTime })
-			}
+		if (mode === 'countdown' && time.hours === 0 && time.minutes === 0 && time.seconds === 0) {
+			setTime({ ...initialTime })
 		}
 		setIsRunning(true)
 		setIsPaused(false)
@@ -339,15 +260,19 @@ export default function TimerCountdownPage() {
 		setIsRunning(false)
 		setIsPaused(false)
 
-		if (mode === 'countdown' || mode === 'pomodoro') {
+		if (mode === 'countdown') {
 			setTime({ ...initialTime })
-		} else {
+		} else if (mode === 'stopwatch') {
 			setTime({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 })
-		}
-
-		if (mode === 'pomodoro') {
+		} else if (mode === 'pomodoro') {
 			setPomodoroPhase('work')
 			setPomodoroSession(1)
+			setTime({
+				hours: 0,
+				minutes: pomodoroSettings.workDuration,
+				seconds: 0,
+				milliseconds: 0
+			})
 		}
 	}
 
@@ -356,12 +281,6 @@ export default function TimerCountdownPage() {
 		setMode(newMode)
 
 		if (newMode === 'pomodoro') {
-			setInitialTime({
-				hours: 0,
-				minutes: pomodoroSettings.workDuration,
-				seconds: 0,
-				milliseconds: 0
-			})
 			setTime({
 				hours: 0,
 				minutes: pomodoroSettings.workDuration,
@@ -378,7 +297,29 @@ export default function TimerCountdownPage() {
 
 		setInitialTime({ hours, minutes, seconds, milliseconds: 0 })
 		setTime({ hours, minutes, seconds, milliseconds: 0 })
-		toast.success(`Установлен таймер: ${preset.name}`)
+		toast.success(`${t('presetLoaded')}: ${preset.name}`)
+	}
+
+	const adjustTime = (field: 'hours' | 'minutes' | 'seconds', increment: boolean) => {
+		if (isRunning) return
+
+		const delta = increment ? 1 : -1
+		const newTime = { ...initialTime }
+
+		switch (field) {
+			case 'hours':
+				newTime.hours = Math.max(0, Math.min(23, newTime.hours + delta))
+				break
+			case 'minutes':
+				newTime.minutes = Math.max(0, Math.min(59, newTime.minutes + delta))
+				break
+			case 'seconds':
+				newTime.seconds = Math.max(0, Math.min(59, newTime.seconds + delta))
+				break
+		}
+
+		setInitialTime(newTime)
+		setTime(newTime)
 	}
 
 	const formatTime = (value: number, padLength: number = 2): string => {
@@ -390,535 +331,352 @@ export default function TimerCountdownPage() {
 
 		const totalInitialSeconds =
 			initialTime.hours * 3600 + initialTime.minutes * 60 + initialTime.seconds
-		const totalCurrentSeconds =
-			time.hours * 3600 + time.minutes * 60 + time.seconds
+		const totalCurrentSeconds = time.hours * 3600 + time.minutes * 60 + time.seconds
 
 		if (totalInitialSeconds === 0) return 100
 
-		return (
-			((totalInitialSeconds - totalCurrentSeconds) / totalInitialSeconds) * 100
-		)
+		return ((totalInitialSeconds - totalCurrentSeconds) / totalInitialSeconds) * 100
 	}
 
 	const getPomodoroPhaseInfo = () => {
 		switch (pomodoroPhase) {
 			case 'work':
 				return {
-					label: 'Работа',
-					color: 'text-blue-600',
-					bgColor: 'bg-blue-50 dark:bg-blue-950/20'
+					label: t('work'),
+					color: 'text-red-600 dark:text-red-400',
+					bgColor: 'bg-red-50 dark:bg-red-950/30',
+					borderColor: 'border-red-200 dark:border-red-800'
 				}
 			case 'shortBreak':
 				return {
-					label: 'Короткий перерыв',
-					color: 'text-green-600',
-					bgColor: 'bg-green-50 dark:bg-green-950/20'
+					label: t('shortBreak'),
+					color: 'text-green-600 dark:text-green-400',
+					bgColor: 'bg-green-50 dark:bg-green-950/30',
+					borderColor: 'border-green-200 dark:border-green-800'
 				}
 			case 'longBreak':
 				return {
-					label: 'Длинный перерыв',
-					color: 'text-purple-600',
-					bgColor: 'bg-purple-50 dark:bg-purple-950/20'
+					label: t('longBreak'),
+					color: 'text-blue-600 dark:text-blue-400',
+					bgColor: 'bg-blue-50 dark:bg-blue-950/30',
+					borderColor: 'border-blue-200 dark:border-blue-800'
 				}
 		}
 	}
 
 	return (
-		<div className='max-w-4xl mx-auto space-y-6'>
-			{/* Mode Selection */}
-			<Card className='p-6'>
-				<RadioGroup
-					value={mode}
-					onValueChange={(value: TimerMode) => handleModeChange(value)}
-				>
-					<div className='grid grid-cols-3 gap-4'>
-						<div
-							className={cn(
-								'relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors',
-								mode === 'countdown'
-									? 'bg-primary/10 border-primary'
-									: 'hover:bg-muted/50'
-							)}
-							onClick={() => handleModeChange('countdown')}
-						>
-							<RadioGroupItem value='countdown' id='countdown' />
-							<Label htmlFor='countdown' className='cursor-pointer'>
-								<div className='flex items-center gap-2'>
-									<Clock className='w-4 h-4' />
-									<span>Таймер</span>
-								</div>
-								<p className='text-xs text-muted-foreground mt-1'>
-									Обратный отсчет
-								</p>
-							</Label>
-						</div>
+		<WidgetContainer config={config}>
+			<div className='max-w-2xl mx-auto space-y-4'>
+				{/* Mode Tabs */}
+				<Tabs value={mode} onValueChange={(value) => handleModeChange(value as TimerMode)} className='w-full'>
+					<TabsList className='grid w-full grid-cols-3'>
+						<TabsTrigger value='countdown' className='gap-2'>
+							<Clock className='w-4 h-4' />
+							{t('timer')}
+						</TabsTrigger>
+						<TabsTrigger value='stopwatch' className='gap-2'>
+							<Timer className='w-4 h-4' />
+							{t('stopwatch')}
+						</TabsTrigger>
+						<TabsTrigger value='pomodoro' className='gap-2'>
+							<Target className='w-4 h-4' />
+							Pomodoro
+						</TabsTrigger>
+					</TabsList>
 
-						<div
-							className={cn(
-								'relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors',
-								mode === 'stopwatch'
-									? 'bg-primary/10 border-primary'
-									: 'hover:bg-muted/50'
-							)}
-							onClick={() => handleModeChange('stopwatch')}
-						>
-							<RadioGroupItem value='stopwatch' id='stopwatch' />
-							<Label htmlFor='stopwatch' className='cursor-pointer'>
-								<div className='flex items-center gap-2'>
-									<Timer className='w-4 h-4' />
-									<span>Секундомер</span>
-								</div>
-								<p className='text-xs text-muted-foreground mt-1'>
-									Прямой отсчет
-								</p>
-							</Label>
-						</div>
-
-						<div
-							className={cn(
-								'relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors',
-								mode === 'pomodoro'
-									? 'bg-primary/10 border-primary'
-									: 'hover:bg-muted/50'
-							)}
-							onClick={() => handleModeChange('pomodoro')}
-						>
-							<RadioGroupItem value='pomodoro' id='pomodoro' />
-							<Label htmlFor='pomodoro' className='cursor-pointer'>
-								<div className='flex items-center gap-2'>
-									<Target className='w-4 h-4' />
-									<span>Pomodoro</span>
-								</div>
-								<p className='text-xs text-muted-foreground mt-1'>
-									Техника фокуса
-								</p>
-							</Label>
-						</div>
-					</div>
-				</RadioGroup>
-			</Card>
-
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Timer Display */}
-				<Card className='p-6'>
-					<div className='space-y-6'>
-						{/* Pomodoro Info */}
-						{mode === 'pomodoro' && (
-							<div
-								className={cn(
-									'p-3 rounded-lg text-center',
-									getPomodoroPhaseInfo().bgColor
-								)}
-							>
+					<TabsContent value={mode} className='mt-4 space-y-4'>
+						{/* Timer Display Card */}
+						<Card className='p-6'>
+							{/* Pomodoro Phase Indicator */}
+							{mode === 'pomodoro' && (
 								<div
-									className={cn('font-medium', getPomodoroPhaseInfo().color)}
+									className={cn(
+										'mb-4 p-2 rounded-lg text-center border',
+										getPomodoroPhaseInfo().bgColor,
+										getPomodoroPhaseInfo().borderColor
+									)}
 								>
-									{getPomodoroPhaseInfo().label}
+									<div className={cn('font-medium text-sm', getPomodoroPhaseInfo().color)}>
+										{getPomodoroPhaseInfo().label} • {t('session')} {pomodoroSession}
+									</div>
 								</div>
-								<div className='text-sm text-muted-foreground mt-1'>
-									Сессия {pomodoroSession}
+							)}
+
+							{/* Time Display */}
+							<div className='text-center mb-4'>
+								<div className='text-6xl md:text-7xl font-mono font-bold tracking-tight'>
+									{mode === 'countdown' && !isRunning ? (
+										<div className='flex items-center justify-center gap-1'>
+											<div className='flex flex-col items-center'>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='h-6 w-6'
+													onClick={() => adjustTime('hours', true)}
+												>
+													<ChevronUp className='h-4 w-4' />
+												</Button>
+												<span>{formatTime(time.hours)}</span>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='h-6 w-6'
+													onClick={() => adjustTime('hours', false)}
+												>
+													<ChevronDown className='h-4 w-4' />
+												</Button>
+											</div>
+											<span className='mx-1'>:</span>
+											<div className='flex flex-col items-center'>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='h-6 w-6'
+													onClick={() => adjustTime('minutes', true)}
+												>
+													<ChevronUp className='h-4 w-4' />
+												</Button>
+												<span>{formatTime(time.minutes)}</span>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='h-6 w-6'
+													onClick={() => adjustTime('minutes', false)}
+												>
+													<ChevronDown className='h-4 w-4' />
+												</Button>
+											</div>
+											<span className='mx-1'>:</span>
+											<div className='flex flex-col items-center'>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='h-6 w-6'
+													onClick={() => adjustTime('seconds', true)}
+												>
+													<ChevronUp className='h-4 w-4' />
+												</Button>
+												<span>{formatTime(time.seconds)}</span>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='h-6 w-6'
+													onClick={() => adjustTime('seconds', false)}
+												>
+													<ChevronDown className='h-4 w-4' />
+												</Button>
+											</div>
+										</div>
+									) : (
+										<>
+											{formatTime(time.hours)}:{formatTime(time.minutes)}:
+											{formatTime(time.seconds)}
+											{showMilliseconds && (
+												<span className='text-3xl md:text-4xl text-muted-foreground'>
+													.{formatTime(Math.floor(time.milliseconds / 10))}
+												</span>
+											)}
+										</>
+									)}
 								</div>
 							</div>
-						)}
 
-						{/* Time Display */}
-						<div className='text-center'>
-							<div className='text-6xl lg:text-7xl font-mono font-bold tracking-tight'>
-								{formatTime(time.hours)}:{formatTime(time.minutes)}:
-								{formatTime(time.seconds)}
-								{showMilliseconds && (
-									<span className='text-3xl lg:text-4xl text-muted-foreground'>
-										.{formatTime(Math.floor(time.milliseconds / 10))}
-									</span>
+							{/* Progress Bar */}
+							{(mode === 'countdown' || mode === 'pomodoro') && (
+								<Progress value={getProgress()} className='h-2 mb-6' />
+							)}
+
+							{/* Control Buttons */}
+							<div className='flex justify-center gap-2'>
+								{!isRunning ? (
+									<Button onClick={startTimer} size='lg' className='gap-2'>
+										<Play className='w-5 h-5' />
+										{t('start')}
+									</Button>
+								) : isPaused ? (
+									<Button onClick={resumeTimer} size='lg' className='gap-2'>
+										<Play className='w-5 h-5' />
+										{t('resume')}
+									</Button>
+								) : (
+									<Button
+										onClick={pauseTimer}
+										size='lg'
+										variant='secondary'
+										className='gap-2'
+									>
+										<Pause className='w-5 h-5' />
+										{t('pause')}
+									</Button>
 								)}
-							</div>
-						</div>
 
-						{/* Progress Bar */}
-						{(mode === 'countdown' || mode === 'pomodoro') && (
-							<Progress value={getProgress()} className='h-2' />
-						)}
+								<Button onClick={resetTimer} size='lg' variant='outline' className='gap-2'>
+									<RotateCcw className='w-5 h-5' />
+									{t('reset')}
+								</Button>
 
-						{/* Controls */}
-						<div className='flex justify-center gap-3'>
-							{!isRunning ? (
-								<Button onClick={startTimer} size='lg' className='gap-2'>
-									<Play className='w-5 h-5' />
-									Старт
-								</Button>
-							) : isPaused ? (
-								<Button onClick={resumeTimer} size='lg' className='gap-2'>
-									<Play className='w-5 h-5' />
-									Продолжить
-								</Button>
-							) : (
 								<Button
-									onClick={pauseTimer}
+									onClick={() => setShowSettings(!showSettings)}
 									size='lg'
-									variant='secondary'
+									variant='outline'
 									className='gap-2'
 								>
-									<Pause className='w-5 h-5' />
-									Пауза
+									<Settings2 className='w-5 h-5' />
 								</Button>
-							)}
+							</div>
+						</Card>
 
-							<Button
-								onClick={resetTimer}
-								size='lg'
-								variant='outline'
-								className='gap-2'
-							>
-								<RotateCcw className='w-5 h-5' />
-								Сброс
-							</Button>
-						</div>
-
-						{/* Time Input (for countdown mode) */}
+						{/* Quick Presets for Countdown */}
 						{mode === 'countdown' && !isRunning && (
-							<div className='grid grid-cols-3 gap-4'>
-								<div>
-									<Label htmlFor='hours'>Часы</Label>
-									<Input
-										id='hours'
-										type='number'
-										min='0'
-										max='23'
-										value={initialTime.hours}
-										onChange={e =>
-											setInitialTime(prev => ({
-												...prev,
-												hours: parseInt(e.target.value) || 0
-											}))
-										}
-										className='mt-1'
-									/>
+							<Card className='p-4'>
+								<div className='grid grid-cols-6 gap-2'>
+									{TIMER_PRESETS.map((preset, index) => (
+										<Button
+											key={index}
+											onClick={() => loadPreset(preset)}
+											variant='outline'
+											size='sm'
+											className='flex flex-col items-center gap-1 h-auto py-2'
+										>
+											<preset.icon className={cn('w-4 h-4', preset.color)} />
+											<span className='text-xs'>{preset.name}</span>
+										</Button>
+									))}
 								</div>
-								<div>
-									<Label htmlFor='minutes'>Минуты</Label>
-									<Input
-										id='minutes'
-										type='number'
-										min='0'
-										max='59'
-										value={initialTime.minutes}
-										onChange={e =>
-											setInitialTime(prev => ({
-												...prev,
-												minutes: parseInt(e.target.value) || 0
-											}))
-										}
-										className='mt-1'
-									/>
-								</div>
-								<div>
-									<Label htmlFor='seconds'>Секунды</Label>
-									<Input
-										id='seconds'
-										type='number'
-										min='0'
-										max='59'
-										value={initialTime.seconds}
-										onChange={e =>
-											setInitialTime(prev => ({
-												...prev,
-												seconds: parseInt(e.target.value) || 0
-											}))
-										}
-										className='mt-1'
-									/>
-								</div>
-							</div>
+							</Card>
 						)}
 
-						{/* Pomodoro Settings */}
-						{mode === 'pomodoro' && !isRunning && (
-							<div className='space-y-3'>
-								<div className='grid grid-cols-2 gap-4'>
-									<div>
-										<Label htmlFor='work-duration'>Работа (мин)</Label>
-										<Input
-											id='work-duration'
-											type='number'
-											min='1'
-											max='60'
-											value={pomodoroSettings.workDuration}
-											onChange={e =>
-												setPomodoroSettings(prev => ({
-													...prev,
-													workDuration: parseInt(e.target.value) || 25
-												}))
-											}
-											className='mt-1'
-										/>
-									</div>
-									<div>
-										<Label htmlFor='short-break'>Короткий перерыв (мин)</Label>
-										<Input
-											id='short-break'
-											type='number'
-											min='1'
-											max='30'
-											value={pomodoroSettings.shortBreakDuration}
-											onChange={e =>
-												setPomodoroSettings(prev => ({
-													...prev,
-													shortBreakDuration: parseInt(e.target.value) || 5
-												}))
-											}
-											className='mt-1'
-										/>
-									</div>
-								</div>
-								<div className='grid grid-cols-2 gap-4'>
-									<div>
-										<Label htmlFor='long-break'>Длинный перерыв (мин)</Label>
-										<Input
-											id='long-break'
-											type='number'
-											min='1'
-											max='60'
-											value={pomodoroSettings.longBreakDuration}
-											onChange={e =>
-												setPomodoroSettings(prev => ({
-													...prev,
-													longBreakDuration: parseInt(e.target.value) || 15
-												}))
-											}
-											className='mt-1'
-										/>
-									</div>
-									<div>
-										<Label htmlFor='sessions'>
-											Сессий до длинного перерыва
+						{/* Settings Panel */}
+						{showSettings && (
+							<Card className='p-4'>
+								<div className='space-y-3'>
+									<div className='flex items-center justify-between'>
+										<Label htmlFor='sound' className='flex items-center gap-2'>
+											<Volume2 className='w-4 h-4' />
+											{t('soundNotification')}
 										</Label>
-										<Input
-											id='sessions'
-											type='number'
-											min='2'
-											max='10'
-											value={pomodoroSettings.sessionsUntilLongBreak}
-											onChange={e =>
-												setPomodoroSettings(prev => ({
-													...prev,
-													sessionsUntilLongBreak: parseInt(e.target.value) || 4
-												}))
-											}
-											className='mt-1'
+										<Switch
+											id='sound'
+											checked={soundEnabled}
+											onCheckedChange={setSoundEnabled}
 										/>
 									</div>
+
+									{mode === 'stopwatch' && (
+										<div className='flex items-center justify-between'>
+											<Label htmlFor='milliseconds' className='flex items-center gap-2'>
+												<Zap className='w-4 h-4' />
+												{t('showMilliseconds')}
+											</Label>
+											<Switch
+												id='milliseconds'
+												checked={showMilliseconds}
+												onCheckedChange={setShowMilliseconds}
+											/>
+										</div>
+									)}
+
+									{mode === 'pomodoro' && !isRunning && (
+										<div className='space-y-2 pt-2 border-t'>
+											<h4 className='text-sm font-medium'>{t('pomodoroSettings')}</h4>
+											<div className='grid grid-cols-2 gap-3'>
+												<div>
+													<Label htmlFor='work-duration' className='text-xs'>
+														{t('workDuration')}
+													</Label>
+													<Input
+														id='work-duration'
+														type='number'
+														min='1'
+														max='60'
+														value={pomodoroSettings.workDuration}
+														onChange={e =>
+															setPomodoroSettings(prev => ({
+																...prev,
+																workDuration: parseInt(e.target.value) || 25
+															}))
+														}
+														className='h-8 text-sm'
+													/>
+												</div>
+												<div>
+													<Label htmlFor='short-break' className='text-xs'>
+														{t('shortBreakDuration')}
+													</Label>
+													<Input
+														id='short-break'
+														type='number'
+														min='1'
+														max='30'
+														value={pomodoroSettings.shortBreakDuration}
+														onChange={e =>
+															setPomodoroSettings(prev => ({
+																...prev,
+																shortBreakDuration: parseInt(e.target.value) || 5
+															}))
+														}
+														className='h-8 text-sm'
+													/>
+												</div>
+												<div>
+													<Label htmlFor='long-break' className='text-xs'>
+														{t('longBreakDuration')}
+													</Label>
+													<Input
+														id='long-break'
+														type='number'
+														min='1'
+														max='60'
+														value={pomodoroSettings.longBreakDuration}
+														onChange={e =>
+															setPomodoroSettings(prev => ({
+																...prev,
+																longBreakDuration: parseInt(e.target.value) || 15
+															}))
+														}
+														className='h-8 text-sm'
+													/>
+												</div>
+												<div>
+													<Label htmlFor='sessions' className='text-xs'>
+														{t('sessionsUntilLongBreak')}
+													</Label>
+													<Input
+														id='sessions'
+														type='number'
+														min='2'
+														max='10'
+														value={pomodoroSettings.sessionsUntilLongBreak}
+														onChange={e =>
+															setPomodoroSettings(prev => ({
+																...prev,
+																sessionsUntilLongBreak: parseInt(e.target.value) || 4
+															}))
+														}
+														className='h-8 text-sm'
+													/>
+												</div>
+											</div>
+										</div>
+									)}
 								</div>
-							</div>
+							</Card>
 						)}
+					</TabsContent>
+				</Tabs>
+
+				{/* Compact Info */}
+				<Card className='p-4 bg-muted/50'>
+					<div className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<Bell className='w-4 h-4' />
+						<span>
+							{t('shortcuts')}: <kbd className='px-1 py-0.5 bg-background rounded text-xs'>Space</kbd> -{' '}
+							{t('startPause')}, <kbd className='px-1 py-0.5 bg-background rounded text-xs'>Ctrl+R</kbd> -{' '}
+							{t('reset')}
+						</span>
 					</div>
 				</Card>
-
-				{/* Settings and Presets */}
-				<div className='space-y-6'>
-					{/* Settings */}
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4 flex items-center gap-2'>
-							<Settings className='w-5 h-5' />
-							Настройки
-						</h3>
-
-						<div className='space-y-4'>
-							<div className='flex items-center justify-between'>
-								<Label htmlFor='sound' className='flex items-center gap-2'>
-									{soundEnabled ? (
-										<Volume2 className='w-4 h-4' />
-									) : (
-										<VolumeX className='w-4 h-4' />
-									)}
-									Звуковое уведомление
-								</Label>
-								<Switch
-									id='sound'
-									checked={soundEnabled}
-									onCheckedChange={setSoundEnabled}
-								/>
-							</div>
-
-							<div className='flex items-center justify-between'>
-								<Label
-									htmlFor='notification'
-									className='flex items-center gap-2'
-								>
-									{notificationEnabled ? (
-										<Bell className='w-4 h-4' />
-									) : (
-										<BellOff className='w-4 h-4' />
-									)}
-									Push-уведомления
-								</Label>
-								<Switch
-									id='notification'
-									checked={notificationEnabled}
-									onCheckedChange={setNotificationEnabled}
-								/>
-							</div>
-
-							<div className='flex items-center justify-between'>
-								<Label
-									htmlFor='milliseconds'
-									className='flex items-center gap-2'
-								>
-									<Zap className='w-4 h-4' />
-									Показывать миллисекунды
-								</Label>
-								<Switch
-									id='milliseconds'
-									checked={showMilliseconds}
-									onCheckedChange={setShowMilliseconds}
-								/>
-							</div>
-
-							{/* Sound Selection */}
-							{soundEnabled && (
-								<div>
-									<Label htmlFor='alarm-sound'>Звук уведомления</Label>
-									<select
-										id='alarm-sound'
-										value={selectedSound}
-										onChange={e => setSelectedSound(e.target.value)}
-										className='w-full mt-1 px-3 py-2 rounded-md border bg-background'
-									>
-										{ALARM_SOUNDS.map(sound => (
-											<option key={sound.id} value={sound.id}>
-												{sound.name}
-											</option>
-										))}
-									</select>
-								</div>
-							)}
-						</div>
-					</Card>
-
-					{/* Quick Presets (for countdown mode) */}
-					{mode === 'countdown' && (
-						<Card className='p-6'>
-							<h3 className='font-semibold mb-4 flex items-center gap-2'>
-								<Clock className='w-5 h-5' />
-								Быстрые пресеты
-							</h3>
-
-							<div className='space-y-3'>
-								{['quick', 'break', 'focus', 'work'].map(category => (
-									<div key={category}>
-										<h4 className='text-sm font-medium text-muted-foreground mb-2 capitalize'>
-											{category === 'quick'
-												? 'Быстрые'
-												: category === 'break'
-													? 'Перерывы'
-													: category === 'focus'
-														? 'Фокус'
-														: 'Работа'}
-										</h4>
-										<div className='grid grid-cols-2 gap-2'>
-											{TIMER_PRESETS.filter(
-												preset => preset.category === category
-											).map((preset, index) => (
-												<Button
-													key={index}
-													onClick={() => loadPreset(preset)}
-													variant='outline'
-													size='sm'
-													className='justify-start'
-													disabled={isRunning}
-												>
-													<preset.icon className='w-4 h-4 mr-2' />
-													{preset.name}
-												</Button>
-											))}
-										</div>
-									</div>
-								))}
-							</div>
-						</Card>
-					)}
-
-					{/* Statistics */}
-					{mode === 'pomodoro' && (
-						<Card className='p-6'>
-							<h3 className='font-semibold mb-4 flex items-center gap-2'>
-								<BarChart3 className='w-5 h-5' />
-								Статистика сессии
-							</h3>
-
-							<div className='space-y-3'>
-								<div className='flex justify-between items-center p-3 rounded-lg bg-muted/50'>
-									<span className='text-sm text-muted-foreground'>
-										Завершено сессий
-									</span>
-									<Badge variant='secondary'>{pomodoroSession - 1}</Badge>
-								</div>
-								<div className='flex justify-between items-center p-3 rounded-lg bg-muted/50'>
-									<span className='text-sm text-muted-foreground'>
-										Текущая фаза
-									</span>
-									<Badge className={getPomodoroPhaseInfo().color}>
-										{getPomodoroPhaseInfo().label}
-									</Badge>
-								</div>
-								<div className='flex justify-between items-center p-3 rounded-lg bg-muted/50'>
-									<span className='text-sm text-muted-foreground'>
-										До длинного перерыва
-									</span>
-									<Badge variant='outline'>
-										{pomodoroSettings.sessionsUntilLongBreak -
-											((pomodoroSession - 1) %
-												pomodoroSettings.sessionsUntilLongBreak)}
-									</Badge>
-								</div>
-							</div>
-						</Card>
-					)}
-				</div>
 			</div>
-
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4 flex items-center gap-2'>
-					<Info className='w-4 h-4' />
-					Информация о режимах
-				</h3>
-				<div className='grid md:grid-cols-3 gap-6 text-sm'>
-					<div>
-						<h4 className='font-medium mb-2'>Таймер</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Обратный отсчет времени</li>
-							<li>• Настраиваемая длительность</li>
-							<li>• Звуковые уведомления</li>
-							<li>• Быстрые пресеты</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Секундомер</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Прямой отсчет времени</li>
-							<li>• Высокая точность</li>
-							<li>• Пауза и продолжение</li>
-							<li>• Без ограничений</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Pomodoro</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Циклы работы и отдыха</li>
-							<li>• Повышение продуктивности</li>
-							<li>• Автоматические переходы</li>
-							<li>• Настраиваемые интервалы</li>
-						</ul>
-					</div>
-				</div>
-			</Card>
-
-			{/* Hidden audio element */}
-			<audio
-				ref={audioRef}
-				src={ALARM_SOUNDS.find(s => s.id === selectedSound)?.url}
-				preload='auto'
-			/>
-		</div>
+		</WidgetContainer>
 	)
 }
