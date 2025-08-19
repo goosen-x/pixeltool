@@ -6,83 +6,83 @@ import { WidgetSkeleton, WidgetSkeletonSimple } from './WidgetSkeleton'
 import { ProgressBar } from '@/components/ui/progress-bar'
 
 interface WidgetWrapperProps {
-  children: React.ReactNode
-  simple?: boolean
+	children: React.ReactNode
+	simple?: boolean
 }
 
-export function WidgetWrapper({ children, simple = false }: WidgetWrapperProps) {
-  const pathname = usePathname()
-  const [isLoading, setIsLoading] = useState(false)
-  const [showContent, setShowContent] = useState(true)
-  const previousPathRef = useRef(pathname)
-  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const contentTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+export function WidgetWrapper({
+	children,
+	simple = false
+}: WidgetWrapperProps) {
+	const pathname = usePathname()
+	const [isLoading, setIsLoading] = useState(false)
+	const [showContent, setShowContent] = useState(true)
+	const previousPathRef = useRef(pathname)
+	const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+	const contentTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
-    // Check if we're navigating between different widgets
-    const currentWidget = pathname.split('/').pop()
-    const previousWidget = previousPathRef.current.split('/').pop()
-    
-    // Only show loading if navigating between different widgets
-    if (currentWidget !== previousWidget && previousWidget !== undefined) {
-      // Hide content immediately
-      setShowContent(false)
-      
-      // Show skeleton after a brief delay
-      if (contentTimeoutRef.current) {
-        clearTimeout(contentTimeoutRef.current)
-      }
-      
-      contentTimeoutRef.current = setTimeout(() => {
-        setIsLoading(true)
-      }, 100)
-      
-      // Clear any existing loading timeout
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current)
-      }
-      
-      // Hide skeleton and show content
-      loadingTimeoutRef.current = setTimeout(() => {
-        setIsLoading(false)
-        setShowContent(true)
-      }, 500)
-    }
-    
-    previousPathRef.current = pathname
+	useEffect(() => {
+		// Check if we're navigating between different widgets
+		const currentWidget = pathname.split('/').pop()
+		const previousWidget = previousPathRef.current.split('/').pop()
 
-    return () => {
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current)
-      }
-      if (contentTimeoutRef.current) {
-        clearTimeout(contentTimeoutRef.current)
-      }
-    }
-  }, [pathname])
+		// Only show loading if navigating between different widgets
+		if (currentWidget !== previousWidget && previousWidget !== undefined) {
+			// Hide content immediately
+			setShowContent(false)
 
-  if (isLoading) {
-    return (
-      <>
-        <ProgressBar isLoading={true} />
-        {simple ? <WidgetSkeletonSimple /> : <WidgetSkeleton />}
-      </>
-    )
-  }
+			// Show skeleton after a brief delay
+			if (contentTimeoutRef.current) {
+				clearTimeout(contentTimeoutRef.current)
+			}
 
-  if (!showContent) {
-    return null
-  }
+			contentTimeoutRef.current = setTimeout(() => {
+				setIsLoading(true)
+			}, 100)
 
-  return (
-    <>
-      <ProgressBar isLoading={isLoading} />
-      <div 
-        key={pathname}
-        className="widget-fade-in"
-      >
-        {children}
-      </div>
-    </>
-  )
+			// Clear any existing loading timeout
+			if (loadingTimeoutRef.current) {
+				clearTimeout(loadingTimeoutRef.current)
+			}
+
+			// Hide skeleton and show content
+			loadingTimeoutRef.current = setTimeout(() => {
+				setIsLoading(false)
+				setShowContent(true)
+			}, 500)
+		}
+
+		previousPathRef.current = pathname
+
+		return () => {
+			if (loadingTimeoutRef.current) {
+				clearTimeout(loadingTimeoutRef.current)
+			}
+			if (contentTimeoutRef.current) {
+				clearTimeout(contentTimeoutRef.current)
+			}
+		}
+	}, [pathname])
+
+	if (isLoading) {
+		return (
+			<>
+				<ProgressBar isLoading={true} />
+				{simple ? <WidgetSkeletonSimple /> : <WidgetSkeleton />}
+			</>
+		)
+	}
+
+	if (!showContent) {
+		return null
+	}
+
+	return (
+		<>
+			<ProgressBar isLoading={isLoading} />
+			<div key={pathname} className='widget-fade-in'>
+				{children}
+			</div>
+		</>
+	)
 }

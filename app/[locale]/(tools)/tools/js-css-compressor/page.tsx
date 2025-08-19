@@ -438,6 +438,7 @@ export default function JSCSSCompressorPage() {
 							accept='.js,.css,.javascript'
 							onChange={handleFileUpload}
 							className='hidden'
+							aria-label='Upload JavaScript or CSS file for compression'
 						/>
 					</div>
 

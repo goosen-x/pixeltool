@@ -11,7 +11,8 @@ Go to your Supabase dashboard → SQL Editor and run:
 -- lib/supabase/migrations/002_analytics_tables_safe.sql
 ```
 
-This script checks for existing objects before creating them, so it won't fail if some parts are already created.
+This script checks for existing objects before creating them, so it won't fail
+if some parts are already created.
 
 ## 2. Check Analytics Setup
 
@@ -32,6 +33,7 @@ npx tsx lib/scripts/populate-widgets-supabase.ts
 ## 4. Verify Setup
 
 Your Supabase database should now have:
+
 - ✅ Posts table (with your blog posts)
 - ✅ Widgets table (with all widget data)
 - ✅ Widget translations
@@ -41,11 +43,13 @@ Your Supabase database should now have:
 ## 4. Test Analytics
 
 1. Start the development server:
+
    ```bash
    npm run dev
    ```
 
-2. Visit any widget page (e.g., http://localhost:3000/en/projects/age-calculator)
+2. Visit any widget page (e.g.,
+   http://localhost:3000/en/projects/age-calculator)
 
 3. Check Supabase dashboard → Table Editor → usage_events
    - You should see new events being tracked
@@ -63,6 +67,7 @@ Your Supabase database should now have:
 ## Usage Stats Display
 
 The "Usage Stats" section in the widget sidebar will show:
+
 - **Views today**: Number of views in the current day
 - **Total uses**: Total views in the selected timeframe (7 days by default)
 - **Avg. session**: Average time users spend on the widget

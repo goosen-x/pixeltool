@@ -18,14 +18,21 @@ interface KeyboardShortcutsProps {
 	showToast?: boolean
 }
 
-export function KeyboardShortcuts({ shortcuts, showToast = false }: KeyboardShortcutsProps) {
+export function KeyboardShortcuts({
+	shortcuts,
+	showToast = false
+}: KeyboardShortcutsProps) {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			for (const shortcut of shortcuts) {
-				const ctrlOrMeta = shortcut.ctrl ? (e.ctrlKey || e.metaKey) : shortcut.meta ? e.metaKey : true
+				const ctrlOrMeta = shortcut.ctrl
+					? e.ctrlKey || e.metaKey
+					: shortcut.meta
+						? e.metaKey
+						: true
 				const shift = shortcut.shift ? e.shiftKey : !e.shiftKey
 				const alt = shortcut.alt ? e.altKey : !e.altKey
-				
+
 				if (
 					e.key.toLowerCase() === shortcut.key.toLowerCase() &&
 					ctrlOrMeta &&
@@ -34,7 +41,7 @@ export function KeyboardShortcuts({ shortcuts, showToast = false }: KeyboardShor
 				) {
 					e.preventDefault()
 					shortcut.action()
-					
+
 					if (showToast) {
 						toast.success(shortcut.description)
 					}

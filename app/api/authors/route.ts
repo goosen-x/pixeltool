@@ -4,7 +4,7 @@ import { getAllAuthors } from '@/lib/db/blog'
 export async function GET(request: NextRequest) {
 	try {
 		const authors = await getAllAuthors()
-		
+
 		return NextResponse.json({
 			success: true,
 			data: authors

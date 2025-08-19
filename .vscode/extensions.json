@@ -1,0 +1,20 @@
+{
+	"recommendations": [
+		"bradlc.vscode-tailwindcss",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"ms-vscode.vscode-typescript-next",
+		"bradlc.vscode-tailwindcss",
+		"ms-vscode.vscode-json",
+		"christian-kohler.path-intellisense",
+		"formulahendry.auto-rename-tag",
+		"ms-vscode.vscode-css-peek",
+		"zignd.html-css-class-completion",
+		"ms-vscode.vscode-react-native",
+		"ms-vscode.sublime-keybindings",
+		"visualstudioexptteam.vscodeintellicode",
+		"gruntfuggly.todo-tree",
+		"eamodio.gitlens"
+	],
+	"unwantedRecommendations": ["ms-vscode.vscode-typescript"]
+}

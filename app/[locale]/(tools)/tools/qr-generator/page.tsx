@@ -10,12 +10,27 @@ import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
-import { Download, Copy, Link, Wifi, Smartphone, QrCode, Settings } from 'lucide-react'
+import {
+	Download,
+	Copy,
+	Link,
+	Wifi,
+	Smartphone,
+	QrCode,
+	Settings
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 type QRType = 'url' | 'appstore' | 'wifi'
 
@@ -40,8 +55,10 @@ export default function QRGeneratorPage() {
 	const [qrSize, setQrSize] = useState(256)
 	const [darkColor, setDarkColor] = useState('#000000')
 	const [lightColor, setLightColor] = useState('#FFFFFF')
-	const [errorCorrection, setErrorCorrection] = useState<'L' | 'M' | 'Q' | 'H'>('M')
-	
+	const [errorCorrection, setErrorCorrection] = useState<'L' | 'M' | 'Q' | 'H'>(
+		'M'
+	)
+
 	// WiFi settings
 	const [wifiConfig, setWifiConfig] = useState<WifiConfig>({
 		ssid: '',
@@ -49,7 +66,7 @@ export default function QRGeneratorPage() {
 		security: 'WPA',
 		hidden: false
 	})
-	
+
 	// App Store settings
 	const [appStoreConfig, setAppStoreConfig] = useState<AppStoreConfig>({
 		platform: 'universal',
@@ -126,10 +143,10 @@ export default function QRGeneratorPage() {
 		if (!canvas) return
 
 		try {
-			const blob = await new Promise<Blob>((resolve) => {
-				canvas.toBlob((blob) => resolve(blob!), 'image/png')
+			const blob = await new Promise<Blob>(resolve => {
+				canvas.toBlob(blob => resolve(blob!), 'image/png')
 			})
-			
+
 			await navigator.clipboard.write([
 				new ClipboardItem({ 'image/png': blob })
 			])
@@ -141,204 +158,268 @@ export default function QRGeneratorPage() {
 
 	useEffect(() => {
 		generateQR()
-	}, [qrType, url, qrSize, darkColor, lightColor, errorCorrection, wifiConfig, appStoreConfig])
+	}, [
+		qrType,
+		url,
+		qrSize,
+		darkColor,
+		lightColor,
+		errorCorrection,
+		wifiConfig,
+		appStoreConfig
+	])
 
 	// Keyboard shortcuts
 	const shortcuts = [
 		{
 			key: 'd',
-			meta: true,
+			ctrl: true,
 			action: downloadQR,
 			description: t('download')
 		},
 		{
 			key: 'c',
-			meta: true,
+			ctrl: true,
 			action: copyQRAsImage,
 			description: t('copy')
+		},
+		{
+			key: 'Enter',
+			action: generateQR,
+			description: t('shortcuts.generate')
 		}
 	]
 
+	useWidgetKeyboard({
+		shortcuts,
+		widgetId: 'qr-generator'
+	})
+
 	return (
 		<WidgetLayout>
-			<div className="grid lg:grid-cols-3 gap-6">
+			<div className='grid lg:grid-cols-3 gap-6'>
 				{/* Settings */}
-				<div className="lg:col-span-2">
+				<div className='lg:col-span-2'>
 					<WidgetSection
-						icon={<Settings className="w-5 h-5" />}
+						icon={<Settings className='w-5 h-5' />}
 						title={t('settings.title')}
 					>
-						<Tabs value={qrType} onValueChange={(v) => setQrType(v as QRType)}>
-							<TabsList className="grid w-full grid-cols-3">
-								<TabsTrigger value="url">
-									<Link className="w-4 h-4 mr-2" />
+						<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
+							<TabsList className='grid w-full grid-cols-3'>
+								<TabsTrigger value='url'>
+									<Link className='w-4 h-4 mr-2' />
 									{t('types.url')}
 								</TabsTrigger>
-								<TabsTrigger value="appstore">
-									<Smartphone className="w-4 h-4 mr-2" />
+								<TabsTrigger value='appstore'>
+									<Smartphone className='w-4 h-4 mr-2' />
 									{t('types.appStore')}
 								</TabsTrigger>
-								<TabsTrigger value="wifi">
-									<Wifi className="w-4 h-4 mr-2" />
+								<TabsTrigger value='wifi'>
+									<Wifi className='w-4 h-4 mr-2' />
 									{t('types.wifi')}
 								</TabsTrigger>
 							</TabsList>
 
-							<TabsContent value="url" className="space-y-4">
+							<TabsContent value='url' className='space-y-4'>
 								<div>
-									<Label htmlFor="url">{t('url.label')}</Label>
+									<Label htmlFor='url'>{t('url.label')}</Label>
 									<Input
-										id="url"
-										type="url"
+										id='url'
+										type='url'
 										placeholder={t('url.placeholder')}
 										value={url}
-										onChange={(e) => setUrl(e.target.value)}
+										onChange={e => setUrl(e.target.value)}
 									/>
 								</div>
 							</TabsContent>
 
-							<TabsContent value="appstore" className="space-y-4">
+							<TabsContent value='appstore' className='space-y-4'>
 								<div>
 									<Label>{t('appStore.platform')}</Label>
 									<Select
 										value={appStoreConfig.platform}
-										onValueChange={(v) => setAppStoreConfig({ ...appStoreConfig, platform: v as 'ios' | 'android' | 'universal' })}
+										onValueChange={v =>
+											setAppStoreConfig({
+												...appStoreConfig,
+												platform: v as 'ios' | 'android' | 'universal'
+											})
+										}
 									>
 										<SelectTrigger>
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="universal">
-												<div className="flex items-center gap-2">
-													<Smartphone className="w-4 h-4" />
+											<SelectItem value='universal'>
+												<div className='flex items-center gap-2'>
+													<Smartphone className='w-4 h-4' />
 													{t('appStore.universal')}
 												</div>
 											</SelectItem>
-											<SelectItem value="ios">
-												<div className="flex items-center gap-2">
-													<Smartphone className="w-4 h-4" />
+											<SelectItem value='ios'>
+												<div className='flex items-center gap-2'>
+													<Smartphone className='w-4 h-4' />
 													App Store (iOS)
 												</div>
 											</SelectItem>
-											<SelectItem value="android">
-												<div className="flex items-center gap-2">
-													<Smartphone className="w-4 h-4" />
+											<SelectItem value='android'>
+												<div className='flex items-center gap-2'>
+													<Smartphone className='w-4 h-4' />
 													Google Play
 												</div>
 											</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>
-								
+
 								{appStoreConfig.platform === 'universal' ? (
 									<>
 										<div>
-											<Label htmlFor="iosId">{t('appStore.iosAppId')}</Label>
+											<Label htmlFor='iosId'>{t('appStore.iosAppId')}</Label>
 											<Input
-												id="iosId"
-												placeholder="363590051"
+												id='iosId'
+												placeholder='363590051'
 												value={appStoreConfig.appId}
-												onChange={(e) => setAppStoreConfig({ ...appStoreConfig, appId: e.target.value })}
+												onChange={e =>
+													setAppStoreConfig({
+														...appStoreConfig,
+														appId: e.target.value
+													})
+												}
 											/>
-											<p className="text-xs text-muted-foreground mt-1">
+											<p className='text-xs text-muted-foreground mt-1'>
 												{t('appStore.iosHint')}
 											</p>
 										</div>
 										<div>
-											<Label htmlFor="androidId">{t('appStore.androidAppId')}</Label>
+											<Label htmlFor='androidId'>
+												{t('appStore.androidAppId')}
+											</Label>
 											<Input
-												id="androidId"
-												placeholder="com.netflix.mediaclient"
+												id='androidId'
+												placeholder='com.netflix.mediaclient'
 												value={appStoreConfig.androidId || ''}
-												onChange={(e) => setAppStoreConfig({ ...appStoreConfig, androidId: e.target.value })}
+												onChange={e =>
+													setAppStoreConfig({
+														...appStoreConfig,
+														androidId: e.target.value
+													})
+												}
 											/>
-											<p className="text-xs text-muted-foreground mt-1">
+											<p className='text-xs text-muted-foreground mt-1'>
 												{t('appStore.androidHint')}
 											</p>
 										</div>
-										<div className="p-3 bg-muted rounded-lg">
-											<p className="text-xs text-muted-foreground">
+										<div className='p-3 bg-muted rounded-lg'>
+											<p className='text-xs text-muted-foreground'>
 												{t('appStore.universalHint')}
 											</p>
 										</div>
 									</>
 								) : (
 									<div>
-										<Label htmlFor="appId">{t('appStore.appId')}</Label>
+										<Label htmlFor='appId'>{t('appStore.appId')}</Label>
 										<Input
-											id="appId"
-											placeholder={appStoreConfig.platform === 'ios' ? '363590051' : 'com.example.app'}
-											value={appStoreConfig.platform === 'ios' ? appStoreConfig.appId : (appStoreConfig.androidId || appStoreConfig.appId)}
-											onChange={(e) => {
+											id='appId'
+											placeholder={
+												appStoreConfig.platform === 'ios'
+													? '363590051'
+													: 'com.example.app'
+											}
+											value={
+												appStoreConfig.platform === 'ios'
+													? appStoreConfig.appId
+													: appStoreConfig.androidId || appStoreConfig.appId
+											}
+											onChange={e => {
 												if (appStoreConfig.platform === 'ios') {
-													setAppStoreConfig({ ...appStoreConfig, appId: e.target.value })
+													setAppStoreConfig({
+														...appStoreConfig,
+														appId: e.target.value
+													})
 												} else {
-													setAppStoreConfig({ ...appStoreConfig, androidId: e.target.value })
+													setAppStoreConfig({
+														...appStoreConfig,
+														androidId: e.target.value
+													})
 												}
 											}}
 										/>
-										<p className="text-xs text-muted-foreground mt-1">
-											{appStoreConfig.platform === 'ios' 
-												? t('appStore.iosHint') 
-												: t('appStore.androidHint')
-											}
+										<p className='text-xs text-muted-foreground mt-1'>
+											{appStoreConfig.platform === 'ios'
+												? t('appStore.iosHint')
+												: t('appStore.androidHint')}
 										</p>
 									</div>
 								)}
 							</TabsContent>
 
-							<TabsContent value="wifi" className="space-y-4">
+							<TabsContent value='wifi' className='space-y-4'>
 								<div>
-									<Label htmlFor="ssid">{t('wifi.networkName')}</Label>
+									<Label htmlFor='ssid'>{t('wifi.networkName')}</Label>
 									<Input
-										id="ssid"
+										id='ssid'
 										placeholder={t('wifi.networkNamePlaceholder')}
 										value={wifiConfig.ssid}
-										onChange={(e) => setWifiConfig({ ...wifiConfig, ssid: e.target.value })}
+										onChange={e =>
+											setWifiConfig({ ...wifiConfig, ssid: e.target.value })
+										}
 									/>
 								</div>
 								<div>
-									<Label htmlFor="password">{t('wifi.password')}</Label>
+									<Label htmlFor='password'>{t('wifi.password')}</Label>
 									<Input
-										id="password"
-										type="password"
+										id='password'
+										type='password'
 										placeholder={t('wifi.passwordPlaceholder')}
 										value={wifiConfig.password}
-										onChange={(e) => setWifiConfig({ ...wifiConfig, password: e.target.value })}
+										onChange={e =>
+											setWifiConfig({ ...wifiConfig, password: e.target.value })
+										}
 									/>
 								</div>
 								<div>
 									<Label>{t('wifi.security')}</Label>
 									<Select
 										value={wifiConfig.security}
-										onValueChange={(v) => setWifiConfig({ ...wifiConfig, security: v as 'WPA' | 'WEP' | 'nopass' })}
+										onValueChange={v =>
+											setWifiConfig({
+												...wifiConfig,
+												security: v as 'WPA' | 'WEP' | 'nopass'
+											})
+										}
 									>
 										<SelectTrigger>
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="WPA">WPA/WPA2</SelectItem>
-											<SelectItem value="WEP">WEP</SelectItem>
-											<SelectItem value="nopass">{t('wifi.noPassword')}</SelectItem>
+											<SelectItem value='WPA'>WPA/WPA2</SelectItem>
+											<SelectItem value='WEP'>WEP</SelectItem>
+											<SelectItem value='nopass'>
+												{t('wifi.noPassword')}
+											</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>
-								<div className="flex items-center justify-between">
-									<Label htmlFor="hidden">{t('wifi.hidden')}</Label>
+								<div className='flex items-center justify-between'>
+									<Label htmlFor='hidden'>{t('wifi.hidden')}</Label>
 									<Switch
-										id="hidden"
+										id='hidden'
 										checked={wifiConfig.hidden}
-										onCheckedChange={(checked) => setWifiConfig({ ...wifiConfig, hidden: checked })}
+										onCheckedChange={checked =>
+											setWifiConfig({ ...wifiConfig, hidden: checked })
+										}
 									/>
 								</div>
 							</TabsContent>
 						</Tabs>
 
-						<div className="mt-6 space-y-4">
-							<h3 className="text-lg font-semibold">{t('qrSettings')}</h3>
-							
+						<div className='mt-6 space-y-4'>
+							<h3 className='text-lg font-semibold'>{t('qrSettings')}</h3>
+
 							<div>
-								<Label>{t('size')}: {qrSize}px</Label>
+								<Label>
+									{t('size')}: {qrSize}px
+								</Label>
 								<Slider
 									value={[qrSize]}
 									onValueChange={([value]) => setQrSize(value)}
@@ -348,38 +429,38 @@ export default function QRGeneratorPage() {
 								/>
 							</div>
 
-							<div className="grid grid-cols-2 gap-4">
+							<div className='grid grid-cols-2 gap-4'>
 								<div>
-									<Label htmlFor="darkColor">{t('darkColor')}</Label>
-									<div className="flex gap-2">
+									<Label htmlFor='darkColor'>{t('darkColor')}</Label>
+									<div className='flex gap-2'>
 										<Input
-											id="darkColor"
-											type="color"
+											id='darkColor'
+											type='color'
 											value={darkColor}
-											onChange={(e) => setDarkColor(e.target.value)}
-											className="w-16 h-10 p-1"
+											onChange={e => setDarkColor(e.target.value)}
+											className='w-16 h-10 p-1'
 										/>
 										<Input
 											value={darkColor}
-											onChange={(e) => setDarkColor(e.target.value)}
-											placeholder="#000000"
+											onChange={e => setDarkColor(e.target.value)}
+											placeholder='#000000'
 										/>
 									</div>
 								</div>
 								<div>
-									<Label htmlFor="lightColor">{t('lightColor')}</Label>
-									<div className="flex gap-2">
+									<Label htmlFor='lightColor'>{t('lightColor')}</Label>
+									<div className='flex gap-2'>
 										<Input
-											id="lightColor"
-											type="color"
+											id='lightColor'
+											type='color'
 											value={lightColor}
-											onChange={(e) => setLightColor(e.target.value)}
-											className="w-16 h-10 p-1"
+											onChange={e => setLightColor(e.target.value)}
+											className='w-16 h-10 p-1'
 										/>
 										<Input
 											value={lightColor}
-											onChange={(e) => setLightColor(e.target.value)}
-											placeholder="#FFFFFF"
+											onChange={e => setLightColor(e.target.value)}
+											placeholder='#FFFFFF'
 										/>
 									</div>
 								</div>
@@ -389,16 +470,18 @@ export default function QRGeneratorPage() {
 								<Label>{t('errorCorrection')}</Label>
 								<Select
 									value={errorCorrection}
-									onValueChange={(v) => setErrorCorrection(v as 'L' | 'M' | 'Q' | 'H')}
+									onValueChange={v =>
+										setErrorCorrection(v as 'L' | 'M' | 'Q' | 'H')
+									}
 								>
 									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value="L">{t('errorLevels.L')}</SelectItem>
-										<SelectItem value="M">{t('errorLevels.M')}</SelectItem>
-										<SelectItem value="Q">{t('errorLevels.Q')}</SelectItem>
-										<SelectItem value="H">{t('errorLevels.H')}</SelectItem>
+										<SelectItem value='L'>{t('errorLevels.L')}</SelectItem>
+										<SelectItem value='M'>{t('errorLevels.M')}</SelectItem>
+										<SelectItem value='Q'>{t('errorLevels.Q')}</SelectItem>
+										<SelectItem value='H'>{t('errorLevels.H')}</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
@@ -408,22 +491,21 @@ export default function QRGeneratorPage() {
 
 				{/* Preview */}
 				<div>
-					<WidgetSection icon={QrCode} title={t('preview')} className="flex flex-col items-center space-y-6">
-						<div className="p-6 bg-white rounded-2xl shadow-lg">
+					<WidgetSection
+						icon={QrCode}
+						title={t('preview')}
+						className='flex flex-col items-center space-y-6'
+					>
+						<div className='p-6 bg-white rounded-2xl shadow-lg'>
 							<canvas ref={canvasRef} />
 						</div>
-						<div className="flex gap-2">
-							<Button
-								variant="outline"
-								onClick={downloadQR}
-							>
-								<Download className="w-4 h-4 mr-2" />
+						<div className='flex gap-2'>
+							<Button variant='outline' onClick={downloadQR}>
+								<Download className='w-4 h-4 mr-2' />
 								{t('download')}
 							</Button>
-							<Button
-								onClick={copyQRAsImage}
-							>
-								<Copy className="w-4 h-4 mr-2" />
+							<Button onClick={copyQRAsImage}>
+								<Copy className='w-4 h-4 mr-2' />
 								{t('copy')}
 							</Button>
 						</div>

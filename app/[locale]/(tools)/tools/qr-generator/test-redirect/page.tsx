@@ -14,7 +14,7 @@ export default function TestRedirectPage() {
 	useEffect(() => {
 		const ua = navigator.userAgent
 		setUserAgent(ua)
-		
+
 		if (/iPhone|iPad|iPod/i.test(ua)) {
 			setPlatform('iOS')
 		} else if (/Android/i.test(ua)) {
@@ -40,27 +40,34 @@ export default function TestRedirectPage() {
 	]
 
 	return (
-		<div className="container mx-auto p-6 max-w-2xl">
+		<div className='container mx-auto p-6 max-w-2xl'>
 			<Card>
 				<CardHeader>
 					<CardTitle>Test App Redirect</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-4">
+				<CardContent className='space-y-4'>
 					<div>
-						<h3 className="font-semibold mb-2">Your Device Info:</h3>
-						<p className="text-sm text-muted-foreground">Platform: {platform}</p>
-						<p className="text-sm text-muted-foreground break-all">User Agent: {userAgent}</p>
+						<h3 className='font-semibold mb-2'>Your Device Info:</h3>
+						<p className='text-sm text-muted-foreground'>
+							Platform: {platform}
+						</p>
+						<p className='text-sm text-muted-foreground break-all'>
+							User Agent: {userAgent}
+						</p>
 					</div>
 
 					<div>
-						<h3 className="font-semibold mb-2">Test Links:</h3>
-						<div className="space-y-2">
-							{testLinks.map((link) => (
-								<div key={link.name} className="flex items-center justify-between p-3 border rounded">
+						<h3 className='font-semibold mb-2'>Test Links:</h3>
+						<div className='space-y-2'>
+							{testLinks.map(link => (
+								<div
+									key={link.name}
+									className='flex items-center justify-between p-3 border rounded'
+								>
 									<span>{link.name}</span>
 									<Button
-										variant="outline"
-										size="sm"
+										variant='outline'
+										size='sm'
 										onClick={() => window.open(link.url, '_blank')}
 									>
 										Test Redirect
@@ -70,9 +77,9 @@ export default function TestRedirectPage() {
 						</div>
 					</div>
 
-					<div className="pt-4">
-						<Link href="../qr-generator">
-							<Button variant="outline">← Back to QR Generator</Button>
+					<div className='pt-4'>
+						<Link href='../qr-generator'>
+							<Button variant='outline'>← Back to QR Generator</Button>
 						</Link>
 					</div>
 				</CardContent>

@@ -1,6 +1,7 @@
 # Widget Keyboard Shortcuts Guide
 
-This guide explains how to implement keyboard shortcuts in widgets for improved user experience and accessibility.
+This guide explains how to implement keyboard shortcuts in widgets for improved
+user experience and accessibility.
 
 ## Overview
 
@@ -15,43 +16,47 @@ The keyboard shortcuts system provides:
 ### 1. Basic Setup
 
 ```tsx
-import { useWidgetKeyboard, commonWidgetShortcuts, type KeyboardShortcut } from '@/lib/hooks/useWidgetKeyboard'
+import {
+	useWidgetKeyboard,
+	commonWidgetShortcuts,
+	type KeyboardShortcut
+} from '@/lib/hooks/useWidgetKeyboard'
 import { WidgetKeyboardShortcuts } from '@/components/widgets'
 
 export default function YourWidget() {
-  const shortcuts: KeyboardShortcut[] = [
-    {
-      key: 'Enter',
-      ctrl: true,
-      description: 'Submit form',
-      action: () => handleSubmit()
-    },
-    {
-      key: 'r',
-      ctrl: true,
-      shift: true,
-      description: 'Reset form',
-      action: () => handleReset()
-    }
-  ]
+	const shortcuts: KeyboardShortcut[] = [
+		{
+			key: 'Enter',
+			ctrl: true,
+			description: 'Submit form',
+			action: () => handleSubmit()
+		},
+		{
+			key: 'r',
+			ctrl: true,
+			shift: true,
+			description: 'Reset form',
+			action: () => handleReset()
+		}
+	]
 
-  useWidgetKeyboard({
-    shortcuts,
-    widgetId: 'your-widget-id',
-    enabled: true
-  })
+	useWidgetKeyboard({
+		shortcuts,
+		widgetId: 'your-widget-id',
+		enabled: true
+	})
 
-  return (
-    <div>
-      {/* Your widget content */}
-      
-      <WidgetKeyboardShortcuts
-        shortcuts={shortcuts}
-        variant="floating"
-        position="bottom-right"
-      />
-    </div>
-  )
+	return (
+		<div>
+			{/* Your widget content */}
+
+			<WidgetKeyboardShortcuts
+				shortcuts={shortcuts}
+				variant='floating'
+				position='bottom-right'
+			/>
+		</div>
+	)
 }
 ```
 
@@ -59,47 +64,47 @@ export default function YourWidget() {
 
 ```tsx
 const shortcuts: KeyboardShortcut[] = [
-  {
-    ...commonWidgetShortcuts.submit,
-    action: handleCalculate
-  },
-  {
-    ...commonWidgetShortcuts.copy,
-    action: copyResults,
-    enabled: !!results // Conditionally enable
-  },
-  {
-    ...commonWidgetShortcuts.reset,
-    action: reset
-  }
+	{
+		...commonWidgetShortcuts.submit,
+		action: handleCalculate
+	},
+	{
+		...commonWidgetShortcuts.copy,
+		action: copyResults,
+		enabled: !!results // Conditionally enable
+	},
+	{
+		...commonWidgetShortcuts.reset,
+		action: reset
+	}
 ]
 ```
 
 ### 3. Display Variants
 
 #### Floating Button (Default)
+
 ```tsx
 <WidgetKeyboardShortcuts
-  shortcuts={shortcuts}
-  variant="floating"
-  position="bottom-right"
+	shortcuts={shortcuts}
+	variant='floating'
+	position='bottom-right'
 />
 ```
 
 #### Dialog Trigger
+
 ```tsx
-<WidgetKeyboardShortcuts
-  shortcuts={shortcuts}
-  variant="dialog"
-/>
+<WidgetKeyboardShortcuts shortcuts={shortcuts} variant='dialog' />
 ```
 
 #### Inline Display
+
 ```tsx
 <WidgetKeyboardShortcuts
-  shortcuts={shortcuts}
-  variant="inline"
-  className="mb-4"
+	shortcuts={shortcuts}
+	variant='inline'
+	className='mb-4'
 />
 ```
 
@@ -109,13 +114,17 @@ Show shortcuts next to buttons:
 
 ```tsx
 import { ShortcutHint } from '@/components/widgets'
-
-<Button onClick={handleSubmit}>
-  Submit
-  <ShortcutHint 
-    shortcut={{ key: 'Enter', ctrl: true, description: '', action: handleSubmit }}
-    className="ml-2"
-  />
+;<Button onClick={handleSubmit}>
+	Submit
+	<ShortcutHint
+		shortcut={{
+			key: 'Enter',
+			ctrl: true,
+			description: '',
+			action: handleSubmit
+		}}
+		className='ml-2'
+	/>
 </Button>
 ```
 
@@ -125,14 +134,14 @@ import { ShortcutHint } from '@/components/widgets'
 
 ```tsx
 interface KeyboardShortcut {
-  key: string          // Key to press (e.g., 'Enter', 'a', 'ArrowUp')
-  ctrl?: boolean       // Require Ctrl/Cmd key
-  shift?: boolean      // Require Shift key
-  alt?: boolean        // Require Alt key
-  meta?: boolean       // Require Meta/Windows key
-  description: string  // Description shown in shortcuts list
-  action: () => void   // Function to execute
-  enabled?: boolean    // Conditionally enable/disable
+	key: string // Key to press (e.g., 'Enter', 'a', 'ArrowUp')
+	ctrl?: boolean // Require Ctrl/Cmd key
+	shift?: boolean // Require Shift key
+	alt?: boolean // Require Alt key
+	meta?: boolean // Require Meta/Windows key
+	description: string // Description shown in shortcuts list
+	action: () => void // Function to execute
+	enabled?: boolean // Conditionally enable/disable
 }
 ```
 
@@ -165,19 +174,20 @@ interface KeyboardShortcut {
 ## Pre-built Shortcut Collections
 
 ```tsx
-import { 
-  calculatorShortcuts,
-  converterShortcuts,
-  generatorShortcuts,
-  editorShortcuts
+import {
+	calculatorShortcuts,
+	converterShortcuts,
+	generatorShortcuts,
+	editorShortcuts
 } from '@/lib/hooks/useWidgetKeyboard'
 
 // Override actions
 const shortcuts = calculatorShortcuts.map(shortcut => ({
-  ...shortcut,
-  action: shortcut.key === 'Enter' && shortcut.ctrl 
-    ? handleCalculate 
-    : shortcut.action
+	...shortcut,
+	action:
+		shortcut.key === 'Enter' && shortcut.ctrl
+			? handleCalculate
+			: shortcut.action
 }))
 ```
 
@@ -187,8 +197,8 @@ const shortcuts = calculatorShortcuts.map(shortcut => ({
 
 ```tsx
 const { focusElement, focusNext, focusPrevious } = useWidgetKeyboard({
-  shortcuts,
-  widgetId: 'widget-id'
+	shortcuts,
+	widgetId: 'widget-id'
 })
 
 // Focus specific element
@@ -196,8 +206,13 @@ focusElement('#input-field')
 
 // Navigate focus
 const navigationShortcuts = [
-  { key: 'Tab', description: 'Next field', action: focusNext },
-  { key: 'Tab', shift: true, description: 'Previous field', action: focusPrevious }
+	{ key: 'Tab', description: 'Next field', action: focusNext },
+	{
+		key: 'Tab',
+		shift: true,
+		description: 'Previous field',
+		action: focusPrevious
+	}
 ]
 ```
 
@@ -205,13 +220,13 @@ const navigationShortcuts = [
 
 ```tsx
 const shortcuts: KeyboardShortcut[] = [
-  {
-    key: 'd',
-    ctrl: true,
-    description: 'Download',
-    action: handleDownload,
-    enabled: !!downloadData // Only enable when data exists
-  }
+	{
+		key: 'd',
+		ctrl: true,
+		description: 'Download',
+		action: handleDownload,
+		enabled: !!downloadData // Only enable when data exists
+	}
 ]
 ```
 
@@ -219,42 +234,46 @@ const shortcuts: KeyboardShortcut[] = [
 
 ```tsx
 const shortcuts: KeyboardShortcut[] = [
-  {
-    key: 's',
-    ctrl: true,
-    description: 'Save',
-    action: () => {
-      if (validateForm()) {
-        handleSave()
-      } else {
-        toast.error('Please fix errors before saving')
-      }
-    }
-  }
+	{
+		key: 's',
+		ctrl: true,
+		description: 'Save',
+		action: () => {
+			if (validateForm()) {
+				handleSave()
+			} else {
+				toast.error('Please fix errors before saving')
+			}
+		}
+	}
 ]
 ```
 
 ## Best Practices
 
 ### 1. Shortcut Selection
+
 - Use standard shortcuts when possible (Ctrl+C for copy, Ctrl+S for save)
 - Avoid conflicts with browser shortcuts
 - Keep shortcuts simple and memorable
 - Group related shortcuts
 
 ### 2. Accessibility
+
 - All shortcuts accessible via keyboard only
 - Provide visual indicators for available shortcuts
 - Include shortcut descriptions in UI
 - Support screen readers
 
 ### 3. User Experience
+
 - Show shortcut hints on hover
 - Display "Shift + ?" to show all shortcuts
 - Save user preferences
 - Provide feedback when shortcuts are used
 
 ### 4. Performance
+
 - Lazy load shortcut components
 - Debounce rapid shortcut triggers
 - Clean up event listeners properly
@@ -262,23 +281,46 @@ const shortcuts: KeyboardShortcut[] = [
 ## Implementation Examples
 
 ### ASCII Art Generator
+
 ```tsx
 const shortcuts: KeyboardShortcut[] = [
-  { key: 'Enter', ctrl: true, description: 'Generate ASCII', action: generate },
-  { key: 'c', ctrl: true, shift: true, description: 'Copy ASCII', action: copy },
-  { key: '1', ctrl: true, description: 'Text tab', action: () => setTab('text') },
-  { key: '2', ctrl: true, description: 'Image tab', action: () => setTab('image') },
-  { key: '3', ctrl: true, description: 'Patterns tab', action: () => setTab('patterns') }
+	{ key: 'Enter', ctrl: true, description: 'Generate ASCII', action: generate },
+	{
+		key: 'c',
+		ctrl: true,
+		shift: true,
+		description: 'Copy ASCII',
+		action: copy
+	},
+	{
+		key: '1',
+		ctrl: true,
+		description: 'Text tab',
+		action: () => setTab('text')
+	},
+	{
+		key: '2',
+		ctrl: true,
+		description: 'Image tab',
+		action: () => setTab('image')
+	},
+	{
+		key: '3',
+		ctrl: true,
+		description: 'Patterns tab',
+		action: () => setTab('patterns')
+	}
 ]
 ```
 
 ### BMI Calculator
+
 ```tsx
 const shortcuts: KeyboardShortcut[] = [
-  { key: 'Enter', ctrl: true, description: 'Calculate BMI', action: calculate },
-  { key: 'u', ctrl: true, description: 'Switch units', action: toggleUnits },
-  { key: 'e', ctrl: true, description: 'Load example', action: loadExample },
-  { key: 'a', ctrl: true, description: 'Advanced mode', action: toggleAdvanced }
+	{ key: 'Enter', ctrl: true, description: 'Calculate BMI', action: calculate },
+	{ key: 'u', ctrl: true, description: 'Switch units', action: toggleUnits },
+	{ key: 'e', ctrl: true, description: 'Load example', action: loadExample },
+	{ key: 'a', ctrl: true, description: 'Advanced mode', action: toggleAdvanced }
 ]
 ```
 

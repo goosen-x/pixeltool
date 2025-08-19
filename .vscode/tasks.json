@@ -1,0 +1,138 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "dev",
+			"type": "shell",
+			"command": "npm run dev",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "npm run build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$tsc"]
+		},
+		{
+			"label": "lint",
+			"type": "shell",
+			"command": "npm run lint",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$eslint-stylish"]
+		},
+		{
+			"label": "lint-fix",
+			"type": "shell",
+			"command": "npx eslint --fix \"**/*.{ts,tsx,js,jsx}\"",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$eslint-stylish"]
+		},
+		{
+			"label": "typecheck",
+			"type": "shell",
+			"command": "npm run typecheck",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": ["$tsc"]
+		},
+		{
+			"label": "format",
+			"type": "shell",
+			"command": "npm run format",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "quality-check",
+			"type": "shell",
+			"command": "npm run typecheck && npm run lint && npm run check:security",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			},
+			"problemMatcher": ["$tsc", "$eslint-stylish"]
+		},
+		{
+			"label": "translations-check",
+			"type": "shell",
+			"command": "npm run translations:check",
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "new-widget",
+			"type": "shell",
+			"command": "npx tsx scripts/create-widget-template.ts",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "deploy-check",
+			"type": "shell",
+			"command": "npm run build && npm run check:all && npm run test",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			},
+			"problemMatcher": ["$tsc", "$eslint-stylish"]
+		}
+	]
+}

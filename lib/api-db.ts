@@ -1,4 +1,7 @@
-import { getAllPublishedPosts, getPostBySlug as getDbPostBySlug } from './db/blog'
+import {
+	getAllPublishedPosts,
+	getPostBySlug as getDbPostBySlug
+} from './db/blog'
 import type { BlogPost } from './types/database'
 import type { Post } from './types/post'
 import type { Author } from './types/author'
@@ -7,7 +10,7 @@ import { getAllPostsFromFiles, getPostBySlugFromFile } from './api-file'
 // Convert database BlogPost to legacy Post format
 function convertDbPostToLegacy(dbPost: BlogPost): Post {
 	const primaryAuthor = dbPost.authors?.[0]
-	
+
 	const author: Author = {
 		name: primaryAuthor?.name || 'Unknown Author',
 		picture: primaryAuthor?.picture || '/images/avatar.jpeg'
@@ -32,12 +35,12 @@ function convertDbPostToLegacy(dbPost: BlogPost): Post {
 export async function getAllPosts(locale: string = 'en'): Promise<Post[]> {
 	try {
 		const dbPosts = await getAllPublishedPosts(locale)
-		
+
 		// If we get posts from DB, use them
 		if (dbPosts && dbPosts.length > 0) {
 			return dbPosts.map(convertDbPostToLegacy)
 		}
-		
+
 		// If no posts from DB (but no error), fallback to files
 		console.warn('No posts found in database, falling back to file system')
 		return getAllPostsFromFiles(locale)
@@ -54,7 +57,10 @@ export async function getAllPosts(locale: string = 'en'): Promise<Post[]> {
 }
 
 // Get post by slug
-export async function getPostBySlug(slug: string, locale: string = 'en'): Promise<Post | null> {
+export async function getPostBySlug(
+	slug: string,
+	locale: string = 'en'
+): Promise<Post | null> {
 	try {
 		const dbPost = await getDbPostBySlug(slug, locale)
 		if (!dbPost) {

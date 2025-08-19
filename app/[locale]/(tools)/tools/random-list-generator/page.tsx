@@ -193,6 +193,7 @@ export default function RandomListGeneratorPage() {
 										accept='.txt'
 										onChange={handleFileUpload}
 										className='hidden'
+										aria-label='Upload text file with list items'
 									/>
 								</label>
 							</div>
@@ -356,7 +357,8 @@ export default function RandomListGeneratorPage() {
 							This application uses crypto.getRandomValues() for enhanced
 							randomness instead of Math.random(). Please comply with local
 							laws. Users are responsible for any violations. This service is
-							provided &quot;as is&quot; without any warranties, express or implied.
+							provided &quot;as is&quot; without any warranties, express or
+							implied.
 						</AlertDescription>
 					</Alert>
 				</div>

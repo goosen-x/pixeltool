@@ -12,7 +12,6 @@ import {
 	SocialsBlock
 } from './widgets'
 
-
 const container = {
 	hidden: { opacity: 0 },
 	show: {
@@ -25,8 +24,8 @@ const container = {
 
 const item = {
 	hidden: { opacity: 0, y: 20 },
-	show: { 
-		opacity: 1, 
+	show: {
+		opacity: 1,
 		y: 0,
 		transition: {
 			duration: 0.6,
@@ -46,23 +45,23 @@ export const SectionMain = ({
 		<motion.section
 			id={id}
 			className={cn('grid grid-cols-12 gap-4 mb-24', className)}
-			initial="hidden"
-			animate="show"
+			initial='hidden'
+			animate='show'
 			variants={container}
 		>
-			<motion.div variants={item} className="contents">
+			<motion.div variants={item} className='contents'>
 				<HeaderBlock />
 			</motion.div>
-			<motion.div variants={item} className="contents">
+			<motion.div variants={item} className='contents'>
 				<SocialsBlock />
 			</motion.div>
-			<motion.div variants={item} className="contents">
+			<motion.div variants={item} className='contents'>
 				<LocationBlock />
 			</motion.div>
-			<motion.div variants={item} className="contents">
+			<motion.div variants={item} className='contents'>
 				<AboutBlock />
 			</motion.div>
-			<motion.div variants={item} className="contents">
+			<motion.div variants={item} className='contents'>
 				<EmailListBlock />
 			</motion.div>
 		</motion.section>

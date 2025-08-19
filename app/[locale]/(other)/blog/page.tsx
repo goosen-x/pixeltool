@@ -13,20 +13,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { locale } = await params
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/${locale}/blog`
-	
+
 	const metadata = {
 		en: {
 			title: 'Blog - Developer Tutorials & Guides | PixelTool',
-			description: 'Read our latest articles about web development, CSS techniques, JavaScript tutorials, and developer tools. Learn from practical examples and code snippets.',
+			description:
+				'Read our latest articles about web development, CSS techniques, JavaScript tutorials, and developer tools. Learn from practical examples and code snippets.'
 		},
 		ru: {
 			title: 'Блог - Туториалы и Руководства для Разработчиков | PixelTool',
-			description: 'Читайте наши статьи о веб-разработке, CSS техниках, JavaScript туториалах и инструментах разработчика. Учитесь на практических примерах и фрагментах кода.',
+			description:
+				'Читайте наши статьи о веб-разработке, CSS техниках, JavaScript туториалах и инструментах разработчика. Учитесь на практических примерах и фрагментах кода.'
 		}
 	}
-	
-	const currentMetadata = metadata[locale as keyof typeof metadata] || metadata.en
-	
+
+	const currentMetadata =
+		metadata[locale as keyof typeof metadata] || metadata.en
+
 	return {
 		title: currentMetadata.title,
 		description: currentMetadata.description,
@@ -37,23 +40,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			siteName: 'PixelTool',
 			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
 			type: 'website',
-			images: [{
-				url: `/api/og?title=${encodeURIComponent(locale === 'ru' ? 'Блог' : 'Blog')}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
-				width: 1200,
-				height: 630,
-			}]
+			images: [
+				{
+					url: `/api/og?title=${encodeURIComponent(locale === 'ru' ? 'Блог' : 'Blog')}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
+					width: 1200,
+					height: 630
+				}
+			]
 		},
 		twitter: {
 			card: 'summary_large_image',
 			title: currentMetadata.title,
 			description: currentMetadata.description,
-			images: [`/api/og?title=${encodeURIComponent(locale === 'ru' ? 'Блог' : 'Blog')}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`],
+			images: [
+				`/api/og?title=${encodeURIComponent(locale === 'ru' ? 'Блог' : 'Blog')}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`
+			]
 		},
 		alternates: {
 			canonical: url,
 			languages: {
-				'en': `${baseUrl}/en/blog`,
-				'ru': `${baseUrl}/ru/blog`,
+				en: `${baseUrl}/en/blog`,
+				ru: `${baseUrl}/ru/blog`
 			}
 		}
 	}
@@ -96,10 +103,7 @@ export default async function Blog(props: Props) {
 
 // Generate static params for both locales
 export async function generateStaticParams() {
-	return [
-		{ locale: 'en' },
-		{ locale: 'ru' }
-	]
+	return [{ locale: 'en' }, { locale: 'ru' }]
 }
 
 // Enable ISR with 30 minutes revalidation for blog listing

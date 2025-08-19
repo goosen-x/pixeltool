@@ -16,7 +16,7 @@ export const OnlineUsers = () => {
 					cache: 'no-store',
 					headers: {
 						'Cache-Control': 'no-cache',
-						'Pragma': 'no-cache'
+						Pragma: 'no-cache'
 					}
 				})
 				if (response.ok) {
@@ -24,7 +24,7 @@ export const OnlineUsers = () => {
 					// Ensure minimum of 1 user (current user)
 					setOnlineCount(Math.max(1, data.onlineUsers))
 					console.log('🔄 Online users updated:', Math.max(1, data.onlineUsers))
-					
+
 					// Добавляем эффект мигания при обновлении
 					setIsBlinking(true)
 					setTimeout(() => setIsBlinking(false), 2000)
@@ -48,27 +48,31 @@ export const OnlineUsers = () => {
 	}, [])
 
 	return (
-		<div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-green-500/15 to-emerald-500/15 border border-green-500/30 backdrop-blur-sm shadow-lg hover:shadow-green-500/20 transition-all duration-300">
+		<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-green-500/15 to-emerald-500/15 border border-green-500/30 backdrop-blur-sm shadow-lg hover:shadow-green-500/20 transition-all duration-300'>
 			{/* Ярко мигающая точка */}
-			<div className="relative flex items-center justify-center">
-				<div className="absolute w-4 h-4 bg-green-400 rounded-full animate-ping opacity-100" />
-				<div className="absolute w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-				<div className={`w-2 h-2 bg-green-300 rounded-full ${isBlinking ? 'animate-bounce' : ''}`} />
+			<div className='relative flex items-center justify-center'>
+				<div className='absolute w-3 h-3 sm:w-4 sm:h-4 bg-green-400 rounded-full animate-ping opacity-100' />
+				<div className='absolute w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse' />
+				<div
+					className={`w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-300 rounded-full ${isBlinking ? 'animate-bounce' : ''}`}
+				/>
 			</div>
-			
-			{/* Иконка активности */}
-			<Activity className="w-4 h-4 text-green-600 dark:text-green-400" />
-			
+
+			{/* Иконка активности - скрыта на мобильных */}
+			<Activity className='hidden sm:block w-4 h-4 text-green-600 dark:text-green-400' />
+
 			{/* Счетчик с анимацией */}
-			<div className="flex items-center gap-1">
+			<div className='flex items-center gap-1'>
 				{isLoading ? (
-					<div className="w-8 h-4 bg-green-600/20 dark:bg-green-400/20 rounded animate-pulse" />
+					<div className='w-6 h-3 sm:w-8 sm:h-4 bg-green-600/20 dark:bg-green-400/20 rounded animate-pulse' />
 				) : (
-					<span className={`text-sm font-bold text-green-700 dark:text-green-300 transition-all duration-300 ${isBlinking ? 'scale-110' : ''}`}>
+					<span
+						className={`text-xs sm:text-sm font-bold text-green-700 dark:text-green-300 transition-all duration-300 ${isBlinking ? 'scale-110' : ''}`}
+					>
 						{onlineCount.toLocaleString()}
 					</span>
 				)}
-				<span className="text-xs font-medium text-green-600/80 dark:text-green-400/80">
+				<span className='text-[10px] sm:text-xs font-medium text-green-600/80 dark:text-green-400/80'>
 					online
 				</span>
 			</div>

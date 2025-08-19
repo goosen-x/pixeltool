@@ -204,7 +204,10 @@ export default function RandomNumberGeneratorPage() {
 			{/* Input Section */}
 			<WidgetSection title={t('sections.settings')}>
 				<div className='grid md:grid-cols-3 gap-4'>
-					<WidgetInput label={t('inputs.minimum.label')} description={t('inputs.minimum.description')}>
+					<WidgetInput
+						label={t('inputs.minimum.label')}
+						description={t('inputs.minimum.description')}
+					>
 						<Input
 							type='number'
 							value={min}
@@ -214,8 +217,11 @@ export default function RandomNumberGeneratorPage() {
 							placeholder={t('inputs.minimum.placeholder')}
 						/>
 					</WidgetInput>
-					
-					<WidgetInput label={t('inputs.maximum.label')} description={t('inputs.maximum.description')}>
+
+					<WidgetInput
+						label={t('inputs.maximum.label')}
+						description={t('inputs.maximum.description')}
+					>
 						<Input
 							type='number'
 							value={max}
@@ -225,8 +231,11 @@ export default function RandomNumberGeneratorPage() {
 							placeholder={t('inputs.maximum.placeholder')}
 						/>
 					</WidgetInput>
-					
-					<WidgetInput label={t('inputs.count.label')} description={t('inputs.count.description')}>
+
+					<WidgetInput
+						label={t('inputs.count.label')}
+						description={t('inputs.count.description')}
+					>
 						<Input
 							type='number'
 							value={count}
@@ -241,7 +250,10 @@ export default function RandomNumberGeneratorPage() {
 				<div className='flex items-center justify-between mt-6'>
 					<div className='flex items-center space-x-2'>
 						<Switch id='unique' checked={unique} onCheckedChange={setUnique} />
-						<label htmlFor='unique' className='text-sm font-medium cursor-pointer'>
+						<label
+							htmlFor='unique'
+							className='text-sm font-medium cursor-pointer'
+						>
 							{t('inputs.unique')}
 						</label>
 					</div>
@@ -264,32 +276,31 @@ export default function RandomNumberGeneratorPage() {
 			{latestResult && (
 				<WidgetSection title={t('sections.result')}>
 					<WidgetOutput>
-					<div className='bg-muted rounded-lg p-6 text-center'>
-						<div className='flex flex-wrap justify-center gap-4 mb-4'>
-							{latestResult.numbers.map((num, index) => (
-								<span
-									key={index}
-									className='text-2xl font-bold bg-background rounded-lg px-4 py-2 shadow-sm'
-								>
-									{num}
-								</span>
-							))}
+						<div className='bg-muted rounded-lg p-6 text-center'>
+							<div className='flex flex-wrap justify-center gap-4 mb-4'>
+								{latestResult.numbers.map((num, index) => (
+									<span
+										key={index}
+										className='text-2xl font-bold bg-background rounded-lg px-4 py-2 shadow-sm'
+									>
+										{num}
+									</span>
+								))}
+							</div>
+							<p className='text-sm text-muted-foreground'>
+								{t('result.generatedAt')}{' '}
+								{latestResult.timestamp.toLocaleString()}
+							</p>
 						</div>
-						<p className='text-sm text-muted-foreground'>
-							{t('result.generatedAt')} {latestResult.timestamp.toLocaleString()}
-						</p>
-					</div>
-				</WidgetOutput>
+					</WidgetOutput>
 				</WidgetSection>
 			)}
 
 			{/* History Section */}
 			{results.length > 1 && (
-				<WidgetSection 
-					title={t('sections.history')}
-				>
-					<div className="flex justify-between items-center mb-4">
-						<h3 className="text-sm font-medium">{t('sections.allResults')}</h3>
+				<WidgetSection title={t('sections.history')}>
+					<div className='flex justify-between items-center mb-4'>
+						<h3 className='text-sm font-medium'>{t('sections.allResults')}</h3>
 						<Button variant='outline' size='sm' onClick={downloadResults}>
 							<Download className='w-4 h-4 mr-1' />
 							{t('actions.downloadAll')}
@@ -345,7 +356,7 @@ export default function RandomNumberGeneratorPage() {
 			</WidgetSection>
 
 			{/* Keyboard Shortcuts */}
-			<WidgetSection title="Keyboard Shortcuts">
+			<WidgetSection title='Keyboard Shortcuts'>
 				<KeyboardShortcutInfo />
 			</WidgetSection>
 		</WidgetLayout>

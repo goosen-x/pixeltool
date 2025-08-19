@@ -422,6 +422,7 @@ export default function JSValidatorPage() {
 							accept='.js,.javascript,.mjs,.tsx,.jsx'
 							onChange={handleFileUpload}
 							className='hidden'
+							aria-label='Upload JavaScript file for validation'
 						/>
 					</div>
 

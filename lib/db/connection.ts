@@ -20,12 +20,14 @@ const mockSql = Object.assign(
 let sql: any
 
 try {
-	sql = databaseUrl ? neon(databaseUrl, {
-		fetchOptions: {
-			// Add timeout to prevent hanging
-			signal: AbortSignal.timeout(3000), // Shorter timeout for faster fallback
-		}
-	}) : mockSql
+	sql = databaseUrl
+		? neon(databaseUrl, {
+				fetchOptions: {
+					// Add timeout to prevent hanging
+					signal: AbortSignal.timeout(3000) // Shorter timeout for faster fallback
+				}
+			})
+		: mockSql
 } catch (error) {
 	console.error('Error initializing database connection:', error)
 	sql = mockSql

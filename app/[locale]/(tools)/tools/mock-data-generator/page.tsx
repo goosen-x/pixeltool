@@ -315,15 +315,15 @@ export default function MockDataGeneratorPage() {
 			const startTime = performance.now()
 			const response = await fetch(api.endpoint)
 			const endTime = performance.now()
-			
+
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
-			
+
 			const jsonData = await response.json()
 			const responseTimeMs = Math.round(endTime - startTime)
 			const dataSizeBytes = new Blob([JSON.stringify(jsonData)]).size
-			
+
 			setData(jsonData)
 			setResponseTime(responseTimeMs)
 			setDataSize(formatBytes(dataSizeBytes))
@@ -374,7 +374,8 @@ export default function MockDataGeneratorPage() {
 	const getAPIsByCategory = (category: string) => {
 		return publicAPIs.filter(api => {
 			const matchesCategory = api.category === category
-			const matchesSearch = searchQuery.trim() === '' || 
+			const matchesSearch =
+				searchQuery.trim() === '' ||
 				api.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				api.description.toLowerCase().includes(searchQuery.toLowerCase())
 			return matchesCategory && matchesSearch
@@ -383,7 +384,8 @@ export default function MockDataGeneratorPage() {
 
 	const renderFormattedData = (obj: any, depth = 0): React.ReactNode => {
 		if (obj === null) return <span className='text-muted-foreground'>null</span>
-		if (typeof obj !== 'object') return <span className='text-foreground'>{String(obj)}</span>
+		if (typeof obj !== 'object')
+			return <span className='text-foreground'>{String(obj)}</span>
 
 		if (Array.isArray(obj)) {
 			return (
@@ -459,7 +461,7 @@ export default function MockDataGeneratorPage() {
 							<Input
 								placeholder='Search APIs...'
 								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
+								onChange={e => setSearchQuery(e.target.value)}
 								className='pl-8'
 							/>
 							<Database className='absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
@@ -517,7 +519,9 @@ export default function MockDataGeneratorPage() {
 													>
 														<div className='flex items-start justify-between'>
 															<div className='flex-1'>
-																<div className='font-medium text-sm'>{api.name}</div>
+																<div className='font-medium text-sm'>
+																	{api.name}
+																</div>
 																<div className='text-xs text-muted-foreground mt-1'>
 																	{api.description}
 																</div>
@@ -530,11 +534,12 @@ export default function MockDataGeneratorPage() {
 															<Badge variant='secondary' className='text-xs'>
 																{api.method}
 															</Badge>
-															{api.rateLimit && api.rateLimit !== 'Unlimited' && (
-																<Badge variant='outline' className='text-xs'>
-																	{api.rateLimit}
-																</Badge>
-															)}
+															{api.rateLimit &&
+																api.rateLimit !== 'Unlimited' && (
+																	<Badge variant='outline' className='text-xs'>
+																		{api.rateLimit}
+																	</Badge>
+																)}
 														</div>
 													</button>
 												))
@@ -615,7 +620,10 @@ export default function MockDataGeneratorPage() {
 						{data && !loading && (
 							<div className='space-y-4'>
 								{/* View Mode Tabs */}
-								<Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'json' | 'formatted')}>
+								<Tabs
+									value={viewMode}
+									onValueChange={v => setViewMode(v as 'json' | 'formatted')}
+								>
 									<TabsList>
 										<TabsTrigger value='json'>
 											<Code2 className='w-4 h-4 mr-2' />
@@ -722,19 +730,25 @@ export default function MockDataGeneratorPage() {
 					</h3>
 					<div className='space-y-3 text-sm'>
 						<div className='flex items-start gap-2'>
-							<Badge variant='outline' className='mt-0.5'>CORS</Badge>
+							<Badge variant='outline' className='mt-0.5'>
+								CORS
+							</Badge>
 							<p className='text-muted-foreground'>
 								All APIs support CORS for browser-based requests
 							</p>
 						</div>
 						<div className='flex items-start gap-2'>
-							<Badge variant='outline' className='mt-0.5'>FREE</Badge>
+							<Badge variant='outline' className='mt-0.5'>
+								FREE
+							</Badge>
 							<p className='text-muted-foreground'>
 								No API keys required for basic usage
 							</p>
 						</div>
 						<div className='flex items-start gap-2'>
-							<Badge variant='outline' className='mt-0.5'>FAST</Badge>
+							<Badge variant='outline' className='mt-0.5'>
+								FAST
+							</Badge>
 							<p className='text-muted-foreground'>
 								Response times shown for each request
 							</p>

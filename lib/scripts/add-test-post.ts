@@ -6,20 +6,20 @@ config({ path: path.join(process.cwd(), '.env.local') })
 
 async function addTestPost() {
 	console.log('Adding test blog post...')
-	
+
 	// Dynamically import after env vars are loaded
 	const { createBlogPost, getAllAuthors } = await import('../db/blog')
-	
+
 	try {
 		// Get default author
 		const authors = await getAllAuthors()
 		const defaultAuthor = authors.find(a => a.name === 'Dmitry Borisenko')
-		
+
 		if (!defaultAuthor) {
 			console.error('Default author not found!')
 			return
 		}
-		
+
 		const testPost = {
 			slug: 'welcome-to-my-blog',
 			title: 'Welcome to My Blog',
@@ -55,9 +55,9 @@ Stay tuned for more posts about web development, React, TypeScript, and more!`,
 			locale: 'en',
 			author_ids: [defaultAuthor.id]
 		}
-		
+
 		const result = await createBlogPost(testPost)
-		
+
 		if (result) {
 			console.log('✅ Test post created successfully!')
 			console.log(`Visit: http://localhost:3000/en/blog/${result.slug}`)

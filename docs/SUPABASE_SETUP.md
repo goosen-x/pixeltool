@@ -56,7 +56,8 @@ npx tsx lib/scripts/migrate-to-supabase.ts
 
 ## 6. Update Your Code
 
-The project is already configured to use Supabase when available. Just restart your dev server:
+The project is already configured to use Supabase when available. Just restart
+your dev server:
 
 ```bash
 npm run dev
@@ -82,14 +83,17 @@ npx tsx lib/scripts/check-supabase.ts
 ## Troubleshooting
 
 ### "relation does not exist" error
+
 - Make sure you ran the migration SQL
 - Check you're in the right project
 
 ### "Invalid API key" error
+
 - Double-check your env variables
 - Make sure you're using the `anon` key, not `service_role`
 
 ### Connection timeout
+
 - Check your database password
 - Verify the connection string format
 

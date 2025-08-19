@@ -8,13 +8,13 @@ import Link from 'next/link'
 
 export default function Error({
 	error,
-	reset,
+	reset
 }: {
 	error: Error & { digest?: string }
 	reset: () => void
 }) {
 	const t = useTranslations('Error')
-	
+
 	useEffect(() => {
 		// Логирование ошибки в консоль для отладки
 		console.error('Server error:', error)
@@ -30,10 +30,8 @@ export default function Error({
 				<h1 className='mb-4 text-2xl font-bold tracking-tight text-foreground sm:text-4xl'>
 					{t('title')}
 				</h1>
-				
-				<p className='mb-4 text-muted-foreground'>
-					{t('description')}
-				</p>
+
+				<p className='mb-4 text-muted-foreground'>{t('description')}</p>
 
 				{/* Показываем детали ошибки только в development */}
 				{process.env.NODE_ENV === 'development' && (

@@ -2,23 +2,23 @@ import fs from 'fs'
 import path from 'path'
 
 const widgetMappings: Record<string, string> = {
-  'clamp-calculator': 'css-clamp-calculator',
-  'color-converter': 'color-converter',
-  'bezier-curve': 'bezier-curve',
-  'css-specificity': 'css-specificity',
-  'flexbox-generator': 'flexbox-generator',
-  'grid-generator': 'grid-generator',
-  'html-tree': 'html-tree',
-  'password-generator': 'password-generator',
-  'qr-generator': 'qr-generator',
-  'speed-test': 'speed-test',
-  'svg-encoder': 'svg-encoder',
-  'utm-builder': 'utm-builder',
-  'youtube-thumbnail': 'youtube-thumbnail',
+	'clamp-calculator': 'css-clamp-calculator',
+	'color-converter': 'color-converter',
+	'bezier-curve': 'bezier-curve',
+	'css-specificity': 'css-specificity',
+	'flexbox-generator': 'flexbox-generator',
+	'grid-generator': 'grid-generator',
+	'html-tree': 'html-tree',
+	'password-generator': 'password-generator',
+	'qr-generator': 'qr-generator',
+	'speed-test': 'speed-test',
+	'svg-encoder': 'svg-encoder',
+	'utm-builder': 'utm-builder',
+	'youtube-thumbnail': 'youtube-thumbnail'
 }
 
 const createLayoutFile = (widgetFolder: string, metadataKey: string) => {
-  const content = `import { generateWidgetMetadata } from '@/lib/seo/generate-widget-metadata'
+	const content = `import { generateWidgetMetadata } from '@/lib/seo/generate-widget-metadata'
 import { WidgetSchema } from '@/components/seo/WidgetSchema'
 
 export function generateMetadata({ params }: { params: { locale: string } }) {
@@ -38,7 +38,10 @@ export default function Layout({
   return (
     <>
       <WidgetSchema
-        name="${metadataKey.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}"
+        name="${metadataKey
+					.split('-')
+					.map(w => w.charAt(0).toUpperCase() + w.slice(1))
+					.join(' ')}"
         description="Free online tool for developers and designers."
         url={url}
       />
@@ -47,28 +50,28 @@ export default function Layout({
   )
 }`
 
-  return content
+	return content
 }
 
 // Create layout files for all widgets
 Object.entries(widgetMappings).forEach(([folder, metadataKey]) => {
-  const layoutPath = path.join(
-    process.cwd(),
-    'app',
-    '[locale]',
-    '(other)',
-    'projects',
-    folder,
-    'layout.tsx'
-  )
-  
-  // Skip if layout already exists
-  if (!fs.existsSync(layoutPath)) {
-    fs.writeFileSync(layoutPath, createLayoutFile(folder, metadataKey))
-    console.log(`Created layout for ${folder}`)
-  } else {
-    console.log(`Layout already exists for ${folder}`)
-  }
+	const layoutPath = path.join(
+		process.cwd(),
+		'app',
+		'[locale]',
+		'(other)',
+		'projects',
+		folder,
+		'layout.tsx'
+	)
+
+	// Skip if layout already exists
+	if (!fs.existsSync(layoutPath)) {
+		fs.writeFileSync(layoutPath, createLayoutFile(folder, metadataKey))
+		console.log(`Created layout for ${folder}`)
+	} else {
+		console.log(`Layout already exists for ${folder}`)
+	}
 })
 
 console.log('Widget layouts creation complete!')

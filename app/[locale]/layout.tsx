@@ -102,10 +102,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			siteName: 'PixelTool',
 			images: [
 				{
-					url: '/og-image.png',
+					url: `${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
 					width: 1200,
 					height: 630,
-					alt: 'PixelTool - Professional Developer Tools'
+					alt: 'PixelTool - Professional Developer Tools',
+					type: 'image/png'
 				}
 			]
 		},
@@ -113,8 +114,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: 'summary_large_image',
 			title: currentMetadata.title.default,
 			description: currentMetadata.description,
-			images: ['/og-image.png'],
-			creator: '@pixeltool'
+			images: [
+				`${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`
+			],
+			creator: '@pixeltool',
+			site: '@pixeltool'
+		},
+		other: {
+			'telegram:image': `${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
+			'og:image:secure_url': `${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
+			'og:image:type': 'image/png',
+			'og:image:width': '1200',
+			'og:image:height': '630'
 		},
 		alternates: {
 			canonical: siteUrl,

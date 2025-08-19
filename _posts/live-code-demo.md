@@ -1,16 +1,19 @@
 ---
-title: "Interactive Code Examples: Live Preview Demo"
-excerpt: "See how our new live code preview feature works with interactive HTML, CSS, and JavaScript examples you can edit and run in real-time."
-coverImage: "/images/avatar.jpeg"
-date: "2025-08-07T10:00:00.000Z"
+title: 'Interactive Code Examples: Live Preview Demo'
+excerpt:
+  'See how our new live code preview feature works with interactive HTML, CSS,
+  and JavaScript examples you can edit and run in real-time.'
+coverImage: '/images/avatar.jpeg'
+date: '2025-08-07T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
-  picture: "/images/avatar.jpeg"
+  picture: '/images/avatar.jpeg'
 ogImage:
-  url: "/images/avatar.jpeg"
+  url: '/images/avatar.jpeg'
 ---
 
-This post demonstrates our new live code preview feature. You can now include interactive code examples that readers can see in action!
+This post demonstrates our new live code preview feature. You can now include
+interactive code examples that readers can see in action!
 
 ## Simple Button Example
 
@@ -60,7 +63,7 @@ let clickCount = 0;
 
 function handleClick() {
   clickCount++;
-  document.getElementById('message').textContent = 
+  document.getElementById('message').textContent =
     `Button clicked ${clickCount} time${clickCount !== 1 ? 's' : ''}!`;
 }
 ```
@@ -190,10 +193,10 @@ function changeColor() {
   const color = document.getElementById('colorInput').value;
   const display = document.getElementById('colorDisplay');
   const code = document.getElementById('colorCode');
-  
+
   display.style.backgroundColor = color;
   code.textContent = color;
-  
+
   // Adjust text color based on background
   const rgb = hexToRgb(color);
   const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
@@ -212,13 +215,15 @@ function hexToRgb(hex) {
 
 ## How It Works
 
-To create these live examples in your markdown files, use the special `:live` suffix:
+To create these live examples in your markdown files, use the special `:live`
+suffix:
 
 - `html:live` for HTML code
-- `css:live` for CSS code  
+- `css:live` for CSS code
 - `js:live` for JavaScript code
 
-The code blocks are automatically combined into an interactive preview that readers can experiment with!
+The code blocks are automatically combined into an interactive preview that
+readers can experiment with!
 
 ## Regular Code Still Works
 
@@ -227,11 +232,12 @@ Of course, regular code blocks still work as expected:
 ```javascript
 // This is a regular code block
 function fibonacci(n) {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
+	if (n <= 1) return n
+	return fibonacci(n - 1) + fibonacci(n - 2)
 }
 
-console.log(fibonacci(10)); // 55
+console.log(fibonacci(10)) // 55
 ```
 
-This feature makes technical blog posts much more engaging and helps readers understand concepts through hands-on experimentation!
+This feature makes technical blog posts much more engaging and helps readers
+understand concepts through hands-on experimentation!

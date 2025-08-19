@@ -1,13 +1,13 @@
 interface ViewTransition {
-  finished: Promise<void>
-  ready: Promise<void>
-  updateCallbackDone: Promise<void>
+	finished: Promise<void>
+	ready: Promise<void>
+	updateCallbackDone: Promise<void>
 }
 
 interface Document {
-  startViewTransition?(callback: () => void | Promise<void>): ViewTransition
+	startViewTransition?(callback: () => void | Promise<void>): ViewTransition
 }
 
 interface CSSStyleDeclaration {
-  viewTransitionName?: string
+	viewTransitionName?: string
 }

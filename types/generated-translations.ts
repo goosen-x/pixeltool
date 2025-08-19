@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-14T03:27:56.940Z
+// Generated on: 2025-08-19T20:18:10.911Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -61,6 +61,7 @@ export interface GeneratedTranslations {
       tryNow: string
       live: string
       viewAll: string
+      swipeHint: string
     }
     whyChoose: {
       title: string
@@ -113,6 +114,7 @@ export interface GeneratedTranslations {
       experience: string
       contact: string
       blog: string
+      menu: string
     }
     cv: {
       btnText: string
@@ -120,6 +122,7 @@ export interface GeneratedTranslations {
       filename: string
     }
     search: string
+    settings: string
   }
   Feedback: {
     title: string
@@ -715,6 +718,10 @@ export interface GeneratedTranslations {
         noCharset: string
         notEnoughWords: string
       }
+      shortcuts: {
+        clear: string
+        toggleVisibility: string
+      }
       toast: {
         generated: string
         passphraseGenerated: string
@@ -722,6 +729,7 @@ export interface GeneratedTranslations {
         copyError: string
         historyCleared: string
         downloaded: string
+        cleared: string
       }
     }
     utmBuilder: {
@@ -985,6 +993,69 @@ export interface GeneratedTranslations {
         copied: string
       }
     }
+    colorContrastChecker: {
+      title: string
+      description: string
+      useCase: string
+      sections: {
+        colorInput: string
+        contrastResults: string
+        wcagCompliance: string
+        previewText: string
+        colorExamples: string
+        quickActions: string
+      }
+      inputs: {
+        foreground: string
+        background: string
+        foregroundPlaceholder: string
+        backgroundPlaceholder: string
+      }
+      results: {
+        contrastRatio: string
+        normalText: string
+        largeText: string
+        uiComponents: string
+        pass: string
+        fail: string
+        levelAA: string
+        levelAAA: string
+      }
+      actions: {
+        swapColors: string
+        randomColors: string
+        copyRatio: string
+        copyCSS: string
+        suggestFix: string
+      }
+      preview: {
+        normalText: string
+        largeText: string
+        boldText: string
+        sampleParagraph: string
+      }
+      messages: {
+        ratioCopied: string
+        cssCopied: string
+        colorCopied: string
+        invalidColor: string
+        selectBothColors: string
+      }
+      tooltips: {
+        normalTextAA: string
+        normalTextAAA: string
+        largeTextAA: string
+        largeTextAAA: string
+        uiComponents: string
+      }
+      examples: {
+        blackOnWhite: string
+        whiteOnBlack: string
+        darkGrayOnLight: string
+        blueOnWhite: string
+        greenOnWhite: string
+      }
+    }
     bezierCurve: {
       title: string
       description: string
@@ -1079,69 +1150,6 @@ export interface GeneratedTranslations {
         regenerate: string
       }
     }
-    pomodoroTimer: {
-      title: string
-      description: string
-      useCase: string
-      timerSettings: string
-      workDuration: string
-      shortBreak: string
-      longBreak: string
-      pomodorosUntilLongBreak: string
-      minutes: string
-      currentSession: string
-      work: string
-      break: string
-      longBreakSession: string
-      start: string
-      pause: string
-      resume: string
-      reset: string
-      skip: string
-      sessionComplete: string
-      takeABreak: string
-      backToWork: string
-      statistics: string
-      todayStats: string
-      completedPomodoros: string
-      totalFocusTime: string
-      totalBreakTime: string
-      currentStreak: string
-      hours: string
-      hour: string
-      minute: string
-      settings: {
-        title: string
-        soundEnabled: string
-        autoStartBreaks: string
-        autoStartPomodoros: string
-        showNotifications: string
-        save: string
-        cancel: string
-        show: string
-        hide: string
-        saved: string
-      }
-      goals: {
-        title: string
-        setGoal: string
-        goal: string
-        progress: string
-      }
-      notifications: {
-        workComplete: string
-        breakComplete: string
-        longBreakComplete: string
-        goalReached: string
-      }
-      tips: {
-        title: string
-        tip1: string
-        tip2: string
-        tip3: string
-        tip4: string
-      }
-    }
     specialSymbolsPicker?: {
       title: string
       description: string
@@ -1160,6 +1168,7 @@ export interface GeneratedTranslations {
         settings: string
         result: string
         history: string
+        allResults: string
         about: string
       }
       inputs: {
@@ -1217,11 +1226,15 @@ export interface GeneratedTranslations {
       useCase: string
       tabs: {
         percentOf: string
+        percentOfNumber: string
         whatPercent: string
         findTotal: string
         percentChange: string
+        percentageChange: string
         addPercent: string
+        addPercentage: string
         subtractPercent: string
+        subtractPercentage: string
       }
       labels: {
         percent: string
@@ -1247,6 +1260,39 @@ export interface GeneratedTranslations {
         addPercent: string
         subtractPercent: string
       }
+      inputs: {
+        percentage: string
+        number: string
+        value: string
+        of: string
+        isPercentOf: string
+        from: string
+        to: string
+        addPercentage: string
+        subtractPercentage: string
+      }
+      buttons: {
+        loadExample: string
+        copy: string
+        reset: string
+      }
+      info: {
+        title: string
+        commonUses: {
+          title: string
+          item1: string
+          item2: string
+          item3: string
+          item4: string
+        }
+        formulas: {
+          title: string
+          item1: string
+          item2: string
+          item3: string
+          item4: string
+        }
+      }
       commonUses: {
         title: string
         businessFinance: {
@@ -1265,10 +1311,92 @@ export interface GeneratedTranslations {
         }
       }
     }
-    drawLots?: {
+    drawLots: {
       title: string
       description: string
       useCase: string
+      inputLabel: string
+      inputPlaceholder: string
+      inputHint: string
+      startDrawing: string
+      clickToReveal: string
+      clickToDraw: string
+      selected: string
+      revealed: string
+      reset: string
+      errors: {
+        empty: string
+        tooMany: string
+      }
+      howToUse: {
+        title: string
+        step1: string
+        step2: string
+        step3: string
+        step4: string
+      }
+      about: {
+        title: string
+        description: string
+        useCases: string
+        disclaimer: string
+      }
+    }
+    emailValidator: {
+      title: string
+      description: string
+      useCase: string
+      placeholder: string
+      bulkPlaceholder: string
+      validate: string
+      validateAll: string
+      tabs: {
+        single: string
+        bulk: string
+      }
+      emailCount: string
+      results: string
+      export: string
+      copied: string
+      exported: string
+      suggestion: string
+      quality: {
+        high: string
+        medium: string
+        low: string
+      }
+      checks: {
+        syntax: string
+        syntaxDesc: string
+        domain: string
+        domainDesc: string
+        disposable: string
+        disposableDesc: string
+        roleEmail: string
+        roleEmailDesc: string
+      }
+      flags: {
+        disposable: string
+        role: string
+        free: string
+      }
+      stats: {
+        valid: string
+        invalid: string
+        disposable: string
+        avgScore: string
+      }
+      errors: {
+        emptyEmail: string
+        emptyBulk: string
+        tooMany: string
+        invalid: string
+        validationFailed: string
+      }
+      success: {
+        valid: string
+        bulk: string
+      }
     }
     mockDataGenerator?: {
       title: string
@@ -1648,10 +1776,35 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    timerCountdown?: {
+    timerCountdown: {
       title: string
       description: string
       useCase: string
+      category: string
+      timer: string
+      stopwatch: string
+      start: string
+      pause: string
+      resume: string
+      reset: string
+      soundNotification: string
+      showMilliseconds: string
+      shortcuts: string
+      startPause: string
+      timerComplete: string
+      presetLoaded: string
+      work: string
+      shortBreak: string
+      longBreak: string
+      session: string
+      pomodoroSettings: string
+      workDuration: string
+      shortBreakDuration: string
+      longBreakDuration: string
+      sessionsUntilLongBreak: string
+      workTime: string
+      shortBreakTime: string
+      longBreakTime: string
     }
     currencyConverter?: {
       title: string
@@ -1683,10 +1836,42 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    pxRemConverter?: {
+    pxRemConverter: {
       title: string
       description: string
       useCase: string
+      selectUnit: string
+      input: string
+      inputPlaceholder: string
+      baseFontSize: string
+      parentFontSize: string
+      viewportWidth: string
+      viewportHeight: string
+      advancedSettings: string
+      show: string
+      hide: string
+      result: string
+      copyCss: string
+      reset: string
+      presets: {
+        title: string
+        typography: string
+        spacing: string
+        breakpoints: string
+      }
+      conversions: {
+        pixels: string
+        rootEm: string
+        elementEm: string
+        percent: string
+        points: string
+        viewportWidth: string
+        viewportHeight: string
+      }
+      toast: {
+        copied: string
+        cssCopied: string
+      }
     }
     cssBoxShadow?: {
       title: string
@@ -1723,10 +1908,17 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    uuidGenerator?: {
+    uuidGenerator: {
       title: string
       description: string
       useCase: string
+      shortcuts: {
+        generate: string
+        copy: string
+        copyAll: string
+        download: string
+        clear: string
+      }
     }
     compoundInterest?: {
       title: string
@@ -2107,6 +2299,33 @@ export interface GeneratedTranslations {
       save: string
       rollDice: string
       setDiceCount: string
+      generate: string
+      regenerate: string
+      copyResult: string
+      download: string
+      toggleUnique: string
+      calculate: string
+      resetForm: string
+      loadExample: string
+      toggleAdvanced: string
+      switchUnits: string
+      generateTeams: string
+      reset: string
+      drawCard: string
+      revealCard: string
+      startPause: string
+      nextSession: string
+      settings: string
+      flipCoin: string
+      changeCoinType: string
+      changeMode: string
+      generateRandom: string
+      copyCSS: string
+      export: string
+      addColorStop: string
+      formatJSON: string
+      minifyJSON: string
+      clearInput: string
     }
   }
   cookieConsent: {
@@ -2120,7 +2339,7 @@ export interface GeneratedTranslations {
 }
 
 // All widget names from translation file
-export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'pomodoroTimer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
+export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'colorContrastChecker' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'emailValidator' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
 
 // Runtime validation helper
 export const WIDGET_NAMES = [
@@ -2147,15 +2366,16 @@ export const WIDGET_NAMES = [
   'cssSpecificity',
   'themeTransitions',
   'colorConverter',
+  'colorContrastChecker',
   'bezierCurve',
   'seoMarkdownGenerator',
   'teamRandomizer',
-  'pomodoroTimer',
   'specialSymbolsPicker',
   'fancyTextGenerator',
   'randomNumberGenerator',
   'percentageCalculator',
   'drawLots',
+  'emailValidator',
   'mockDataGenerator',
   'tipCalculator',
   'randomListGenerator',

@@ -1285,69 +1285,66 @@ export const widgets: Widget[] = [
 		}
 	},
 	{
-		id: 'pomodoro-timer',
-		icon: Timer,
-		category: 'lifestyle',
-		translationKey: 'pomodoroTimer',
-		path: 'pomodoro-timer',
-		gradient: 'from-red-500 to-orange-600',
-		recommendedTools: ['team-randomizer', 'password-generator', 'utm-builder'],
-		difficulty: 'beginner',
-		tags: ['timer', 'pomodoro', 'productivity', 'focus', 'time-management'],
+		id: 'email-validator',
+		icon: Mail,
+		category: 'webdev',
+		translationKey: 'emailValidator',
+		path: 'email-validator',
+		gradient: 'from-blue-500 to-teal-600',
+		recommendedTools: [
+			'regex-tester',
+			'json-yaml-formatter',
+			'mock-data-generator'
+		],
+		difficulty: 'intermediate',
+		tags: ['email', 'validation', 'syntax', 'domain', 'disposable', 'bulk'],
 		useCase:
-			'Boost productivity using the Pomodoro Technique with customizable work and break intervals',
+			'Validate email addresses for syntax, domain existence, and quality checks',
 		metaDescription:
-			'Pomodoro timer for productivity. Work in focused 25-minute intervals with regular breaks.',
+			'Email validator tool. Check email syntax, domain MX records, disposable addresses, and bulk validation.',
 		faqs: {
 			en: [
 				{
-					question: 'What is the Pomodoro Technique?',
+					question: 'How does email validation work?',
 					answer:
-						'The Pomodoro Technique is a time management method that uses 25-minute focused work sessions (called "pomodoros") followed by 5-minute breaks. After 4 pomodoros, take a longer 15-30 minute break.'
+						'The validator checks email syntax, verifies domain existence through MX records, detects disposable email providers, and identifies role-based addresses.'
 				},
 				{
-					question: 'Can I customize the timer intervals?',
+					question: 'What is a disposable email?',
 					answer:
-						'Yes! While the traditional Pomodoro uses 25/5/15 minute intervals, you can adjust work time, short breaks, and long breaks to suit your workflow.'
+						'Disposable emails are temporary addresses from services like TempMail or 10MinuteMail. They are often blocked by legitimate services.'
 				},
 				{
-					question: 'Why is it effective for productivity?',
+					question: 'What are role-based emails?',
 					answer:
-						'The technique helps maintain focus by breaking work into manageable chunks, prevents burnout with regular breaks, and creates a sense of urgency that combats procrastination.'
+						'Role-based emails like info@, support@, or admin@ are generic addresses not tied to specific individuals, often filtered by marketing systems.'
+				},
+				{
+					question: 'How accurate is the validation?',
+					answer:
+						'Syntax validation is 100% accurate. Domain checking depends on MX record availability. The tool provides a quality score based on multiple factors.'
 				}
 			],
 			ru: [
 				{
-					question: 'Что такое техника Помодоро?',
+					question: 'Как работает валидация email?',
 					answer:
-						'Техника Помодоро - это метод управления временем, использующий 25-минутные сессии сфокусированной работы (называемые "помодоро"), за которыми следуют 5-минутные перерывы. После 4 помодоро делается длинный перерыв 15-30 минут.'
+						'Валидатор проверяет синтаксис email, проверяет существование домена через MX записи, определяет временные почтовые провайдеры и идентифицирует ролевые адреса.'
 				},
 				{
-					question: 'Можно ли настроить интервалы таймера?',
+					question: 'Что такое временный email?',
 					answer:
-						'Да! Хотя традиционный Помодоро использует интервалы 25/5/15 минут, вы можете настроить время работы, короткие и длинные перерывы под свой рабочий процесс.'
+						'Временные email - это адреса от сервисов типа TempMail или 10MinuteMail. Они часто блокируются легитимными сервисами.'
 				},
 				{
-					question: 'Почему это эффективно для продуктивности?',
+					question: 'Что такое ролевые email?',
 					answer:
-						'Техника помогает поддерживать фокус, разбивая работу на управляемые части, предотвращает выгорание регулярными перерывами и создаёт чувство срочности, которое борется с прокрастинацией.'
-				}
-			],
-			he: [
-				{
-					question: 'מהי טכניקת הפומודורו?',
-					answer:
-						'טכניקת הפומודורו היא שיטת ניהול זמן המשתמשת במפגשי עבודה ממוקדים של 25 דקות (הנקראים "פומודורו") ואחריהם הפסקות של 5 דקות. אחרי 4 פומודורו, קחו הפסקה ארוכה של 15-30 דקות.'
+						'Ролевые email типа info@, support@ или admin@ - это общие адреса, не привязанные к конкретным людям, часто фильтруемые маркетинговыми системами.'
 				},
 				{
-					question: 'האם אפשר להתאים אישית את מרווחי הטיימר?',
+					question: 'Насколько точна валидация?',
 					answer:
-						'כן! בעוד שהפומודורו המסורתי משתמש במרווחים של 25/5/15 דקות, אתם יכולים להתאים את זמן העבודה, ההפסקות הקצרות והארוכות לזרימת העבודה שלכם.'
-				},
-				{
-					question: 'למה זה יעיל לפרודוקטיביות?',
-					answer:
-						'הטכניקה עוזרת לשמור על מיקוד על ידי חלוקת העבודה לחלקים ניתנים לניהול, מונעת שחיקה עם הפסקות סדירות, ויוצרת תחושת דחיפות שנלחמת בדחיינות.'
+						'Проверка синтаксиса точна на 100%. Проверка домена зависит от доступности MX записей. Инструмент предоставляет оценку качества на основе множества факторов.'
 				}
 			]
 		}
@@ -2127,7 +2124,7 @@ export const widgets: Widget[] = [
 		translationKey: 'worldTime',
 		path: 'world-time',
 		gradient: 'from-blue-500 to-cyan-600',
-		recommendedTools: ['pomodoro-timer', 'unit-converter', 'speed-test'],
+		recommendedTools: ['timer-countdown', 'unit-converter', 'speed-test'],
 		difficulty: 'beginner',
 		tags: ['time', 'timezone', 'world', 'clock', 'converter', 'dst'],
 		useCase: 'Track time across multiple cities and convert between timezones',
@@ -3316,7 +3313,7 @@ export const widgets: Widget[] = [
 		translationKey: 'timerCountdown',
 		path: 'timer-countdown',
 		gradient: 'from-orange-500 to-red-600',
-		recommendedTools: ['pomodoro-timer', 'world-time', 'age-calculator'],
+		recommendedTools: ['world-time', 'age-calculator', 'unit-converter'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase:

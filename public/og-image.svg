@@ -1,0 +1,62 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0f172a"/>
+  
+  <!-- Gradient overlay -->
+  <defs>
+    <radialGradient id="bg1" cx="0.2" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bg2" cx="0.8" cy="0.8" r="0.5">
+      <stop offset="0%" stop-color="#A855F7" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#A855F7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bg3" cx="0.4" cy="0.2" r="0.5">
+      <stop offset="0%" stop-color="#22C55E" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#22C55E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <rect width="1200" height="630" fill="url(#bg1)"/>
+  <rect width="1200" height="630" fill="url(#bg2)"/>
+  <rect width="1200" height="630" fill="url(#bg3)"/>
+  
+  <!-- Logo -->
+  <g transform="translate(100, 60)">
+    <rect width="50" height="50" rx="10" fill="#3B82F6"/>
+    <path d="M35 20H40C42 20 43 21 43 23V27C43 29 42 30 40 30H35M15 30H10C8 30 7 29 7 27V23C7 21 8 20 10 20H15M12 25H38" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <text x="65" y="35" font-family="Arial, sans-serif" font-size="32" font-weight="600" fill="white">PixelTool</text>
+  </g>
+  
+  <!-- Main title -->
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="56" font-weight="700" fill="white" text-anchor="middle">
+    Free Online Developer Tools
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="340" font-family="Arial, sans-serif" font-size="24" fill="#94a3b8" text-anchor="middle">
+    50+ Professional Tools for Web Development
+  </text>
+  
+  <!-- Features -->
+  <g transform="translate(350, 420)">
+    <g>
+      <circle cx="15" cy="15" r="3" fill="#22C55E"/>
+      <text x="30" y="20" font-family="Arial, sans-serif" font-size="18" fill="#e2e8f0">100% Free</text>
+    </g>
+    <g transform="translate(200, 0)">
+      <circle cx="15" cy="15" r="3" fill="#FBBF24"/>
+      <text x="30" y="20" font-family="Arial, sans-serif" font-size="18" fill="#e2e8f0">No Install</text>
+    </g>
+    <g transform="translate(400, 0)">
+      <circle cx="15" cy="15" r="3" fill="#3B82F6"/>
+      <text x="30" y="20" font-family="Arial, sans-serif" font-size="18" fill="#e2e8f0">Works Offline</text>
+    </g>
+  </g>
+  
+  <!-- URL -->
+  <text x="600" y="560" font-family="Arial, sans-serif" font-size="16" fill="#64748b" text-anchor="middle" letter-spacing="2">
+    pixeltool.pro
+  </text>
+</svg>

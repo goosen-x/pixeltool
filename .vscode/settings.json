@@ -1,0 +1,70 @@
+{
+	"editor.formatOnSave": true,
+	"editor.formatOnPaste": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.organizeImports": "explicit",
+		"source.removeUnusedImports": "explicit"
+	},
+	"typescript.preferences.includePackageJsonAutoImports": "on",
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"typescript.suggest.autoImports": true,
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"emmet.includeLanguages": {
+		"typescript": "html",
+		"typescriptreact": "html"
+	},
+	"tailwindCSS.includeLanguages": {
+		"typescript": "html",
+		"typescriptreact": "html"
+	},
+	"tailwindCSS.experimental.classRegex": [
+		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+		["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+	],
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"editor.quickSuggestions": {
+		"strings": "on"
+	},
+	"css.validate": false,
+	"less.validate": false,
+	"scss.validate": false,
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/.next": true,
+		"**/dist": true,
+		"**/build": true,
+		"**/.git": true,
+		"**/coverage": true,
+		"**/.nyc_output": true
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true,
+		"**/node_modules": true,
+		"**/.next": true,
+		"**/dist": true,
+		"**/build": true
+	},
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/node_modules/**": true,
+		"**/.next/**": true
+	},
+	"editor.rulers": [80, 120],
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": false,
+	"editor.bracketPairColorization.enabled": true,
+	"editor.guides.bracketPairs": true,
+	"editor.minimap.enabled": false,
+	"workbench.editor.enablePreview": false,
+	"explorer.confirmDelete": false,
+	"explorer.confirmDragAndDrop": false,
+	"git.autofetch": true,
+	"git.enableSmartCommit": true,
+	"git.confirmSync": false,
+	"extensions.ignoreRecommendations": false
+}

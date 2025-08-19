@@ -11,7 +11,7 @@ type Props = {
 export default async function ContactPage(props: Props) {
 	const params = await props.params
 	const t = await getTranslations('contact')
-	
+
 	return (
 		<main className='min-h-screen bg-background'>
 			<div className='max-w-7xl mx-auto px-5 py-12'>

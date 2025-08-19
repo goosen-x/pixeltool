@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -59,21 +59,7 @@ export default function DiceRollerPage() {
 	})
 	const [copiedText, setCopiedText] = useState(false)
 
-	useEffect(() => {
-		setMounted(true)
-		// Load history from localStorage
-		const savedHistory = localStorage.getItem('diceRollHistory')
-		if (savedHistory) {
-			const parsed = JSON.parse(savedHistory).map((item: any) => ({
-				...item,
-				timestamp: new Date(item.timestamp)
-			}))
-			setRollHistory(parsed)
-			updateStatistics(parsed)
-		}
-	}, [])
-
-	const updateStatistics = (history: DiceResult[]) => {
+	const updateStatistics = useCallback((history: DiceResult[]) => {
 		const stats: Statistics = {
 			totalRolls: history.length,
 			totalSum: 0,
@@ -109,9 +95,23 @@ export default function DiceRollerPage() {
 		stats.totalDiceRolled = totalDiceRolled
 
 		setStatistics(stats)
-	}
+	}, [])
 
-	const rollDice = () => {
+	useEffect(() => {
+		setMounted(true)
+		// Load history from localStorage
+		const savedHistory = localStorage.getItem('diceRollHistory')
+		if (savedHistory) {
+			const parsed = JSON.parse(savedHistory).map((item: any) => ({
+				...item,
+				timestamp: new Date(item.timestamp)
+			}))
+			setRollHistory(parsed)
+			updateStatistics(parsed)
+		}
+	}, [updateStatistics])
+
+	const rollDice = useCallback(() => {
 		if (isRolling) return
 
 		setIsRolling(true)
@@ -176,7 +176,7 @@ export default function DiceRollerPage() {
 				}
 			}
 		}, intervalDuration)
-	}
+	}, [isRolling, diceCount, rollHistory, updateStatistics])
 
 	const clearHistory = () => {
 		setRollHistory([])
@@ -201,7 +201,7 @@ export default function DiceRollerPage() {
 				e.preventDefault()
 				rollDice()
 			}
-			
+
 			// Numbers 1-6 to set dice count
 			const num = parseInt(e.key)
 			if (num >= 1 && num <= 6) {
@@ -211,7 +211,7 @@ export default function DiceRollerPage() {
 
 		window.addEventListener('keydown', handleKeyPress)
 		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [isRolling])
+	}, [isRolling, rollDice])
 
 	const copyResults = () => {
 		if (currentRoll.length === 0) {
@@ -283,7 +283,9 @@ export default function DiceRollerPage() {
 							<div className='flex flex-col sm:flex-row items-center justify-between gap-4'>
 								<div className='text-center sm:text-left'>
 									<h2 className='text-2xl font-bold'>Virtual Dice</h2>
-									<p className='text-sm text-muted-foreground'>Click roll or press Space</p>
+									<p className='text-sm text-muted-foreground'>
+										Click roll or press Space
+									</p>
 								</div>
 								<div className='flex items-center gap-4'>
 									{/* Dice Count Selector */}
@@ -343,14 +345,18 @@ export default function DiceRollerPage() {
 												{/* Face 2 - Right (2) */}
 												<div
 													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{ transform: 'rotateY(90deg) translateZ(48px)' }}
+													style={{
+														transform: 'rotateY(90deg) translateZ(48px)'
+													}}
 												>
 													<DiceFace value={2} />
 												</div>
 												{/* Face 3 - Top (3) */}
 												<div
 													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{ transform: 'rotateX(90deg) translateZ(48px)' }}
+													style={{
+														transform: 'rotateX(90deg) translateZ(48px)'
+													}}
 												>
 													<DiceFace value={3} />
 												</div>
@@ -401,7 +407,8 @@ export default function DiceRollerPage() {
 												{currentRoll.reduce((sum, val) => sum + val, 0)}
 											</h2>
 											<p className='text-sm text-muted-foreground'>
-												{currentRoll.join(' + ')} = {currentRoll.reduce((sum, val) => sum + val, 0)}
+												{currentRoll.join(' + ')} ={' '}
+												{currentRoll.reduce((sum, val) => sum + val, 0)}
 											</p>
 										</div>
 									</motion.div>
@@ -421,9 +428,9 @@ export default function DiceRollerPage() {
 									/>
 									{isRolling ? 'Rolling...' : 'Roll Dice'}
 								</Button>
-								<Button 
-									onClick={copyResults} 
-									size='lg' 
+								<Button
+									onClick={copyResults}
+									size='lg'
 									variant='outline'
 									disabled={currentRoll.length === 0}
 								>
@@ -451,11 +458,15 @@ export default function DiceRollerPage() {
 								</div>
 								<div className='grid grid-cols-2 gap-4'>
 									<div className='text-center p-3 bg-muted/50 rounded-lg'>
-										<p className='text-2xl font-bold'>{statistics.totalRolls}</p>
+										<p className='text-2xl font-bold'>
+											{statistics.totalRolls}
+										</p>
 										<p className='text-xs text-muted-foreground'>Total Rolls</p>
 									</div>
 									<div className='text-center p-3 bg-muted/50 rounded-lg'>
-										<p className='text-2xl font-bold'>{statistics.average.toFixed(1)}</p>
+										<p className='text-2xl font-bold'>
+											{statistics.average.toFixed(1)}
+										</p>
 										<p className='text-xs text-muted-foreground'>Average</p>
 									</div>
 									{statistics.doubles > 0 && (
@@ -487,7 +498,12 @@ export default function DiceRollerPage() {
 											</p>
 											{statistics.totalDiceRolled > 0 && (
 												<p className='text-xs text-muted-foreground'>
-													{(((statistics.distribution[num] || 0) / statistics.totalDiceRolled) * 100).toFixed(0)}%
+													{(
+														((statistics.distribution[num] || 0) /
+															statistics.totalDiceRolled) *
+														100
+													).toFixed(0)}
+													%
 												</p>
 											)}
 										</div>
@@ -509,9 +525,9 @@ export default function DiceRollerPage() {
 									Recent Rolls
 								</h3>
 								<div className='flex gap-2'>
-									<Button 
-										onClick={() => setShowHistory(!showHistory)} 
-										variant='ghost' 
+									<Button
+										onClick={() => setShowHistory(!showHistory)}
+										variant='ghost'
 										size='sm'
 									>
 										{showHistory ? 'Hide' : 'Show'}
@@ -535,7 +551,10 @@ export default function DiceRollerPage() {
 												</Badge>
 												<div className='flex items-center gap-1'>
 													{roll.values.map((value, i) => (
-														<div key={i} className='w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-black dark:text-white'>
+														<div
+															key={i}
+															className='w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-black dark:text-white'
+														>
 															<DiceFace value={value} />
 														</div>
 													))}
@@ -543,7 +562,10 @@ export default function DiceRollerPage() {
 												<span className='font-medium'>= {roll.total}</span>
 											</div>
 											<p className='text-xs text-muted-foreground'>
-												{roll.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+												{roll.timestamp.toLocaleTimeString([], {
+													hour: '2-digit',
+													minute: '2-digit'
+												})}
 											</p>
 										</div>
 									))}
@@ -553,7 +575,6 @@ export default function DiceRollerPage() {
 					)}
 				</div>
 			</div>
-
 		</div>
 	)
 }

@@ -9,17 +9,17 @@ export async function GET() {
 			POSTGRES_URL: process.env.POSTGRES_URL ? 'Set' : 'Not set',
 			NODE_ENV: process.env.NODE_ENV
 		}
-		
+
 		// Try to get posts
 		let posts: any[] = []
 		let dbError: string | null = null
-		
+
 		try {
 			posts = await getAllPublishedPosts('en')
 		} catch (error: any) {
 			dbError = error.message
 		}
-		
+
 		return NextResponse.json({
 			success: true,
 			env: envInfo,
@@ -28,9 +28,12 @@ export async function GET() {
 			error: dbError
 		})
 	} catch (error: any) {
-		return NextResponse.json({
-			success: false,
-			error: error.message
-		}, { status: 500 })
+		return NextResponse.json(
+			{
+				success: false,
+				error: error.message
+			},
+			{ status: 500 }
+		)
 	}
 }

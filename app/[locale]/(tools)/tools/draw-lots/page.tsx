@@ -1,15 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Shuffle, RotateCcw, Edit2, Check, X } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { Shuffle, RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
+import { WidgetContainer } from '@/components/widgets/base'
+import { Badge } from '@/components/ui/badge'
 
 interface Lot {
 	id: string
@@ -29,68 +31,43 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function DrawLotsPage() {
+	const t = useTranslations('widgets.drawLots')
 	const [mounted, setMounted] = useState(false)
 	const [inputText, setInputText] = useState(
 		'Option 1\nOption 2\nOption 3\nOption 4\nOption 5'
 	)
-	const [pageTitle, setPageTitle] = useState('Draw Lots')
-	const [isEditingTitle, setIsEditingTitle] = useState(false)
-	const [tempTitle, setTempTitle] = useState(pageTitle)
 	const [lots, setLots] = useState<Lot[]>([])
 	const [isDrawing, setIsDrawing] = useState(false)
-	const [selectedLot, setSelectedLot] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
+
+	const config = {
+		title: t('title'),
+		description: t('description'),
+		icon: <Shuffle className='w-6 h-6 text-primary' />,
+		category: t('category')
+	}
 
 	useEffect(() => {
 		setMounted(true)
 	}, [])
 
-	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to draw card
-			if (e.code === 'Space' && !isDrawing) {
-				e.preventDefault()
-				startDrawing()
-			}
-			// Enter to reveal a random card (if cards are available and none selected)
-			if (e.key === 'Enter' && isDrawing && !selectedLot && lots.length > 0) {
-				e.preventDefault()
-				const availableLots = lots.filter(lot => !lot.isRevealed)
-				if (availableLots.length > 0) {
-					const randomLot = availableLots[Math.floor(Math.random() * availableLots.length)]
-					revealLot(randomLot.id)
-				}
-			}
-			// Ctrl/Cmd + R to reset
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				reset()
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [isDrawing, selectedLot, lots])
-
-	const startDrawing = () => {
+	const startDrawing = useCallback(() => {
 		const lines = inputText
 			.trim()
 			.split('\n')
 			.filter(line => line.trim() !== '')
 
 		if (lines.length === 0) {
-			setError('Please enter at least one item')
+			setError(t('errors.empty'))
 			return
 		}
 
 		if (lines.length > 100) {
-			setError('Maximum 100 items allowed')
+			setError(t('errors.tooMany'))
 			return
 		}
 
 		setError(null)
-		setSelectedLot(null)
 
 		// Create lot objects with random order
 		const lotObjects: Lot[] = lines.map((value, index) => ({
@@ -104,56 +81,55 @@ export default function DrawLotsPage() {
 		const shuffledLots = shuffleArray(lotObjects)
 		setLots(shuffledLots)
 		setIsDrawing(true)
-	}
+	}, [inputText])
 
-	const revealLot = (lotId: string) => {
-		if (selectedLot) return // Only one lot can be selected
-
+	const revealLot = useCallback((lotId: string) => {
 		setLots(prev =>
 			prev.map(lot => (lot.id === lotId ? { ...lot, isRevealed: true } : lot))
 		)
+	}, [])
 
-		const lot = lots.find(l => l.id === lotId)
-		if (lot) {
-			setSelectedLot(lot.value)
-		}
-	}
-
-	const reset = () => {
+	const reset = useCallback(() => {
 		setLots([])
 		setIsDrawing(false)
-		setSelectedLot(null)
 		setError(null)
-	}
+	}, [])
 
-	const saveTitle = () => {
-		setPageTitle(tempTitle.trim() || 'Draw Lots')
-		setIsEditingTitle(false)
-	}
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			// Space to draw card
+			if (e.code === 'Space' && !isDrawing) {
+				e.preventDefault()
+				startDrawing()
+			}
+			// Enter to reveal a random card (if cards are available)
+			if (e.key === 'Enter' && isDrawing && lots.length > 0) {
+				e.preventDefault()
+				const availableLots = lots.filter(lot => !lot.isRevealed)
+				if (availableLots.length > 0) {
+					const randomLot =
+						availableLots[Math.floor(Math.random() * availableLots.length)]
+					revealLot(randomLot.id)
+				}
+			}
+			// Ctrl/Cmd + R to reset
+			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+				e.preventDefault()
+				reset()
+			}
+		}
 
-	const cancelEditTitle = () => {
-		setTempTitle(pageTitle)
-		setIsEditingTitle(false)
-	}
+		window.addEventListener('keydown', handleKeyPress)
+		return () => window.removeEventListener('keydown', handleKeyPress)
+	}, [isDrawing, lots, startDrawing, revealLot, reset])
 
 	if (!mounted) {
-		return (
-			<div className='max-w-6xl mx-auto space-y-8'>
-				<div>
-					<h1 className='text-3xl font-bold tracking-tight mb-2'>Draw Lots</h1>
-					<p className='text-muted-foreground'>
-						Random selection made easy - draw straws digitally
-					</p>
-				</div>
-				<div className='animate-pulse space-y-8'>
-					<div className='h-64 bg-muted rounded-lg'></div>
-				</div>
-			</div>
-		)
+		return null
 	}
 
 	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
+		<WidgetContainer config={config}>
 			{!isDrawing ? (
 				<>
 					{/* Input Section */}
@@ -162,18 +138,18 @@ export default function DrawLotsPage() {
 							htmlFor='items'
 							className='text-base font-semibold mb-2 block'
 						>
-							Enter Items (one per line)
+							{t('inputLabel')}
 						</Label>
 						<Textarea
 							id='items'
 							value={inputText}
 							onChange={e => setInputText(e.target.value)}
-							placeholder='Enter items to draw from...'
+							placeholder={t('inputPlaceholder')}
 							className='min-h-[200px] font-mono'
 							spellCheck={false}
 						/>
 						<p className='text-sm text-muted-foreground mt-2'>
-							Enter each item on a new line. Maximum 100 items.
+							{t('inputHint')}
 						</p>
 
 						{error && (
@@ -184,18 +160,18 @@ export default function DrawLotsPage() {
 
 						<Button onClick={startDrawing} className='w-full mt-4' size='lg'>
 							<Shuffle className='w-4 h-4 mr-2' />
-							Start Drawing
+							{t('startDrawing')}
 						</Button>
 					</Card>
 
 					{/* Instructions */}
 					<Card className='p-6 bg-muted/50'>
-						<h3 className='font-semibold mb-3'>How to Use</h3>
+						<h3 className='font-semibold mb-3'>{t('howToUse.title')}</h3>
 						<ol className='space-y-2 text-sm text-muted-foreground'>
-							<li>1. Enter items (names, options, tasks, etc.) one per line</li>
-							<li>2. Click &quot;Start Drawing&quot; to create randomized cards</li>
-							<li>3. Click any card to reveal what was drawn</li>
-							<li>4. Only one card can be selected per draw</li>
+							<li>{t('howToUse.step1')}</li>
+							<li>{t('howToUse.step2')}</li>
+							<li>{t('howToUse.step3')}</li>
+							<li>{t('howToUse.step4')}</li>
 						</ol>
 					</Card>
 				</>
@@ -203,114 +179,113 @@ export default function DrawLotsPage() {
 				<>
 					{/* Drawing Area */}
 					<Card className='p-6'>
-						{selectedLot ? (
-							<div className='text-center py-12'>
-								<h2 className='text-2xl font-semibold mb-4'>Selected:</h2>
-								<div className='bg-primary text-primary-foreground rounded-lg p-8 max-w-md mx-auto'>
-									<p className='text-3xl font-bold'>{selectedLot}</p>
-								</div>
-								<Button onClick={reset} className='mt-8' variant='outline'>
-									<RotateCcw className='w-4 h-4 mr-2' />
-									Draw Again
-								</Button>
-							</div>
-						) : (
-							<>
-								<h3 className='text-lg font-semibold mb-4'>
-									Click a card to draw
-								</h3>
-								<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
-									<AnimatePresence>
-										{lots.map((lot, index) => (
-											<motion.div
-												key={lot.id}
-												initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
-												animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-												exit={{ opacity: 0, scale: 0.8 }}
-												transition={{
-													delay: index * 0.05,
-													duration: 0.3,
-													type: 'spring',
-													stiffness: 300
+						<div className='flex items-center justify-between mb-4'>
+							<h3 className='text-lg font-semibold'>{t('clickToReveal')}</h3>
+							<Button onClick={reset} variant='outline' size='sm'>
+								<RotateCcw className='w-4 h-4 mr-2' />
+								{t('reset')}
+							</Button>
+						</div>
+
+						<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
+							<AnimatePresence>
+								{lots.map((lot, index) => (
+									<motion.div
+										key={lot.id}
+										initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
+										animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+										exit={{ opacity: 0, scale: 0.8 }}
+										transition={{
+											delay: index * 0.05,
+											duration: 0.3,
+											type: 'spring',
+											stiffness: 300
+										}}
+									>
+										<button
+											onClick={() => revealLot(lot.id)}
+											disabled={lot.isRevealed}
+											className={cn(
+												'relative w-full aspect-[3/4] rounded-lg transition-all duration-300 transform-gpu',
+												'hover:scale-105 hover:shadow-lg',
+												'focus:outline-none focus:ring-2 focus:ring-primary',
+												lot.isRevealed
+													? 'cursor-default'
+													: 'cursor-pointer hover:shadow-xl'
+											)}
+											style={{
+												transformStyle: 'preserve-3d',
+												perspective: '1000px'
+											}}
+										>
+											<div
+												className={cn(
+													'absolute inset-0 rounded-lg transition-transform duration-500',
+													'backface-hidden',
+													lot.isRevealed && 'rotate-y-180'
+												)}
+												style={{
+													transform: lot.isRevealed
+														? 'rotateY(180deg)'
+														: 'rotateY(0deg)',
+													backfaceVisibility: 'hidden'
 												}}
 											>
-												<button
-													onClick={() => revealLot(lot.id)}
-													disabled={lot.isRevealed || selectedLot !== null}
-													className={cn(
-														'relative w-full aspect-[3/4] rounded-lg transition-all duration-300 transform-gpu',
-														'hover:scale-105 hover:shadow-lg',
-														'focus:outline-none focus:ring-2 focus:ring-primary',
-														lot.isRevealed
-															? 'cursor-default'
-															: 'cursor-pointer hover:shadow-xl',
-														selectedLot && !lot.isRevealed && 'opacity-50'
-													)}
-													style={{
-														transformStyle: 'preserve-3d',
-														perspective: '1000px'
-													}}
-												>
-													<div
-														className={cn(
-															'absolute inset-0 rounded-lg transition-transform duration-500',
-															'backface-hidden',
-															lot.isRevealed && 'rotate-y-180'
-														)}
-														style={{
-															transform: lot.isRevealed
-																? 'rotateY(180deg)'
-																: 'rotateY(0deg)',
-															backfaceVisibility: 'hidden'
-														}}
-													>
-														{/* Card Back */}
-														<div className='w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center'>
-															<div className='text-primary-foreground'>
-																<div className='text-4xl font-bold mb-2'>?</div>
-																<div className='text-sm opacity-80'>
-																	Click to draw
-																</div>
-															</div>
+												{/* Card Back */}
+												<div className='w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center'>
+													<div className='text-primary-foreground'>
+														<div className='text-4xl font-bold mb-2'>?</div>
+														<div className='text-sm opacity-80'>
+															{t('clickToDraw')}
 														</div>
 													</div>
+												</div>
+											</div>
 
-													<div
-														className={cn(
-															'absolute inset-0 rounded-lg transition-transform duration-500',
-															'backface-hidden',
-															!lot.isRevealed && 'rotate-y-180'
-														)}
-														style={{
-															transform: lot.isRevealed
-																? 'rotateY(0deg)'
-																: 'rotateY(-180deg)',
-															backfaceVisibility: 'hidden'
-														}}
-													>
-														{/* Card Front */}
-														<div className='w-full h-full bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center p-4'>
-															<p className='text-white font-semibold text-center break-words'>
-																{lot.value}
-															</p>
+											<div
+												className={cn(
+													'absolute inset-0 rounded-lg transition-transform duration-500',
+													'backface-hidden',
+													!lot.isRevealed && 'rotate-y-180'
+												)}
+												style={{
+													transform: lot.isRevealed
+														? 'rotateY(0deg)'
+														: 'rotateY(-180deg)',
+													backfaceVisibility: 'hidden'
+												}}
+											>
+												{/* Card Front */}
+												<div className='w-full h-full bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center p-4'>
+													<div className='text-center'>
+														<p className='text-white font-bold text-lg break-words'>
+															{lot.value}
+														</p>
+														<div className='mt-2 text-white/80 text-sm'>
+															{t('selected')}
 														</div>
 													</div>
-												</button>
-											</motion.div>
+												</div>
+											</div>
+										</button>
+									</motion.div>
+								))}
+							</AnimatePresence>
+						</div>
+
+						{lots.filter(lot => lot.isRevealed).length > 0 && (
+							<div className='mt-6 p-4 bg-muted rounded-lg'>
+								<h4 className='font-medium mb-2'>{t('revealed')}</h4>
+								<div className='flex flex-wrap gap-2'>
+									{lots
+										.filter(lot => lot.isRevealed)
+										.map(lot => (
+											<Badge key={lot.id} variant='secondary'>
+												{lot.value}
+											</Badge>
 										))}
-									</AnimatePresence>
 								</div>
-
-								<Button
-									onClick={reset}
-									className='mt-6'
-									variant='outline'
-									size='sm'
-								>
-									<RotateCcw className='w-4 h-4 mr-2' />
-									Reset
-								</Button>
-							</>
+							</div>
 						)}
 					</Card>
 				</>
@@ -318,24 +293,13 @@ export default function DrawLotsPage() {
 
 			{/* About Section */}
 			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>About This Tool</h3>
+				<h3 className='font-semibold mb-3'>{t('about.title')}</h3>
 				<div className='space-y-2 text-sm text-muted-foreground'>
-					<p>
-						This digital draw lots tool simulates the traditional method of
-						drawing straws or picking papers from a hat. It uses the
-						Fisher-Yates shuffle algorithm to ensure truly random results.
-					</p>
-					<p>
-						Perfect for making fair decisions, selecting winners, assigning
-						tasks, or any situation where you need an unbiased random selection.
-					</p>
-					<p className='text-xs mt-4'>
-						This tool is provided &quot;as is&quot; without warranties. Please follow
-						local laws and regulations. Users are responsible for their use of
-						this tool.
-					</p>
+					<p>{t('about.description')}</p>
+					<p>{t('about.useCases')}</p>
+					<p className='text-xs mt-4'>{t('about.disclaimer')}</p>
 				</div>
 			</Card>
-		</div>
+		</WidgetContainer>
 	)
 }
