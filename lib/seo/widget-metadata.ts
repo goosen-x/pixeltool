@@ -807,33 +807,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'pomodoro-timer': {
-		en: {
-			title: 'Pomodoro Timer - Productivity Timer Online | Free Tool',
-			description:
-				'Boost productivity with Pomodoro Technique timer. Customizable work/break intervals, task tracking, and statistics. Perfect for focused work sessions.',
-			keywords: [
-				'pomodoro timer',
-				'pomodoro technique',
-				'productivity timer',
-				'work timer',
-				'focus timer',
-				'tomato timer'
-			]
-		},
-		ru: {
-			title: 'Помодоро Таймер - Таймер Продуктивности | Бесплатно',
-			description:
-				'Повысьте продуктивность с техникой Помодоро. Настраиваемые интервалы работы/отдыха, трекинг задач. Для фокусировки.',
-			keywords: [
-				'помодоро таймер',
-				'техника помодоро',
-				'таймер продуктивности',
-				'рабочий таймер',
-				'томато таймер'
-			]
-		}
-	},
 	'compound-interest-calculator': {
 		en: {
 			title: 'Compound Interest Calculator - Investment Growth | Free Tool',

@@ -21,6 +21,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	const locale = useLocale()
 	const t = useTranslations('projectsPage')
 	const widgetT = useTranslations('widgets')
+	const categoriesT = useTranslations('widgets.categories')
 
 	// State for collapsed categories with localStorage persistence
 	const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
@@ -79,7 +80,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 							)}
 						>
 							<Home className='w-4 h-4' />
-							<span>Overview</span>
+							<span>{t('overview')}</span>
 						</Link>
 
 						<div className='my-4 space-y-2'>
@@ -105,7 +106,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 												className='w-full flex items-center justify-between mb-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground hover:bg-primary/5 transition-all duration-200 rounded-md group relative z-10'
 											>
 												<span className='group-hover:translate-x-1 transition-transform duration-200'>
-													{categoryName}
+													{categoriesT(categoryKey)}
 												</span>
 												<ChevronDown
 													className={cn(

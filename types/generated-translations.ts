@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-19T19:12:21.915Z
+// Generated on: 2025-08-19T20:18:10.911Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -1150,69 +1150,6 @@ export interface GeneratedTranslations {
         regenerate: string
       }
     }
-    pomodoroTimer: {
-      title: string
-      description: string
-      useCase: string
-      timerSettings: string
-      workDuration: string
-      shortBreak: string
-      longBreak: string
-      pomodorosUntilLongBreak: string
-      minutes: string
-      currentSession: string
-      work: string
-      break: string
-      longBreakSession: string
-      start: string
-      pause: string
-      resume: string
-      reset: string
-      skip: string
-      sessionComplete: string
-      takeABreak: string
-      backToWork: string
-      statistics: string
-      todayStats: string
-      completedPomodoros: string
-      totalFocusTime: string
-      totalBreakTime: string
-      currentStreak: string
-      hours: string
-      hour: string
-      minute: string
-      settings: {
-        title: string
-        soundEnabled: string
-        autoStartBreaks: string
-        autoStartPomodoros: string
-        showNotifications: string
-        save: string
-        cancel: string
-        show: string
-        hide: string
-        saved: string
-      }
-      goals: {
-        title: string
-        setGoal: string
-        goal: string
-        progress: string
-      }
-      notifications: {
-        workComplete: string
-        breakComplete: string
-        longBreakComplete: string
-        goalReached: string
-      }
-      tips: {
-        title: string
-        tip1: string
-        tip2: string
-        tip3: string
-        tip4: string
-      }
-    }
     specialSymbolsPicker?: {
       title: string
       description: string
@@ -1289,11 +1226,15 @@ export interface GeneratedTranslations {
       useCase: string
       tabs: {
         percentOf: string
+        percentOfNumber: string
         whatPercent: string
         findTotal: string
         percentChange: string
+        percentageChange: string
         addPercent: string
+        addPercentage: string
         subtractPercent: string
+        subtractPercentage: string
       }
       labels: {
         percent: string
@@ -1318,6 +1259,39 @@ export interface GeneratedTranslations {
         decrease: string
         addPercent: string
         subtractPercent: string
+      }
+      inputs: {
+        percentage: string
+        number: string
+        value: string
+        of: string
+        isPercentOf: string
+        from: string
+        to: string
+        addPercentage: string
+        subtractPercentage: string
+      }
+      buttons: {
+        loadExample: string
+        copy: string
+        reset: string
+      }
+      info: {
+        title: string
+        commonUses: {
+          title: string
+          item1: string
+          item2: string
+          item3: string
+          item4: string
+        }
+        formulas: {
+          title: string
+          item1: string
+          item2: string
+          item3: string
+          item4: string
+        }
       }
       commonUses: {
         title: string
@@ -1802,10 +1776,35 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    timerCountdown?: {
+    timerCountdown: {
       title: string
       description: string
       useCase: string
+      category: string
+      timer: string
+      stopwatch: string
+      start: string
+      pause: string
+      resume: string
+      reset: string
+      soundNotification: string
+      showMilliseconds: string
+      shortcuts: string
+      startPause: string
+      timerComplete: string
+      presetLoaded: string
+      work: string
+      shortBreak: string
+      longBreak: string
+      session: string
+      pomodoroSettings: string
+      workDuration: string
+      shortBreakDuration: string
+      longBreakDuration: string
+      sessionsUntilLongBreak: string
+      workTime: string
+      shortBreakTime: string
+      longBreakTime: string
     }
     currencyConverter?: {
       title: string
@@ -2340,7 +2339,7 @@ export interface GeneratedTranslations {
 }
 
 // All widget names from translation file
-export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'colorContrastChecker' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'pomodoroTimer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'emailValidator' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
+export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'colorContrastChecker' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'emailValidator' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
 
 // Runtime validation helper
 export const WIDGET_NAMES = [
@@ -2371,7 +2370,6 @@ export const WIDGET_NAMES = [
   'bezierCurve',
   'seoMarkdownGenerator',
   'teamRandomizer',
-  'pomodoroTimer',
   'specialSymbolsPicker',
   'fancyTextGenerator',
   'randomNumberGenerator',

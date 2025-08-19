@@ -118,28 +118,6 @@ export default function ContactInfo({ locale }: Props) {
 					))}
 				</div>
 			</div>
-
-			{/* Availability */}
-			<div className='p-6 bg-card border rounded-lg'>
-				<h3 className='font-semibold text-foreground mb-2'>
-					{t('availability.title')}
-				</h3>
-				<p className='text-muted-foreground mb-4'>{t('availability.status')}</p>
-				<div className='space-y-2 text-sm text-muted-foreground'>
-					<div className='flex items-center gap-2'>
-						<div className='w-2 h-2 bg-green-500 rounded-full'></div>
-						{t('availability.remote')}
-					</div>
-					<div className='flex items-center gap-2'>
-						<div className='w-2 h-2 bg-green-500 rounded-full'></div>
-						{t('availability.freelance')}
-					</div>
-					<div className='flex items-center gap-2'>
-						<div className='w-2 h-2 bg-yellow-500 rounded-full'></div>
-						{t('availability.fulltime')}
-					</div>
-				</div>
-			</div>
 		</div>
 	)
 }

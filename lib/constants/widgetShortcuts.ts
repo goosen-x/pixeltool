@@ -40,15 +40,6 @@ export const widgetShortcuts: Record<string, WidgetShortcutConfig> = {
 		shortcuts: ['Space Draw Card', '⌘+R Reset', 'Enter Reveal Card'],
 		description: '🎴 Digital drawing lots with 3D card animations'
 	},
-	'pomodoro-timer': {
-		shortcuts: [
-			'Space Start/Pause',
-			'⌘+R Reset',
-			'⌘+N Next Session',
-			'⌘+S Settings'
-		],
-		description: '🍅 Focus timer with work/break cycles'
-	},
 	'coin-flip': {
 		shortcuts: ['Space Flip Coin', '⌘+T Change Coin Type', '⌘+R Reset'],
 		description: '🪙 3D coin flip with multiple currency types'

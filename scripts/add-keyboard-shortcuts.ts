@@ -19,7 +19,6 @@ const WIDGETS_WITH_SHORTCUTS = [
 	'age-calculator',
 	'random-number-generator',
 	'team-randomizer',
-	'pomodoro-timer',
 	'password-generator',
 	'qr-generator',
 	'uuid-generator',

@@ -1350,74 +1350,6 @@ export const widgets: Widget[] = [
 		}
 	},
 	{
-		id: 'pomodoro-timer',
-		icon: Timer,
-		category: 'lifestyle',
-		translationKey: 'pomodoroTimer',
-		path: 'pomodoro-timer',
-		gradient: 'from-red-500 to-orange-600',
-		recommendedTools: ['team-randomizer', 'password-generator', 'utm-builder'],
-		difficulty: 'beginner',
-		tags: ['timer', 'pomodoro', 'productivity', 'focus', 'time-management'],
-		useCase:
-			'Boost productivity using the Pomodoro Technique with customizable work and break intervals',
-		metaDescription:
-			'Pomodoro timer for productivity. Work in focused 25-minute intervals with regular breaks.',
-		faqs: {
-			en: [
-				{
-					question: 'What is the Pomodoro Technique?',
-					answer:
-						'The Pomodoro Technique is a time management method that uses 25-minute focused work sessions (called "pomodoros") followed by 5-minute breaks. After 4 pomodoros, take a longer 15-30 minute break.'
-				},
-				{
-					question: 'Can I customize the timer intervals?',
-					answer:
-						'Yes! While the traditional Pomodoro uses 25/5/15 minute intervals, you can adjust work time, short breaks, and long breaks to suit your workflow.'
-				},
-				{
-					question: 'Why is it effective for productivity?',
-					answer:
-						'The technique helps maintain focus by breaking work into manageable chunks, prevents burnout with regular breaks, and creates a sense of urgency that combats procrastination.'
-				}
-			],
-			ru: [
-				{
-					question: 'Что такое техника Помодоро?',
-					answer:
-						'Техника Помодоро - это метод управления временем, использующий 25-минутные сессии сфокусированной работы (называемые "помодоро"), за которыми следуют 5-минутные перерывы. После 4 помодоро делается длинный перерыв 15-30 минут.'
-				},
-				{
-					question: 'Можно ли настроить интервалы таймера?',
-					answer:
-						'Да! Хотя традиционный Помодоро использует интервалы 25/5/15 минут, вы можете настроить время работы, короткие и длинные перерывы под свой рабочий процесс.'
-				},
-				{
-					question: 'Почему это эффективно для продуктивности?',
-					answer:
-						'Техника помогает поддерживать фокус, разбивая работу на управляемые части, предотвращает выгорание регулярными перерывами и создаёт чувство срочности, которое борется с прокрастинацией.'
-				}
-			],
-			he: [
-				{
-					question: 'מהי טכניקת הפומודורו?',
-					answer:
-						'טכניקת הפומודורו היא שיטת ניהול זמן המשתמשת במפגשי עבודה ממוקדים של 25 דקות (הנקראים "פומודורו") ואחריהם הפסקות של 5 דקות. אחרי 4 פומודורו, קחו הפסקה ארוכה של 15-30 דקות.'
-				},
-				{
-					question: 'האם אפשר להתאים אישית את מרווחי הטיימר?',
-					answer:
-						'כן! בעוד שהפומודורו המסורתי משתמש במרווחים של 25/5/15 דקות, אתם יכולים להתאים את זמן העבודה, ההפסקות הקצרות והארוכות לזרימת העבודה שלכם.'
-				},
-				{
-					question: 'למה זה יעיל לפרודוקטיביות?',
-					answer:
-						'הטכניקה עוזרת לשמור על מיקוד על ידי חלוקת העבודה לחלקים ניתנים לניהול, מונעת שחיקה עם הפסקות סדירות, ויוצרת תחושת דחיפות שנלחמת בדחיינות.'
-				}
-			]
-		}
-	},
-	{
 		id: 'special-symbols-picker',
 		icon: Type,
 		category: 'content',
@@ -2192,7 +2124,7 @@ export const widgets: Widget[] = [
 		translationKey: 'worldTime',
 		path: 'world-time',
 		gradient: 'from-blue-500 to-cyan-600',
-		recommendedTools: ['pomodoro-timer', 'unit-converter', 'speed-test'],
+		recommendedTools: ['timer-countdown', 'unit-converter', 'speed-test'],
 		difficulty: 'beginner',
 		tags: ['time', 'timezone', 'world', 'clock', 'converter', 'dst'],
 		useCase: 'Track time across multiple cities and convert between timezones',
@@ -3381,7 +3313,7 @@ export const widgets: Widget[] = [
 		translationKey: 'timerCountdown',
 		path: 'timer-countdown',
 		gradient: 'from-orange-500 to-red-600',
-		recommendedTools: ['pomodoro-timer', 'world-time', 'age-calculator'],
+		recommendedTools: ['world-time', 'age-calculator', 'unit-converter'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase:

@@ -29,7 +29,6 @@ import {
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
-import { WidgetContainer } from '@/components/widgets/base'
 
 type TimerMode = 'countdown' | 'stopwatch' | 'pomodoro'
 type PomodoroPhase = 'work' | 'shortBreak' | 'longBreak'
@@ -99,10 +98,10 @@ export default function TimerCountdownPage() {
 	const audioRef = useRef<HTMLAudioElement | null>(null)
 
 	const config = {
-		title: t('title'),
-		description: t('description'),
-		icon: <Clock className='w-6 h-6 text-primary' />,
-		category: t('category')
+		title: '',
+		description: '',
+		icon: null,
+		category: ''
 	}
 
 	// Initialize audio
@@ -151,7 +150,9 @@ export default function TimerCountdownPage() {
 
 		// Play sound
 		if (soundEnabled && audioRef.current) {
-			audioRef.current.play().catch(err => console.error('Error playing sound:', err))
+			audioRef.current
+				.play()
+				.catch(err => console.error('Error playing sound:', err))
 		}
 
 		// Handle Pomodoro phase transitions
@@ -224,9 +225,12 @@ export default function TimerCountdownPage() {
 	// Timer logic
 	useEffect(() => {
 		if (isRunning && !isPaused) {
-			intervalRef.current = setInterval(() => {
-				updateTimer()
-			}, showMilliseconds ? 10 : 1000)
+			intervalRef.current = setInterval(
+				() => {
+					updateTimer()
+				},
+				showMilliseconds ? 10 : 1000
+			)
 		} else {
 			if (intervalRef.current) {
 				clearInterval(intervalRef.current)
@@ -241,7 +245,12 @@ export default function TimerCountdownPage() {
 	}, [isRunning, isPaused, mode, showMilliseconds, updateTimer])
 
 	const startTimer = () => {
-		if (mode === 'countdown' && time.hours === 0 && time.minutes === 0 && time.seconds === 0) {
+		if (
+			mode === 'countdown' &&
+			time.hours === 0 &&
+			time.minutes === 0 &&
+			time.seconds === 0
+		) {
 			setTime({ ...initialTime })
 		}
 		setIsRunning(true)
@@ -300,7 +309,10 @@ export default function TimerCountdownPage() {
 		toast.success(`${t('presetLoaded')}: ${preset.name}`)
 	}
 
-	const adjustTime = (field: 'hours' | 'minutes' | 'seconds', increment: boolean) => {
+	const adjustTime = (
+		field: 'hours' | 'minutes' | 'seconds',
+		increment: boolean
+	) => {
 		if (isRunning) return
 
 		const delta = increment ? 1 : -1
@@ -331,11 +343,14 @@ export default function TimerCountdownPage() {
 
 		const totalInitialSeconds =
 			initialTime.hours * 3600 + initialTime.minutes * 60 + initialTime.seconds
-		const totalCurrentSeconds = time.hours * 3600 + time.minutes * 60 + time.seconds
+		const totalCurrentSeconds =
+			time.hours * 3600 + time.minutes * 60 + time.seconds
 
 		if (totalInitialSeconds === 0) return 100
 
-		return ((totalInitialSeconds - totalCurrentSeconds) / totalInitialSeconds) * 100
+		return (
+			((totalInitialSeconds - totalCurrentSeconds) / totalInitialSeconds) * 100
+		)
 	}
 
 	const getPomodoroPhaseInfo = () => {
@@ -365,10 +380,13 @@ export default function TimerCountdownPage() {
 	}
 
 	return (
-		<WidgetContainer config={config}>
-			<div className='max-w-2xl mx-auto space-y-4'>
+		<div className='w-full space-y-4'>
 				{/* Mode Tabs */}
-				<Tabs value={mode} onValueChange={(value) => handleModeChange(value as TimerMode)} className='w-full'>
+				<Tabs
+					value={mode}
+					onValueChange={value => handleModeChange(value as TimerMode)}
+					className='w-full'
+				>
 					<TabsList className='grid w-full grid-cols-3'>
 						<TabsTrigger value='countdown' className='gap-2'>
 							<Clock className='w-4 h-4' />
@@ -396,8 +414,14 @@ export default function TimerCountdownPage() {
 										getPomodoroPhaseInfo().borderColor
 									)}
 								>
-									<div className={cn('font-medium text-sm', getPomodoroPhaseInfo().color)}>
-										{getPomodoroPhaseInfo().label} • {t('session')} {pomodoroSession}
+									<div
+										className={cn(
+											'font-medium text-sm',
+											getPomodoroPhaseInfo().color
+										)}
+									>
+										{getPomodoroPhaseInfo().label} • {t('session')}{' '}
+										{pomodoroSession}
 									</div>
 								</div>
 							)}
@@ -510,7 +534,12 @@ export default function TimerCountdownPage() {
 									</Button>
 								)}
 
-								<Button onClick={resetTimer} size='lg' variant='outline' className='gap-2'>
+								<Button
+									onClick={resetTimer}
+									size='lg'
+									variant='outline'
+									className='gap-2'
+								>
 									<RotateCcw className='w-5 h-5' />
 									{t('reset')}
 								</Button>
@@ -564,7 +593,10 @@ export default function TimerCountdownPage() {
 
 									{mode === 'stopwatch' && (
 										<div className='flex items-center justify-between'>
-											<Label htmlFor='milliseconds' className='flex items-center gap-2'>
+											<Label
+												htmlFor='milliseconds'
+												className='flex items-center gap-2'
+											>
 												<Zap className='w-4 h-4' />
 												{t('showMilliseconds')}
 											</Label>
@@ -578,7 +610,9 @@ export default function TimerCountdownPage() {
 
 									{mode === 'pomodoro' && !isRunning && (
 										<div className='space-y-2 pt-2 border-t'>
-											<h4 className='text-sm font-medium'>{t('pomodoroSettings')}</h4>
+											<h4 className='text-sm font-medium'>
+												{t('pomodoroSettings')}
+											</h4>
 											<div className='grid grid-cols-2 gap-3'>
 												<div>
 													<Label htmlFor='work-duration' className='text-xs'>
@@ -612,7 +646,8 @@ export default function TimerCountdownPage() {
 														onChange={e =>
 															setPomodoroSettings(prev => ({
 																...prev,
-																shortBreakDuration: parseInt(e.target.value) || 5
+																shortBreakDuration:
+																	parseInt(e.target.value) || 5
 															}))
 														}
 														className='h-8 text-sm'
@@ -631,7 +666,8 @@ export default function TimerCountdownPage() {
 														onChange={e =>
 															setPomodoroSettings(prev => ({
 																...prev,
-																longBreakDuration: parseInt(e.target.value) || 15
+																longBreakDuration:
+																	parseInt(e.target.value) || 15
 															}))
 														}
 														className='h-8 text-sm'
@@ -650,7 +686,8 @@ export default function TimerCountdownPage() {
 														onChange={e =>
 															setPomodoroSettings(prev => ({
 																...prev,
-																sessionsUntilLongBreak: parseInt(e.target.value) || 4
+																sessionsUntilLongBreak:
+																	parseInt(e.target.value) || 4
 															}))
 														}
 														className='h-8 text-sm'
@@ -670,13 +707,18 @@ export default function TimerCountdownPage() {
 					<div className='flex items-center gap-2 text-sm text-muted-foreground'>
 						<Bell className='w-4 h-4' />
 						<span>
-							{t('shortcuts')}: <kbd className='px-1 py-0.5 bg-background rounded text-xs'>Space</kbd> -{' '}
-							{t('startPause')}, <kbd className='px-1 py-0.5 bg-background rounded text-xs'>Ctrl+R</kbd> -{' '}
-							{t('reset')}
+							{t('shortcuts')}:{' '}
+							<kbd className='px-1 py-0.5 bg-background rounded text-xs'>
+								Space
+							</kbd>{' '}
+							- {t('startPause')},{' '}
+							<kbd className='px-1 py-0.5 bg-background rounded text-xs'>
+								Ctrl+R
+							</kbd>{' '}
+							- {t('reset')}
 						</span>
 					</div>
 				</Card>
-			</div>
-		</WidgetContainer>
+		</div>
 	)
 }

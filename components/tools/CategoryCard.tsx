@@ -25,12 +25,12 @@ interface CategoryCardProps {
 const categoryTranslations: Record<string, Record<string, string>> = {
 	webdev: { ru: 'Веб-разработка', en: 'Web Development' },
 	design: { ru: 'Дизайн', en: 'Design' },
-	business: { ru: 'Бизнес', en: 'Business' },
-	content: { ru: 'Контент', en: 'Content' },
-	security: { ru: 'Безопасность', en: 'Security' },
+	business: { ru: 'Бизнес и финансы', en: 'Business & Finance' },
+	content: { ru: 'Создание контента', en: 'Content Creation' },
+	security: { ru: 'Безопасность', en: 'Security & Privacy' },
 	multimedia: { ru: 'Мультимедиа', en: 'Multimedia' },
-	analytics: { ru: 'Аналитика', en: 'Analytics' },
-	lifestyle: { ru: 'Стиль жизни', en: 'Lifestyle' }
+	analytics: { ru: 'Аналитика и данные', en: 'Analytics & Data' },
+	lifestyle: { ru: 'Здоровье и образ жизни', en: 'Health & Lifestyle' }
 }
 
 const iconMap: Record<string, any> = {
@@ -57,7 +57,7 @@ export function CategoryCard({
 
 	return (
 		<Card className='group p-5 bg-background/60 backdrop-blur-sm border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300'>
-			<div className='flex flex-col items-center text-center gap-3'>
+			<div className='flex flex-col items-start text-left gap-3'>
 				<div
 					className={cn(
 						'p-4 rounded-xl bg-gradient-to-br',

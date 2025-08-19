@@ -1146,69 +1146,6 @@
 				"regenerate": "Click 'Regenerate' to create new random combinations"
 			}
 		},
-		"pomodoroTimer": {
-			"title": "Pomodoro Timer",
-			"description": "Master time management with proven technique. 25 minutes work, 5 minutes rest",
-			"useCase": "Improve focus and productivity using the Pomodoro time management technique",
-			"timerSettings": "Timer Settings",
-			"workDuration": "Work Duration",
-			"shortBreak": "Short Break",
-			"longBreak": "Long Break",
-			"pomodorosUntilLongBreak": "Pomodoros until long break",
-			"minutes": "minutes",
-			"currentSession": "Current Session",
-			"work": "Work",
-			"break": "Break",
-			"longBreakSession": "Long Break",
-			"start": "Start",
-			"pause": "Pause",
-			"resume": "Resume",
-			"reset": "Reset",
-			"skip": "Skip",
-			"sessionComplete": "Session Complete!",
-			"takeABreak": "Time for a break!",
-			"backToWork": "Break's over! Time to focus.",
-			"statistics": "Statistics",
-			"todayStats": "Today's Stats",
-			"completedPomodoros": "Completed Pomodoros",
-			"totalFocusTime": "Total Focus Time",
-			"totalBreakTime": "Total Break Time",
-			"currentStreak": "Current Streak",
-			"hours": "hours",
-			"hour": "hour",
-			"minute": "minute",
-			"settings": {
-				"title": "Settings",
-				"soundEnabled": "Sound notifications",
-				"autoStartBreaks": "Auto-start breaks",
-				"autoStartPomodoros": "Auto-start work sessions",
-				"showNotifications": "Desktop notifications",
-				"save": "Save Settings",
-				"cancel": "Cancel",
-				"show": "Show Settings",
-				"hide": "Hide Settings",
-				"saved": "Settings saved"
-			},
-			"goals": {
-				"title": "Daily Goal",
-				"setGoal": "Set daily pomodoro goal",
-				"goal": "Goal",
-				"progress": "Progress"
-			},
-			"notifications": {
-				"workComplete": "Great work! Time for a break.",
-				"breakComplete": "Break's over! Ready to focus?",
-				"longBreakComplete": "Long break complete! Let's get back to it.",
-				"goalReached": "Congratulations! You've reached your daily goal!"
-			},
-			"tips": {
-				"title": "Pomodoro Tips",
-				"tip1": "Work for 25 minutes, then take a 5-minute break",
-				"tip2": "After 4 pomodoros, take a longer 15-30 minute break",
-				"tip3": "Stay focused on one task during each pomodoro",
-				"tip4": "Use breaks to stretch, hydrate, and rest your eyes"
-			}
-		},
 		"specialSymbolsPicker": {
 			"title": "Special Symbols Picker",
 			"description": "Click to copy special characters and Unicode symbols for any text",
@@ -1285,11 +1222,15 @@
 			"useCase": "Calculate percentages for discounts, tips, tax amounts, and financial planning",
 			"tabs": {
 				"percentOf": "% of Number",
+				"percentOfNumber": "% of Number",
 				"whatPercent": "Find 100%",
 				"findTotal": "X is Y%",
 				"percentChange": "% Change",
+				"percentageChange": "% Change",
 				"addPercent": "Add %",
-				"subtractPercent": "Subtract %"
+				"addPercentage": "Add %",
+				"subtractPercent": "Subtract %",
+				"subtractPercentage": "Subtract %"
 			},
 			"labels": {
 				"percent": "Percent",
@@ -1314,6 +1255,39 @@
 				"decrease": "decrease",
 				"addPercent": "{number} + {percent}% = {result}",
 				"subtractPercent": "{number} - {percent}% = {result}"
+			},
+			"inputs": {
+				"percentage": "Percentage",
+				"number": "Number",
+				"value": "Value",
+				"of": "of what?",
+				"isPercentOf": "is what percent?",
+				"from": "From",
+				"to": "To",
+				"addPercentage": "Add percentage",
+				"subtractPercentage": "Subtract percentage"
+			},
+			"buttons": {
+				"loadExample": "Load Example",
+				"copy": "Copy",
+				"reset": "Reset"
+			},
+			"info": {
+				"title": "Calculator Information",
+				"commonUses": {
+					"title": "Common Uses",
+					"item1": "Calculate store discounts",
+					"item2": "Determine tip amounts",
+					"item3": "Calculate taxes",
+					"item4": "Analyze investment growth"
+				},
+				"formulas": {
+					"title": "Formulas",
+					"item1": "X% of Y = (X ÷ 100) × Y",
+					"item2": "X is what % of Y = (X ÷ Y) × 100",
+					"item3": "If X% = Y, then 100% = Y ÷ (X ÷ 100)",
+					"item4": "% Change = ((New - Old) ÷ Old) × 100"
+				}
 			},
 			"commonUses": {
 				"title": "Common Uses",
@@ -1372,9 +1346,21 @@
 			"bulkPlaceholder": "Enter email addresses, one per line...",
 			"validate": "Validate",
 			"validateAll": "Validate All",
+			"sections": {
+				"input": "Email Input",
+				"results": "Validation Results"
+			},
 			"tabs": {
 				"single": "Single Email",
 				"bulk": "Bulk Validation"
+			},
+			"single": {
+				"label": "Email Address",
+				"description": "Enter a single email address to validate"
+			},
+			"bulk": {
+				"label": "Email Addresses",
+				"description": "Enter multiple email addresses, one per line (max 100)"
 			},
 			"emailCount": "{{count}} emails",
 			"results": "Validation Results",
