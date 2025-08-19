@@ -666,44 +666,6 @@ export default function JWTDecoderPage() {
 					)}
 				</div>
 			</div>
-
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4 flex items-center gap-2'>
-					<Info className='w-4 h-4' />О JWT
-				</h3>
-				<div className='grid md:grid-cols-2 gap-6 text-sm text-muted-foreground'>
-					<div>
-						<h4 className='font-medium text-foreground mb-2'>Что такое JWT?</h4>
-						<p>
-							JSON Web Token (JWT) — это открытый стандарт (RFC 7519) для
-							безопасной передачи информации между сторонами в виде JSON
-							объекта.
-						</p>
-					</div>
-					<div>
-						<h4 className='font-medium text-foreground mb-2'>Структура JWT</h4>
-						<p>
-							JWT состоит из трех частей: Header (заголовок), Payload (полезная
-							нагрузка) и Signature (подпись), разделенных точками.
-						</p>
-					</div>
-					<div>
-						<h4 className='font-medium text-foreground mb-2'>Безопасность</h4>
-						<p>
-							JWT подписан, но не зашифрован. Любой может декодировать и
-							прочитать содержимое. Не храните конфиденциальные данные в JWT.
-						</p>
-					</div>
-					<div>
-						<h4 className='font-medium text-foreground mb-2'>Использование</h4>
-						<p>
-							JWT часто используется для аутентификации и авторизации в
-							веб-приложениях, API и микросервисах.
-						</p>
-					</div>
-				</div>
-			</Card>
 		</WidgetLayout>
 	)
 }

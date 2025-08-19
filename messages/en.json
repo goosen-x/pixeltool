@@ -714,13 +714,18 @@
 				"noCharset": "Please select at least one character type",
 				"notEnoughWords": "Please enter at least 4 words for passphrase generation"
 			},
+			"shortcuts": {
+				"clear": "Clear",
+				"toggleVisibility": "Toggle visibility"
+			},
 			"toast": {
 				"generated": "Password generated successfully",
 				"passphraseGenerated": "Passphrase generated successfully",
 				"copied": "Password copied to clipboard",
 				"copyError": "Failed to copy to clipboard",
 				"historyCleared": "Password history cleared",
-				"downloaded": "Passwords downloaded successfully"
+				"downloaded": "Passwords downloaded successfully",
+				"cleared": "Cleared"
 			}
 		},
 		"utmBuilder": {
@@ -1331,7 +1336,33 @@
 		"drawLots": {
 			"title": "Draw Lots",
 			"description": "Digital draw straws - pick names or make random selections fairly",
-			"useCase": "Make fair random selections from a list of options or names"
+			"useCase": "Make fair random selections from a list of options or names",
+			"inputLabel": "Enter Items (one per line)",
+			"inputPlaceholder": "Enter items to draw from...",
+			"inputHint": "Enter each item on a new line. Maximum 100 items.",
+			"startDrawing": "Start Drawing",
+			"clickToReveal": "Click a card to reveal",
+			"clickToDraw": "Click to draw",
+			"selected": "✓ Selected",
+			"revealed": "Revealed:",
+			"reset": "Reset",
+			"errors": {
+				"empty": "Please enter at least one item",
+				"tooMany": "Maximum 100 items allowed"
+			},
+			"howToUse": {
+				"title": "How to Use",
+				"step1": "1. Enter items (names, options, tasks, etc.) one per line",
+				"step2": "2. Click \"Start Drawing\" to create randomized cards",
+				"step3": "3. Click any card to reveal what was drawn",
+				"step4": "4. You can reveal multiple cards in one draw"
+			},
+			"about": {
+				"title": "About This Tool",
+				"description": "This digital draw lots tool simulates the traditional method of drawing straws or picking papers from a hat. It uses the Fisher-Yates shuffle algorithm to ensure truly random results.",
+				"useCases": "Perfect for making fair decisions, selecting winners, assigning tasks, or any situation where you need an unbiased random selection.",
+				"disclaimer": "This tool is provided \"as is\" without warranties. Please follow local laws and regulations. Users are responsible for their use of this tool."
+			}
 		},
 		"emailValidator": {
 			"title": "Email Validator",
@@ -1857,7 +1888,39 @@
 		"pxRemConverter": {
 			"title": "PX to REM/EM Converter",
 			"description": "Convert between px, rem, and em CSS units with custom base font size",
-			"useCase": "Convert CSS units between pixels, rem, and em for responsive design"
+			"useCase": "Convert CSS units between pixels, rem, and em for responsive design",
+			"selectUnit": "Select unit",
+			"input": "Value",
+			"inputPlaceholder": "Enter value",
+			"baseFontSize": "Base font size (HTML)",
+			"parentFontSize": "Parent font size (for em)",
+			"viewportWidth": "Viewport width (for vw)",
+			"viewportHeight": "Viewport height (for vh)",
+			"advancedSettings": "advanced settings",
+			"show": "Show",
+			"hide": "Hide",
+			"result": "Result",
+			"copyCss": "Copy CSS",
+			"reset": "Reset",
+			"presets": {
+				"title": "Preset Sizes",
+				"typography": "Typography",
+				"spacing": "Spacing",
+				"breakpoints": "Breakpoints"
+			},
+			"conversions": {
+				"pixels": "Pixels",
+				"rootEm": "Root Em",
+				"elementEm": "Element Em",
+				"percent": "Percent",
+				"points": "Points",
+				"viewportWidth": "Viewport Width",
+				"viewportHeight": "Viewport Height"
+			},
+			"toast": {
+				"copied": "Value copied to clipboard!",
+				"cssCopied": "CSS properties copied to clipboard!"
+			}
 		},
 		"cssBoxShadow": {
 			"title": "CSS Box Shadow Generator",

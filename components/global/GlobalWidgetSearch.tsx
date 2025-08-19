@@ -73,8 +73,12 @@ export function GlobalWidgetSearch({
 				widget,
 				title,
 				description,
-				category:
-					widgetCategories[widget.category as keyof typeof widgetCategories],
+				category: widget.category,
+				categoryName: safeTranslate(
+					t,
+					`categories.${widget.category}`,
+					widget.category
+				),
 				isFavorite: favorites.includes(widget.id),
 				path: `/${locale}/tools/${widget.path}`
 			}
@@ -111,7 +115,7 @@ export function GlobalWidgetSearch({
 					item.title.toLowerCase().includes(query) ||
 					item.description.toLowerCase().includes(query) ||
 					item.widget.tags?.some(tag => tag.toLowerCase().includes(query)) ||
-					item.category.toLowerCase().includes(query)
+					item.categoryName.toLowerCase().includes(query)
 				)
 			})
 			.slice(0, 8)
@@ -278,7 +282,7 @@ export function GlobalWidgetSearch({
 
 											{/* Category badge */}
 											<Badge variant='outline' className='shrink-0'>
-												{item.category}
+												{item.categoryName}
 											</Badge>
 
 											{/* Arrow */}

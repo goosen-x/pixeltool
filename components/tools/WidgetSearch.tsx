@@ -208,7 +208,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 						<section key={category}>
 							<div className='flex items-center gap-3 mb-6'>
 								<h2 className='text-2xl font-heading font-bold'>
-									{widgetCategories[category as keyof typeof widgetCategories]}
+									{t(`categories.${category}`)}
 								</h2>
 								<Badge variant='outline' className='font-medium'>
 									{projects.length}

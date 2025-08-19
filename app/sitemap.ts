@@ -2,8 +2,7 @@ import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
 import { widgets } from '@/lib/constants/widgets'
 
-const BASE_URL =
-	process.env.NEXT_PUBLIC_SITE_URL || 'https://portfolio.vercel.app'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const locales = ['en', 'ru']

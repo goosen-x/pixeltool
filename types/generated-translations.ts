@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-18T21:30:28.638Z
+// Generated on: 2025-08-19T19:11:47.282Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -718,6 +718,10 @@ export interface GeneratedTranslations {
         noCharset: string
         notEnoughWords: string
       }
+      shortcuts: {
+        clear: string
+        toggleVisibility: string
+      }
       toast: {
         generated: string
         passphraseGenerated: string
@@ -725,6 +729,7 @@ export interface GeneratedTranslations {
         copyError: string
         historyCleared: string
         downloaded: string
+        cleared: string
       }
     }
     utmBuilder: {
@@ -1332,10 +1337,36 @@ export interface GeneratedTranslations {
         }
       }
     }
-    drawLots?: {
+    drawLots: {
       title: string
       description: string
       useCase: string
+      inputLabel: string
+      inputPlaceholder: string
+      inputHint: string
+      startDrawing: string
+      clickToReveal: string
+      clickToDraw: string
+      selected: string
+      revealed: string
+      reset: string
+      errors: {
+        empty: string
+        tooMany: string
+      }
+      howToUse: {
+        title: string
+        step1: string
+        step2: string
+        step3: string
+        step4: string
+      }
+      about: {
+        title: string
+        description: string
+        useCases: string
+        disclaimer: string
+      }
     }
     emailValidator: {
       title: string
@@ -1806,10 +1837,42 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    pxRemConverter?: {
+    pxRemConverter: {
       title: string
       description: string
       useCase: string
+      selectUnit: string
+      input: string
+      inputPlaceholder: string
+      baseFontSize: string
+      parentFontSize: string
+      viewportWidth: string
+      viewportHeight: string
+      advancedSettings: string
+      show: string
+      hide: string
+      result: string
+      copyCss: string
+      reset: string
+      presets: {
+        title: string
+        typography: string
+        spacing: string
+        breakpoints: string
+      }
+      conversions: {
+        pixels: string
+        rootEm: string
+        elementEm: string
+        percent: string
+        points: string
+        viewportWidth: string
+        viewportHeight: string
+      }
+      toast: {
+        copied: string
+        cssCopied: string
+      }
     }
     cssBoxShadow?: {
       title: string
