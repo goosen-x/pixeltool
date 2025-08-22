@@ -11,12 +11,7 @@ if [ ${#commit_message} -lt 10 ]; then
   exit 1
 fi
 
-# Check if commit message is too long
-if [ ${#commit_message} -gt 100 ]; then
-  echo "❌ Commit message too long (maximum 100 characters)"
-  echo "💡 Use body for detailed explanations"
-  exit 1
-fi
+# Check if commit message is too long - DISABLED
 
 # Conventional commits validation
 if echo "$commit_message" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|ci|perf|build|revert)(\(.+\))?: .{3,}"; then

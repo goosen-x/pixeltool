@@ -492,7 +492,7 @@ export default function QRGeneratorPage() {
 				{/* Preview */}
 				<div>
 					<WidgetSection
-						icon={QrCode}
+						icon={<QrCode className='w-5 h-5' />}
 						title={t('preview')}
 						className='flex flex-col items-center space-y-6'
 					>

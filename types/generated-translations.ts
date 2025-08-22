@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-19T20:18:10.911Z
+// Generated on: 2025-08-19T20:53:30.572Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -1350,9 +1350,21 @@ export interface GeneratedTranslations {
       bulkPlaceholder: string
       validate: string
       validateAll: string
+      sections: {
+        input: string
+        results: string
+      }
       tabs: {
         single: string
         bulk: string
+      }
+      single: {
+        label: string
+        description: string
+      }
+      bulk: {
+        label: string
+        description: string
       }
       emailCount: string
       results: string

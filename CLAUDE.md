@@ -1,5 +1,5 @@
 # CLAUDE.md
-
+делай в режиме паранойи
 This file provides comprehensive guidance to Claude Code (claude.ai/code) for
 senior-level development on this repository.
 
@@ -7,20 +7,20 @@ senior-level development on this repository.
 
 ```bash
 # Development
-npm run dev              # Start dev server (port 3000)
-npm run build            # Production build
-npm run lint             # ESLint check
-npm run typecheck        # TypeScript validation
+yarn dev                 # Start dev server (port 3000)
+yarn build               # Production build
+yarn lint                # ESLint check
+yarn typecheck           # TypeScript validation
 
 # Quality Checks
-npm run translations:check    # Validate all translations
-npm run check:all            # Run security, imports, bundle checks
-npm run format               # Auto-fix formatting
-npm run test                 # Run test suite
+yarn translations:check  # Validate all translations
+yarn check:all           # Run security, imports, bundle checks
+yarn format              # Auto-fix formatting
+yarn test                # Run test suite
 
 # Database
-npx tsx lib/scripts/migrate-posts.ts     # Migrate posts to DB
-npx tsx lib/scripts/check-supabase.ts    # Verify DB connection
+yarn tsx lib/scripts/migrate-posts.ts     # Migrate posts to DB
+yarn tsx lib/scripts/check-supabase.ts    # Verify DB connection
 ```
 
 ## 🏗️ Architecture & Best Practices
@@ -114,7 +114,7 @@ portfolio/
 - **Never commit secrets** - Use environment variables
 - **Validate all inputs** - Use Zod schemas
 - **Sanitize user content** - Prevent XSS attacks
-- **Check dependencies** - Run `npm audit` regularly
+- **Check dependencies** - Run `yarn audit` regularly
 
 ## 📋 Common Workflows
 
@@ -132,8 +132,8 @@ portfolio/
 
 ```bash
 # After adding translations:
-npm run generate:types        # Generate TypeScript types
-npm run validate:translations # Check completeness
+yarn generate:types        # Generate TypeScript types
+yarn validate:translations # Check completeness
 ```
 
 Common translation structure:
@@ -169,7 +169,7 @@ const { data, error } = await supabase
 
 ### Performance Pitfalls
 
-- **Large bundles**: Check with `npm run check:bundle`
+- **Large bundles**: Check with `yarn check:bundle`
 - **Unnecessary client components**: Audit `'use client'` usage
 - **Missing image optimization**: Use Next.js Image component
 - **Unoptimized fonts**: Use `next/font` for loading
@@ -235,23 +235,23 @@ The project tracks user interactions automatically:
 ```bash
 # Clear caches and rebuild
 rm -rf .next node_modules
-npm install
-npm run build
+yarn install
+yarn build
 ```
 
 ### Translation Errors
 
 ```bash
 # Regenerate types and validate
-npm run generate:types
-npm run validate:translations
+yarn generate:types
+yarn validate:translations
 ```
 
 ### Database Issues
 
 ```bash
 # Check connection and schema
-npx tsx lib/scripts/verify-supabase-setup.ts
+yarn tsx lib/scripts/verify-supabase-setup.ts
 ```
 
 ## 📚 Additional Resources
@@ -307,20 +307,20 @@ When creating new widgets, ensure:
 
 ```bash
 # Development
-npm run dev              # Start with auto-reload
-npm run build           # Production build with checks
-npm run quality         # Full quality check
-npm run deploy-check    # Pre-deployment validation
+yarn dev              # Start with auto-reload
+yarn build           # Production build with checks
+yarn quality         # Full quality check
+yarn deploy-check    # Pre-deployment validation
 
 # Code Quality
-npm run lint-fix        # Auto-fix ESLint issues
-npm run format          # Format all code
-npm run check:all       # Run all checks (security, performance, a11y)
-npm run typecheck       # TypeScript validation
+yarn lint-fix        # Auto-fix ESLint issues
+yarn format          # Format all code
+yarn check:all       # Run all checks (security, performance, a11y)
+yarn typecheck       # TypeScript validation
 
 # Widget Development
-npm run new-widget      # Create new widget template
-npm run translations:check  # Validate all translations
+yarn new-widget      # Create new widget template
+yarn translations:check  # Validate all translations
 ```
 
 This configuration ensures your development workflow meets senior-level

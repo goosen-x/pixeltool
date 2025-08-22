@@ -289,38 +289,6 @@ export function ProjectsRightSidebar() {
 				</CardContent>
 			</Card>
 
-			{/* Related Tools Mini */}
-			{widget.recommendedTools && widget.recommendedTools.length > 0 && (
-				<Card>
-					<CardHeader className='pb-3'>
-						<CardTitle className='text-sm'>
-							{tSidebar('relatedTools.title')}
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='space-y-1'>
-							{widget.recommendedTools.slice(0, 3).map(toolId => {
-								const tool = getWidgetById(toolId)
-								if (!tool) return null
-								return (
-									<Link
-										key={tool.id}
-										href={`/${pathname.split('/')[1]}/tools/${tool.path}`}
-										className='block p-2 rounded hover:bg-muted transition-colors'
-									>
-										<div className='flex items-center gap-2'>
-											<tool.icon className='w-4 h-4 text-muted-foreground' />
-											<span className='text-sm'>
-												{t(`${tool.translationKey}.title`)}
-											</span>
-										</div>
-									</Link>
-								)
-							})}
-						</div>
-					</CardContent>
-				</Card>
-			)}
 		</aside>
 	)
 }

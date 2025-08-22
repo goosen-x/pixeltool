@@ -40,7 +40,7 @@ export const LanguageSelect = ({ className, locale }: Props) => {
 	return (
 		<div className={cn('shrink-0', className)}>
 			<Select value={locale} onValueChange={handleLanguageChange}>
-				<SelectTrigger className='h-10 px-3 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300'>
+				<SelectTrigger className='h-10 px-3 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 text-foreground'>
 					<SelectValue aria-label={locale}>
 						<span className='flex items-center gap-2'>
 							<span className='text-lg'>
@@ -49,7 +49,7 @@ export const LanguageSelect = ({ className, locale }: Props) => {
 						</span>
 					</SelectValue>
 				</SelectTrigger>
-				<SelectContent className='rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl'>
+				<SelectContent className='rounded-xl border border-border/50 bg-background/95 backdrop-blur-xl z-[9999]'>
 					{LOCALES.map(LOCALE => (
 						<SelectItem
 							value={LOCALE.value}
@@ -58,7 +58,7 @@ export const LanguageSelect = ({ className, locale }: Props) => {
 						>
 							<span className='flex items-center gap-3 py-1'>
 								<span className='text-lg'>{LOCALE.flag}</span>
-								<span className='text-sm font-medium'>{LOCALE.key}</span>
+								<span className='text-sm font-medium text-foreground'>{LOCALE.key}</span>
 							</span>
 						</SelectItem>
 					))}

@@ -3313,7 +3313,7 @@ export const widgets: Widget[] = [
 		translationKey: 'timerCountdown',
 		path: 'timer-countdown',
 		gradient: 'from-orange-500 to-red-600',
-		recommendedTools: ['world-time', 'age-calculator', 'unit-converter'],
+		recommendedTools: ['world-time', 'age-calculator', 'bmi-calculator'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase:
