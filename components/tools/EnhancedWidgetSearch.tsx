@@ -340,7 +340,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 																		: project.description}
 																</p>
 																{project.tags.length > 0 && (
-																	<div className='flex flex-wrap gap-1'>
+																	<div className='flex flex-wrap gap-1.5'>
 																		{project.tags.slice(0, 5).map(tag => (
 																			<Badge
 																				key={tag}

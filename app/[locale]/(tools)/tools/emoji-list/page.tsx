@@ -78,7 +78,7 @@ export default function EmojiListPage() {
 								+ emojis
 							</Badge>
 						</div>
-						<p className='text-muted-foreground max-w-2xl mx-auto'>
+						<p className='text-muted-foreground max-w-6xl mx-auto'>
 							Browse, copy, and download emojis from our comprehensive
 							collection. Perfect for social media, messaging, and web
 							development.

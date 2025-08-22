@@ -10,6 +10,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
 	Timer,
 	Play,
 	Pause,
@@ -29,6 +37,9 @@ import {
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
+import { SlidingTimer } from '@/components/widgets/timer/SlidingTimer'
+import { SlidingCountdown } from '@/components/widgets/timer/SlidingCountdown'
+import { AnimatedProgressBar } from '@/components/widgets/timer/AnimatedProgressBar'
 
 type TimerMode = 'countdown' | 'stopwatch' | 'pomodoro'
 type PomodoroPhase = 'work' | 'shortBreak' | 'longBreak'
@@ -82,7 +93,7 @@ export default function TimerCountdownPage() {
 	})
 	const [soundEnabled, setSoundEnabled] = useState(true)
 	const [showMilliseconds, setShowMilliseconds] = useState(false)
-	const [showSettings, setShowSettings] = useState(false)
+	const [smoothProgress, setSmoothProgress] = useState(0)
 
 	// Pomodoro specific
 	const [pomodoroPhase, setPomodoroPhase] = useState<PomodoroPhase>('work')
@@ -95,7 +106,6 @@ export default function TimerCountdownPage() {
 	})
 
 	const intervalRef = useRef<NodeJS.Timeout | null>(null)
-	const audioRef = useRef<HTMLAudioElement | null>(null)
 
 	const config = {
 		title: '',
@@ -104,11 +114,47 @@ export default function TimerCountdownPage() {
 		category: ''
 	}
 
-	// Initialize audio
-	useEffect(() => {
-		audioRef.current = new Audio('/notification.mp3')
-		audioRef.current.volume = 0.5
-	}, [])
+	// Initialize audio - using Web Audio API for better compatibility
+	const playNotificationSound = useCallback(() => {
+		if (!soundEnabled) return
+
+		try {
+			if ('AudioContext' in window || 'webkitAudioContext' in window) {
+				const AudioContext =
+					window.AudioContext || (window as any).webkitAudioContext
+				const audioContext = new AudioContext()
+
+				// Create a pleasant notification sound sequence
+				const createTone = (
+					frequency: number,
+					startTime: number,
+					duration: number
+				) => {
+					const oscillator = audioContext.createOscillator()
+					const gainNode = audioContext.createGain()
+
+					oscillator.connect(gainNode)
+					gainNode.connect(audioContext.destination)
+
+					oscillator.frequency.setValueAtTime(frequency, startTime)
+					gainNode.gain.setValueAtTime(0, startTime)
+					gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.01)
+					gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration)
+
+					oscillator.start(startTime)
+					oscillator.stop(startTime + duration)
+				}
+
+				// Pleasant notification sequence: C-E-G chord
+				const currentTime = audioContext.currentTime
+				createTone(523.25, currentTime, 0.3) // C5
+				createTone(659.25, currentTime + 0.1, 0.3) // E5
+				createTone(783.99, currentTime + 0.2, 0.4) // G5
+			}
+		} catch (error) {
+			console.warn('Could not play notification sound:', error)
+		}
+	}, [soundEnabled])
 
 	const handlePomodoroPhaseComplete = useCallback(() => {
 		if (pomodoroPhase === 'work') {
@@ -149,11 +195,7 @@ export default function TimerCountdownPage() {
 		setIsPaused(false)
 
 		// Play sound
-		if (soundEnabled && audioRef.current) {
-			audioRef.current
-				.play()
-				.catch(err => console.error('Error playing sound:', err))
-		}
+		playNotificationSound()
 
 		// Handle Pomodoro phase transitions
 		if (mode === 'pomodoro') {
@@ -161,7 +203,7 @@ export default function TimerCountdownPage() {
 		} else {
 			toast.success(t('timerComplete'))
 		}
-	}, [mode, soundEnabled, t, handlePomodoroPhaseComplete])
+	}, [mode, t, handlePomodoroPhaseComplete, playNotificationSound])
 
 	const updateTimer = useCallback(() => {
 		setTime(prevTime => {
@@ -244,6 +286,12 @@ export default function TimerCountdownPage() {
 		}
 	}, [isRunning, isPaused, mode, showMilliseconds, updateTimer])
 
+	// Update smooth progress
+	useEffect(() => {
+		const newProgress = getProgress()
+		setSmoothProgress(newProgress)
+	}, [time, initialTime, mode])
+
 	const startTimer = () => {
 		if (
 			mode === 'countdown' &&
@@ -293,6 +341,26 @@ export default function TimerCountdownPage() {
 			setTime({
 				hours: 0,
 				minutes: pomodoroSettings.workDuration,
+				seconds: 0,
+				milliseconds: 0
+			})
+		} else if (newMode === 'stopwatch') {
+			setTime({
+				hours: 0,
+				minutes: 0,
+				seconds: 0,
+				milliseconds: 0
+			})
+		} else if (newMode === 'countdown') {
+			setTime({
+				hours: 0,
+				minutes: 5,
+				seconds: 0,
+				milliseconds: 0
+			})
+			setInitialTime({
+				hours: 0,
+				minutes: 5,
 				seconds: 0,
 				milliseconds: 0
 			})
@@ -381,344 +449,304 @@ export default function TimerCountdownPage() {
 
 	return (
 		<div className='w-full space-y-4'>
-				{/* Mode Tabs */}
-				<Tabs
-					value={mode}
-					onValueChange={value => handleModeChange(value as TimerMode)}
-					className='w-full'
-				>
-					<TabsList className='grid w-full grid-cols-3'>
-						<TabsTrigger value='countdown' className='gap-2'>
-							<Clock className='w-4 h-4' />
-							{t('timer')}
-						</TabsTrigger>
-						<TabsTrigger value='stopwatch' className='gap-2'>
-							<Timer className='w-4 h-4' />
-							{t('stopwatch')}
-						</TabsTrigger>
-						<TabsTrigger value='pomodoro' className='gap-2'>
-							<Target className='w-4 h-4' />
-							Pomodoro
-						</TabsTrigger>
-					</TabsList>
+			{/* Mode Tabs */}
+			<Tabs
+				value={mode}
+				onValueChange={value => handleModeChange(value as TimerMode)}
+				className='w-full'
+			>
+				<TabsList className='grid w-full grid-cols-3'>
+					<TabsTrigger value='countdown' className='gap-2'>
+						<Clock className='w-4 h-4' />
+						{t('timer')}
+					</TabsTrigger>
+					<TabsTrigger value='stopwatch' className='gap-2'>
+						<Timer className='w-4 h-4' />
+						{t('stopwatch')}
+					</TabsTrigger>
+					<TabsTrigger value='pomodoro' className='gap-2'>
+						<Target className='w-4 h-4' />
+						Pomodoro
+					</TabsTrigger>
+				</TabsList>
 
-					<TabsContent value={mode} className='mt-4 space-y-4'>
-						{/* Timer Display Card */}
-						<Card className='p-6'>
-							{/* Pomodoro Phase Indicator */}
-							{mode === 'pomodoro' && (
-								<div
-									className={cn(
-										'mb-4 p-2 rounded-lg text-center border',
-										getPomodoroPhaseInfo().bgColor,
-										getPomodoroPhaseInfo().borderColor
-									)}
-								>
-									<div
-										className={cn(
-											'font-medium text-sm',
-											getPomodoroPhaseInfo().color
-										)}
-									>
-										{getPomodoroPhaseInfo().label} • {t('session')}{' '}
-										{pomodoroSession}
-									</div>
-								</div>
-							)}
-
-							{/* Time Display */}
-							<div className='text-center mb-4'>
-								<div className='text-6xl md:text-7xl font-mono font-bold tracking-tight'>
-									{mode === 'countdown' && !isRunning ? (
-										<div className='flex items-center justify-center gap-1'>
-											<div className='flex flex-col items-center'>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='h-6 w-6'
-													onClick={() => adjustTime('hours', true)}
-												>
-													<ChevronUp className='h-4 w-4' />
-												</Button>
-												<span>{formatTime(time.hours)}</span>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='h-6 w-6'
-													onClick={() => adjustTime('hours', false)}
-												>
-													<ChevronDown className='h-4 w-4' />
-												</Button>
-											</div>
-											<span className='mx-1'>:</span>
-											<div className='flex flex-col items-center'>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='h-6 w-6'
-													onClick={() => adjustTime('minutes', true)}
-												>
-													<ChevronUp className='h-4 w-4' />
-												</Button>
-												<span>{formatTime(time.minutes)}</span>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='h-6 w-6'
-													onClick={() => adjustTime('minutes', false)}
-												>
-													<ChevronDown className='h-4 w-4' />
-												</Button>
-											</div>
-											<span className='mx-1'>:</span>
-											<div className='flex flex-col items-center'>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='h-6 w-6'
-													onClick={() => adjustTime('seconds', true)}
-												>
-													<ChevronUp className='h-4 w-4' />
-												</Button>
-												<span>{formatTime(time.seconds)}</span>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='h-6 w-6'
-													onClick={() => adjustTime('seconds', false)}
-												>
-													<ChevronDown className='h-4 w-4' />
-												</Button>
-											</div>
-										</div>
-									) : (
-										<>
-											{formatTime(time.hours)}:{formatTime(time.minutes)}:
-											{formatTime(time.seconds)}
-											{showMilliseconds && (
-												<span className='text-3xl md:text-4xl text-muted-foreground'>
-													.{formatTime(Math.floor(time.milliseconds / 10))}
-												</span>
-											)}
-										</>
-									)}
-								</div>
-							</div>
-
-							{/* Progress Bar */}
-							{(mode === 'countdown' || mode === 'pomodoro') && (
-								<Progress value={getProgress()} className='h-2 mb-6' />
-							)}
-
-							{/* Control Buttons */}
-							<div className='flex justify-center gap-2'>
-								{!isRunning ? (
-									<Button onClick={startTimer} size='lg' className='gap-2'>
-										<Play className='w-5 h-5' />
-										{t('start')}
-									</Button>
-								) : isPaused ? (
-									<Button onClick={resumeTimer} size='lg' className='gap-2'>
-										<Play className='w-5 h-5' />
-										{t('resume')}
-									</Button>
-								) : (
-									<Button
-										onClick={pauseTimer}
-										size='lg'
-										variant='secondary'
-										className='gap-2'
-									>
-										<Pause className='w-5 h-5' />
-										{t('pause')}
-									</Button>
-								)}
-
+				<TabsContent value={mode} className='mt-4 space-y-4'>
+					{/* Timer Display Card */}
+					<Card className='p-6 relative'>
+						{/* Settings Dropdown - positioned in top right */}
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
 								<Button
-									onClick={resetTimer}
-									size='lg'
-									variant='outline'
-									className='gap-2'
+									variant='ghost'
+									size='icon'
+									className='absolute top-2 right-2 h-8 w-8'
 								>
-									<RotateCcw className='w-5 h-5' />
-									{t('reset')}
+									<Settings2 className='h-4 w-4' />
 								</Button>
-
-								<Button
-									onClick={() => setShowSettings(!showSettings)}
-									size='lg'
-									variant='outline'
-									className='gap-2'
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='end' className='w-56'>
+								<DropdownMenuLabel>{t('settings')}</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									className='flex items-center justify-between'
+									onSelect={e => e.preventDefault()}
 								>
-									<Settings2 className='w-5 h-5' />
-								</Button>
-							</div>
-						</Card>
-
-						{/* Quick Presets for Countdown */}
-						{mode === 'countdown' && !isRunning && (
-							<Card className='p-4'>
-								<div className='grid grid-cols-6 gap-2'>
-									{TIMER_PRESETS.map((preset, index) => (
-										<Button
-											key={index}
-											onClick={() => loadPreset(preset)}
-											variant='outline'
-											size='sm'
-											className='flex flex-col items-center gap-1 h-auto py-2'
+									<Label
+										htmlFor='dropdown-sound'
+										className='flex items-center gap-2 cursor-pointer'
+									>
+										<Volume2 className='w-4 h-4' />
+										{t('soundNotification')}
+									</Label>
+									<Switch
+										id='dropdown-sound'
+										checked={soundEnabled}
+										onCheckedChange={setSoundEnabled}
+									/>
+								</DropdownMenuItem>
+								{mode === 'stopwatch' && (
+									<DropdownMenuItem
+										className='flex items-center justify-between'
+										onSelect={e => e.preventDefault()}
+									>
+										<Label
+											htmlFor='dropdown-milliseconds'
+											className='flex items-center gap-2 cursor-pointer'
 										>
-											<preset.icon className={cn('w-4 h-4', preset.color)} />
-											<span className='text-xs'>{preset.name}</span>
-										</Button>
-									))}
-								</div>
-							</Card>
-						)}
-
-						{/* Settings Panel */}
-						{showSettings && (
-							<Card className='p-4'>
-								<div className='space-y-3'>
-									<div className='flex items-center justify-between'>
-										<Label htmlFor='sound' className='flex items-center gap-2'>
-											<Volume2 className='w-4 h-4' />
-											{t('soundNotification')}
+											<Zap className='w-4 h-4' />
+											{t('showMilliseconds')}
 										</Label>
 										<Switch
-											id='sound'
-											checked={soundEnabled}
-											onCheckedChange={setSoundEnabled}
+											id='dropdown-milliseconds'
+											checked={showMilliseconds}
+											onCheckedChange={setShowMilliseconds}
 										/>
-									</div>
-
-									{mode === 'stopwatch' && (
-										<div className='flex items-center justify-between'>
-											<Label
-												htmlFor='milliseconds'
-												className='flex items-center gap-2'
-											>
-												<Zap className='w-4 h-4' />
-												{t('showMilliseconds')}
-											</Label>
-											<Switch
-												id='milliseconds'
-												checked={showMilliseconds}
-												onCheckedChange={setShowMilliseconds}
-											/>
-										</div>
-									)}
-
-									{mode === 'pomodoro' && !isRunning && (
-										<div className='space-y-2 pt-2 border-t'>
-											<h4 className='text-sm font-medium'>
-												{t('pomodoroSettings')}
-											</h4>
-											<div className='grid grid-cols-2 gap-3'>
-												<div>
-													<Label htmlFor='work-duration' className='text-xs'>
-														{t('workDuration')}
-													</Label>
-													<Input
-														id='work-duration'
-														type='number'
-														min='1'
-														max='60'
-														value={pomodoroSettings.workDuration}
-														onChange={e =>
-															setPomodoroSettings(prev => ({
-																...prev,
-																workDuration: parseInt(e.target.value) || 25
-															}))
-														}
-														className='h-8 text-sm'
-													/>
-												</div>
-												<div>
-													<Label htmlFor='short-break' className='text-xs'>
-														{t('shortBreakDuration')}
-													</Label>
-													<Input
-														id='short-break'
-														type='number'
-														min='1'
-														max='30'
-														value={pomodoroSettings.shortBreakDuration}
-														onChange={e =>
-															setPomodoroSettings(prev => ({
-																...prev,
-																shortBreakDuration:
-																	parseInt(e.target.value) || 5
-															}))
-														}
-														className='h-8 text-sm'
-													/>
-												</div>
-												<div>
-													<Label htmlFor='long-break' className='text-xs'>
-														{t('longBreakDuration')}
-													</Label>
-													<Input
-														id='long-break'
-														type='number'
-														min='1'
-														max='60'
-														value={pomodoroSettings.longBreakDuration}
-														onChange={e =>
-															setPomodoroSettings(prev => ({
-																...prev,
-																longBreakDuration:
-																	parseInt(e.target.value) || 15
-															}))
-														}
-														className='h-8 text-sm'
-													/>
-												</div>
-												<div>
-													<Label htmlFor='sessions' className='text-xs'>
-														{t('sessionsUntilLongBreak')}
-													</Label>
-													<Input
-														id='sessions'
-														type='number'
-														min='2'
-														max='10'
-														value={pomodoroSettings.sessionsUntilLongBreak}
-														onChange={e =>
-															setPomodoroSettings(prev => ({
-																...prev,
-																sessionsUntilLongBreak:
-																	parseInt(e.target.value) || 4
-															}))
-														}
-														className='h-8 text-sm'
-													/>
+									</DropdownMenuItem>
+								)}
+								{mode === 'pomodoro' && !isRunning && (
+									<>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem
+											className='p-0'
+											onSelect={e => e.preventDefault()}
+										>
+											<div className='px-2 py-1.5 w-full'>
+												<div className='space-y-2'>
+													<h4 className='text-sm font-medium'>
+														{t('pomodoroSettings')}
+													</h4>
+													<div className='grid grid-cols-2 gap-2 text-xs'>
+														<div>
+															<Label
+																htmlFor='dropdown-work'
+																className='text-xs'
+															>
+																{t('workDuration')}
+															</Label>
+															<Input
+																id='dropdown-work'
+																type='number'
+																min='1'
+																max='60'
+																value={pomodoroSettings.workDuration}
+																onChange={e =>
+																	setPomodoroSettings(prev => ({
+																		...prev,
+																		workDuration: parseInt(e.target.value) || 25
+																	}))
+																}
+																className='h-6 text-xs mt-1'
+															/>
+														</div>
+														<div>
+															<Label
+																htmlFor='dropdown-short'
+																className='text-xs'
+															>
+																{t('shortBreakDuration')}
+															</Label>
+															<Input
+																id='dropdown-short'
+																type='number'
+																min='1'
+																max='30'
+																value={pomodoroSettings.shortBreakDuration}
+																onChange={e =>
+																	setPomodoroSettings(prev => ({
+																		...prev,
+																		shortBreakDuration:
+																			parseInt(e.target.value) || 5
+																	}))
+																}
+																className='h-6 text-xs mt-1'
+															/>
+														</div>
+														<div>
+															<Label
+																htmlFor='dropdown-long'
+																className='text-xs'
+															>
+																{t('longBreakDuration')}
+															</Label>
+															<Input
+																id='dropdown-long'
+																type='number'
+																min='1'
+																max='60'
+																value={pomodoroSettings.longBreakDuration}
+																onChange={e =>
+																	setPomodoroSettings(prev => ({
+																		...prev,
+																		longBreakDuration:
+																			parseInt(e.target.value) || 15
+																	}))
+																}
+																className='h-6 text-xs mt-1'
+															/>
+														</div>
+														<div>
+															<Label
+																htmlFor='dropdown-sessions'
+																className='text-xs'
+															>
+																{t('sessionsUntilLongBreak')}
+															</Label>
+															<Input
+																id='dropdown-sessions'
+																type='number'
+																min='2'
+																max='10'
+																value={pomodoroSettings.sessionsUntilLongBreak}
+																onChange={e =>
+																	setPomodoroSettings(prev => ({
+																		...prev,
+																		sessionsUntilLongBreak:
+																			parseInt(e.target.value) || 4
+																	}))
+																}
+																className='h-6 text-xs mt-1'
+															/>
+														</div>
+													</div>
 												</div>
 											</div>
-										</div>
+										</DropdownMenuItem>
+									</>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						{/* Pomodoro Phase Indicator */}
+						{mode === 'pomodoro' && (
+							<div
+								className={cn(
+									'mb-4 p-2 rounded-lg text-center border',
+									getPomodoroPhaseInfo().bgColor,
+									getPomodoroPhaseInfo().borderColor
+								)}
+							>
+								<div
+									className={cn(
+										'font-medium text-sm',
+										getPomodoroPhaseInfo().color
 									)}
+								>
+									{getPomodoroPhaseInfo().label} • {t('session')}{' '}
+									{pomodoroSession}
 								</div>
-							</Card>
+							</div>
 						)}
-					</TabsContent>
-				</Tabs>
 
-				{/* Compact Info */}
-				<Card className='p-4 bg-muted/50'>
-					<div className='flex items-center gap-2 text-sm text-muted-foreground'>
-						<Bell className='w-4 h-4' />
-						<span>
-							{t('shortcuts')}:{' '}
-							<kbd className='px-1 py-0.5 bg-background rounded text-xs'>
-								Space
-							</kbd>{' '}
-							- {t('startPause')},{' '}
-							<kbd className='px-1 py-0.5 bg-background rounded text-xs'>
-								Ctrl+R
-							</kbd>{' '}
-							- {t('reset')}
-						</span>
-					</div>
-				</Card>
+						{/* Time Display */}
+						<div className='text-center mb-6'>
+							{mode === 'countdown' && !isRunning ? (
+								<SlidingCountdown
+									hours={time.hours}
+									minutes={time.minutes}
+									seconds={time.seconds}
+									onTimeChange={adjustTime}
+									isEditable={true}
+								/>
+							) : mode === 'stopwatch' ? (
+								<SlidingTimer
+									hours={time.hours}
+									minutes={time.minutes}
+									seconds={time.seconds}
+									milliseconds={time.milliseconds}
+									showMilliseconds={showMilliseconds}
+								/>
+							) : (
+								<SlidingTimer
+									hours={time.hours}
+									minutes={time.minutes}
+									seconds={time.seconds}
+								/>
+							)}
+						</div>
+
+						{/* Progress Bar */}
+						{(mode === 'countdown' || mode === 'pomodoro') && (
+							<div className='w-full mb-6'>
+								<AnimatedProgressBar value={smoothProgress} className='h-3' />
+							</div>
+						)}
+
+						{/* Control Buttons */}
+						<div className='flex justify-center gap-2'>
+							{!isRunning ? (
+								<Button onClick={startTimer} size='lg' className='gap-2'>
+									<Play className='w-5 h-5' />
+									{t('start')}
+								</Button>
+							) : isPaused ? (
+								<Button onClick={resumeTimer} size='lg' className='gap-2'>
+									<Play className='w-5 h-5' />
+									{t('resume')}
+								</Button>
+							) : (
+								<Button
+									onClick={pauseTimer}
+									size='lg'
+									variant='secondary'
+									className='gap-2'
+								>
+									<Pause className='w-5 h-5' />
+									{t('pause')}
+								</Button>
+							)}
+
+							<Button
+								onClick={resetTimer}
+								size='lg'
+								variant='outline'
+								className='gap-2'
+							>
+								<RotateCcw className='w-5 h-5' />
+								{t('reset')}
+							</Button>
+						</div>
+					</Card>
+
+					{/* Quick Presets for Countdown */}
+					{mode === 'countdown' && !isRunning && (
+						<Card className='p-4'>
+							<div className='grid grid-cols-6 gap-2'>
+								{TIMER_PRESETS.map((preset, index) => (
+									<Button
+										key={index}
+										onClick={() => loadPreset(preset)}
+										variant='outline'
+										size='sm'
+										className='flex flex-col items-center gap-1 h-auto py-2'
+									>
+										<preset.icon className={cn('w-4 h-4', preset.color)} />
+										<span className='text-xs'>{preset.name}</span>
+									</Button>
+								))}
+							</div>
+						</Card>
+					)}
+				</TabsContent>
+			</Tabs>
 		</div>
 	)
 }

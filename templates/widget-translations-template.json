@@ -1,0 +1,106 @@
+{
+	"templateWidget": {
+		"title": "Template Widget",
+		"description": "A comprehensive template for creating new widgets",
+		"useCase": "Use this template as a starting point for new widget development",
+
+		"tabs": {
+			"input": "Input",
+			"settings": "Settings"
+		},
+
+		"inputs": {
+			"mainInput": "Main Input",
+			"placeholder": "Enter your input here..."
+		},
+
+		"actions": {
+			"process": "Process",
+			"processing": "Processing...",
+			"reset": "Reset",
+			"copy": "Copy Result",
+			"download": "Download",
+			"generate": "Generate",
+			"clear": "Clear",
+			"import": "Import",
+			"export": "Export"
+		},
+
+		"settings": {
+			"option": "Processing Option",
+			"option1": "Option 1",
+			"option2": "Option 2",
+			"option3": "Option 3",
+			"enableFeature": "Enable Advanced Feature",
+			"enableFeatureDescription": "Adds extra functionality to the processing"
+		},
+
+		"results": {
+			"title": "Results",
+			"empty": "No results yet. Enter some input and click Process.",
+			"summary": "Processing Summary",
+			"details": "Details"
+		},
+
+		"validation": {
+			"required": "This field is required",
+			"invalid": "Invalid input format",
+			"tooShort": "Input is too short (minimum 3 characters)",
+			"tooLong": "Input is too long (maximum 500 characters)",
+			"invalidFormat": "Invalid format. Please check your input."
+		},
+
+		"toast": {
+			"success": "Processing completed successfully!",
+			"error": "An error occurred during processing",
+			"copied": "Result copied to clipboard",
+			"imported": "Data imported successfully",
+			"exported": "Data exported successfully",
+			"reset": "Widget reset to default values"
+		},
+
+		"shortcuts": {
+			"process": "Process input",
+			"reset": "Reset widget",
+			"copy": "Copy result",
+			"save": "Save result"
+		},
+
+		"info": {
+			"title": "How to Use",
+			"point1": "Enter your input in the text field above",
+			"point2": "Adjust settings in the Settings tab if needed",
+			"point3": "Click Process or press Ctrl+Enter to generate results",
+			"proTip": "💡 Pro Tip",
+			"proTipDescription": "Use keyboard shortcuts for faster workflow!"
+		},
+
+		"help": {
+			"title": "Help & Documentation",
+			"description": "Learn how to use this widget effectively",
+			"examples": "Examples",
+			"troubleshooting": "Troubleshooting"
+		},
+
+		"history": {
+			"title": "Recent Results",
+			"empty": "No recent results",
+			"clear": "Clear History",
+			"restore": "Restore"
+		},
+
+		"export": {
+			"title": "Export Options",
+			"json": "Export as JSON",
+			"csv": "Export as CSV",
+			"txt": "Export as Text",
+			"filename": "Filename"
+		},
+
+		"import": {
+			"title": "Import Data",
+			"dropzone": "Drop files here or click to browse",
+			"supportedFormats": "Supported formats: JSON, CSV, TXT"
+		}
+	}
+}

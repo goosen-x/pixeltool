@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-19T20:18:10.911Z
+// Generated on: 2025-08-22T16:52:59.640Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -314,6 +314,12 @@ export interface GeneratedTranslations {
     title: string
     description: string
     mainPageSections: string
+    overview: string
+    relatedTools: string
+    sidebar: {
+      allTools: string
+      categories: string
+    }
     categories: {
       "css-tools": {
         title: string
@@ -551,7 +557,9 @@ export interface GeneratedTranslations {
       title: string
       description: string
       useCase: string
-      settings: string
+      settings: {
+        title: string
+      }
       preview: string
       download: string
       copy: string
@@ -601,6 +609,9 @@ export interface GeneratedTranslations {
         downloaded: string
         copied: string
         copyError: string
+      }
+      shortcuts: {
+        generate: string
       }
     }
     speedTest: {
@@ -1350,9 +1361,21 @@ export interface GeneratedTranslations {
       bulkPlaceholder: string
       validate: string
       validateAll: string
+      sections: {
+        input: string
+        results: string
+      }
       tabs: {
         single: string
         bulk: string
+      }
+      single: {
+        label: string
+        description: string
+      }
+      bulk: {
+        label: string
+        description: string
       }
       emailCount: string
       results: string
@@ -1478,10 +1501,31 @@ export interface GeneratedTranslations {
         invalidDateTime: string
       }
     }
-    diceRoller?: {
+    diceRoller: {
       title: string
       description: string
       useCase: string
+      diceLabel: string
+      pressToRoll: string
+      roll: string
+      rolling: string
+      statistics: string
+      history: string
+      rolls: string
+      average: string
+      doubles: string
+      triples: string
+      noDataYet: string
+      noRollsYet: string
+      rollsCount: string
+      toast: {
+        doubles: string
+        total: string
+        rolled: string
+        historyCleared: string
+        noDiceRolled: string
+        copiedToClipboard: string
+      }
     }
     socialMediaFormatter?: {
       title: string
@@ -1507,6 +1551,11 @@ export interface GeneratedTranslations {
       title: string
       description: string
       useCase: string
+      hero: {
+        badge: string
+        title: string
+        description: string
+      }
       sections: {
         input: string
         results: string
@@ -1523,6 +1572,8 @@ export interface GeneratedTranslations {
       actions: {
         calculate: string
         calculating: string
+        copy: string
+        reset: string
       }
       timeUnits: {
         years: string
@@ -1538,6 +1589,7 @@ export interface GeneratedTranslations {
       additionalInfo: {
         nextBirthday: string
         lifeStage: string
+        lifeStageDescription: string
         zodiacSign: string
         chineseZodiac: string
       }
@@ -1573,6 +1625,9 @@ export interface GeneratedTranslations {
           dayOfWeek: string
           realTime: string
         }
+      }
+      famousPeople: {
+        title: string
       }
     }
     bingoGenerator: {
@@ -1766,10 +1821,113 @@ export interface GeneratedTranslations {
         enterTemperature: string
       }
     }
-    bmiCalculator?: {
+    bmiCalculator: {
       title: string
       description: string
       useCase: string
+      hero: {
+        badge: string
+      }
+      unitSystem: {
+        metric: string
+        imperial: string
+        metricUnits: string
+        imperialUnits: string
+      }
+      units: {
+        kg: string
+        lbs: string
+        cm: string
+        ft: string
+        in: string
+      }
+      tabs: {
+        basic: string
+        advanced: string
+      }
+      input: {
+        yourParameters: string
+        example: string
+        weight: string
+        height: string
+        age: string
+        gender: string
+        male: string
+        female: string
+        activityLevel: string
+        activityLevels: {
+          sedentary: string
+          light: string
+          moderate: string
+          active: string
+          veryActive: string
+        }
+        additionalParameters: string
+        bodyMeasurements: string
+        waist: string
+        neck: string
+        hip: string
+      }
+      actions: {
+        calculate: string
+        calculateFull: string
+        copy: string
+        reset: string
+      }
+      results: {
+        enterData: string
+        fillForm: string
+        extendedAnalysis: string
+        enterMeasurements: string
+        idealWeight: string
+        healthRisk: string
+        weightRecommendation: string
+        recommendedToLose: string
+        recommendedToGain: string
+        weightNormal: string
+        bodyComposition: string
+        bodyFat: string
+        leanMass: string
+        ofTotalMass: string
+        waistToHeight: string
+        healthyRange: string
+        normal: string
+        calorieIntake: string
+        maintenance: string
+        slowWeightLoss: string
+        weightLoss: string
+        slowWeightGain: string
+        weightGain: string
+        perWeek: string
+        perDay: string
+      }
+      info: {
+        whatIsBMI: string
+        bmiDescription: string[]
+        limitations: string
+        limitationsDescription: string[]
+        additionalMetrics: string
+        additionalMetricsDescription: string[]
+      }
+      tips: {
+        switchUnits: string
+        switchUnitsDesc: string
+        advancedMetrics: string
+        advancedMetricsDesc: string
+        quickExample: string
+        quickExampleDesc: string
+        bmiLimitations: string
+        bmiLimitationsDesc: string
+      }
+      categories: {
+        severeUnderweight: string
+        underweight: string
+        normal: string
+        overweight: string
+        obesityClass1: string
+        obesityClass2: string
+        obesityClass3: string
+      }
     }
     textCounter?: {
       title: string
@@ -1781,30 +1939,96 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
       category: string
-      timer: string
-      stopwatch: string
-      start: string
-      pause: string
-      resume: string
-      reset: string
-      soundNotification: string
-      showMilliseconds: string
-      shortcuts: string
-      startPause: string
-      timerComplete: string
-      presetLoaded: string
-      work: string
-      shortBreak: string
-      longBreak: string
-      session: string
-      pomodoroSettings: string
-      workDuration: string
-      shortBreakDuration: string
-      longBreakDuration: string
-      sessionsUntilLongBreak: string
-      workTime: string
-      shortBreakTime: string
-      longBreakTime: string
+      timer: {
+        title: string
+        inputs: {
+          minutes: string
+          seconds: string
+        }
+        actions: {
+          start: string
+          pause: string
+          resume: string
+          stop: string
+          reset: string
+        }
+        shortcuts: {
+          playPause: string
+        }
+        validation: {
+          invalidTime: string
+        }
+        toast: {
+          started: string
+          paused: string
+          stopped: string
+          reset: string
+          finished: string
+        }
+      }
+      countdown: {
+        title: string
+        countingDownTo: string
+        setCountdownTime: string
+        finished: string
+        quickPresets: string
+        inputs: {
+          title: string
+          optional: string
+          titlePlaceholder: string
+          date: string
+          time: string
+        }
+        timeUnits: {
+          days: string
+          hours: string
+          minutes: string
+          seconds: string
+        }
+        actions: {
+          setCountdown: string
+          clearCountdown: string
+        }
+        validation: {
+          dateTimeRequired: string
+          futureDate: string
+        }
+        toast: {
+          countdownSet: string
+          countdownCleared: string
+          countdownFinished: string
+          quickTimeSet: string
+        }
+      }
+      info: {
+        features: {
+          title: string
+          timer: string
+          countdown: string
+          sounds: string
+          keyboard: string
+        }
+        useCases: {
+          title: string
+          pomodoro: string
+          workouts: string
+          cooking: string
+          events: string
+        }
+        tips: {
+          title: string
+          space: string
+          escape: string
+          sound: string
+          presets: string
+        }
+      }
+      shortcuts: {
+        title: string
+        playPause: string
+        stop: string
+        reset: string
+      }
     }
     currencyConverter?: {
       title: string
@@ -1998,6 +2222,61 @@ export interface GeneratedTranslations {
       title: string
       description: string
       useCase: string
+    }
+    openGraphValidator: {
+      title: string
+      description: string
+      useCase: string
+      tabs: {
+        validator: string
+        preview: string
+        generator: string
+      }
+      inputs: {
+        url: string
+        urlPlaceholder: string
+      }
+      actions: {
+        validate: string
+        validating: string
+        copyTags: string
+        viewSource: string
+      }
+      validation: {
+        urlRequired: string
+        invalidUrl: string
+      }
+      results: {
+        valid: string
+        invalid: string
+        foundTags: string
+        errors: string
+        warnings: string
+        recommendations: string
+      }
+      preview: {
+        title: string
+        noData: string
+      }
+      generator: {
+        title: string
+        missingDescription: string
+        noMissing: string
+      }
+      toast: {
+        validated: string
+        error: string
+        tagCopied: string
+        tagsCopied: string
+      }
+      info: {
+        title: string
+        point1: string
+        point2: string
+        point3: string
+        proTip: string
+        proTipDescription: string
+      }
     }
     search: {
       placeholder: string
@@ -2339,7 +2618,7 @@ export interface GeneratedTranslations {
 }
 
 // All widget names from translation file
-export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'colorContrastChecker' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'emailValidator' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard'
+export type GeneratedWidgetName = 'title' | 'description' | 'mainPage' | 'clampCalculator' | 'svgEncoder' | 'youtubeThumbnail' | 'htmlTree' | 'flexboxGenerator' | 'gridGenerator' | 'qrGenerator' | 'speedTest' | 'passwordGenerator' | 'utmBuilder' | 'textToSpeech' | 'systemInfo' | 'jsonTools' | 'jsCssCompressor' | 'themeSettings' | 'languageSettings' | 'fontSettings' | 'cssSpecificity' | 'themeTransitions' | 'colorConverter' | 'colorContrastChecker' | 'bezierCurve' | 'seoMarkdownGenerator' | 'teamRandomizer' | 'specialSymbolsPicker' | 'fancyTextGenerator' | 'randomNumberGenerator' | 'percentageCalculator' | 'drawLots' | 'emailValidator' | 'mockDataGenerator' | 'tipCalculator' | 'randomListGenerator' | 'coinFlip' | 'worldTime' | 'diceRoller' | 'socialMediaFormatter' | 'emojiList' | 'textEmoticons' | 'jsValidator' | 'ageCalculator' | 'bingoGenerator' | 'temperatureConverter' | 'bmiCalculator' | 'textCounter' | 'timerCountdown' | 'currencyConverter' | 'textDiff' | 'phpSyntaxChecker' | 'mysqlSyntaxChecker' | 'regexTester' | 'javascriptSyntaxChecker' | 'pxRemConverter' | 'cssBoxShadow' | 'cssGradient' | 'colorContrast' | 'cssKeyframes' | 'jsonYamlFormatter' | 'base64Encoder' | 'jwtDecoder' | 'uuidGenerator' | 'compoundInterest' | 'loanCalculator' | 'fuelCalculator' | 'faviconGenerator' | 'textCaseConverter' | 'imageSizeChecker' | 'htmlXmlParser' | 'asciiArtGenerator' | 'analyticsDashboard' | 'openGraphValidator'
 
 // Runtime validation helper
 export const WIDGET_NAMES = [
@@ -2416,4 +2695,5 @@ export const WIDGET_NAMES = [
   'htmlXmlParser',
   'asciiArtGenerator',
   'analyticsDashboard',
+  'openGraphValidator',
 ] as const

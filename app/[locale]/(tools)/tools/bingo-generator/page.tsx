@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import {
 	Grid3X3,
 	Plus,
@@ -20,8 +21,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { useTranslations } from 'next-intl'
@@ -331,9 +330,9 @@ export default function BingoGeneratorPage() {
 		bingoGrid.length > 0 ? (progress / bingoGrid.length) * 100 : 0
 
 	return (
-		<WidgetLayout>
+		<div className='space-y-6'>
 			{/* Settings Section */}
-			<WidgetSection title={t('sections.settings')}>
+			<Card className='p-6'>
 				<div className='grid md:grid-cols-2 gap-6'>
 					<WidgetInput
 						label={t('inputs.gridSize.label')}
@@ -388,10 +387,10 @@ export default function BingoGeneratorPage() {
 						</div>
 					</div>
 				</div>
-			</WidgetSection>
+			</Card>
 
 			{/* Bingo Items Input */}
-			<WidgetSection title={t('sections.items')}>
+			<Card className='p-6'>
 				<div className='space-y-4'>
 					<p className='text-sm text-muted-foreground'>
 						{t('sections.itemsDescription')}
@@ -431,11 +430,11 @@ export default function BingoGeneratorPage() {
 						</Button>
 					</div>
 				</div>
-			</WidgetSection>
+			</Card>
 
 			{/* Bingo Grid */}
 			{bingoGrid.length > 0 && (
-				<WidgetSection title={t('sections.bingoCard')}>
+				<Card className='p-6'>
 					<WidgetOutput>
 						<div className='space-y-6'>
 							{/* Progress and Status */}
@@ -480,7 +479,7 @@ export default function BingoGeneratorPage() {
 
 							{/* Bingo Grid */}
 							<div
-								className='grid gap-2 mx-auto max-w-2xl'
+								className='grid gap-2 mx-auto max-w-6xl'
 								style={{
 									gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
 									aspectRatio: '1'
@@ -532,11 +531,11 @@ export default function BingoGeneratorPage() {
 							)}
 						</div>
 					</WidgetOutput>
-				</WidgetSection>
+				</Card>
 			)}
 
 			{/* Info Section */}
-			<WidgetSection title={t('sections.about')}>
+			<Card className='p-6'>
 				<div className='grid md:grid-cols-2 gap-6 text-sm'>
 					<div className='space-y-3'>
 						<div>
@@ -561,7 +560,7 @@ export default function BingoGeneratorPage() {
 						</div>
 					</div>
 				</div>
-			</WidgetSection>
-		</WidgetLayout>
+			</Card>
+		</div>
 	)
 }

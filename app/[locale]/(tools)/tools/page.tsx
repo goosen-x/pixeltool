@@ -143,7 +143,7 @@ export default async function ToolsPage({
 						</h2>
 
 						{/* Description */}
-						<p className='text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed'>
+						<p className='text-xl sm:text-2xl text-muted-foreground max-w-6xl mx-auto leading-relaxed'>
 							{locale === 'ru'
 								? 'Найдите идеальный инструмент для вашей задачи'
 								: 'Find the perfect tool for your task'}
@@ -158,7 +158,7 @@ export default async function ToolsPage({
 			{/* CTA Section */}
 			<section className='py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5'>
 				<div className='container mx-auto px-4 text-center'>
-					<div className='max-w-3xl mx-auto space-y-6'>
+					<div className='max-w-6xl mx-auto space-y-6'>
 						<h2 className='text-3xl sm:text-4xl font-bold'>
 							{locale === 'ru'
 								? 'Не нашли нужный инструмент?'

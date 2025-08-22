@@ -90,7 +90,7 @@ export default async function HomePage({ params }: Props) {
 			<HomePageTracker />
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
 				{/* Hero Section */}
-				<section className='relative px-4 pt-8 pb-20 sm:pt-24 sm:pb-32 sm:px-6 lg:px-8 overflow-hidden'>
+				<section className='relative px-4 pt-12 pb-24 sm:pt-32 sm:pb-40 sm:px-6 lg:px-8 overflow-hidden'>
 					{/* Enhanced Background decoration - mobile optimized */}
 					<div className='absolute inset-0 -z-10'>
 						<div className='absolute top-10 -left-20 sm:top-20 sm:left-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-br from-primary/20 to-accent/10 rounded-full blur-2xl sm:blur-3xl animate-pulse' />
@@ -118,19 +118,19 @@ export default async function HomePage({ params }: Props) {
 						</div>
 
 						{/* Main Title with ripple animation */}
-						<div className='mb-6 sm:mb-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8'>
+						<div className='mb-8 sm:mb-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8'>
 							<RippleLoader className='opacity-80 flex-shrink-0 scale-75 sm:scale-100' />
-							<h1 className='text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-heading font-black tracking-tight leading-none'>
+							<h1 className='text-6xl sm:text-7xl md:text-8xl lg:text-[11rem] font-heading font-black tracking-tight leading-none bg-gradient-to-br from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent animate-gradient bg-300%'>
 								PixelTool
 							</h1>
 						</div>
 
 						{/* Enhanced subtitle */}
-						<div className='mx-auto mb-6 max-w-4xl px-4'>
-							<p className='text-xl sm:text-2xl md:text-3xl lg:text-4xl text-muted-foreground font-light mb-3 sm:mb-4 leading-relaxed'>
+						<div className='mx-auto mb-8 sm:mb-10 max-w-4xl px-4'>
+							<p className='text-xl sm:text-2xl md:text-3xl lg:text-4xl text-foreground/90 font-light mb-4 sm:mb-6 leading-relaxed'>
 								{t('hero.subtitle')}
 							</p>
-							<p className='text-base sm:text-lg md:text-xl text-muted-foreground/80 max-w-2xl mx-auto'>
+							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed'>
 								{t('hero.subtitle2')}
 							</p>
 						</div>
@@ -182,11 +182,14 @@ export default async function HomePage({ params }: Props) {
 							<Link href={`/${locale}/tools`} className='w-full sm:w-auto'>
 								<Button
 									size='lg'
-									className='group gap-2 sm:gap-3 text-base sm:text-xl px-6 sm:px-10 h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl sm:shadow-2xl hover:shadow-primary/25 transition-all duration-300 hover:scale-105 w-full sm:w-auto'
+									className='group gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl sm:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 w-full sm:w-auto relative overflow-hidden'
 								>
-									<Terminal className='h-4 w-4 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform' />
-									{t('hero.exploreTools')}
-									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform' />
+									<div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+									<Terminal className='h-5 w-5 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform z-10' />
+									<span className='z-10 font-semibold'>
+										{t('hero.exploreTools')}
+									</span>
+									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform z-10' />
 								</Button>
 							</Link>
 							<Link
@@ -197,10 +200,10 @@ export default async function HomePage({ params }: Props) {
 								<Button
 									size='lg'
 									variant='outline'
-									className='gap-2 sm:gap-3 text-base sm:text-xl px-6 sm:px-10 h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-background/95 backdrop-blur-sm border-border hover:border-primary hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary/10 dark:hover:text-primary transition-all duration-300 w-full sm:w-auto'
+									className='gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-background/95 backdrop-blur-sm border-2 border-border hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary transition-all duration-300 w-full sm:w-auto'
 								>
-									<Code2 className='h-4 w-4 sm:h-6 sm:w-6' />
-									{t('hero.viewOnGitHub')}
+									<Code2 className='h-5 w-5 sm:h-6 sm:w-6' />
+									<span className='font-medium'>{t('hero.viewOnGitHub')}</span>
 									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5' />
 								</Button>
 							</Link>
@@ -234,7 +237,7 @@ export default async function HomePage({ params }: Props) {
 				</section>
 
 				{/* Why Choose PixelTool Section */}
-				<section className='relative px-4 py-16 sm:py-24 md:py-32 sm:px-6 lg:px-8 overflow-hidden'>
+				<section className='relative px-4 py-24 sm:py-32 md:py-40 sm:px-6 lg:px-8 overflow-hidden'>
 					{/* Background Effects - mobile optimized */}
 					<div className='absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent' />
 					<div className='absolute left-0 top-1/2 -translate-y-1/2 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-r from-primary/10 to-transparent rounded-full blur-2xl sm:blur-3xl' />

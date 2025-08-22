@@ -49,7 +49,7 @@ export default function FancyTextGeneratorPage() {
 	}
 
 	return (
-		<div className='max-w-4xl mx-auto space-y-6'>
+		<div className='max-w-6xl mx-auto space-y-6'>
 			{/* Input Section */}
 			<Card className='p-6'>
 				<div className='space-y-4'>

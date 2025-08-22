@@ -1,64 +1,65 @@
 import {
-	Ruler,
-	FileImage,
-	Youtube,
-	GitBranch,
-	Box,
-	Grid3X3,
-	QrCode,
-	Gauge,
-	Key,
-	Link as LinkIcon,
 	BarChart3,
-	Palette,
-	Spline,
-	FileText,
-	SunMoon,
-	Languages,
-	Hash,
-	Users,
-	Timer,
-	Mail,
-	Database,
-	Type,
-	Dices,
-	Percent,
-	Monitor,
-	Shuffle,
-	List,
-	Coins,
-	Globe,
+	Binary,
+	Box,
 	Braces,
-	MessageSquare,
-	Smile,
-	Volume2,
-	Zap,
 	Bug,
 	Calculator,
-	Thermometer,
-	Weight,
-	FileSearch,
-	Clock,
-	DollarSign,
-	GitCompare,
-	Code,
-	Search,
-	TestTube,
-	Binary,
-	Droplet,
-	Square,
-	Layers,
-	ImageIcon,
 	Circle,
-	Sparkles,
-	FileJson,
-	Lock,
-	Fingerprint,
-	TrendingUp,
+	Clock,
+	Code,
+	Coins,
 	CreditCard,
+	Database,
+	Dices,
+	DollarSign,
+	Droplet,
+	FileImage,
+	FileJson,
+	FileSearch,
+	FileText,
+	Fingerprint,
 	Fuel,
+	Gauge,
+	GitBranch,
+	GitCompare,
+	Globe,
+	Grid3X3,
+	Hash,
 	Image,
-	TerminalSquare
+	ImageIcon,
+	Key,
+	Languages,
+	Layers,
+	Link as LinkIcon,
+	List,
+	Lock,
+	Mail,
+	MessageSquare,
+	Monitor,
+	Palette,
+	Percent,
+	QrCode,
+	Ruler,
+	Search,
+	Settings,
+	Shuffle,
+	Smile,
+	Sparkles,
+	Spline,
+	Square,
+	SunMoon,
+	TerminalSquare,
+	TestTube,
+	Thermometer,
+	Timer,
+	TrendingUp,
+	Type,
+	Users,
+	Volume2,
+	Weight,
+	Youtube,
+	Zap
 } from 'lucide-react'
 export interface WidgetFAQ {
 	question: string
@@ -3313,7 +3314,7 @@ export const widgets: Widget[] = [
 		translationKey: 'timerCountdown',
 		path: 'timer-countdown',
 		gradient: 'from-orange-500 to-red-600',
-		recommendedTools: ['world-time', 'age-calculator', 'unit-converter'],
+		recommendedTools: ['world-time', 'age-calculator', 'bmi-calculator'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase:
@@ -4898,6 +4899,61 @@ export const widgets: Widget[] = [
 				}
 			],
 			he: []
+		}
+	},
+	{
+		id: 'opengraph-validator',
+		path: 'opengraph-validator',
+		translationKey: 'openGraphValidator',
+		icon: Globe,
+		gradient: 'from-blue-500 to-purple-600',
+		category: 'webdev',
+		tags: ['opengraph', 'meta', 'social', 'seo', 'preview', 'validator'],
+		difficulty: 'intermediate',
+		useCase:
+			'Validate and preview Open Graph meta tags for social media sharing',
+		metaDescription:
+			'OpenGraph validator and previewer. Test how your webpage appears when shared on social platforms.',
+		recommendedTools: [
+			'html-xml-parser',
+			'seo-markdown-generator',
+			'utm-link-builder'
+		],
+		faqs: {
+			en: [
+				{
+					question: 'What are Open Graph tags?',
+					answer:
+						'Open Graph tags are HTML meta tags that control how your content appears when shared on social media platforms like Facebook, Twitter, and LinkedIn.'
+				},
+				{
+					question: 'Which tags are required?',
+					answer:
+						'The essential tags are og:title, og:description, og:image, og:url, and og:type. These provide the basic information for social sharing.'
+				},
+				{
+					question: 'How do I fix missing tags?',
+					answer:
+						'Add the missing meta tags to your HTML head section. Each tag should have a property attribute (like "og:title") and a content attribute with your value.'
+				}
+			],
+			ru: [
+				{
+					question: 'Что такое теги Open Graph?',
+					answer:
+						'Open Graph теги - это HTML мета-теги, которые контролируют, как ваш контент отображается при публикации в социальных сетях вроде Facebook, Twitter и LinkedIn.'
+				},
+				{
+					question: 'Какие теги обязательны?',
+					answer:
+						'Основные теги: og:title, og:description, og:image, og:url и og:type. Они предоставляют базовую информацию для социального обмена.'
+				},
+				{
+					question: 'Как исправить отсутствующие теги?',
+					answer:
+						'Добавьте недостающие мета-теги в секцию head вашего HTML. Каждый тег должен иметь атрибут property (например "og:title") и атрибут content с вашим значением.'
+				}
+			]
 		}
 	}
 ]

@@ -40,7 +40,7 @@ export default function TestRedirectPage() {
 	]
 
 	return (
-		<div className='container mx-auto p-6 max-w-2xl'>
+		<div className='container mx-auto p-6 max-w-6xl'>
 			<Card>
 				<CardHeader>
 					<CardTitle>Test App Redirect</CardTitle>

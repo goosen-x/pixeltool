@@ -19,7 +19,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { DiceFace } from '@/components/tools/DiceFace'
-import { KeyboardShortcutInfo } from '@/components/widgets'
+import { Pie, PieChart, Cell, ResponsiveContainer, Legend } from 'recharts'
+import {
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+	type ChartConfig
+} from '@/components/ui/chart'
+import { useTranslations } from 'next-intl'
 
 interface DiceResult {
 	id: string
@@ -42,6 +49,7 @@ interface Statistics {
 // Dice symbols removed - using DiceFace component instead
 
 export default function DiceRollerPage() {
+	const t = useTranslations('widgets.diceRoller')
 	const [mounted, setMounted] = useState(false)
 	const [diceCount, setDiceCount] = useState(2)
 	const [isRolling, setIsRolling] = useState(false)
@@ -164,14 +172,14 @@ export default function DiceRollerPage() {
 				const isDoubles = values.length > 1 && new Set(values).size === 1
 				if (isDoubles) {
 					toast.success(
-						`${values[0]}s! You rolled ${values.length} ${values[0]}s!`,
+						t('toast.doubles', { value: values[0], count: values.length }),
 						{
 							icon: '🎯'
 						}
 					)
 				} else {
-					toast.success(`Total: ${result.total}`, {
-						description: `Rolled ${values.join(', ')}`
+					toast.success(t('toast.total', { total: result.total }), {
+						description: t('toast.rolled', { values: values.join(', ') })
 					})
 				}
 			}
@@ -190,7 +198,7 @@ export default function DiceRollerPage() {
 			totalDiceRolled: 0
 		})
 		localStorage.removeItem('diceRollHistory')
-		toast.success('History cleared')
+		toast.success(t('toast.historyCleared'))
 	}
 
 	// Keyboard shortcuts
@@ -215,14 +223,14 @@ export default function DiceRollerPage() {
 
 	const copyResults = () => {
 		if (currentRoll.length === 0) {
-			toast.error('No dice rolled yet')
+			toast.error(t('toast.noDiceRolled'))
 			return
 		}
 
 		const text = `🎲 Dice Roll: ${currentRoll.join(', ')} = ${currentRoll.reduce((a, b) => a + b, 0)}`
 		navigator.clipboard.writeText(text)
 		setCopiedText(true)
-		toast.success('Copied to clipboard')
+		toast.success(t('toast.copiedToClipboard'))
 		setTimeout(() => setCopiedText(false), 2000)
 	}
 
@@ -271,309 +279,383 @@ export default function DiceRollerPage() {
 	}
 
 	return (
-		<div className='max-w-7xl mx-auto'>
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Main Gaming Area - Takes 2 columns on large screens */}
-				<div className='lg:col-span-2 space-y-6'>
-					{/* Dice Display and Controls */}
-					<Card className='relative overflow-hidden'>
-						<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5' />
-						<div className='relative p-8 space-y-8'>
-							{/* Title and Quick Controls */}
-							<div className='flex flex-col sm:flex-row items-center justify-between gap-4'>
-								<div className='text-center sm:text-left'>
-									<h2 className='text-2xl font-bold'>Virtual Dice</h2>
-									<p className='text-sm text-muted-foreground'>
-										Click roll or press Space
-									</p>
-								</div>
-								<div className='flex items-center gap-4'>
-									{/* Dice Count Selector */}
-									<div className='flex items-center gap-2'>
-										{[1, 2, 3, 4, 5, 6].map(num => (
-											<Button
-												key={num}
-												variant={diceCount === num ? 'default' : 'outline'}
-												size='sm'
-												onClick={() => setDiceCount(num)}
-												className='w-8 h-8 p-0'
-											>
-												{num}
-											</Button>
-										))}
-									</div>
-								</div>
-							</div>
+		<div className='max-w-7xl mx-auto space-y-6'>
+			{/* Main Dice Card */}
+			<Card className='relative overflow-hidden'>
+				<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5' />
+				<div className='relative p-6 space-y-6'>
+					{/* Dice Count Selector - Compact at top */}
+					<div className='flex items-center justify-center gap-2'>
+						<span className='text-sm font-medium mr-2'>{t('diceLabel')}</span>
+						{[1, 2, 3, 4, 5, 6].map(num => (
+							<Button
+								key={num}
+								variant={diceCount === num ? 'default' : 'outline'}
+								size='icon'
+								onClick={() => setDiceCount(num)}
+								className='w-8 h-8'
+							>
+								{num}
+							</Button>
+						))}
+					</div>
 
-							{/* 3D Dice Container - 3 per row */}
-							<div className='grid grid-cols-3 gap-4 max-w-sm mx-auto'>
-								{Array.from({ length: diceCount }, (_, i) => (
-									<div key={i} className='relative'>
-										<div className='w-24 h-24 perspective-1000'>
-											<motion.div
-												className='relative w-full h-full transform-style-3d'
-												animate={
-													isRolling
-														? {
-																rotateX: [0, 720],
-																rotateY: [0, 720],
-																rotateZ: [0, 360]
-															}
-														: currentRoll[i]
-															? {
-																	rotateX: getDiceRotation(currentRoll[i]).x,
-																	rotateY: getDiceRotation(currentRoll[i]).y,
-																	rotateZ: 0
-																}
-															: {}
-												}
-												transition={{
-													duration: isRolling ? 1 : 0.3,
-													repeat: isRolling ? Infinity : 0,
-													ease: isRolling ? 'linear' : 'easeOut'
-												}}
-												style={{ transformStyle: 'preserve-3d' }}
-											>
-												{/* Dice Faces - каждая грань показывает соответствующее число */}
-												{/* Face 1 - Front (1) */}
-												<div
-													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{ transform: 'translateZ(48px)' }}
-												>
-													<DiceFace value={1} />
-												</div>
-												{/* Face 2 - Right (2) */}
-												<div
-													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{
-														transform: 'rotateY(90deg) translateZ(48px)'
-													}}
-												>
-													<DiceFace value={2} />
-												</div>
-												{/* Face 3 - Top (3) */}
-												<div
-													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{
-														transform: 'rotateX(90deg) translateZ(48px)'
-													}}
-												>
-													<DiceFace value={3} />
-												</div>
-												{/* Face 4 - Bottom (4) */}
-												<div
-													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{
-														transform: 'rotateX(-90deg) translateZ(48px)'
-													}}
-												>
-													<DiceFace value={4} />
-												</div>
-												{/* Face 5 - Left (5) */}
-												<div
-													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{
-														transform: 'rotateY(-90deg) translateZ(48px)'
-													}}
-												>
-													<DiceFace value={5} />
-												</div>
-												{/* Face 6 - Back (6) */}
-												<div
-													className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
-													style={{
-														transform: 'rotateY(180deg) translateZ(48px)'
-													}}
-												>
-													<DiceFace value={6} />
-												</div>
-											</motion.div>
-										</div>
-									</div>
-								))}
-							</div>
-
-							{/* Result Display */}
-							<AnimatePresence mode='wait'>
-								{currentRoll.length > 0 && !isRolling && (
+					{/* 3D Dice Container - Responsive grid */}
+					<div
+						className={cn(
+							'grid gap-3 mx-auto',
+							diceCount === 1 && 'grid-cols-1 max-w-[80px]',
+							diceCount === 2 && 'grid-cols-2 max-w-[172px]',
+							diceCount === 3 && 'grid-cols-3 max-w-[264px]',
+							diceCount === 4 &&
+								'grid-cols-2 md:grid-cols-4 max-w-[172px] md:max-w-[356px]',
+							diceCount === 5 &&
+								'grid-cols-3 md:grid-cols-5 max-w-[264px] md:max-w-[448px]',
+							diceCount === 6 &&
+								'grid-cols-3 md:grid-cols-6 max-w-[264px] md:max-w-[540px]'
+						)}
+					>
+						{Array.from({ length: diceCount }, (_, i) => (
+							<div key={i} className='relative'>
+								<div className='w-20 h-20 perspective-1000'>
 									<motion.div
-										initial={{ opacity: 0, y: 20 }}
-										animate={{ opacity: 1, y: 0 }}
-										exit={{ opacity: 0, y: -20 }}
-										className='text-center'
+										className='relative w-full h-full transform-style-3d'
+										animate={
+											isRolling
+												? {
+														rotateX: [0, 720],
+														rotateY: [0, 720],
+														rotateZ: [0, 360]
+													}
+												: currentRoll[i]
+													? {
+															rotateX: getDiceRotation(currentRoll[i]).x,
+															rotateY: getDiceRotation(currentRoll[i]).y,
+															rotateZ: 0
+														}
+													: {}
+										}
+										transition={{
+											duration: isRolling ? 1 : 0.3,
+											repeat: isRolling ? Infinity : 0,
+											ease: isRolling ? 'linear' : 'easeOut'
+										}}
+										style={{ transformStyle: 'preserve-3d' }}
 									>
-										<div className='space-y-2'>
-											<h2 className='text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent'>
-												{currentRoll.reduce((sum, val) => sum + val, 0)}
-											</h2>
-											<p className='text-sm text-muted-foreground'>
-												{currentRoll.join(' + ')} ={' '}
-												{currentRoll.reduce((sum, val) => sum + val, 0)}
-											</p>
+										{/* Dice Faces - каждая грань показывает соответствующее число */}
+										{/* Face 1 - Front (1) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{ transform: 'translateZ(40px)' }}
+										>
+											<DiceFace value={1} />
+										</div>
+										{/* Face 2 - Right (2) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateY(90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={2} />
+										</div>
+										{/* Face 3 - Top (3) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateX(90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={3} />
+										</div>
+										{/* Face 4 - Bottom (4) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateX(-90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={4} />
+										</div>
+										{/* Face 5 - Left (5) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateY(-90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={5} />
+										</div>
+										{/* Face 6 - Back (6) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateY(180deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={6} />
 										</div>
 									</motion.div>
+								</div>
+							</div>
+						))}
+					</div>
+
+					{/* Result Display and Controls in one row */}
+					<div className='flex items-center justify-between gap-4'>
+						{/* Result on left */}
+						<AnimatePresence mode='wait'>
+							{currentRoll.length > 0 && !isRolling ? (
+								<motion.div
+									initial={{ opacity: 0, scale: 0.8 }}
+									animate={{ opacity: 1, scale: 1 }}
+									exit={{ opacity: 0, scale: 0.8 }}
+									className='flex items-baseline gap-3'
+								>
+									<h2 className='text-4xl font-bold'>
+										{currentRoll.reduce((sum, val) => sum + val, 0)}
+									</h2>
+									<p className='text-sm text-muted-foreground'>
+										{currentRoll.join(' + ')}
+									</p>
+								</motion.div>
+							) : (
+								<div className='text-muted-foreground'>{t('pressToRoll')}</div>
+							)}
+						</AnimatePresence>
+
+						{/* Buttons on right */}
+						<div className='flex gap-2'>
+							<Button onClick={rollDice} size='default' disabled={isRolling}>
+								<Dices
+									className={cn('w-4 h-4 mr-2', isRolling && 'animate-spin')}
+								/>
+								{isRolling ? t('rolling') : t('roll')}
+							</Button>
+							<Button
+								onClick={copyResults}
+								size='icon'
+								variant='outline'
+								disabled={currentRoll.length === 0}
+							>
+								{copiedText ? (
+									<Check className='w-4 h-4' />
+								) : (
+									<Copy className='w-4 h-4' />
 								)}
-							</AnimatePresence>
-
-							{/* Roll Button */}
-							<div className='flex justify-center gap-4'>
-								<Button
-									onClick={rollDice}
-									size='lg'
-									disabled={isRolling}
-									className='min-w-[200px]'
-								>
-									<Dices
-										className={cn('w-5 h-5 mr-2', isRolling && 'animate-spin')}
-									/>
-									{isRolling ? 'Rolling...' : 'Roll Dice'}
-								</Button>
-								<Button
-									onClick={copyResults}
-									size='lg'
-									variant='outline'
-									disabled={currentRoll.length === 0}
-								>
-									{copiedText ? (
-										<Check className='w-4 h-4' />
-									) : (
-										<Copy className='w-4 h-4' />
-									)}
-								</Button>
-							</div>
+							</Button>
 						</div>
-					</Card>
+					</div>
 				</div>
+			</Card>
 
-				{/* Sidebar - Statistics and History */}
-				<div className='space-y-6'>
-					{/* Statistics */}
-					<Card className='p-6'>
-						<div className='space-y-6'>
-							{/* Quick Stats */}
-							<div>
-								<div className='flex items-center gap-2 mb-4'>
-									<TrendingUp className='w-5 h-5 text-primary' />
-									<h3 className='font-semibold'>Statistics</h3>
-								</div>
-								<div className='grid grid-cols-2 gap-4'>
-									<div className='text-center p-3 bg-muted/50 rounded-lg'>
-										<p className='text-2xl font-bold'>
-											{statistics.totalRolls}
-										</p>
-										<p className='text-xs text-muted-foreground'>Total Rolls</p>
-									</div>
-									<div className='text-center p-3 bg-muted/50 rounded-lg'>
-										<p className='text-2xl font-bold'>
-											{statistics.average.toFixed(1)}
-										</p>
-										<p className='text-xs text-muted-foreground'>Average</p>
-									</div>
-									{statistics.doubles > 0 && (
-										<div className='text-center p-3 bg-muted/50 rounded-lg'>
-											<p className='text-2xl font-bold'>{statistics.doubles}</p>
-											<p className='text-xs text-muted-foreground'>Doubles</p>
-										</div>
-									)}
-									{statistics.triples > 0 && (
-										<div className='text-center p-3 bg-muted/50 rounded-lg'>
-											<p className='text-2xl font-bold'>{statistics.triples}</p>
-											<p className='text-xs text-muted-foreground'>Triples</p>
-										</div>
-									)}
-								</div>
-							</div>
-
-							{/* Distribution */}
-							<div>
-								<h4 className='text-sm font-semibold mb-3'>Distribution</h4>
-								<div className='grid grid-cols-3 gap-3'>
-									{[1, 2, 3, 4, 5, 6].map(num => (
-										<div key={num} className='text-center'>
-											<div className='w-full aspect-square bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white p-2'>
-												<DiceFace value={num} />
-											</div>
-											<p className='text-sm font-medium mt-1'>
-												{statistics.distribution[num] || 0}
-											</p>
-											{statistics.totalDiceRolled > 0 && (
-												<p className='text-xs text-muted-foreground'>
-													{(
-														((statistics.distribution[num] || 0) /
-															statistics.totalDiceRolled) *
-														100
-													).toFixed(0)}
-													%
-												</p>
-											)}
-										</div>
-									))}
-								</div>
-							</div>
+			{/* Stats and History Row */}
+			<div className='grid lg:grid-cols-2 gap-6'>
+				{/* Compact Statistics */}
+				<Card className='flex flex-col'>
+					<div className='px-5 pt-5 pb-0'>
+						<div className='flex items-center gap-2 mb-4'>
+							<TrendingUp className='w-4 h-4 text-primary' />
+							<h3 className='font-medium'>{t('statistics')}</h3>
 						</div>
-					</Card>
 
-					{/* Keyboard Shortcuts */}
-					<KeyboardShortcutInfo />
-
-					{/* History */}
-					{rollHistory.length > 0 && (
-						<Card className='p-6'>
-							<div className='flex items-center justify-between mb-4'>
-								<h3 className='font-semibold flex items-center gap-2'>
-									<History className='w-4 h-4' />
-									Recent Rolls
-								</h3>
-								<div className='flex gap-2'>
-									<Button
-										onClick={() => setShowHistory(!showHistory)}
-										variant='ghost'
-										size='sm'
-									>
-										{showHistory ? 'Hide' : 'Show'}
-									</Button>
-									<Button onClick={clearHistory} variant='ghost' size='sm'>
-										<RotateCcw className='w-3 h-3' />
-									</Button>
-								</div>
+						{/* Stats Grid */}
+						<div className='grid grid-cols-4 gap-3 mb-4'>
+							<div className='text-center'>
+								<p className='text-xl font-bold'>{statistics.totalRolls}</p>
+								<p className='text-xs text-muted-foreground'>{t('rolls')}</p>
 							</div>
-
-							{showHistory && (
-								<div className='space-y-2 max-h-[400px] overflow-y-auto'>
-									{rollHistory.slice(0, 20).map((roll, index) => (
-										<div
-											key={roll.id}
-											className='flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors'
-										>
-											<div className='flex items-center gap-3'>
-												<Badge variant='outline' className='text-xs'>
-													#{rollHistory.length - index}
-												</Badge>
-												<div className='flex items-center gap-1'>
-													{roll.values.map((value, i) => (
-														<div
-															key={i}
-															className='w-8 h-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-black dark:text-white'
-														>
-															<DiceFace value={value} />
-														</div>
-													))}
-												</div>
-												<span className='font-medium'>= {roll.total}</span>
-											</div>
-											<p className='text-xs text-muted-foreground'>
-												{roll.timestamp.toLocaleTimeString([], {
-													hour: '2-digit',
-													minute: '2-digit'
-												})}
-											</p>
-										</div>
-									))}
+							<div className='text-center'>
+								<p className='text-xl font-bold'>
+									{statistics.average.toFixed(1)}
+								</p>
+								<p className='text-xs text-muted-foreground'>{t('average')}</p>
+							</div>
+							{statistics.doubles > 0 && (
+								<div className='text-center'>
+									<p className='text-xl font-bold'>{statistics.doubles}</p>
+									<p className='text-xs text-muted-foreground'>2x</p>
 								</div>
 							)}
-						</Card>
+							{statistics.triples > 0 && (
+								<div className='text-center'>
+									<p className='text-xl font-bold'>{statistics.triples}</p>
+									<p className='text-xs text-muted-foreground'>3x</p>
+								</div>
+							)}
+						</div>
+					</div>
+
+					{/* Pie Chart */}
+					<div className='flex-1 pb-0'>
+						{statistics.totalDiceRolled > 0 ? (
+							<div className='relative'>
+								<ResponsiveContainer width='100%' height={200}>
+									<PieChart>
+										<Pie
+											data={[1, 2, 3, 4, 5, 6].map(num => ({
+												name: num,
+												value: statistics.distribution[num] || 0,
+												percentage:
+													statistics.totalDiceRolled > 0
+														? Math.round(
+																((statistics.distribution[num] || 0) /
+																	statistics.totalDiceRolled) *
+																	100
+															)
+														: 0
+											}))}
+											dataKey='value'
+											nameKey='name'
+											cx='50%'
+											cy='50%'
+											innerRadius={40}
+											outerRadius={70}
+											label={({ name, percentage }) =>
+												percentage > 0 ? `${percentage}%` : ''
+											}
+											labelLine={false}
+										>
+											{[1, 2, 3, 4, 5, 6].map((num, index) => (
+												<Cell
+													key={`cell-${index}`}
+													fill={`hsl(var(--chart-${num}))`}
+												/>
+											))}
+										</Pie>
+										<ChartTooltip
+											content={({ active, payload }) => {
+												if (active && payload && payload.length) {
+													const data = payload[0]
+													const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅']
+													return (
+														<div className='rounded-lg border bg-background p-3 shadow-md'>
+															<div className='flex items-center gap-3'>
+																<div
+																	className='w-12 h-12 rounded-lg shadow-sm flex items-center justify-center text-white text-3xl'
+																	style={{
+																		backgroundColor: `hsl(var(--chart-${data.name}))`
+																	}}
+																>
+																	{diceSymbols[(data.name as number) - 1]}
+																</div>
+																<div>
+																	<p className='font-semibold text-base'>
+																		{data.value} {t('rollsCount')}
+																	</p>
+																	<p className='text-sm text-muted-foreground'>
+																		{data.payload.percentage}%
+																	</p>
+																</div>
+															</div>
+														</div>
+													)
+												}
+												return null
+											}}
+										/>
+									</PieChart>
+								</ResponsiveContainer>
+							</div>
+						) : (
+							<div className='h-[200px] flex items-center justify-center'>
+								<p className='text-sm text-muted-foreground'>
+									{t('noDataYet')}
+								</p>
+							</div>
+						)}
+					</div>
+
+					{/* Distribution Numbers */}
+					<div className='px-5 pb-5'>
+						<div className='flex items-center justify-between gap-2'>
+							{[1, 2, 3, 4, 5, 6].map(num => {
+								const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅']
+								return (
+									<div key={num} className='text-center flex-1'>
+										<div
+											className='w-12 h-12 mx-auto mb-2 rounded-lg shadow-sm flex items-center justify-center text-white text-3xl'
+											style={{ backgroundColor: `hsl(var(--chart-${num}))` }}
+										>
+											{diceSymbols[num - 1]}
+										</div>
+										<p className='text-sm font-semibold'>
+											{statistics.distribution[num] || 0}
+										</p>
+										{statistics.totalDiceRolled > 0 && (
+											<p className='text-xs text-muted-foreground font-medium'>
+												{(
+													((statistics.distribution[num] || 0) /
+														statistics.totalDiceRolled) *
+													100
+												).toFixed(0)}
+												%
+											</p>
+										)}
+									</div>
+								)
+							})}
+						</div>
+					</div>
+				</Card>
+
+				{/* Compact History */}
+				<Card className='p-5'>
+					<div className='flex items-center justify-between mb-3'>
+						<h3 className='font-medium flex items-center gap-2'>
+							<History className='w-4 h-4' />
+							{t('history')}
+						</h3>
+						{rollHistory.length > 0 && (
+							<Button
+								onClick={clearHistory}
+								variant='ghost'
+								size='icon'
+								className='h-8 w-8'
+							>
+								<RotateCcw className='w-3 h-3' />
+							</Button>
+						)}
+					</div>
+
+					{rollHistory.length > 0 ? (
+						<div className='space-y-2 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700'>
+							{rollHistory.map((roll, index) => {
+								const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅']
+								return (
+									<div
+										key={roll.id}
+										className='flex items-center justify-between p-2 rounded bg-muted/30 text-sm hover:bg-muted/40 transition-colors'
+									>
+										<div className='flex items-center gap-2'>
+											<span className='text-xs text-muted-foreground font-medium'>
+												#{rollHistory.length - index}
+											</span>
+											<div className='flex items-center gap-0.5'>
+												{roll.values.map((value, i) => (
+													<span key={i} className='text-2xl'>
+														{diceSymbols[value - 1]}
+													</span>
+												))}
+											</div>
+											<span className='font-semibold ml-1'>= {roll.total}</span>
+										</div>
+										<span className='text-xs text-muted-foreground'>
+											{roll.timestamp.toLocaleTimeString([], {
+												hour: '2-digit',
+												minute: '2-digit'
+											})}
+										</span>
+									</div>
+								)
+							})}
+						</div>
+					) : (
+						<div className='text-center py-8 text-muted-foreground text-sm'>
+							{t('noRollsYet')}
+						</div>
 					)}
-				</div>
+				</Card>
 			</div>
 		</div>
 	)
