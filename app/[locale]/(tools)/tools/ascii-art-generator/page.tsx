@@ -13,7 +13,8 @@ import {
 import Image from 'next/image'
 import { toast } from 'sonner'
 import {
-	WidgetContainer,
+	WidgetLayout,
+	WidgetSection,
 	WidgetForm,
 	WidgetInfo,
 	WidgetShareSection,
@@ -394,228 +395,206 @@ export default function AsciiArtGeneratorPage() {
 	]
 
 	return (
-		<WidgetContainer
-			config={config}
-			features={{
-				reset: true
-			}}
-			actions={{
-				onReset: () => {
-					setAsciiOutput('')
-					setImagePreview(null)
-					setSelectedPattern('')
-				}
-			}}
-		>
-			<div className='space-y-6'>
-				{/* Tips and Tutorial */}
-				<div className='flex flex-col sm:flex-row gap-4 justify-between items-start'>
-					<WidgetTips
-						tips={asciiTips}
+		<div className='space-y-6'>
+			{/* Tips and Tutorial */}
+			<div className='flex flex-col sm:flex-row gap-4 justify-between items-start'>
+				<WidgetTips
+					tips={asciiTips}
+					widgetId='ascii-art-generator'
+					variant='inline'
+					className='flex-1'
+				/>
+				{!showTutorial && (
+					<WidgetTutorial
+						steps={tutorialSteps}
 						widgetId='ascii-art-generator'
-						variant='inline'
-						className='flex-1'
+						onComplete={() => {
+							toast.success(
+								"Tutorial completed! You're ready to create ASCII art"
+							)
+							setShowTutorial(false)
+						}}
 					/>
-					{!showTutorial && (
-						<WidgetTutorial
-							steps={tutorialSteps}
-							widgetId='ascii-art-generator'
-							onComplete={() => {
-								toast.success(
-									"Tutorial completed! You're ready to create ASCII art"
-								)
-								setShowTutorial(false)
-							}}
-						/>
-					)}
-				</div>
-				<Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
-					<TabsList className='grid w-full grid-cols-3'>
-						<TabsTrigger value='text' className='flex items-center gap-2'>
-							<Type className='w-4 h-4' />
-							Text to ASCII
-						</TabsTrigger>
-						<TabsTrigger value='image' className='flex items-center gap-2'>
-							<ImageIcon className='w-4 h-4' />
-							Image to ASCII
-						</TabsTrigger>
-						<TabsTrigger value='patterns' className='flex items-center gap-2'>
-							<Palette className='w-4 h-4' />
-							Patterns
-						</TabsTrigger>
-					</TabsList>
+				)}
+			</div>
+			<Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+				<TabsList className='grid w-full grid-cols-3'>
+					<TabsTrigger value='text' className='flex items-center gap-2'>
+						<Type className='w-4 h-4' />
+						Text to ASCII
+					</TabsTrigger>
+					<TabsTrigger value='image' className='flex items-center gap-2'>
+						<ImageIcon className='w-4 h-4' />
+						Image to ASCII
+					</TabsTrigger>
+					<TabsTrigger value='patterns' className='flex items-center gap-2'>
+						<Palette className='w-4 h-4' />
+						Patterns
+					</TabsTrigger>
+				</TabsList>
 
-					<TabsContent value='text' className='mt-6'>
-						<WidgetForm
-							fields={textFields}
-							onSubmit={handleTextToAscii}
-							submitLabel='Generate ASCII Art'
-						/>
-					</TabsContent>
+				<TabsContent value='text' className='mt-6'>
+					<WidgetForm
+						fields={textFields}
+						onSubmit={handleTextToAscii}
+						submitLabel='Generate ASCII Art'
+					/>
+				</TabsContent>
 
-					<TabsContent value='image' className='mt-6 space-y-4'>
-						<Card className='p-6'>
-							<div className='space-y-4'>
-								<div>
-									<label className='block text-sm font-medium mb-2'>
-										Upload Image
-									</label>
-									<input
-										ref={fileInputRef}
-										type='file'
-										accept='image/*'
-										onChange={handleImageUpload}
-										aria-label='Upload Image'
-										className='block w-full text-sm text-muted-foreground
+				<TabsContent value='image' className='mt-6 space-y-4'>
+					<Card className='p-6'>
+						<div className='space-y-4'>
+							<div>
+								<label className='block text-sm font-medium mb-2'>
+									Upload Image
+								</label>
+								<input
+									ref={fileInputRef}
+									type='file'
+									accept='image/*'
+									onChange={handleImageUpload}
+									aria-label='Upload Image'
+									className='block w-full text-sm text-muted-foreground
                       file:mr-4 file:py-2 file:px-4
                       file:rounded-full file:border-0
                       file:text-sm file:font-semibold
                       file:bg-primary file:text-primary-foreground
                       hover:file:bg-primary/90'
+								/>
+							</div>
+
+							{imagePreview && (
+								<div className='space-y-2'>
+									<p className='text-sm text-muted-foreground'>Preview:</p>
+									<Image
+										src={imagePreview}
+										alt='Uploaded image preview'
+										width={300}
+										height={200}
+										className='max-w-xs rounded-lg border'
 									/>
 								</div>
-
-								{imagePreview && (
-									<div className='space-y-2'>
-										<p className='text-sm text-muted-foreground'>Preview:</p>
-										<Image
-											src={imagePreview}
-											alt='Uploaded image preview'
-											width={300}
-											height={200}
-											className='max-w-xs rounded-lg border'
-										/>
-									</div>
-								)}
-							</div>
-						</Card>
-
-						{imagePreview && (
-							<WidgetForm
-								fields={imageFields}
-								onSubmit={handleImageToAscii}
-								submitLabel='Update ASCII Art'
-								showReset={false}
-							/>
-						)}
-					</TabsContent>
-
-					<TabsContent value='patterns' className='mt-6'>
-						<div className='space-y-4'>
-							{Object.entries(asciiCategories).map(([category, label]) => (
-								<div key={category}>
-									<h3 className='font-semibold mb-3'>{label}</h3>
-									<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-										{asciiPatterns
-											.filter(p => p.category === category)
-											.map(pattern => (
-												<Card
-													key={pattern.id}
-													className={`p-4 cursor-pointer transition-all hover:shadow-lg ${
-														selectedPattern === pattern.id
-															? 'ring-2 ring-primary'
-															: ''
-													}`}
-													onClick={() => handlePatternSelect(pattern.id)}
-												>
-													<h4 className='font-medium text-sm mb-2'>
-														{pattern.name}
-													</h4>
-													<pre className='text-xs overflow-hidden whitespace-pre font-mono'>
-														{pattern.pattern
-															.trim()
-															.split('\n')
-															.slice(0, 3)
-															.join('\n')}
-														...
-													</pre>
-												</Card>
-											))}
-									</div>
-								</div>
-							))}
-						</div>
-					</TabsContent>
-				</Tabs>
-
-				{/* ASCII Output */}
-				{asciiOutput && (
-					<Card className='p-6'>
-						<div className='flex items-center justify-between mb-4'>
-							<h3 className='font-semibold'>ASCII Art Output</h3>
-							<div className='flex items-center gap-2'>
-								<Button onClick={handleCopyAscii} variant='outline' size='sm'>
-									<Copy className='w-4 h-4 mr-2' />
-									Copy
-								</Button>
-								<Button
-									onClick={handleDownloadText}
-									variant='outline'
-									size='sm'
-								>
-									<FileText className='w-4 h-4 mr-2' />
-									Download Text
-								</Button>
-								<Button
-									onClick={handleDownloadImage}
-									variant='outline'
-									size='sm'
-								>
-									<Download className='w-4 h-4 mr-2' />
-									Download Image
-								</Button>
-							</div>
-						</div>
-
-						<div className='relative'>
-							<Textarea
-								value={asciiOutput}
-								readOnly
-								className='font-mono text-xs leading-none h-96 resize-none'
-								style={{ lineHeight: '1.2' }}
-							/>
-							<Badge variant='secondary' className='absolute top-2 right-2'>
-								{asciiOutput.split('\n').length} lines
-							</Badge>
+							)}
 						</div>
 					</Card>
-				)}
 
-				<WidgetInfo
-					howToUse={[
-						'Text to ASCII: Enter any text and choose a font style',
-						'Image to ASCII: Upload an image to convert it to ASCII characters',
-						'Patterns: Browse and select from pre-made ASCII art patterns',
-						'Adjust settings like width and character set for images',
-						'Copy the result or download as text/image file'
-					]}
-					features={[
-						'Convert text to ASCII art with multiple font styles',
-						'Transform images into ASCII art with customizable settings',
-						'Library of pre-made ASCII art patterns',
-						'Multiple character sets for different styles',
-						'Export as text file or PNG image',
-						'Real-time preview and adjustments'
-					]}
-					tips={[
-						'Use simple images with good contrast for best results',
-						'Adjust width based on where you plan to use the ASCII art',
-						'Try different character sets for varied artistic effects',
-						'Invert brightness for better results with dark images'
-					]}
-					warnings={[
-						'Large images may take time to process',
-						'ASCII art looks best with monospace fonts',
-						'Some detail will be lost in image conversion'
-					]}
-				/>
+					{imagePreview && (
+						<WidgetForm
+							fields={imageFields}
+							onSubmit={handleImageToAscii}
+							submitLabel='Update ASCII Art'
+							showReset={false}
+						/>
+					)}
+				</TabsContent>
 
-				<WidgetShareSection
-					widgetTitle='ASCII Art Generator'
-					widgetDescription='Convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.'
-					hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
-				/>
-			</div>
+				<TabsContent value='patterns' className='mt-6'>
+					<div className='space-y-4'>
+						{Object.entries(asciiCategories).map(([category, label]) => (
+							<div key={category}>
+								<h3 className='font-semibold mb-3'>{label}</h3>
+								<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+									{asciiPatterns
+										.filter(p => p.category === category)
+										.map(pattern => (
+											<Card
+												key={pattern.id}
+												className={`p-4 cursor-pointer transition-all hover:shadow-lg ${
+													selectedPattern === pattern.id
+														? 'ring-2 ring-primary'
+														: ''
+												}`}
+												onClick={() => handlePatternSelect(pattern.id)}
+											>
+												<h4 className='font-medium text-sm mb-2'>
+													{pattern.name}
+												</h4>
+												<pre className='text-xs overflow-hidden whitespace-pre font-mono'>
+													{pattern.pattern
+														.trim()
+														.split('\n')
+														.slice(0, 3)
+														.join('\n')}
+													...
+												</pre>
+											</Card>
+										))}
+								</div>
+							</div>
+						))}
+					</div>
+				</TabsContent>
+			</Tabs>
+
+			{/* ASCII Output */}
+			{asciiOutput && (
+				<Card className='p-6'>
+					<div className='flex items-center justify-between mb-4'>
+						<h3 className='font-semibold'>ASCII Art Output</h3>
+						<div className='flex items-center gap-2'>
+							<Button onClick={handleCopyAscii} variant='outline' size='sm'>
+								<Copy className='w-4 h-4 mr-2' />
+								Copy
+							</Button>
+							<Button onClick={handleDownloadText} variant='outline' size='sm'>
+								<FileText className='w-4 h-4 mr-2' />
+								Download Text
+							</Button>
+							<Button onClick={handleDownloadImage} variant='outline' size='sm'>
+								<Download className='w-4 h-4 mr-2' />
+								Download Image
+							</Button>
+						</div>
+					</div>
+
+					<div className='relative'>
+						<Textarea
+							value={asciiOutput}
+							readOnly
+							className='font-mono text-xs leading-none h-96 resize-none'
+							style={{ lineHeight: '1.2' }}
+						/>
+						<Badge variant='secondary' className='absolute top-2 right-2'>
+							{asciiOutput.split('\n').length} lines
+						</Badge>
+					</div>
+				</Card>
+			)}
+
+			<WidgetInfo
+				howToUse={[
+					'Text to ASCII: Enter any text and choose a font style',
+					'Image to ASCII: Upload an image to convert it to ASCII characters',
+					'Patterns: Browse and select from pre-made ASCII art patterns',
+					'Adjust settings like width and character set for images',
+					'Copy the result or download as text/image file'
+				]}
+				features={[
+					'Convert text to ASCII art with multiple font styles',
+					'Transform images into ASCII art with customizable settings',
+					'Library of pre-made ASCII art patterns',
+					'Multiple character sets for different styles',
+					'Export as text file or PNG image',
+					'Real-time preview and adjustments'
+				]}
+				tips={[
+					'Use simple images with good contrast for best results',
+					'Adjust width based on where you plan to use the ASCII art',
+					'Try different character sets for varied artistic effects',
+					'Invert brightness for better results with dark images'
+				]}
+				warnings={[
+					'Large images may take time to process',
+					'ASCII art looks best with monospace fonts',
+					'Some detail will be lost in image conversion'
+				]}
+			/>
+
+			<WidgetShareSection
+				widgetTitle='ASCII Art Generator'
+				widgetDescription='Convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.'
+				hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
+			/>
 
 			{/* Keyboard shortcuts */}
 			<WidgetKeyboardShortcuts
@@ -623,6 +602,6 @@ export default function AsciiArtGeneratorPage() {
 				variant='floating'
 				position='bottom-right'
 			/>
-		</WidgetContainer>
+		</div>
 	)
 }

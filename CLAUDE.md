@@ -1,7 +1,7 @@
 # CLAUDE.md
-делай в режиме паранойи
-This file provides comprehensive guidance to Claude Code (claude.ai/code) for
-senior-level development on this repository.
+
+делай в режиме паранойи This file provides comprehensive guidance to Claude Code
+(claude.ai/code) for senior-level development on this repository.
 
 ## 🚀 Quick Start Commands
 
@@ -120,13 +120,57 @@ portfolio/
 
 ### Adding a New Widget/Tool
 
-1. **Create widget constant** in `/lib/constants/widgets.ts`
-2. **Add translations** to both `/messages/en.json` and `/messages/ru.json`
-3. **Create page component** in
-   `/app/[locale]/(tools)/tools/[widget-name]/page.tsx`
-4. **Use widget base components** from `/components/widgets/base/`
-5. **Add custom hook** if needed in `/lib/hooks/widgets/`
-6. **Test thoroughly** - check both languages, dark mode, mobile view
+**NEW: Use the Enhanced Widget Creation System**
+
+1. **Use the widget creation hook** - `useWidgetCreation` provides:
+   - State management (inputs, results, loading, errors)
+   - Built-in validation system
+   - Analytics tracking
+   - Keyboard shortcuts
+   - Copy/download/share functionality
+   - Consistent error handling
+
+2. **Follow the widget creation guide** - See `/docs/WIDGET_CREATION_GUIDE.md`
+
+3. **Use the template** - Copy from
+   `/app/[locale]/(tools)/tools/_template/page.tsx`
+
+4. **Step-by-step process**:
+   - Add widget definition to `/lib/constants/widgets.ts`
+   - Copy template to new widget folder
+   - Add translations (EN/RU) to `/messages/`
+   - Update widget configuration (ID, icon, gradient)
+   - Implement widget-specific logic
+   - Test thoroughly (both languages, dark mode, mobile)
+
+5. **Widget Template Structure**:
+
+   ```typescript
+   const widget = useWidgetCreation({
+     widgetId: 'my-widget',
+     enableKeyboard: true,
+     enableAnalytics: true,
+     enableFavorites: true,
+     defaultState: { inputs: {...}, custom: {...} },
+     validationRules: { field: (value) => validation }
+   })
+   ```
+
+6. **Required Translations Structure**:
+   ```json
+   {
+     "myWidget": {
+       "title": "Widget Title",
+       "description": "Description",
+       "inputs": {...},
+       "actions": {...},
+       "results": {...},
+       "validation": {...},
+       "toast": {...},
+       "info": {...}
+     }
+   }
+   ```
 
 ### Working with Translations
 

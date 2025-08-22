@@ -16,10 +16,7 @@ import {
 } from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-	WidgetKeyboardShortcuts,
-	ShortcutHint
-} from '@/components/widgets'
+import { WidgetKeyboardShortcuts, ShortcutHint } from '@/components/widgets'
 import {
 	useWidgetKeyboard,
 	commonWidgetShortcuts,
@@ -80,7 +77,12 @@ export default function BMICalculatorPage() {
 			label: t('categories.underweight'),
 			color: 'from-orange-600 to-orange-500'
 		},
-		{ min: 18.5, max: 25, label: t('categories.normal'), color: 'from-green-600 to-green-500' },
+		{
+			min: 18.5,
+			max: 25,
+			label: t('categories.normal'),
+			color: 'from-green-600 to-green-500'
+		},
 		{
 			min: 25,
 			max: 30,
@@ -175,12 +177,10 @@ export default function BMICalculatorPage() {
 		enabled: true
 	})
 
-
 	const getCurrentBMICategory = (bmi: number) => {
 		const categories = getBMICategories()
 		return (
-			categories.find(cat => bmi >= cat.min && bmi < cat.max) ||
-			categories[0]
+			categories.find(cat => bmi >= cat.min && bmi < cat.max) || categories[0]
 		)
 	}
 
@@ -318,7 +318,9 @@ export default function BMICalculatorPage() {
 														className='pr-12'
 													/>
 													<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-														{input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}
+														{input.unitSystem === 'metric'
+															? t('units.kg')
+															: t('units.lbs')}
 													</span>
 												</div>
 											</div>
@@ -430,8 +432,12 @@ export default function BMICalculatorPage() {
 														<SelectValue />
 													</SelectTrigger>
 													<SelectContent>
-														<SelectItem value='male'>{t('input.male')}</SelectItem>
-														<SelectItem value='female'>{t('input.female')}</SelectItem>
+														<SelectItem value='male'>
+															{t('input.male')}
+														</SelectItem>
+														<SelectItem value='female'>
+															{t('input.female')}
+														</SelectItem>
 													</SelectContent>
 												</Select>
 											</div>
@@ -453,11 +459,21 @@ export default function BMICalculatorPage() {
 													<SelectValue />
 												</SelectTrigger>
 												<SelectContent>
-													<SelectItem value='sedentary'>{t('input.activityLevels.sedentary')}</SelectItem>
-													<SelectItem value='light'>{t('input.activityLevels.light')}</SelectItem>
-													<SelectItem value='moderate'>{t('input.activityLevels.moderate')}</SelectItem>
-													<SelectItem value='active'>{t('input.activityLevels.active')}</SelectItem>
-													<SelectItem value='very-active'>{t('input.activityLevels.veryActive')}</SelectItem>
+													<SelectItem value='sedentary'>
+														{t('input.activityLevels.sedentary')}
+													</SelectItem>
+													<SelectItem value='light'>
+														{t('input.activityLevels.light')}
+													</SelectItem>
+													<SelectItem value='moderate'>
+														{t('input.activityLevels.moderate')}
+													</SelectItem>
+													<SelectItem value='active'>
+														{t('input.activityLevels.active')}
+													</SelectItem>
+													<SelectItem value='very-active'>
+														{t('input.activityLevels.veryActive')}
+													</SelectItem>
 												</SelectContent>
 											</Select>
 										</div>
@@ -539,7 +555,9 @@ export default function BMICalculatorPage() {
 																<p className='font-semibold'>
 																	{result.idealWeight.min.toFixed(0)}-
 																	{result.idealWeight.max.toFixed(0)}{' '}
-																	{input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}
+																	{input.unitSystem === 'metric'
+																		? t('units.kg')
+																		: t('units.lbs')}
 																</p>
 															</div>
 														</div>
@@ -580,7 +598,9 @@ export default function BMICalculatorPage() {
 																	className='text-lg'
 																>
 																	-{result.weightToLose.toFixed(1)}{' '}
-																	{input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}
+																	{input.unitSystem === 'metric'
+																		? t('units.kg')
+																		: t('units.lbs')}
 																</Badge>
 															</div>
 														)}
@@ -591,7 +611,9 @@ export default function BMICalculatorPage() {
 																</span>
 																<Badge variant='secondary' className='text-lg'>
 																	+{result.weightToGain.toFixed(1)}{' '}
-																	{input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}
+																	{input.unitSystem === 'metric'
+																		? t('units.kg')
+																		: t('units.lbs')}
 																</Badge>
 															</div>
 														)}
@@ -659,7 +681,9 @@ export default function BMICalculatorPage() {
 															className='pr-12'
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-															{input.unitSystem === 'metric' ? t('units.cm') : t('units.in')}
+															{input.unitSystem === 'metric'
+																? t('units.cm')
+																: t('units.in')}
 														</span>
 													</div>
 												</div>
@@ -680,7 +704,9 @@ export default function BMICalculatorPage() {
 															className='pr-12'
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-															{input.unitSystem === 'metric' ? t('units.cm') : t('units.in')}
+															{input.unitSystem === 'metric'
+																? t('units.cm')
+																: t('units.in')}
 														</span>
 													</div>
 												</div>
@@ -702,7 +728,9 @@ export default function BMICalculatorPage() {
 																className='pr-12'
 															/>
 															<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-																{input.unitSystem === 'metric' ? t('units.cm') : t('units.in')}
+																{input.unitSystem === 'metric'
+																	? t('units.cm')
+																	: t('units.in')}
 															</span>
 														</div>
 													</div>
@@ -767,7 +795,9 @@ export default function BMICalculatorPage() {
 															</span>
 															<span className='text-2xl font-bold'>
 																{healthMetrics.leanMass.toFixed(1)}{' '}
-																{input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}
+																{input.unitSystem === 'metric'
+																	? t('units.kg')
+																	: t('units.lbs')}
 															</span>
 														</div>
 														<div className='flex items-center gap-2 text-xs text-muted-foreground'>
@@ -841,7 +871,11 @@ export default function BMICalculatorPage() {
 																		{result.calories.mildLoss}
 																	</div>
 																	<p className='text-xs text-muted-foreground'>
-																		-0.25 {input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}/{t('results.perWeek')}
+																		-0.25{' '}
+																		{input.unitSystem === 'metric'
+																			? t('units.kg')
+																			: t('units.lbs')}
+																		/{t('results.perWeek')}
 																	</p>
 																</div>
 																<div className='p-3 rounded-lg bg-orange-50 dark:bg-orange-950/20'>
@@ -852,7 +886,11 @@ export default function BMICalculatorPage() {
 																		{result.calories.loss}
 																	</div>
 																	<p className='text-xs text-muted-foreground'>
-																		-0.5 {input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}/{t('results.perWeek')}
+																		-0.5{' '}
+																		{input.unitSystem === 'metric'
+																			? t('units.kg')
+																			: t('units.lbs')}
+																		/{t('results.perWeek')}
 																	</p>
 																</div>
 															</>
@@ -867,7 +905,11 @@ export default function BMICalculatorPage() {
 																		{result.calories.mildGain}
 																	</div>
 																	<p className='text-xs text-muted-foreground'>
-																		+0.25 {input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}/{t('results.perWeek')}
+																		+0.25{' '}
+																		{input.unitSystem === 'metric'
+																			? t('units.kg')
+																			: t('units.lbs')}
+																		/{t('results.perWeek')}
 																	</p>
 																</div>
 																<div className='p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20'>
@@ -878,7 +920,11 @@ export default function BMICalculatorPage() {
 																		{result.calories.gain}
 																	</div>
 																	<p className='text-xs text-muted-foreground'>
-																		+0.5 {input.unitSystem === 'metric' ? t('units.kg') : t('units.lbs')}/{t('results.perWeek')}
+																		+0.5{' '}
+																		{input.unitSystem === 'metric'
+																			? t('units.kg')
+																			: t('units.lbs')}
+																		/{t('results.perWeek')}
 																	</p>
 																</div>
 															</>
@@ -964,7 +1010,9 @@ export default function BMICalculatorPage() {
 							<Zap className='w-6 h-6 text-green-600' />
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>{t('info.additionalMetrics')}</h4>
+							<h4 className='font-semibold mb-2'>
+								{t('info.additionalMetrics')}
+							</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
 								<li>{t('info.additionalMetricsDescription.0')}</li>
 								<li>{t('info.additionalMetricsDescription.1')}</li>
@@ -974,7 +1022,6 @@ export default function BMICalculatorPage() {
 					</div>
 				</Card>
 			</div>
-
 
 			{/* Keyboard shortcuts */}
 			<WidgetKeyboardShortcuts

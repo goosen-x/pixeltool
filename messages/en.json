@@ -2002,34 +2002,96 @@
 			"description": "Timer, countdown, and stopwatch with notifications for time management",
 			"useCase": "Time management with countdown timers, stopwatch, and notifications",
 			"category": "Productivity",
-			"timer": "Timer",
-			"stopwatch": "Stopwatch",
-			"start": "Start",
-			"pause": "Pause",
-			"resume": "Resume",
-			"reset": "Reset",
-			"soundNotification": "Sound notification",
-			"showMilliseconds": "Show milliseconds",
-			"shortcuts": "Shortcuts",
-			"startPause": "start/pause",
-			"timerComplete": "Timer complete!",
-			"presetLoaded": "Timer set",
-			"work": "Work",
-			"shortBreak": "Short break",
-			"longBreak": "Long break",
-			"session": "Session",
-			"settings": "Settings",
-			"hours": "Hours",
-			"minutes": "Minutes",
-			"seconds": "Seconds",
-			"pomodoroSettings": "Pomodoro Settings",
-			"workDuration": "Work (min)",
-			"shortBreakDuration": "Short break",
-			"longBreakDuration": "Long break",
-			"sessionsUntilLongBreak": "Sessions until long",
-			"workTime": "Time to work!",
-			"shortBreakTime": "Time for a short break!",
-			"longBreakTime": "Time for a long break!"
+			"timer": {
+				"title": "Timer",
+				"inputs": {
+					"minutes": "Minutes",
+					"seconds": "Seconds"
+				},
+				"actions": {
+					"start": "Start",
+					"pause": "Pause",
+					"resume": "Resume",
+					"stop": "Stop",
+					"reset": "Reset"
+				},
+				"shortcuts": {
+					"playPause": "Play/Pause"
+				},
+				"validation": {
+					"invalidTime": "Please enter a valid time"
+				},
+				"toast": {
+					"started": "Timer started",
+					"paused": "Timer paused",
+					"stopped": "Timer stopped",
+					"reset": "Timer reset",
+					"finished": "Time's up!"
+				}
+			},
+			"countdown": {
+				"title": "Countdown",
+				"countingDownTo": "Counting down to",
+				"setCountdownTime": "Set countdown date and time",
+				"finished": "Time's up!",
+				"quickPresets": "Quick presets",
+				"inputs": {
+					"title": "Title",
+					"optional": "optional",
+					"titlePlaceholder": "My special event",
+					"date": "Date",
+					"time": "Time"
+				},
+				"timeUnits": {
+					"days": "Days",
+					"hours": "Hours",
+					"minutes": "Minutes",
+					"seconds": "Seconds"
+				},
+				"actions": {
+					"setCountdown": "Set Countdown",
+					"clearCountdown": "Clear Countdown"
+				},
+				"validation": {
+					"dateTimeRequired": "Please select date and time",
+					"futureDate": "Please select a future date"
+				},
+				"toast": {
+					"countdownSet": "Countdown set successfully",
+					"countdownCleared": "Countdown cleared",
+					"countdownFinished": "Countdown finished!",
+					"quickTimeSet": "Quick countdown set for {minutes} minutes"
+				}
+			},
+			"info": {
+				"features": {
+					"title": "Features",
+					"timer": "Precise timer with progress bar",
+					"countdown": "Event countdown with date selection",
+					"sounds": "Audio notifications",
+					"keyboard": "Keyboard shortcuts support"
+				},
+				"useCases": {
+					"title": "Use Cases",
+					"pomodoro": "Pomodoro technique sessions",
+					"workouts": "Exercise and break timing",
+					"cooking": "Cooking and baking timers",
+					"events": "Special event countdowns"
+				},
+				"tips": {
+					"title": "Tips",
+					"space": "Use Space bar for quick control",
+					"escape": "Press Esc to stop timer",
+					"sound": "Toggle sound notifications",
+					"presets": "Use quick presets for common times"
+				}
+			},
+			"shortcuts": {
+				"title": "Keyboard Shortcuts",
+				"playPause": "Play/Pause",
+				"stop": "Stop",
+				"reset": "Reset"
+			}
 		},
 		"currencyConverter": {
 			"title": "Currency Converter",
@@ -2241,6 +2303,61 @@
 			"title": "Analytics Dashboard",
 			"description": "View website analytics and performance metrics",
 			"useCase": "Monitor website traffic, performance, and user engagement metrics"
+		},
+		"openGraphValidator": {
+			"title": "OpenGraph Validator",
+			"description": "Validate and preview Open Graph meta tags for social media sharing",
+			"useCase": "Use this tool to check how your webpage appears when shared on social platforms",
+			"tabs": {
+				"validator": "Validator",
+				"preview": "Preview",
+				"generator": "Generator"
+			},
+			"inputs": {
+				"url": "Website URL",
+				"urlPlaceholder": "https://example.com"
+			},
+			"actions": {
+				"validate": "Validate",
+				"validating": "Validating...",
+				"copyTags": "Copy Missing Tags",
+				"viewSource": "View Source"
+			},
+			"validation": {
+				"urlRequired": "Please enter a URL to validate",
+				"invalidUrl": "Please enter a valid URL (including https://)"
+			},
+			"results": {
+				"valid": "✅ Your page has proper Open Graph tags!",
+				"invalid": "❌ Your page is missing required Open Graph tags",
+				"foundTags": "Open Graph tags found",
+				"errors": "Errors",
+				"warnings": "Warnings",
+				"recommendations": "Recommendations"
+			},
+			"preview": {
+				"title": "Social Media Preview",
+				"noData": "Enter a URL and validate to see social media previews"
+			},
+			"generator": {
+				"title": "Missing Tags Generator",
+				"missingDescription": "Copy these missing Open Graph tags to your HTML head:",
+				"noMissing": "No missing tags! Your Open Graph setup looks good."
+			},
+			"toast": {
+				"validated": "Page validated successfully!",
+				"error": "Failed to validate page",
+				"tagCopied": "Tag copied to clipboard",
+				"tagsCopied": "Missing tags copied to clipboard"
+			},
+			"info": {
+				"title": "About Open Graph",
+				"point1": "Open Graph tags control how your content appears when shared on social media",
+				"point2": "Required tags: og:title, og:description, og:image, og:url, og:type",
+				"point3": "Proper Open Graph tags improve click-through rates and social engagement",
+				"proTip": "💡 Pro Tip",
+				"proTipDescription": "Use images that are 1200x630px for the best social media appearance!"
+			}
 		},
 		"search": {
 			"placeholder": "Search tools by name, description, or tags...",

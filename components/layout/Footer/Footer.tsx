@@ -149,10 +149,10 @@ export const Footer = async () => {
 									{category.tools.map((tool, toolIdx) => (
 										<li key={toolIdx}>
 											<span className='flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-all group/item cursor-not-allowed opacity-60'>
-												<span className='text-muted-foreground'>
-													{tool}
+												<span className='text-muted-foreground'>{tool}</span>
+												<span className='text-xs text-muted-foreground'>
+													soon
 												</span>
-												<span className='text-xs text-muted-foreground'>soon</span>
 											</span>
 										</li>
 									))}

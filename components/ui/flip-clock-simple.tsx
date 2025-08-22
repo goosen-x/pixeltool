@@ -16,11 +16,11 @@ function FlipDigit({ digit }: FlipDigitProps) {
 		if (digit !== currentDigit) {
 			setPreviousDigit(currentDigit)
 			setIsFlipping(true)
-			
+
 			setTimeout(() => {
 				setCurrentDigit(digit)
 			}, 250)
-			
+
 			setTimeout(() => {
 				setIsFlipping(false)
 			}, 500)
@@ -28,13 +28,13 @@ function FlipDigit({ digit }: FlipDigitProps) {
 	}, [digit, currentDigit])
 
 	return (
-		<div className="flip-digit-simple">
+		<div className='flip-digit-simple'>
 			{/* Static card showing current digit */}
-			<div className="flip-card-static">
-				<div className="flip-card-upper">
+			<div className='flip-card-static'>
+				<div className='flip-card-upper'>
 					<span>{currentDigit}</span>
 				</div>
-				<div className="flip-card-lower">
+				<div className='flip-card-lower'>
 					<span>{currentDigit}</span>
 				</div>
 			</div>
@@ -43,11 +43,11 @@ function FlipDigit({ digit }: FlipDigitProps) {
 			{isFlipping && (
 				<>
 					{/* Upper card flipping down */}
-					<div className="flip-card-upper flip-card-flip-upper">
+					<div className='flip-card-upper flip-card-flip-upper'>
 						<span>{previousDigit}</span>
 					</div>
 					{/* Lower card flipping up */}
-					<div className="flip-card-lower flip-card-flip-lower">
+					<div className='flip-card-lower flip-card-flip-lower'>
 						<span>{digit}</span>
 					</div>
 				</>
@@ -87,35 +87,35 @@ export function FlipClockSimple({
 	}
 
 	return (
-		<div className="flip-clock-simple-container">
-			<div className="flip-clock-simple">
+		<div className='flip-clock-simple-container'>
+			<div className='flip-clock-simple'>
 				{/* Hours */}
-				<div className="flip-digit-group">
+				<div className='flip-digit-group'>
 					<FlipDigit digit={timeString.h1} />
 					<FlipDigit digit={timeString.h2} />
 				</div>
-				
-				<div className="flip-clock-colon">:</div>
-				
+
+				<div className='flip-clock-colon'>:</div>
+
 				{/* Minutes */}
-				<div className="flip-digit-group">
+				<div className='flip-digit-group'>
 					<FlipDigit digit={timeString.m1} />
 					<FlipDigit digit={timeString.m2} />
 				</div>
-				
-				<div className="flip-clock-colon">:</div>
-				
+
+				<div className='flip-clock-colon'>:</div>
+
 				{/* Seconds */}
-				<div className="flip-digit-group">
+				<div className='flip-digit-group'>
 					<FlipDigit digit={timeString.s1} />
 					<FlipDigit digit={timeString.s2} />
 				</div>
-				
+
 				{/* Milliseconds */}
 				{showMilliseconds && (
 					<>
-						<div className="flip-clock-colon flip-clock-colon-small">.</div>
-						<div className="flip-digit-group">
+						<div className='flip-clock-colon flip-clock-colon-small'>.</div>
+						<div className='flip-digit-group'>
 							<FlipDigit digit={timeString.ms1} />
 							<FlipDigit digit={timeString.ms2} />
 						</div>

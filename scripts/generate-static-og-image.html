@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.05;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+        }
+        
+        .content {
+            text-align: center;
+            z-index: 10;
+            padding: 60px;
+        }
+        
+        .logo {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .logo .pixel {
+            color: #3b82f6;
+        }
+        
+        .logo .tool {
+            color: #10b981;
+        }
+        
+        .tagline {
+            font-size: 36px;
+            color: #e2e8f0;
+            margin-bottom: 50px;
+        }
+        
+        .features {
+            font-size: 28px;
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        
+        .url {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 20px;
+            color: #94a3b8;
+        }
+        
+        .decorative {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 300px;
+            height: 300px;
+            border: 3px solid #3b82f6;
+            opacity: 0.2;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="pattern"></div>
+    <div class="decorative"></div>
+    
+    <div class="content">
+        <div class="logo">
+            <span class="pixel">Pixel</span><span class="tool">Tool</span>
+        </div>
+        
+        <div class="tagline">
+            Professional Developer Tools
+        </div>
+        
+        <div class="features">
+            ✓ 64+ Free Online Tools<br>
+            ✓ No Installation Required<br>
+            ✓ Works Offline<br>
+            ✓ 100% Privacy Focused
+        </div>
+    </div>
+    
+    <div class="url">pixeltool.pro</div>
+</body>
+</html>

@@ -307,9 +307,12 @@ export default function DiceRollerPage() {
 							diceCount === 1 && 'grid-cols-1 max-w-[80px]',
 							diceCount === 2 && 'grid-cols-2 max-w-[172px]',
 							diceCount === 3 && 'grid-cols-3 max-w-[264px]',
-							diceCount === 4 && 'grid-cols-2 md:grid-cols-4 max-w-[172px] md:max-w-[356px]',
-							diceCount === 5 && 'grid-cols-3 md:grid-cols-5 max-w-[264px] md:max-w-[448px]',
-							diceCount === 6 && 'grid-cols-3 md:grid-cols-6 max-w-[264px] md:max-w-[540px]'
+							diceCount === 4 &&
+								'grid-cols-2 md:grid-cols-4 max-w-[172px] md:max-w-[356px]',
+							diceCount === 5 &&
+								'grid-cols-3 md:grid-cols-5 max-w-[264px] md:max-w-[448px]',
+							diceCount === 6 &&
+								'grid-cols-3 md:grid-cols-6 max-w-[264px] md:max-w-[540px]'
 						)}
 					>
 						{Array.from({ length: diceCount }, (_, i) => (

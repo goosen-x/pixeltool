@@ -18,11 +18,11 @@ function FlipUnit({ current, previous }: FlipUnitProps) {
 			setAnimating(true)
 			setDisplayPrevious(previous)
 			setDisplayCurrent(current)
-			
+
 			const timer = setTimeout(() => {
 				setAnimating(false)
 			}, 600)
-			
+
 			return () => clearTimeout(timer)
 		}
 	}, [current, previous])
@@ -38,7 +38,7 @@ function FlipUnit({ current, previous }: FlipUnitProps) {
 						<span>{animating ? displayPrevious : displayCurrent}</span>
 					</div>
 				</div>
-				
+
 				{animating && (
 					<>
 						<div className='flip-card-face flip-card-face-top flip-animation-top'>
@@ -46,7 +46,7 @@ function FlipUnit({ current, previous }: FlipUnitProps) {
 								<span>{displayPrevious}</span>
 							</div>
 						</div>
-						
+
 						<div className='flip-card-face flip-card-face-bottom flip-animation-bottom'>
 							<div className='flip-card-bottom'>
 								<span>{displayCurrent}</span>
@@ -75,7 +75,12 @@ export function FlipClock({
 	milliseconds = 0
 }: FlipClockProps) {
 	const [time, setTime] = useState({ hours, minutes, seconds, milliseconds })
-	const [prevTime, setPrevTime] = useState({ hours, minutes, seconds, milliseconds })
+	const [prevTime, setPrevTime] = useState({
+		hours,
+		minutes,
+		seconds,
+		milliseconds
+	})
 
 	useEffect(() => {
 		if (
@@ -101,7 +106,9 @@ export function FlipClock({
 	const prevHoursStr = formatNumber(prevTime.hours)
 	const prevMinutesStr = formatNumber(prevTime.minutes)
 	const prevSecondsStr = formatNumber(prevTime.seconds)
-	const prevMillisecondsStr = formatNumber(Math.floor(prevTime.milliseconds / 10))
+	const prevMillisecondsStr = formatNumber(
+		Math.floor(prevTime.milliseconds / 10)
+	)
 
 	return (
 		<div className='flip-clock-container'>
@@ -111,30 +118,38 @@ export function FlipClock({
 					<FlipUnit current={hoursStr[0]} previous={prevHoursStr[0]} />
 					<FlipUnit current={hoursStr[1]} previous={prevHoursStr[1]} />
 				</div>
-				
+
 				<div className='flip-clock-separator'>:</div>
-				
+
 				{/* Minutes */}
 				<div className='flip-clock-group'>
 					<FlipUnit current={minutesStr[0]} previous={prevMinutesStr[0]} />
 					<FlipUnit current={minutesStr[1]} previous={prevMinutesStr[1]} />
 				</div>
-				
+
 				<div className='flip-clock-separator'>:</div>
-				
+
 				{/* Seconds */}
 				<div className='flip-clock-group'>
 					<FlipUnit current={secondsStr[0]} previous={prevSecondsStr[0]} />
 					<FlipUnit current={secondsStr[1]} previous={prevSecondsStr[1]} />
 				</div>
-				
+
 				{/* Milliseconds */}
 				{showMilliseconds && (
 					<>
-						<div className='flip-clock-separator flip-clock-separator-small'>.</div>
+						<div className='flip-clock-separator flip-clock-separator-small'>
+							.
+						</div>
 						<div className='flip-clock-group'>
-							<FlipUnit current={millisecondsStr[0]} previous={prevMillisecondsStr[0]} />
-							<FlipUnit current={millisecondsStr[1]} previous={prevMillisecondsStr[1]} />
+							<FlipUnit
+								current={millisecondsStr[0]}
+								previous={prevMillisecondsStr[0]}
+							/>
+							<FlipUnit
+								current={millisecondsStr[1]}
+								previous={prevMillisecondsStr[1]}
+							/>
 						</div>
 					</>
 				)}

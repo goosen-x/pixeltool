@@ -199,7 +199,7 @@ export default function PercentageCalculatorPage() {
 	]
 
 	return (
-		<div className='max-w-4xl mx-auto space-y-6'>
+		<div className='max-w-6xl mx-auto space-y-6'>
 			{/* Tips Section */}
 			<WidgetTips
 				tips={percentageTips}

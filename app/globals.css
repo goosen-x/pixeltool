@@ -125,7 +125,8 @@ body {
 	@apply transition-colors duration-200;
 }
 
-button, a {
+button,
+a {
 	@apply transition-all duration-200;
 }
 
@@ -1266,7 +1267,9 @@ pre[class*='language-'] {
 
 /* Dark theme adjustments */
 .dark .flip-card-face-front {
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.3),
+		0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 /* Dots on the sides */
@@ -1287,7 +1290,11 @@ pre[class*='language-'] {
 /* Advanced Flip Clock Styles */
 .flip-clock-advanced {
 	@apply flex items-center justify-center p-8;
-	background: radial-gradient(ellipse at center, rgba(34, 34, 34, 1) 0%, rgba(17, 17, 17, 1) 100%);
+	background: radial-gradient(
+		ellipse at center,
+		rgba(34, 34, 34, 1) 0%,
+		rgba(17, 17, 17, 1) 100%
+	);
 	min-height: 280px;
 }
 
@@ -1348,7 +1355,11 @@ pre[class*='language-'] {
 	color: #eee;
 	font-size: 72px;
 	font-weight: bold;
-	font-family: 'Anton', system-ui, -apple-system, sans-serif;
+	font-family:
+		'Anton',
+		system-ui,
+		-apple-system,
+		sans-serif;
 	line-height: 0;
 	display: flex;
 	align-items: flex-start;
@@ -1385,7 +1396,11 @@ pre[class*='language-'] {
 	color: #eee;
 	font-size: 72px;
 	font-weight: bold;
-	font-family: 'Anton', system-ui, -apple-system, sans-serif;
+	font-family:
+		'Anton',
+		system-ui,
+		-apple-system,
+		sans-serif;
 	text-align: center;
 	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -1419,7 +1434,11 @@ pre[class*='language-'] {
 	color: #eee;
 	font-size: 72px;
 	font-weight: bold;
-	font-family: 'Anton', system-ui, -apple-system, sans-serif;
+	font-family:
+		'Anton',
+		system-ui,
+		-apple-system,
+		sans-serif;
 	line-height: 1.4;
 	display: flex;
 	align-items: flex-end;
@@ -1448,7 +1467,11 @@ pre[class*='language-'] {
 	color: #eee;
 	font-size: 72px;
 	font-weight: bold;
-	font-family: 'Anton', system-ui, -apple-system, sans-serif;
+	font-family:
+		'Anton',
+		system-ui,
+		-apple-system,
+		sans-serif;
 	line-height: 0;
 	display: flex;
 	align-items: flex-start;

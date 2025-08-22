@@ -17,7 +17,7 @@ function FlipDigit({ value, prevValue }: FlipDigitProps) {
 		if (value !== prevValue) {
 			setIsFlipping(true)
 			setCurrentValue(prevValue)
-			
+
 			// Start flip animation
 			setTimeout(() => {
 				setDisplayValue(value)
@@ -32,16 +32,20 @@ function FlipDigit({ value, prevValue }: FlipDigitProps) {
 	}, [value, prevValue])
 
 	return (
-		<div className="flip-digit">
+		<div className='flip-digit'>
 			{/* Background static bottom half */}
-			<div className="digit-static" data-value={displayValue} />
-			
+			<div className='digit-static' data-value={displayValue} />
+
 			{/* Stack of digit cards */}
-			<div className={cn("digit-card", isFlipping && "flipping")} data-value={currentValue} data-next={displayValue}>
+			<div
+				className={cn('digit-card', isFlipping && 'flipping')}
+				data-value={currentValue}
+				data-next={displayValue}
+			>
 				{/* Top half */}
-				<div className="digit-top" />
+				<div className='digit-top' />
 				{/* Bottom half (flips) */}
-				<div className="digit-bottom" />
+				<div className='digit-bottom' />
 			</div>
 		</div>
 	)
@@ -54,7 +58,7 @@ interface FlipNumberProps {
 
 function FlipNumber({ value, maxValue = 99 }: FlipNumberProps) {
 	const [prevValue, setPrevValue] = useState(value)
-	
+
 	useEffect(() => {
 		if (value !== prevValue) {
 			const timer = setTimeout(() => {
@@ -70,7 +74,7 @@ function FlipNumber({ value, maxValue = 99 }: FlipNumberProps) {
 	const prevOnesDigit = prevValue % 10
 
 	return (
-		<div className="flip-number">
+		<div className='flip-number'>
 			<FlipDigit value={tensDigit} prevValue={prevTensDigit} />
 			<FlipDigit value={onesDigit} prevValue={prevOnesDigit} />
 		</div>
@@ -93,23 +97,23 @@ export function FlipClockAdvanced({
 	milliseconds = 0
 }: FlipClockAdvancedProps) {
 	return (
-		<div className="flip-clock-advanced">
-			<div className="flip-clock-inner">
+		<div className='flip-clock-advanced'>
+			<div className='flip-clock-inner'>
 				<FlipNumber value={hours} maxValue={23} />
-				<div className="flip-separator">
-					<span className="flip-separator-dot"></span>
-					<span className="flip-separator-dot"></span>
+				<div className='flip-separator'>
+					<span className='flip-separator-dot'></span>
+					<span className='flip-separator-dot'></span>
 				</div>
 				<FlipNumber value={minutes} maxValue={59} />
-				<div className="flip-separator">
-					<span className="flip-separator-dot"></span>
-					<span className="flip-separator-dot"></span>
+				<div className='flip-separator'>
+					<span className='flip-separator-dot'></span>
+					<span className='flip-separator-dot'></span>
 				</div>
 				<FlipNumber value={seconds} maxValue={59} />
 				{showMilliseconds && (
 					<>
-						<div className="flip-separator flip-separator-small">
-							<span className="flip-separator-dot"></span>
+						<div className='flip-separator flip-separator-small'>
+							<span className='flip-separator-dot'></span>
 						</div>
 						<FlipNumber value={Math.floor(milliseconds / 10)} maxValue={99} />
 					</>

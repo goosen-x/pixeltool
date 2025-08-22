@@ -10,7 +10,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
-import { WidgetContainer } from '@/components/widgets/base'
 import { Badge } from '@/components/ui/badge'
 
 interface Lot {
@@ -39,13 +38,6 @@ export default function DrawLotsPage() {
 	const [lots, setLots] = useState<Lot[]>([])
 	const [isDrawing, setIsDrawing] = useState(false)
 	const [error, setError] = useState<string | null>(null)
-
-	const config = {
-		title: t('title'),
-		description: t('description'),
-		icon: <Shuffle className='w-6 h-6 text-primary' />,
-		category: t('category')
-	}
 
 	useEffect(() => {
 		setMounted(true)
@@ -129,7 +121,7 @@ export default function DrawLotsPage() {
 	}
 
 	return (
-		<WidgetContainer config={config}>
+		<div className='space-y-6'>
 			{!isDrawing ? (
 				<>
 					{/* Input Section */}
@@ -300,6 +292,6 @@ export default function DrawLotsPage() {
 					<p className='text-xs mt-4'>{t('about.disclaimer')}</p>
 				</div>
 			</Card>
-		</WidgetContainer>
+		</div>
 	)
 }

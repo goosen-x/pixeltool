@@ -288,7 +288,6 @@ export function ProjectsRightSidebar() {
 					</p>
 				</CardContent>
 			</Card>
-
 		</aside>
 	)
 }

@@ -31,25 +31,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const metadata = {
 		en: {
 			title: {
-				default: 'PixelTool - Free Online Developer Tools & Utilities',
+				default: 'PixelTool - Free Developer Tools',
 				template: '%s | PixelTool'
 			},
 			description:
-				'Professional web developer tools: CSS generators, color converters, formatters, validators, and 50+ more utilities. No installation required, 100% free.'
+				'Professional web developer tools: CSS generators, formatters, validators. Free & works offline.'
 		},
 		ru: {
 			title: {
-				default: 'PixelTool - Бесплатные Онлайн Инструменты для Разработчиков',
+				default: 'PixelTool - Инструменты Разработчика',
 				template: '%s | PixelTool'
 			},
 			description:
-				'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики и 50+ утилит. Без установки, 100% бесплатно.'
+				'Профессиональные инструменты для веб-разработчиков: CSS генераторы, форматировщики. Бесплатно.'
 		}
 	}
 
 	const currentMetadata =
 		metadata[locale as keyof typeof metadata] || metadata.en
 	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+
+	// Shorten title and description for OG tags
+	const ogTitle = currentMetadata.title.default.slice(0, 60)
+	const ogDescription = currentMetadata.description.slice(0, 160)
 
 	return {
 		metadataBase: new URL(siteUrl),
@@ -97,12 +101,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			type: 'website',
 			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
 			url: siteUrl,
-			title: currentMetadata.title.default,
-			description: currentMetadata.description,
+			title: ogTitle,
+			description: ogDescription,
 			siteName: 'PixelTool',
 			images: [
 				{
-					url: `${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
+					url: `${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
 					width: 1200,
 					height: 630,
 					alt: 'PixelTool - Professional Developer Tools',
@@ -112,20 +116,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		},
 		twitter: {
 			card: 'summary_large_image',
-			title: currentMetadata.title.default,
-			description: currentMetadata.description,
+			title: ogTitle,
+			description: ogDescription,
 			images: [
-				`${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`
+				`${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`
 			],
 			creator: '@pixeltool',
 			site: '@pixeltool'
 		},
 		other: {
-			'telegram:image': `${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
-			'og:image:secure_url': `${siteUrl}/api/og?title=${encodeURIComponent(currentMetadata.title.default)}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`,
-			'og:image:type': 'image/png',
-			'og:image:width': '1200',
-			'og:image:height': '630'
+			'telegram:image': `${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
+			'og:image:secure_url': `${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
+			'og:locale:alternate': locale === 'ru' ? 'en_US' : 'ru_RU'
 		},
 		alternates: {
 			canonical: siteUrl,

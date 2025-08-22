@@ -186,7 +186,9 @@ export default async function HomePage({ params }: Props) {
 								>
 									<div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 									<Terminal className='h-5 w-5 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform z-10' />
-									<span className='z-10 font-semibold'>{t('hero.exploreTools')}</span>
+									<span className='z-10 font-semibold'>
+										{t('hero.exploreTools')}
+									</span>
 									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform z-10' />
 								</Button>
 							</Link>

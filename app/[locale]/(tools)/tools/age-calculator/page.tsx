@@ -30,8 +30,6 @@ import { format } from 'date-fns'
 import { ru, enUS } from 'date-fns/locale'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { KeyboardShortcutInfo } from '@/components/widgets'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
@@ -157,88 +155,162 @@ export default function AgeCalculatorPage() {
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
 	// Locale-specific data
-	const ZODIAC_SIGNS_LOCALE = locale === 'ru' ? ZODIAC_SIGNS : [
-		{ name: 'Capricorn', start: '12-22', end: '01-19' },
-		{ name: 'Aquarius', start: '01-20', end: '02-18' },
-		{ name: 'Pisces', start: '02-19', end: '03-20' },
-		{ name: 'Aries', start: '03-21', end: '04-19' },
-		{ name: 'Taurus', start: '04-20', end: '05-20' },
-		{ name: 'Gemini', start: '05-21', end: '06-20' },
-		{ name: 'Cancer', start: '06-21', end: '07-22' },
-		{ name: 'Leo', start: '07-23', end: '08-22' },
-		{ name: 'Virgo', start: '08-23', end: '09-22' },
-		{ name: 'Libra', start: '09-23', end: '10-22' },
-		{ name: 'Scorpio', start: '10-23', end: '11-21' },
-		{ name: 'Sagittarius', start: '11-22', end: '12-21' }
-	]
+	const ZODIAC_SIGNS_LOCALE =
+		locale === 'ru'
+			? ZODIAC_SIGNS
+			: [
+					{ name: 'Capricorn', start: '12-22', end: '01-19' },
+					{ name: 'Aquarius', start: '01-20', end: '02-18' },
+					{ name: 'Pisces', start: '02-19', end: '03-20' },
+					{ name: 'Aries', start: '03-21', end: '04-19' },
+					{ name: 'Taurus', start: '04-20', end: '05-20' },
+					{ name: 'Gemini', start: '05-21', end: '06-20' },
+					{ name: 'Cancer', start: '06-21', end: '07-22' },
+					{ name: 'Leo', start: '07-23', end: '08-22' },
+					{ name: 'Virgo', start: '08-23', end: '09-22' },
+					{ name: 'Libra', start: '09-23', end: '10-22' },
+					{ name: 'Scorpio', start: '10-23', end: '11-21' },
+					{ name: 'Sagittarius', start: '11-22', end: '12-21' }
+				]
 
-	const CHINESE_ZODIAC_LOCALE = locale === 'ru' ? CHINESE_ZODIAC : [
-		'Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake',
-		'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'
-	]
+	const CHINESE_ZODIAC_LOCALE =
+		locale === 'ru'
+			? CHINESE_ZODIAC
+			: [
+					'Rat',
+					'Ox',
+					'Tiger',
+					'Rabbit',
+					'Dragon',
+					'Snake',
+					'Horse',
+					'Goat',
+					'Monkey',
+					'Rooster',
+					'Dog',
+					'Pig'
+				]
 
-	const LIFE_STAGES_LOCALE = locale === 'ru' ? LIFE_STAGES : [
-		{ name: 'Infant', min: 0, max: 1 },
-		{ name: 'Toddler', min: 1, max: 3 },
-		{ name: 'Preschooler', min: 3, max: 6 },
-		{ name: 'School Age', min: 6, max: 12 },
-		{ name: 'Teenager', min: 12, max: 18 },
-		{ name: 'Young Adult', min: 18, max: 30 },
-		{ name: 'Adult', min: 30, max: 50 },
-		{ name: 'Middle Age', min: 50, max: 65 },
-		{ name: 'Senior', min: 65, max: 80 },
-		{ name: 'Elderly', min: 80, max: 150 }
-	]
+	const LIFE_STAGES_LOCALE =
+		locale === 'ru'
+			? LIFE_STAGES
+			: [
+					{ name: 'Infant', min: 0, max: 1 },
+					{ name: 'Toddler', min: 1, max: 3 },
+					{ name: 'Preschooler', min: 3, max: 6 },
+					{ name: 'School Age', min: 6, max: 12 },
+					{ name: 'Teenager', min: 12, max: 18 },
+					{ name: 'Young Adult', min: 18, max: 30 },
+					{ name: 'Adult', min: 30, max: 50 },
+					{ name: 'Middle Age', min: 50, max: 65 },
+					{ name: 'Senior', min: 65, max: 80 },
+					{ name: 'Elderly', min: 80, max: 150 }
+				]
 
-	const DAY_NAMES_LOCALE = locale === 'ru' ? DAY_NAMES : [
-		'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-	]
+	const DAY_NAMES_LOCALE =
+		locale === 'ru'
+			? DAY_NAMES
+			: [
+					'Sunday',
+					'Monday',
+					'Tuesday',
+					'Wednesday',
+					'Thursday',
+					'Friday',
+					'Saturday'
+				]
 
-	const FAMOUS_PEOPLE_LOCALE = locale === 'ru' ? FAMOUS_PEOPLE : [
-		{ name: 'Albert Einstein', date: new Date('1879-03-14'), category: 'Scientists', icon: '🧪' },
-		{ name: 'Leonardo da Vinci', date: new Date('1452-04-15'), category: 'Artists', icon: '🎨' },
-		{ name: 'Steve Jobs', date: new Date('1955-02-24'), category: 'Entrepreneurs', icon: '💼' },
-		{ name: 'Marie Curie', date: new Date('1867-11-07'), category: 'Scientists', icon: '⚗️' },
-		{ name: 'William Shakespeare', date: new Date('1564-04-23'), category: 'Writers', icon: '📚' },
-		{ name: 'Nelson Mandela', date: new Date('1918-07-18'), category: 'Politicians', icon: '🌍' }
-	]
+	const FAMOUS_PEOPLE_LOCALE =
+		locale === 'ru'
+			? FAMOUS_PEOPLE
+			: [
+					{
+						name: 'Albert Einstein',
+						date: new Date('1879-03-14'),
+						category: 'Scientists',
+						icon: '🧪'
+					},
+					{
+						name: 'Leonardo da Vinci',
+						date: new Date('1452-04-15'),
+						category: 'Artists',
+						icon: '🎨'
+					},
+					{
+						name: 'Steve Jobs',
+						date: new Date('1955-02-24'),
+						category: 'Entrepreneurs',
+						icon: '💼'
+					},
+					{
+						name: 'Marie Curie',
+						date: new Date('1867-11-07'),
+						category: 'Scientists',
+						icon: '⚗️'
+					},
+					{
+						name: 'William Shakespeare',
+						date: new Date('1564-04-23'),
+						category: 'Writers',
+						icon: '📚'
+					},
+					{
+						name: 'Nelson Mandela',
+						date: new Date('1918-07-18'),
+						category: 'Politicians',
+						icon: '🌍'
+					}
+				]
 
-	const getZodiacSign = useCallback((date: Date): string => {
-		const month = date.getMonth() + 1
-		const day = date.getDate()
-		const dateStr = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+	const getZodiacSign = useCallback(
+		(date: Date): string => {
+			const month = date.getMonth() + 1
+			const day = date.getDate()
+			const dateStr = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
 
-		for (const sign of ZODIAC_SIGNS_LOCALE) {
-			const [startMonth, startDay] = sign.start.split('-').map(Number)
-			const [endMonth, endDay] = sign.end.split('-').map(Number)
+			for (const sign of ZODIAC_SIGNS_LOCALE) {
+				const [startMonth, startDay] = sign.start.split('-').map(Number)
+				const [endMonth, endDay] = sign.end.split('-').map(Number)
 
-			if (startMonth === endMonth) {
-				if (month === startMonth && day >= startDay && day <= endDay) {
-					return sign.name
-				}
-			} else {
-				if (
-					(month === startMonth && day >= startDay) ||
-					(month === endMonth && day <= endDay)
-				) {
-					return sign.name
+				if (startMonth === endMonth) {
+					if (month === startMonth && day >= startDay && day <= endDay) {
+						return sign.name
+					}
+				} else {
+					if (
+						(month === startMonth && day >= startDay) ||
+						(month === endMonth && day <= endDay)
+					) {
+						return sign.name
+					}
 				}
 			}
-		}
 
-		return ZODIAC_SIGNS_LOCALE[0].name // Fallback
-	}, [ZODIAC_SIGNS_LOCALE])
+			return ZODIAC_SIGNS_LOCALE[0].name // Fallback
+		},
+		[ZODIAC_SIGNS_LOCALE]
+	)
 
-	const getChineseZodiac = useCallback((year: number): string => {
-		const baseYear = 1900 // Year of the Rat
-		const index = (year - baseYear) % 12
-		return CHINESE_ZODIAC_LOCALE[index]
-	}, [CHINESE_ZODIAC_LOCALE])
+	const getChineseZodiac = useCallback(
+		(year: number): string => {
+			const baseYear = 1900 // Year of the Rat
+			const index = (year - baseYear) % 12
+			return CHINESE_ZODIAC_LOCALE[index]
+		},
+		[CHINESE_ZODIAC_LOCALE]
+	)
 
-	const getLifeStage = useCallback((age: number): string => {
-		const stage = LIFE_STAGES_LOCALE.find(s => age >= s.min && age < s.max)
-		return stage ? stage.name : locale === 'ru' ? 'Неопределенный возраст' : 'Undefined age'
-	}, [LIFE_STAGES_LOCALE, locale])
+	const getLifeStage = useCallback(
+		(age: number): string => {
+			const stage = LIFE_STAGES_LOCALE.find(s => age >= s.min && age < s.max)
+			return stage
+				? stage.name
+				: locale === 'ru'
+					? 'Неопределенный возраст'
+					: 'Undefined age'
+		},
+		[LIFE_STAGES_LOCALE, locale]
+	)
 
 	const calculateAge = useCallback(
 		(birthDate: Date): AgeData => {
@@ -318,20 +390,23 @@ export default function AgeCalculatorPage() {
 		[getZodiacSign, getChineseZodiac, getLifeStage, DAY_NAMES_LOCALE]
 	)
 
-	const formatAgeText = useCallback((data: AgeData): string => {
-		if (locale === 'ru') {
-			return `Мне ${data.years} лет, ${data.months} месяцев и ${data.days} дней
+	const formatAgeText = useCallback(
+		(data: AgeData): string => {
+			if (locale === 'ru') {
+				return `Мне ${data.years} лет, ${data.months} месяцев и ${data.days} дней
 Всего дней прожито: ${data.totalDays.toLocaleString()}
 До следующего дня рождения: ${data.nextBirthday.daysUntil} дней
 Знак зодиака: ${data.zodiacSign}
 Китайский гороскоп: ${data.chineseZodiac}`
-		}
-		return `I am ${data.years} years, ${data.months} months and ${data.days} days old
+			}
+			return `I am ${data.years} years, ${data.months} months and ${data.days} days old
 Total days lived: ${data.totalDays.toLocaleString()}
 Days until next birthday: ${data.nextBirthday.daysUntil}
 Zodiac sign: ${data.zodiacSign}
 Chinese zodiac: ${data.chineseZodiac}`
-	}, [locale])
+		},
+		[locale]
+	)
 
 	const handleCalculate = useCallback(() => {
 		if (!birthDate) {
@@ -428,7 +503,10 @@ Chinese zodiac: ${data.chineseZodiac}`
 									{t('inputs.birthDate.label')}
 								</label>
 								<div className='flex gap-2'>
-									<Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+									<Popover
+										open={isCalendarOpen}
+										onOpenChange={setIsCalendarOpen}
+									>
 										<PopoverTrigger asChild>
 											<Button
 												variant='outline'
@@ -467,7 +545,12 @@ Chinese zodiac: ${data.chineseZodiac}`
 										</PopoverContent>
 									</Popover>
 									{birthDate && (
-										<Button onClick={reset} variant='outline' size='icon' className='h-12'>
+										<Button
+											onClick={reset}
+											variant='outline'
+											size='icon'
+											className='h-12'
+										>
 											<RefreshCw className='h-4 w-4' />
 										</Button>
 									)}

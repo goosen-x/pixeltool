@@ -58,7 +58,9 @@ export const LanguageSelect = ({ className, locale }: Props) => {
 						>
 							<span className='flex items-center gap-3 py-1'>
 								<span className='text-lg'>{LOCALE.flag}</span>
-								<span className='text-sm font-medium text-foreground'>{LOCALE.key}</span>
+								<span className='text-sm font-medium text-foreground'>
+									{LOCALE.key}
+								</span>
 							</span>
 						</SelectItem>
 					))}

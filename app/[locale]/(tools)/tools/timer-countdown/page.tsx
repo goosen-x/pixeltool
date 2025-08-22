@@ -117,29 +117,34 @@ export default function TimerCountdownPage() {
 	// Initialize audio - using Web Audio API for better compatibility
 	const playNotificationSound = useCallback(() => {
 		if (!soundEnabled) return
-		
+
 		try {
 			if ('AudioContext' in window || 'webkitAudioContext' in window) {
-				const AudioContext = window.AudioContext || (window as any).webkitAudioContext
+				const AudioContext =
+					window.AudioContext || (window as any).webkitAudioContext
 				const audioContext = new AudioContext()
-				
+
 				// Create a pleasant notification sound sequence
-				const createTone = (frequency: number, startTime: number, duration: number) => {
+				const createTone = (
+					frequency: number,
+					startTime: number,
+					duration: number
+				) => {
 					const oscillator = audioContext.createOscillator()
 					const gainNode = audioContext.createGain()
-					
+
 					oscillator.connect(gainNode)
 					gainNode.connect(audioContext.destination)
-					
+
 					oscillator.frequency.setValueAtTime(frequency, startTime)
 					gainNode.gain.setValueAtTime(0, startTime)
 					gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.01)
 					gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration)
-					
+
 					oscillator.start(startTime)
 					oscillator.stop(startTime + duration)
 				}
-				
+
 				// Pleasant notification sequence: C-E-G chord
 				const currentTime = audioContext.currentTime
 				createTone(523.25, currentTime, 0.3) // C5
@@ -484,9 +489,12 @@ export default function TimerCountdownPage() {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className='flex items-center justify-between'
-									onSelect={(e) => e.preventDefault()}
+									onSelect={e => e.preventDefault()}
 								>
-									<Label htmlFor='dropdown-sound' className='flex items-center gap-2 cursor-pointer'>
+									<Label
+										htmlFor='dropdown-sound'
+										className='flex items-center gap-2 cursor-pointer'
+									>
 										<Volume2 className='w-4 h-4' />
 										{t('soundNotification')}
 									</Label>
@@ -499,9 +507,12 @@ export default function TimerCountdownPage() {
 								{mode === 'stopwatch' && (
 									<DropdownMenuItem
 										className='flex items-center justify-between'
-										onSelect={(e) => e.preventDefault()}
+										onSelect={e => e.preventDefault()}
 									>
-										<Label htmlFor='dropdown-milliseconds' className='flex items-center gap-2 cursor-pointer'>
+										<Label
+											htmlFor='dropdown-milliseconds'
+											className='flex items-center gap-2 cursor-pointer'
+										>
 											<Zap className='w-4 h-4' />
 											{t('showMilliseconds')}
 										</Label>
@@ -517,14 +528,19 @@ export default function TimerCountdownPage() {
 										<DropdownMenuSeparator />
 										<DropdownMenuItem
 											className='p-0'
-											onSelect={(e) => e.preventDefault()}
+											onSelect={e => e.preventDefault()}
 										>
 											<div className='px-2 py-1.5 w-full'>
 												<div className='space-y-2'>
-													<h4 className='text-sm font-medium'>{t('pomodoroSettings')}</h4>
+													<h4 className='text-sm font-medium'>
+														{t('pomodoroSettings')}
+													</h4>
 													<div className='grid grid-cols-2 gap-2 text-xs'>
 														<div>
-															<Label htmlFor='dropdown-work' className='text-xs'>
+															<Label
+																htmlFor='dropdown-work'
+																className='text-xs'
+															>
 																{t('workDuration')}
 															</Label>
 															<Input
@@ -543,7 +559,10 @@ export default function TimerCountdownPage() {
 															/>
 														</div>
 														<div>
-															<Label htmlFor='dropdown-short' className='text-xs'>
+															<Label
+																htmlFor='dropdown-short'
+																className='text-xs'
+															>
 																{t('shortBreakDuration')}
 															</Label>
 															<Input
@@ -555,14 +574,18 @@ export default function TimerCountdownPage() {
 																onChange={e =>
 																	setPomodoroSettings(prev => ({
 																		...prev,
-																		shortBreakDuration: parseInt(e.target.value) || 5
+																		shortBreakDuration:
+																			parseInt(e.target.value) || 5
 																	}))
 																}
 																className='h-6 text-xs mt-1'
 															/>
 														</div>
 														<div>
-															<Label htmlFor='dropdown-long' className='text-xs'>
+															<Label
+																htmlFor='dropdown-long'
+																className='text-xs'
+															>
 																{t('longBreakDuration')}
 															</Label>
 															<Input
@@ -574,14 +597,18 @@ export default function TimerCountdownPage() {
 																onChange={e =>
 																	setPomodoroSettings(prev => ({
 																		...prev,
-																		longBreakDuration: parseInt(e.target.value) || 15
+																		longBreakDuration:
+																			parseInt(e.target.value) || 15
 																	}))
 																}
 																className='h-6 text-xs mt-1'
 															/>
 														</div>
 														<div>
-															<Label htmlFor='dropdown-sessions' className='text-xs'>
+															<Label
+																htmlFor='dropdown-sessions'
+																className='text-xs'
+															>
 																{t('sessionsUntilLongBreak')}
 															</Label>
 															<Input
@@ -659,10 +686,7 @@ export default function TimerCountdownPage() {
 						{/* Progress Bar */}
 						{(mode === 'countdown' || mode === 'pomodoro') && (
 							<div className='w-full mb-6'>
-								<AnimatedProgressBar 
-									value={smoothProgress} 
-									className='h-3'
-								/>
+								<AnimatedProgressBar value={smoothProgress} className='h-3' />
 							</div>
 						)}
 
@@ -723,7 +747,6 @@ export default function TimerCountdownPage() {
 					)}
 				</TabsContent>
 			</Tabs>
-
 		</div>
 	)
 }
