@@ -17,10 +17,10 @@ export function SocialMetaTags() {
 			<meta property='og:site' content='PixelTool' />
 
 			{/* VK */}
-			<meta property='vk:image' content='/og-image.png' />
+			<meta property='vk:image' content='https://pixeltool.pro/og-image.png' />
 
 			{/* Additional image formats for better compatibility */}
-			<link rel='image_src' href='/og-image.png' />
+			<link rel='image_src' href='https://pixeltool.pro/og-image.png' />
 		</>
 	)
 }

@@ -49,7 +49,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	const currentMetadata =
 		metadata[locale as keyof typeof metadata] || metadata.en
-	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+	// Жестко задаем URL для Open Graph, так как env переменные могут не работать корректно
+	const siteUrl = 'https://pixeltool.pro'
 
 	// Shorten title and description for OG tags
 	const ogTitle = currentMetadata.title.default.slice(0, 60)
@@ -106,16 +107,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			siteName: 'PixelTool',
 			images: [
 				{
-					url: `${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
+					url: `https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
 					width: 1200,
 					height: 630,
 					alt: 'PixelTool - Professional Developer Tools',
 					type: 'image/png'
 				},
 				{
-					url: `${siteUrl}/image.png`,
-					width: 512,
-					height: 512,
+					url: 'https://pixeltool.pro/og-image.png',
+					width: 1024,
+					height: 1024,
 					alt: 'PixelTool - Online tools for developers',
 					type: 'image/png'
 				}
@@ -126,16 +127,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			title: ogTitle,
 			description: ogDescription,
 			images: [
-				`${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
-				`${siteUrl}/image.png`
+				`https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
+				'https://pixeltool.pro/og-image.png'
 			],
 			creator: '@pixeltool',
 			site: '@pixeltool'
 		},
 		other: {
-			'telegram:image': `${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
-			'og:image:secure_url': `${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
-			'og:locale:alternate': locale === 'ru' ? 'en_US' : 'ru_RU'
+			// Telegram
+			'telegram:image': 'https://pixeltool.pro/og-image.png',
+			// Дополнительные OG теги для лучшей совместимости
+			'og:image:secure_url': 'https://pixeltool.pro/og-image.png',
+			'og:image:width': '1024',
+			'og:image:height': '1024',
+			'og:locale:alternate': locale === 'ru' ? 'en_US' : 'ru_RU',
+			// Twitter дополнительные теги
+			'twitter:image': 'https://pixeltool.pro/og-image.png',
+			'twitter:image:alt': 'PixelTool - Professional Developer Tools',
+			// WhatsApp
+			'og:site': 'PixelTool',
+			// VK
+			'vk:image': 'https://pixeltool.pro/og-image.png'
 		},
 		alternates: {
 			canonical: siteUrl,
