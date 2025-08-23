@@ -2,6 +2,11 @@
 	"name": "my-app",
 	"version": "0.1.0",
 	"private": true,
+	"engines": {
+		"node": ">=18.0.0",
+		"yarn": ">=1.22.0",
+		"npm": "please-use-yarn"
+	},
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
@@ -12,7 +17,7 @@
 		"test:coverage": "vitest run --coverage",
 		"validate:translations": "npx tsx scripts/validate-translations.ts",
 		"generate:types": "npx tsx scripts/generate-translation-types.ts",
-		"translations:check": "npm run generate:types && npm run validate:translations",
+		"translations:check": "yarn run generate:types && yarn run validate:translations",
 		"create-widget": "node scripts/create-widget.js",
 		"create-widget-improved": "node scripts/create-widget-improved.js",
 		"claude-widget": "node scripts/claude-create-widget.js",
@@ -21,7 +26,7 @@
 		"check:bundle": "npx tsx scripts/check-bundle-size.ts",
 		"check:performance": "npx tsx scripts/check-performance.ts",
 		"check:accessibility": "npx tsx scripts/check-accessibility.ts",
-		"check:all": "npm run check:security && npm run check:imports && npm run check:bundle && npm run check:performance && npm run check:accessibility",
+		"check:all": "yarn run check:security && yarn run check:imports && yarn run check:bundle && yarn run check:performance && yarn run check:accessibility",
 		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"typecheck": "tsc --noEmit",
