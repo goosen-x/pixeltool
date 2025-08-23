@@ -113,7 +113,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 					type: 'image/png'
 				},
 				{
-					url: `${siteUrl}/image.png`,
+					url: `${siteUrl}/og-image.png`,
 					width: 512,
 					height: 512,
 					alt: 'PixelTool - Online tools for developers',
@@ -127,7 +127,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			description: ogDescription,
 			images: [
 				`${siteUrl}/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
-				`${siteUrl}/image.png`
+				`${siteUrl}/og-image.png`
 			],
 			creator: '@pixeltool',
 			site: '@pixeltool'
