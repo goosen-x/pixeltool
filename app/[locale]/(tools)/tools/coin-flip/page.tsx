@@ -16,6 +16,7 @@ import { RotateCcw, Coins, History, ChevronDown, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 interface FlipResult {
 	id: string
@@ -230,7 +231,9 @@ export default function CoinFlipPage() {
 					<div className='flex gap-4'>
 						{/* Выбор монеты */}
 						<div>
-							<div className='text-xs text-muted-foreground mb-2 text-center'>Монета</div>
+							<div className='text-xs text-muted-foreground mb-2 text-center'>
+								Монета
+							</div>
 							<div className='flex gap-2'>
 								{coinTypes.map(coin => (
 									<Button
@@ -246,10 +249,12 @@ export default function CoinFlipPage() {
 								))}
 							</div>
 						</div>
-						
+
 						{/* Скорость анимации */}
 						<div>
-							<div className='text-xs text-muted-foreground mb-2 text-center'>Скорость</div>
+							<div className='text-xs text-muted-foreground mb-2 text-center'>
+								Скорость
+							</div>
 							<div className='flex gap-2'>
 								{[
 									{ value: 'slow', icon: '🐌' },
@@ -258,9 +263,15 @@ export default function CoinFlipPage() {
 								].map(speed => (
 									<Button
 										key={speed.value}
-										variant={animationSpeed === speed.value ? 'default' : 'ghost'}
+										variant={
+											animationSpeed === speed.value ? 'default' : 'ghost'
+										}
 										size='sm'
-										onClick={() => setAnimationSpeed(speed.value as 'slow' | 'normal' | 'fast')}
+										onClick={() =>
+											setAnimationSpeed(
+												speed.value as 'slow' | 'normal' | 'fast'
+											)
+										}
 										className='h-8 w-8 p-0'
 										title={speed.value}
 									>
@@ -274,7 +285,9 @@ export default function CoinFlipPage() {
 					{/* Компактная статистика в углу */}
 					{flipHistory.length > 0 && (
 						<div>
-							<div className='text-xs text-muted-foreground mb-2 text-center'>Статистика</div>
+							<div className='text-xs text-muted-foreground mb-2 text-center'>
+								Статистика
+							</div>
 							<div className='flex gap-3 text-xs'>
 								<span className='flex items-center gap-1'>
 									{selectedCoin.headsIcon} {headsPercentage}%
@@ -303,40 +316,56 @@ export default function CoinFlipPage() {
 							{/* Heads Side */}
 							<div
 								className={cn(
-									'absolute inset-0 rounded-full flex items-center justify-center text-5xl font-bold shadow-2xl backface-hidden',
-									'bg-gradient-to-br',
-									selectedCoin.color,
-									'text-white border-4 border-white/20'
+									'absolute inset-0 rounded-full shadow-2xl backface-hidden overflow-hidden',
+									selectedCoin.id === 'ruble' && 'bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center'
 								)}
 								style={{ backfaceVisibility: 'hidden' }}
 							>
-								<div className='text-center'>
-									<div className='text-8xl mb-2'>{selectedCoin.headsIcon}</div>
-									<div className='text-base font-semibold'>
-										{selectedCoin.headsText}
+								{selectedCoin.id === 'usd' ? (
+									<Image
+										src="/images/coins/dollar-heads.png"
+										alt="Dollar Heads"
+										width={256}
+										height={256}
+										className="w-full h-full object-cover"
+									/>
+								) : (
+									<div className='text-center text-white'>
+										<div className='text-8xl mb-2'>{selectedCoin.headsIcon}</div>
+										<div className='text-base font-semibold'>
+											{selectedCoin.headsText}
+										</div>
 									</div>
-								</div>
+								)}
 							</div>
 
 							{/* Tails Side */}
 							<div
 								className={cn(
-									'absolute inset-0 rounded-full flex items-center justify-center text-5xl font-bold shadow-2xl backface-hidden',
-									'bg-gradient-to-br',
-									selectedCoin.color,
-									'text-white border-4 border-white/20'
+									'absolute inset-0 rounded-full shadow-2xl backface-hidden overflow-hidden',
+									selectedCoin.id === 'ruble' && 'bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center'
 								)}
 								style={{
 									backfaceVisibility: 'hidden',
 									transform: 'rotateY(180deg)'
 								}}
 							>
-								<div className='text-center'>
-									<div className='text-7xl mb-2'>{selectedCoin.tailsIcon}</div>
-									<div className='text-base font-semibold'>
-										{selectedCoin.tailsText}
+								{selectedCoin.id === 'usd' ? (
+									<Image
+										src="/images/coins/dollar-tails.png"
+										alt="Dollar Tails"
+										width={256}
+										height={256}
+										className="w-full h-full object-cover"
+									/>
+								) : (
+									<div className='text-center text-white'>
+										<div className='text-7xl mb-2'>{selectedCoin.tailsIcon}</div>
+										<div className='text-base font-semibold'>
+											{selectedCoin.tailsText}
+										</div>
 									</div>
-								</div>
+								)}
 							</div>
 						</motion.div>
 					</div>
@@ -391,7 +420,9 @@ export default function CoinFlipPage() {
 					>
 						<div className='flex items-center gap-2'>
 							<History className='w-4 h-4' />
-							<span className='font-semibold'>История бросков ({flipHistory.length})</span>
+							<span className='font-semibold'>
+								История бросков ({flipHistory.length})
+							</span>
 						</div>
 						{historyOpen ? (
 							<ChevronUp className='w-4 h-4' />
@@ -399,7 +430,7 @@ export default function CoinFlipPage() {
 							<ChevronDown className='w-4 h-4' />
 						)}
 					</Button>
-					
+
 					<AnimatePresence>
 						{historyOpen && (
 							<motion.div
@@ -424,18 +455,25 @@ export default function CoinFlipPage() {
 												key={flip.id}
 												className='flex flex-col items-center p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors'
 											>
-												<Badge variant='outline' className='font-mono text-xs mb-2'>
+												<Badge
+													variant='outline'
+													className='font-mono text-xs mb-2'
+												>
 													#{flipHistory.length - index}
 												</Badge>
 												<div className='text-2xl mb-1'>
 													{flip.result === 'heads'
-														? coinTypes.find(c => c.name === flip.coinType)?.headsIcon || selectedCoin.headsIcon
-														: coinTypes.find(c => c.name === flip.coinType)?.tailsIcon || selectedCoin.tailsIcon}
+														? coinTypes.find(c => c.name === flip.coinType)
+																?.headsIcon || selectedCoin.headsIcon
+														: coinTypes.find(c => c.name === flip.coinType)
+																?.tailsIcon || selectedCoin.tailsIcon}
 												</div>
 												<p className='font-medium text-sm text-center mb-1'>
 													{flip.result === 'heads'
-														? coinTypes.find(c => c.name === flip.coinType)?.headsText || 'Орёл'
-														: coinTypes.find(c => c.name === flip.coinType)?.tailsText || 'Решка'}
+														? coinTypes.find(c => c.name === flip.coinType)
+																?.headsText || 'Орёл'
+														: coinTypes.find(c => c.name === flip.coinType)
+																?.tailsText || 'Решка'}
 												</p>
 												<p className='text-xs text-muted-foreground text-center'>
 													{flip.timestamp.toLocaleTimeString()}
