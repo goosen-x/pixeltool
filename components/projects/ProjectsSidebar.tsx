@@ -27,16 +27,20 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
 		new Set()
 	)
+	const [isHydrated, setIsHydrated] = useState(false)
 
 	// Load collapsed state from localStorage on mount
 	useEffect(() => {
-		const saved = localStorage.getItem('tools-collapsed-categories')
-		if (saved) {
-			try {
-				const collapsed = JSON.parse(saved)
-				setCollapsedCategories(new Set(collapsed))
-			} catch (error) {
-				console.error('Error loading collapsed categories:', error)
+		setIsHydrated(true)
+		if (typeof window !== 'undefined') {
+			const saved = localStorage.getItem('tools-collapsed-categories')
+			if (saved) {
+				try {
+					const collapsed = JSON.parse(saved)
+					setCollapsedCategories(new Set(collapsed))
+				} catch (error) {
+					console.error('Error loading collapsed categories:', error)
+				}
 			}
 		}
 	}, [])
@@ -51,10 +55,12 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 		setCollapsedCategories(newCollapsed)
 
 		// Save to localStorage
-		localStorage.setItem(
-			'tools-collapsed-categories',
-			JSON.stringify(Array.from(newCollapsed))
-		)
+		if (typeof window !== 'undefined') {
+			localStorage.setItem(
+				'tools-collapsed-categories',
+				JSON.stringify(Array.from(newCollapsed))
+			)
+		}
 	}
 
 	return (
@@ -93,7 +99,8 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 
 									if (categoryWidgets.length === 0) return null
 
-									const isCollapsed = collapsedCategories.has(categoryKey)
+									// Only use localStorage state after hydration, default to expanded
+									const isCollapsed = isHydrated ? collapsedCategories.has(categoryKey) : false
 
 									return (
 										<div
@@ -138,7 +145,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 																	: 'opacity-100 transform translate-x-0 scale-100'
 															)}
 															style={{
-																transitionDelay: isCollapsed
+																transitionDelay: isCollapsed || !isHydrated
 																	? '0ms'
 																	: `${index * 50}ms`
 															}}

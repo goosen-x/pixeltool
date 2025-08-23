@@ -458,11 +458,11 @@ export default function TimerCountdownPage() {
 				<TabsList className='grid w-full grid-cols-3'>
 					<TabsTrigger value='countdown' className='gap-2'>
 						<Clock className='w-4 h-4' />
-						{t('timer')}
+						{t('timer.title')}
 					</TabsTrigger>
 					<TabsTrigger value='stopwatch' className='gap-2'>
 						<Timer className='w-4 h-4' />
-						{t('stopwatch')}
+						Stopwatch
 					</TabsTrigger>
 					<TabsTrigger value='pomodoro' className='gap-2'>
 						<Target className='w-4 h-4' />
