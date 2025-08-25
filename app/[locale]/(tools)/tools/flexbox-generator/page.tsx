@@ -13,7 +13,7 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
-import { Copy, RotateCcw, HelpCircle } from 'lucide-react'
+import { Copy, RotateCcw, HelpCircle, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations, useLocale } from 'next-intl'
 import {
@@ -47,6 +47,7 @@ export default function FlexboxGeneratorPage() {
 	const [props, setProps] = useState<FlexboxProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(3)
 	const [showItemNumbers, setShowItemNumbers] = useState(true)
+	const [copiedTailwind, setCopiedTailwind] = useState(false)
 
 	const updateProp = (key: keyof FlexboxProps, value: string | number) => {
 		setProps(prev => ({ ...prev, [key]: value }))
@@ -65,9 +66,83 @@ export default function FlexboxGeneratorPage() {
 		return css
 	}
 
+	const generateTailwind = () => {
+		// Map CSS values to Tailwind classes
+		const flexDirectionMap: Record<string, string> = {
+			row: 'flex-row',
+			'row-reverse': 'flex-row-reverse',
+			column: 'flex-col',
+			'column-reverse': 'flex-col-reverse'
+		}
+
+		const justifyContentMap: Record<string, string> = {
+			'flex-start': 'justify-start',
+			'flex-end': 'justify-end',
+			center: 'justify-center',
+			'space-between': 'justify-between',
+			'space-around': 'justify-around',
+			'space-evenly': 'justify-evenly'
+		}
+
+		const alignItemsMap: Record<string, string> = {
+			'flex-start': 'items-start',
+			'flex-end': 'items-end',
+			center: 'items-center',
+			stretch: 'items-stretch',
+			baseline: 'items-baseline'
+		}
+
+		const alignContentMap: Record<string, string> = {
+			'flex-start': 'content-start',
+			'flex-end': 'content-end',
+			center: 'content-center',
+			stretch: 'content-stretch',
+			'space-between': 'content-between',
+			'space-around': 'content-around'
+		}
+
+		const flexWrapMap: Record<string, string> = {
+			nowrap: 'flex-nowrap',
+			wrap: 'flex-wrap',
+			'wrap-reverse': 'flex-wrap-reverse'
+		}
+
+		// Generate gap class
+		const gapClass =
+			props.gap % 4 === 0 && props.gap <= 96
+				? `gap-${props.gap / 4}`
+				: `gap-[${props.gap}px]`
+
+		// Combine all classes
+		const classes = [
+			'flex',
+			flexDirectionMap[props.flexDirection],
+			justifyContentMap[props.justifyContent],
+			alignItemsMap[props.alignItems],
+			alignContentMap[props.alignContent],
+			flexWrapMap[props.flexWrap],
+			gapClass
+		]
+			.filter(Boolean)
+			.join(' ')
+
+		return classes
+	}
+
 	const copyToClipboard = async () => {
 		try {
 			await navigator.clipboard.writeText(generateCSS())
+			toast.success(t('toast.copied'))
+		} catch (err) {
+			toast.error(t('toast.copyError'))
+		}
+	}
+
+	const copyTailwindToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(generateTailwind())
+			setCopiedTailwind(true)
+			setTimeout(() => setCopiedTailwind(false), 2000)
 			toast.success(t('toast.copied'))
 		} catch (err) {
 			toast.error(t('toast.copyError'))
@@ -313,23 +388,56 @@ export default function FlexboxGeneratorPage() {
 			{/* Generated CSS */}
 			<Card className='lg:col-span-3'>
 				<CardHeader>
-					<CardTitle className='flex items-center justify-between'>
-						<span>{t('generatedCss')}</span>
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={copyToClipboard}
-							className='hover:bg-accent hover:text-white'
-						>
-							<Copy className='w-4 h-4 mr-1' />
-							{t('copy')}
-						</Button>
-					</CardTitle>
+					<CardTitle>{t('generatedCss')}</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<pre className='bg-muted p-4 rounded-md overflow-x-auto'>
-						<code className='text-sm'>{generateCSS()}</code>
-					</pre>
+					<div className='grid md:grid-cols-2 gap-4'>
+						{/* CSS Result */}
+						<div>
+							<div className='flex items-center justify-between mb-2'>
+								<Label className='text-sm text-muted-foreground'>CSS</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyToClipboard}
+									className='h-8 px-2 hover:bg-accent hover:text-white'
+								>
+									<Copy className='h-3 w-3' />
+								</Button>
+							</div>
+							<div className='bg-secondary rounded-lg p-4'>
+								<pre className='text-secondary-foreground font-mono text-xs overflow-x-auto'>
+									{generateCSS()}
+								</pre>
+							</div>
+						</div>
+
+						{/* Tailwind Result */}
+						<div>
+							<div className='flex items-center justify-between mb-2'>
+								<Label className='text-sm text-muted-foreground'>
+									Tailwind CSS
+								</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyTailwindToClipboard}
+									className='h-8 px-2 hover:bg-accent hover:text-white'
+								>
+									{copiedTailwind ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
+								</Button>
+							</div>
+							<div className='bg-secondary rounded-lg p-4'>
+								<span className='text-secondary-foreground font-mono text-xs break-words'>
+									{generateTailwind()}
+								</span>
+							</div>
+						</div>
+					</div>
 				</CardContent>
 			</Card>
 		</div>

@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const title = widgets[widget.translationKey]?.title || widget.translationKey
 	const description = widgets[widget.translationKey]?.description || ''
 
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+	// Жестко задаем URL для Open Graph
+	const baseUrl = 'https://pixeltool.pro'
 	const url = `${baseUrl}/${locale}/tools/${widget.path}`
 
 	// Import SEO metadata if available
@@ -48,10 +49,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			type: 'website',
 			images: [
 				{
-					url: `/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&locale=${locale}`,
+					url: `https://pixeltool.pro/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&widget=${widget.id}&locale=${locale}`,
 					width: 1200,
 					height: 630,
-					alt: title
+					alt: title,
+					type: 'image/png'
 				}
 			]
 		},
@@ -61,9 +63,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			title: seoData?.title || `${title} - Free Online Tool`,
 			description: seoData?.description || description,
 			images: [
-				`/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&locale=${locale}`
+				`https://pixeltool.pro/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&widget=${widget.id}&locale=${locale}`
 			],
 			creator: '@pixeltool'
+		},
+
+		other: {
+			// Дополнительные метатеги для социальных сетей
+			'og:image:secure_url': `https://pixeltool.pro/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&widget=${widget.id}&locale=${locale}`,
+			'og:image:width': '1200',
+			'og:image:height': '630',
+			'twitter:image': `https://pixeltool.pro/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&widget=${widget.id}&locale=${locale}`,
+			'twitter:image:alt': title,
+			'telegram:image': `https://pixeltool.pro/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&widget=${widget.id}&locale=${locale}`
 		},
 
 		alternates: {

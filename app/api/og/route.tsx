@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
+import { getWidgetById } from '@/lib/constants/widgets'
 
 export const runtime = 'edge'
 
@@ -11,9 +12,26 @@ export async function GET(request: NextRequest) {
 		const title = searchParams.get('title') || 'PixelTool'
 		const description =
 			searchParams.get('description') || 'Professional Developer Tools'
-		const widget = searchParams.get('widget')
-		const icon = searchParams.get('icon') || '🛠️'
+		const widgetId = searchParams.get('widget')
 		const locale = searchParams.get('locale') || 'en'
+
+		// Get widget data if available
+		const widget = widgetId ? getWidgetById(widgetId) : null
+
+		// Category emoji mapping
+		const categoryEmojis: Record<string, string> = {
+			webdev: '🌐',
+			business: '💼',
+			content: '📝',
+			security: '🔒',
+			multimedia: '🎨',
+			analytics: '📊',
+			lifestyle: '🎯'
+		}
+
+		const categoryEmoji = widget
+			? categoryEmojis[widget.category] || '🛠️'
+			: '🛠️'
 
 		return new ImageResponse(
 			(
@@ -63,20 +81,33 @@ export async function GET(request: NextRequest) {
 							zIndex: 10
 						}}
 					>
-						{/* Icon */}
-						<div
-							style={{
-								fontSize: 80,
-								marginBottom: 20
-							}}
-						>
-							{icon}
-						</div>
+						{/* Widget Icon or Emoji */}
+						{widget && (
+							<div
+								style={{
+									width: 80,
+									height: 80,
+									marginBottom: 20,
+									background:
+										widget.gradient ||
+										'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+									borderRadius: 16,
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									fontSize: 40,
+									color: 'white',
+									fontWeight: 'bold'
+								}}
+							>
+								{categoryEmoji}
+							</div>
+						)}
 
 						{/* Title */}
 						<h1
 							style={{
-								fontSize: widget ? 48 : 60,
+								fontSize: widgetId ? 48 : 60,
 								fontWeight: 'bold',
 								color: '#f1f5f9',
 								marginBottom: 20,

@@ -47,8 +47,9 @@ export function useSystemInfo(options: UseSystemInfoOptions = {}) {
 				await navigator.clipboard.writeText(text)
 				setCopiedItem(label)
 				toast.success(
-					translations?.copied?.replace('{item}', label) ||
-						`${label} copied to clipboard!`
+					translations?.copied
+						?.replace('__ITEM__', label)
+						.replace('{item}', label) || `${label} copied to clipboard!`
 				)
 
 				// Clear copied state after 2 seconds

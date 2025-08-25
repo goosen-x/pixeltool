@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-23T08:32:56.398Z
+// Generated on: 2025-08-25T19:03:58.868Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -409,6 +409,7 @@ export interface GeneratedTranslations {
       min: string
       max: string
       viewport: string
+      property: string
       result: string
       liveExample: string
       liveExampleText: string
@@ -438,19 +439,36 @@ export interface GeneratedTranslations {
       takeEncoded: string
       readyForCss: string
       preview: string
+      settings: string
       background: string
       white: string
       silver: string
       black: string
       example: string
+      clear: string
+      output: string
+      encoded: string
+      css: string
+      tailwind: string
+      encodedResult: string
+      cssResult: string
+      tailwindResult: string
+      copy: string
+      characters: string
       placeholder: string
       encodedPlaceholder: string
       cssPlaceholder: string
+      tailwindPlaceholder: string
+      dragDropHint: string
       dropFile: string
       editHint: string
+      cssHint: string
+      tailwindHint: string
+      previewEmpty: string
       toast: {
         encodedCopied: string
         cssCopied: string
+        tailwindCopied: string
         copyError: string
         fileLoaded: string
         invalidFile: string
@@ -474,6 +492,7 @@ export interface GeneratedTranslations {
       alternativeUrls: string
       thumbnail: string
       copyUrl: string
+      download: string
       errors: {
         invalid: string
       }
@@ -796,10 +815,85 @@ export interface GeneratedTranslations {
         qrError: string
       }
     }
-    textToSpeech?: {
+    textToSpeech: {
       title: string
       description: string
       useCase: string
+      enterText: string
+      placeholder: string
+      speak: string
+      resume: string
+      pause: string
+      stop: string
+      repeat: string
+      characters: string
+      settings: string
+      voice: string
+      selectVoice: string
+      speed: string
+      pitch: string
+      volume: string
+      currentVoice: string
+      local: string
+      history: string
+      noHistory: string
+      noHistoryDescription: string
+      startSpeaking: string
+      clearAll: string
+      bookmarks: string
+      saveBookmark: string
+      bookmarkName: string
+      bookmarkHint: string
+      savedBookmarks: string
+      noBookmarks: string
+      noBookmarksDescription: string
+      save: string
+      export: string
+      copy: string
+      quickExamples: string
+      examples: {
+        greeting: string
+        announcement: string
+        story: string
+        poem: string
+      }
+      tabs: {
+        main: string
+        settings: string
+        history: string
+        bookmarks: string
+      }
+      about: {
+        title: string
+        description: string
+        features: string
+        feature1: string
+        feature2: string
+        feature3: string
+        feature4: string
+        tips: string
+        tip1Title: string
+        tip1Description: string
+        tip2Title: string
+        tip2Description: string
+      }
+      errors: {
+        noText: string
+        emptyText: string
+        speechFailed: string
+        noBookmarkName: string
+        invalidFileType: string
+      }
+      success: {
+        bookmarkAdded: string
+        textExported: string
+        textImported: string
+        textCopied: string
+        historyCleared: string
+      }
+      info: {
+        featureNotSupported: string
+      }
     }
     systemInfo: {
       title: string
@@ -1144,6 +1238,7 @@ export interface GeneratedTranslations {
       members: string
       totalParticipants: string
       emptyTeam: string
+      fillDefaults: string
       exportTeams: string
       copyToClipboard: string
       teamsExported: string
@@ -1181,6 +1276,7 @@ export interface GeneratedTranslations {
         history: string
         allResults: string
         about: string
+        showingRecent: string
       }
       inputs: {
         minimum: {
@@ -1203,6 +1299,7 @@ export interface GeneratedTranslations {
       actions: {
         generate: string
         downloadAll: string
+        copy: string
       }
       result: {
         generatedAt: string
@@ -1335,6 +1432,7 @@ export interface GeneratedTranslations {
       selected: string
       revealed: string
       reset: string
+      fillDefaults: string
       errors: {
         empty: string
         tooMany: string
@@ -2029,6 +2127,27 @@ export interface GeneratedTranslations {
         stop: string
         reset: string
       }
+      settings: string
+      soundNotification: string
+      showMilliseconds: string
+      start: string
+      pause: string
+      resume: string
+      reset: string
+      session: string
+      work: string
+      shortBreak: string
+      longBreak: string
+      workTime: string
+      shortBreakTime: string
+      longBreakTime: string
+      timerComplete: string
+      presetLoaded: string
+      pomodoroSettings: string
+      workDuration: string
+      shortBreakDuration: string
+      longBreakDuration: string
+      sessionsUntilLongBreak: string
     }
     currencyConverter?: {
       title: string
@@ -2122,26 +2241,241 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    base64Encoder?: {
+    base64Encoder: {
       title: string
       description: string
       useCase: string
+      mode: {
+        encode: string
+        decode: string
+      }
+      input: {
+        title: string
+        text: string
+        file: string
+        dataUrl: string
+        dropFile: string
+        or: string
+        selectFile: string
+        maxSize: string
+        placeholder: {
+          text: {
+            encode: string
+            decode: string
+          }
+          file: {
+            encode: string
+            decode: string
+          }
+          dataurl: {
+            encode: string
+            decode: string
+          }
+        }
+      }
+      output: {
+        title: string
+        placeholder: {
+          encode: string
+          decode: string
+        }
+      }
+      options: {
+        title: string
+        urlSafe: string
+        lineBreaks: string
+        lineNumbers: string
+      }
+      actions: {
+        copy: string
+        download: string
+        changeFile: string
+        swap: {
+          encode: string
+          decode: string
+        }
+      }
+      stats: {
+        increase: string
+        decrease: string
+        time: string
+      }
+      history: {
+        title: string
+        clear: string
+      }
+      preview: {
+        title: string
+        toggle: string
+      }
+      examples: {
+        title: string
+        text: string
+        json: string
+        html: string
+        base64: string
+        dataUrl: string
+        urlSafe: string
+      }
+      success: {
+        encode: string
+        decode: string
+        copied: string
+        downloaded: string
+        cleared: string
+        historyCleared: string
+      }
+      errors: {
+        encodeFailed: string
+        decodeFailed: string
+        fileTooLarge: string
+        copyFailed: string
+      }
+      info: {
+        historyLoaded: string
+      }
+      shortcuts: {
+        process: string
+        copy: string
+        swap: string
+        clear: string
+        download: string
+      }
     }
-    jwtDecoder?: {
+    jwtDecoder: {
       title: string
       description: string
       useCase: string
+      examples: {
+        auth0: string
+        auth0Desc: string
+        firebase: string
+        firebaseDesc: string
+        cognito: string
+        cognitoDesc: string
+        simple: string
+        simpleDesc: string
+        expired: string
+        expiredDesc: string
+        invalid: string
+        invalidDesc: string
+      }
+      input: {
+        label: string
+        placeholder: string
+        clear: string
+      }
+      validation: {
+        validFormat: string
+        errors: string
+      }
+      tabs: {
+        header: string
+        payload: string
+        signature: string
+      }
+      output: {
+        title: string
+        copyJson: string
+        copyPayload: string
+        noHeader: string
+        noPayload: string
+        signatureTitle: string
+        noSignature: string
+        signatureWarning: string
+        signatureNote: string
+      }
+      placeholder: {
+        text: string
+      }
+      toast: {
+        copied: string
+        exampleLoaded: string
+        reset: string
+      }
+      errors: {
+        invalidParts: string
+        missingAlg: string
+        invalidTyp: string
+        headerDecode: string
+        tokenExpired: string
+        notActiveYet: string
+        payloadDecode: string
+        invalidFormat: string
+      }
+      timeLeft: {
+        expired: string
+      }
+      algorithms: {
+        HS256: string
+        HS384: string
+        HS512: string
+        RS256: string
+        RS384: string
+        RS512: string
+        ES256: string
+        ES384: string
+        ES512: string
+        PS256: string
+        PS384: string
+        PS512: string
+        none: string
+      }
     }
     uuidGenerator: {
       title: string
       description: string
       useCase: string
-      shortcuts: {
-        generate: string
-        copy: string
-        copyAll: string
-        download: string
-        clear: string
+      version: string
+      format: string
+      quantity: string
+      generate: string
+      result: string
+      copyAll: string
+      download: string
+      clear: string
+      placeholder: string
+      versions: {
+        v4: string
+        v7: string
+        v1: string
+        nil: string
+      }
+      formats: {
+        standard: string
+        uppercase: string
+        noHyphens: string
+        braces: string
+      }
+      validator: {
+        title: string
+        input: string
+        placeholder: string
+        validate: string
+        valid: string
+        invalid: string
+        version: string
+        variant: string
+        unknown: string
+      }
+      info: {
+        title: string
+        whatIs: string
+        description: string
+        structure: string
+        versionDigit: string
+        variantDigit: string
+        commonUse: string
+        use1: string
+        use2: string
+        use3: string
+        use4: string
+      }
+      toast: {
+        copied: string
+        copyError: string
+        generated: string
+        downloaded: string
       }
     }
     compoundInterest?: {
@@ -2380,148 +2714,6 @@ export interface GeneratedTranslations {
       }
     }
     footer: string
-  }
-  textToSpeech: {
-    title: string
-    description: string
-    enterText: string
-    placeholder: string
-    speak: string
-    resume: string
-    pause: string
-    stop: string
-    settings: string
-    voice: string
-    selectVoice: string
-    speed: string
-    pitch: string
-    volume: string
-    currentVoice: string
-    local: string
-    history: string
-    recentlyUsed: string
-    clear: string
-    clearAll: string
-    bookmarks: string
-    quickExamples: string
-    about: string
-    aboutDescription: string
-    whenToUse: string
-    platformSupport: string
-    tip: string
-    toast: {
-      enterText: string
-      speechFailed: string
-      enterTextBookmark: string
-      bookmarkAdded: string
-      historyCleared: string
-      bookmarkDeleted: string
-      copied: string
-    }
-    uses: string[]
-    platforms: string[]
-    textCaseConverter: {
-      title: string
-      description: string
-      useCase: string
-      input: string
-      output: string
-      placeholder: string
-      outputPlaceholder: string
-      settings: string
-      caseType: string
-      convert: string
-      copy: string
-      download: string
-      clear: string
-      copied: string
-      downloaded: string
-      examples: string
-      originalText: string
-      cases: {
-        uppercase: string
-        lowercase: string
-        capitalize: string
-        title: string
-        sentence: string
-        camelCase: string
-        PascalCase: string
-        snake_case: string
-        "kebab-case": string
-        alternating: string
-        inverse: string
-      }
-      faqs: {
-        question: string
-        answer: string
-      }[]
-    }
-    imageSizeChecker: {
-      title: string
-      description: string
-      useCase: string
-      uploadArea: string
-      dragDrop: string
-      or: string
-      browseFiles: string
-      supportedFormats: string
-      results: string
-      exportCSV: string
-      clearAll: string
-      dimensions: string
-      aspectRatio: string
-      fileSize: string
-      format: string
-      noImages: string
-      errorProcessing: string
-      imagesProcessed: string
-      exported: string
-      commonAspectRatios: string
-      photography: string
-      socialMedia: string
-      square: string
-      traditional: string
-      classic35mm: string
-      widescreen: string
-      post: string
-      story: string
-      thumbnail: string
-      header: string
-      faqs: {
-        question: string
-        answer: string
-      }[]
-    }
-    analyticsDashboard: {
-      title: string
-      description: string
-      totalViews: string
-      totalSessions: string
-      avgDuration: string
-      onlineNow: string
-      timeframePeriod: string
-      uniqueUsers: string
-      perSession: string
-      activeUsers: string
-      topWidgets: string
-      views: string
-      widgetAnalytics: string
-      trends: string
-      last24Hours: string
-      last7Days: string
-      last30Days: string
-      selectWidget: string
-      performance: string
-      viewsToday: string
-      uniqueSessions: string
-      avgSessionDuration: string
-      hourlyViews: string
-      usageTrends: string
-    }
-    asciiArtGenerator: {
-      title: string
-      description: string
-    }
   }
   Footer: {
     badge: string

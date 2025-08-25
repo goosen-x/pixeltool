@@ -22,7 +22,7 @@ export function RelatedTools({
 	const locale = useLocale()
 
 	// First try to get recommended tools from widget data
-	let relatedTools = getRecommendedWidgets(currentTool)
+	let relatedTools = getRecommendedWidgets(currentTool).slice(0, 3)
 
 	// If no recommended tools or less than 3, fall back to category-based selection
 	if (relatedTools.length < 3) {
@@ -35,7 +35,7 @@ export function RelatedTools({
 			)
 			.slice(0, 3 - relatedTools.length)
 
-		relatedTools = [...relatedTools, ...additionalTools]
+		relatedTools = [...relatedTools, ...additionalTools].slice(0, 3)
 	}
 
 	if (relatedTools.length === 0) {

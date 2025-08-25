@@ -135,6 +135,73 @@ a {
 	@apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background transition-all duration-200;
 }
 
+/* Better focus states for form elements */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+	@apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background border-primary/50 transition-all duration-200;
+}
+
+/* Focus states for buttons */
+button:focus-visible {
+	@apply outline-none ring-2 ring-primary/60 ring-offset-2 ring-offset-background transition-all duration-200;
+}
+
+/* Focus states for links */
+a:focus-visible {
+	@apply outline-none ring-2 ring-primary/40 ring-offset-1 ring-offset-background transition-all duration-200;
+}
+
+/* Remove default browser outline */
+* {
+	outline: none;
+}
+
+/* Override any remaining red outline styles */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+	outline: none !important;
+	box-shadow: none;
+}
+
+/* Custom focus styles for shadcn components */
+.focus\:ring-ring:focus {
+	--tw-ring-color: hsl(var(--primary) / 0.5);
+}
+
+/* Better focus for interactive elements */
+[role='button']:focus-visible,
+[role='tab']:focus-visible,
+[role='menuitem']:focus-visible {
+	@apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background transition-all duration-200;
+}
+
+/* Improved focus for card-like elements */
+[data-state='open']:focus-visible,
+[data-state='closed']:focus-visible {
+	@apply outline-none ring-2 ring-primary/30 ring-offset-1 transition-all duration-200;
+}
+
+/* Focus styles for navigation and interactive UI */
+nav a:focus-visible,
+.nav-link:focus-visible {
+	@apply outline-none ring-2 ring-primary/40 ring-offset-1 rounded-md transition-all duration-200;
+}
+
+/* Special handling for dark backgrounds */
+.dark *:focus-visible {
+	--tw-ring-offset-color: hsl(var(--background));
+}
+
+/* Accessible focus indicators */
+@media (prefers-reduced-motion: reduce) {
+	*:focus-visible {
+		transition: none;
+	}
+}
+
 /* View Transitions for theme switching */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -420,7 +487,7 @@ code.inline-code {
 
 		--border: 220 13% 91%;
 		--input: 220 13% 91%;
-		--ring: 352 84% 58%;
+		--ring: 217 91% 60%;
 
 		--radius: 0.75rem;
 
@@ -461,7 +528,7 @@ code.inline-code {
 
 		--border: 240 3.7% 15.9%;
 		--input: 240 3.7% 15.9%;
-		--ring: 240 4.9% 83.9%;
+		--ring: 217 91% 60%;
 
 		/* Chart colors */
 		--chart-1: 12 76% 61%;
@@ -649,7 +716,7 @@ pre[class*='language-'] {
 
 @layer base {
 	* {
-		@apply border-border outline-ring/50;
+		@apply border-border;
 	}
 	body {
 		@apply bg-background text-foreground;

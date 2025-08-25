@@ -300,8 +300,9 @@ export function useWorldTime(options: UseWorldTimeOptions = {}) {
 				)
 			)
 			toast.success(
-				translations?.cityAdded?.replace('{city}', cityName) ||
-					`${cityName} added`
+				translations?.cityAdded
+					?.replace('__CITY__', cityName)
+					.replace('{city}', cityName) || `${cityName} added`
 			)
 		},
 		[selectedCities, updateCityTimes, translations]

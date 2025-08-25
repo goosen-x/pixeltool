@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Slider } from '@/components/ui/slider'
-import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
 	Select,
 	SelectContent,
@@ -16,153 +15,50 @@ import {
 	SelectValue
 } from '@/components/ui/select'
 import {
-	Fingerprint,
 	Copy,
 	RefreshCw,
 	Download,
-	Sparkles,
-	Info,
-	CheckCircle,
-	Hash,
-	Zap,
-	Timer,
-	Shield,
-	Binary,
-	Braces,
-	Minus,
+	Check,
+	Trash2,
 	Plus,
-	List
+	Info,
+	Shield,
+	Clock,
+	Hash,
+	Shuffle,
+	AlertCircle
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 import { useTranslations } from 'next-intl'
 
-type UUIDVersion = 'v4' | 'v1' | 'v3' | 'v5' | 'nil'
-type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces' | 'base64'
+type UUIDVersion = 'v4' | 'v1' | 'v7' | 'nil'
+type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces'
 
 interface GeneratedUUID {
 	id: string
 	value: string
-	formatted: string
-	timestamp: number
 	version: UUIDVersion
-}
-
-interface UUIDInfo {
-	version: string
-	variant: string
-	timestamp?: string
-	clockSequence?: string
-	node?: string
-	hash?: string
-}
-
-const UUID_FORMATS: { value: UUIDFormat; label: string; example: string }[] = [
-	{
-		value: 'standard',
-		label: 'Стандартный',
-		example: '550e8400-e29b-41d4-a716-446655440000'
-	},
-	{
-		value: 'uppercase',
-		label: 'Заглавные буквы',
-		example: '550E8400-E29B-41D4-A716-446655440000'
-	},
-	{
-		value: 'no-hyphens',
-		label: 'Без дефисов',
-		example: '550e8400e29b41d4a716446655440000'
-	},
-	{
-		value: 'braces',
-		label: 'С фигурными скобками',
-		example: '{550e8400-e29b-41d4-a716-446655440000}'
-	},
-	{
-		value: 'base64',
-		label: 'Base64',
-		example: 'VQ6EAOKbQdSnFkRmVUQAAA=='
-	}
-]
-
-const NAMESPACE_UUIDS = {
-	DNS: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-	URL: '6ba7b811-9dad-11d1-80b4-00c04fd430c8',
-	OID: '6ba7b812-9dad-11d1-80b4-00c04fd430c8',
-	X500: '6ba7b814-9dad-11d1-80b4-00c04fd430c8'
+	timestamp: number
 }
 
 export default function UUIDGeneratorPage() {
 	const t = useTranslations('widgets.uuidGenerator')
 	const [version, setVersion] = useState<UUIDVersion>('v4')
 	const [format, setFormat] = useState<UUIDFormat>('standard')
-	const [quantity, setQuantity] = useState(1)
-	const [uppercase, setUppercase] = useState(false)
-	const [hyphens, setHyphens] = useState(true)
-	const [braces, setBraces] = useState(false)
-	const [history, setHistory] = useState<GeneratedUUID[]>([])
-	const [namespace, setNamespace] = useState('DNS')
-	const [nameString, setNameString] = useState('')
+	const [quantity, setQuantity] = useState('1')
+	const [uuids, setUuids] = useState<GeneratedUUID[]>([])
 	const [validationInput, setValidationInput] = useState('')
-	const [validationResult, setValidationResult] = useState<UUIDInfo | null>(
-		null
-	)
+	const [validationResult, setValidationResult] = useState<{
+		valid: boolean
+		version?: string
+		variant?: string
+		info?: string
+	} | null>(null)
+	const [copiedId, setCopiedId] = useState<string | null>(null)
+	const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-	useEffect(() => {
-		// Generate initial UUID on mount
-		generateUUIDs()
-	}, [])
-
-	const generateUUIDs = () => {
-		const newUUIDs: GeneratedUUID[] = []
-
-		for (let i = 0; i < quantity; i++) {
-			let uuid = ''
-
-			switch (version) {
-				case 'v4':
-					uuid = generateV4()
-					break
-				case 'v1':
-					uuid = generateV1()
-					break
-				case 'v3':
-					uuid = generateV3(nameString || 'example.com')
-					break
-				case 'v5':
-					uuid = generateV5(nameString || 'example.com')
-					break
-				case 'nil':
-					uuid = '00000000-0000-0000-0000-000000000000'
-					break
-			}
-
-			const formatted = formatUUID(uuid, format)
-
-			newUUIDs.push({
-				id: crypto.randomUUID(),
-				value: uuid,
-				formatted,
-				timestamp: Date.now(),
-				version
-			})
-		}
-
-		setHistory(prev => [...newUUIDs, ...prev].slice(0, 100))
-
-		if (quantity === 1) {
-			navigator.clipboard.writeText(newUUIDs[0].formatted)
-			toast.success('UUID скопирован в буфер обмена!')
-		} else {
-			toast.success(`Сгенерировано ${quantity} UUID`)
-		}
-	}
-
+	// Generate UUID v4
 	const generateV4 = (): string => {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
 			/[xy]/g,
@@ -174,11 +70,11 @@ export default function UUIDGeneratorPage() {
 		)
 	}
 
+	// Generate UUID v1 (time-based)
 	const generateV1 = (): string => {
-		// Simplified v1 UUID (time-based)
 		const timestamp = Date.now()
 		const timestampHex = timestamp.toString(16).padStart(12, '0')
-		const clockSeq = Math.floor(Math.random() * 0x3fff) | 0x8000 // Set variant bits
+		const clockSeq = Math.floor(Math.random() * 0x3fff) | 0x8000
 		const node = Array.from({ length: 6 }, () =>
 			Math.floor(Math.random() * 256)
 				.toString(16)
@@ -194,534 +90,498 @@ export default function UUIDGeneratorPage() {
 		].join('-')
 	}
 
-	const generateV3 = (name: string): string => {
-		// Simplified v3 UUID (MD5 namespace)
-		const namespaceUuid =
-			NAMESPACE_UUIDS[namespace as keyof typeof NAMESPACE_UUIDS]
-		const hash = simpleHash(namespaceUuid + name, 'md5')
+	// Generate UUID v7 (Unix timestamp + random)
+	const generateV7 = (): string => {
+		const timestamp = Date.now()
+		const timestampHex = timestamp.toString(16).padStart(12, '0')
+		const random = Array.from({ length: 10 }, () =>
+			Math.floor(Math.random() * 256)
+				.toString(16)
+				.padStart(2, '0')
+		).join('')
 
-		return formatAsUUID(hash, 3)
-	}
-
-	const generateV5 = (name: string): string => {
-		// Simplified v5 UUID (SHA-1 namespace)
-		const namespaceUuid =
-			NAMESPACE_UUIDS[namespace as keyof typeof NAMESPACE_UUIDS]
-		const hash = simpleHash(namespaceUuid + name, 'sha1')
-
-		return formatAsUUID(hash, 5)
-	}
-
-	const simpleHash = (str: string, algorithm: 'md5' | 'sha1'): string => {
-		// Simple hash implementation for demo purposes
-		let hash = 0
-		for (let i = 0; i < str.length; i++) {
-			const char = str.charCodeAt(i)
-			hash = (hash << 5) - hash + char
-			hash = hash & hash
-		}
-
-		const hashHex = Math.abs(hash).toString(16).padStart(32, '0')
-		return algorithm === 'sha1' ? hashHex.padStart(40, '0') : hashHex
-	}
-
-	const formatAsUUID = (hash: string, version: number): string => {
-		const uuid = [
-			hash.slice(0, 8),
-			hash.slice(8, 12),
-			version + hash.slice(13, 16),
-			((parseInt(hash.slice(16, 18), 16) & 0x3f) | 0x80).toString(16) +
-				hash.slice(18, 20),
-			hash.slice(20, 32)
+		return [
+			timestampHex.slice(0, 8),
+			timestampHex.slice(8, 12),
+			'7' + random.slice(0, 3),
+			((parseInt(random.slice(3, 5), 16) & 0x3f) | 0x80)
+				.toString(16)
+				.padStart(2, '0') + random.slice(5, 7),
+			random.slice(7, 19)
 		].join('-')
-
-		return uuid
 	}
 
+	// Format UUID
 	const formatUUID = (uuid: string, format: UUIDFormat): string => {
-		let formatted = uuid
-
 		switch (format) {
 			case 'uppercase':
-				formatted = uuid.toUpperCase()
-				break
+				return uuid.toUpperCase()
 			case 'no-hyphens':
-				formatted = uuid.replace(/-/g, '')
-				break
+				return uuid.replace(/-/g, '')
 			case 'braces':
-				formatted = `{${uuid}}`
-				break
-			case 'base64':
-				// Convert UUID to base64
-				const hex = uuid.replace(/-/g, '')
-				const bytes = hex.match(/.{2}/g)?.map(byte => parseInt(byte, 16)) || []
-				formatted = btoa(String.fromCharCode(...bytes))
-				break
+				return `{${uuid}}`
+			default:
+				return uuid
 		}
-
-		return formatted
 	}
 
-	const validateUUID = (uuid: string) => {
-		const cleanUuid = uuid
-			.trim()
-			.toLowerCase()
-			.replace(/[\{\}]/g, '')
-		const uuidRegex =
-			/^[0-9a-f]{8}-?[0-9a-f]{4}-?[1-5][0-9a-f]{3}-?[89ab][0-9a-f]{3}-?[0-9a-f]{12}$/i
+	// Generate UUIDs
+	const generateUUIDs = () => {
+		const count = Math.min(Math.max(1, parseInt(quantity) || 1), 1000)
+		const newUUIDs: GeneratedUUID[] = []
 
-		if (!uuidRegex.test(cleanUuid)) {
-			setValidationResult(null)
-			toast.error('Невалидный формат UUID')
-			return
+		for (let i = 0; i < count; i++) {
+			let uuid = ''
+
+			switch (version) {
+				case 'v4':
+					uuid = generateV4()
+					break
+				case 'v1':
+					uuid = generateV1()
+					break
+				case 'v7':
+					uuid = generateV7()
+					break
+				case 'nil':
+					uuid = '00000000-0000-0000-0000-000000000000'
+					break
+			}
+
+			newUUIDs.push({
+				id: crypto.randomUUID(),
+				value: formatUUID(uuid, format),
+				version,
+				timestamp: Date.now()
+			})
 		}
 
-		// Add hyphens if missing
-		const formattedUuid =
-			cleanUuid.length === 32
-				? cleanUuid.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5')
-				: cleanUuid
+		setUuids(newUUIDs)
 
-		const parts = formattedUuid.split('-')
-		const version = parseInt(parts[2].charAt(0), 16)
-		const variant = parseInt(parts[3].charAt(0), 16)
-
-		const info: UUIDInfo = {
-			version: version >= 1 && version <= 5 ? `Version ${version}` : 'Unknown',
-			variant: getVariant(variant)
+		// Auto-copy single UUID
+		if (count === 1) {
+			copyToClipboard(newUUIDs[0].value, newUUIDs[0].id)
+		} else {
+			toast.success(t('toast.generated', { count }))
 		}
 
-		// Extract additional info for v1
-		if (version === 1) {
-			const timestamp = parts[0] + parts[1].slice(1) + parts[2].slice(1)
-			info.timestamp = new Date(
-				parseInt(timestamp, 16) / 10000 - 12219292800000
-			).toISOString()
-			info.clockSequence = parts[3]
-			info.node = parts[4]
+		// Auto-select text for easy copying
+		if (textareaRef.current) {
+			setTimeout(() => {
+				textareaRef.current?.select()
+			}, 50)
 		}
-
-		setValidationResult(info)
-		toast.success('UUID валиден')
 	}
 
-	const getVariant = (variantBits: number): string => {
-		if (variantBits >= 0 && variantBits <= 7)
-			return 'Reserved (NCS backward compatibility)'
-		if (variantBits >= 8 && variantBits <= 11) return 'RFC 4122'
-		if (variantBits >= 12 && variantBits <= 13) return 'Reserved (Microsoft)'
-		if (variantBits >= 14 && variantBits <= 15) return 'Reserved (Future use)'
-		return 'Unknown'
+	// Copy to clipboard
+	const copyToClipboard = async (text: string, id?: string) => {
+		try {
+			await navigator.clipboard.writeText(text)
+			if (id) {
+				setCopiedId(id)
+				setTimeout(() => setCopiedId(null), 2000)
+			}
+			toast.success(t('toast.copied'))
+		} catch (err) {
+			toast.error(t('toast.copyError'))
+		}
 	}
 
-	const copyUUID = (uuid: string) => {
-		navigator.clipboard.writeText(uuid)
-		toast.success('UUID скопирован!')
-	}
-
+	// Copy all UUIDs
 	const copyAll = () => {
-		const allUuids = history
-			.slice(0, quantity)
-			.map(u => u.formatted)
-			.join('\n')
-		navigator.clipboard.writeText(allUuids)
-		toast.success(`Скопировано ${Math.min(quantity, history.length)} UUID`)
+		const allUuids = uuids.map(u => u.value).join('\n')
+		copyToClipboard(allUuids)
 	}
 
+	// Download UUIDs
 	const downloadUUIDs = () => {
-		const uuids = history
-			.slice(0, quantity)
-			.map(u => u.formatted)
-			.join('\n')
-		const blob = new Blob([uuids], { type: 'text/plain' })
-		const url = window.URL.createObjectURL(blob)
+		const content = uuids.map(u => u.value).join('\n')
+		const blob = new Blob([content], { type: 'text/plain' })
+		const url = URL.createObjectURL(blob)
 		const a = document.createElement('a')
 		a.href = url
 		a.download = `uuids-${version}-${Date.now()}.txt`
 		a.click()
-		window.URL.revokeObjectURL(url)
-		toast.success('UUID загружены')
+		URL.revokeObjectURL(url)
+		toast.success(t('toast.downloaded'))
 	}
 
-	const clearHistory = () => {
-		setHistory([])
-		toast.success('История очищена')
+	// Validate UUID
+	const validateUUID = (uuid: string) => {
+		const cleaned = uuid
+			.trim()
+			.toLowerCase()
+			.replace(/[\{\}]/g, '')
+		const uuidRegex =
+			/^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i
+
+		if (!uuidRegex.test(cleaned)) {
+			setValidationResult({
+				valid: false,
+				info: t('validator.invalid')
+			})
+			return
+		}
+
+		// Add hyphens if missing
+		const formatted =
+			cleaned.length === 32
+				? cleaned.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5')
+				: cleaned
+
+		const parts = formatted.split('-')
+		const versionDigit = parseInt(parts[2].charAt(0), 16)
+		const variantBits = parseInt(parts[3].charAt(0), 16)
+
+		let variant = ''
+		if (variantBits >= 8 && variantBits <= 11) variant = 'RFC 4122'
+		else if (variantBits >= 0 && variantBits <= 7) variant = 'NCS'
+		else if (variantBits >= 12 && variantBits <= 13) variant = 'Microsoft'
+		else variant = 'Future'
+
+		setValidationResult({
+			valid: true,
+			version:
+				versionDigit >= 1 && versionDigit <= 7
+					? `v${versionDigit}`
+					: t('validator.unknown'),
+			variant,
+			info: t('validator.valid')
+		})
 	}
 
-	// Keyboard shortcuts
-	const shortcuts = [
+	// Generate on mount
+	useEffect(() => {
+		generateUUIDs()
+	}, [])
+
+	// Regenerate on settings change
+	useEffect(() => {
+		if (uuids.length > 0) {
+			generateUUIDs()
+		}
+	}, [version, format])
+
+	const versionOptions = [
 		{
-			key: 'g',
-			ctrl: true,
-			action: generateUUIDs,
-			description: t('shortcuts.generate')
+			value: 'v4' as UUIDVersion,
+			label: 'Version 4',
+			description: t('versions.v4'),
+			icon: <Shuffle className='w-4 h-4' />
 		},
 		{
-			key: 'c',
-			ctrl: true,
-			action: () => history.length > 0 && copyUUID(history[0].formatted),
-			description: t('shortcuts.copy'),
-			enabled: history.length > 0
+			value: 'v7' as UUIDVersion,
+			label: 'Version 7',
+			description: t('versions.v7'),
+			icon: <Clock className='w-4 h-4' />
 		},
 		{
-			key: 'a',
-			ctrl: true,
-			shift: true,
-			action: copyAll,
-			description: t('shortcuts.copyAll'),
-			enabled: history.length > 0
+			value: 'v1' as UUIDVersion,
+			label: 'Version 1',
+			description: t('versions.v1'),
+			icon: <Clock className='w-4 h-4' />
 		},
 		{
-			key: 'd',
-			ctrl: true,
-			action: downloadUUIDs,
-			description: t('shortcuts.download'),
-			enabled: history.length > 0
-		},
-		{
-			key: 'k',
-			ctrl: true,
-			action: clearHistory,
-			description: t('shortcuts.clear'),
-			enabled: history.length > 0
+			value: 'nil' as UUIDVersion,
+			label: 'NIL UUID',
+			description: t('versions.nil'),
+			icon: <Hash className='w-4 h-4' />
 		}
 	]
 
-	useWidgetKeyboard({
-		shortcuts,
-		widgetId: 'uuid-generator'
-	})
+	const formatOptions = [
+		{
+			value: 'standard',
+			label: t('formats.standard'),
+			example: '550e8400-e29b-41d4-a716-446655440000'
+		},
+		{
+			value: 'uppercase',
+			label: t('formats.uppercase'),
+			example: '550E8400-E29B-41D4-A716-446655440000'
+		},
+		{
+			value: 'no-hyphens',
+			label: t('formats.noHyphens'),
+			example: '550e8400e29b41d4a716446655440000'
+		},
+		{
+			value: 'braces',
+			label: t('formats.braces'),
+			example: '{550e8400-e29b-41d4-a716-446655440000}'
+		}
+	]
 
 	return (
-		<WidgetLayout>
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Main Generator */}
-				<div className='lg:col-span-2 space-y-6'>
-					{/* Settings */}
-					<WidgetSection
-						icon={<Fingerprint className='h-5 w-5' />}
-						title='Настройки генератора'
-						description='Выберите версию и формат UUID'
-					>
-						<div className='space-y-6'>
-							<WidgetInput
-								label='Версия UUID'
-								description='Выберите версию генерации UUID'
-							>
-								<RadioGroup
-									value={version}
-									onValueChange={(value: UUIDVersion) => setVersion(value)}
-								>
-									<div className='grid grid-cols-2 md:grid-cols-3 gap-3'>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='v4' id='v4' />
-											<Label htmlFor='v4' className='cursor-pointer'>
-												<div className='font-medium'>Version 4</div>
-												<div className='text-xs text-muted-foreground'>
-													Random
-												</div>
-											</Label>
-										</div>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='v1' id='v1' />
-											<Label htmlFor='v1' className='cursor-pointer'>
-												<div className='font-medium'>Version 1</div>
-												<div className='text-xs text-muted-foreground'>
-													Time-based
-												</div>
-											</Label>
-										</div>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='v3' id='v3' />
-											<Label htmlFor='v3' className='cursor-pointer'>
-												<div className='font-medium'>Version 3</div>
-												<div className='text-xs text-muted-foreground'>
-													MD5 hash
-												</div>
-											</Label>
-										</div>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='v5' id='v5' />
-											<Label htmlFor='v5' className='cursor-pointer'>
-												<div className='font-medium'>Version 5</div>
-												<div className='text-xs text-muted-foreground'>
-													SHA-1 hash
-												</div>
-											</Label>
-										</div>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='nil' id='nil' />
-											<Label htmlFor='nil' className='cursor-pointer'>
-												<div className='font-medium'>NIL UUID</div>
-												<div className='text-xs text-muted-foreground'>
-													All zeros
-												</div>
-											</Label>
-										</div>
-									</div>
-								</RadioGroup>
-							</WidgetInput>
-
-							{(version === 'v3' || version === 'v5') && (
-								<>
-									<WidgetInput
-										label='Namespace'
-										description='Выберите пространство имен для хеширования'
+		<div className='space-y-6'>
+			{/* Main Generator Card */}
+			<Card>
+				<CardHeader>
+					<CardTitle>{t('title')}</CardTitle>
+				</CardHeader>
+				<CardContent className='space-y-6'>
+					{/* Quick Settings */}
+					<div className='flex flex-wrap gap-4'>
+						<div className='flex-1 min-w-[200px]'>
+							<Label className='text-xs text-muted-foreground mb-2 block'>
+								{t('version')}
+							</Label>
+							<div className='grid grid-cols-2 gap-2'>
+								{versionOptions.map(opt => (
+									<button
+										key={opt.value}
+										onClick={() => setVersion(opt.value)}
+										className={cn(
+											'flex items-center gap-2 p-3 rounded-lg border text-left transition-all',
+											version === opt.value
+												? 'border-primary bg-primary/5 text-primary'
+												: 'border-border hover:border-primary/50'
+										)}
 									>
-										<Select value={namespace} onValueChange={setNamespace}>
-											<SelectTrigger>
-												<SelectValue />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectItem value='DNS'>DNS</SelectItem>
-												<SelectItem value='URL'>URL</SelectItem>
-												<SelectItem value='OID'>OID</SelectItem>
-												<SelectItem value='X500'>X500</SelectItem>
-											</SelectContent>
-										</Select>
-									</WidgetInput>
-									<WidgetInput
-										label='Name String'
-										description='Строка для генерации UUID'
-									>
-										<Input
-											id='name'
-											value={nameString}
-											onChange={e => setNameString(e.target.value)}
-											placeholder='example.com'
-										/>
-									</WidgetInput>
-								</>
-							)}
+										{opt.icon}
+										<div className='flex-1'>
+											<div className='font-medium text-sm'>{opt.label}</div>
+											<div className='text-xs text-muted-foreground'>
+												{opt.description}
+											</div>
+										</div>
+									</button>
+								))}
+							</div>
+						</div>
 
-							<WidgetInput
-								label='Формат вывода'
-								description='Выберите формат отображения UUID'
-							>
+						<div className='space-y-4'>
+							<div>
+								<Label className='text-xs text-muted-foreground mb-2 block'>
+									{t('format')}
+								</Label>
 								<Select
 									value={format}
-									onValueChange={(value: UUIDFormat) => setFormat(value)}
+									onValueChange={(v: UUIDFormat) => setFormat(v)}
 								>
-									<SelectTrigger>
+									<SelectTrigger className='w-[200px]'>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										{UUID_FORMATS.map(fmt => (
+										{formatOptions.map(fmt => (
 											<SelectItem key={fmt.value} value={fmt.value}>
 												<div>
-													<div>{fmt.label}</div>
+													<div className='font-medium'>{fmt.label}</div>
 													<div className='text-xs text-muted-foreground font-mono'>
-														{fmt.example}
+														{fmt.example.slice(0, 20)}...
 													</div>
 												</div>
 											</SelectItem>
 										))}
 									</SelectContent>
 								</Select>
-							</WidgetInput>
+							</div>
 
-							<WidgetInput
-								label='Количество UUID'
-								description='Сколько UUID сгенерировать (1-100)'
-							>
-								<div className='flex items-center gap-4'>
-									<Button
-										onClick={() => setQuantity(Math.max(1, quantity - 1))}
-										size='icon'
-										variant='outline'
-									>
-										<Minus className='w-4 h-4' />
-									</Button>
-									<Slider
-										value={[quantity]}
-										onValueChange={([value]) => setQuantity(value)}
-										min={1}
-										max={100}
-										className='flex-1'
+							<div>
+								<Label className='text-xs text-muted-foreground mb-2 block'>
+									{t('quantity')}
+								</Label>
+								<div className='flex gap-2'>
+									<Input
+										type='number'
+										value={quantity}
+										onChange={e => setQuantity(e.target.value)}
+										min='1'
+										max='1000'
+										className='w-[100px]'
 									/>
-									<Button
-										onClick={() => setQuantity(Math.min(100, quantity + 1))}
-										size='icon'
-										variant='outline'
-									>
-										<Plus className='w-4 h-4' />
+									<Button onClick={generateUUIDs} className='gap-2'>
+										<RefreshCw className='w-4 h-4' />
+										{t('generate')}
 									</Button>
-									<span className='w-12 text-right font-mono'>{quantity}</span>
 								</div>
-							</WidgetInput>
+							</div>
 						</div>
-					</WidgetSection>
+					</div>
 
 					{/* Generated UUIDs */}
-					<WidgetOutput
-						gradientFrom='from-primary/10'
-						gradientTo='to-accent/10'
-					>
-						<div className='flex items-center justify-between mb-4'>
-							<h3 className='font-semibold'>Сгенерированные UUID</h3>
-							<div className='flex gap-2'>
-								{history.length > 0 && (
-									<>
-										<Button
-											onClick={copyAll}
-											size='sm'
-											variant='outline'
-											className='gap-2'
-										>
-											<Copy className='w-4 h-4' />
-											Копировать все
-										</Button>
-										<Button
-											onClick={downloadUUIDs}
-											size='sm'
-											variant='outline'
-											className='gap-2'
-										>
-											<Download className='w-4 h-4' />
-											Скачать
-										</Button>
-									</>
-								)}
-								<Button onClick={generateUUIDs} size='sm' className='gap-2'>
-									<RefreshCw className='w-4 h-4' />
-									Генерировать
-								</Button>
-							</div>
-						</div>
-
-						{history.length > 0 ? (
-							<div className='space-y-2 max-h-[400px] overflow-y-auto'>
-								{history.slice(0, Math.max(quantity, 10)).map(uuid => (
-									<div
-										key={uuid.id}
-										className='flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors group'
+					<div className='space-y-3'>
+						<div className='flex items-center justify-between'>
+							<Label className='text-sm'>{t('result')}</Label>
+							{uuids.length > 0 && (
+								<div className='flex gap-2'>
+									{uuids.length > 1 && (
+										<>
+											<Button
+												size='sm'
+												variant='outline'
+												onClick={copyAll}
+												className='gap-2'
+											>
+												<Copy className='w-4 h-4' />
+												{t('copyAll')}
+											</Button>
+											<Button
+												size='sm'
+												variant='outline'
+												onClick={downloadUUIDs}
+												className='gap-2'
+											>
+												<Download className='w-4 h-4' />
+												{t('download')}
+											</Button>
+										</>
+									)}
+									<Button
+										size='sm'
+										variant='outline'
+										onClick={() => setUuids([])}
+										className='gap-2'
 									>
-										<div>
-											<code className='text-sm font-mono'>
-												{uuid.formatted}
-											</code>
-											<div className='flex items-center gap-2 mt-1'>
-												<Badge variant='outline' className='text-xs'>
-													{uuid.version.toUpperCase()}
-												</Badge>
-												<span className='text-xs text-muted-foreground'>
-													{new Date(uuid.timestamp).toLocaleTimeString()}
-												</span>
-											</div>
-										</div>
-										<Button
-											onClick={() => copyUUID(uuid.formatted)}
-											size='icon'
-											variant='ghost'
-											className='opacity-0 group-hover:opacity-100 transition-opacity'
-										>
-											<Copy className='w-4 h-4' />
-										</Button>
-									</div>
-								))}
-							</div>
-						) : (
-							<div className='text-center py-8 text-muted-foreground'>
-								Нажмите &quot;Генерировать&quot; для создания UUID
-							</div>
-						)}
-
-						{history.length > 0 && (
-							<Button
-								onClick={clearHistory}
-								variant='outline'
-								size='sm'
-								className='w-full mt-4'
-							>
-								Очистить историю
-							</Button>
-						)}
-					</WidgetOutput>
-				</div>
-
-				{/* Sidebar */}
-				<div className='space-y-6'>
-					{/* UUID Validator */}
-					<WidgetSection
-						icon={<Shield className='h-5 w-5' />}
-						title='Валидатор UUID'
-						description='Проверка валидности UUID'
-					>
-						<div className='space-y-4'>
-							<Input
-								value={validationInput}
-								onChange={e => setValidationInput(e.target.value)}
-								placeholder='Введите UUID для проверки...'
-								className='font-mono text-sm'
-							/>
-
-							<Button
-								onClick={() => validateUUID(validationInput)}
-								disabled={!validationInput}
-								className='w-full'
-							>
-								Проверить UUID
-							</Button>
-
-							{validationResult && (
-								<div className='space-y-2 p-3 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800'>
-									<div className='flex items-center gap-2 text-green-700 dark:text-green-300'>
-										<CheckCircle className='w-4 h-4' />
-										<span className='font-medium'>Валидный UUID</span>
-									</div>
-									<div className='space-y-1 text-sm'>
-										<div>Версия: {validationResult.version}</div>
-										<div>Вариант: {validationResult.variant}</div>
-										{validationResult.timestamp && (
-											<div>Время: {validationResult.timestamp}</div>
-										)}
-										{validationResult.node && (
-											<div>Node: {validationResult.node}</div>
-										)}
-									</div>
+										<Trash2 className='w-4 h-4' />
+										{t('clear')}
+									</Button>
 								</div>
 							)}
 						</div>
-					</WidgetSection>
 
-					{/* Info */}
-					<WidgetSection
-						icon={<Info className='h-5 w-5' />}
-						title='О UUID'
-						description='Информация о типах UUID'
-						className='bg-muted/50'
-					>
-						<div className='space-y-3 text-sm text-muted-foreground'>
+						{uuids.length === 1 ? (
+							<div className='relative group'>
+								<Input
+									value={uuids[0].value}
+									readOnly
+									className='font-mono text-lg h-14 pr-12'
+									onClick={e => (e.target as HTMLInputElement).select()}
+								/>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() => copyToClipboard(uuids[0].value, uuids[0].id)}
+									className='absolute right-2 top-1/2 -translate-y-1/2'
+								>
+									{copiedId === uuids[0].id ? (
+										<Check className='w-4 h-4 text-green-500' />
+									) : (
+										<Copy className='w-4 h-4' />
+									)}
+								</Button>
+							</div>
+						) : uuids.length > 1 ? (
+							<textarea
+								ref={textareaRef}
+								value={uuids.map(u => u.value).join('\n')}
+								readOnly
+								className='w-full h-48 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary'
+								onClick={e => (e.target as HTMLTextAreaElement).select()}
+							/>
+						) : (
+							<div className='h-14 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm'>
+								{t('placeholder')}
+							</div>
+						)}
+					</div>
+				</CardContent>
+			</Card>
+
+			{/* Validator and Info */}
+			<div className='grid gap-6 lg:grid-cols-2'>
+				{/* Validator */}
+				<Card>
+					<CardHeader>
+						<CardTitle className='flex items-center gap-2'>
+							<Shield className='w-5 h-5' />
+							{t('validator.title')}
+						</CardTitle>
+					</CardHeader>
+					<CardContent className='space-y-4'>
+						<div className='space-y-2'>
+							<Label>{t('validator.input')}</Label>
+							<Input
+								value={validationInput}
+								onChange={e => setValidationInput(e.target.value)}
+								placeholder={t('validator.placeholder')}
+								className='font-mono'
+								onKeyDown={e =>
+									e.key === 'Enter' && validateUUID(validationInput)
+								}
+							/>
+						</div>
+
+						<Button
+							onClick={() => validateUUID(validationInput)}
+							disabled={!validationInput}
+							className='w-full'
+						>
+							{t('validator.validate')}
+						</Button>
+
+						{validationResult && (
+							<div
+								className={cn(
+									'p-4 rounded-lg border',
+									validationResult.valid
+										? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
+										: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
+								)}
+							>
+								<div className='flex items-center gap-2 mb-2'>
+									{validationResult.valid ? (
+										<Check className='w-5 h-5 text-green-600 dark:text-green-400' />
+									) : (
+										<AlertCircle className='w-5 h-5 text-red-600 dark:text-red-400' />
+									)}
+									<span className='font-medium'>{validationResult.info}</span>
+								</div>
+								{validationResult.valid && (
+									<div className='space-y-1 text-sm'>
+										{validationResult.version && (
+											<div>
+												{t('validator.version')}: {validationResult.version}
+											</div>
+										)}
+										{validationResult.variant && (
+											<div>
+												{t('validator.variant')}: {validationResult.variant}
+											</div>
+										)}
+									</div>
+								)}
+							</div>
+						)}
+					</CardContent>
+				</Card>
+
+				{/* Info */}
+				<Card>
+					<CardHeader>
+						<CardTitle className='flex items-center gap-2'>
+							<Info className='w-5 h-5' />
+							{t('info.title')}
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className='space-y-4 text-sm'>
 							<div>
-								<h4 className='font-medium text-foreground mb-1'>Version 1</h4>
-								<p>
-									Основан на времени и MAC-адресе. Может раскрыть информацию о
-									системе.
-								</p>
+								<h4 className='font-medium mb-1'>{t('info.whatIs')}</h4>
+								<p className='text-muted-foreground'>{t('info.description')}</p>
 							</div>
 							<div>
-								<h4 className='font-medium text-foreground mb-1'>Version 4</h4>
-								<p>Случайный UUID. Самый популярный и безопасный вариант.</p>
-							</div>
-							<div>
-								<h4 className='font-medium text-foreground mb-1'>
-									Version 3 & 5
-								</h4>
-								<p>
-									Основаны на namespace и имени. v3 использует MD5, v5 - SHA-1.
-								</p>
-							</div>
-							<div>
-								<h4 className='font-medium text-foreground mb-1'>Формат</h4>
-								<p className='font-mono text-xs'>
+								<h4 className='font-medium mb-1'>{t('info.structure')}</h4>
+								<code className='text-xs bg-muted px-2 py-1 rounded'>
 									xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
+								</code>
+								<p className='text-muted-foreground text-xs mt-1'>
+									M = {t('info.versionDigit')}, N = {t('info.variantDigit')}
 								</p>
-								<p className='mt-1'>M - версия, N - вариант</p>
+							</div>
+							<div className='space-y-2'>
+								<h4 className='font-medium'>{t('info.commonUse')}</h4>
+								<ul className='text-muted-foreground space-y-1'>
+									<li>• {t('info.use1')}</li>
+									<li>• {t('info.use2')}</li>
+									<li>• {t('info.use3')}</li>
+									<li>• {t('info.use4')}</li>
+								</ul>
 							</div>
 						</div>
-					</WidgetSection>
-				</div>
+					</CardContent>
+				</Card>
 			</div>
-		</WidgetLayout>
+		</div>
 	)
 }

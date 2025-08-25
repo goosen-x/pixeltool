@@ -25,10 +25,11 @@ import {
 	Fingerprint
 } from 'lucide-react'
 import { useSystemInfo } from '@/lib/hooks/widgets'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 
 export default function SystemInfoPage() {
 	const t = useTranslations('widgets.systemInfo')
+	const locale = useLocale()
 
 	const {
 		mounted,
@@ -43,7 +44,10 @@ export default function SystemInfoPage() {
 		getDeviceName
 	} = useSystemInfo({
 		translations: {
-			copied: t('toast.copied'),
+			copied:
+				locale === 'ru'
+					? '__ITEM__ скопировано в буфер обмена'
+					: '__ITEM__ copied to clipboard',
 			copyError: t('toast.copyError'),
 			refreshed: t('toast.refreshed')
 		}

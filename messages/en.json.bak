@@ -405,7 +405,6 @@
 			"min": "Min",
 			"max": "Max",
 			"viewport": "Viewport",
-			"property": "Property",
 			"result": "Result",
 			"liveExample": "Live Example",
 			"liveExampleText": "This text uses the calculated clamp formula. Try editing this text or resize your browser window to see how it scales smoothly between the minimum and maximum values! 🎨",
@@ -431,40 +430,23 @@
 			"quotes": "Quotes",
 			"single": "Single",
 			"double": "Double",
-			"insertSvg": "Insert SVG",
+			"insertSvg": "Insert SVG:",
 			"takeEncoded": "Take encoded:",
 			"readyForCss": "Ready for CSS:",
-			"preview": "Preview",
-			"settings": "Settings",
-			"background": "Background",
+			"preview": "Preview:",
+			"background": "Background:",
 			"white": "White",
 			"silver": "Silver",
 			"black": "Black",
 			"example": "Example",
-			"clear": "Clear",
-			"output": "Output",
-			"encoded": "Encoded",
-			"css": "CSS",
-			"tailwind": "Tailwind",
-			"encodedResult": "Encoded Result",
-			"cssResult": "CSS Result",
-			"tailwindResult": "Tailwind Config",
-			"copy": "Copy",
-			"characters": "characters",
 			"placeholder": "Paste your SVG code here or drag & drop an SVG file...",
 			"encodedPlaceholder": "Encoded result will appear here...",
 			"cssPlaceholder": "CSS result will appear here...",
-			"tailwindPlaceholder": "Tailwind config will appear here...",
-			"dragDropHint": "Drag & drop SVG files here",
 			"dropFile": "Drop SVG file here",
 			"editHint": "You can edit this field to decode back to SVG",
-			"cssHint": "Ready to use in your CSS",
-			"tailwindHint": "Use this inline Tailwind class in your HTML",
-			"previewEmpty": "Preview will appear here",
 			"toast": {
 				"encodedCopied": "Encoded SVG copied to clipboard",
 				"cssCopied": "CSS code copied to clipboard",
-				"tailwindCopied": "Tailwind config copied to clipboard",
 				"copyError": "Failed to copy to clipboard",
 				"fileLoaded": "SVG file loaded successfully",
 				"invalidFile": "Please drop a valid SVG file"
@@ -488,7 +470,6 @@
 			"alternativeUrls": "Alternative Thumbnail URLs",
 			"thumbnail": "Thumbnail",
 			"copyUrl": "Copy URL",
-			"download": "Download",
 			"errors": {
 				"invalid": "Invalid YouTube URL or video ID"
 			},
@@ -580,7 +561,7 @@
 			"copy": "Copy",
 			"types": {
 				"url": "URL",
-				"appStore": "Mobile App",
+				"appStore": "App Store",
 				"wifi": "WiFi"
 			},
 			"url": {
@@ -2307,239 +2288,23 @@
 		"base64Encoder": {
 			"title": "Base64 Encoder/Decoder",
 			"description": "Encode and decode data in Base64 format with file support",
-			"useCase": "Encode and decode data in Base64 format with file support",
-			"mode": {
-				"encode": "Encode",
-				"decode": "Decode"
-			},
-			"input": {
-				"title": "Input",
-				"text": "Text",
-				"file": "File",
-				"dataUrl": "Data URL",
-				"dropFile": "Drop your file here",
-				"or": "or",
-				"selectFile": "Select File",
-				"maxSize": "Maximum file size: {size}",
-				"placeholder": {
-					"text": {
-						"encode": "Enter text to encode...",
-						"decode": "Enter Base64 string to decode..."
-					},
-					"file": {
-						"encode": "Select a file to encode...",
-						"decode": "Select a Base64 file to decode..."
-					},
-					"dataurl": {
-						"encode": "Enter Data URL to extract Base64...",
-						"decode": "Enter Data URL to decode..."
-					}
-				}
-			},
-			"output": {
-				"title": "Output",
-				"placeholder": {
-					"encode": "Base64 encoded result will appear here...",
-					"decode": "Decoded text will appear here..."
-				}
-			},
-			"options": {
-				"title": "Options",
-				"urlSafe": "URL-safe encoding",
-				"lineBreaks": "Add line breaks (76 chars)",
-				"lineNumbers": "Show line numbers"
-			},
-			"actions": {
-				"copy": "Copy",
-				"download": "Download",
-				"changeFile": "Change File",
-				"swap": {
-					"encode": "Swap & Decode",
-					"decode": "Swap & Encode"
-				}
-			},
-			"stats": {
-				"increase": "Size Increase",
-				"decrease": "Size Decrease",
-				"time": "Processing Time"
-			},
-			"history": {
-				"title": "Recent Operations",
-				"clear": "Clear History"
-			},
-			"preview": {
-				"title": "Image Preview",
-				"toggle": "Toggle preview"
-			},
-			"examples": {
-				"title": "Quick Examples",
-				"text": "Plain Text",
-				"json": "JSON Data",
-				"html": "HTML Code",
-				"base64": "Base64 String",
-				"dataUrl": "Data URL",
-				"urlSafe": "URL-Safe Base64"
-			},
-			"success": {
-				"encode": "Successfully encoded",
-				"decode": "Successfully decoded",
-				"copied": "Copied to clipboard",
-				"downloaded": "File downloaded",
-				"cleared": "All cleared",
-				"historyCleared": "History cleared"
-			},
-			"errors": {
-				"encodeFailed": "Failed to encode data",
-				"decodeFailed": "Failed to decode - invalid Base64",
-				"fileTooLarge": "File is too large. Maximum size is 10MB",
-				"copyFailed": "Failed to copy to clipboard"
-			},
-			"info": {
-				"historyLoaded": "History item loaded"
-			},
-			"shortcuts": {
-				"process": "Process",
-				"copy": "Copy result",
-				"swap": "Swap input/output",
-				"clear": "Clear all",
-				"download": "Download result"
-			}
+			"useCase": "Encode and decode data in Base64 format with file support"
 		},
 		"jwtDecoder": {
 			"title": "JWT Decoder",
 			"description": "Decode and analyze JSON Web Tokens (JWT) structure",
-			"useCase": "Decode and analyze JSON Web Tokens (JWT) structure",
-			"examples": "JWT Token Examples",
-			"input": {
-				"label": "JWT Token",
-				"placeholder": "Paste JWT token for decoding...",
-				"clear": "Clear"
-			},
-			"validation": {
-				"validFormat": "Valid format",
-				"errors": "Errors"
-			},
-			"tabs": {
-				"header": "Header",
-				"payload": "Payload",
-				"signature": "Signature"
-			},
-			"output": {
-				"title": "Decoded Data",
-				"copyJson": "JSON",
-				"copyPayload": "Payload",
-				"noHeader": "No data in header",
-				"noPayload": "No payload data",
-				"signatureTitle": "Signature (Base64)",
-				"noSignature": "None",
-				"signatureWarning": "Signature Verification",
-				"signatureNote": "Signature verification requires a secret key or public key. This tool only decodes tokens without signature verification."
-			},
-			"placeholder": {
-				"text": "Paste JWT token for decoding"
-			},
-			"toast": {
-				"copied": "Copied to clipboard!",
-				"exampleLoaded": "Example loaded:",
-				"reset": "Decoder reset"
-			},
-			"examples": {
-				"auth0": "Auth0 Token",
-				"auth0Desc": "Auth0 JWT example",
-				"firebase": "Firebase Token",
-				"firebaseDesc": "Firebase Authentication JWT",
-				"cognito": "AWS Cognito",
-				"cognitoDesc": "AWS Cognito Access Token",
-				"simple": "Simple Token",
-				"simpleDesc": "Minimal JWT",
-				"expired": "Expired Token",
-				"expiredDesc": "Expired token",
-				"invalid": "Invalid JWT",
-				"invalidDesc": "Invalid token example"
-			},
-			"errors": {
-				"invalidParts": "JWT must consist of 3 parts separated by dots",
-				"missingAlg": "Missing required \"alg\" field in header",
-				"invalidTyp": "The \"typ\" field must be \"JWT\" or \"JWS\"",
-				"headerDecode": "Header decoding error",
-				"tokenExpired": "Token expired",
-				"notActiveYet": "Token not active yet. Active from",
-				"payloadDecode": "Payload decoding error",
-				"invalidFormat": "Invalid JWT format"
-			},
-			"timeLeft": {
-				"expired": "Expired"
-			},
-			"algorithms": {
-				"HS256": "HMAC with SHA-256",
-				"HS384": "HMAC with SHA-384",
-				"HS512": "HMAC with SHA-512",
-				"RS256": "RSA with SHA-256",
-				"RS384": "RSA with SHA-384",
-				"RS512": "RSA with SHA-512",
-				"ES256": "ECDSA with SHA-256",
-				"ES384": "ECDSA with SHA-384",
-				"ES512": "ECDSA with SHA-512",
-				"PS256": "RSA-PSS with SHA-256",
-				"PS384": "RSA-PSS with SHA-384",
-				"PS512": "RSA-PSS with SHA-512",
-				"none": "No signature"
-			}
+			"useCase": "Decode and analyze JSON Web Tokens (JWT) structure"
 		},
 		"uuidGenerator": {
 			"title": "UUID Generator",
-			"description": "Generate universally unique identifiers (UUID) in multiple formats",
-			"useCase": "Create unique IDs for databases, APIs, and distributed systems",
-			"version": "Version",
-			"format": "Format",
-			"quantity": "Quantity",
-			"generate": "Generate",
-			"result": "Result",
-			"copyAll": "Copy All",
-			"download": "Download",
-			"clear": "Clear",
-			"placeholder": "Click Generate to create UUIDs",
-			"versions": {
-				"v4": "Random",
-				"v7": "Time + Random",
-				"v1": "Time-based",
-				"nil": "All zeros"
-			},
-			"formats": {
-				"standard": "Standard",
-				"uppercase": "Uppercase",
-				"noHyphens": "No hyphens",
-				"braces": "Braces"
-			},
-			"validator": {
-				"title": "UUID Validator",
-				"input": "UUID to validate",
-				"placeholder": "Paste UUID here...",
-				"validate": "Validate",
-				"valid": "Valid UUID",
-				"invalid": "Invalid UUID format",
-				"version": "Version",
-				"variant": "Variant",
-				"unknown": "Unknown"
-			},
-			"info": {
-				"title": "About UUID",
-				"whatIs": "What is UUID?",
-				"description": "UUID (Universally Unique Identifier) is a 128-bit number used to identify information in computer systems.",
-				"structure": "Structure",
-				"versionDigit": "version",
-				"variantDigit": "variant",
-				"commonUse": "Common Uses",
-				"use1": "Database primary keys",
-				"use2": "API resource identifiers",
-				"use3": "Distributed system IDs",
-				"use4": "Session tokens"
-			},
-			"toast": {
-				"copied": "UUID copied to clipboard",
-				"copyError": "Failed to copy to clipboard",
-				"generated": "Generated {{count}} UUIDs",
-				"downloaded": "UUIDs downloaded"
+			"description": "Generate UUID/GUID in various versions (v1, v3, v4, v5)",
+			"useCase": "Generate UUID/GUID in various versions (v1, v3, v4, v5)",
+			"shortcuts": {
+				"generate": "Generate new UUID",
+				"copy": "Copy last UUID",
+				"copyAll": "Copy all UUIDs",
+				"download": "Download UUIDs",
+				"clear": "Clear history"
 			}
 		},
 		"compoundInterest": {
@@ -2796,6 +2561,197 @@
 			}
 		},
 		"footer": "Your preferences are saved locally and will persist across sessions"
+	},
+	"textToSpeech": {
+		"title": "Text to Speech",
+		"description": "Convert any text to speech with customizable voice settings and multiple languages",
+		"enterText": "Enter text to speak",
+		"placeholder": "Type or paste your text here, then press ENTER or click Speak...",
+		"speak": "Speak",
+		"resume": "Resume",
+		"pause": "Pause",
+		"stop": "Stop",
+		"repeat": "Repeat",
+		"characters": "characters",
+		"settings": "Voice Settings",
+		"voice": "Voice",
+		"selectVoice": "Select a voice",
+		"speed": "Speed",
+		"pitch": "Pitch",
+		"volume": "Volume",
+		"currentVoice": "Current voice",
+		"local": "Local",
+		"history": "History",
+		"noHistory": "No History Yet",
+		"noHistoryDescription": "Your speech history will appear here after you start using text-to-speech.",
+		"startSpeaking": "Start Speaking",
+		"clearAll": "Clear All",
+		"bookmarks": "Bookmarks",
+		"saveBookmark": "Save Bookmark",
+		"bookmarkName": "Bookmark name",
+		"bookmarkHint": "Enter text above and give it a name to save as bookmark with current voice settings.",
+		"savedBookmarks": "Saved Bookmarks",
+		"noBookmarks": "No Bookmarks Saved",
+		"noBookmarksDescription": "Save your favorite texts with voice settings for quick access later.",
+		"save": "Save",
+		"export": "Export",
+		"copy": "Copy",
+		"quickExamples": "Quick Examples",
+		"examples": {
+			"greeting": "Hello, how are you today?",
+			"announcement": "Attention everyone, the meeting will start in 5 minutes.",
+			"story": "Once upon a time, in a land far away, there lived a brave knight who embarked on an incredible adventure.",
+			"poem": "Roses are red, violets are blue, this text-to-speech tool is perfect for you!"
+		},
+		"tabs": {
+			"main": "Main",
+			"settings": "Settings",
+			"history": "History",
+			"bookmarks": "Bookmarks"
+		},
+		"about": {
+			"title": "About Text to Speech",
+			"description": "Text-to-Speech (TTS) uses the browser's Speech Synthesis API to convert written text into spoken words. The available voices depend on your operating system and language settings.",
+			"features": "Key Features",
+			"feature1": "Multiple languages and voice options",
+			"feature2": "Customizable speed, pitch, and volume",
+			"feature3": "History tracking and bookmarks",
+			"feature4": "Offline support with local voices",
+			"tips": "Usage Tips",
+			"tip1Title": "Keyboard Shortcut",
+			"tip1Description": "Press Ctrl/Cmd + Enter to speak text quickly",
+			"tip2Title": "Local Voices",
+			"tip2Description": "Local voices provide better quality and work offline"
+		},
+		"errors": {
+			"noText": "Please enter some text",
+			"emptyText": "Please enter some text",
+			"speechFailed": "Speech synthesis failed",
+			"noBookmarkName": "Please enter a bookmark name",
+			"invalidFileType": "Only .txt files are supported"
+		},
+		"success": {
+			"bookmarkAdded": "Bookmark added successfully!",
+			"textExported": "Text exported to file",
+			"textImported": "Text imported successfully",
+			"textCopied": "Text copied to clipboard",
+			"historyCleared": "History cleared successfully"
+		},
+		"info": {
+			"featureNotSupported": "This feature requires advanced browser APIs"
+		},
+		"textCaseConverter": {
+			"title": "Text Case Converter",
+			"description": "Convert text between different letter cases and formatting styles",
+			"useCase": "Transform text to uppercase, lowercase, camelCase, snake_case, and more",
+			"input": "Input Text",
+			"output": "Converted Text",
+			"placeholder": "Enter or paste your text here...",
+			"outputPlaceholder": "Converted text will appear here...",
+			"settings": "Conversion Settings",
+			"caseType": "Case Type",
+			"convert": "Convert",
+			"copy": "Copy",
+			"download": "Download",
+			"clear": "Clear",
+			"copied": "Copied to clipboard!",
+			"downloaded": "File downloaded!",
+			"examples": "Examples",
+			"originalText": "Original text:",
+			"cases": {
+				"uppercase": "UPPERCASE",
+				"lowercase": "lowercase",
+				"capitalize": "Capitalize Each Word",
+				"title": "Title Case",
+				"sentence": "Sentence case",
+				"camelCase": "camelCase",
+				"PascalCase": "PascalCase",
+				"snake_case": "snake_case",
+				"kebab-case": "kebab-case",
+				"alternating": "aLtErNaTiNg CaSe",
+				"inverse": "iNVERSE cASE"
+			},
+			"faqs": [
+				{
+					"question": "What is text case conversion?",
+					"answer": "Text case conversion is the process of changing the capitalization pattern of text. It includes converting to uppercase, lowercase, and various programming case conventions."
+				},
+				{
+					"question": "What is Title Case?",
+					"answer": "Title Case capitalizes the first letter of each major word while keeping articles, prepositions, and conjunctions lowercase (unless they're the first word)."
+				},
+				{
+					"question": "What's the difference between camelCase and PascalCase?",
+					"answer": "camelCase starts with a lowercase letter (helloWorld), while PascalCase starts with an uppercase letter (HelloWorld). Both are commonly used in programming."
+				},
+				{
+					"question": "When should I use snake_case vs kebab-case?",
+					"answer": "snake_case uses underscores and is common in Python and Ruby. kebab-case uses hyphens and is popular in URLs and CSS class names."
+				},
+				{
+					"question": "What is alternating case used for?",
+					"answer": "Alternating case (aLtErNaTiNg) alternates between lowercase and uppercase letters. It's mainly used for stylistic purposes or mockery in informal text."
+				}
+			]
+		},
+		"imageSizeChecker": {
+			"title": "Image Size Checker",
+			"description": "Check dimensions, file size, and aspect ratio of images instantly",
+			"useCase": "Analyze image properties including dimensions, file size, format, and aspect ratio",
+			"uploadArea": "Upload Images",
+			"dragDrop": "Drag and drop images here",
+			"or": "or",
+			"browseFiles": "Browse Files",
+			"supportedFormats": "Supports JPG, PNG, GIF, WebP, SVG, and more",
+			"results": "Results",
+			"exportCSV": "Export CSV",
+			"clearAll": "Clear All",
+			"dimensions": "Dimensions",
+			"aspectRatio": "Aspect Ratio",
+			"fileSize": "File Size",
+			"format": "Format",
+			"noImages": "Please select image files",
+			"errorProcessing": "Error processing",
+			"imagesProcessed": "images processed successfully",
+			"exported": "Data exported to CSV",
+			"commonAspectRatios": "Common Aspect Ratios",
+			"photography": "Photography",
+			"socialMedia": "Social Media",
+			"square": "Square",
+			"traditional": "Traditional",
+			"classic35mm": "Classic 35mm",
+			"widescreen": "Widescreen",
+			"post": "Post",
+			"story": "Story",
+			"thumbnail": "Thumbnail",
+			"header": "Header",
+			"faqs": [
+				{
+					"question": "What image formats are supported?",
+					"answer": "The tool supports all common image formats including JPG, PNG, GIF, WebP, SVG, BMP, and TIFF. It can analyze any format your browser can display."
+				},
+				{
+					"question": "Is there a file size limit?",
+					"answer": "There's no hard limit, but very large images (over 50MB) might take longer to process. The tool works entirely in your browser, so performance depends on your device."
+				},
+				{
+					"question": "How is aspect ratio calculated?",
+					"answer": "Aspect ratio is calculated by finding the greatest common divisor of width and height, then expressing them as the simplest whole number ratio (e.g., 16:9 instead of 1920:1080)."
+				},
+				{
+					"question": "Can I check multiple images at once?",
+					"answer": "Yes! You can select or drag multiple images at once. The tool will process them all and display the results in a grid layout."
+				},
+				{
+					"question": "Is my image data safe?",
+					"answer": "Absolutely. All processing happens locally in your browser. No images are uploaded to any server. Your files remain completely private."
+				}
+			]
+		},
+		"asciiArtGenerator": {
+			"title": "ASCII Art Generator",
+			"description": "Convert text and images to ASCII art"
+		}
 	},
 	"Footer": {
 		"badge": "50+ Professional Tools",

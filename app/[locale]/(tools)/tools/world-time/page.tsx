@@ -31,12 +31,13 @@ import {
 	Sunrise
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { useWorldTime } from '@/lib/hooks/widgets'
 import { AnalogClock } from '@/components/ui/analog-clock'
 
 export default function WorldTimePage() {
 	const t = useTranslations('widgets.worldTime')
+	const locale = useLocale()
 
 	const {
 		mounted,
@@ -56,7 +57,8 @@ export default function WorldTimePage() {
 	} = useWorldTime({
 		translations: {
 			alreadyAdded: t('toast.alreadyAdded'),
-			cityAdded: t('toast.cityAdded'),
+			cityAdded:
+				locale === 'ru' ? '__CITY__ добавлен' : '{city} has been added',
 			enterTimeDate: t('toast.enterTimeDate'),
 			invalidDateTime: t('toast.invalidDateTime')
 		}
