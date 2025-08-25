@@ -32,9 +32,9 @@ function shuffleArray<T>(array: T[]): T[] {
 export default function DrawLotsPage() {
 	const t = useTranslations('widgets.drawLots')
 	const [mounted, setMounted] = useState(false)
-	const [inputText, setInputText] = useState(
-		'Option 1\nOption 2\nOption 3\nOption 4\nOption 5'
-	)
+	const defaultValues =
+		'Albert Einstein\nMarie Curie\nLeonardo da Vinci\nNikola Tesla'
+	const [inputText, setInputText] = useState(defaultValues)
 	const [lots, setLots] = useState<Lot[]>([])
 	const [isDrawing, setIsDrawing] = useState(false)
 	const [error, setError] = useState<string | null>(null)
@@ -123,15 +123,28 @@ export default function DrawLotsPage() {
 	return (
 		<div className='space-y-6'>
 			{!isDrawing ? (
-				<>
+				<div className='grid gap-6 lg:grid-cols-[1fr_400px]'>
 					{/* Input Section */}
 					<Card className='p-6'>
-						<Label
-							htmlFor='items'
-							className='text-base font-semibold mb-2 block'
-						>
-							{t('inputLabel')}
-						</Label>
+						<div className='flex items-center justify-between mb-2 h-9'>
+							<Label htmlFor='items' className='text-base font-semibold'>
+								{t('inputLabel')}
+							</Label>
+							<Button
+								variant='ghost'
+								size='sm'
+								onClick={() => setInputText(defaultValues)}
+								className={cn(
+									'text-xs transition-opacity',
+									inputText === defaultValues
+										? 'opacity-0 pointer-events-none'
+										: 'opacity-100'
+								)}
+							>
+								<RotateCcw className='w-3 h-3 mr-1' />
+								{t('fillDefaults')}
+							</Button>
+						</div>
 						<Textarea
 							id='items'
 							value={inputText}
@@ -157,7 +170,7 @@ export default function DrawLotsPage() {
 					</Card>
 
 					{/* Instructions */}
-					<Card className='p-6 bg-muted/50'>
+					<Card className='p-6 bg-muted/50 h-fit'>
 						<h3 className='font-semibold mb-3'>{t('howToUse.title')}</h3>
 						<ol className='space-y-2 text-sm text-muted-foreground'>
 							<li>{t('howToUse.step1')}</li>
@@ -166,7 +179,7 @@ export default function DrawLotsPage() {
 							<li>{t('howToUse.step4')}</li>
 						</ol>
 					</Card>
-				</>
+				</div>
 			) : (
 				<>
 					{/* Drawing Area */}

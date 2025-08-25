@@ -15,7 +15,6 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { KeyboardShortcutInfo } from '@/components/widgets'
 import {
 	Users,
 	Shuffle,
@@ -25,6 +24,7 @@ import {
 	Info,
 	Download
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface Team {
 	id: number
@@ -56,7 +56,7 @@ function distributeIntoTeams(
 	for (let i = 0; i < numberOfTeams; i++) {
 		teams.push({
 			id: i + 1,
-			name: `Team ${i + 1}`,
+			name: `${i + 1}`,
 			members: []
 		})
 	}
@@ -72,6 +72,8 @@ function distributeIntoTeams(
 
 export default function TeamRandomizerPage() {
 	const t = useTranslations('widgets.teamRandomizer')
+	const defaultParticipants =
+		'Alice Johnson\nBob Smith\nCarol Williams\nDavid Brown\nEve Davis\nFrank Miller\nGrace Wilson'
 	const [participantsInput, setParticipantsInput] = useState('')
 	const [numberOfTeams, setNumberOfTeams] = useState(2)
 	const [preferredTeamSize, setPreferredTeamSize] = useState('')
@@ -215,43 +217,62 @@ export default function TeamRandomizerPage() {
 	}
 
 	return (
-		<div className='container mx-auto p-4 max-w-6xl'>
-			<div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-				{/* Left Panel - Input */}
-				<div className='lg:col-span-2 space-y-6'>
-					{/* Participants List */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center gap-2'>
-								<Users className='w-4 h-4' />
-								{t('participantsList')}
-							</CardTitle>
-							<CardDescription>{t('participantsDesc')}</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<Textarea
-								placeholder={t('participantsPlaceholder')}
-								value={participantsInput}
-								onChange={e => setParticipantsInput(e.target.value)}
-								className='min-h-[200px]'
-							/>
-							{participants.length > 0 && (
-								<div className='mt-2 text-sm text-muted-foreground'>
-									{t('totalParticipants')} {participants.length}
-								</div>
-							)}
-						</CardContent>
-					</Card>
+		<div className='w-full space-y-4'>
+			{/* Main Card */}
+			<Card className='p-4 sm:p-6'>
+				<div className='grid lg:grid-cols-2 gap-6'>
+					{/* Left Column - Input */}
+					<div>
+						{/* Header with participant count */}
+						<div className='flex items-center justify-between mb-4'>
+							<div className='flex items-center gap-2'>
+								<Users className='w-5 h-5 text-muted-foreground' />
+								<h2 className='text-lg font-semibold'>
+									{t('participantsList')}
+								</h2>
+								{participants.length > 0 && (
+									<Badge variant='secondary' className='ml-2'>
+										{participants.length}
+									</Badge>
+								)}
+							</div>
+							<Button
+								variant='ghost'
+								size='sm'
+								onClick={() => setParticipantsInput(defaultParticipants)}
+								className={cn(
+									'text-xs transition-opacity',
+									participantsInput === defaultParticipants
+										? 'opacity-0 pointer-events-none'
+										: 'opacity-100'
+								)}
+							>
+								<RotateCcw className='w-3 h-3 mr-1' />
+								{t('fillDefaults')}
+							</Button>
+						</div>
 
-					{/* Team Settings */}
-					<Card>
-						<CardHeader>
-							<CardTitle>{t('teamSettings')}</CardTitle>
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-								<div>
-									<Label htmlFor='numberOfTeams'>{t('numberOfTeams')}</Label>
+						{/* Participants Input */}
+						<Textarea
+							placeholder={t('participantsPlaceholder')}
+							value={participantsInput}
+							onChange={e => setParticipantsInput(e.target.value)}
+							className='min-h-[200px] resize-none'
+						/>
+					</div>
+
+					{/* Right Column - Settings */}
+					<div className='flex flex-col justify-between'>
+						<div className='space-y-4'>
+							<h3 className='font-semibold text-base'>{t('teamSettings')}</h3>
+							<div className='space-y-4'>
+								<div className='space-y-2'>
+									<Label
+										htmlFor='numberOfTeams'
+										className='text-sm font-medium'
+									>
+										{t('numberOfTeams')}
+									</Label>
 									<Input
 										id='numberOfTeams'
 										type='number'
@@ -261,10 +282,13 @@ export default function TeamRandomizerPage() {
 										onChange={e =>
 											setNumberOfTeams(parseInt(e.target.value) || 2)
 										}
+										className='w-full'
 									/>
 								</div>
-								<div>
-									<Label htmlFor='teamSize'>{t('teamSize')}</Label>
+								<div className='space-y-2'>
+									<Label htmlFor='teamSize' className='text-sm font-medium'>
+										{t('teamSize')}
+									</Label>
 									<Input
 										id='teamSize'
 										type='number'
@@ -272,147 +296,118 @@ export default function TeamRandomizerPage() {
 										placeholder='Auto'
 										value={preferredTeamSize}
 										onChange={e => setPreferredTeamSize(e.target.value)}
+										className='w-full'
 									/>
-									<p className='text-xs text-muted-foreground mt-1'>
+									<p className='text-xs text-muted-foreground'>
 										{t('teamSizeDesc')}
 									</p>
 								</div>
 							</div>
-						</CardContent>
-					</Card>
-
-					{/* Action Buttons */}
-					<div className='flex flex-wrap gap-2'>
+						</div>
 						<Button
 							onClick={generateTeams}
 							disabled={participants.length < 2}
-							className='flex-1 min-w-[120px]'
+							className='w-full mt-6'
+							size='lg'
 						>
 							<Shuffle className='w-4 h-4 mr-2' />
 							{teams.length === 0 ? t('generateTeams') : t('regenerateTeams')}
 						</Button>
-						<Button
-							variant='outline'
-							onClick={resetAll}
-							className='flex items-center gap-2'
-						>
-							<RotateCcw className='w-4 h-4' />
-							{t('resetAll')}
-						</Button>
+					</div>
+				</div>
+			</Card>
+
+			{/* Validation Errors */}
+			{errors.length > 0 && (
+				<div className='flex items-start gap-2 p-3 bg-destructive/10 text-destructive rounded-lg'>
+					<AlertCircle className='w-4 h-4 mt-0.5' />
+					<div className='text-sm'>
+						{errors.map((error, index) => (
+							<p key={index}>{error}</p>
+						))}
+					</div>
+				</div>
+			)}
+
+			{/* Results Section */}
+			{teams.length > 0 && (
+				<div className='space-y-4'>
+					<div className='flex items-center justify-between'>
+						<h3 className='text-lg font-semibold'>{t('results')}</h3>
+						<div className='flex gap-2'>
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={copyTeamsToClipboard}
+								title={t('copyToClipboard')}
+							>
+								<Copy className='w-4 h-4' />
+							</Button>
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={exportTeams}
+								title={t('exportTeams')}
+							>
+								<Download className='w-4 h-4' />
+							</Button>
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={resetAll}
+								title={t('resetAll')}
+							>
+								<RotateCcw className='w-4 h-4' />
+							</Button>
+						</div>
 					</div>
 
-					{/* Validation Errors */}
-					{errors.length > 0 && (
-						<Card className='border-destructive'>
-							<CardContent className='pt-6'>
-								<div className='flex items-start gap-2'>
-									<AlertCircle className='w-4 h-4 text-destructive mt-0.5' />
-									<div>
-										<p className='text-sm font-medium text-destructive mb-1'>
-											Validation Errors:
+					{/* Team Cards Grid */}
+					<div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+						{teams.map((team, teamIndex) => {
+							const colors = [
+								'bg-blue-500/10 border-blue-500/20',
+								'bg-green-500/10 border-green-500/20',
+								'bg-purple-500/10 border-purple-500/20',
+								'bg-orange-500/10 border-orange-500/20',
+								'bg-pink-500/10 border-pink-500/20',
+								'bg-yellow-500/10 border-yellow-500/20'
+							]
+							const colorClass = colors[teamIndex % colors.length]
+
+							return (
+								<Card key={team.id} className={cn('p-4 border-2', colorClass)}>
+									<div className='flex items-center justify-between mb-3'>
+										<h4 className='font-semibold'>
+											{t('team')} {team.name}
+										</h4>
+										<Badge variant='secondary' className='text-xs'>
+											{team.members.length}
+										</Badge>
+									</div>
+									{team.members.length === 0 ? (
+										<p className='text-sm text-muted-foreground italic'>
+											{t('emptyTeam')}
 										</p>
-										<ul className='text-sm text-destructive space-y-1'>
-											{errors.map((error, index) => (
-												<li key={index}>• {error}</li>
-											))}
-										</ul>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					)}
-				</div>
-
-				{/* Right Panel - Results */}
-				<div className='space-y-6'>
-					{/* Generated Teams */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center justify-between'>
-								<span>{t('results')}</span>
-								{teams.length > 0 && (
-									<div className='flex gap-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={copyTeamsToClipboard}
-										>
-											<Copy className='w-3 h-3' />
-										</Button>
-										<Button variant='outline' size='sm' onClick={exportTeams}>
-											<Download className='w-3 h-3' />
-										</Button>
-									</div>
-								)}
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							{teams.length === 0 ? (
-								<div className='text-center py-8 text-muted-foreground'>
-									<Users className='w-8 h-8 mx-auto mb-2 opacity-50' />
-									<p>{t('noResults')}</p>
-								</div>
-							) : (
-								<div className='space-y-4'>
-									{teams.map(team => (
-										<div key={team.id} className='space-y-2'>
-											<div className='flex items-center justify-between'>
-												<h3 className='font-semibold'>{team.name}</h3>
-												<Badge variant='secondary'>
-													{team.members.length}{' '}
-													{team.members.length === 1
-														? t('member')
-														: t('members')}
-												</Badge>
-											</div>
-											{team.members.length === 0 ? (
-												<p className='text-sm text-muted-foreground italic'>
-													{t('emptyTeam')}
-												</p>
-											) : (
-												<div className='flex flex-wrap gap-1'>
-													{team.members.map((member, index) => (
-														<Badge
-															key={index}
-															variant='outline'
-															className='text-xs'
-														>
-															{member}
-														</Badge>
-													))}
+									) : (
+										<div className='space-y-1'>
+											{team.members.map((member, index) => (
+												<div
+													key={index}
+													className='text-sm py-1 px-2 bg-background/50 rounded flex items-center gap-2'
+												>
+													<div className='w-1.5 h-1.5 rounded-full bg-current opacity-50' />
+													{member}
 												</div>
-											)}
-											{team.id < teams.length && (
-												<div className='border-t my-2' />
-											)}
+											))}
 										</div>
-									))}
-								</div>
-							)}
-						</CardContent>
-					</Card>
-
-					{/* Tips */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center gap-2'>
-								<Info className='w-4 h-4' />
-								{t('tips.title')}
-							</CardTitle>
-						</CardHeader>
-						<CardContent className='space-y-3'>
-							<div className='text-sm space-y-2'>
-								<p>• {t('tips.fairDistribution')}</p>
-								<p>• {t('tips.remainders')}</p>
-								<p>• {t('tips.regenerate')}</p>
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Keyboard Shortcuts */}
-					<KeyboardShortcutInfo />
+									)}
+								</Card>
+							)
+						})}
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	)
 }

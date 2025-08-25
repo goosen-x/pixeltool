@@ -21,11 +21,15 @@ export default function ClampCalculatorPage() {
 	const locale = useLocale() as 'en' | 'ru'
 	const t = useTranslations('widgets.clampCalculator')
 	const [unit, setUnit] = useState<'px' | 'rem'>('rem')
+	const [property, setProperty] = useState<'font-size' | 'margin' | 'padding'>(
+		'font-size'
+	)
 	const [minValue, setMinValue] = useState<number | ''>('')
 	const [maxValue, setMaxValue] = useState<number | ''>('')
 	const [minViewport, setMinViewport] = useState<number | ''>('')
 	const [maxViewport, setMaxViewport] = useState<number | ''>('')
 	const [copied, setCopied] = useState(false)
+	const [copiedTailwind, setCopiedTailwind] = useState(false)
 	const [errors, setErrors] = useState<string[]>([])
 
 	const toRem = (value: number) => +(value / 16).toFixed(3)
@@ -42,7 +46,25 @@ export default function ClampCalculatorPage() {
 		((numMaxValue - numMaxViewport * variablePart) / 16).toFixed(3)
 	)
 
-	const result = `clamp(${toRem(numMinValue)}rem,${constant ? ` ${constant}rem +` : ''} ${parseFloat((100 * variablePart).toFixed(2))}vw, ${toRem(numMaxValue)}rem)`
+	const clampValue = `clamp(${toRem(numMinValue)}rem,${constant ? ` ${constant}rem +` : ''} ${parseFloat((100 * variablePart).toFixed(2))}vw, ${toRem(numMaxValue)}rem)`
+
+	const result = `${property}: ${clampValue};`
+
+	// Convert to Tailwind CSS format
+	const minRemValue = toRem(numMinValue)
+	const maxRemValue = toRem(numMaxValue)
+	const constantRem = constant
+	const vwValue = parseFloat((100 * variablePart).toFixed(2))
+
+	// Map properties to Tailwind classes
+	const tailwindPrefixMap = {
+		'font-size': 'text',
+		margin: 'm',
+		padding: 'p'
+	}
+
+	const tailwindPrefix = tailwindPrefixMap[property]
+	const tailwindResult = `${tailwindPrefix}-[clamp(${minRemValue}rem,_${constantRem ? `${constantRem}rem_+_` : ''}${vwValue}vw,_${maxRemValue}rem)]`
 
 	const validate = useCallback(() => {
 		const newErrors: string[] = []
@@ -80,6 +102,17 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(result)
 			setCopied(true)
 			setTimeout(() => setCopied(false), 2000)
+			toast.success(t('toast.copied'))
+		} catch (err) {
+			toast.error(t('toast.copyError'))
+		}
+	}
+
+	const copyTailwindToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(tailwindResult)
+			setCopiedTailwind(true)
+			setTimeout(() => setCopiedTailwind(false), 2000)
 			toast.success(t('toast.copied'))
 		} catch (err) {
 			toast.error(t('toast.copyError'))
@@ -289,21 +322,88 @@ export default function ClampCalculatorPage() {
 			)}
 
 			<Card className='mt-6 p-6'>
-				<h3 className='font-semibold mb-4'>{t('result')}</h3>
-				<div className='bg-secondary rounded-lg p-4 font-mono text-sm flex items-center justify-between'>
-					<span className='text-secondary-foreground'>{result}</span>
-					<Button
-						size='sm'
-						variant='outline'
-						onClick={copyToClipboard}
-						className='ml-4 hover:bg-accent hover:text-white'
-					>
-						{copied ? (
-							<Check className='h-4 w-4 text-green-500' />
-						) : (
-							<Copy className='h-4 w-4' />
-						)}
-					</Button>
+				<div className='flex items-start justify-between mb-4'>
+					<h3 className='font-semibold'>{t('result')}</h3>
+					<div>
+						<RadioGroup
+							value={property}
+							onValueChange={v =>
+								setProperty(v as 'font-size' | 'margin' | 'padding')
+							}
+							className='flex items-center space-x-3'
+						>
+							<div className='flex items-center space-x-2'>
+								<RadioGroupItem value='font-size' id='font-size' />
+								<Label htmlFor='font-size' className='text-sm cursor-pointer'>
+									font-size
+								</Label>
+							</div>
+							<div className='flex items-center space-x-2'>
+								<RadioGroupItem value='margin' id='margin' />
+								<Label htmlFor='margin' className='text-sm cursor-pointer'>
+									margin
+								</Label>
+							</div>
+							<div className='flex items-center space-x-2'>
+								<RadioGroupItem value='padding' id='padding' />
+								<Label htmlFor='padding' className='text-sm cursor-pointer'>
+									padding
+								</Label>
+							</div>
+						</RadioGroup>
+					</div>
+				</div>
+
+				<div className='grid md:grid-cols-2 gap-4'>
+					{/* CSS Result */}
+					<div>
+						<div className='flex items-center justify-between mb-2'>
+							<Label className='text-sm text-muted-foreground'>CSS</Label>
+							<Button
+								size='sm'
+								variant='ghost'
+								onClick={copyToClipboard}
+								className='h-8 px-2 hover:bg-accent hover:text-white'
+							>
+								{copied ? (
+									<Check className='h-3 w-3 text-green-500' />
+								) : (
+									<Copy className='h-3 w-3' />
+								)}
+							</Button>
+						</div>
+						<div className='bg-secondary rounded-lg p-4'>
+							<span className='text-secondary-foreground break-all font-mono text-xs'>
+								{result}
+							</span>
+						</div>
+					</div>
+
+					{/* Tailwind Result */}
+					<div>
+						<div className='flex items-center justify-between mb-2'>
+							<Label className='text-sm text-muted-foreground'>
+								Tailwind CSS
+							</Label>
+							<Button
+								size='sm'
+								variant='ghost'
+								onClick={copyTailwindToClipboard}
+								className='h-8 px-2 hover:bg-accent hover:text-white'
+							>
+								{copiedTailwind ? (
+									<Check className='h-3 w-3 text-green-500' />
+								) : (
+									<Copy className='h-3 w-3' />
+								)}
+							</Button>
+						</div>
+						<div className='bg-secondary rounded-lg p-4'>
+							<span className='text-secondary-foreground break-all font-mono text-xs'>
+								{tailwindResult}
+							</span>
+						</div>
+					</div>
 				</div>
 			</Card>
 
@@ -311,7 +411,7 @@ export default function ClampCalculatorPage() {
 				<h3 className='font-semibold mb-4'>{t('liveExample')}</h3>
 				<p
 					className='text-lg leading-relaxed'
-					style={{ fontSize: result }}
+					style={{ [property]: clampValue }}
 					contentEditable
 					suppressContentEditableWarning
 				>

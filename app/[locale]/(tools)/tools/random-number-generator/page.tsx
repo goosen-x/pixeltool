@@ -7,13 +7,9 @@ import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useTranslations } from 'next-intl'
-import { KeyboardShortcutInfo } from '@/components/widgets'
 
 interface GeneratedResult {
 	numbers: number[]
@@ -200,149 +196,228 @@ export default function RandomNumberGeneratorPage() {
 	const latestResult = results[0]
 
 	return (
-		<WidgetLayout>
-			{/* Input Section */}
-			<WidgetSection title={t('sections.settings')}>
-				<div className='grid md:grid-cols-3 gap-4'>
-					<WidgetInput
-						label={t('inputs.minimum.label')}
-						description={t('inputs.minimum.description')}
-					>
-						<Input
-							type='number'
-							value={min}
-							onChange={e => setMin(parseInt(e.target.value) || 0)}
-							min={0}
-							max={999999}
-							placeholder={t('inputs.minimum.placeholder')}
-						/>
-					</WidgetInput>
+		<div className='w-full space-y-6'>
+			{/* Combined Settings & Results Card */}
+			<Card className='p-4 sm:p-6'>
+				{/* Compact Settings Row */}
+				<div className='space-y-4'>
+					<div className='flex flex-wrap items-center gap-2 sm:gap-3'>
+						<div className='flex items-center gap-1.5'>
+							<label className='text-xs font-medium text-muted-foreground'>
+								{t('inputs.minimum.label')}
+							</label>
+							<Input
+								type='number'
+								value={min}
+								onChange={e => setMin(parseInt(e.target.value) || 0)}
+								min={0}
+								max={999999}
+								className='w-20 h-8 text-sm'
+								placeholder='1'
+							/>
+						</div>
 
-					<WidgetInput
-						label={t('inputs.maximum.label')}
-						description={t('inputs.maximum.description')}
-					>
-						<Input
-							type='number'
-							value={max}
-							onChange={e => setMax(parseInt(e.target.value) || 0)}
-							min={0}
-							max={999999}
-							placeholder={t('inputs.maximum.placeholder')}
-						/>
-					</WidgetInput>
+						<div className='flex items-center gap-1.5'>
+							<label className='text-xs font-medium text-muted-foreground'>
+								{t('inputs.maximum.label')}
+							</label>
+							<Input
+								type='number'
+								value={max}
+								onChange={e => setMax(parseInt(e.target.value) || 0)}
+								min={0}
+								max={999999}
+								className='w-20 h-8 text-sm'
+								placeholder='10'
+							/>
+						</div>
 
-					<WidgetInput
-						label={t('inputs.count.label')}
-						description={t('inputs.count.description')}
-					>
-						<Input
-							type='number'
-							value={count}
-							onChange={e => setCount(parseInt(e.target.value) || 1)}
-							min={1}
-							max={1000}
-							placeholder={t('inputs.count.placeholder')}
-						/>
-					</WidgetInput>
-				</div>
+						<div className='flex items-center gap-1.5'>
+							<label className='text-xs font-medium text-muted-foreground'>
+								{t('inputs.count.label')}
+							</label>
+							<Input
+								type='number'
+								value={count}
+								onChange={e => setCount(parseInt(e.target.value) || 1)}
+								min={1}
+								max={1000}
+								className='w-20 h-8 text-sm'
+								placeholder='5'
+							/>
+						</div>
 
-				<div className='flex items-center justify-between mt-6'>
-					<div className='flex items-center space-x-2'>
-						<Switch id='unique' checked={unique} onCheckedChange={setUnique} />
-						<label
-							htmlFor='unique'
-							className='text-sm font-medium cursor-pointer'
-						>
-							{t('inputs.unique')}
-						</label>
+						<div className='flex items-center gap-1.5 ml-auto'>
+							<Switch
+								id='unique'
+								checked={unique}
+								onCheckedChange={setUnique}
+								className='scale-90'
+							/>
+							<label
+								htmlFor='unique'
+								className='text-xs font-medium cursor-pointer'
+							>
+								{t('inputs.unique')}
+							</label>
+						</div>
 					</div>
 
-					<Button onClick={handleGenerate} className='gap-2'>
-						<Shuffle className='w-4 h-4' />
-						{t('actions.generate')}
-					</Button>
-				</div>
-			</WidgetSection>
+					{/* Error Display */}
+					{error && (
+						<Alert variant='destructive' className='py-2'>
+							<AlertDescription className='text-xs'>{error}</AlertDescription>
+						</Alert>
+					)}
 
-			{/* Error Display */}
-			{error && (
-				<Alert variant='destructive'>
-					<AlertDescription>{error}</AlertDescription>
-				</Alert>
-			)}
-
-			{/* Output Section */}
-			{latestResult && (
-				<WidgetSection title={t('sections.result')}>
-					<WidgetOutput>
-						<div className='bg-muted rounded-lg p-6 text-center'>
-							<div className='flex flex-wrap justify-center gap-4 mb-4'>
+					{/* Results Display */}
+					{latestResult && (
+						<div className='bg-muted/50 rounded-lg p-6 text-center'>
+							<div className='flex flex-wrap justify-center gap-3 mb-3'>
 								{latestResult.numbers.map((num, index) => (
 									<span
 										key={index}
-										className='text-2xl font-bold bg-background rounded-lg px-4 py-2 shadow-sm'
+										className='text-xl sm:text-2xl font-bold bg-background rounded-lg px-3 sm:px-4 py-2 shadow-sm border'
 									>
 										{num}
 									</span>
 								))}
 							</div>
-							<p className='text-sm text-muted-foreground'>
+							<p className='text-xs text-muted-foreground'>
 								{t('result.generatedAt')}{' '}
 								{latestResult.timestamp.toLocaleString()}
 							</p>
 						</div>
-					</WidgetOutput>
-				</WidgetSection>
+					)}
+
+					{/* Action Buttons */}
+					<div className='flex flex-wrap gap-2 pt-2'>
+						<Button
+							onClick={handleGenerate}
+							className='flex-1 sm:flex-none gap-2'
+						>
+							<Shuffle className='w-4 h-4' />
+							{t('actions.generate')}
+						</Button>
+						{latestResult && (
+							<>
+								<Button
+									variant='outline'
+									size='default'
+									onClick={() =>
+										copyToClipboard(latestResult.numbers, latestResult.id)
+									}
+									className={cn(
+										'gap-2',
+										copiedId === latestResult.id && 'bg-green-500/10'
+									)}
+								>
+									{copiedId === latestResult.id ? (
+										<Check className='w-4 h-4' />
+									) : (
+										<Copy className='w-4 h-4' />
+									)}
+									{t('actions.copy')}
+								</Button>
+								{results.length > 1 && (
+									<Button
+										variant='outline'
+										size='default'
+										onClick={downloadResults}
+										className='gap-2'
+									>
+										<Download className='w-4 h-4' />
+										{t('actions.downloadAll')}
+									</Button>
+								)}
+							</>
+						)}
+					</div>
+				</div>
+			</Card>
+
+			{/* Error Display for initial state */}
+			{!latestResult && error && (
+				<Alert variant='destructive'>
+					<AlertDescription>{error}</AlertDescription>
+				</Alert>
 			)}
 
 			{/* History Section */}
 			{results.length > 1 && (
-				<WidgetSection title={t('sections.history')}>
-					<div className='flex justify-between items-center mb-4'>
-						<h3 className='text-sm font-medium'>{t('sections.allResults')}</h3>
-						<Button variant='outline' size='sm' onClick={downloadResults}>
-							<Download className='w-4 h-4 mr-1' />
+				<Card className='p-4 sm:p-6'>
+					<div className='flex items-center justify-between mb-3'>
+						<h2 className='text-base font-semibold flex items-center gap-2'>
+							<History className='w-4 h-4' />
+							{t('sections.history')}
+							<span className='text-xs text-muted-foreground font-normal'>
+								({results.length - 1})
+							</span>
+						</h2>
+						<Button
+							variant='ghost'
+							size='sm'
+							onClick={downloadResults}
+							className='h-8 text-xs'
+						>
+							<Download className='w-3.5 h-3.5 mr-1' />
 							{t('actions.downloadAll')}
 						</Button>
 					</div>
-					<div className='space-y-3'>
-						{results.slice(1).map(result => (
+
+					<div className='space-y-1.5'>
+						{results.slice(1, 6).map((result, index) => (
 							<div
 								key={result.id}
-								className='flex items-center justify-between p-3 bg-muted rounded-lg'
+								className='group flex items-center gap-2 py-2 px-3 rounded-md hover:bg-muted/50 transition-colors'
 							>
-								<div className='flex-1'>
-									<p className='font-mono text-sm'>
-										{result.numbers.join('  ')}
-									</p>
-									<p className='text-xs text-muted-foreground mt-1'>
-										{result.timestamp.toLocaleString()}
-									</p>
+								<span className='text-xs text-muted-foreground w-4'>
+									#{index + 2}
+								</span>
+								<div className='flex-1 flex items-center gap-3'>
+									<div className='font-mono text-sm flex-1 truncate'>
+										{result.numbers.join(' · ')}
+									</div>
+									<span className='text-xs text-muted-foreground whitespace-nowrap'>
+										{result.timestamp.toLocaleTimeString([], {
+											hour: '2-digit',
+											minute: '2-digit'
+										})}
+									</span>
 								</div>
 								<Button
 									variant='ghost'
 									size='sm'
 									onClick={() => copyToClipboard(result.numbers, result.id)}
 									className={cn(
-										'shrink-0',
-										copiedId === result.id && 'bg-green-500/10'
+										'h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity',
+										copiedId === result.id && 'opacity-100 text-green-600'
 									)}
 								>
 									{copiedId === result.id ? (
-										<Check className='w-4 h-4' />
+										<Check className='w-3.5 h-3.5' />
 									) : (
-										<Copy className='w-4 h-4' />
+										<Copy className='w-3.5 h-3.5' />
 									)}
 								</Button>
 							</div>
 						))}
+
+						{results.length > 6 && (
+							<p className='text-xs text-muted-foreground text-center pt-2'>
+								{t('sections.showingRecent', {
+									count: 5,
+									total: results.length - 1
+								})}
+							</p>
+						)}
 					</div>
-				</WidgetSection>
+				</Card>
 			)}
 
 			{/* Info Section */}
-			<WidgetSection title={t('sections.about')}>
+			<Card className='p-6'>
+				<h2 className='text-lg font-semibold mb-4'>{t('sections.about')}</h2>
 				<div className='space-y-3 text-sm text-muted-foreground'>
 					<p>{t('info.description')}</p>
 					<p>{t('info.cryptoApi')}</p>
@@ -353,12 +428,7 @@ export default function RandomNumberGeneratorPage() {
 						<li>{t('info.features.timestamps')}</li>
 					</ul>
 				</div>
-			</WidgetSection>
-
-			{/* Keyboard Shortcuts */}
-			<WidgetSection title='Keyboard Shortcuts'>
-				<KeyboardShortcutInfo />
-			</WidgetSection>
-		</WidgetLayout>
+			</Card>
+		</div>
 	)
 }

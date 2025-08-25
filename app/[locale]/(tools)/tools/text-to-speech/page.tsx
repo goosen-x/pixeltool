@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
+import { Input } from '@/components/ui/input'
 import {
 	Select,
 	SelectContent,
@@ -19,13 +20,24 @@ import {
 	Pause,
 	Square,
 	Volume2,
+	VolumeX,
+	Volume1,
 	Settings,
 	History,
-	Bookmark,
-	Trash2
+	Trash2,
+	Download,
+	Copy,
+	Upload,
+	FastForward,
+	AudioWaveform,
+	Music,
+	Sparkles,
+	Clock,
+	Mic
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { useTranslations, useLocale } from 'next-intl'
 
 interface Voice {
 	voice: SpeechSynthesisVoice
@@ -38,17 +50,15 @@ interface HistoryItem {
 	id: string
 	text: string
 	voice: string
+	rate: number
+	pitch: number
 	timestamp: Date
-}
-
-interface BookmarkItem {
-	id: string
-	text: string
-	name: string
-	timestamp: Date
+	duration?: number
 }
 
 export default function TextToSpeechPage() {
+	const t = useTranslations('widgets.textToSpeech')
+	const locale = useLocale()
 	const [mounted, setMounted] = useState(false)
 	const [text, setText] = useState('')
 	const [voices, setVoices] = useState<Voice[]>([])
@@ -59,92 +69,158 @@ export default function TextToSpeechPage() {
 	const [pitch, setPitch] = useState([1])
 	const [volume, setVolume] = useState([1])
 	const [history, setHistory] = useState<HistoryItem[]>([])
-	const [bookmarks, setBookmarks] = useState<BookmarkItem[]>([])
 	const [currentUtterance, setCurrentUtterance] =
 		useState<SpeechSynthesisUtterance | null>(null)
-	const [showSettings, setShowSettings] = useState(false)
-	const [showHistory, setShowHistory] = useState(false)
-	const [showBookmarks, setShowBookmarks] = useState(false)
+	const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+	// Load saved data from localStorage
 	useEffect(() => {
 		setMounted(true)
+		const savedHistory = localStorage.getItem('tts-history')
+		if (savedHistory) {
+			try {
+				const parsedHistory = JSON.parse(savedHistory).map((item: any) => ({
+					...item,
+					timestamp: new Date(item.timestamp)
+				}))
+				setHistory(parsedHistory)
+			} catch (error) {
+				console.error('Error parsing history:', error)
+			}
+		}
 
-		// Load voices
+		const savedSettings = localStorage.getItem('tts-settings')
+		if (savedSettings) {
+			try {
+				const settings = JSON.parse(savedSettings)
+				if (settings.rate) setRate([settings.rate])
+				if (settings.pitch) setPitch([settings.pitch])
+				if (settings.volume) setVolume([settings.volume])
+			} catch (error) {
+				console.error('Error parsing settings:', error)
+			}
+		}
+	}, [])
+
+	// Load voices
+	useEffect(() => {
 		const loadVoices = () => {
 			const availableVoices = speechSynthesis.getVoices()
-			const voiceList: Voice[] = availableVoices.map(voice => ({
-				voice,
-				name: voice.name,
-				lang: voice.lang,
-				localService: voice.localService
-			}))
-			setVoices(voiceList)
+			if (availableVoices.length > 0) {
+				const voiceList: Voice[] = availableVoices.map(voice => ({
+					voice,
+					name: voice.name,
+					lang: voice.lang,
+					localService: voice.localService
+				}))
+				setVoices(voiceList)
 
-			// Set default voice (prefer local Russian voice if available)
-			const russianVoice = voiceList.find(
-				v => v.lang.startsWith('ru') && v.localService
-			)
-			const englishVoice = voiceList.find(
-				v => v.lang.startsWith('en') && v.localService
-			)
-			const defaultVoice = russianVoice || englishVoice || voiceList[0]
-
-			if (defaultVoice) {
-				setSelectedVoice(defaultVoice.name)
+				if (!selectedVoice && voiceList.length > 0) {
+					// If locale is Russian, try to find a Russian voice first
+					if (locale === 'ru') {
+						const russianVoice = voiceList.find(v => v.lang.startsWith('ru'))
+						if (russianVoice) {
+							setSelectedVoice(russianVoice.name)
+							return
+						}
+					}
+					// Otherwise use default voice
+					const defaultVoice =
+						voiceList.find(v => v.voice.default) || voiceList[0]
+					setSelectedVoice(defaultVoice.name)
+				}
 			}
 		}
 
 		loadVoices()
 		speechSynthesis.addEventListener('voiceschanged', loadVoices)
-
-		// Load history and bookmarks
-		const savedHistory = localStorage.getItem('ttsHistory')
-		if (savedHistory) {
-			const parsed = JSON.parse(savedHistory).map((item: any) => ({
-				...item,
-				timestamp: new Date(item.timestamp)
-			}))
-			setHistory(parsed)
-		}
-
-		const savedBookmarks = localStorage.getItem('ttsBookmarks')
-		if (savedBookmarks) {
-			const parsed = JSON.parse(savedBookmarks).map((item: any) => ({
-				...item,
-				timestamp: new Date(item.timestamp)
-			}))
-			setBookmarks(parsed)
-		}
-
-		return () => {
+		return () =>
 			speechSynthesis.removeEventListener('voiceschanged', loadVoices)
-			if (currentUtterance) {
-				speechSynthesis.cancel()
+	}, [selectedVoice, locale])
+
+	// Save settings to localStorage
+	useEffect(() => {
+		if (mounted) {
+			const settings = {
+				rate: rate[0],
+				pitch: pitch[0],
+				volume: volume[0]
 			}
+			localStorage.setItem('tts-settings', JSON.stringify(settings))
 		}
-	}, [])
+	}, [rate, pitch, volume, mounted])
 
-	const speak = () => {
+	// Helper functions
+	const getVoicesByLanguage = useCallback(() => {
+		const grouped = voices.reduce(
+			(acc, voice) => {
+				const langName =
+					new Intl.DisplayNames(['en'], { type: 'language' }).of(
+						voice.lang.split('-')[0]
+					) || voice.lang
+				if (!acc[langName]) acc[langName] = []
+				acc[langName].push(voice)
+				return acc
+			},
+			{} as Record<string, Voice[]>
+		)
+		return grouped
+	}, [voices])
+
+	const addToHistory = useCallback(
+		(text: string, voice: string, rate: number, pitch: number) => {
+			const newItem: HistoryItem = {
+				id: Date.now().toString(),
+				text,
+				voice,
+				rate,
+				pitch,
+				timestamp: new Date()
+			}
+
+			const updatedHistory = [newItem, ...history].slice(0, 50) // Keep only 50 items
+			setHistory(updatedHistory)
+			localStorage.setItem('tts-history', JSON.stringify(updatedHistory))
+		},
+		[history]
+	)
+
+	const deleteHistoryItem = useCallback(
+		(id: string) => {
+			const updatedHistory = history.filter(item => item.id !== id)
+			setHistory(updatedHistory)
+			localStorage.setItem('tts-history', JSON.stringify(updatedHistory))
+		},
+		[history]
+	)
+
+	const clearHistory = useCallback(() => {
+		setHistory([])
+		localStorage.removeItem('tts-history')
+		toast.success(t('success.historyCleared'))
+	}, [t])
+
+	const getVolumeIcon = () => {
+		if (volume[0] === 0) return VolumeX
+		if (volume[0] < 0.5) return Volume1
+		return Volume2
+	}
+
+	const speak = useCallback(() => {
 		if (!text.trim()) {
-			toast.error('Please enter some text to speak')
+			toast.error(t('errors.emptyText'))
 			return
 		}
 
-		if (isPaused) {
-			speechSynthesis.resume()
-			setIsPaused(false)
-			setIsPlaying(true)
-			return
+		if (speechSynthesis.speaking) {
+			speechSynthesis.cancel()
 		}
-
-		// Stop current speech
-		speechSynthesis.cancel()
 
 		const utterance = new SpeechSynthesisUtterance(text)
-		const voice = voices.find(v => v.name === selectedVoice)?.voice
+		const selectedVoiceObj = voices.find(v => v.name === selectedVoice)
 
-		if (voice) {
-			utterance.voice = voice
+		if (selectedVoiceObj) {
+			utterance.voice = selectedVoiceObj.voice
 		}
 
 		utterance.rate = rate[0]
@@ -166,111 +242,56 @@ export default function TextToSpeechPage() {
 			setIsPlaying(false)
 			setIsPaused(false)
 			setCurrentUtterance(null)
-			toast.error('Speech synthesis failed')
+			toast.error(t('errors.speechFailed'))
 		}
 
 		setCurrentUtterance(utterance)
 		speechSynthesis.speak(utterance)
 
 		// Add to history
-		const historyItem: HistoryItem = {
-			id: crypto.randomUUID(),
-			text: text.slice(0, 100) + (text.length > 100 ? '...' : ''),
-			voice: selectedVoice,
-			timestamp: new Date()
+		addToHistory(text, selectedVoice, rate[0], pitch[0])
+	}, [text, voices, selectedVoice, rate, pitch, volume, t, addToHistory])
+
+	const pause = useCallback(() => {
+		if (speechSynthesis.speaking && !speechSynthesis.paused) {
+			speechSynthesis.pause()
+			setIsPaused(true)
 		}
+	}, [])
 
-		const newHistory = [historyItem, ...history].slice(0, 50)
-		setHistory(newHistory)
-		localStorage.setItem('ttsHistory', JSON.stringify(newHistory))
-	}
+	const resume = useCallback(() => {
+		if (speechSynthesis.paused) {
+			speechSynthesis.resume()
+			setIsPaused(false)
+		}
+	}, [])
 
-	const pause = () => {
-		speechSynthesis.pause()
-		setIsPaused(true)
-		setIsPlaying(false)
-	}
-
-	const stop = () => {
+	const stop = useCallback(() => {
 		speechSynthesis.cancel()
 		setIsPlaying(false)
 		setIsPaused(false)
 		setCurrentUtterance(null)
-	}
+	}, [])
 
-	const addBookmark = () => {
-		if (!text.trim()) {
-			toast.error('Please enter some text to bookmark')
-			return
-		}
+	const exportText = useCallback(() => {
+		const blob = new Blob([text], { type: 'text/plain' })
+		const url = URL.createObjectURL(blob)
+		const a = document.createElement('a')
+		a.href = url
+		a.download = 'speech-text.txt'
+		a.click()
+		URL.revokeObjectURL(url)
+		toast.success(t('success.textExported'))
+	}, [text, t])
 
-		const name = prompt('Enter a name for this bookmark:')
-		if (!name) return
-
-		const bookmark: BookmarkItem = {
-			id: crypto.randomUUID(),
-			text,
-			name,
-			timestamp: new Date()
-		}
-
-		const newBookmarks = [bookmark, ...bookmarks].slice(0, 20)
-		setBookmarks(newBookmarks)
-		localStorage.setItem('ttsBookmarks', JSON.stringify(newBookmarks))
-		toast.success('Bookmark added!')
-	}
-
-	const loadFromHistory = (historyText: string) => {
-		setText(historyText)
-		setShowHistory(false)
-	}
-
-	const loadFromBookmark = (bookmarkText: string) => {
-		setText(bookmarkText)
-		setShowBookmarks(false)
-	}
-
-	const clearHistory = () => {
-		setHistory([])
-		localStorage.removeItem('ttsHistory')
-		toast.success('History cleared')
-	}
-
-	const deleteBookmark = (id: string) => {
-		const newBookmarks = bookmarks.filter(b => b.id !== id)
-		setBookmarks(newBookmarks)
-		localStorage.setItem('ttsBookmarks', JSON.stringify(newBookmarks))
-		toast.success('Bookmark deleted')
-	}
-
-	const getVoicesByLanguage = () => {
-		const grouped: { [key: string]: Voice[] } = {}
-		voices.forEach(voice => {
-			const lang = voice.lang.split('-')[0]
-			if (!grouped[lang]) {
-				grouped[lang] = []
-			}
-			grouped[lang].push(voice)
+	const copyToClipboard = useCallback(() => {
+		navigator.clipboard.writeText(text).then(() => {
+			toast.success(t('success.textCopied'))
 		})
-		return grouped
-	}
+	}, [text, t])
 
 	if (!mounted) {
-		return (
-			<div className='max-w-6xl mx-auto space-y-8'>
-				<div>
-					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Text to Speech
-					</h1>
-					<p className='text-muted-foreground'>
-						Convert text to speech using browser synthesis API
-					</p>
-				</div>
-				<div className='animate-pulse space-y-8'>
-					<div className='h-96 bg-muted rounded-lg'></div>
-				</div>
-			</div>
-		)
+		return null
 	}
 
 	const voicesByLanguage = getVoicesByLanguage()
@@ -278,134 +299,170 @@ export default function TextToSpeechPage() {
 
 	return (
 		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Main Input */}
-			<Card className='p-6'>
-				<div className='space-y-4'>
-					<Label htmlFor='text-input'>Enter text to speak</Label>
-					<Textarea
-						id='text-input'
-						value={text}
-						onChange={e => setText(e.target.value)}
-						placeholder='Type or paste your text here, then press ENTER or click Speak...'
-						className='min-h-[120px]'
-						onKeyPress={e => {
-							if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-								speak()
-							}
-						}}
-					/>
+			{/* Main Interface */}
+			<Card className='overflow-hidden'>
+				<CardContent className='p-6 space-y-6'>
+					{/* Text Input Area with controls */}
+					<div className='space-y-3'>
+						<div className='flex items-center justify-between'>
+							<Label htmlFor='text-input' className='text-base font-medium'>
+								{t('enterText')}
+							</Label>
+							<div className='flex items-center gap-2'>
+								<Badge variant='outline' className='text-xs'>
+									{text.length} {t('characters')}
+								</Badge>
+							</div>
+						</div>
 
-					<div className='flex items-center gap-2 flex-wrap'>
-						<Button
-							onClick={speak}
-							disabled={isPlaying}
-							className='flex items-center gap-2'
-						>
-							<Play className='w-4 h-4' />
-							{isPaused ? 'Resume' : 'Speak'}
-						</Button>
+						{/* Quick Examples */}
+						<div className='flex flex-wrap gap-2'>
+							{[
+								{ key: 'examples.greeting', text: t('examples.greeting') },
+								{
+									key: 'examples.announcement',
+									text: t('examples.announcement')
+								},
+								{ key: 'examples.story', text: t('examples.story') },
+								{ key: 'examples.poem', text: t('examples.poem') }
+							].map((example, index) => (
+								<Button
+									key={example.key}
+									variant='outline'
+									size='sm'
+									onClick={() => setText(example.text)}
+									className='text-xs h-7 px-2'
+								>
+									{example.text.slice(0, 30)}...
+								</Button>
+							))}
+						</div>
 
-						<Button
-							onClick={pause}
-							disabled={!isPlaying}
-							variant='outline'
-							className='flex items-center gap-2'
-						>
-							<Pause className='w-4 h-4' />
-							Pause
-						</Button>
-
-						<Button
-							onClick={stop}
-							disabled={!isPlaying && !isPaused}
-							variant='outline'
-							className='flex items-center gap-2'
-						>
-							<Square className='w-4 h-4' />
-							Stop
-						</Button>
-
-						<Button
-							onClick={addBookmark}
-							variant='outline'
-							size='icon'
-							disabled={!text.trim()}
-						>
-							<Bookmark className='w-4 h-4' />
-						</Button>
-
-						<Button
-							onClick={() => setShowSettings(!showSettings)}
-							variant='outline'
-							size='icon'
-						>
-							<Settings className='w-4 h-4' />
-						</Button>
-
-						<Button
-							onClick={() => setShowHistory(!showHistory)}
-							variant='outline'
-							size='icon'
-						>
-							<History className='w-4 h-4' />
-						</Button>
+						<div className='flex gap-3'>
+							<div className='flex-1 relative'>
+								<Textarea
+									id='text-input'
+									ref={textareaRef}
+									value={text}
+									onChange={e => setText(e.target.value)}
+									placeholder={t('placeholder')}
+									className='min-h-[120px] text-base leading-relaxed resize-none w-full pr-20'
+									maxLength={5000}
+								/>
+								{/* Export and Copy buttons in corner */}
+								<div className='absolute top-2 right-2 flex gap-1'>
+									<Button
+										onClick={copyToClipboard}
+										variant='ghost'
+										size='icon'
+										disabled={!text.trim()}
+										className='w-8 h-8'
+										title={t('copy')}
+									>
+										<Copy className='w-4 h-4' />
+									</Button>
+									<Button
+										onClick={exportText}
+										variant='ghost'
+										size='icon'
+										disabled={!text.trim()}
+										className='w-8 h-8'
+										title={t('export')}
+									>
+										<Download className='w-4 h-4' />
+									</Button>
+								</div>
+							</div>
+							<div className='flex flex-col gap-2'>
+								{/* Play/Pause/Stop buttons */}
+								{!isPlaying ? (
+									<Button
+										onClick={speak}
+										disabled={!text.trim()}
+										className='w-12 h-12 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center p-0'
+										size='lg'
+									>
+										<Play className='w-5 h-5 text-white' fill='currentColor' />
+									</Button>
+								) : (
+									<>
+										{isPaused ? (
+											<Button
+												onClick={resume}
+												className='w-12 h-12 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0'
+												size='lg'
+											>
+												<Play
+													className='w-5 h-5 text-white'
+													fill='currentColor'
+												/>
+											</Button>
+										) : (
+											<Button
+												onClick={pause}
+												className='w-12 h-12 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0'
+												size='lg'
+											>
+												<Pause
+													className='w-5 h-5 text-white'
+													fill='currentColor'
+												/>
+											</Button>
+										)}
+										<Button
+											onClick={stop}
+											variant='outline'
+											size='icon'
+											className='w-12 h-12'
+										>
+											<Square className='w-4 h-4' />
+										</Button>
+									</>
+								)}
+							</div>
+						</div>
 					</div>
 
-					{selectedVoiceObj && (
-						<div className='text-sm text-muted-foreground'>
-							Current voice:{' '}
-							<Badge variant='secondary'>{selectedVoiceObj.name}</Badge>
-							<Badge variant='outline' className='ml-2'>
-								{selectedVoiceObj.lang}
-							</Badge>
-							{selectedVoiceObj.localService && (
-								<Badge variant='outline' className='ml-2'>
-									Local
-								</Badge>
-							)}
-						</div>
-					)}
-				</div>
-			</Card>
-
-			{/* Voice Settings */}
-			{showSettings && (
-				<Card className='p-6'>
-					<h3 className='font-semibold mb-4 flex items-center gap-2'>
-						<Settings className='w-4 h-4' />
-						Voice Settings
-					</h3>
-
-					<div className='grid md:grid-cols-2 gap-6'>
-						<div className='space-y-4'>
-							<div>
-								<Label htmlFor='voice-select'>Voice</Label>
+					{/* All Settings in one row */}
+					<div className='grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg'>
+						{/* Voice Selection */}
+						<div className='flex items-center gap-3'>
+							<Mic className='w-4 h-4 text-muted-foreground flex-shrink-0' />
+							<div className='flex-1 space-y-1'>
+								<Label className='text-xs'>{t('voice')}</Label>
 								<Select value={selectedVoice} onValueChange={setSelectedVoice}>
-									<SelectTrigger id='voice-select'>
-										<SelectValue placeholder='Select a voice' />
+									<SelectTrigger className='h-8 text-xs'>
+										<SelectValue placeholder={t('selectVoice')} />
 									</SelectTrigger>
 									<SelectContent className='max-h-[300px]'>
 										{Object.entries(voicesByLanguage).map(
 											([lang, langVoices]) => (
 												<div key={lang}>
-													<div className='px-2 py-1 text-sm font-medium text-muted-foreground'>
+													<div className='px-3 py-2 text-xs font-semibold text-primary border-b'>
 														{lang.toUpperCase()}
 													</div>
 													{langVoices.map(voice => (
 														<SelectItem key={voice.name} value={voice.name}>
-															<div className='flex items-center gap-2'>
-																<span>{voice.name}</span>
-																<Badge variant='outline' className='text-xs'>
-																	{voice.lang}
-																</Badge>
-																{voice.localService && (
+															<div className='flex items-center justify-between w-full'>
+																<span className='text-xs'>
+																	{voice.name.split(' ')[0]}
+																</span>
+																<div className='flex items-center gap-1'>
 																	<Badge
-																		variant='secondary'
-																		className='text-xs'
+																		variant='outline'
+																		className='text-[10px] h-4 px-1'
 																	>
-																		Local
+																		{voice.lang}
 																	</Badge>
-																)}
+																	{voice.localService && (
+																		<Badge
+																			variant='secondary'
+																			className='text-[10px] h-4 px-1 bg-green-50 text-green-700'
+																		>
+																			{t('local')}
+																		</Badge>
+																	)}
+																</div>
 															</div>
 														</SelectItem>
 													))}
@@ -415,196 +472,138 @@ export default function TextToSpeechPage() {
 									</SelectContent>
 								</Select>
 							</div>
+						</div>
 
-							<div>
-								<Label>Speed: {rate[0].toFixed(1)}x</Label>
+						{/* Speed */}
+						<div className='flex items-center gap-3'>
+							<FastForward className='w-4 h-4 text-muted-foreground flex-shrink-0' />
+							<div className='flex-1 space-y-1'>
+								<div className='flex items-center justify-between'>
+									<Label className='text-xs'>{t('speed')}</Label>
+									<span className='text-xs font-mono text-muted-foreground'>
+										{rate[0].toFixed(1)}x
+									</span>
+								</div>
 								<Slider
 									value={rate}
 									onValueChange={setRate}
-									min={0.1}
-									max={2.0}
-									step={0.1}
-									className='mt-2'
+									min={0.25}
+									max={3.0}
+									step={0.25}
+									className='h-1'
 								/>
 							</div>
 						</div>
 
-						<div className='space-y-4'>
-							<div>
-								<Label>Pitch: {pitch[0].toFixed(1)}</Label>
+						{/* Pitch */}
+						<div className='flex items-center gap-3'>
+							<AudioWaveform className='w-4 h-4 text-muted-foreground flex-shrink-0' />
+							<div className='flex-1 space-y-1'>
+								<div className='flex items-center justify-between'>
+									<Label className='text-xs'>{t('pitch')}</Label>
+									<span className='text-xs font-mono text-muted-foreground'>
+										{pitch[0].toFixed(1)}
+									</span>
+								</div>
 								<Slider
 									value={pitch}
 									onValueChange={setPitch}
 									min={0.1}
 									max={2.0}
 									step={0.1}
-									className='mt-2'
+									className='h-1'
 								/>
 							</div>
+						</div>
 
-							<div>
-								<Label className='flex items-center gap-2'>
-									<Volume2 className='w-4 h-4' />
-									Volume: {Math.round(volume[0] * 100)}%
-								</Label>
+						{/* Volume */}
+						<div className='flex items-center gap-3'>
+							{(() => {
+								const IconComponent = getVolumeIcon()
+								return (
+									<IconComponent className='w-4 h-4 text-muted-foreground flex-shrink-0' />
+								)
+							})()}
+							<div className='flex-1 space-y-1'>
+								<div className='flex items-center justify-between'>
+									<Label className='text-xs'>{t('volume')}</Label>
+									<span className='text-xs font-mono text-muted-foreground'>
+										{Math.round(volume[0] * 100)}%
+									</span>
+								</div>
 								<Slider
 									value={volume}
 									onValueChange={setVolume}
-									min={0.1}
+									min={0}
 									max={1.0}
 									step={0.1}
-									className='mt-2'
+									className='h-1'
 								/>
 							</div>
 						</div>
 					</div>
-				</Card>
-			)}
+				</CardContent>
+			</Card>
 
-			{/* History */}
-			{showHistory && history.length > 0 && (
-				<Card className='p-6'>
-					<div className='flex items-center justify-between mb-4'>
-						<h3 className='font-semibold flex items-center gap-2'>
-							<History className='w-4 h-4' />
-							History
-						</h3>
-						<Button onClick={clearHistory} variant='outline' size='sm'>
-							Clear All
-						</Button>
-					</div>
-
-					<div className='space-y-2 max-h-[300px] overflow-y-auto'>
-						{history.map(item => (
-							<div
-								key={item.id}
-								className='flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent'
-								onClick={() => loadFromHistory(item.text)}
-							>
-								<div className='flex-1'>
-									<p className='text-sm'>{item.text}</p>
-									<div className='flex items-center gap-2 mt-1'>
-										<Badge variant='outline' className='text-xs'>
-											{item.voice}
-										</Badge>
-										<span className='text-xs text-muted-foreground'>
-											{item.timestamp.toLocaleString()}
-										</span>
+			{/* History at the bottom */}
+			{history.length > 0 && (
+				<Card>
+					<CardHeader>
+						<div className='flex items-center justify-between'>
+							<CardTitle className='flex items-center gap-2'>
+								<History className='w-5 h-5' />
+								{t('history')}
+							</CardTitle>
+							<Button onClick={clearHistory} variant='outline' size='sm'>
+								{t('clearAll')}
+							</Button>
+						</div>
+					</CardHeader>
+					<CardContent>
+						<div className='grid gap-3 max-h-[300px] overflow-y-auto'>
+							{history.slice(0, 5).map((item, index) => (
+								<div
+									key={item.id}
+									className='p-3 border rounded-lg hover:bg-muted/50 transition-colors group'
+								>
+									<div className='flex items-start justify-between gap-3'>
+										<div className='flex-1 min-w-0'>
+											<p className='text-sm mb-2 break-words'>
+												{item.text.slice(0, 100)}...
+											</p>
+											<div className='flex items-center gap-3 text-xs text-muted-foreground'>
+												<span>
+													{new Date(item.timestamp).toLocaleDateString()}
+												</span>
+												<span>{item.voice}</span>
+												<span>{item.rate.toFixed(1)}x</span>
+											</div>
+										</div>
+										<div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
+											<Button
+												onClick={() => setText(item.text)}
+												size='sm'
+												variant='ghost'
+												className='h-7 w-7 p-0'
+											>
+												<Copy className='w-3 h-3' />
+											</Button>
+											<Button
+												onClick={() => deleteHistoryItem(item.id)}
+												size='sm'
+												variant='ghost'
+												className='h-7 w-7 p-0 text-destructive'
+											>
+												<Trash2 className='w-3 h-3' />
+											</Button>
+										</div>
 									</div>
 								</div>
-							</div>
-						))}
-					</div>
+							))}
+						</div>
+					</CardContent>
 				</Card>
 			)}
-
-			{/* Bookmarks */}
-			{showBookmarks && bookmarks.length > 0 && (
-				<Card className='p-6'>
-					<h3 className='font-semibold mb-4 flex items-center gap-2'>
-						<Bookmark className='w-4 h-4' />
-						Bookmarks
-					</h3>
-
-					<div className='space-y-2 max-h-[300px] overflow-y-auto'>
-						{bookmarks.map(bookmark => (
-							<div
-								key={bookmark.id}
-								className='flex items-start gap-3 p-3 rounded-lg border'
-							>
-								<div
-									className='flex-1 cursor-pointer hover:text-primary'
-									onClick={() => loadFromBookmark(bookmark.text)}
-								>
-									<p className='font-medium text-sm'>{bookmark.name}</p>
-									<p className='text-sm text-muted-foreground line-clamp-2'>
-										{bookmark.text}
-									</p>
-									<span className='text-xs text-muted-foreground'>
-										{bookmark.timestamp.toLocaleString()}
-									</span>
-								</div>
-								<Button
-									onClick={() => deleteBookmark(bookmark.id)}
-									size='icon'
-									variant='ghost'
-									className='h-8 w-8'
-								>
-									<Trash2 className='w-3 h-3' />
-								</Button>
-							</div>
-						))}
-					</div>
-				</Card>
-			)}
-
-			{/* Quick Examples */}
-			<Card className='p-6'>
-				<h3 className='font-semibold mb-3'>Quick Examples</h3>
-				<div className='grid md:grid-cols-2 gap-3'>
-					{[
-						'Hello, how are you today?',
-						'Привет, как дела?',
-						'I love you',
-						'Я тебя люблю',
-						'What time is it?',
-						'Сколько время?'
-					].map(example => (
-						<Button
-							key={example}
-							variant='outline'
-							size='sm'
-							onClick={() => setText(example)}
-							className='text-left justify-start h-auto p-3'
-						>
-							{example}
-						</Button>
-					))}
-				</div>
-			</Card>
-
-			{/* Info Section */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>About Text to Speech</h3>
-				<div className='space-y-3 text-sm text-muted-foreground'>
-					<p>
-						Text-to-Speech (TTS) uses the browser&apos;s Speech Synthesis API to
-						convert written text into spoken words. The available voices depend
-						on your operating system and language settings.
-					</p>
-
-					<div className='grid md:grid-cols-2 gap-4 mt-4'>
-						<div>
-							<h4 className='font-medium text-foreground mb-2'>When to Use</h4>
-							<ul className='space-y-1 text-xs'>
-								<li>• Accessibility for visually impaired users</li>
-								<li>• Language learning and pronunciation</li>
-								<li>• Voice acting and content creation</li>
-								<li>• When you have a sore throat</li>
-								<li>• Creating voice assistants or bots</li>
-							</ul>
-						</div>
-
-						<div>
-							<h4 className='font-medium text-foreground mb-2'>
-								Platform Support
-							</h4>
-							<ul className='space-y-1 text-xs'>
-								<li>• Windows 7/10+ (built-in voices)</li>
-								<li>• macOS/iOS (high-quality voices)</li>
-								<li>• Android (Google voices)</li>
-								<li>• Modern browsers (Chrome, Safari, Firefox)</li>
-							</ul>
-						</div>
-					</div>
-
-					<p className='text-xs mt-4'>
-						<strong>Tip:</strong> Press Ctrl/Cmd + Enter while typing to speak
-						the text quickly. Local voices provide better quality and work
-						offline.
-					</p>
-				</div>
-			</Card>
 		</div>
 	)
 }

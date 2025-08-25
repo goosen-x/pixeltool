@@ -14,10 +14,10 @@ export async function GET(request: NextRequest) {
 			searchParams.get('description') || 'Professional Developer Tools'
 		const widgetId = searchParams.get('widget')
 		const locale = searchParams.get('locale') || 'en'
-		
+
 		// Get widget data if available
 		const widget = widgetId ? getWidgetById(widgetId) : null
-		
+
 		// Category emoji mapping
 		const categoryEmojis: Record<string, string> = {
 			webdev: '🌐',
@@ -28,8 +28,10 @@ export async function GET(request: NextRequest) {
 			analytics: '📊',
 			lifestyle: '🎯'
 		}
-		
-		const categoryEmoji = widget ? categoryEmojis[widget.category] || '🛠️' : '🛠️'
+
+		const categoryEmoji = widget
+			? categoryEmojis[widget.category] || '🛠️'
+			: '🛠️'
 
 		return new ImageResponse(
 			(
@@ -86,7 +88,9 @@ export async function GET(request: NextRequest) {
 									width: 80,
 									height: 80,
 									marginBottom: 20,
-									background: widget.gradient || 'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+									background:
+										widget.gradient ||
+										'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
 									borderRadius: 16,
 									display: 'flex',
 									alignItems: 'center',

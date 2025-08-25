@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import QRCode from 'qrcode'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Label } from '@/components/ui/label'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { Button } from '@/components/ui/button'
@@ -19,6 +18,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
 	Download,
 	Copy,
@@ -50,8 +50,10 @@ interface AppStoreConfig {
 export default function QRGeneratorPage() {
 	const t = useTranslations('widgets.qrGenerator')
 	const canvasRef = useRef<HTMLCanvasElement>(null)
+	const [mounted, setMounted] = useState(false)
+	const [hasGeneratedOnce, setHasGeneratedOnce] = useState(false)
 	const [qrType, setQrType] = useState<QRType>('url')
-	const [url, setUrl] = useState('')
+	const [url, setUrl] = useState('https://example.com')
 	const [qrSize, setQrSize] = useState(256)
 	const [darkColor, setDarkColor] = useState('#000000')
 	const [lightColor, setLightColor] = useState('#FFFFFF')
@@ -101,6 +103,8 @@ export default function QRGeneratorPage() {
 	}
 
 	const generateQR = async () => {
+		if (!mounted) return
+
 		const canvas = canvasRef.current
 		if (!canvas) return
 
@@ -120,7 +124,8 @@ export default function QRGeneratorPage() {
 				errorCorrectionLevel: errorCorrection,
 				margin: 2
 			})
-			toast.success(t('toast.generated'))
+			setHasGeneratedOnce(true)
+			// Don't show success toast on every update
 		} catch (err) {
 			console.error(err)
 			toast.error(t('toast.generateError'))
@@ -156,9 +161,15 @@ export default function QRGeneratorPage() {
 		}
 	}
 
+	// Set mounted state
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+
 	useEffect(() => {
 		generateQR()
 	}, [
+		mounted,
 		qrType,
 		url,
 		qrSize,
@@ -196,83 +207,83 @@ export default function QRGeneratorPage() {
 	})
 
 	return (
-		<WidgetLayout>
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Settings */}
-				<div className='lg:col-span-2'>
-					<WidgetSection
-						icon={<Settings className='w-5 h-5' />}
-						title={t('settings.title')}
-					>
-						<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
-							<TabsList className='grid w-full grid-cols-3'>
-								<TabsTrigger value='url'>
-									<Link className='w-4 h-4 mr-2' />
-									{t('types.url')}
-								</TabsTrigger>
-								<TabsTrigger value='appstore'>
-									<Smartphone className='w-4 h-4 mr-2' />
-									{t('types.appStore')}
-								</TabsTrigger>
-								<TabsTrigger value='wifi'>
-									<Wifi className='w-4 h-4 mr-2' />
-									{t('types.wifi')}
-								</TabsTrigger>
-							</TabsList>
+		<div className='grid lg:grid-cols-3 gap-6'>
+			{/* Settings */}
+			<div className='lg:col-span-2'>
+				<WidgetSection
+					icon={<Settings className='w-5 h-5' />}
+					title={t('settings.title')}
+				>
+					<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
+						<TabsList className='grid w-full grid-cols-3'>
+							<TabsTrigger value='url'>
+								<Link className='w-4 h-4 mr-2' />
+								{t('types.url')}
+							</TabsTrigger>
+							<TabsTrigger value='appstore'>
+								<Smartphone className='w-4 h-4 mr-2' />
+								{t('types.appStore')}
+							</TabsTrigger>
+							<TabsTrigger value='wifi'>
+								<Wifi className='w-4 h-4 mr-2' />
+								{t('types.wifi')}
+							</TabsTrigger>
+						</TabsList>
 
-							<TabsContent value='url' className='space-y-4'>
-								<div>
-									<Label htmlFor='url'>{t('url.label')}</Label>
-									<Input
-										id='url'
-										type='url'
-										placeholder={t('url.placeholder')}
-										value={url}
-										onChange={e => setUrl(e.target.value)}
-									/>
-								</div>
-							</TabsContent>
+						<TabsContent value='url' className='space-y-4'>
+							<div>
+								<Label htmlFor='url'>{t('url.label')}</Label>
+								<Input
+									id='url'
+									type='url'
+									placeholder={t('url.placeholder')}
+									value={url}
+									onChange={e => setUrl(e.target.value)}
+								/>
+							</div>
+						</TabsContent>
 
-							<TabsContent value='appstore' className='space-y-4'>
-								<div>
-									<Label>{t('appStore.platform')}</Label>
-									<Select
-										value={appStoreConfig.platform}
-										onValueChange={v =>
-											setAppStoreConfig({
-												...appStoreConfig,
-												platform: v as 'ios' | 'android' | 'universal'
-											})
-										}
-									>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='universal'>
-												<div className='flex items-center gap-2'>
-													<Smartphone className='w-4 h-4' />
-													{t('appStore.universal')}
-												</div>
-											</SelectItem>
-											<SelectItem value='ios'>
-												<div className='flex items-center gap-2'>
-													<Smartphone className='w-4 h-4' />
-													App Store (iOS)
-												</div>
-											</SelectItem>
-											<SelectItem value='android'>
-												<div className='flex items-center gap-2'>
-													<Smartphone className='w-4 h-4' />
-													Google Play
-												</div>
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
+						<TabsContent value='appstore' className='space-y-4'>
+							<div>
+								<Label>{t('appStore.platform')}</Label>
+								<Select
+									value={appStoreConfig.platform}
+									onValueChange={v =>
+										setAppStoreConfig({
+											...appStoreConfig,
+											platform: v as 'ios' | 'android' | 'universal'
+										})
+									}
+								>
+									<SelectTrigger>
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='universal'>
+											<div className='flex items-center gap-2'>
+												<Smartphone className='w-4 h-4' />
+												{t('appStore.universal')}
+											</div>
+										</SelectItem>
+										<SelectItem value='ios'>
+											<div className='flex items-center gap-2'>
+												<Smartphone className='w-4 h-4' />
+												App Store (iOS)
+											</div>
+										</SelectItem>
+										<SelectItem value='android'>
+											<div className='flex items-center gap-2'>
+												<Smartphone className='w-4 h-4' />
+												Google Play
+											</div>
+										</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
 
-								{appStoreConfig.platform === 'universal' ? (
-									<>
+							{appStoreConfig.platform === 'universal' ? (
+								<>
+									<div className='grid grid-cols-2 gap-4'>
 										<div>
 											<Label htmlFor='iosId'>{t('appStore.iosAppId')}</Label>
 											<Input
@@ -309,51 +320,53 @@ export default function QRGeneratorPage() {
 												{t('appStore.androidHint')}
 											</p>
 										</div>
-										<div className='p-3 bg-muted rounded-lg'>
-											<p className='text-xs text-muted-foreground'>
-												{t('appStore.universalHint')}
-											</p>
-										</div>
-									</>
-								) : (
-									<div>
-										<Label htmlFor='appId'>{t('appStore.appId')}</Label>
-										<Input
-											id='appId'
-											placeholder={
-												appStoreConfig.platform === 'ios'
-													? '363590051'
-													: 'com.example.app'
-											}
-											value={
-												appStoreConfig.platform === 'ios'
-													? appStoreConfig.appId
-													: appStoreConfig.androidId || appStoreConfig.appId
-											}
-											onChange={e => {
-												if (appStoreConfig.platform === 'ios') {
-													setAppStoreConfig({
-														...appStoreConfig,
-														appId: e.target.value
-													})
-												} else {
-													setAppStoreConfig({
-														...appStoreConfig,
-														androidId: e.target.value
-													})
-												}
-											}}
-										/>
-										<p className='text-xs text-muted-foreground mt-1'>
-											{appStoreConfig.platform === 'ios'
-												? t('appStore.iosHint')
-												: t('appStore.androidHint')}
+									</div>
+									<div className='p-3 bg-muted rounded-lg'>
+										<p className='text-xs text-muted-foreground'>
+											{t('appStore.universalHint')}
 										</p>
 									</div>
-								)}
-							</TabsContent>
+								</>
+							) : (
+								<div>
+									<Label htmlFor='appId'>{t('appStore.appId')}</Label>
+									<Input
+										id='appId'
+										placeholder={
+											appStoreConfig.platform === 'ios'
+												? '363590051'
+												: 'com.example.app'
+										}
+										value={
+											appStoreConfig.platform === 'ios'
+												? appStoreConfig.appId
+												: appStoreConfig.androidId || appStoreConfig.appId
+										}
+										onChange={e => {
+											if (appStoreConfig.platform === 'ios') {
+												setAppStoreConfig({
+													...appStoreConfig,
+													appId: e.target.value
+												})
+											} else {
+												setAppStoreConfig({
+													...appStoreConfig,
+													androidId: e.target.value
+												})
+											}
+										}}
+									/>
+									<p className='text-xs text-muted-foreground mt-1'>
+										{appStoreConfig.platform === 'ios'
+											? t('appStore.iosHint')
+											: t('appStore.androidHint')}
+									</p>
+								</div>
+							)}
+						</TabsContent>
 
-							<TabsContent value='wifi' className='space-y-4'>
+						<TabsContent value='wifi' className='space-y-4'>
+							<div className='grid grid-cols-2 gap-4'>
 								<div>
 									<Label htmlFor='ssid'>{t('wifi.networkName')}</Label>
 									<Input
@@ -377,6 +390,8 @@ export default function QRGeneratorPage() {
 										}
 									/>
 								</div>
+							</div>
+							<div className='grid grid-cols-2 gap-4'>
 								<div>
 									<Label>{t('wifi.security')}</Label>
 									<Select
@@ -400,72 +415,62 @@ export default function QRGeneratorPage() {
 										</SelectContent>
 									</Select>
 								</div>
-								<div className='flex items-center justify-between'>
-									<Label htmlFor='hidden'>{t('wifi.hidden')}</Label>
-									<Switch
-										id='hidden'
-										checked={wifiConfig.hidden}
-										onCheckedChange={checked =>
-											setWifiConfig({ ...wifiConfig, hidden: checked })
-										}
+								<div>
+									<Label htmlFor='hidden' className='block mb-2'>
+										{t('wifi.hidden')}
+									</Label>
+									<div className='flex items-center h-10'>
+										<Switch
+											id='hidden'
+											checked={wifiConfig.hidden}
+											onCheckedChange={checked =>
+												setWifiConfig({ ...wifiConfig, hidden: checked })
+											}
+										/>
+									</div>
+								</div>
+							</div>
+						</TabsContent>
+					</Tabs>
+
+					<div className='mt-6 space-y-4'>
+						<h3 className='text-lg font-semibold'>{t('qrSettings')}</h3>
+
+						<div className='grid grid-cols-3 gap-4'>
+							<div>
+								<Label htmlFor='darkColor'>{t('darkColor')}</Label>
+								<div className='flex gap-2'>
+									<Input
+										id='darkColor'
+										type='color'
+										value={darkColor}
+										onChange={e => setDarkColor(e.target.value)}
+										className='w-16 h-10 p-1'
+									/>
+									<Input
+										value={darkColor}
+										onChange={e => setDarkColor(e.target.value)}
+										placeholder='#000000'
 									/>
 								</div>
-							</TabsContent>
-						</Tabs>
-
-						<div className='mt-6 space-y-4'>
-							<h3 className='text-lg font-semibold'>{t('qrSettings')}</h3>
-
+							</div>
 							<div>
-								<Label>
-									{t('size')}: {qrSize}px
-								</Label>
-								<Slider
-									value={[qrSize]}
-									onValueChange={([value]) => setQrSize(value)}
-									min={128}
-									max={512}
-									step={32}
-								/>
-							</div>
-
-							<div className='grid grid-cols-2 gap-4'>
-								<div>
-									<Label htmlFor='darkColor'>{t('darkColor')}</Label>
-									<div className='flex gap-2'>
-										<Input
-											id='darkColor'
-											type='color'
-											value={darkColor}
-											onChange={e => setDarkColor(e.target.value)}
-											className='w-16 h-10 p-1'
-										/>
-										<Input
-											value={darkColor}
-											onChange={e => setDarkColor(e.target.value)}
-											placeholder='#000000'
-										/>
-									</div>
-								</div>
-								<div>
-									<Label htmlFor='lightColor'>{t('lightColor')}</Label>
-									<div className='flex gap-2'>
-										<Input
-											id='lightColor'
-											type='color'
-											value={lightColor}
-											onChange={e => setLightColor(e.target.value)}
-											className='w-16 h-10 p-1'
-										/>
-										<Input
-											value={lightColor}
-											onChange={e => setLightColor(e.target.value)}
-											placeholder='#FFFFFF'
-										/>
-									</div>
+								<Label htmlFor='lightColor'>{t('lightColor')}</Label>
+								<div className='flex gap-2'>
+									<Input
+										id='lightColor'
+										type='color'
+										value={lightColor}
+										onChange={e => setLightColor(e.target.value)}
+										className='w-16 h-10 p-1'
+									/>
+									<Input
+										value={lightColor}
+										onChange={e => setLightColor(e.target.value)}
+										placeholder='#FFFFFF'
+									/>
 								</div>
 							</div>
-
 							<div>
 								<Label>{t('errorCorrection')}</Label>
 								<Select
@@ -486,32 +491,77 @@ export default function QRGeneratorPage() {
 								</Select>
 							</div>
 						</div>
-					</WidgetSection>
-				</div>
+					</div>
+				</WidgetSection>
+			</div>
 
-				{/* Preview */}
-				<div>
-					<WidgetSection
-						icon={<QrCode className='w-5 h-5' />}
-						title={t('preview')}
-						className='flex flex-col items-center space-y-6'
-					>
-						<div className='p-6 bg-white rounded-2xl shadow-lg'>
-							<canvas ref={canvasRef} />
+			{/* Preview */}
+			<div className='relative'>
+				<div className='absolute top-0 right-2 flex gap-2 z-10'>
+					<Button variant='outline' size='icon' onClick={downloadQR}>
+						<Download className='w-4 h-4' />
+					</Button>
+					<Button variant='outline' size='icon' onClick={copyQRAsImage}>
+						<Copy className='w-4 h-4' />
+					</Button>
+				</div>
+				<div className='flex items-center justify-center p-6 pt-16 bg-white dark:bg-white rounded-lg'>
+					{!hasGeneratedOnce && (
+						<div
+							className='absolute grid grid-cols-8 gap-[2px] p-2 bg-white rounded'
+							style={{
+								width: `${qrSize}px`,
+								height: `${qrSize}px`
+							}}
+						>
+							{[...Array(64)].map((_, index) => {
+								// Deterministic pattern based on index
+								const row = Math.floor(index / 8)
+								const col = index % 8
+								const isCornerPattern =
+									// Top-left corner
+									(row < 3 && col < 3) ||
+									// Top-right corner
+									(row < 3 && col >= 5) ||
+									// Bottom-left corner
+									(row >= 5 && col < 3)
+
+								// Create a checkered pattern for the middle
+								const isCheckerPattern = (row + col) % 2 === 0
+
+								const shouldBeDark =
+									isCornerPattern ||
+									(row >= 3 &&
+										row < 5 &&
+										col >= 3 &&
+										col < 5 &&
+										isCheckerPattern)
+
+								return (
+									<Skeleton
+										key={index}
+										className={`rounded-sm ${
+											shouldBeDark ? 'opacity-100' : 'opacity-30'
+										}`}
+									/>
+								)
+							})}
 						</div>
-						<div className='flex gap-2'>
-							<Button variant='outline' onClick={downloadQR}>
-								<Download className='w-4 h-4 mr-2' />
-								{t('download')}
-							</Button>
-							<Button onClick={copyQRAsImage}>
-								<Copy className='w-4 h-4 mr-2' />
-								{t('copy')}
-							</Button>
-						</div>
-					</WidgetSection>
+					)}
+					<canvas
+						ref={canvasRef}
+						width={qrSize}
+						height={qrSize}
+						className='block'
+						style={{
+							imageRendering: 'pixelated',
+							width: `${qrSize}px`,
+							height: `${qrSize}px`,
+							visibility: hasGeneratedOnce ? 'visible' : 'hidden'
+						}}
+					/>
 				</div>
 			</div>
-		</WidgetLayout>
+		</div>
 	)
 }

@@ -82,7 +82,6 @@ export interface Translations {
 		timerStopwatch?: WidgetBriefTranslation
 		todoList?: WidgetBriefTranslation
 		characterCounter?: WidgetBriefTranslation
-		pomodoro?: WidgetBriefTranslation
 		weatherWidget?: WidgetBriefTranslation
 		notepad?: WidgetBriefTranslation
 		bingoGenerator?: WidgetBriefTranslation

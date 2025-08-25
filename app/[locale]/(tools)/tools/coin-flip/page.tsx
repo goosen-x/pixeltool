@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider'
 import {
 	Select,
 	SelectContent,
@@ -17,6 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { useTranslations, useLocale } from 'next-intl'
 
 interface FlipResult {
 	id: string
@@ -57,6 +59,8 @@ const coinTypes: CoinType[] = [
 ]
 
 export default function CoinFlipPage() {
+	const locale = useLocale()
+	const t = useTranslations('widgets.coinFlip')
 	const [mounted, setMounted] = useState(false)
 	const [isFlipping, setIsFlipping] = useState(false)
 	const [currentResult, setCurrentResult] = useState<'heads' | 'tails' | null>(
@@ -107,8 +111,20 @@ export default function CoinFlipPage() {
 		// Calculate rotation
 		const baseRotations =
 			animationSpeed === 'slow' ? 3 : animationSpeed === 'fast' ? 8 : 5
-		const finalRotation =
-			rotation + baseRotations * 360 + (result === 'heads' ? 0 : 180)
+
+		// Определяем текущую позицию монеты (какая сторона сейчас видна)
+		const currentPosition = rotation % 360
+		const isCurrentlyHeads = currentPosition < 90 || currentPosition >= 270
+
+		// Вычисляем, сколько нужно повернуть, чтобы показать нужную сторону
+		let additionalRotation = 0
+		if (result === 'heads' && !isCurrentlyHeads) {
+			additionalRotation = 180
+		} else if (result === 'tails' && isCurrentlyHeads) {
+			additionalRotation = 180
+		}
+
+		const finalRotation = rotation + baseRotations * 360 + additionalRotation
 		setRotation(finalRotation)
 
 		// Animation duration
@@ -136,10 +152,15 @@ export default function CoinFlipPage() {
 
 			// Show result toast
 			const resultText =
-				result === 'heads' ? selectedCoin.headsText : selectedCoin.tailsText
+				result === 'heads'
+					? locale === 'ru'
+						? 'Орёл'
+						: 'Heads'
+					: locale === 'ru'
+						? 'Решка'
+						: 'Tails'
 			toast.success(`${resultText}!`, {
-				icon:
-					result === 'heads' ? selectedCoin.headsIcon : selectedCoin.tailsIcon
+				icon: result === 'heads' ? '🦅' : '🪙'
 			})
 		}, duration)
 	}, [
@@ -148,7 +169,8 @@ export default function CoinFlipPage() {
 		rotation,
 		selectedCoin,
 		flipHistory,
-		updateCounts
+		updateCounts,
+		locale
 	])
 
 	const clearHistory = useCallback(() => {
@@ -156,8 +178,8 @@ export default function CoinFlipPage() {
 		setHeadsCount(0)
 		setTailsCount(0)
 		localStorage.removeItem('coinFlipHistory')
-		toast.success('History cleared')
-	}, [])
+		toast.success(locale === 'ru' ? 'История очищена' : 'History cleared')
+	}, [locale])
 
 	// Keyboard shortcuts
 	useEffect(() => {
@@ -232,7 +254,7 @@ export default function CoinFlipPage() {
 						{/* Выбор монеты */}
 						<div>
 							<div className='text-xs text-muted-foreground mb-2 text-center'>
-								Монета
+								{locale === 'ru' ? 'Монета' : 'Coin'}
 							</div>
 							<div className='flex gap-2'>
 								{coinTypes.map(coin => (
@@ -251,33 +273,58 @@ export default function CoinFlipPage() {
 						</div>
 
 						{/* Скорость анимации */}
-						<div>
-							<div className='text-xs text-muted-foreground mb-2 text-center'>
-								Скорость
+						<div className='w-36'>
+							<div className='text-xs text-muted-foreground mb-3 text-center'>
+								{locale === 'ru' ? 'Скорость' : 'Speed'}
 							</div>
-							<div className='flex gap-2'>
-								{[
-									{ value: 'slow', icon: '🐌' },
-									{ value: 'normal', icon: '⚡' },
-									{ value: 'fast', icon: '🚀' }
-								].map(speed => (
-									<Button
-										key={speed.value}
-										variant={
-											animationSpeed === speed.value ? 'default' : 'ghost'
-										}
-										size='sm'
-										onClick={() =>
-											setAnimationSpeed(
-												speed.value as 'slow' | 'normal' | 'fast'
-											)
-										}
-										className='h-8 w-8 p-0'
-										title={speed.value}
+							<div className='relative px-3'>
+								<Slider
+									value={[
+										animationSpeed === 'slow'
+											? 0
+											: animationSpeed === 'fast'
+												? 2
+												: 1
+									]}
+									onValueChange={value => {
+										const speeds: ('slow' | 'normal' | 'fast')[] = [
+											'slow',
+											'normal',
+											'fast'
+										]
+										setAnimationSpeed(speeds[value[0]])
+									}}
+									max={2}
+									step={1}
+									className='cursor-pointer'
+								/>
+								{/* Иконки скорости */}
+								<div className='flex justify-between mt-2 text-sm select-none'>
+									<span
+										className={cn(
+											'transition-opacity',
+											animationSpeed === 'slow' ? 'opacity-100' : 'opacity-50'
+										)}
 									>
-										{speed.icon}
-									</Button>
-								))}
+										🐌
+									</span>
+									<span
+										className={cn(
+											'transition-opacity',
+											animationSpeed === 'normal' ? 'opacity-100' : 'opacity-50'
+										)}
+									>
+										⚡
+									</span>
+									<span
+										className={cn(
+											'transition-opacity',
+											animationSpeed === 'fast' ? 'opacity-100' : 'opacity-50'
+										)}
+									>
+										🚀
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -286,14 +333,14 @@ export default function CoinFlipPage() {
 					{flipHistory.length > 0 && (
 						<div>
 							<div className='text-xs text-muted-foreground mb-2 text-center'>
-								Статистика
+								{locale === 'ru' ? 'Статистика' : 'Statistics'}
 							</div>
 							<div className='flex gap-3 text-xs'>
 								<span className='flex items-center gap-1'>
-									{selectedCoin.headsIcon} {headsPercentage}%
+									🦅 {headsPercentage}%
 								</span>
 								<span className='flex items-center gap-1'>
-									{selectedCoin.tailsIcon} {tailsPercentage}%
+									🪙 {tailsPercentage}%
 								</span>
 							</div>
 						</div>
@@ -313,59 +360,43 @@ export default function CoinFlipPage() {
 							}}
 							style={{ transformStyle: 'preserve-3d' }}
 						>
-							{/* Heads Side */}
+							{/* Heads Side (Орёл) - показывается при 0° */}
 							<div
-								className={cn(
-									'absolute inset-0 rounded-full shadow-2xl backface-hidden overflow-hidden',
-									selectedCoin.id === 'ruble' && 'bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center'
-								)}
+								className='absolute inset-0 rounded-full shadow-2xl backface-hidden overflow-hidden'
 								style={{ backfaceVisibility: 'hidden' }}
 							>
-								{selectedCoin.id === 'usd' ? (
-									<Image
-										src="/images/coins/dollar-heads.png"
-										alt="Dollar Heads"
-										width={256}
-										height={256}
-										className="w-full h-full object-cover"
-									/>
-								) : (
-									<div className='text-center text-white'>
-										<div className='text-8xl mb-2'>{selectedCoin.headsIcon}</div>
-										<div className='text-base font-semibold'>
-											{selectedCoin.headsText}
-										</div>
-									</div>
-								)}
+								<Image
+									src={
+										selectedCoin.id === 'usd'
+											? '/images/coins/dollar-heads.png'
+											: '/images/coins/ruble-heads.png'
+									}
+									alt={`${selectedCoin.name} Heads`}
+									width={256}
+									height={256}
+									className='w-full h-full object-cover'
+								/>
 							</div>
 
-							{/* Tails Side */}
+							{/* Tails Side (Решка) - показывается при 180° */}
 							<div
-								className={cn(
-									'absolute inset-0 rounded-full shadow-2xl backface-hidden overflow-hidden',
-									selectedCoin.id === 'ruble' && 'bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center'
-								)}
+								className='absolute inset-0 rounded-full shadow-2xl backface-hidden overflow-hidden'
 								style={{
 									backfaceVisibility: 'hidden',
 									transform: 'rotateY(180deg)'
 								}}
 							>
-								{selectedCoin.id === 'usd' ? (
-									<Image
-										src="/images/coins/dollar-tails.png"
-										alt="Dollar Tails"
-										width={256}
-										height={256}
-										className="w-full h-full object-cover"
-									/>
-								) : (
-									<div className='text-center text-white'>
-										<div className='text-7xl mb-2'>{selectedCoin.tailsIcon}</div>
-										<div className='text-base font-semibold'>
-											{selectedCoin.tailsText}
-										</div>
-									</div>
-								)}
+								<Image
+									src={
+										selectedCoin.id === 'usd'
+											? '/images/coins/dollar-tails.png'
+											: '/images/coins/ruble-tails.png'
+									}
+									alt={`${selectedCoin.name} Tails`}
+									width={256}
+									height={256}
+									className='w-full h-full object-cover'
+								/>
 							</div>
 						</motion.div>
 					</div>
@@ -382,13 +413,21 @@ export default function CoinFlipPage() {
 								>
 									<h3 className='text-2xl font-bold mb-2'>
 										{currentResult === 'heads'
-											? selectedCoin.headsText
-											: selectedCoin.tailsText}
+											? locale === 'ru'
+												? 'Орёл'
+												: 'Heads'
+											: locale === 'ru'
+												? 'Решка'
+												: 'Tails'}
 									</h3>
 									<p className='text-muted-foreground'>
 										{currentResult === 'heads'
-											? 'Выпал орёл!'
-											: 'Выпала решка!'}
+											? locale === 'ru'
+												? 'Выпал орёл!'
+												: 'Got heads!'
+											: locale === 'ru'
+												? 'Выпала решка!'
+												: 'Got tails!'}
 									</p>
 								</motion.div>
 							)}
@@ -405,7 +444,13 @@ export default function CoinFlipPage() {
 						<Coins
 							className={cn('w-6 h-6 mr-3', isFlipping && 'animate-spin')}
 						/>
-						{isFlipping ? 'Подбрасываем...' : 'Подбросить монету'}
+						{isFlipping
+							? locale === 'ru'
+								? 'Подбрасываем...'
+								: 'Flipping...'
+							: locale === 'ru'
+								? 'Подбросить монету'
+								: 'Flip Coin'}
 					</Button>
 				</div>
 			</Card>
@@ -421,7 +466,9 @@ export default function CoinFlipPage() {
 						<div className='flex items-center gap-2'>
 							<History className='w-4 h-4' />
 							<span className='font-semibold'>
-								История бросков ({flipHistory.length})
+								{locale === 'ru'
+									? `История бросков (${flipHistory.length})`
+									: `Flip History (${flipHistory.length})`}
 							</span>
 						</div>
 						{historyOpen ? (
@@ -444,7 +491,7 @@ export default function CoinFlipPage() {
 									<div className='flex justify-end'>
 										<Button onClick={clearHistory} variant='outline' size='sm'>
 											<RotateCcw className='w-4 h-4 mr-1' />
-											Очистить
+											{locale === 'ru' ? 'Очистить' : 'Clear'}
 										</Button>
 									</div>
 
@@ -462,18 +509,16 @@ export default function CoinFlipPage() {
 													#{flipHistory.length - index}
 												</Badge>
 												<div className='text-2xl mb-1'>
-													{flip.result === 'heads'
-														? coinTypes.find(c => c.name === flip.coinType)
-																?.headsIcon || selectedCoin.headsIcon
-														: coinTypes.find(c => c.name === flip.coinType)
-																?.tailsIcon || selectedCoin.tailsIcon}
+													{flip.result === 'heads' ? '🦅' : '🪙'}
 												</div>
 												<p className='font-medium text-sm text-center mb-1'>
 													{flip.result === 'heads'
-														? coinTypes.find(c => c.name === flip.coinType)
-																?.headsText || 'Орёл'
-														: coinTypes.find(c => c.name === flip.coinType)
-																?.tailsText || 'Решка'}
+														? locale === 'ru'
+															? 'Орёл'
+															: 'Heads'
+														: locale === 'ru'
+															? 'Решка'
+															: 'Tails'}
 												</p>
 												<p className='text-xs text-muted-foreground text-center'>
 													{flip.timestamp.toLocaleTimeString()}

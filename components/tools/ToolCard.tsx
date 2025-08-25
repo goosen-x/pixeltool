@@ -31,14 +31,35 @@ export function ToolCard({
 	const description = t(`${widget.translationKey}.description`)
 
 	return (
-		<Link href={`/${locale}/tools/${widget.path}`} className='block group'>
+		<Link
+			href={`/${locale}/tools/${widget.path}`}
+			className='block group/card'
+			style={{
+				display: 'block',
+				textDecoration: 'none'
+			}}
+		>
 			<Card
 				className={cn(
-					'h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50 bg-background/60 backdrop-blur-sm relative group overflow-hidden',
+					'h-full transition-all duration-300 border-border/50 bg-background/60 backdrop-blur-sm relative overflow-hidden transform-gpu',
+					'hover:shadow-lg hover:-translate-y-1 hover:border-primary/30',
 					className
 				)}
+				style={{
+					transition: 'all 0.3s ease',
+					cursor: 'pointer'
+				}}
+				onMouseEnter={e => {
+					e.currentTarget.style.transform = 'translateY(-4px)'
+					e.currentTarget.style.boxShadow =
+						'0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)'
+				}}
+				onMouseLeave={e => {
+					e.currentTarget.style.transform = 'translateY(0)'
+					e.currentTarget.style.boxShadow = ''
+				}}
 			>
-				<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
+				<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500' />
 
 				{showFavoriteButton && (
 					<FavoriteButton
@@ -50,13 +71,22 @@ export function ToolCard({
 				<CardHeader className='relative z-10 p-4 sm:p-6'>
 					<div
 						className={cn(
-							'w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white mb-3 sm:mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg',
+							'w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white mb-3 sm:mb-4 transition-all duration-300 shadow-lg',
 							widget.gradient
 						)}
+						style={{
+							transition: 'transform 0.3s ease'
+						}}
+						onMouseEnter={e => {
+							e.currentTarget.style.transform = 'scale(1.1)'
+						}}
+						onMouseLeave={e => {
+							e.currentTarget.style.transform = 'scale(1)'
+						}}
 					>
 						<Icon className='w-6 h-6 sm:w-8 sm:h-8' />
 					</div>
-					<CardTitle className='text-base sm:text-lg font-heading transition-all duration-300 group-hover:text-primary pr-8'>
+					<CardTitle className='text-base sm:text-lg font-heading transition-all duration-300 group-hover/card:text-primary pr-8'>
 						{searchQuery ? highlightText(title, searchQuery) : title}
 					</CardTitle>
 				</CardHeader>

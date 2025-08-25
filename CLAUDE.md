@@ -8,15 +8,21 @@
 ```bash
 # Development
 yarn dev                 # Start dev server (port 3000)
+yarn dev:clean           # Clear cache and start dev server
+yarn dev:no-cache        # Start dev server with all caching disabled
 yarn build               # Production build
 yarn lint                # ESLint check
 yarn typecheck           # TypeScript validation
+yarn clean               # Clear Next.js cache
 
 # Quality Checks
 yarn translations:check  # Validate all translations
 yarn check:all           # Run security, imports, bundle checks
 yarn format              # Auto-fix formatting
 yarn test                # Run test suite
+
+# Translation Development
+yarn watch:translations  # Watch translation files for changes
 
 # Database
 yarn tsx lib/scripts/migrate-posts.ts     # Migrate posts to DB

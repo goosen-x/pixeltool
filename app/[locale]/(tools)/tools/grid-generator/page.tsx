@@ -14,7 +14,7 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
-import { Copy, RotateCcw, Plus, Minus, HelpCircle } from 'lucide-react'
+import { Copy, RotateCcw, Plus, Minus, HelpCircle, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations, useLocale } from 'next-intl'
 import {
@@ -57,6 +57,7 @@ export default function GridGeneratorPage() {
 	const [itemCount, setItemCount] = useState(6)
 	const [showItemNumbers, setShowItemNumbers] = useState(true)
 	const [useUniformGap, setUseUniformGap] = useState(true)
+	const [copiedTailwind, setCopiedTailwind] = useState(false)
 
 	const updateProp = (key: keyof GridProps, value: string | number) => {
 		if (key === 'gap' && useUniformGap) {
@@ -89,9 +90,108 @@ export default function GridGeneratorPage() {
 		return css
 	}
 
+	const generateTailwind = () => {
+		// Map CSS grid values to Tailwind classes
+		const justifyItemsMap: Record<string, string> = {
+			start: 'justify-items-start',
+			end: 'justify-items-end',
+			center: 'justify-items-center',
+			stretch: 'justify-items-stretch'
+		}
+
+		const alignItemsMap: Record<string, string> = {
+			start: 'items-start',
+			end: 'items-end',
+			center: 'items-center',
+			stretch: 'items-stretch'
+		}
+
+		const justifyContentMap: Record<string, string> = {
+			start: 'justify-start',
+			end: 'justify-end',
+			center: 'justify-center',
+			stretch: 'justify-stretch',
+			'space-between': 'justify-between',
+			'space-around': 'justify-around',
+			'space-evenly': 'justify-evenly'
+		}
+
+		const alignContentMap: Record<string, string> = {
+			start: 'content-start',
+			end: 'content-end',
+			center: 'content-center',
+			stretch: 'content-stretch',
+			'space-between': 'content-between',
+			'space-around': 'content-around',
+			'space-evenly': 'content-evenly'
+		}
+
+		const autoFlowMap: Record<string, string> = {
+			row: 'grid-flow-row',
+			column: 'grid-flow-col',
+			dense: 'grid-flow-dense',
+			'row dense': 'grid-flow-row-dense',
+			'column dense': 'grid-flow-col-dense'
+		}
+
+		// Generate grid template classes
+		const columnsClass = `grid-cols-[${props.columns}]`
+		const rowsClass = `grid-rows-[${props.rows}]`
+
+		// Generate gap classes
+		let gapClasses = ''
+		if (useUniformGap) {
+			const gapValue = props.gap
+			gapClasses =
+				gapValue % 4 === 0 && gapValue <= 96
+					? `gap-${gapValue / 4}`
+					: `gap-[${gapValue}px]`
+		} else {
+			const rowGapValue = props.rowGap
+			const colGapValue = props.columnGap
+			const rowGapClass =
+				rowGapValue % 4 === 0 && rowGapValue <= 96
+					? `gap-y-${rowGapValue / 4}`
+					: `gap-y-[${rowGapValue}px]`
+			const colGapClass =
+				colGapValue % 4 === 0 && colGapValue <= 96
+					? `gap-x-${colGapValue / 4}`
+					: `gap-x-[${colGapValue}px]`
+			gapClasses = `${rowGapClass} ${colGapClass}`
+		}
+
+		// Combine all classes
+		const classes = [
+			'grid',
+			columnsClass,
+			rowsClass,
+			gapClasses,
+			justifyItemsMap[props.justifyItems],
+			alignItemsMap[props.alignItems],
+			justifyContentMap[props.justifyContent],
+			alignContentMap[props.alignContent],
+			autoFlowMap[props.autoFlow]
+		]
+			.filter(Boolean)
+			.join(' ')
+
+		return classes
+	}
+
 	const copyToClipboard = async () => {
 		try {
 			await navigator.clipboard.writeText(generateCSS())
+			toast.success(t('toast.copied'))
+		} catch (err) {
+			toast.error(t('toast.copyError'))
+		}
+	}
+
+	const copyTailwindToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(generateTailwind())
+			setCopiedTailwind(true)
+			setTimeout(() => setCopiedTailwind(false), 2000)
 			toast.success(t('toast.copied'))
 		} catch (err) {
 			toast.error(t('toast.copyError'))
@@ -426,23 +526,56 @@ export default function GridGeneratorPage() {
 			{/* Generated CSS */}
 			<Card className='lg:col-span-3'>
 				<CardHeader>
-					<CardTitle className='flex items-center justify-between'>
-						<span>{t('generatedCss')}</span>
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={copyToClipboard}
-							className='hover:bg-accent hover:text-white'
-						>
-							<Copy className='w-4 h-4 mr-1' />
-							{t('copy')}
-						</Button>
-					</CardTitle>
+					<CardTitle>{t('generatedCss')}</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<pre className='bg-muted p-4 rounded-md overflow-x-auto'>
-						<code className='text-sm'>{generateCSS()}</code>
-					</pre>
+					<div className='grid md:grid-cols-2 gap-4'>
+						{/* CSS Result */}
+						<div>
+							<div className='flex items-center justify-between mb-2'>
+								<Label className='text-sm text-muted-foreground'>CSS</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyToClipboard}
+									className='h-8 px-2 hover:bg-accent hover:text-white'
+								>
+									<Copy className='h-3 w-3' />
+								</Button>
+							</div>
+							<div className='bg-secondary rounded-lg p-4'>
+								<pre className='text-secondary-foreground font-mono text-xs overflow-x-auto'>
+									{generateCSS()}
+								</pre>
+							</div>
+						</div>
+
+						{/* Tailwind Result */}
+						<div>
+							<div className='flex items-center justify-between mb-2'>
+								<Label className='text-sm text-muted-foreground'>
+									Tailwind CSS
+								</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyTailwindToClipboard}
+									className='h-8 px-2 hover:bg-accent hover:text-white'
+								>
+									{copiedTailwind ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
+								</Button>
+							</div>
+							<div className='bg-secondary rounded-lg p-4'>
+								<span className='text-secondary-foreground font-mono text-xs break-words'>
+									{generateTailwind()}
+								</span>
+							</div>
+						</div>
+					</div>
 				</CardContent>
 			</Card>
 		</div>

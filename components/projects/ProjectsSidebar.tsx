@@ -100,7 +100,9 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 									if (categoryWidgets.length === 0) return null
 
 									// Only use localStorage state after hydration, default to expanded
-									const isCollapsed = isHydrated ? collapsedCategories.has(categoryKey) : false
+									const isCollapsed = isHydrated
+										? collapsedCategories.has(categoryKey)
+										: false
 
 									return (
 										<div
@@ -145,9 +147,10 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 																	: 'opacity-100 transform translate-x-0 scale-100'
 															)}
 															style={{
-																transitionDelay: isCollapsed || !isHydrated
-																	? '0ms'
-																	: `${index * 50}ms`
+																transitionDelay:
+																	isCollapsed || !isHydrated
+																		? '0ms'
+																		: `${index * 50}ms`
 															}}
 														>
 															<Link
