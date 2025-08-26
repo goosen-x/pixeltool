@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
 	Type,
 	Copy,
@@ -24,16 +25,17 @@ import {
 	Instagram,
 	Globe,
 	Search,
-	Edit3
+	Edit3,
+	ChevronDown,
+	ChevronUp,
+	BookOpen,
+	Mic
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 import { useTranslations } from 'next-intl'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 
 interface TextStats {
 	characters: number
@@ -154,6 +156,95 @@ const COMMON_STOP_WORDS = [
 	'not',
 	'on'
 ]
+
+// Animated Number Component
+function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
+	const [displayValue, setDisplayValue] = useState(0)
+
+	useEffect(() => {
+		const duration = 500
+		const startTime = Date.now()
+		const startValue = displayValue
+		const difference = value - startValue
+
+		const animate = () => {
+			const now = Date.now()
+			const progress = Math.min((now - startTime) / duration, 1)
+			const easeOutQuart = 1 - Math.pow(1 - progress, 4)
+			
+			setDisplayValue(Math.floor(startValue + difference * easeOutQuart))
+
+			if (progress < 1) {
+				requestAnimationFrame(animate)
+			} else {
+				setDisplayValue(value)
+			}
+		}
+
+		requestAnimationFrame(animate)
+	}, [value])
+
+	return <>{displayValue}{suffix}</>
+}
+
+// Collapsible Section Component
+function CollapsibleSection({ 
+	title, 
+	icon, 
+	children, 
+	defaultOpen = false 
+}: { 
+	title: string
+	icon: React.ReactNode
+	children: React.ReactNode
+	defaultOpen?: boolean
+}) {
+	const [isOpen, setIsOpen] = useState(defaultOpen)
+
+	return (
+		<Card className='overflow-hidden border-2 hover:border-muted-foreground/20 transition-all duration-200'>
+			<CardContent className='p-0'>
+				<button
+					onClick={() => setIsOpen(!isOpen)}
+					className='w-full p-5 flex items-center justify-between hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 rounded-t-lg group'
+				>
+					<div className='flex items-center gap-3'>
+						<motion.div
+							whileHover={{ scale: 1.1 }}
+							className='p-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-200'
+						>
+							{icon}
+						</motion.div>
+						<h3 className='font-semibold text-lg group-hover:text-primary transition-colors duration-200'>{title}</h3>
+					</div>
+					<motion.div
+						animate={{ rotate: isOpen ? 180 : 0 }}
+						transition={{ duration: 0.3, ease: "easeInOut" }}
+						className='p-1 rounded-full hover:bg-muted/50 transition-colors'
+					>
+						<ChevronDown className='w-5 h-5 text-muted-foreground' />
+					</motion.div>
+				</button>
+				
+				<AnimatePresence>
+					{isOpen && (
+						<motion.div
+							initial={{ height: 0, opacity: 0 }}
+							animate={{ height: 'auto', opacity: 1 }}
+							exit={{ height: 0, opacity: 0 }}
+							transition={{ duration: 0.3, ease: "easeInOut" }}
+							className='overflow-hidden border-t bg-gradient-to-b from-muted/10 to-transparent'
+						>
+							<div className='p-6'>
+								{children}
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</CardContent>
+		</Card>
+	)
+}
 
 export default function TextCounterPage() {
 	const t = useTranslations('widgets.textCounter')
@@ -396,375 +487,319 @@ SEO-оптимизация требует особого внимания к д�
 	})
 
 	return (
-		<WidgetLayout>
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Text Input */}
-				<div className='lg:col-span-2 space-y-6'>
-					<WidgetSection
-						icon={<Edit3 className='h-5 w-5' />}
-						title='Введите или вставьте текст'
-						description='Анализ количества символов, слов и других параметров текста'
+		<WidgetLayout showShare={false}>
+			<div className='w-full space-y-6'>
+				{/* Hero Stats Section */}
+				<div className='grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4'>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.3 }}
 					>
-						<div className='space-y-4'>
-							<div className='flex items-center justify-between'>
-								<div className='flex gap-2'>
-									<Button onClick={loadExample} variant='outline' size='sm'>
-										Пример
-									</Button>
-									<Button
-										onClick={copyText}
-										variant='outline'
-										size='sm'
-										disabled={!text}
-									>
-										<Copy className='w-4 h-4 mr-2' />
-										Копировать
-									</Button>
-									<Button onClick={clearText} variant='outline' size='sm'>
-										<RefreshCw className='w-4 h-4 mr-2' />
-										Очистить
-									</Button>
+						<Card className='relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 hover:border-primary/30 transition-all duration-200 hover:shadow-lg hover:shadow-primary/10'>
+							<CardContent className='p-4 sm:p-6'>
+								<div className='flex items-center justify-between'>
+									<div>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Characters</p>
+										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent'>
+											<AnimatedNumber value={stats.characters} />
+										</p>
+									</div>
+									<div className='relative'>
+										<Hash className='w-6 h-6 sm:w-8 sm:h-8 text-primary/30' />
+										<div className='absolute inset-0 bg-primary/10 blur-xl rounded-full'></div>
+									</div>
 								</div>
-							</div>
+							</CardContent>
+						</Card>
+					</motion.div>
 
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.3, delay: 0.1 }}
+					>
+						<Card className='relative overflow-hidden bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 hover:border-blue-500/30 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10'>
+							<CardContent className='p-4 sm:p-6'>
+								<div className='flex items-center justify-between'>
+									<div>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Words</p>
+										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent'>
+											<AnimatedNumber value={stats.words} />
+										</p>
+									</div>
+									<div className='relative'>
+										<Type className='w-6 h-6 sm:w-8 sm:h-8 text-blue-500/30' />
+										<div className='absolute inset-0 bg-blue-500/10 blur-xl rounded-full'></div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</motion.div>
+
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.3, delay: 0.2 }}
+					>
+						<Card className='relative overflow-hidden bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent border-green-500/20 hover:border-green-500/30 transition-all duration-200 hover:shadow-lg hover:shadow-green-500/10'>
+							<CardContent className='p-4 sm:p-6'>
+								<div className='flex items-center justify-between'>
+									<div>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Sentences</p>
+										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent'>
+											<AnimatedNumber value={stats.sentences} />
+										</p>
+									</div>
+									<div className='relative'>
+										<FileText className='w-6 h-6 sm:w-8 sm:h-8 text-green-500/30' />
+										<div className='absolute inset-0 bg-green-500/10 blur-xl rounded-full'></div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</motion.div>
+
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.3, delay: 0.3 }}
+					>
+						<Card className='relative overflow-hidden bg-gradient-to-br from-orange-500/10 via-orange-500/5 to-transparent border-orange-500/20 hover:border-orange-500/30 transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/10'>
+							<CardContent className='p-4 sm:p-6'>
+								<div className='flex items-center justify-between'>
+									<div>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Reading Time</p>
+										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent'>
+											<AnimatedNumber value={stats.readingTime} suffix=" min" />
+										</p>
+									</div>
+									<div className='relative'>
+										<Clock className='w-6 h-6 sm:w-8 sm:h-8 text-orange-500/30' />
+										<div className='absolute inset-0 bg-orange-500/10 blur-xl rounded-full'></div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</motion.div>
+				</div>
+
+				{/* Text Input Section */}
+				<Card className='relative border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/30 transition-all duration-200'>
+					<CardContent className='p-4 sm:p-6'>
+						<div className='relative'>
 							<Textarea
 								id='text-input'
 								value={text}
 								onChange={e => setText(e.target.value)}
-								placeholder='Начните вводить или вставьте текст для анализа...'
-								className='min-h-[400px] resize-y'
+								placeholder='Start typing or paste your text here for instant analysis...'
+								className='min-h-[250px] sm:min-h-[300px] resize-y pr-12 sm:pr-16 text-base border-0 focus:ring-0 bg-transparent placeholder:text-muted-foreground/60'
 							/>
+							{/* Floating Character Counter */}
+							<motion.div 
+								className='absolute bottom-2 sm:bottom-4 right-2 sm:right-4 text-xs sm:text-sm font-mono bg-background/90 backdrop-blur border rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 shadow-sm'
+								initial={{ opacity: 0 }}
+								animate={{ opacity: text ? 1 : 0.5 }}
+								transition={{ duration: 0.2 }}
+							>
+								<span className='text-muted-foreground'>
+									{stats.characters.toLocaleString()}
+								</span>
+							</motion.div>
+						</div>
 
-							{/* Quick Stats Bar */}
-							<div className='flex flex-wrap gap-4 mt-4 pt-4 border-t'>
-								<div className='flex items-center gap-2'>
-									<Hash className='w-4 h-4 text-muted-foreground' />
-									<span className='text-sm'>
-										<strong>{stats.characters}</strong> символов
-									</span>
-								</div>
-								<div className='flex items-center gap-2'>
-									<Type className='w-4 h-4 text-muted-foreground' />
-									<span className='text-sm'>
-										<strong>{stats.words}</strong> слов
-									</span>
-								</div>
-								<div className='flex items-center gap-2'>
-									<FileText className='w-4 h-4 text-muted-foreground' />
-									<span className='text-sm'>
-										<strong>{stats.sentences}</strong> предложений
-									</span>
-								</div>
-								<div className='flex items-center gap-2'>
-									<Clock className='w-4 h-4 text-muted-foreground' />
-									<span className='text-sm'>
-										~<strong>{stats.readingTime}</strong> мин чтения
-									</span>
-								</div>
+						{/* Action Buttons */}
+						<div className='flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-0 mt-6 pt-4 border-t'>
+							<div className='flex gap-2'>
+								<Button onClick={loadExample} variant='outline' size='sm' className='flex-1 sm:flex-none hover:bg-primary/5 hover:border-primary/20'>
+									<Zap className='w-4 h-4 mr-2' />
+									<span className='hidden xs:inline'>Example</span>
+									<span className='xs:hidden'>Ex</span>
+								</Button>
+								<Button onClick={clearText} variant='outline' size='sm' className='flex-1 sm:flex-none hover:bg-destructive/5 hover:border-destructive/20' disabled={!text}>
+									<RefreshCw className='w-4 h-4 mr-2' />
+									<span className='hidden xs:inline'>Clear</span>
+									<span className='xs:hidden'>Clr</span>
+								</Button>
+							</div>
+							<div className='flex gap-2'>
+								<Button
+									onClick={copyText}
+									variant='outline'
+									size='sm'
+									disabled={!text}
+									className='flex-1 sm:flex-none hover:bg-blue-500/5 hover:border-blue-500/20'
+								>
+									<Copy className='w-4 h-4 mr-2' />
+									<span className='hidden sm:inline'>Copy Text</span>
+									<span className='sm:hidden'>Text</span>
+								</Button>
+								<Button
+									onClick={copyStats}
+									variant='default'
+									size='sm'
+									disabled={!text}
+									className='flex-1 sm:flex-none bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 shadow-md hover:shadow-lg transition-all'
+								>
+									<BarChart3 className='w-4 h-4 mr-2' />
+									<span className='hidden sm:inline'>Copy Stats</span>
+									<span className='sm:hidden'>Stats</span>
+								</Button>
 							</div>
 						</div>
-					</WidgetSection>
 
-					{/* Platform Limits */}
-					<WidgetSection
-						icon={<Globe className='h-5 w-5' />}
-						title='Лимиты платформ'
-						description='Проверьте соответствие текста ограничениям социальных сетей и SEO'
-					>
-						<div className='space-y-3'>
-							{PLATFORM_LIMITS.map(platform => {
-								const progress = getPlatformProgress(platform)
-								const status = getPlatformStatus(platform)
-								const Icon = platform.icon
-								const StatusIcon = status.icon
-
-								return (
-									<div
-										key={`${platform.name}-${platform.description}`}
-										className={cn(
-											'p-3 rounded-lg border cursor-pointer transition-colors',
-											selectedPlatform?.name === platform.name &&
-												selectedPlatform?.description === platform.description
-												? 'bg-primary/10 border-primary'
-												: 'hover:bg-muted/50'
-										)}
-										onClick={() => setSelectedPlatform(platform)}
+						{/* Quick Info Bar */}
+						{text && (
+							<motion.div
+								initial={{ opacity: 0, height: 0 }}
+								animate={{ opacity: 1, height: 'auto' }}
+								className='mt-4 pt-4 border-t bg-gradient-to-r from-muted/30 via-muted/20 to-muted/30 rounded-lg'
+							>
+								<div className='flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm p-3'>
+									<motion.div 
+										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
+										whileHover={{ scale: 1.02 }}
 									>
-										<div className='flex items-center justify-between mb-2'>
-											<div className='flex items-center gap-2'>
-												<Icon className={cn('w-4 h-4', platform.color)} />
-												<span className='font-medium'>{platform.name}</span>
-												<span className='text-sm text-muted-foreground'>
-													• {platform.description}
+										<BookOpen className='w-4 h-4 text-blue-500' />
+										<span className='font-medium'>~{stats.readingTime} min read</span>
+									</motion.div>
+									<motion.div 
+										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
+										whileHover={{ scale: 1.02 }}
+									>
+										<Mic className='w-4 h-4 text-green-500' />
+										<span className='font-medium'>~{stats.speakingTime} min speech</span>
+									</motion.div>
+									<motion.div 
+										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
+										whileHover={{ scale: 1.02 }}
+									>
+										<Type className='w-4 h-4 text-purple-500' />
+										<span className='font-medium'>{stats.avgWordLength.toFixed(1)} avg chars/word</span>
+									</motion.div>
+								</div>
+							</motion.div>
+						)}
+					</CardContent>
+				</Card>
+
+				{/* Collapsible Platform Limits Section */}
+				<CollapsibleSection
+					title="Platform Limits"
+					icon={<Globe className='w-5 h-5' />}
+					defaultOpen={false}
+				>
+					<div className='space-y-3'>
+						{PLATFORM_LIMITS.slice(0, 5).map(platform => {
+							const progress = getPlatformProgress(platform)
+							const status = getPlatformStatus(platform)
+							const Icon = platform.icon
+							const remaining = platform.limit - (platform.type === 'characters' ? stats.characters : stats.words)
+
+							return (
+								<div key={`${platform.name}-${platform.description}`} className='space-y-2'>
+									<div className='flex items-center justify-between'>
+										<div className='flex items-center gap-2'>
+											<Icon className={cn('w-4 h-4', platform.color)} />
+											<span className='text-sm font-medium'>{platform.name}</span>
+											{platform.description && (
+												<span className='text-xs text-muted-foreground'>
+													({platform.description})
 												</span>
-											</div>
-											<div className='flex items-center gap-2'>
-												<StatusIcon className={cn('w-4 h-4', status.color)} />
-												<span className={cn('text-sm', status.color)}>
-													{platform.type === 'characters'
-														? stats.characters
-														: stats.words}
-													/{platform.limit}
-												</span>
-											</div>
+											)}
 										</div>
-										<Progress value={progress} className='h-2' />
+										<span className={cn('text-sm font-medium', 
+											remaining < 0 ? 'text-red-600' : 
+											remaining < platform.limit * 0.2 ? 'text-yellow-600' : 
+											'text-green-600'
+										)}>
+											{remaining >= 0 ? `${remaining} left` : `${Math.abs(remaining)} over`}
+										</span>
 									</div>
-								)
-							})}
-						</div>
-					</WidgetSection>
-				</div>
+									<Progress 
+										value={progress} 
+										className={cn('h-2 transition-all', 
+											progress > 100 && 'bg-red-100'
+										)}
+									/>
+								</div>
+							)
+						})}
+					</div>
+				</CollapsibleSection>
 
-				{/* Statistics */}
-				<div className='space-y-6'>
-					{/* Detailed Stats */}
-					<WidgetOutput
-						gradientFrom='from-primary/10'
-						gradientTo='to-accent/10'
+				{/* Collapsible Advanced Analysis Section */}
+				{stats.words > 0 && (
+					<CollapsibleSection
+						title="Advanced Analysis"
+						icon={<BarChart3 className='w-5 h-5' />}
+						defaultOpen={false}
 					>
-						<div className='flex items-center justify-between mb-4'>
-							<h3 className='font-semibold flex items-center gap-2'>
-								<BarChart3 className='w-5 h-5 text-primary' />
-								Подробная статистика
-							</h3>
-							<Button onClick={copyStats} variant='outline' size='sm'>
-								<Copy className='w-4 h-4' />
-							</Button>
-						</div>
+						<div className='grid md:grid-cols-2 gap-6'>
+							{/* Detailed Stats */}
+							<div className='space-y-4'>
+								<div>
+									<h4 className='text-sm font-medium mb-3'>Character Analysis</h4>
+									<div className='space-y-2'>
+										<div className='flex justify-between text-sm'>
+											<span className='text-muted-foreground'>Without spaces</span>
+											<span className='font-mono'>{stats.charactersNoSpaces}</span>
+										</div>
+										<div className='flex justify-between text-sm'>
+											<span className='text-muted-foreground'>Spaces</span>
+											<span className='font-mono'>{stats.characters - stats.charactersNoSpaces}</span>
+										</div>
+										<div className='flex justify-between text-sm'>
+											<span className='text-muted-foreground'>Paragraphs</span>
+											<span className='font-mono'>{stats.paragraphs}</span>
+										</div>
+									</div>
+								</div>
 
-						<div className='space-y-4'>
-							{/* Character Stats */}
-							<div>
-								<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-									Символы
-								</h4>
-								<div className='space-y-2'>
-									<div className='flex justify-between text-sm'>
-										<span>Всего символов:</span>
-										<span className='font-mono font-medium'>
-											{stats.characters}
-										</span>
-									</div>
-									<div className='flex justify-between text-sm'>
-										<span>Без пробелов:</span>
-										<span className='font-mono font-medium'>
-											{stats.charactersNoSpaces}
-										</span>
-									</div>
-									<div className='flex justify-between text-sm'>
-										<span>Пробелов:</span>
-										<span className='font-mono font-medium'>
-											{stats.characters - stats.charactersNoSpaces}
-										</span>
+								<div>
+									<h4 className='text-sm font-medium mb-3'>Averages</h4>
+									<div className='space-y-2'>
+										<div className='flex justify-between text-sm'>
+											<span className='text-muted-foreground'>Words per sentence</span>
+											<span className='font-mono'>{stats.avgSentenceLength.toFixed(1)}</span>
+										</div>
+										<div className='flex justify-between text-sm'>
+											<span className='text-muted-foreground'>Characters per word</span>
+											<span className='font-mono'>{stats.avgWordLength.toFixed(1)}</span>
+										</div>
 									</div>
 								</div>
 							</div>
 
-							{/* Text Structure */}
-							<div>
-								<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-									Структура текста
-								</h4>
-								<div className='space-y-2'>
-									<div className='flex justify-between text-sm'>
-										<span>Слов:</span>
-										<span className='font-mono font-medium'>{stats.words}</span>
-									</div>
-									<div className='flex justify-between text-sm'>
-										<span>Предложений:</span>
-										<span className='font-mono font-medium'>
-											{stats.sentences}
-										</span>
-									</div>
-									<div className='flex justify-between text-sm'>
-										<span>Абзацев:</span>
-										<span className='font-mono font-medium'>
-											{stats.paragraphs}
-										</span>
-									</div>
-								</div>
-							</div>
-
-							{/* Reading Metrics */}
-							<div>
-								<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-									Время
-								</h4>
-								<div className='space-y-2'>
-									<div className='flex justify-between text-sm'>
-										<span>Время чтения:</span>
-										<span className='font-medium'>
-											~{stats.readingTime} мин
-										</span>
-									</div>
-									<div className='flex justify-between text-sm'>
-										<span>Время озвучивания:</span>
-										<span className='font-medium'>
-											~{stats.speakingTime} мин
-										</span>
-									</div>
-								</div>
-							</div>
-
-							{/* Averages */}
-							<div>
-								<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-									Средние значения
-								</h4>
-								<div className='space-y-2'>
-									<div className='flex justify-between text-sm'>
-										<span>Длина слова:</span>
-										<span className='font-mono font-medium'>
-											{stats.avgWordLength.toFixed(1)} симв.
-										</span>
-									</div>
-									<div className='flex justify-between text-sm'>
-										<span>Длина предложения:</span>
-										<span className='font-mono font-medium'>
-											{stats.avgSentenceLength.toFixed(1)} слов
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</WidgetOutput>
-
-					{/* Word Analysis */}
-					{stats.words > 0 && (
-						<WidgetOutput
-							gradientFrom='from-accent/10'
-							gradientTo='to-primary/10'
-						>
-							<h3 className='font-semibold mb-4 flex items-center gap-2'>
-								<Zap className='w-5 h-5 text-accent' />
-								Анализ слов
-							</h3>
-
+							{/* Word Analysis */}
 							<div className='space-y-4'>
 								{stats.longestWord && (
 									<div>
-										<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-											Самое длинное слово
-										</h4>
+										<h4 className='text-sm font-medium mb-3'>Longest Word</h4>
 										<Badge variant='secondary' className='font-mono'>
-											{stats.longestWord} ({stats.longestWord.length} симв.)
+											{stats.longestWord} ({stats.longestWord.length} chars)
 										</Badge>
 									</div>
 								)}
 
 								{stats.commonWords.length > 0 && (
 									<div>
-										<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-											Частые слова
-										</h4>
+										<h4 className='text-sm font-medium mb-3'>Most Common Words</h4>
 										<div className='space-y-2'>
 											{stats.commonWords.map(({ word, count }) => (
-												<div
-													key={word}
-													className='flex items-center justify-between'
-												>
+												<div key={word} className='flex items-center justify-between'>
 													<span className='font-mono text-sm'>{word}</span>
-													<Badge variant='outline'>{count}</Badge>
+													<Badge variant='outline' className='text-xs'>{count}×</Badge>
 												</div>
 											))}
 										</div>
 									</div>
 								)}
 							</div>
-						</WidgetOutput>
-					)}
-
-					{/* Selected Platform Info */}
-					{selectedPlatform && (
-						<WidgetOutput
-							gradientFrom='from-primary/10'
-							gradientTo='to-accent/10'
-							className='border-primary'
-						>
-							<div className='flex items-center gap-2 mb-3'>
-								<selectedPlatform.icon
-									className={cn('w-5 h-5', selectedPlatform.color)}
-								/>
-								<h4 className='font-semibold'>{selectedPlatform.name}</h4>
-							</div>
-
-							<div className='space-y-2 text-sm'>
-								<p className='text-muted-foreground'>
-									{selectedPlatform.description}
-								</p>
-								<div className='flex justify-between'>
-									<span>Лимит:</span>
-									<span className='font-medium'>
-										{selectedPlatform.limit}{' '}
-										{selectedPlatform.type === 'characters'
-											? 'символов'
-											: 'слов'}
-									</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>Использовано:</span>
-									<span className='font-medium'>
-										{selectedPlatform.type === 'characters'
-											? stats.characters
-											: stats.words}
-									</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>Осталось:</span>
-									<span className='font-medium'>
-										{Math.max(
-											0,
-											selectedPlatform.limit -
-												(selectedPlatform.type === 'characters'
-													? stats.characters
-													: stats.words)
-										)}
-									</span>
-								</div>
-							</div>
-						</WidgetOutput>
-					)}
-				</div>
+						</div>
+					</CollapsibleSection>
+				)}
 			</div>
-
-			{/* Tips */}
-			<WidgetSection
-				icon={<AlertCircle className='h-5 w-5' />}
-				title='Советы по оптимизации текста'
-				description='Рекомендации для различных платформ и целей'
-				className='bg-muted/50'
-			>
-				<div className='grid md:grid-cols-3 gap-6 text-sm'>
-					<div>
-						<h4 className='font-medium mb-2'>SEO оптимизация</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Заголовок: 50-60 символов</li>
-							<li>• Описание: 150-160 символов</li>
-							<li>• URL: короткий и понятный</li>
-							<li>• Ключевые слова: 2-3% плотность</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Социальные сети</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Twitter: используйте хештеги</li>
-							<li>• Instagram: эмодзи привлекают внимание</li>
-							<li>• LinkedIn: профессиональный тон</li>
-							<li>• Facebook: визуальный контент</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Читабельность</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Короткие предложения (15-20 слов)</li>
-							<li>• Простые слова предпочтительнее</li>
-							<li>• Используйте абзацы</li>
-							<li>• Добавляйте подзаголовки</li>
-						</ul>
-					</div>
-				</div>
-			</WidgetSection>
 		</WidgetLayout>
 	)
 }

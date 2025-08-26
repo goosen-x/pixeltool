@@ -672,7 +672,7 @@ export default function TextEmoticonsPage() {
 									{category.emoticons.map((emoticon, index) => (
 										<div
 											key={`${emoticon.text}-${index}`}
-											className='flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent transition-colors'
+											className='flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors'
 										>
 											<Button
 												onClick={() => copyEmoticon(emoticon.text)}
@@ -732,7 +732,7 @@ export default function TextEmoticonsPage() {
 							{filteredEmoticons.map((emoticon, index) => (
 								<div
 									key={`${emoticon.text}-${index}`}
-									className='flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent transition-colors'
+									className='flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors'
 								>
 									<Button
 										onClick={() => copyEmoticon(emoticon.text)}

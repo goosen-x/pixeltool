@@ -74,15 +74,17 @@ export function useAnalytics(widgetId: string) {
 	const flushEvents = useCallback(async () => {
 		if (eventQueue.current.length === 0 || isFlushingRef.current) return
 
+		// Skip flushing in development mode
+		if (process.env.NODE_ENV === 'development' || typeof window === 'undefined') {
+			eventQueue.current = []
+			return
+		}
+
 		isFlushingRef.current = true
 		const events = [...eventQueue.current]
 		eventQueue.current = []
 
 		try {
-			if (process.env.NODE_ENV === 'development') {
-				console.log('📊 Flushing analytics events:', events.length)
-			}
-
 			await fetch('/api/analytics/track', {
 				method: 'POST',
 				headers: {
@@ -91,9 +93,6 @@ export function useAnalytics(widgetId: string) {
 				body: JSON.stringify({ events })
 			})
 		} catch (error) {
-			if (process.env.NODE_ENV === 'development') {
-				console.warn('Analytics tracking failed:', error)
-			}
 			// Re-add failed events to queue for retry (but limit retries)
 			if (events.length < 10) {
 				eventQueue.current.unshift(...events)
@@ -110,13 +109,15 @@ export function useAnalytics(widgetId: string) {
 			metadata?: Record<string, any>
 		) => {
 			try {
-				// Check if user has given consent for analytics and not in development mode
+				// Check if user has given consent for analytics
 				if (
 					!hasConsent ||
 					!sessionId.current ||
-					process.env.NODE_ENV === 'development'
-				)
+					process.env.NODE_ENV === 'development' ||
+					typeof window === 'undefined'
+				) {
 					return
+				}
 
 				const now = Date.now()
 
@@ -166,6 +167,7 @@ export function useAnalytics(widgetId: string) {
 
 	// Track page view
 	const trackView = useCallback(() => {
+		// View is already tracked in useEffect, this is just for manual calls
 		if (!hasTrackedView.current) {
 			trackEvent('view')
 			hasTrackedView.current = true
@@ -233,9 +235,11 @@ export function useAnalytics(widgetId: string) {
 			trackEvent('view')
 			hasTrackedView.current = true
 
-			// Track session start
-			sessionStartTime.current = Date.now()
-			trackEvent('session_start')
+			// Track session start only once
+			if (!sessionStartTime.current || sessionStartTime.current === Date.now()) {
+				sessionStartTime.current = Date.now()
+				trackEvent('session_start')
+			}
 
 			// Track session end on page unload
 			const handleBeforeUnload = () => {
@@ -243,15 +247,12 @@ export function useAnalytics(widgetId: string) {
 				if (eventQueue.current.length > 0) {
 					flushEvents()
 				}
-				const sessionDuration = Date.now() - sessionStartTime.current
-				trackEvent('session_end', {
-					sessionDuration: Math.round(sessionDuration / 1000) // in seconds
-				})
+				// Don't track session_end on unload - it's already handled by visibility change
 			}
 
 			// Track session end on visibility change (when tab becomes hidden)
 			const handleVisibilityChange = () => {
-				if (document.hidden) {
+				if (document.hidden && sessionStartTime.current > 0) {
 					// Flush remaining events when tab becomes hidden
 					if (eventQueue.current.length > 0) {
 						flushEvents()
@@ -260,6 +261,12 @@ export function useAnalytics(widgetId: string) {
 					trackEvent('session_end', {
 						sessionDuration: Math.round(sessionDuration / 1000) // in seconds
 					})
+					// Reset session start time to prevent duplicate tracking
+					sessionStartTime.current = 0
+				} else if (!document.hidden && sessionStartTime.current === 0) {
+					// Track new session when tab becomes visible again
+					sessionStartTime.current = Date.now()
+					trackEvent('session_start')
 				}
 			}
 
@@ -275,10 +282,13 @@ export function useAnalytics(widgetId: string) {
 					flushEvents()
 				}
 
-				const sessionDuration = Date.now() - sessionStartTime.current
-				trackEvent('session_end', {
-					sessionDuration: Math.round(sessionDuration / 1000) // in seconds
-				})
+				// Only track session end if we have an active session
+				if (sessionStartTime.current > 0) {
+					const sessionDuration = Date.now() - sessionStartTime.current
+					trackEvent('session_end', {
+						sessionDuration: Math.round(sessionDuration / 1000) // in seconds
+					})
+				}
 			}
 		}
 	}, [widgetId, trackEvent, flushEvents])
