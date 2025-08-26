@@ -691,8 +691,13 @@
 			"description": "Generate strong, secure passwords with customizable options and strength analysis",
 			"useCase": "Generate secure passwords with customizable complexity",
 			"placeholder": "Your generated password",
-			"generate": "Generate New",
+			"generate": "Generate New Password",
 			"copy": "Copy",
+			"modes": {
+				"random": "Random",
+				"memorable": "Memorable",
+				"phrase": "Phrase"
+			},
 			"tabs": {
 				"random": "Random",
 				"passphrase": "Passphrase",
@@ -708,7 +713,9 @@
 			},
 			"options": {
 				"title": "Password Options",
-				"length": "Password Length",
+				"length": "Length",
+				"characters": "Characters",
+				"advanced": "Advanced",
 				"characterTypes": "Character Types",
 				"uppercase": "Uppercase Letters",
 				"lowercase": "Lowercase Letters",
@@ -718,13 +725,23 @@
 				"excludeSimilar": "Exclude Similar Characters",
 				"excludeAmbiguous": "Exclude Ambiguous Symbols"
 			},
+			"memorable": {
+				"pattern": "Pattern",
+				"hint": "Memorable passwords use common words combined with numbers and symbols, making them easier to remember while maintaining security."
+			},
 			"passphrase": {
 				"title": "Passphrase Generator",
 				"description": "Create memorable passphrases from custom words. Passphrases are easier to remember but still secure",
 				"words": "Word List",
 				"placeholder": "coffee mountain bicycle sunset ocean thunder",
 				"hint": "Enter at least 4 words. The generator will randomly select and combine them.",
-				"generate": "Generate Passphrase"
+				"generate": "Generate Passphrase",
+				"themes": {
+					"nature": "Nature",
+					"tech": "Technology",
+					"fantasy": "Fantasy",
+					"space": "Space"
+				}
 			},
 			"tips": {
 				"title": "Security Tips",
@@ -736,6 +753,9 @@
 			},
 			"history": {
 				"title": "Password History",
+				"recent": "Recent Passwords",
+				"show": "Show History",
+				"hide": "Hide History",
 				"download": "Download",
 				"clear": "Clear",
 				"empty": "No passwords generated yet"
@@ -2093,7 +2113,14 @@
 		"textCounter": {
 			"title": "Text Counter",
 			"description": "Count characters, words, sentences, and paragraphs for SEO and social media",
-			"useCase": "Count text statistics for SEO optimization and social media character limits"
+			"useCase": "Count text statistics for SEO optimization and social media character limits",
+			"shortcuts": {
+				"clear": "Clear text",
+				"copyStats": "Copy statistics",
+				"highlightCommon": "Highlight common words",
+				"showLimits": "Show platform limits",
+				"limits": "Limits"
+			}
 		},
 		"timerCountdown": {
 			"title": "Timer & Countdown",
@@ -2306,103 +2333,59 @@
 		},
 		"base64Encoder": {
 			"title": "Base64 Encoder/Decoder",
-			"description": "Encode and decode data in Base64 format with file support",
-			"useCase": "Encode and decode data in Base64 format with file support",
-			"mode": {
-				"encode": "Encode",
-				"decode": "Decode"
-			},
+			"description": "Encode and decode data in Base64 format with bidirectional sync",
+			"useCase": "Encode and decode data in Base64 format with bidirectional sync",
 			"input": {
-				"title": "Input",
-				"text": "Text",
-				"file": "File",
-				"dataUrl": "Data URL",
-				"dropFile": "Drop your file here",
-				"or": "or",
-				"selectFile": "Select File",
-				"maxSize": "Maximum file size: {size}",
+				"plainText": "Plain Text",
 				"placeholder": {
-					"text": {
-						"encode": "Enter text to encode...",
-						"decode": "Enter Base64 string to decode..."
-					},
-					"file": {
-						"encode": "Select a file to encode...",
-						"decode": "Select a Base64 file to decode..."
-					},
-					"dataurl": {
-						"encode": "Enter Data URL to extract Base64...",
-						"decode": "Enter Data URL to decode..."
-					}
+					"plainText": "Enter text to encode...",
+					"base64": "Enter Base64 to decode..."
 				}
 			},
 			"output": {
-				"title": "Output",
+				"base64": "Base64 Encoded",
 				"placeholder": {
-					"encode": "Base64 encoded result will appear here...",
-					"decode": "Decoded text will appear here..."
+					"base64": "Enter Base64 to decode..."
 				}
 			},
 			"options": {
 				"title": "Options",
 				"urlSafe": "URL-safe encoding",
-				"lineBreaks": "Add line breaks (76 chars)",
-				"lineNumbers": "Show line numbers"
+				"lineBreaks": "Add line breaks (76 chars)"
 			},
 			"actions": {
 				"copy": "Copy",
 				"download": "Download",
-				"changeFile": "Change File",
-				"swap": {
-					"encode": "Swap & Decode",
-					"decode": "Swap & Encode"
-				}
-			},
-			"stats": {
-				"increase": "Size Increase",
-				"decrease": "Size Decrease",
-				"time": "Processing Time"
-			},
-			"history": {
-				"title": "Recent Operations",
-				"clear": "Clear History"
-			},
-			"preview": {
-				"title": "Image Preview",
-				"toggle": "Toggle preview"
+				"clear": "Clear All"
 			},
 			"examples": {
 				"title": "Quick Examples",
-				"text": "Plain Text",
-				"json": "JSON Data",
-				"html": "HTML Code",
-				"base64": "Base64 String",
-				"dataUrl": "Data URL",
-				"urlSafe": "URL-Safe Base64"
+				"text": "Simple Text",
+				"json": "JSON Object",
+				"html": "HTML Tag",
+				"emoji": "Emoji Text"
 			},
 			"success": {
-				"encode": "Successfully encoded",
-				"decode": "Successfully decoded",
-				"copied": "Copied to clipboard",
-				"downloaded": "File downloaded",
-				"cleared": "All cleared",
-				"historyCleared": "History cleared"
+				"plainCopied": "Plain text copied!",
+				"base64Copied": "Base64 copied!",
+				"downloaded": "File downloaded successfully!",
+				"cleared": "All fields cleared!",
+				"historyCleared": "History cleared!",
+				"historyLoaded": "History item loaded!"
 			},
 			"errors": {
-				"encodeFailed": "Failed to encode data",
-				"decodeFailed": "Failed to decode - invalid Base64",
-				"fileTooLarge": "File is too large. Maximum size is 10MB",
+				"decodeFailed": "Decoding failed",
+				"invalidBase64Characters": "Invalid Base64 characters detected",
+				"invalidBase64Format": "Invalid Base64 format",
 				"copyFailed": "Failed to copy to clipboard"
 			},
-			"info": {
-				"historyLoaded": "History item loaded"
+			"history": {
+				"title": "Recent Conversions",
+				"clear": "Clear History",
+				"conversion": "Conversion"
 			},
-			"shortcuts": {
-				"process": "Process",
-				"copy": "Copy result",
-				"swap": "Swap input/output",
-				"clear": "Clear all",
-				"download": "Download result"
+			"stats": {
+				"sizeChange": "Size change"
 			}
 		},
 		"jwtDecoder": {

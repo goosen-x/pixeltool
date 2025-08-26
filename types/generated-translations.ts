@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-25T19:03:58.868Z
+// Generated on: 2025-08-25T19:53:34.366Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -2245,39 +2245,17 @@ export interface GeneratedTranslations {
       title: string
       description: string
       useCase: string
-      mode: {
-        encode: string
-        decode: string
-      }
       input: {
-        title: string
-        text: string
-        file: string
-        dataUrl: string
-        dropFile: string
-        or: string
-        selectFile: string
-        maxSize: string
+        plainText: string
         placeholder: {
-          text: {
-            encode: string
-            decode: string
-          }
-          file: {
-            encode: string
-            decode: string
-          }
-          dataurl: {
-            encode: string
-            decode: string
-          }
+          plainText: string
+          base64: string
         }
       }
       output: {
-        title: string
+        base64: string
         placeholder: {
-          encode: string
-          decode: string
+          base64: string
         }
       }
       options: {
@@ -2289,57 +2267,32 @@ export interface GeneratedTranslations {
       actions: {
         copy: string
         download: string
-        changeFile: string
-        swap: {
-          encode: string
-          decode: string
-        }
-      }
-      stats: {
-        increase: string
-        decrease: string
-        time: string
-      }
-      history: {
-        title: string
-        clear: string
-      }
-      preview: {
-        title: string
-        toggle: string
       }
       examples: {
         title: string
         text: string
         json: string
         html: string
-        base64: string
-        dataUrl: string
-        urlSafe: string
+        emoji: string
       }
       success: {
-        encode: string
-        decode: string
-        copied: string
+        plainCopied: string
+        base64Copied: string
         downloaded: string
         cleared: string
         historyCleared: string
-      }
-      errors: {
-        encodeFailed: string
-        decodeFailed: string
-        fileTooLarge: string
-        copyFailed: string
-      }
-      info: {
         historyLoaded: string
       }
-      shortcuts: {
-        process: string
-        copy: string
-        swap: string
+      errors: {
+        decodeFailed: string
+        invalidBase64Characters: string
+        invalidBase64Format: string
+        copyFailed: string
+      }
+      history: {
+        title: string
         clear: string
-        download: string
+        conversion: string
       }
     }
     jwtDecoder: {
