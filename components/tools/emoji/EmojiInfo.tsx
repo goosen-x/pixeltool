@@ -1,46 +1,43 @@
 import { Card } from '@/components/ui/card'
+import { useTranslations } from 'next-intl'
 
 export function EmojiInfo() {
+	const t = useTranslations('widgets.emojiList')
+	
 	return (
 		<Card className='p-6 bg-muted/50'>
-			<h3 className='font-semibold mb-3'>About This Tool</h3>
+			<h3 className='font-semibold mb-3'>{t('aboutTitle')}</h3>
 			<div className='grid md:grid-cols-2 gap-4 text-sm text-muted-foreground'>
 				<div>
-					<h4 className='font-medium text-foreground mb-2'>How to Use</h4>
+					<h4 className='font-medium text-foreground mb-2'>{t('howToUse')}</h4>
 					<ul className='space-y-1'>
-						<li>• Click any emoji to copy it to your clipboard</li>
-						<li>• Hover and click the download icon to save as PNG image</li>
-						<li>• Use the search bar to find specific emojis</li>
-						<li>• Browse by category using the tabs</li>
-						<li>• Your recent emojis are saved automatically</li>
+						<li>• {t('howToUseList.copy')}</li>
+						<li>• {t('howToUseList.download')}</li>
+						<li>• {t('howToUseList.search')}</li>
+						<li>• {t('howToUseList.browse')}</li>
+						<li>• {t('howToUseList.recent')}</li>
 					</ul>
 				</div>
 				<div>
-					<h4 className='font-medium text-foreground mb-2'>Features</h4>
+					<h4 className='font-medium text-foreground mb-2'>{t('features')}</h4>
 					<ul className='space-y-1'>
-						<li>• 1,800+ emojis from Unicode 14.0</li>
-						<li>• Instant copy with visual feedback</li>
-						<li>• Download emojis as PNG images (256x256)</li>
-						<li>• Recent emojis history (last 30)</li>
-						<li>• Works on all modern devices</li>
+						<li>• {t('featuresList.count')}</li>
+						<li>• {t('featuresList.instantCopy')}</li>
+						<li>• {t('featuresList.downloadPng')}</li>
+						<li>• {t('featuresList.recentHistory')}</li>
+						<li>• {t('featuresList.compatibility')}</li>
 					</ul>
 				</div>
 			</div>
 			<p className='text-xs mt-4'>
-				If your device doesn&apos;t support certain emojis, they may appear as
-				boxes or question marks. Update your system for the latest emoji
-				support.
+				{t('compatibilityNote')}
 			</p>
 			<div className='mt-4 p-4 bg-background rounded-lg'>
 				<h4 className='font-medium text-foreground mb-2 text-sm'>
-					Using Emojis in Social Media
+					{t('usingSocialMedia')}
 				</h4>
 				<p className='text-xs'>
-					For social media platforms like Facebook, Twitter, and Instagram,
-					simply copy the emoji and paste it directly into your posts, comments,
-					or bio. The download feature is useful when you need emoji images for
-					blogs, websites, or applications that don&apos;t support Unicode
-					emojis directly.
+					{t('socialMediaDescription')}
 				</p>
 			</div>
 		</Card>

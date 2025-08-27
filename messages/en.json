@@ -828,7 +828,48 @@
 				"saved": "Link saved to history",
 				"historyCleared": "History cleared",
 				"downloaded": "Links downloaded successfully",
-				"qrError": "Failed to generate QR code"
+				"qrError": "Failed to generate QR code",
+				"loaded": "Link loaded from history"
+			},
+			"urlConstructor": {
+				"title": "URL Constructor"
+			},
+			"sources": {
+				"title": "Select Traffic Source",
+				"popular": "Popular"
+			},
+			"form": {
+				"title": "Build Your Link",
+				"url": "Target URL",
+				"preset": "Traffic Source Preset",
+				"presetPlaceholder": "Select a preset",
+				"custom": "Custom",
+				"source": "Campaign Source (utm_source)",
+				"sourceHint": "Identify the advertiser, site, publication, etc.",
+				"medium": "Campaign Medium (utm_medium)",
+				"mediumHint": "Marketing medium: cpc, banner, email, social",
+				"campaign": "Campaign Name (utm_campaign)",
+				"campaignHint": "Product, promo code, or slogan",
+				"content": "Campaign Content (utm_content)",
+				"contentHint": "Differentiate ads or links that point to the same URL",
+				"term": "Campaign Term (utm_term)",
+				"termHint": "Identify paid search keywords",
+				"advanced": "Advanced Parameters"
+			},
+			"result": {
+				"title": "Generated Link",
+				"empty": "Fill in required fields to generate link",
+				"copy": "Copy",
+				"save": "Save",
+				"qr": "QR Code",
+				"test": "Test Link",
+				"parameters": "UTM Parameters",
+				"preview": "Generated URL"
+			},
+			"parameters": {
+				"title": "Dynamic Parameters",
+				"viewAll": "View all parameters",
+				"showLess": "Show less"
 			}
 		},
 		"textToSpeech": {
@@ -1275,7 +1316,35 @@
 		"specialSymbolsPicker": {
 			"title": "Special Symbols Picker",
 			"description": "Click to copy special characters and Unicode symbols for any text",
-			"useCase": "Quickly copy special symbols and Unicode characters for use in any text"
+			"useCase": "Quickly copy special symbols and Unicode characters for use in any text",
+			"categories": "Categories",
+			"allCategories": "All",
+			"recentlyUsed": "Recent",
+			"clearRecent": "Clear recent",
+			"copied": "Copied: {symbol}",
+			"copyError": "Failed to copy symbol",
+			"totalSymbols": "{count} symbols",
+			"recentSymbols": "{count} recent symbol{count, plural, =1 {} other {s}}",
+			"aboutTitle": "About Special Symbols",
+			"aboutDescription": "Special symbols and Unicode characters help enhance your text and add uniqueness to your messages. Simply click on any symbol to copy it to your clipboard.",
+			"features": {
+				"title": "Features",
+				"list": {
+					"collection": "Large collection of Unicode symbols",
+					"categories": "Organized by categories",
+					"copy": "One-click copy",
+					"recent": "Recently used history"
+				}
+			},
+			"tips": {
+				"title": "Tips",
+				"list": {
+					"click": "Click on any symbol to copy",
+					"categories": "Use categories for quick discovery",
+					"apps": "Works in all applications",
+					"unicode": "Supports Unicode standards"
+				}
+			}
 		},
 		"fancyTextGenerator": {
 			"title": "Fancy Text Generator",
@@ -1370,7 +1439,14 @@
 				"result": "Result",
 				"is": "is",
 				"ofWhat": "of what?",
-				"equals": "equals"
+				"equals": "equals",
+				"increase": "Increase",
+				"decrease": "Decrease",
+				"empty": "Empty",
+				"whatIs": "What is",
+				"percentOf": "% of",
+				"isWhatPercentOf": "is what % of",
+				"percentOfQuestion": "% of?"
 			},
 			"calculate": "Calculate",
 			"formula": "Formula",
@@ -1383,6 +1459,14 @@
 				"decrease": "decrease",
 				"addPercent": "{number} + {percent}% = {result}",
 				"subtractPercent": "{number} - {percent}% = {result}"
+			},
+			"explanations": {
+				"percentOf": "{percentage}% of {value} is {result}",
+				"whatPercent": "{value1} is {result}% of {value2}",
+				"findTotal": "If {value} is {percentage}%, then the total is {result}",
+				"percentChange": "{change} of {result}%",
+				"addPercent": "{value} increased by {percentage}% is {result}",
+				"subtractPercent": "{value} decreased by {percentage}% is {result}"
 			},
 			"inputs": {
 				"percentage": "Percentage",
@@ -1398,7 +1482,17 @@
 			"buttons": {
 				"loadExample": "Load Example",
 				"copy": "Copy",
-				"reset": "Reset"
+				"reset": "Clear All"
+			},
+			"toast": {
+				"presetApplied": "Applied {preset}% preset",
+				"copied": "Copied to clipboard!",
+				"allCleared": "All calculations cleared",
+				"historyCleared": "Recent calculations cleared"
+			},
+			"quickPresets": "Quick Presets",
+			"recent": {
+				"title": "Recent Calculations"
 			},
 			"info": {
 				"title": "Calculator Information",
@@ -1644,17 +1738,245 @@
 		"socialMediaFormatter": {
 			"title": "Social Media Formatter",
 			"description": "Format text with spaces and line breaks for social media",
-			"useCase": "Format text with proper spacing and line breaks for social media posts"
+			"useCase": "Format text with proper spacing and line breaks for social media posts",
+			"hero": {
+				"subtitle": "Keep your posts beautifully formatted",
+				"demo": "Transform       regular text\n\n\ninto beautiful   posts"
+			},
+			"platforms": {
+				"instagram": "Instagram",
+				"facebook": "Facebook", 
+				"twitter": "Twitter",
+				"linkedin": "LinkedIn",
+				"tiktok": "TikTok",
+				"selectPlatform": "Select platform",
+				"allPlatforms": "All platforms"
+			},
+			"presets": {
+				"title": "Quick presets",
+				"poem": "Poem",
+				"list": "Indented list",
+				"quote": "Quote",
+				"announcement": "Announcement",
+				"story": "Story",
+				"review": "Review"
+			},
+			"formatOptions": {
+				"title": "Formatting options",
+				"preserveSpaces": "Preserve spaces",
+				"preserveNewlines": "Preserve line breaks",
+				"addIndentation": "Add indentation",
+				"centerText": "Center text",
+				"fullFormat": "Full formatting"
+			},
+			"textInput": {
+				"label": "Your text",
+				"placeholder": "Enter or paste text to format...",
+				"pasteFromClipboard": "Paste from clipboard",
+				"clearText": "Clear"
+			},
+			"preview": {
+				"title": "Preview",
+				"livePreview": "Live preview",
+				"beforeAfter": "Before / After",
+				"platformPreview": "How it will look on {platform}",
+				"characterCount": "{count} characters",
+				"characterLimit": "Limit: {limit} characters",
+				"warningLimit": "{platform} limit exceeded",
+				"invisibleChars": "+{count} invisible characters"
+			},
+			"actions": {
+				"format": "Format",
+				"autoFormat": "Auto format",
+				"copy": "Copy",
+				"copyFormatted": "Copy result",
+				"reset": "Reset",
+				"save": "Save",
+				"share": "Share",
+				"download": "Download"
+			},
+			"templates": {
+				"poem": {
+					"name": "Poem",
+					"description": "Perfect for poetry and lyrics",
+					"example": "Lines with preserved\n     indentation and spaces\nFor   beautiful   formatting"
+				},
+				"list": {
+					"name": "Indented list",
+					"description": "For clear lists and enumerations",
+					"example": "• First item\n    • Sub-item\n• Second item\n    • Sub-item"
+				},
+				"quote": {
+					"name": "Quote",
+					"description": "Centered quotes",
+					"example": "     \"Beautiful quote     \n     needs good     \n      formatting\"     "
+				},
+				"announcement": {
+					"name": "Announcement",
+					"description": "For important announcements",
+					"example": "🎯 IMPORTANT ANNOUNCEMENT\n\n      Announcement text      \n\n💬 Details in comments"
+				},
+				"story": {
+					"name": "Story",
+					"description": "Narrative content with flow",
+					"example": "Chapter 1: The Beginning\n\nOnce upon a time,   in a digital world   far, far away...\n\n     There lived a developer\n     who discovered the magic\n     of proper formatting.\n\nAnd that's how this story begins! 📖✨"
+				},
+				"review": {
+					"name": "Review",
+					"description": "Product or service reviews",
+					"example": "⭐⭐⭐⭐⭐ 5/5 Stars!\n\n📱 Product: Amazing App\n👤 Reviewer: Happy User\n\n✅ Pros:\n    • Easy to use\n    • Great features\n    • Excellent support\n\n❌ Cons:\n    • Could use dark mode\n    \n💭 Final thoughts:   Highly recommended!"
+				}
+			},
+			"howItWorks": {
+				"title": "How it works",
+				"step1": "Enter your text",
+				"step2": "Choose platform",
+				"step3": "Configure formatting",
+				"step4": "Copy the result",
+				"description": "We use invisible Unicode characters to preserve spacing and line breaks"
+			},
+			"info": {
+				"title": "Information",
+				"whatAreInvisibleChars": "What are invisible characters?",
+				"invisibleCharsDesc": "Special Unicode characters that aren't displayed but help preserve formatting",
+				"compatibility": "Compatibility",
+				"compatibilityDesc": "Works on all major social media platforms",
+				"limitations": "Limitations",
+				"limitationsDesc": "Some platforms may handle formatting differently"
+			},
+			"toast": {
+				"textFormatted": "Text formatted!",
+				"copiedToClipboard": "Copied to clipboard",
+				"pastedFromClipboard": "Text pasted from clipboard",
+				"textCleared": "Text cleared",
+				"resetComplete": "Settings reset",
+				"templateApplied": "Template applied",
+				"savedToHistory": "Saved to history",
+				"errorEmptyText": "Enter text to format",
+				"errorClipboard": "Clipboard error",
+				"errorGeneric": "An error occurred"
+			},
+			"shortcuts": {
+				"title": "Keyboard shortcuts",
+				"format": "Ctrl/Cmd + Enter",
+				"copy": "Ctrl/Cmd + C",
+				"paste": "Ctrl/Cmd + V",
+				"clear": "Ctrl/Cmd + Delete",
+				"reset": "Ctrl/Cmd + R"
+			}
 		},
 		"emojiList": {
 			"title": "Emoji List",
 			"description": "Browse and copy 1800+ emojis organized by categories",
-			"useCase": "Browse and copy 1800+ emojis organized by categories"
+			"useCase": "Browse and copy 1800+ emojis organized by categories",
+			"aboutTitle": "About This Tool",
+			"howToUse": "How to Use",
+			"features": "Features",
+			"usingSocialMedia": "Using Emojis in Social Media",
+			"howToUseList": {
+				"copy": "Click any emoji to copy it to your clipboard",
+				"download": "Hover and click the download icon to save as PNG image",
+				"search": "Use the search bar to find specific emojis",
+				"browse": "Browse by category using the tabs",
+				"recent": "Your recent emojis are saved automatically"
+			},
+			"featuresList": {
+				"count": "1,800+ emojis from Unicode 14.0",
+				"instantCopy": "Instant copy with visual feedback",
+				"downloadPng": "Download emojis as PNG images (256x256)",
+				"recentHistory": "Recent emojis history (last 30)",
+				"compatibility": "Works on all modern devices"
+			},
+			"compatibilityNote": "If your device doesn't support certain emojis, they may appear as boxes or question marks. Update your system for the latest emoji support.",
+			"socialMediaDescription": "For social media platforms like Facebook, Twitter, and Instagram, simply copy the emoji and paste it directly into your posts, comments, or bio. The download feature is useful when you need emoji images for blogs, websites, or applications that don't support Unicode emojis directly.",
+			"copied": "Copied {emoji} to clipboard!",
+			"copyError": "Failed to copy emoji",
+			"downloaded": "Downloaded {emoji} as PNG image!",
+			"downloadError": "Failed to download emoji",
+			"recentEmojis": "{count} recent emoji{count, plural, =1 {} other {s}}",
+			"totalEmojis": "{count} emoji{count, plural, =1 {} other {s}}"
 		},
 		"textEmoticons": {
 			"title": "Text Emoticons",
 			"description": "ASCII emoticons and Japanese kaomoji for text expressions",
-			"useCase": "Find and copy ASCII emoticons and kaomoji for text-based communication"
+			"useCase": "Find and copy ASCII emoticons and kaomoji for text-based communication",
+			"searchPlaceholder": "Search emoticons...",
+			"allCategories": "All",
+			"recentlyUsed": "Recent",
+			"clearRecent": "Clear recent",
+			"copied": "Copied: {emoticon}",
+			"copyError": "Failed to copy",
+			"categories": {
+				"title": "Categories",
+				"popular": "Popular",
+				"happy": "Happy",
+				"sad": "Sad",
+				"angry": "Angry",
+				"love": "Love",
+				"animals": "Animals",
+				"special": "Special",
+				"japanese": "Japanese"
+			},
+			"aboutTitle": "About Text Emoticons",
+			"aboutDescription": "Text emoticons (emoticons) are a way to express emotions and moods using ASCII characters. They are widely used in text messages, social media, and online communication.",
+			"features": {
+				"title": "Features",
+				"list": {
+					"collection": "800+ unique text emoticons",
+					"categories": "Organized by emotion categories",
+					"copy": "One-click copy",
+					"recent": "Recently used history",
+					"search": "Search by name and tags"
+				}
+			},
+			"tips": {
+				"title": "Usage Tips",
+				"list": {
+					"social": "Perfect for social media",
+					"messages": "Add emotion to text messages",
+					"forums": "Popular in forums and chats",
+					"email": "Liven up emails"
+				}
+			},
+			"totalEmoticons": "{count} emoticons",
+			"noResults": "No emoticons found",
+			"clickToCopy": "Click to copy",
+			"emoticonName": {
+				"lennyFace": "Lenny Face",
+				"shrug": "Shrug",
+				"tableFlip": "Table Flip",
+				"disapproval": "Look of Disapproval",
+				"bear": "Bear",
+				"confused": "Confused",
+				"happy": "Happy",
+				"sad": "Sad",
+				"crying": "Crying",
+				"angry": "Angry",
+				"love": "Love",
+				"kiss": "Kiss",
+				"hug": "Hug",
+				"wink": "Wink",
+				"surprised": "Surprised",
+				"excited": "Excited",
+				"cool": "Cool",
+				"dead": "Dead",
+				"devil": "Devil",
+				"angel": "Angel",
+				"cat": "Cat",
+				"dog": "Dog",
+				"fish": "Fish",
+				"give": "Give Energy",
+				"pointing": "Pointing",
+				"fighting": "Fighting",
+				"dancing": "Dancing",
+				"shocked": "Shocked",
+				"singing": "Singing",
+				"goodbye": "Goodbye",
+				"curious": "Curious",
+				"content": "Content",
+				"friends": "Friends",
+				"embarrassed": "Embarrassed"
+			}
 		},
 		"jsValidator": {
 			"title": "JavaScript Validator",
@@ -1881,7 +2203,10 @@
 				"references": "Reference Temperatures",
 				"about": "About Temperature Scales",
 				"referencePoints": "Nearest Reference Points",
-				"placeholder": "Enter Temperature"
+				"placeholder": "Enter Temperature",
+				"presets": "Quick Presets",
+				"history": "Conversion History",
+				"temperatureControl": "Temperature Control"
 			},
 			"inputs": {
 				"temperature": {
@@ -1904,7 +2229,8 @@
 			},
 			"actions": {
 				"swap": "Swap",
-				"reset": "Reset"
+				"reset": "Reset",
+				"copy": "Copy"
 			},
 			"quickValues": {
 				"ноль": "Zero Celsius",
@@ -1925,11 +2251,15 @@
 				"hot": "Hot",
 				"veryHot": "Very Hot",
 				"boiling": "Boiling",
-				"extremelyHot": "Extremely Hot"
+				"extremelyHot": "Extremely Hot",
+				"belowFreezing": "Below freezing point",
+				"liquidWater": "Liquid water range",
+				"aboveBoiling": "Above boiling point"
 			},
 			"context": {
 				"aboveAbsoluteZero": "{value}K above absolute zero",
-				"exactly": "Exactly"
+				"exactly": "Exactly",
+				"fromAbsoluteZero": "{value}K from absolute zero"
 			},
 			"references": {
 				"absoluteZero": "Absolute Zero",
@@ -1964,6 +2294,7 @@
 				"formulas": "Conversion Formulas",
 				"applications": "Practical Applications",
 				"facts": "Interesting Facts",
+				"currentTemp": "Current Temperature",
 				"celsiusDesc": "Celsius (°C) - metric system, zero at water freezing",
 				"fahrenheitDesc": "Fahrenheit (°F) - imperial system, USA",
 				"kelvinDesc": "Kelvin (K) - absolute scale, scientific calculations",
@@ -1981,10 +2312,19 @@
 				"copied": "Copied to clipboard!",
 				"conversionError": "Temperature conversion error",
 				"valueLoaded": "Value loaded",
-				"reset": "Reset"
+				"reset": "Reset",
+				"presetLoaded": "Preset loaded"
 			},
 			"placeholder": {
 				"enterTemperature": "Enter temperature for conversion"
+			},
+			"presets": {
+				"absoluteZero": "Absolute Zero",
+				"waterFreeze": "Water Freezing",
+				"roomTemp": "Room Temp",
+				"bodyTemp": "Body Temp",
+				"waterBoil": "Water Boiling",
+				"oven": "Oven"
 			}
 		},
 		"bmiCalculator": {
@@ -2114,6 +2454,60 @@
 			"title": "Text Counter",
 			"description": "Count characters, words, sentences, and paragraphs for SEO and social media",
 			"useCase": "Count text statistics for SEO optimization and social media character limits",
+			"stats": {
+				"characters": "Characters",
+				"words": "Words", 
+				"sentences": "Sentences",
+				"readingTime": "Reading Time",
+				"charactersNoSpaces": "Without spaces",
+				"spaces": "Spaces",
+				"paragraphs": "Paragraphs"
+			},
+			"actions": {
+				"example": "Example",
+				"clear": "Clear",
+				"copyText": "Copy Text",
+				"copyStats": "Copy Stats",
+				"exampleShort": "Ex",
+				"clearShort": "Clr",
+				"textShort": "Text",
+				"statsShort": "Stats"
+			},
+			"placeholder": "Start typing or paste your text here for instant analysis...",
+			"exampleText": "Text counter and word counter is an essential tool for content creation. It helps optimize texts for social media and SEO.\n\nEach platform has its limitations. Twitter allows only 280 characters. Instagram provides more space - up to 2200 characters for captions.\n\nSEO optimization requires special attention to title and description lengths. Google typically displays the first 60 characters of titles and 160 characters of descriptions in search results.",
+			"toast": {
+				"exampleLoaded": "Example loaded",
+				"textCleared": "Text cleared",
+				"textCopied": "Text copied!",
+				"statsCopied": "Statistics copied!"
+			},
+			"statsExport": {
+				"title": "Text Statistics:",
+				"readingTime": "Reading time: ~{time} min",
+				"speakingTime": "Speaking time: ~{time} min",
+				"avgWordLength": "Average word length: {length} characters",
+				"avgSentenceLength": "Average sentence length: {length} words",
+				"longestWordLabel": "Longest word: {word}",
+				"commonWordsLabel": "Common words:"
+			},
+			"sections": {
+				"platformLimits": "Platform Limits",
+				"advancedAnalysis": "Advanced Analysis",
+				"characterAnalysis": "Character Analysis",
+				"averages": "Averages",
+				"longestWord": "Longest Word",
+				"commonWords": "Most Common Words"
+			},
+			"labels": {
+				"wordsPerSentence": "Words per sentence",
+				"charactersPerWord": "Characters per word",
+				"left": "left",
+				"over": "over",
+				"minRead": "min read",
+				"minSpeech": "min speech",
+				"avgCharsPerWord": "avg chars/word",
+				"chars": "chars"
+			},
 			"shortcuts": {
 				"clear": "Clear text",
 				"copyStats": "Copy statistics",
@@ -2241,8 +2635,34 @@
 		},
 		"currencyConverter": {
 			"title": "Currency Converter",
-			"description": "Convert between currencies with fixed exchange rates",
-			"useCase": "Convert between currencies with fixed exchange rates"
+			"description": "Convert between currencies with real-time exchange rates",
+			"useCase": "Convert between currencies with visual interface and favorites",
+			"from": "From",
+			"to": "To",
+			"amount": "Amount",
+			"result": "Result",
+			"searchCurrency": "Search currency...",
+			"noCurrencyFound": "No currency found",
+			"favorites": "Favorites",
+			"allCurrencies": "All Currencies",
+			"selectFromCurrency": "Select source currency",
+			"selectToCurrency": "Select target currency",
+			"exchangeRate": "Exchange rate",
+			"copyResult": "Copy result",
+			"reset": "Reset",
+			"history": "Conversion History",
+			"toast": {
+				"swapped": "Currencies swapped",
+				"copied": "Result copied to clipboard",
+				"reset": "Converter reset",
+				"addedToFavorites": "Added to favorites",
+				"removedFromFavorites": "Removed from favorites"
+			},
+			"info": {
+				"title": "Information",
+				"disclaimer": "This converter uses fixed exchange rates for demonstration purposes.",
+				"sources": "For real-time rates, please use official sources."
+			}
 		},
 		"textDiff": {
 			"title": "Text Difference Tool",
@@ -2548,7 +2968,65 @@
 		"textCaseConverter": {
 			"title": "Text Case Converter",
 			"description": "Convert text between different letter cases and formatting styles",
-			"useCase": "Transform text to uppercase, lowercase, camelCase, snake_case, and more"
+			"useCase": "Transform text to uppercase, lowercase, camelCase, snake_case, and more",
+			"input": "Input Text",
+			"output": "Output",
+			"placeholder": "Enter text to convert...",
+			"outputPlaceholder": "Converted text will appear here...",
+			"caseType": "Case Type",
+			"settings": "Settings",
+			"cases": {
+				"uppercase": "UPPERCASE",
+				"lowercase": "lowercase",
+				"title": "Title Case",
+				"sentence": "Sentence case",
+				"capitalize": "Capitalize First Letter",
+				"camelCase": "camelCase",
+				"PascalCase": "PascalCase",
+				"snake_case": "snake_case",
+				"kebab-case": "kebab-case",
+				"CONSTANT_CASE": "CONSTANT_CASE",
+				"dotCase": "dot.case",
+				"pathCase": "path/case",
+				"Header-Case": "Header-Case",
+				"Train-Case": "Train-Case",
+				"alternating": "aLtErNaTe CaSe",
+				"inverse": "Inverse Case",
+				"reverse": "Reverse Text",
+				"sponge": "SpOnGe CaSe"
+			},
+			"searchPlaceholder": "Search case types...",
+			"filterLabel": "Filter:",
+			"allCategories": "All",
+			"categories": {
+				"basic": "Basic",
+				"programming": "Programming",
+				"special": "Special"
+			},
+			"instantConversion": "Instant Conversion",
+			"textStats": "Text Statistics",
+			"charactersNoSpaces": "Without spaces",
+			"exportAll": "Export All",
+			"exportAsJSON": "Export as JSON",
+			"exportAsCSV": "Export as CSV",
+			"toggleFavorite": "Toggle favorite",
+			"resultsFound": "results found",
+			"loadExample": "Example",
+			"exampleLoaded": "Example loaded",
+			"convert": "Convert",
+			"copy": "Copy",
+			"copied": "Copied!",
+			"download": "Download",
+			"downloaded": "File downloaded",
+			"clear": "Clear",
+			"stats": {
+				"characters": "Characters",
+				"words": "Words",
+				"lines": "Lines",
+				"sentences": "Sentences"
+			},
+			"examples": "Examples",
+			"originalText": "Original Text"
 		},
 		"imageSizeChecker": {
 			"title": "Image Size Checker",

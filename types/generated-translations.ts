@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-25T19:53:34.366Z
+// Generated on: 2025-08-26T18:51:24.226Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -697,6 +697,11 @@ export interface GeneratedTranslations {
       placeholder: string
       generate: string
       copy: string
+      modes: {
+        random: string
+        memorable: string
+        phrase: string
+      }
       tabs: {
         random: string
         passphrase: string
@@ -713,6 +718,8 @@ export interface GeneratedTranslations {
       options: {
         title: string
         length: string
+        characters: string
+        advanced: string
         characterTypes: string
         uppercase: string
         lowercase: string
@@ -722,6 +729,10 @@ export interface GeneratedTranslations {
         excludeSimilar: string
         excludeAmbiguous: string
       }
+      memorable: {
+        pattern: string
+        hint: string
+      }
       passphrase: {
         title: string
         description: string
@@ -729,6 +740,12 @@ export interface GeneratedTranslations {
         placeholder: string
         hint: string
         generate: string
+        themes: {
+          nature: string
+          tech: string
+          fantasy: string
+          space: string
+        }
       }
       tips: {
         title: string
@@ -740,6 +757,9 @@ export interface GeneratedTranslations {
       }
       history: {
         title: string
+        recent: string
+        show: string
+        hide: string
         download: string
         clear: string
         empty: string
@@ -787,6 +807,7 @@ export interface GeneratedTranslations {
         contentHint: string
         term: string
         termHint: string
+        advanced: string
       }
       result: {
         title: string
@@ -796,9 +817,11 @@ export interface GeneratedTranslations {
         qr: string
         test: string
         parameters: string
+        preview: string
       }
       parameters: {
-        hint: string
+        title: string
+        viewAll: string
       }
       history: {
         title: string
@@ -813,6 +836,14 @@ export interface GeneratedTranslations {
         historyCleared: string
         downloaded: string
         qrError: string
+        loaded: string
+      }
+      urlConstructor: {
+        title: string
+      }
+      sources: {
+        title: string
+        popular: string
       }
     }
     textToSpeech: {
@@ -1256,10 +1287,38 @@ export interface GeneratedTranslations {
         regenerate: string
       }
     }
-    specialSymbolsPicker?: {
+    specialSymbolsPicker: {
       title: string
       description: string
       useCase: string
+      categories: string
+      allCategories: string
+      recentlyUsed: string
+      clearRecent: string
+      copied: string
+      copyError: string
+      totalSymbols: string
+      recentSymbols: string
+      aboutTitle: string
+      aboutDescription: string
+      features: {
+        title: string
+        list: {
+          collection: string
+          categories: string
+          copy: string
+          recent: string
+        }
+      }
+      tips: {
+        title: string
+        list: {
+          click: string
+          categories: string
+          apps: string
+          unicode: string
+        }
+      }
     }
     fancyTextGenerator?: {
       title: string
@@ -1625,20 +1684,248 @@ export interface GeneratedTranslations {
         copiedToClipboard: string
       }
     }
-    socialMediaFormatter?: {
+    socialMediaFormatter: {
       title: string
       description: string
       useCase: string
+      hero: {
+        subtitle: string
+        demo: string
+      }
+      platforms: {
+        instagram: string
+        facebook: string
+        twitter: string
+        linkedin: string
+        tiktok: string
+        selectPlatform: string
+        allPlatforms: string
+      }
+      presets: {
+        title: string
+        poem: string
+        list: string
+        quote: string
+        announcement: string
+        story: string
+        review: string
+      }
+      formatOptions: {
+        title: string
+        preserveSpaces: string
+        preserveNewlines: string
+        addIndentation: string
+        centerText: string
+        fullFormat: string
+      }
+      textInput: {
+        label: string
+        placeholder: string
+        pasteFromClipboard: string
+        clearText: string
+      }
+      preview: {
+        title: string
+        livePreview: string
+        beforeAfter: string
+        platformPreview: string
+        characterCount: string
+        characterLimit: string
+        warningLimit: string
+        invisibleChars: string
+      }
+      actions: {
+        format: string
+        autoFormat: string
+        copy: string
+        copyFormatted: string
+        reset: string
+        save: string
+        share: string
+        download: string
+      }
+      templates: {
+        poem: {
+          name: string
+          description: string
+          example: string
+        }
+        list: {
+          name: string
+          description: string
+          example: string
+        }
+        quote: {
+          name: string
+          description: string
+          example: string
+        }
+        announcement: {
+          name: string
+          description: string
+          example: string
+        }
+        story: {
+          name: string
+          description: string
+          example: string
+        }
+        review: {
+          name: string
+          description: string
+          example: string
+        }
+      }
+      howItWorks: {
+        title: string
+        step1: string
+        step2: string
+        step3: string
+        step4: string
+        description: string
+      }
+      info: {
+        title: string
+        whatAreInvisibleChars: string
+        invisibleCharsDesc: string
+        compatibility: string
+        compatibilityDesc: string
+        limitations: string
+        limitationsDesc: string
+      }
+      toast: {
+        textFormatted: string
+        copiedToClipboard: string
+        pastedFromClipboard: string
+        textCleared: string
+        resetComplete: string
+        templateApplied: string
+        savedToHistory: string
+        errorEmptyText: string
+        errorClipboard: string
+        errorGeneric: string
+      }
+      shortcuts: {
+        title: string
+        format: string
+        copy: string
+        paste: string
+        clear: string
+        reset: string
+      }
     }
-    emojiList?: {
+    emojiList: {
       title: string
       description: string
       useCase: string
+      aboutTitle: string
+      howToUse: string
+      features: string
+      usingSocialMedia: string
+      howToUseList: {
+        copy: string
+        download: string
+        search: string
+        browse: string
+        recent: string
+      }
+      featuresList: {
+        count: string
+        instantCopy: string
+        downloadPng: string
+        recentHistory: string
+        compatibility: string
+      }
+      compatibilityNote: string
+      socialMediaDescription: string
+      copied: string
+      copyError: string
+      downloaded: string
+      downloadError: string
+      recentEmojis: string
+      totalEmojis: string
     }
-    textEmoticons?: {
+    textEmoticons: {
       title: string
       description: string
       useCase: string
+      searchPlaceholder: string
+      allCategories: string
+      recentlyUsed: string
+      clearRecent: string
+      copied: string
+      copyError: string
+      categories: {
+        title: string
+        popular: string
+        happy: string
+        sad: string
+        angry: string
+        love: string
+        animals: string
+        special: string
+        japanese: string
+      }
+      aboutTitle: string
+      aboutDescription: string
+      features: {
+        title: string
+        list: {
+          collection: string
+          categories: string
+          copy: string
+          recent: string
+          search: string
+        }
+      }
+      tips: {
+        title: string
+        list: {
+          social: string
+          messages: string
+          forums: string
+          email: string
+        }
+      }
+      totalEmoticons: string
+      noResults: string
+      clickToCopy: string
+      emoticonName: {
+        lennyFace: string
+        shrug: string
+        tableFlip: string
+        disapproval: string
+        bear: string
+        confused: string
+        happy: string
+        sad: string
+        crying: string
+        angry: string
+        love: string
+        kiss: string
+        hug: string
+        wink: string
+        surprised: string
+        excited: string
+        cool: string
+        dead: string
+        devil: string
+        angel: string
+        cat: string
+        dog: string
+        fish: string
+        give: string
+        pointing: string
+        fighting: string
+        dancing: string
+        shocked: string
+        singing: string
+        goodbye: string
+        curious: string
+        content: string
+        friends: string
+        embarrassed: string
+      }
     }
     jsValidator?: {
       title: string
@@ -2027,10 +2314,71 @@ export interface GeneratedTranslations {
         obesityClass3: string
       }
     }
-    textCounter?: {
+    textCounter: {
       title: string
       description: string
       useCase: string
+      stats: {
+        characters: string
+        words: string
+        sentences: string
+        readingTime: string
+        charactersNoSpaces: string
+        spaces: string
+        paragraphs: string
+      }
+      actions: {
+        example: string
+        clear: string
+        copyText: string
+        copyStats: string
+        exampleShort: string
+        clearShort: string
+        textShort: string
+        statsShort: string
+      }
+      placeholder: string
+      exampleText: string
+      toast: {
+        exampleLoaded: string
+        textCleared: string
+        textCopied: string
+        statsCopied: string
+      }
+      statsExport: {
+        title: string
+        readingTime: string
+        speakingTime: string
+        avgWordLength: string
+        avgSentenceLength: string
+        longestWordLabel: string
+        commonWordsLabel: string
+      }
+      sections: {
+        platformLimits: string
+        advancedAnalysis: string
+        characterAnalysis: string
+        averages: string
+        longestWord: string
+        commonWords: string
+      }
+      labels: {
+        wordsPerSentence: string
+        charactersPerWord: string
+        left: string
+        over: string
+        minRead: string
+        minSpeech: string
+        avgCharsPerWord: string
+        chars: string
+      }
+      shortcuts: {
+        clear: string
+        copyStats: string
+        highlightCommon: string
+        showLimits: string
+        limits: string
+      }
     }
     timerCountdown: {
       title: string
@@ -2262,11 +2610,11 @@ export interface GeneratedTranslations {
         title: string
         urlSafe: string
         lineBreaks: string
-        lineNumbers: string
       }
       actions: {
         copy: string
         download: string
+        clear: string
       }
       examples: {
         title: string
@@ -2293,6 +2641,9 @@ export interface GeneratedTranslations {
         title: string
         clear: string
         conversion: string
+      }
+      stats: {
+        sizeChange: string
       }
     }
     jwtDecoder: {
@@ -2451,10 +2802,68 @@ export interface GeneratedTranslations {
       description: string
       useCase: string
     }
-    textCaseConverter?: {
+    textCaseConverter: {
       title: string
       description: string
       useCase: string
+      input: string
+      output: string
+      placeholder: string
+      outputPlaceholder: string
+      caseType: string
+      settings: string
+      cases: {
+        uppercase: string
+        lowercase: string
+        title: string
+        sentence: string
+        capitalize: string
+        camelCase: string
+        PascalCase: string
+        snake_case: string
+        "kebab-case": string
+        CONSTANT_CASE: string
+        dotCase: string
+        pathCase: string
+        "Header-Case": string
+        "Train-Case": string
+        alternating: string
+        inverse: string
+        reverse: string
+        sponge: string
+      }
+      searchPlaceholder: string
+      filterLabel: string
+      allCategories: string
+      categories: {
+        basic: string
+        programming: string
+        special: string
+      }
+      instantConversion: string
+      textStats: string
+      charactersNoSpaces: string
+      exportAll: string
+      exportAsJSON: string
+      exportAsCSV: string
+      toggleFavorite: string
+      resultsFound: string
+      loadExample: string
+      exampleLoaded: string
+      convert: string
+      copy: string
+      copied: string
+      download: string
+      downloaded: string
+      clear: string
+      stats: {
+        characters: string
+        words: string
+        lines: string
+        sentences: string
+      }
+      examples: string
+      originalText: string
     }
     imageSizeChecker?: {
       title: string

@@ -79,13 +79,62 @@ const MEMORABLE_PATTERNS: MemorablePattern[] = [
 ]
 
 const COMMON_WORDS = [
-	'sun', 'moon', 'star', 'sky', 'cloud', 'rain', 'snow', 'wind',
-	'fire', 'water', 'earth', 'air', 'ice', 'storm', 'thunder', 'lightning',
-	'tree', 'forest', 'mountain', 'river', 'ocean', 'lake', 'desert', 'island',
-	'wolf', 'eagle', 'lion', 'dragon', 'phoenix', 'tiger', 'bear', 'hawk',
-	'blue', 'red', 'green', 'gold', 'silver', 'black', 'white', 'purple',
-	'sword', 'shield', 'crown', 'crystal', 'diamond', 'stone', 'steel', 'iron',
-	'light', 'dark', 'shadow', 'bright', 'spark', 'flame', 'frost', 'mist'
+	'sun',
+	'moon',
+	'star',
+	'sky',
+	'cloud',
+	'rain',
+	'snow',
+	'wind',
+	'fire',
+	'water',
+	'earth',
+	'air',
+	'ice',
+	'storm',
+	'thunder',
+	'lightning',
+	'tree',
+	'forest',
+	'mountain',
+	'river',
+	'ocean',
+	'lake',
+	'desert',
+	'island',
+	'wolf',
+	'eagle',
+	'lion',
+	'dragon',
+	'phoenix',
+	'tiger',
+	'bear',
+	'hawk',
+	'blue',
+	'red',
+	'green',
+	'gold',
+	'silver',
+	'black',
+	'white',
+	'purple',
+	'sword',
+	'shield',
+	'crown',
+	'crystal',
+	'diamond',
+	'stone',
+	'steel',
+	'iron',
+	'light',
+	'dark',
+	'shadow',
+	'bright',
+	'spark',
+	'flame',
+	'frost',
+	'mist'
 ]
 
 export default function PasswordGeneratorPage() {
@@ -156,7 +205,7 @@ export default function PasswordGeneratorPage() {
 
 	const generatePassword = useCallback(() => {
 		setIsGenerating(true)
-		
+
 		// Simulate generation delay for animation
 		setTimeout(() => {
 			let charset = ''
@@ -213,7 +262,9 @@ export default function PasswordGeneratorPage() {
 					const pos = posArray[index]
 					const char = type[Math.floor(Math.random() * type.length)]
 					newPassword =
-						newPassword.substring(0, pos) + char + newPassword.substring(pos + 1)
+						newPassword.substring(0, pos) +
+						char +
+						newPassword.substring(pos + 1)
 				})
 			}
 
@@ -238,18 +289,20 @@ export default function PasswordGeneratorPage() {
 
 	const generateMemorablePassword = useCallback(() => {
 		setIsGenerating(true)
-		
+
 		setTimeout(() => {
 			const pattern = MEMORABLE_PATTERNS[selectedPattern]
 			const words = []
-			
+
 			// Select random words
 			for (let i = 0; i < 3; i++) {
-				words.push(COMMON_WORDS[Math.floor(Math.random() * COMMON_WORDS.length)])
+				words.push(
+					COMMON_WORDS[Math.floor(Math.random() * COMMON_WORDS.length)]
+				)
 			}
-			
+
 			let newPassword = ''
-			
+
 			switch (selectedPattern) {
 				case 0: // word-word-number
 					newPassword = `${words[0]}-${words[1]}-${Math.floor(Math.random() * 100)}`
@@ -264,68 +317,75 @@ export default function PasswordGeneratorPage() {
 					newPassword = `${words[0].charAt(0).toUpperCase() + words[0].slice(1)}${words[1].charAt(0).toUpperCase() + words[1].slice(1)}${Math.floor(Math.random() * 10)}!`
 					break
 			}
-			
+
 			setPassword(newPassword)
 			const newStrength = calculateStrength(newPassword)
 			setStrength(newStrength)
-			
+
 			// Add to history
 			const historyItem: PasswordHistory = {
 				password: newPassword,
 				strength: newStrength,
 				timestamp: new Date()
 			}
-			
+
 			const newHistory = [historyItem, ...history].slice(0, 50)
 			setHistory(newHistory)
 			localStorage.setItem('password-history', JSON.stringify(newHistory))
-			
+
 			setIsGenerating(false)
 		}, 300)
 	}, [selectedPattern, history, calculateStrength])
 
 	const generatePassphrase = useCallback(() => {
 		setIsGenerating(true)
-		
+
 		setTimeout(() => {
-			const words = customWords.trim().split(/\s+/).filter(w => w.length > 0)
-			
+			const words = customWords
+				.trim()
+				.split(/\s+/)
+				.filter(w => w.length > 0)
+
 			if (words.length < 4) {
 				// Use default words if not enough custom words
-				const defaultWords = COMMON_WORDS.sort(() => Math.random() - 0.5).slice(0, 4)
+				const defaultWords = COMMON_WORDS.sort(() => Math.random() - 0.5).slice(
+					0,
+					4
+				)
 				words.push(...defaultWords)
 			}
-			
+
 			// Shuffle and select words
 			const shuffled = [...words].sort(() => Math.random() - 0.5)
 			const selectedWords = shuffled.slice(0, Math.min(5, shuffled.length))
-			
+
 			// Create passphrase with random formatting
 			const formats = [
 				(words: string[]) => words.join('-'),
 				(words: string[]) => words.join(' '),
-				(words: string[]) => words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(''),
+				(words: string[]) =>
+					words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(''),
 				(words: string[]) => words.join('.') + Math.floor(Math.random() * 100)
 			]
-			
+
 			const format = formats[Math.floor(Math.random() * formats.length)]
 			const newPassword = format(selectedWords)
-			
+
 			setPassword(newPassword)
 			const newStrength = calculateStrength(newPassword)
 			setStrength(newStrength)
-			
+
 			// Add to history
 			const historyItem: PasswordHistory = {
 				password: newPassword,
 				strength: newStrength,
 				timestamp: new Date()
 			}
-			
+
 			const newHistory = [historyItem, ...history].slice(0, 50)
 			setHistory(newHistory)
 			localStorage.setItem('password-history', JSON.stringify(newHistory))
-			
+
 			setIsGenerating(false)
 		}, 300)
 	}, [customWords, history, calculateStrength])
@@ -351,7 +411,7 @@ export default function PasswordGeneratorPage() {
 			await navigator.clipboard.writeText(password)
 			setCopied(true)
 			toast.success(t('toast.copied'))
-			
+
 			// Reset copied state after animation
 			setTimeout(() => setCopied(false), 2000)
 		} catch (err) {
@@ -443,9 +503,13 @@ export default function PasswordGeneratorPage() {
 							<div className='inline-flex p-1 bg-secondary/50 rounded-lg backdrop-blur-sm w-full max-w-md'>
 								{[
 									{ key: 'random', icon: Zap, label: t('modes.random') },
-									{ key: 'memorable', icon: Sparkles, label: t('modes.memorable') },
+									{
+										key: 'memorable',
+										icon: Sparkles,
+										label: t('modes.memorable')
+									},
 									{ key: 'phrase', icon: Type, label: t('modes.phrase') }
-								].map((item) => (
+								].map(item => (
 									<div key={item.key} className='flex-1'>
 										<Button
 											variant={mode === item.key ? 'default' : 'ghost'}
@@ -463,216 +527,255 @@ export default function PasswordGeneratorPage() {
 
 						{/* Quick Options */}
 						<div className='p-4 bg-background/50 rounded-lg'>
-								{mode === 'random' && (
-									<div className='space-y-4'>
-										{/* Length, Characters and Advanced in one row */}
-										<div className='flex items-center gap-3'>
-											{/* Length Slider */}
-											<div className='flex items-center gap-2'>
-												<Label className='text-xs font-medium flex items-center gap-1.5 whitespace-nowrap'>
-													<Hash className='w-3.5 h-3.5 text-muted-foreground' />
-													{t('options.length')}
-												</Label>
-												<div className='w-32'>
-													<Slider
-														value={[options.length]}
-														onValueChange={([value]) =>
-															setOptions({ ...options, length: value })
-														}
-														min={8}
-														max={32}
-														step={1}
-														className='w-full h-1'
-													/>
-												</div>
-												<Badge variant='secondary' className='font-mono text-xs h-5 px-1.5'>
-													{options.length}
-												</Badge>
+							{mode === 'random' && (
+								<div className='space-y-4'>
+									{/* Length, Characters and Advanced in one row */}
+									<div className='flex items-center gap-3'>
+										{/* Length Slider */}
+										<div className='flex items-center gap-2'>
+											<Label className='text-xs font-medium flex items-center gap-1.5 whitespace-nowrap'>
+												<Hash className='w-3.5 h-3.5 text-muted-foreground' />
+												{t('options.length')}
+											</Label>
+											<div className='w-32'>
+												<Slider
+													value={[options.length]}
+													onValueChange={([value]) =>
+														setOptions({ ...options, length: value })
+													}
+													min={8}
+													max={32}
+													step={1}
+													className='w-full h-1'
+												/>
 											</div>
-
-											{/* Character Options */}
-											<div className='flex gap-1.5'>
-												<Button
-													size='sm'
-													variant={options.uppercase ? 'default' : 'outline'}
-													onClick={() => setOptions({ ...options, uppercase: !options.uppercase })}
-													className='h-7 px-2.5 text-xs transition-none'
-												>
-													A-Z
-												</Button>
-												<Button
-													size='sm'
-													variant={options.lowercase ? 'default' : 'outline'}
-													onClick={() => setOptions({ ...options, lowercase: !options.lowercase })}
-													className='h-7 px-2.5 text-xs transition-none'
-												>
-													a-z
-												</Button>
-												<Button
-													size='sm'
-													variant={options.numbers ? 'default' : 'outline'}
-													onClick={() => setOptions({ ...options, numbers: !options.numbers })}
-													className='h-7 px-2.5 text-xs transition-none'
-												>
-													0-9
-												</Button>
-												<Button
-													size='sm'
-													variant={options.symbols ? 'default' : 'outline'}
-													onClick={() => setOptions({ ...options, symbols: !options.symbols })}
-													className='h-7 px-2.5 text-xs transition-none'
-												>
-													!@#
-												</Button>
-											</div>
-
-											{/* Advanced Toggle */}
-											<Button
-												variant='outline'
-												size='sm'
-												onClick={() => setShowAdvanced(!showAdvanced)}
-												className='h-8 px-3 gap-1 text-xs ml-auto'
+											<Badge
+												variant='secondary'
+												className='font-mono text-xs h-5 px-1.5'
 											>
-												<Settings2 className='w-3.5 h-3.5' />
-												{showAdvanced ? (
-													<ChevronUp className='w-3 h-3' />
-												) : (
-													<ChevronDown className='w-3 h-3' />
-												)}
+												{options.length}
+											</Badge>
+										</div>
+
+										{/* Character Options */}
+										<div className='flex gap-1.5'>
+											<Button
+												size='sm'
+												variant={options.uppercase ? 'default' : 'outline'}
+												onClick={() =>
+													setOptions({
+														...options,
+														uppercase: !options.uppercase
+													})
+												}
+												className='h-7 px-2.5 text-xs transition-none'
+											>
+												A-Z
+											</Button>
+											<Button
+												size='sm'
+												variant={options.lowercase ? 'default' : 'outline'}
+												onClick={() =>
+													setOptions({
+														...options,
+														lowercase: !options.lowercase
+													})
+												}
+												className='h-7 px-2.5 text-xs transition-none'
+											>
+												a-z
+											</Button>
+											<Button
+												size='sm'
+												variant={options.numbers ? 'default' : 'outline'}
+												onClick={() =>
+													setOptions({ ...options, numbers: !options.numbers })
+												}
+												className='h-7 px-2.5 text-xs transition-none'
+											>
+												0-9
+											</Button>
+											<Button
+												size='sm'
+												variant={options.symbols ? 'default' : 'outline'}
+												onClick={() =>
+													setOptions({ ...options, symbols: !options.symbols })
+												}
+												className='h-7 px-2.5 text-xs transition-none'
+											>
+												!@#
 											</Button>
 										</div>
 
-										{/* Advanced Options */}
-										<AnimatePresence>
-											{showAdvanced && (
-												<motion.div
-													initial={{ height: 0, opacity: 0 }}
-													animate={{ height: 'auto', opacity: 1 }}
-													exit={{ height: 0, opacity: 0 }}
-													transition={{ duration: 0.3 }}
-													className='overflow-hidden'
-												>
-													<div className='pt-3 border-t space-y-2'>
-														<div className='flex items-center justify-between'>
-															<Label htmlFor='similar' className='text-xs cursor-pointer'>
-																{t('options.excludeSimilar')} (il1Lo0O)
-															</Label>
-															<Switch
-																id='similar'
-																checked={options.excludeSimilar}
-																onCheckedChange={checked =>
-																	setOptions({ ...options, excludeSimilar: checked })
-																}
-																className='scale-75'
-															/>
-														</div>
-														<div className='flex items-center justify-between'>
-															<Label htmlFor='ambiguous' className='text-xs cursor-pointer'>
-																{t('options.excludeAmbiguous')} ({}[]()...)
-															</Label>
-															<Switch
-																id='ambiguous'
-																checked={options.excludeAmbiguous}
-																onCheckedChange={checked =>
-																	setOptions({ ...options, excludeAmbiguous: checked })
-																}
-																className='scale-75'
-															/>
-														</div>
-													</div>
-												</motion.div>
+										{/* Advanced Toggle */}
+										<Button
+											variant='outline'
+											size='sm'
+											onClick={() => setShowAdvanced(!showAdvanced)}
+											className='h-8 px-3 gap-1 text-xs ml-auto'
+										>
+											<Settings2 className='w-3.5 h-3.5' />
+											{showAdvanced ? (
+												<ChevronUp className='w-3 h-3' />
+											) : (
+												<ChevronDown className='w-3 h-3' />
 											)}
-										</AnimatePresence>
+										</Button>
 									</div>
-								)}
 
-								{mode === 'memorable' && (
-									<div className='space-y-3'>
-										<div className='space-y-2'>
-											<Label className='text-xs font-medium flex items-center gap-1.5'>
-												<Sparkles className='w-3.5 h-3.5 text-muted-foreground' />
-												{t('memorable.pattern')}
-											</Label>
-											<div className='flex gap-2 overflow-x-auto'>
-												{MEMORABLE_PATTERNS.map((pattern, index) => {
-													const isSelected = selectedPattern === index
-													return (
-														<Button
-															key={index}
-															variant={isSelected ? 'default' : 'outline'}
-															onClick={() => setSelectedPattern(index)}
-															className='h-auto py-2 px-3 justify-start text-left flex-shrink-0 group'
+									{/* Advanced Options */}
+									<AnimatePresence>
+										{showAdvanced && (
+											<motion.div
+												initial={{ height: 0, opacity: 0 }}
+												animate={{ height: 'auto', opacity: 1 }}
+												exit={{ height: 0, opacity: 0 }}
+												transition={{ duration: 0.3 }}
+												className='overflow-hidden'
+											>
+												<div className='pt-3 border-t space-y-2'>
+													<div className='flex items-center justify-between'>
+														<Label
+															htmlFor='similar'
+															className='text-xs cursor-pointer'
 														>
-															<div>
-																<div className={cn(
+															{t('options.excludeSimilar')} (il1Lo0O)
+														</Label>
+														<Switch
+															id='similar'
+															checked={options.excludeSimilar}
+															onCheckedChange={checked =>
+																setOptions({
+																	...options,
+																	excludeSimilar: checked
+																})
+															}
+															className='scale-75'
+														/>
+													</div>
+													<div className='flex items-center justify-between'>
+														<Label
+															htmlFor='ambiguous'
+															className='text-xs cursor-pointer'
+														>
+															{t('options.excludeAmbiguous')} ({}[]()...)
+														</Label>
+														<Switch
+															id='ambiguous'
+															checked={options.excludeAmbiguous}
+															onCheckedChange={checked =>
+																setOptions({
+																	...options,
+																	excludeAmbiguous: checked
+																})
+															}
+															className='scale-75'
+														/>
+													</div>
+												</div>
+											</motion.div>
+										)}
+									</AnimatePresence>
+								</div>
+							)}
+
+							{mode === 'memorable' && (
+								<div className='space-y-3'>
+									<div className='space-y-2'>
+										<Label className='text-xs font-medium flex items-center gap-1.5'>
+											<Sparkles className='w-3.5 h-3.5 text-muted-foreground' />
+											{t('memorable.pattern')}
+										</Label>
+										<div className='flex gap-2 overflow-x-auto'>
+											{MEMORABLE_PATTERNS.map((pattern, index) => {
+												const isSelected = selectedPattern === index
+												return (
+													<Button
+														key={index}
+														variant={isSelected ? 'default' : 'outline'}
+														onClick={() => setSelectedPattern(index)}
+														className='h-auto py-2 px-3 justify-start text-left flex-shrink-0 group'
+													>
+														<div>
+															<div
+																className={cn(
 																	'font-medium text-xs whitespace-nowrap',
 																	isSelected && 'text-primary-foreground',
-																	!isSelected && 'group-hover:text-primary-foreground'
-																)}>
-																	{pattern.pattern}
-																</div>
-																<div className={cn(
+																	!isSelected &&
+																		'group-hover:text-primary-foreground'
+																)}
+															>
+																{pattern.pattern}
+															</div>
+															<div
+																className={cn(
 																	'text-[10px] mt-0.5 whitespace-nowrap transition-colors',
 																	isSelected && 'text-primary-foreground/70',
-																	!isSelected && 'text-muted-foreground group-hover:text-primary-foreground/70'
-																)}>
-																	{pattern.example}
-																</div>
+																	!isSelected &&
+																		'text-muted-foreground group-hover:text-primary-foreground/70'
+																)}
+															>
+																{pattern.example}
 															</div>
-														</Button>
-													)
-												})}
-											</div>
-										</div>
-										<div className='p-3 bg-secondary/20 rounded-lg'>
-											<p className='text-xs text-muted-foreground'>
-												{t('memorable.hint')}
-											</p>
+														</div>
+													</Button>
+												)
+											})}
 										</div>
 									</div>
-								)}
+									<div className='p-3 bg-secondary/20 rounded-lg'>
+										<p className='text-xs text-muted-foreground'>
+											{t('memorable.hint')}
+										</p>
+									</div>
+								</div>
+							)}
 
-								{mode === 'phrase' && (
-									<div className='space-y-3'>
-										<div className='space-y-2'>
-											<Label className='text-xs font-medium flex items-center gap-1.5'>
-												<Type className='w-3.5 h-3.5 text-muted-foreground' />
-												{t('passphrase.words')}
-											</Label>
-											<textarea
-												value={customWords}
-												onChange={(e) => setCustomWords(e.target.value)}
-												placeholder={t('passphrase.placeholder')}
-												className='w-full min-h-[60px] p-2 bg-background rounded-md border border-border resize-none font-mono text-xs'
-												spellCheck={false}
-											/>
-											<p className='text-[10px] text-muted-foreground'>
-												{t('passphrase.hint')}
-											</p>
-										</div>
-										<div className='grid grid-cols-4 gap-1.5'>
-											{['nature', 'tech', 'fantasy', 'space'].map((theme) => (
-												<Button
-													key={theme}
-													variant='outline'
-													size='sm'
-													onClick={() => {
-														const themeWords = {
-															nature: 'ocean mountain forest river sunset thunder',
-															tech: 'quantum neural cyber digital matrix protocol',
-															fantasy: 'dragon phoenix crystal magic sword shield',
-															space: 'galaxy nebula asteroid comet stellar nova'
-														}
-														setCustomWords(themeWords[theme as keyof typeof themeWords])
-													}}
-													className='h-7 text-[10px] px-2'
-												>
-													{t(`passphrase.themes.${theme}`)}
-												</Button>
-											))}
-										</div>
+							{mode === 'phrase' && (
+								<div className='space-y-3'>
+									<div className='space-y-2'>
+										<Label className='text-xs font-medium flex items-center gap-1.5'>
+											<Type className='w-3.5 h-3.5 text-muted-foreground' />
+											{t('passphrase.words')}
+										</Label>
+										<textarea
+											value={customWords}
+											onChange={e => setCustomWords(e.target.value)}
+											placeholder={t('passphrase.placeholder')}
+											className='w-full min-h-[60px] p-2 bg-background rounded-md border border-border resize-none font-mono text-xs'
+											spellCheck={false}
+										/>
+										<p className='text-[10px] text-muted-foreground'>
+											{t('passphrase.hint')}
+										</p>
 									</div>
-								)}
+									<div className='grid grid-cols-4 gap-1.5'>
+										{['nature', 'tech', 'fantasy', 'space'].map(theme => (
+											<Button
+												key={theme}
+												variant='outline'
+												size='sm'
+												onClick={() => {
+													const themeWords = {
+														nature:
+															'ocean mountain forest river sunset thunder',
+														tech: 'quantum neural cyber digital matrix protocol',
+														fantasy:
+															'dragon phoenix crystal magic sword shield',
+														space: 'galaxy nebula asteroid comet stellar nova'
+													}
+													setCustomWords(
+														themeWords[theme as keyof typeof themeWords]
+													)
+												}}
+												className='h-7 text-[10px] px-2'
+											>
+												{t(`passphrase.themes.${theme}`)}
+											</Button>
+										))}
+									</div>
+								</div>
+							)}
 						</div>
 
 						{/* Password Display */}
@@ -729,20 +832,20 @@ export default function PasswordGeneratorPage() {
 										key={password}
 										className='inline-block'
 										duration={0.4}
-										getEnterDelay={(i) => i * 0.015}
-										getExitDelay={(i) => i * 0.015}
+										getEnterDelay={i => i * 0.015}
+										getExitDelay={i => i * 0.015}
 										transition={{
-											ease: [0.25, 0.1, 0.25, 1],
+											ease: [0.25, 0.1, 0.25, 1]
 										}}
 										variants={{
 											enter: {
 												initial: { y: 0, opacity: 1 },
-												animate: { y: -50, opacity: 0.1 },
+												animate: { y: -50, opacity: 0.1 }
 											},
 											exit: {
 												initial: { y: 50, opacity: 0 },
-												animate: { y: 0, opacity: 1 },
-											},
+												animate: { y: 0, opacity: 1 }
+											}
 										}}
 									>
 										{password}
@@ -846,10 +949,16 @@ export default function PasswordGeneratorPage() {
 														variant='outline'
 														className={cn(
 															'text-xs',
-															item.strength >= 80 && 'border-green-500/50 text-green-600',
-															item.strength >= 60 && item.strength < 80 && 'border-yellow-500/50 text-yellow-600',
-															item.strength >= 40 && item.strength < 60 && 'border-orange-500/50 text-orange-600',
-															item.strength < 40 && 'border-red-500/50 text-red-600'
+															item.strength >= 80 &&
+																'border-green-500/50 text-green-600',
+															item.strength >= 60 &&
+																item.strength < 80 &&
+																'border-yellow-500/50 text-yellow-600',
+															item.strength >= 40 &&
+																item.strength < 60 &&
+																'border-orange-500/50 text-orange-600',
+															item.strength < 40 &&
+																'border-red-500/50 text-red-600'
 														)}
 													>
 														{item.strength}%

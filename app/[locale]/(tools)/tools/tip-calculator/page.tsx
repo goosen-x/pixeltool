@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { useTranslations } from 'next-intl'
+import { RelatedTools } from '@/components/seo/RelatedTools'
 
 export default function TipCalculatorPage() {
 	const t = useTranslations('widgets.tipCalculator')
@@ -45,16 +46,10 @@ export default function TipCalculatorPage() {
 	const result = calculateTip()
 
 	return (
-		<div className='min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-12'>
-			<div className='container max-w-6xl mx-auto px-4'>
-				<div className='text-center mb-8'>
-					<h1 className='text-4xl font-bold mb-4'>{t('title')}</h1>
-					<p className='text-lg text-muted-foreground'>{t('description')}</p>
-				</div>
-
-				<div className='grid md:grid-cols-2 gap-6'>
-					{/* Input Section */}
-					<Card>
+		<div className='space-y-6'>
+			<div className='grid md:grid-cols-2 gap-6'>
+				{/* Input Section */}
+				<Card>
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
 								<Calculator className='h-5 w-5' />
@@ -62,22 +57,40 @@ export default function TipCalculatorPage() {
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-6'>
-							{/* Bill Amount */}
-							<div className='space-y-2'>
-								<Label htmlFor='bill' className='flex items-center gap-2'>
-									<DollarSign className='h-4 w-4' />
-									{t('billAmount')}
-								</Label>
-								<Input
-									id='bill'
-									type='number'
-									value={billAmount}
-									onChange={e => setBillAmount(e.target.value)}
-									placeholder='0.00'
-									min='0'
-									step='0.01'
-									className='text-lg'
-								/>
+							{/* Bill Amount and Number of People */}
+							<div className='grid grid-cols-2 gap-4'>
+								<div className='space-y-2'>
+									<Label htmlFor='bill' className='flex items-center gap-2'>
+										<DollarSign className='h-4 w-4' />
+										{t('billAmount')}
+									</Label>
+									<Input
+										id='bill'
+										type='number'
+										value={billAmount}
+										onChange={e => setBillAmount(e.target.value)}
+										placeholder='0.00'
+										min='0'
+										step='0.01'
+										className='text-lg'
+									/>
+								</div>
+								
+								<div className='space-y-2'>
+									<Label htmlFor='people' className='flex items-center gap-2'>
+										<Users className='h-4 w-4' />
+										{t('numberOfPeople')}
+									</Label>
+									<Input
+										id='people'
+										type='number'
+										value={numberOfPeople}
+										onChange={e => setNumberOfPeople(e.target.value)}
+										placeholder='1'
+										min='1'
+										className='text-lg'
+									/>
+								</div>
 							</div>
 
 							{/* Tip Percentage */}
@@ -139,23 +152,6 @@ export default function TipCalculatorPage() {
 										{customTipPercent || tipPercent}%
 									</div>
 								</div>
-							</div>
-
-							{/* Number of People */}
-							<div className='space-y-2'>
-								<Label htmlFor='people' className='flex items-center gap-2'>
-									<Users className='h-4 w-4' />
-									{t('numberOfPeople')}
-								</Label>
-								<Input
-									id='people'
-									type='number'
-									value={numberOfPeople}
-									onChange={e => setNumberOfPeople(e.target.value)}
-									placeholder='1'
-									min='1'
-									className='text-lg'
-								/>
 							</div>
 						</CardContent>
 					</Card>
@@ -234,10 +230,10 @@ export default function TipCalculatorPage() {
 							</div>
 						</CardContent>
 					</Card>
-				</div>
+			</div>
 
-				{/* Tip Guide */}
-				<Card className='mt-6'>
+			{/* Tip Guide */}
+			<Card>
 					<CardHeader>
 						<CardTitle>{t('tipGuide.title')}</CardTitle>
 					</CardHeader>
@@ -264,7 +260,9 @@ export default function TipCalculatorPage() {
 						</div>
 					</CardContent>
 				</Card>
-			</div>
+			
+			{/* Similar Tools */}
+			<RelatedTools currentTool="tip-calculator" category="business" />
 		</div>
 	)
 }

@@ -5,28 +5,44 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import {
 	Link as LinkIcon,
 	Copy,
-	QrCode,
 	Info,
 	History,
 	Download,
 	Trash2,
-	ExternalLink
+	ExternalLink,
+	Check,
+	Sparkles,
+	Mail,
+	Share2,
+	Search,
+	MessageSquare,
+	Globe,
+	X,
+	ChevronRight,
+	Clock,
+	Plus,
+	ArrowRight,
+	Eye,
+	EyeOff,
+	Facebook,
+	Instagram
 } from 'lucide-react'
+import { 
+	FaGoogle, 
+	FaYandex, 
+	FaVk, 
+	FaFacebookF, 
+	FaInstagram,
+	FaEnvelope 
+} from 'react-icons/fa'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
-import QRCode from 'qrcode'
+import { cn } from '@/lib/utils'
 
 interface UTMParams {
 	url: string
@@ -38,10 +54,14 @@ interface UTMParams {
 }
 
 interface Preset {
+	id: string
 	name: string
 	source: string
 	medium: string
-	params?: Record<string, string>
+	icon: React.ReactNode
+	color: string
+	gradient: string
+	popular?: boolean
 }
 
 interface SavedLink {
@@ -52,13 +72,63 @@ interface SavedLink {
 }
 
 const PRESETS: Preset[] = [
-	{ name: 'Google Ads', source: 'google', medium: 'cpc' },
-	{ name: 'Yandex.Direct', source: 'yandex', medium: 'cpc' },
-	{ name: 'VKontakte', source: 'vk', medium: 'social' },
-	{ name: 'Facebook', source: 'facebook', medium: 'social' },
-	{ name: 'Instagram', source: 'instagram', medium: 'social' },
-	{ name: 'Email Newsletter', source: 'newsletter', medium: 'email' },
-	{ name: 'QR Code', source: 'qr', medium: 'offline' }
+	{ 
+		id: 'google-ads',
+		name: 'Google Ads', 
+		source: 'google', 
+		medium: 'cpc',
+		icon: <FaGoogle className="w-5 h-5" />,
+		color: 'text-blue-600',
+		gradient: 'from-blue-500 to-blue-600',
+		popular: true
+	},
+	{ 
+		id: 'yandex',
+		name: 'Yandex.Direct', 
+		source: 'yandex', 
+		medium: 'cpc',
+		icon: <FaYandex className="w-5 h-5" />,
+		color: 'text-red-600',
+		gradient: 'from-red-500 to-red-600',
+		popular: true
+	},
+	{ 
+		id: 'vk',
+		name: 'VKontakte', 
+		source: 'vk', 
+		medium: 'social',
+		icon: <FaVk className="w-5 h-5" />,
+		color: 'text-blue-500',
+		gradient: 'from-blue-400 to-blue-500'
+	},
+	{ 
+		id: 'facebook',
+		name: 'Facebook', 
+		source: 'facebook', 
+		medium: 'social',
+		icon: <FaFacebookF className="w-5 h-5" />,
+		color: 'text-indigo-600',
+		gradient: 'from-indigo-500 to-indigo-600'
+	},
+	{ 
+		id: 'instagram',
+		name: 'Instagram', 
+		source: 'instagram', 
+		medium: 'social',
+		icon: <FaInstagram className="w-5 h-5" />,
+		color: 'text-pink-600',
+		gradient: 'from-pink-500 to-purple-600'
+	},
+	{ 
+		id: 'email',
+		name: 'Email', 
+		source: 'newsletter', 
+		medium: 'email',
+		icon: <FaEnvelope className="w-5 h-5" />,
+		color: 'text-green-600',
+		gradient: 'from-green-500 to-green-600',
+		popular: true
+	}
 ]
 
 // Dynamic parameters for different platforms
@@ -100,18 +170,21 @@ const DYNAMIC_PARAMS = {
 export default function UTMBuilderPage() {
 	const t = useTranslations('widgets.utmBuilder')
 	const [params, setParams] = useState<UTMParams>({
-		url: '',
+		url: 'example.com/landing-page',
 		source: '',
 		medium: '',
 		campaign: '',
 		content: '',
 		term: ''
 	})
-	const [preset, setPreset] = useState('')
+	const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
 	const [generatedUrl, setGeneratedUrl] = useState('')
-	const [showQR, setShowQR] = useState(false)
 	const [history, setHistory] = useState<SavedLink[]>([])
-	const [activeTab, setActiveTab] = useState('builder')
+	const [showHistory, setShowHistory] = useState(false)
+	const [showAdvanced, setShowAdvanced] = useState(false)
+	const [copied, setCopied] = useState(false)
+	const [showAllParams, setShowAllParams] = useState(false)
+	const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set())
 
 	// Load history from localStorage
 	useEffect(() => {
@@ -161,14 +234,14 @@ export default function UTMBuilderPage() {
 		}
 	}
 
-	const handlePresetChange = (presetName: string) => {
-		setPreset(presetName)
-		const selectedPreset = PRESETS.find(p => p.name === presetName)
-		if (selectedPreset) {
+	const handlePresetSelect = (presetId: string) => {
+		setSelectedPreset(presetId)
+		const preset = PRESETS.find(p => p.id === presetId)
+		if (preset) {
 			setParams(prev => ({
 				...prev,
-				source: selectedPreset.source,
-				medium: selectedPreset.medium
+				source: preset.source,
+				medium: preset.medium
 			}))
 		}
 	}
@@ -178,7 +251,9 @@ export default function UTMBuilderPage() {
 
 		try {
 			await navigator.clipboard.writeText(generatedUrl)
+			setCopied(true)
 			toast.success(t('toast.copied'))
+			setTimeout(() => setCopied(false), 2000)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
@@ -224,396 +299,390 @@ export default function UTMBuilderPage() {
 		toast.success(t('toast.downloaded'))
 	}
 
-	const generateQR = async () => {
-		if (!generatedUrl) return
-
-		try {
-			const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement
-			if (canvas) {
-				await QRCode.toCanvas(canvas, generatedUrl, {
-					width: 256,
-					margin: 2
-				})
-				setShowQR(true)
-			}
-		} catch (err) {
-			toast.error(t('toast.qrError'))
-		}
-	}
-
 	const isValidUrl = () => {
 		return params.url && params.source && params.medium && params.campaign
 	}
 
+	const loadFromHistory = (link: SavedLink) => {
+		setParams(link.params)
+		setShowHistory(false)
+		toast.success(t('toast.loaded'))
+	}
+
+	const handleFieldBlur = (fieldName: string) => {
+		setTouchedFields(prev => new Set(prev).add(fieldName))
+	}
+
+	const isFieldInvalid = (fieldName: string, value: string) => {
+		return touchedFields.has(fieldName) && !value
+	}
+
 	return (
-		<Tabs value={activeTab} onValueChange={setActiveTab}>
-			<TabsList className='grid w-full grid-cols-3'>
-				<TabsTrigger value='builder'>
-					<LinkIcon className='w-4 h-4 mr-2' />
-					{t('tabs.builder')}
-				</TabsTrigger>
-				<TabsTrigger value='parameters'>
-					<Info className='w-4 h-4 mr-2' />
-					{t('tabs.parameters')}
-				</TabsTrigger>
-				<TabsTrigger value='history'>
-					<History className='w-4 h-4 mr-2' />
-					{t('tabs.history')}
-				</TabsTrigger>
-			</TabsList>
+		<div className='space-y-6'>
+			{/* Visual URL Constructor */}
+			<Card className='border-2'>
+				<CardHeader className='pb-3'>
+					<div className='flex items-center justify-between'>
+						<CardTitle className='text-xl flex items-center gap-2'>
+							<LinkIcon className='w-5 h-5' />
+							{t('urlConstructor.title')}
+						</CardTitle>
+						<div className='flex gap-2'>
+							<Button
+								variant='ghost'
+								size='sm'
+								onClick={() => setShowHistory(!showHistory)}
+								className='relative'
+							>
+								<History className='w-4 h-4' />
+								{history.length > 0 && (
+									<Badge 
+										variant='secondary' 
+										className='absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]'
+									>
+										{history.length}
+									</Badge>
+								)}
+							</Button>
+						</div>
+					</div>
+				</CardHeader>
+				<CardContent>
+					{/* URL Input */}
+					<div className='space-y-2 mb-4'>
+						<Label htmlFor='url'>
+							{t('form.url')} <span className='text-red-500'>*</span>
+						</Label>
+						<div className='flex'>
+							<span className='flex items-center px-3 text-sm text-muted-foreground bg-muted rounded-l-md border border-r-0'>
+								https://
+							</span>
+							<Input
+								id='url'
+								placeholder='example.com/page'
+								value={params.url.replace(/^https?:\/\//, '')}
+								onChange={e => setParams({ ...params, url: e.target.value })}
+								onBlur={() => handleFieldBlur('url')}
+								className={cn(
+									'rounded-l-none flex-1',
+									isFieldInvalid('url', params.url) && 'border-red-500 focus:ring-red-500'
+								)}
+							/>
+						</div>
+					</div>
 
-			<TabsContent value='builder' className='space-y-6'>
-				<div className='grid gap-6 lg:grid-cols-2'>
-					{/* Input Form */}
-					<Card>
-						<CardHeader>
-							<CardTitle>{t('form.title')}</CardTitle>
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							{/* Target URL */}
+					{/* Live URL Preview */}
+					{generatedUrl && (
+						<div className='space-y-4'>
+							<Separator />
 							<div className='space-y-2'>
-								<Label htmlFor='url'>
-									{t('form.url')} <span className='text-red-500'>*</span>
-								</Label>
-								<div className='flex gap-2'>
-									<span className='flex items-center px-3 text-sm text-muted-foreground bg-muted rounded-l-md border border-r-0'>
-										https://
-									</span>
-									<Input
-										id='url'
-										placeholder='example.com/page'
-										value={params.url.replace(/^https?:\/\//, '')}
-										onChange={e =>
-											setParams({ ...params, url: e.target.value })
-										}
-										className='rounded-l-none'
-									/>
-								</div>
-							</div>
-
-							{/* Preset */}
-							<div className='space-y-2'>
-								<Label>{t('form.preset')}</Label>
-								<Select value={preset} onValueChange={handlePresetChange}>
-									<SelectTrigger>
-										<SelectValue placeholder={t('form.presetPlaceholder')} />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='custom'>{t('form.custom')}</SelectItem>
-										{PRESETS.map(p => (
-											<SelectItem key={p.name} value={p.name}>
-												{p.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-
-							{/* Source */}
-							<div className='space-y-2'>
-								<Label htmlFor='source'>
-									{t('form.source')} <span className='text-red-500'>*</span>
-								</Label>
-								<Input
-									id='source'
-									placeholder='google, yandex, vk...'
-									value={params.source}
-									onChange={e =>
-										setParams({ ...params, source: e.target.value })
-									}
-								/>
-								<p className='text-xs text-muted-foreground'>
-									{t('form.sourceHint')}
-								</p>
-							</div>
-
-							{/* Medium */}
-							<div className='space-y-2'>
-								<Label htmlFor='medium'>
-									{t('form.medium')} <span className='text-red-500'>*</span>
-								</Label>
-								<Input
-									id='medium'
-									placeholder='cpc, email, social...'
-									value={params.medium}
-									onChange={e =>
-										setParams({ ...params, medium: e.target.value })
-									}
-								/>
-								<p className='text-xs text-muted-foreground'>
-									{t('form.mediumHint')}
-								</p>
-							</div>
-
-							{/* Campaign */}
-							<div className='space-y-2'>
-								<Label htmlFor='campaign'>
-									{t('form.campaign')} <span className='text-red-500'>*</span>
-								</Label>
-								<Input
-									id='campaign'
-									placeholder='summer-sale-2024'
-									value={params.campaign}
-									onChange={e =>
-										setParams({ ...params, campaign: e.target.value })
-									}
-								/>
-								<p className='text-xs text-muted-foreground'>
-									{t('form.campaignHint')}
-								</p>
-							</div>
-
-							{/* Content (optional) */}
-							<div className='space-y-2'>
-								<Label htmlFor='content'>{t('form.content')}</Label>
-								<Input
-									id='content'
-									placeholder='banner-header'
-									value={params.content}
-									onChange={e =>
-										setParams({ ...params, content: e.target.value })
-									}
-								/>
-								<p className='text-xs text-muted-foreground'>
-									{t('form.contentHint')}
-								</p>
-							</div>
-
-							{/* Term (optional) */}
-							<div className='space-y-2'>
-								<Label htmlFor='term'>{t('form.term')}</Label>
-								<Input
-									id='term'
-									placeholder='buy iphone'
-									value={params.term}
-									onChange={e => setParams({ ...params, term: e.target.value })}
-								/>
-								<p className='text-xs text-muted-foreground'>
-									{t('form.termHint')}
-								</p>
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Result */}
-					<Card>
-						<CardHeader>
-							<CardTitle>{t('result.title')}</CardTitle>
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							{generatedUrl ? (
-								<>
-									<div className='p-4 bg-muted rounded-lg'>
-										<p className='text-sm font-mono break-all'>
-											{generatedUrl}
-										</p>
-									</div>
-
-									<div className='grid grid-cols-2 gap-2'>
+								<div className='flex items-center justify-between'>
+									<Label className='text-sm text-muted-foreground'>
+										{t('result.preview')}
+									</Label>
+									<div className='flex gap-2'>
 										<Button
+											size='sm'
+											variant={copied ? 'default' : 'outline'}
 											onClick={copyToClipboard}
-											variant='outline'
-											className='hover:bg-accent hover:text-white'
+											className='h-8'
 										>
-											<Copy className='w-4 h-4 mr-2' />
+											{copied ? (
+												<Check className='w-3 h-3 mr-2' />
+											) : (
+												<Copy className='w-3 h-3 mr-2' />
+											)}
 											{t('result.copy')}
 										</Button>
-										<Button onClick={saveToHistory} variant='outline'>
-											<History className='w-4 h-4 mr-2' />
+										<Button
+											size='sm'
+											variant='outline'
+											onClick={saveToHistory}
+											className='h-8'
+										>
+											<Plus className='w-3 h-3 mr-2' />
 											{t('result.save')}
 										</Button>
-										<Button onClick={generateQR} variant='outline'>
-											<QrCode className='w-4 h-4 mr-2' />
-											{t('result.qr')}
-										</Button>
 										<Button
+											size='sm'
+											variant='ghost'
 											onClick={() => window.open(generatedUrl, '_blank')}
-											variant='outline'
+											className='h-8'
 										>
-											<ExternalLink className='w-4 h-4 mr-2' />
-											{t('result.test')}
+											<ExternalLink className='w-3 h-3' />
 										</Button>
 									</div>
-
-									{showQR && (
-										<div className='flex justify-center mt-4'>
-											<canvas id='qr-canvas' />
-										</div>
-									)}
-
-									{/* UTM Parameters Preview */}
-									<div className='space-y-2'>
-										<h4 className='font-medium text-sm'>
-											{t('result.parameters')}
-										</h4>
-										<div className='space-y-1'>
-											<div className='flex gap-2'>
-												<Badge variant='secondary'>utm_source</Badge>
-												<span className='text-sm'>{params.source}</span>
-											</div>
-											<div className='flex gap-2'>
-												<Badge variant='secondary'>utm_medium</Badge>
-												<span className='text-sm'>{params.medium}</span>
-											</div>
-											<div className='flex gap-2'>
-												<Badge variant='secondary'>utm_campaign</Badge>
-												<span className='text-sm'>{params.campaign}</span>
-											</div>
-											{params.content && (
-												<div className='flex gap-2'>
-													<Badge variant='secondary'>utm_content</Badge>
-													<span className='text-sm'>{params.content}</span>
-												</div>
-											)}
-											{params.term && (
-												<div className='flex gap-2'>
-													<Badge variant='secondary'>utm_term</Badge>
-													<span className='text-sm'>{params.term}</span>
-												</div>
-											)}
-										</div>
-									</div>
-								</>
-							) : (
-								<div className='text-center py-8 text-muted-foreground'>
-									<LinkIcon className='w-12 h-12 mx-auto mb-4 opacity-50' />
-									<p>{t('result.empty')}</p>
 								</div>
+								<div className='p-3 bg-muted rounded-lg'>
+									<p className='text-sm font-mono break-all text-foreground'>
+										{generatedUrl}
+									</p>
+								</div>
+							</div>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Traffic Source Cards */}
+			<div className='space-y-4'>
+				<h3 className='text-lg font-semibold flex items-center gap-2'>
+					<Sparkles className='w-5 h-5 text-primary' />
+					{t('sources.title')}
+				</h3>
+				<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
+					{PRESETS.map(preset => (
+						<Card
+							key={preset.id}
+							className={cn(
+								'cursor-pointer transition-all hover:shadow-lg hover:scale-105',
+								selectedPreset === preset.id && 'ring-2 ring-primary'
 							)}
-						</CardContent>
-					</Card>
-				</div>
-			</TabsContent>
-
-			<TabsContent value='parameters' className='space-y-6'>
-				<div className='grid gap-6 lg:grid-cols-3'>
-					{/* Google Ads */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='text-lg'>Google Ads</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className='space-y-2'>
-								{DYNAMIC_PARAMS.google.map((param, index) => (
-									<div key={index} className='text-sm'>
-										<code className='inline-code'>{param.param}</code>
-										<p className='text-xs text-muted-foreground mt-1'>
-											{param.desc}
-										</p>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Yandex.Direct */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='text-lg'>Yandex.Direct</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className='space-y-2'>
-								{DYNAMIC_PARAMS.yandex.map((param, index) => (
-									<div key={index} className='text-sm'>
-										<code className='inline-code'>{param.param}</code>
-										<p className='text-xs text-muted-foreground mt-1'>
-											{param.desc}
-										</p>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* VKontakte */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='text-lg'>VKontakte</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className='space-y-2'>
-								{DYNAMIC_PARAMS.vk.map((param, index) => (
-									<div key={index} className='text-sm'>
-										<code className='inline-code'>{param.param}</code>
-										<p className='text-xs text-muted-foreground mt-1'>
-											{param.desc}
-										</p>
-									</div>
-								))}
-							</div>
-							<div className='mt-4 p-3 bg-muted rounded-lg'>
+							onClick={() => handlePresetSelect(preset.id)}
+						>
+							<CardContent className='p-4 text-center space-y-2'>
+								<div className={cn(
+									'w-12 h-12 rounded-lg flex items-center justify-center mx-auto bg-gradient-to-br',
+									preset.gradient,
+									'text-white'
+								)}>
+									{preset.icon}
+								</div>
+								<h4 className='font-medium text-sm'>{preset.name}</h4>
 								<p className='text-xs text-muted-foreground'>
-									{t('parameters.hint')}
+									{preset.source} / {preset.medium}
 								</p>
-							</div>
-						</CardContent>
-					</Card>
+							</CardContent>
+						</Card>
+				))}
 				</div>
-			</TabsContent>
+			</div>
 
-			<TabsContent value='history' className='space-y-6'>
+			{/* UTM Parameters Form */}
+			<Card>
+				<CardHeader>
+					<CardTitle className='text-lg'>{t('form.title')}</CardTitle>
+				</CardHeader>
+				<CardContent className='space-y-4'>
+					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+						{/* Source */}
+						<div className='space-y-2'>
+							<Label htmlFor='source'>
+								{t('form.source')} <span className='text-red-500'>*</span>
+							</Label>
+							<Input
+								id='source'
+								placeholder='google, yandex, vk...'
+								value={params.source}
+								onChange={e => setParams({ ...params, source: e.target.value })}
+								onBlur={() => handleFieldBlur('source')}
+								className={cn(
+									isFieldInvalid('source', params.source) && 'border-red-500 focus:ring-red-500'
+								)}
+							/>
+							<p className='text-xs text-muted-foreground'>
+								{t('form.sourceHint')}
+							</p>
+						</div>
+
+						{/* Medium */}
+						<div className='space-y-2'>
+							<Label htmlFor='medium'>
+								{t('form.medium')} <span className='text-red-500'>*</span>
+							</Label>
+							<Input
+								id='medium'
+								placeholder='cpc, email, social...'
+								value={params.medium}
+								onChange={e => setParams({ ...params, medium: e.target.value })}
+								onBlur={() => handleFieldBlur('medium')}
+								className={cn(
+									isFieldInvalid('medium', params.medium) && 'border-red-500 focus:ring-red-500'
+								)}
+							/>
+							<p className='text-xs text-muted-foreground'>
+								{t('form.mediumHint')}
+							</p>
+						</div>
+
+						{/* Campaign */}
+						<div className='space-y-2'>
+							<Label htmlFor='campaign'>
+								{t('form.campaign')} <span className='text-red-500'>*</span>
+							</Label>
+							<Input
+								id='campaign'
+								placeholder='summer-sale-2024'
+								value={params.campaign}
+								onChange={e => setParams({ ...params, campaign: e.target.value })}
+								onBlur={() => handleFieldBlur('campaign')}
+								className={cn(
+									isFieldInvalid('campaign', params.campaign) && 'border-red-500 focus:ring-red-500'
+								)}
+							/>
+							<p className='text-xs text-muted-foreground'>
+								{t('form.campaignHint')}
+							</p>
+						</div>
+					</div>
+
+					{/* Advanced Parameters */}
+					<div>
+						<Button
+							variant='ghost'
+							size='sm'
+							onClick={() => setShowAdvanced(!showAdvanced)}
+							className='mb-3'
+						>
+							{showAdvanced ? (
+								<EyeOff className='w-4 h-4 mr-2' />
+							) : (
+								<Eye className='w-4 h-4 mr-2' />
+							)}
+							{t('form.advanced')}
+						</Button>
+
+						{showAdvanced && (
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+								{/* Content */}
+								<div className='space-y-2'>
+									<Label htmlFor='content'>{t('form.content')}</Label>
+									<Input
+										id='content'
+										placeholder='banner-header'
+										value={params.content}
+										onChange={e => setParams({ ...params, content: e.target.value })}
+									/>
+									<p className='text-xs text-muted-foreground'>
+										{t('form.contentHint')}
+									</p>
+								</div>
+
+								{/* Term */}
+								<div className='space-y-2'>
+									<Label htmlFor='term'>{t('form.term')}</Label>
+									<Input
+										id='term'
+										placeholder='buy iphone'
+										value={params.term}
+										onChange={e => setParams({ ...params, term: e.target.value })}
+									/>
+									<p className='text-xs text-muted-foreground'>
+										{t('form.termHint')}
+									</p>
+								</div>
+							</div>
+						)}
+					</div>
+
+					{/* Dynamic Parameters Info */}
+					{params.source && (params.source === 'google' || params.source === 'yandex' || params.source === 'vk') && DYNAMIC_PARAMS[params.source] && (
+						<div className='mt-4 p-3 bg-muted rounded-lg'>
+							<div className='flex items-center gap-2 mb-2'>
+								<Info className='w-4 h-4' />
+								<span className='text-sm font-medium'>{t('parameters.title')}</span>
+							</div>
+							<div className='space-y-1'>
+								{DYNAMIC_PARAMS[params.source]
+									.slice(0, showAllParams ? undefined : 3)
+									.map((param, index) => (
+									<div key={index} className='text-xs'>
+										<code className='bg-background px-1 py-0.5 rounded'>{param.param}</code>
+										<span className='text-muted-foreground ml-2'>{param.desc}</span>
+									</div>
+								))}
+								{DYNAMIC_PARAMS[params.source].length > 3 && (
+									<Button
+										variant='link'
+										size='sm'
+										className='p-0 h-auto text-xs'
+										onClick={() => setShowAllParams(!showAllParams)}
+									>
+										{showAllParams ? (
+											<>
+												{t('parameters.showLess')} <ChevronRight className='w-3 h-3 ml-1 rotate-90' />
+											</>
+										) : (
+											<>
+												{t('parameters.viewAll')} <ChevronRight className='w-3 h-3 ml-1' />
+											</>
+										)}
+									</Button>
+								)}
+							</div>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Compact History */}
+			{showHistory && history.length > 0 && (
 				<Card>
 					<CardHeader>
-						<CardTitle className='flex items-center justify-between'>
-							<span>{t('history.title')}</span>
+						<CardTitle className='text-lg flex items-center justify-between'>
+							<span className='flex items-center gap-2'>
+								<Clock className='w-5 h-5' />
+								{t('history.title')}
+							</span>
 							<div className='flex gap-2'>
-								{history.length > 0 && (
-									<>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={downloadHistory}
-										>
-											<Download className='w-4 h-4 mr-1' />
-											{t('history.download')}
-										</Button>
-										<Button variant='outline' size='sm' onClick={clearHistory}>
-											<Trash2 className='w-4 h-4 mr-1' />
-											{t('history.clear')}
-										</Button>
-									</>
-								)}
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={downloadHistory}
+								>
+									<Download className='w-4 h-4' />
+								</Button>
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={clearHistory}
+								>
+									<Trash2 className='w-4 h-4' />
+								</Button>
 							</div>
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						{history.length > 0 ? (
-							<div className='space-y-2'>
-								{history.map((item, index) => (
-									<div key={index} className='p-3 border rounded-lg space-y-2'>
-										<div className='flex items-start justify-between'>
-											<div className='flex-1'>
-												<div className='font-medium text-sm'>{item.name}</div>
-												<div className='text-xs text-muted-foreground'>
-													{item.timestamp.toLocaleString()}
-												</div>
+						<div className='space-y-2 max-h-64 overflow-y-auto'>
+							{history.slice(0, 10).map((item, index) => (
+								<div 
+									key={index} 
+									className='group p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors'
+									onClick={() => loadFromHistory(item)}
+								>
+									<div className='flex items-center justify-between'>
+										<div className='flex-1 min-w-0'>
+											<div className='flex items-center gap-2'>
+												<span className='font-medium text-sm truncate'>{item.name}</span>
+												<Badge variant='secondary' className='text-[10px]'>
+													{new Date(item.timestamp).toLocaleDateString()}
+												</Badge>
 											</div>
+											<p className='text-xs text-muted-foreground truncate'>
+												{item.url}
+											</p>
+										</div>
+										<div className='flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
 											<Button
 												size='icon'
 												variant='ghost'
-												className='hover:bg-accent hover:text-white'
-												onClick={async () => {
+												className='h-7 w-7'
+												onClick={async (e) => {
+													e.stopPropagation()
 													await navigator.clipboard.writeText(item.url)
 													toast.success(t('toast.copied'))
 												}}
 											>
-												<Copy className='w-4 h-4' />
+												<Copy className='w-3 h-3' />
 											</Button>
 										</div>
-										<div className='text-sm font-mono text-muted-foreground break-all'>
-											{item.url}
-										</div>
 									</div>
-								))}
-							</div>
-						) : (
-							<p className='text-center text-muted-foreground py-8'>
-								{t('history.empty')}
-							</p>
-						)}
+								</div>
+							))}
+						</div>
 					</CardContent>
 				</Card>
-			</TabsContent>
-		</Tabs>
+			)}
+		</div>
 	)
 }

@@ -76,7 +76,9 @@ export default function Base64EncoderPage() {
 	const [showPreview, setShowPreview] = useState(false)
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
-	const [lastEditedField, setLastEditedField] = useState<'plain' | 'base64'>('plain')
+	const [lastEditedField, setLastEditedField] = useState<'plain' | 'base64'>(
+		'plain'
+	)
 	const [base64Error, setBase64Error] = useState<string | null>(null)
 
 	// Load history from localStorage
@@ -104,73 +106,80 @@ export default function Base64EncoderPage() {
 		}
 	}, [history])
 
-	const encodeToBase64 = useCallback((text: string) => {
-		if (!text || text.trim().length === 0) return ''
-		
-		try {
-			let result = btoa(unescape(encodeURIComponent(text)))
-			
-			// Apply URL-safe encoding if needed
-			if (urlSafe) {
-				result = result
-					.replace(/\+/g, '-')
-					.replace(/\//g, '_')
-					.replace(/=+$/, '')
-			}
+	const encodeToBase64 = useCallback(
+		(text: string) => {
+			if (!text || text.trim().length === 0) return ''
 
-			// Add line breaks if needed
-			if (lineBreaks) {
-				result = result.match(/.{1,76}/g)?.join('\n') || result
-			}
-			
-			return result
-		} catch (error) {
-			return ''
-		}
-	}, [urlSafe, lineBreaks])
-
-	const decodeFromBase64 = useCallback((base64: string) => {
-		if (!base64 || base64.trim().length === 0) return { result: '', error: null }
-		
-		try {
-			let toDecode = base64.trim()
-			
-			// Convert URL-safe base64 back to standard
-			if (urlSafe) {
-				toDecode = toDecode.replace(/-/g, '+').replace(/_/g, '/')
-				const padding = toDecode.length % 4
-				if (padding) {
-					toDecode += '='.repeat(4 - padding)
-				}
-			}
-
-			// Remove all whitespace
-			toDecode = toDecode.replace(/\s/g, '')
-
-			// Check for valid Base64 characters
-			const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
-			if (!base64Regex.test(toDecode)) {
-				return { result: '', error: t('errors.invalidBase64Characters') }
-			}
-
-			// Decode
 			try {
-				const decoded = atob(toDecode)
-				const result = decodeURIComponent(escape(decoded))
-				return { result, error: null }
-			} catch (e) {
-				// If decoding fails, try without URI decoding
-				try {
-					const result = atob(toDecode)
-					return { result, error: null }
-				} catch (e2) {
-					return { result: '', error: t('errors.invalidBase64Format') }
+				let result = btoa(unescape(encodeURIComponent(text)))
+
+				// Apply URL-safe encoding if needed
+				if (urlSafe) {
+					result = result
+						.replace(/\+/g, '-')
+						.replace(/\//g, '_')
+						.replace(/=+$/, '')
 				}
+
+				// Add line breaks if needed
+				if (lineBreaks) {
+					result = result.match(/.{1,76}/g)?.join('\n') || result
+				}
+
+				return result
+			} catch (error) {
+				return ''
 			}
-		} catch (error) {
-			return { result: '', error: t('errors.decodeFailed') }
-		}
-	}, [urlSafe, t])
+		},
+		[urlSafe, lineBreaks]
+	)
+
+	const decodeFromBase64 = useCallback(
+		(base64: string) => {
+			if (!base64 || base64.trim().length === 0)
+				return { result: '', error: null }
+
+			try {
+				let toDecode = base64.trim()
+
+				// Convert URL-safe base64 back to standard
+				if (urlSafe) {
+					toDecode = toDecode.replace(/-/g, '+').replace(/_/g, '/')
+					const padding = toDecode.length % 4
+					if (padding) {
+						toDecode += '='.repeat(4 - padding)
+					}
+				}
+
+				// Remove all whitespace
+				toDecode = toDecode.replace(/\s/g, '')
+
+				// Check for valid Base64 characters
+				const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
+				if (!base64Regex.test(toDecode)) {
+					return { result: '', error: t('errors.invalidBase64Characters') }
+				}
+
+				// Decode
+				try {
+					const decoded = atob(toDecode)
+					const result = decodeURIComponent(escape(decoded))
+					return { result, error: null }
+				} catch (e) {
+					// If decoding fails, try without URI decoding
+					try {
+						const result = atob(toDecode)
+						return { result, error: null }
+					} catch (e2) {
+						return { result: '', error: t('errors.invalidBase64Format') }
+					}
+				}
+			} catch (error) {
+				return { result: '', error: t('errors.decodeFailed') }
+			}
+		},
+		[urlSafe, t]
+	)
 
 	// Handle plain text changes
 	useEffect(() => {
@@ -179,7 +188,7 @@ export default function Base64EncoderPage() {
 				const encoded = encodeToBase64(plainText)
 				setBase64Text(encoded)
 				setBase64Error(null)
-				
+
 				// Calculate stats
 				if (plainText && encoded) {
 					const inputSize = new Blob([plainText]).size
@@ -206,7 +215,7 @@ export default function Base64EncoderPage() {
 				const { result, error } = decodeFromBase64(base64Text)
 				setPlainText(result)
 				setBase64Error(error)
-				
+
 				// Calculate stats
 				if (base64Text && result && !error) {
 					const inputSize = new Blob([base64Text]).size
@@ -281,7 +290,6 @@ export default function Base64EncoderPage() {
 		toast.success(t('success.downloaded'))
 	}
 
-
 	const reset = () => {
 		setPlainText('')
 		setBase64Text('')
@@ -309,7 +317,7 @@ export default function Base64EncoderPage() {
 
 	const addToHistory = useCallback(() => {
 		if (!plainText && !base64Text) return
-		
+
 		const historyItem: HistoryItem = {
 			id: Date.now().toString(),
 			plainText,
@@ -336,7 +344,6 @@ export default function Base64EncoderPage() {
 
 	return (
 		<div className='max-w-7xl mx-auto space-y-6'>
-
 			{/* Quick Examples & Options */}
 			<Card>
 				<CardContent className='p-4'>
@@ -344,7 +351,9 @@ export default function Base64EncoderPage() {
 						<div className='flex-1'>
 							<div className='flex items-center gap-2 mb-3'>
 								<Sparkles className='w-4 h-4 text-muted-foreground' />
-								<span className='text-sm font-medium text-muted-foreground'>{t('examples.title')}</span>
+								<span className='text-sm font-medium text-muted-foreground'>
+									{t('examples.title')}
+								</span>
 							</div>
 							<div className='flex flex-wrap gap-2'>
 								{[
@@ -403,7 +412,10 @@ export default function Base64EncoderPage() {
 						</div>
 						<div className='border-l pl-4 space-y-3'>
 							<div className='flex items-center justify-between gap-4'>
-								<Label htmlFor='url-safe' className='text-xs cursor-pointer whitespace-nowrap'>
+								<Label
+									htmlFor='url-safe'
+									className='text-xs cursor-pointer whitespace-nowrap'
+								>
 									{t('options.urlSafe')}
 								</Label>
 								<Switch
@@ -413,7 +425,10 @@ export default function Base64EncoderPage() {
 								/>
 							</div>
 							<div className='flex items-center justify-between gap-4'>
-								<Label htmlFor='line-breaks' className='text-xs cursor-pointer whitespace-nowrap'>
+								<Label
+									htmlFor='line-breaks'
+									className='text-xs cursor-pointer whitespace-nowrap'
+								>
 									{t('options.lineBreaks')}
 								</Label>
 								<Switch
@@ -474,10 +489,7 @@ export default function Base64EncoderPage() {
 								spellCheck={false}
 							/>
 							{plainText && (
-								<Badge
-									variant='secondary'
-									className='absolute top-2 right-2'
-								>
+								<Badge variant='secondary' className='absolute top-2 right-2'>
 									{formatBytes(new Blob([plainText]).size)}
 								</Badge>
 							)}
@@ -489,10 +501,12 @@ export default function Base64EncoderPage() {
 				<Card>
 					<CardHeader className='pb-4'>
 						<div className='flex items-center justify-between'>
-							<CardTitle className={cn(
-								'text-lg flex items-center gap-2',
-								base64Error && 'text-destructive'
-							)}>
+							<CardTitle
+								className={cn(
+									'text-lg flex items-center gap-2',
+									base64Error && 'text-destructive'
+								)}
+							>
 								<Binary className='w-5 h-5' />
 								{t('output.base64')}
 								{base64Error && <AlertCircle className='w-4 h-4' />}
@@ -543,10 +557,7 @@ export default function Base64EncoderPage() {
 								spellCheck={false}
 							/>
 							{base64Text && !base64Error && (
-								<Badge
-									variant='secondary'
-									className='absolute top-2 right-2'
-								>
+								<Badge variant='secondary' className='absolute top-2 right-2'>
 									{formatBytes(new Blob([base64Text]).size)}
 								</Badge>
 							)}
@@ -564,12 +575,17 @@ export default function Base64EncoderPage() {
 			{stats && (
 				<div className='flex justify-center'>
 					<div className='inline-flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg text-sm'>
-						<span className='text-muted-foreground'>{t('stats.sizeChange')}:</span>
-						<span className={cn(
-							'font-semibold',
-							stats.ratio > 0 ? 'text-orange-600' : 'text-green-600'
-						)}>
-							{stats.ratio > 0 ? '+' : ''}{stats.ratio}%
+						<span className='text-muted-foreground'>
+							{t('stats.sizeChange')}:
+						</span>
+						<span
+							className={cn(
+								'font-semibold',
+								stats.ratio > 0 ? 'text-orange-600' : 'text-green-600'
+							)}
+						>
+							{stats.ratio > 0 ? '+' : ''}
+							{stats.ratio}%
 						</span>
 						<span className='text-muted-foreground text-xs'>
 							({formatBytes(stats.inputSize)} → {formatBytes(stats.outputSize)})
@@ -633,8 +649,12 @@ export default function Base64EncoderPage() {
 														{t('input.plainText')}
 													</Label>
 													<div className='text-xs font-mono bg-background rounded p-2 mt-1 truncate'>
-														{item.plainText ? item.plainText.substring(0, 50) : ''}
-														{item.plainText && item.plainText.length > 50 && '...'}
+														{item.plainText
+															? item.plainText.substring(0, 50)
+															: ''}
+														{item.plainText &&
+															item.plainText.length > 50 &&
+															'...'}
 													</div>
 												</div>
 												<div>
@@ -642,8 +662,12 @@ export default function Base64EncoderPage() {
 														{t('output.base64')}
 													</Label>
 													<div className='text-xs font-mono bg-background rounded p-2 mt-1 truncate'>
-														{item.base64Text ? item.base64Text.substring(0, 50) : ''}
-														{item.base64Text && item.base64Text.length > 50 && '...'}
+														{item.base64Text
+															? item.base64Text.substring(0, 50)
+															: ''}
+														{item.base64Text &&
+															item.base64Text.length > 50 &&
+															'...'}
 													</div>
 												</div>
 											</div>
@@ -651,7 +675,7 @@ export default function Base64EncoderPage() {
 										<Button
 											size='sm'
 											variant='ghost'
-											onClick={(e) => {
+											onClick={e => {
 												e.stopPropagation()
 												loadFromHistory(item)
 											}}
@@ -665,7 +689,6 @@ export default function Base64EncoderPage() {
 					</CardContent>
 				</Card>
 			)}
-
 		</div>
 	)
 }

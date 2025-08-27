@@ -75,7 +75,10 @@ export function useAnalytics(widgetId: string) {
 		if (eventQueue.current.length === 0 || isFlushingRef.current) return
 
 		// Skip flushing in development mode
-		if (process.env.NODE_ENV === 'development' || typeof window === 'undefined') {
+		if (
+			process.env.NODE_ENV === 'development' ||
+			typeof window === 'undefined'
+		) {
 			eventQueue.current = []
 			return
 		}
@@ -236,7 +239,10 @@ export function useAnalytics(widgetId: string) {
 			hasTrackedView.current = true
 
 			// Track session start only once
-			if (!sessionStartTime.current || sessionStartTime.current === Date.now()) {
+			if (
+				!sessionStartTime.current ||
+				sessionStartTime.current === Date.now()
+			) {
 				sessionStartTime.current = Date.now()
 				trackEvent('session_start')
 			}

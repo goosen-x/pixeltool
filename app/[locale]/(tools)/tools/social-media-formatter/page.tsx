@@ -1,37 +1,36 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
+import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-	Copy,
-	Check,
-	RefreshCw,
-	Space,
-	AlignLeft,
-	Hash,
-	Facebook,
-	Instagram,
-	Twitter
-} from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { 
+  Copy, 
+  Check, 
+  RefreshCw, 
+  Sparkles,
+  Zap,
+  Palette,
+  Download,
+  Upload,
+  RotateCcw,
+  Wand2,
+  Heart
+} from 'lucide-react'
 
-interface FormatterOption {
-	id: string
-	label: string
-	icon: React.ReactNode
-	description: string
-	transform: (text: string) => string
-	example: {
-		before: string
-		after: string
-	}
-}
+// Import our new components
+import { 
+  PlatformSelector, 
+  PresetTemplates, 
+  Platform, 
+  Template 
+} from '@/components/tools/social-media-formatter'
 
 // Zero-width characters for different purposes
 const ZERO_WIDTH_SPACE = '\u200B'
@@ -40,377 +39,465 @@ const ZERO_WIDTH_JOINER = '\u200D'
 const WORD_JOINER = '\u2060'
 const INVISIBLE_SEPARATOR = '\u2063'
 
-const formatterOptions: FormatterOption[] = [
-	{
-		id: 'preserve-spaces',
-		label: 'Preserve Spaces',
-		icon: <Space className='w-4 h-4' />,
-		description: 'Keep multiple spaces between words',
-		transform: (text: string) => {
-			// Replace multiple spaces with space + zero-width space pattern
-			return text.replace(/ {2,}/g, match => {
-				return match.split('').join(ZERO_WIDTH_SPACE)
-			})
-		},
-		example: {
-			before: 'Hello     World',
-			after: 'Hello     World'
-		}
-	},
-	{
-		id: 'preserve-newlines',
-		label: 'Preserve Line Breaks',
-		icon: <AlignLeft className='w-4 h-4' />,
-		description: 'Keep multiple line breaks in posts',
-		transform: (text: string) => {
-			// Replace multiple newlines with newline + zero-width space pattern
-			return text.replace(/\n{2,}/g, match => {
-				return match.split('').join(ZERO_WIDTH_SPACE)
-			})
-		},
-		example: {
-			before: 'Line 1\n\n\n\nLine 2',
-			after: 'Line 1\n\n\n\nLine 2'
-		}
-	},
-	{
-		id: 'text-indent',
-		label: 'Text Indentation',
-		icon: <AlignLeft className='w-4 h-4' />,
-		description: 'Add indentation to paragraphs',
-		transform: (text: string) => {
-			// Add 4 spaces with zero-width spaces at the beginning of each paragraph
-			const indent = '    '.split('').join(ZERO_WIDTH_SPACE)
-			return text
-				.split('\n')
-				.map(line => {
-					if (line.trim()) {
-						return indent + line
-					}
-					return line
-				})
-				.join('\n')
-		},
-		example: {
-			before: 'First paragraph\nSecond paragraph',
-			after: '    First paragraph\n    Second paragraph'
-		}
-	},
-	{
-		id: 'center-text',
-		label: 'Center Text',
-		icon: <AlignLeft className='w-4 h-4' />,
-		description: 'Center text with spaces',
-		transform: (text: string) => {
-			const lines = text.split('\n')
-			const maxLength = Math.max(...lines.map(line => line.length))
+interface FormatOption {
+  id: string
+  enabled: boolean
+}
 
-			return lines
-				.map(line => {
-					if (line.trim()) {
-						const spaces = Math.floor((maxLength - line.trim().length) / 2)
-						const padding = ' '.repeat(spaces).split('').join(ZERO_WIDTH_SPACE)
-						return padding + line.trim() + padding
-					}
-					return line
-				})
-				.join('\n')
-		},
-		example: {
-			before: 'Center\nThis Text',
-			after: '   Center   \n This Text  '
-		}
-	},
-	{
-		id: 'full-format',
-		label: 'Full Format',
-		icon: <Hash className='w-4 h-4' />,
-		description: 'Preserve all spaces and line breaks',
-		transform: (text: string) => {
-			// Preserve both spaces and newlines
-			let result = text
+const formatOptions: { id: string; transform: (text: string) => string }[] = [
+  {
+    id: 'preserveSpaces',
+    transform: (text: string) => {
+      return text.replace(/ {2,}/g, match => {
+        return match.split('').join(ZERO_WIDTH_SPACE)
+      })
+    }
+  },
+  {
+    id: 'preserveNewlines',
+    transform: (text: string) => {
+      return text.replace(/\n{2,}/g, match => {
+        return match.split('').join(ZERO_WIDTH_SPACE)
+      })
+    }
+  },
+  {
+    id: 'addIndentation',
+    transform: (text: string) => {
+      const indent = '    '.split('').join(ZERO_WIDTH_SPACE)
+      return text
+        .split('\n')
+        .map(line => {
+          if (line.trim()) {
+            return indent + line
+          }
+          return line
+        })
+        .join('\n')
+    }
+  },
+  {
+    id: 'centerText',
+    transform: (text: string) => {
+      const lines = text.split('\n')
+      const maxLength = Math.max(...lines.map(line => line.length))
 
-			// Replace multiple spaces
-			result = result.replace(/ {2,}/g, match => {
-				return match.split('').join(ZERO_WIDTH_SPACE)
-			})
-
-			// Replace multiple newlines
-			result = result.replace(/\n{2,}/g, match => {
-				return match.split('').join(ZERO_WIDTH_SPACE)
-			})
-
-			return result
-		},
-		example: {
-			before: 'Text   with\n\n\nmultiple   spaces',
-			after: 'Text   with\n\n\nmultiple   spaces'
-		}
-	}
+      return lines
+        .map(line => {
+          if (line.trim()) {
+            const spaces = Math.floor((maxLength - line.trim().length) / 2)
+            const padding = ' '.repeat(spaces).split('').join(ZERO_WIDTH_SPACE)
+            return padding + line.trim() + padding
+          }
+          return line
+        })
+        .join('\n')
+    }
+  },
+  {
+    id: 'fullFormat',
+    transform: (text: string) => {
+      let result = text
+      // Apply spaces preservation
+      result = result.replace(/ {2,}/g, match => {
+        return match.split('').join(ZERO_WIDTH_SPACE)
+      })
+      // Apply newlines preservation
+      result = result.replace(/\n{2,}/g, match => {
+        return match.split('').join(ZERO_WIDTH_SPACE)
+      })
+      return result
+    }
+  }
 ]
 
 export default function SocialMediaFormatterPage() {
-	const [mounted, setMounted] = useState(false)
-	const [inputText, setInputText] = useState('')
-	const [outputText, setOutputText] = useState('')
-	const [selectedOption, setSelectedOption] = useState('preserve-spaces')
-	const [copiedOutput, setCopiedOutput] = useState(false)
-	const [charCount, setCharCount] = useState({ input: 0, output: 0 })
+  const t = useTranslations('widgets.socialMediaFormatter')
+  
+  // State
+  const [mounted, setMounted] = useState(false)
+  const [inputText, setInputText] = useState('')
+  const [outputText, setOutputText] = useState('')
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform>('instagram')
+  const [formatOptionsState, setFormatOptionsState] = useState<FormatOption[]>([
+    { id: 'preserveSpaces', enabled: true },
+    { id: 'preserveNewlines', enabled: true },
+    { id: 'addIndentation', enabled: false },
+    { id: 'centerText', enabled: false },
+    { id: 'fullFormat', enabled: false }
+  ])
+  const [copiedOutput, setCopiedOutput] = useState(false)
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [autoFormat, setAutoFormat] = useState(true)
 
-	useEffect(() => {
-		setMounted(true)
-	}, [])
+  // Character counts
+  const inputCharCount = inputText.length
+  const outputCharCount = outputText.length
+  const invisibleCharsCount = outputCharCount - inputCharCount
 
-	useEffect(() => {
-		setCharCount({
-			input: inputText.length,
-			output: outputText.length
-		})
-	}, [inputText, outputText])
+  useEffect(() => {
+    setMounted(true)
+    
+    // Load saved state from localStorage
+    const savedState = localStorage.getItem('socialMediaFormatter')
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState)
+        if (parsed.inputText) setInputText(parsed.inputText)
+        if (parsed.selectedPlatform) setSelectedPlatform(parsed.selectedPlatform)
+        if (parsed.formatOptions) setFormatOptionsState(parsed.formatOptions)
+      } catch (error) {
+        console.warn('Failed to load saved state:', error)
+      }
+    }
+  }, [])
 
-	const formatText = () => {
-		if (!inputText.trim()) {
-			toast.error('Please enter some text')
-			return
-		}
+  // Auto-save to localStorage
+  useEffect(() => {
+    if (!mounted) return
+    
+    const stateToSave = {
+      inputText,
+      selectedPlatform,
+      formatOptions: formatOptionsState
+    }
+    localStorage.setItem('socialMediaFormatter', JSON.stringify(stateToSave))
+  }, [inputText, selectedPlatform, formatOptionsState, mounted])
 
-		const option = formatterOptions.find(opt => opt.id === selectedOption)
-		if (!option) return
+  // Auto-format when options or text change
+  useEffect(() => {
+    if (autoFormat && inputText.trim()) {
+      formatText()
+    }
+  }, [inputText, formatOptionsState, autoFormat])
 
-		const formatted = option.transform(inputText)
-		setOutputText(formatted)
-		toast.success('Text formatted successfully!')
-	}
+  const formatText = useCallback(() => {
+    if (!inputText.trim()) {
+      setOutputText('')
+      return
+    }
 
-	const copyToClipboard = async () => {
-		if (!outputText) {
-			toast.error('No formatted text to copy')
-			return
-		}
+    let result = inputText
 
-		try {
-			await navigator.clipboard.writeText(outputText)
-			setCopiedOutput(true)
-			toast.success('Copied to clipboard! Paste it on your social media.')
-			setTimeout(() => setCopiedOutput(false), 2000)
-		} catch (err) {
-			toast.error('Failed to copy text')
-		}
-	}
+    // Apply enabled format options
+    formatOptionsState.forEach(option => {
+      if (option.enabled) {
+        const formatter = formatOptions.find(f => f.id === option.id)
+        if (formatter) {
+          result = formatter.transform(result)
+        }
+      }
+    })
 
-	const reset = () => {
-		setInputText('')
-		setOutputText('')
-		toast.success('Reset complete')
-	}
+    setOutputText(result)
+  }, [inputText, formatOptionsState])
 
-	if (!mounted) {
-		return (
-			<div className='max-w-6xl mx-auto space-y-8'>
-				<div>
-					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Social Media Formatter
-					</h1>
-					<p className='text-muted-foreground'>
-						Format text with spaces and line breaks for social media
-					</p>
-				</div>
-				<div className='animate-pulse space-y-8'>
-					<div className='h-96 bg-muted rounded-lg'></div>
-				</div>
-			</div>
-		)
-	}
+  const copyToClipboard = async () => {
+    if (!outputText) {
+      toast.error(t('toast.errorEmptyText'))
+      return
+    }
 
-	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Formatter Options */}
-			<Card className='p-6'>
-				<h3 className='font-semibold mb-4'>Formatting Options</h3>
-				<Tabs value={selectedOption} onValueChange={setSelectedOption}>
-					<TabsList className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full'>
-						{formatterOptions.map(option => (
-							<TabsTrigger
-								key={option.id}
-								value={option.id}
-								className='text-xs'
-							>
-								<span className='flex items-center gap-1'>
-									{option.icon}
-									<span className='hidden sm:inline'>{option.label}</span>
-								</span>
-							</TabsTrigger>
-						))}
-					</TabsList>
+    try {
+      await navigator.clipboard.writeText(outputText)
+      setCopiedOutput(true)
+      toast.success(t('toast.copiedToClipboard'))
+      setTimeout(() => setCopiedOutput(false), 2000)
+    } catch (err) {
+      toast.error(t('toast.errorClipboard'))
+    }
+  }
 
-					{formatterOptions.map(option => (
-						<TabsContent key={option.id} value={option.id} className='mt-4'>
-							<div className='space-y-3'>
-								<p className='text-sm text-muted-foreground'>
-									{option.description}
-								</p>
-								<div className='grid md:grid-cols-2 gap-4 p-4 bg-muted rounded-lg'>
-									<div>
-										<p className='text-xs font-medium mb-1'>Before:</p>
-										<code className='text-xs bg-background p-2 rounded block whitespace-pre'>
-											{option.example.before}
-										</code>
-									</div>
-									<div>
-										<p className='text-xs font-medium mb-1'>After:</p>
-										<code className='text-xs bg-background p-2 rounded block whitespace-pre'>
-											{option.example.after}
-										</code>
-									</div>
-								</div>
-							</div>
-						</TabsContent>
-					))}
-				</Tabs>
-			</Card>
+  const pasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      setInputText(text)
+      toast.success(t('toast.pastedFromClipboard'))
+    } catch (err) {
+      toast.error(t('toast.errorClipboard'))
+    }
+  }
 
-			{/* Text Areas */}
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Input */}
-				<Card className='p-6'>
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<Label htmlFor='input'>Input Text</Label>
-							<Badge variant='outline'>{charCount.input} chars</Badge>
-						</div>
+  const resetAll = () => {
+    setInputText('')
+    setOutputText('')
+    setFormatOptionsState([
+      { id: 'preserveSpaces', enabled: true },
+      { id: 'preserveNewlines', enabled: true },
+      { id: 'addIndentation', enabled: false },
+      { id: 'centerText', enabled: false },
+      { id: 'fullFormat', enabled: false }
+    ])
+    setSelectedPlatform('instagram')
+    toast.success(t('toast.resetComplete'))
+  }
 
-						<Textarea
-							id='input'
-							value={inputText}
-							onChange={e => setInputText(e.target.value)}
-							placeholder='Enter your text here...'
-							className='min-h-[300px] font-mono text-sm'
-							spellCheck={false}
-						/>
+  const clearText = () => {
+    setInputText('')
+    setOutputText('')
+    toast.success(t('toast.textCleared'))
+  }
 
-						<div className='flex gap-2'>
-							<Button onClick={formatText} className='flex-1'>
-								<RefreshCw className='w-4 h-4 mr-2' />
-								Format Text
-							</Button>
-							<Button onClick={reset} variant='outline'>
-								Reset
-							</Button>
-						</div>
-					</div>
-				</Card>
+  const applyTemplate = (template: Template) => {
+    setInputText(template.example)
+    toast.success(t('toast.templateApplied'))
+    setShowTemplates(false)
+  }
 
-				{/* Output */}
-				<Card className='p-6'>
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<Label htmlFor='output'>Formatted Text</Label>
-							<div className='flex items-center gap-2'>
-								<Badge variant='outline'>{charCount.output} chars</Badge>
-								{outputText && charCount.output > charCount.input && (
-									<Badge variant='secondary'>
-										+{charCount.output - charCount.input} invisible chars
-									</Badge>
-								)}
-							</div>
-						</div>
+  const toggleFormatOption = (optionId: string) => {
+    setFormatOptionsState(prev => 
+      prev.map(option => 
+        option.id === optionId 
+          ? { ...option, enabled: !option.enabled }
+          : option
+      )
+    )
+  }
 
-						<Textarea
-							id='output'
-							value={outputText}
-							readOnly
-							placeholder='Formatted text will appear here...'
-							className='min-h-[300px] font-mono text-sm bg-muted'
-							spellCheck={false}
-						/>
+  if (!mounted) {
+    return (
+      <div className='max-w-7xl mx-auto space-y-8'>
+        <div className='text-center space-y-4'>
+          <div className='animate-pulse space-y-4'>
+            <div className='h-8 bg-muted rounded-lg w-64 mx-auto'></div>
+            <div className='h-4 bg-muted rounded w-96 mx-auto'></div>
+          </div>
+        </div>
+        <div className='animate-pulse'>
+          <div className='h-96 bg-muted rounded-lg'></div>
+        </div>
+      </div>
+    )
+  }
 
-						<Button
-							onClick={copyToClipboard}
-							className='w-full'
-							disabled={!outputText}
-						>
-							{copiedOutput ? (
-								<>
-									<Check className='w-4 h-4 mr-2' />
-									Copied!
-								</>
-							) : (
-								<>
-									<Copy className='w-4 h-4 mr-2' />
-									Copy to Clipboard
-								</>
-							)}
-						</Button>
-					</div>
-				</Card>
-			</div>
+  return (
+    <div className='max-w-7xl mx-auto space-y-8'>
 
-			{/* Instructions */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>How to Use</h3>
-				<ol className='space-y-2 text-sm'>
-					<li className='flex gap-2'>
-						<span className='font-medium'>1.</span>
-						<span>Enter or paste your text in the input field</span>
-					</li>
-					<li className='flex gap-2'>
-						<span className='font-medium'>2.</span>
-						<span>Choose a formatting option that suits your needs</span>
-					</li>
-					<li className='flex gap-2'>
-						<span className='font-medium'>3.</span>
-						<span>Click &quot;Format Text&quot; to apply the formatting</span>
-					</li>
-					<li className='flex gap-2'>
-						<span className='font-medium'>4.</span>
-						<span>
-							Copy the formatted text and paste it on your social media platform
-						</span>
-					</li>
-				</ol>
-			</Card>
+      {/* Quick Actions */}
+      <Card className='bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800'>
+        <CardContent className='p-4'>
+          <div className='flex items-center justify-center gap-2 flex-wrap'>
+            <Button 
+              variant='outline' 
+              size='sm'
+              onClick={() => setShowTemplates(!showTemplates)}
+              className='bg-white/50 dark:bg-gray-800/50'
+            >
+              <Wand2 className='w-4 h-4 mr-2' />
+              {showTemplates ? 'Hide Templates' : 'Show Templates'}
+            </Button>
+            <Button 
+              variant='outline' 
+              size='sm'
+              onClick={pasteFromClipboard}
+              className='bg-white/50 dark:bg-gray-800/50'
+            >
+              <Upload className='w-4 h-4 mr-2' />
+              {t('textInput.pasteFromClipboard')}
+            </Button>
+            <Button 
+              variant='outline' 
+              size='sm'
+              onClick={() => setAutoFormat(!autoFormat)}
+              className={cn(
+                'bg-white/50 dark:bg-gray-800/50',
+                autoFormat && 'bg-primary/10 border-primary'
+              )}
+            >
+              <Zap className='w-4 h-4 mr-2' />
+              {t('actions.autoFormat')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-			{/* Info Section */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>How It Works</h3>
-				<div className='space-y-3 text-sm text-muted-foreground'>
-					<p>
-						Social media platforms typically remove extra spaces and line breaks
-						to maintain consistent formatting. This tool uses invisible Unicode
-						characters (zero-width spaces) to preserve your intended formatting.
-					</p>
-					<div className='grid md:grid-cols-2 gap-4 mt-4'>
-						<div>
-							<h4 className='font-medium text-foreground mb-2'>
-								Supported Features
-							</h4>
-							<ul className='space-y-1 text-xs'>
-								<li>• Multiple spaces between words</li>
-								<li>• Extra line breaks between paragraphs</li>
-								<li>• Text indentation</li>
-								<li>• Centered text alignment</li>
-							</ul>
-						</div>
-						<div>
-							<h4 className='font-medium text-foreground mb-2'>
-								Compatible Platforms
-							</h4>
-							<ul className='space-y-1 text-xs'>
-								<li>• Facebook posts and comments</li>
-								<li>• Instagram captions and bio</li>
-								<li>• Twitter/X posts</li>
-								<li>• LinkedIn posts</li>
-								<li>• WordPress and other blogs</li>
-							</ul>
-						</div>
-					</div>
-					<p className='text-xs mt-4'>
-						Note: Some platforms may still have limitations. The formatting
-						works best with Latin characters and may vary with different fonts
-						or devices.
-					</p>
-				</div>
-			</Card>
-		</div>
-	)
+      {/* Templates Section */}
+      {showTemplates && (
+        <PresetTemplates 
+          onSelectTemplate={applyTemplate}
+          t={t}
+        />
+      )}
+
+      {/* Main Editor */}
+      <div className='grid lg:grid-cols-2 gap-8'>
+        {/* Input Section */}
+        <Card className='h-fit'>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Sparkles className='w-5 h-5 text-primary' />
+              {t('textInput.label')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between'>
+                <Label htmlFor='input-text'>{t('textInput.label')}</Label>
+                <div className='flex items-center gap-2'>
+                  <Badge variant='outline'>
+                    {t('preview.characterCount', { count: inputCharCount })}
+                  </Badge>
+                </div>
+              </div>
+              
+              <Textarea
+                id='input-text'
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder={t('textInput.placeholder')}
+                className='min-h-[300px] font-mono text-sm resize-none'
+                spellCheck={false}
+              />
+            </div>
+
+            <div className='flex gap-2'>
+              <Button 
+                onClick={formatText}
+                disabled={!inputText.trim()}
+                className='flex-1'
+              >
+                <RefreshCw className='w-4 h-4 mr-2' />
+                {t('actions.format')}
+              </Button>
+              <Button 
+                onClick={clearText}
+                variant='outline'
+                disabled={!inputText.trim()}
+              >
+                <RotateCcw className='w-4 h-4 mr-2' />
+                {t('textInput.clearText')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Output Section */}
+        <Card className='h-fit'>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2'>
+              <Copy className='w-5 h-5 text-green-600' />
+              {t('preview.title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between'>
+                <Label htmlFor='output-text'>{t('actions.copyFormatted')}</Label>
+                <div className='flex items-center gap-2'>
+                  <Badge variant='outline'>
+                    {t('preview.characterCount', { count: outputCharCount })}
+                  </Badge>
+                  {invisibleCharsCount > 0 && (
+                    <Badge variant='secondary'>
+                      {t('preview.invisibleChars', { count: invisibleCharsCount })}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              
+              <Textarea
+                id='output-text'
+                value={outputText}
+                readOnly
+                placeholder='Formatted text will appear here...'
+                className='min-h-[300px] font-mono text-sm bg-muted/50 resize-none'
+                spellCheck={false}
+              />
+            </div>
+
+            <div className='flex gap-2'>
+              <Button 
+                onClick={copyToClipboard}
+                disabled={!outputText}
+                className='flex-1'
+              >
+                {copiedOutput ? (
+                  <>
+                    <Check className='w-4 h-4 mr-2' />
+                    {t('actions.copy')}d!
+                  </>
+                ) : (
+                  <>
+                    <Copy className='w-4 h-4 mr-2' />
+                    {t('actions.copyFormatted')}
+                  </>
+                )}
+              </Button>
+              <Button 
+                onClick={resetAll}
+                variant='outline'
+              >
+                <RotateCcw className='w-4 h-4 mr-2' />
+                {t('actions.reset')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Format Options */}
+      <Card>
+        <CardHeader>
+          <CardTitle className='flex items-center gap-2'>
+            <Palette className='w-5 h-5 text-orange-600' />
+            {t('formatOptions.title')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className='grid md:grid-cols-2 lg:grid-cols-5 gap-3'>
+            {formatOptionsState.map((option) => (
+              <Button
+                key={option.id}
+                variant={option.enabled ? 'default' : 'outline'}
+                size='sm'
+                onClick={() => toggleFormatOption(option.id)}
+                className='justify-start h-auto p-3 flex-col items-start'
+              >
+                <span className='font-medium text-sm'>
+                  {t(`formatOptions.${option.id}`)}
+                </span>
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Separator />
+
+      {/* Platform Selector and Preview */}
+      <PlatformSelector 
+        selectedPlatform={selectedPlatform}
+        onSelectPlatform={setSelectedPlatform}
+        text={outputText || inputText}
+        t={t}
+      />
+
+      {/* How it Works */}
+      <Card className='bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200 dark:border-green-800'>
+        <CardHeader>
+          <CardTitle className='flex items-center gap-2'>
+            <Sparkles className='w-5 h-5 text-green-600' />
+            {t('howItWorks.title')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <p className='text-muted-foreground'>
+            {t('howItWorks.description')}
+          </p>
+          <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4'>
+            {[1, 2, 3, 4].map((step) => (
+              <div key={step} className='flex items-center gap-3'>
+                <div className='w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold'>
+                  {step}
+                </div>
+                <span className='text-sm font-medium'>
+                  {t(`howItWorks.step${step}`)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }

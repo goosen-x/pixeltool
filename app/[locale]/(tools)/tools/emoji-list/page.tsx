@@ -7,9 +7,11 @@ import { toast } from 'sonner'
 import { useEmoji } from '@/lib/hooks/useEmoji'
 import { EmojiGrid, EmojiSearch, EmojiInfo } from '@/components/tools/emoji'
 import { type CategoryId } from '@/lib/data/emoji-data'
+import { useTranslations } from 'next-intl'
 
 export default function EmojiListPage() {
-	const [searchTerm, setSearchTerm] = useState('')
+	const t = useTranslations('widgets.emojiList')
+	
 	const [selectedCategory, setSelectedCategory] = useState<
 		CategoryId | 'all' | 'recent'
 	>('all')
@@ -30,9 +32,9 @@ export default function EmojiListPage() {
 	const handleCopyEmoji = async (emoji: string) => {
 		const success = await copyEmoji(emoji)
 		if (success) {
-			toast.success(`Copied ${emoji} to clipboard!`)
+			toast.success(t('copied', { emoji }))
 		} else {
-			toast.error('Failed to copy emoji')
+			toast.error(t('copyError'))
 		}
 	}
 
@@ -40,14 +42,14 @@ export default function EmojiListPage() {
 	const handleDownloadEmoji = async (emoji: string) => {
 		const success = await downloadEmojiAsImage(emoji)
 		if (success) {
-			toast.success(`Downloaded ${emoji} as PNG image!`)
+			toast.success(t('downloaded', { emoji }))
 		} else {
-			toast.error('Failed to download emoji')
+			toast.error(t('downloadError'))
 		}
 	}
 
-	// Get filtered emojis based on search and category
-	const filteredEmojis = getFilteredEmojis(searchTerm, selectedCategory)
+	// Get filtered emojis based on category
+	const filteredEmojis = getFilteredEmojis('', selectedCategory)
 
 	// Don't render until mounted (to avoid hydration issues)
 	if (!mounted) {
@@ -66,30 +68,9 @@ export default function EmojiListPage() {
 		<div className='min-h-screen bg-background'>
 			<div className='container mx-auto px-4 py-8'>
 				<div className='max-w-6xl mx-auto space-y-6'>
-					{/* Header */}
-					<div className='text-center'>
-						<div className='flex items-center justify-center gap-2 mb-4'>
-							<h1 className='text-3xl font-bold'>Emoji List & Picker</h1>
-							<Badge variant='secondary' className='text-sm'>
-								{emojiCategories.reduce(
-									(total, cat) => total + cat.emojis.length,
-									0
-								)}
-								+ emojis
-							</Badge>
-						</div>
-						<p className='text-muted-foreground max-w-6xl mx-auto'>
-							Browse, copy, and download emojis from our comprehensive
-							collection. Perfect for social media, messaging, and web
-							development.
-						</p>
-					</div>
-
 					{/* Main Card */}
 					<Card className='overflow-hidden'>
 						<EmojiSearch
-							searchTerm={searchTerm}
-							onSearchChange={setSearchTerm}
 							selectedCategory={selectedCategory}
 							onCategoryChange={setSelectedCategory}
 							hasRecentEmojis={recentEmojis.length > 0}
@@ -100,9 +81,8 @@ export default function EmojiListPage() {
 						<div className='px-4 py-2 bg-muted/50 border-b'>
 							<p className='text-sm text-muted-foreground'>
 								{selectedCategory === 'recent'
-									? `${filteredEmojis.length} recent emoji${filteredEmojis.length !== 1 ? 's' : ''}`
-									: `${filteredEmojis.length} emoji${filteredEmojis.length !== 1 ? 's' : ''} found`}
-								{searchTerm && ` for "${searchTerm}"`}
+									? t('recentEmojis', { count: filteredEmojis.length })
+									: t('totalEmojis', { count: filteredEmojis.length })}
 							</p>
 						</div>
 
@@ -112,7 +92,6 @@ export default function EmojiListPage() {
 							onDownloadEmoji={handleDownloadEmoji}
 							copiedEmoji={copiedEmoji}
 							downloadingEmoji={downloadingEmoji}
-							searchTerm={searchTerm}
 						/>
 					</Card>
 
