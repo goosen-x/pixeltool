@@ -158,7 +158,13 @@ const COMMON_STOP_WORDS = [
 ]
 
 // Animated Number Component
-function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
+function AnimatedNumber({
+	value,
+	suffix = ''
+}: {
+	value: number
+	suffix?: string
+}) {
 	const [displayValue, setDisplayValue] = useState(0)
 
 	useEffect(() => {
@@ -171,7 +177,7 @@ function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string
 			const now = Date.now()
 			const progress = Math.min((now - startTime) / duration, 1)
 			const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-			
+
 			setDisplayValue(Math.floor(startValue + difference * easeOutQuart))
 
 			if (progress < 1) {
@@ -184,16 +190,21 @@ function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string
 		requestAnimationFrame(animate)
 	}, [value])
 
-	return <>{displayValue}{suffix}</>
+	return (
+		<>
+			{displayValue}
+			{suffix}
+		</>
+	)
 }
 
 // Collapsible Section Component
-function CollapsibleSection({ 
-	title, 
-	icon, 
-	children, 
-	defaultOpen = false 
-}: { 
+function CollapsibleSection({
+	title,
+	icon,
+	children,
+	defaultOpen = false
+}: {
 	title: string
 	icon: React.ReactNode
 	children: React.ReactNode
@@ -215,29 +226,29 @@ function CollapsibleSection({
 						>
 							{icon}
 						</motion.div>
-						<h3 className='font-semibold text-lg group-hover:text-primary transition-colors duration-200'>{title}</h3>
+						<h3 className='font-semibold text-lg group-hover:text-primary transition-colors duration-200'>
+							{title}
+						</h3>
 					</div>
 					<motion.div
 						animate={{ rotate: isOpen ? 180 : 0 }}
-						transition={{ duration: 0.3, ease: "easeInOut" }}
+						transition={{ duration: 0.3, ease: 'easeInOut' }}
 						className='p-1 rounded-full hover:bg-muted/50 transition-colors'
 					>
 						<ChevronDown className='w-5 h-5 text-muted-foreground' />
 					</motion.div>
 				</button>
-				
+
 				<AnimatePresence>
 					{isOpen && (
 						<motion.div
 							initial={{ height: 0, opacity: 0 }}
 							animate={{ height: 'auto', opacity: 1 }}
 							exit={{ height: 0, opacity: 0 }}
-							transition={{ duration: 0.3, ease: "easeInOut" }}
+							transition={{ duration: 0.3, ease: 'easeInOut' }}
 							className='overflow-hidden border-t bg-gradient-to-b from-muted/10 to-transparent'
 						>
-							<div className='p-6'>
-								{children}
-							</div>
+							<div className='p-6'>{children}</div>
 						</motion.div>
 					)}
 				</AnimatePresence>
@@ -356,49 +367,43 @@ export default function TextCounterPage() {
 
 	const copyStats = () => {
 		const statsText = `
-Статистика текста:
+${t('statsExport.title')}
 
-Символы: ${stats.characters}
-Символы без пробелов: ${stats.charactersNoSpaces}
-Слова: ${stats.words}
-Предложения: ${stats.sentences}
-Абзацы: ${stats.paragraphs}
+${t('stats.characters')}: ${stats.characters}
+${t('stats.charactersNoSpaces')}: ${stats.charactersNoSpaces}
+${t('stats.words')}: ${stats.words}
+${t('stats.sentences')}: ${stats.sentences}
+${t('stats.paragraphs')}: ${stats.paragraphs}
 
-Время чтения: ~${stats.readingTime} мин
-Время озвучивания: ~${stats.speakingTime} мин
+${t('statsExport.readingTime', { time: stats.readingTime })}
+${t('statsExport.speakingTime', { time: stats.speakingTime })}
 
-Средняя длина слова: ${stats.avgWordLength.toFixed(1)} символов
-Средняя длина предложения: ${stats.avgSentenceLength.toFixed(1)} слов
-Самое длинное слово: ${stats.longestWord}
+${t('statsExport.avgWordLength', { length: stats.avgWordLength.toFixed(1) })}
+${t('statsExport.avgSentenceLength', { length: stats.avgSentenceLength.toFixed(1) })}
+${t('statsExport.longestWordLabel', { word: stats.longestWord })}
 
-Частые слова:
+${t('statsExport.commonWordsLabel')}
 ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n')}
     `.trim()
 
 		navigator.clipboard.writeText(statsText)
-		toast.success('Статистика скопирована!')
+		toast.success(t('toast.statsCopied'))
 	}
 
 	const copyText = () => {
 		navigator.clipboard.writeText(text)
-		toast.success('Текст скопирован!')
+		toast.success(t('toast.textCopied'))
 	}
 
 	const clearText = () => {
 		setText('')
 		setSelectedPlatform(null)
-		toast.success('Текст очищен')
+		toast.success(t('toast.textCleared'))
 	}
 
 	const loadExample = () => {
-		const exampleText = `Счетчик символов и слов - это важный инструмент для создания контента. Он помогает оптимизировать тексты для социальных сетей и SEO.
-
-Каждая платформа имеет свои ограничения. Twitter позволяет использовать только 280 символов. Instagram дает больше пространства - до 2200 символов для подписи.
-
-SEO-оптимизация требует особого внимания к длине заголовков и описаний. Google обычно показывает первые 60 символов заголовка и 160 символов описания в результатах поиска.`
-
-		setText(exampleText)
-		toast.success('Пример загружен')
+		setText(t('exampleText'))
+		toast.success(t('toast.exampleLoaded'))
 	}
 
 	const getPlatformProgress = (platform: PlatformLimit): number => {
@@ -500,7 +505,9 @@ SEO-оптимизация требует особого внимания к д�
 							<CardContent className='p-4 sm:p-6'>
 								<div className='flex items-center justify-between'>
 									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Characters</p>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
+											{t('stats.characters')}
+										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.characters} />
 										</p>
@@ -523,7 +530,9 @@ SEO-оптимизация требует особого внимания к д�
 							<CardContent className='p-4 sm:p-6'>
 								<div className='flex items-center justify-between'>
 									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Words</p>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
+											{t('stats.words')}
+										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.words} />
 										</p>
@@ -546,7 +555,9 @@ SEO-оптимизация требует особого внимания к д�
 							<CardContent className='p-4 sm:p-6'>
 								<div className='flex items-center justify-between'>
 									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Sentences</p>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
+											{t('stats.sentences')}
+										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.sentences} />
 										</p>
@@ -569,9 +580,11 @@ SEO-оптимизация требует особого внимания к д�
 							<CardContent className='p-4 sm:p-6'>
 								<div className='flex items-center justify-between'>
 									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>Reading Time</p>
+										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
+											{t('stats.readingTime')}
+										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent'>
-											<AnimatedNumber value={stats.readingTime} suffix=" min" />
+											<AnimatedNumber value={stats.readingTime} suffix=' min' />
 										</p>
 									</div>
 									<div className='relative'>
@@ -592,11 +605,11 @@ SEO-оптимизация требует особого внимания к д�
 								id='text-input'
 								value={text}
 								onChange={e => setText(e.target.value)}
-								placeholder='Start typing or paste your text here for instant analysis...'
+								placeholder={t('placeholder')}
 								className='min-h-[250px] sm:min-h-[300px] resize-y pr-12 sm:pr-16 text-base border-0 focus:ring-0 bg-transparent placeholder:text-muted-foreground/60'
 							/>
 							{/* Floating Character Counter */}
-							<motion.div 
+							<motion.div
 								className='absolute bottom-2 sm:bottom-4 right-2 sm:right-4 text-xs sm:text-sm font-mono bg-background/90 backdrop-blur border rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 shadow-sm'
 								initial={{ opacity: 0 }}
 								animate={{ opacity: text ? 1 : 0.5 }}
@@ -611,15 +624,24 @@ SEO-оптимизация требует особого внимания к д�
 						{/* Action Buttons */}
 						<div className='flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-0 mt-6 pt-4 border-t'>
 							<div className='flex gap-2'>
-								<Button onClick={loadExample} variant='outline' size='sm' className='flex-1 sm:flex-none hover:bg-primary/5 hover:border-primary/20'>
+								<Button
+									onClick={loadExample}
+									variant='outline'
+									size='sm'
+									className='flex-1 sm:flex-none hover:bg-primary/5 hover:border-primary/20'
+								>
 									<Zap className='w-4 h-4 mr-2' />
-									<span className='hidden xs:inline'>Example</span>
-									<span className='xs:hidden'>Ex</span>
+									{t('actions.example')}
 								</Button>
-								<Button onClick={clearText} variant='outline' size='sm' className='flex-1 sm:flex-none hover:bg-destructive/5 hover:border-destructive/20' disabled={!text}>
+								<Button
+									onClick={clearText}
+									variant='outline'
+									size='sm'
+									className='flex-1 sm:flex-none hover:bg-destructive/5 hover:border-destructive/20'
+									disabled={!text}
+								>
 									<RefreshCw className='w-4 h-4 mr-2' />
-									<span className='hidden xs:inline'>Clear</span>
-									<span className='xs:hidden'>Clr</span>
+									{t('actions.clear')}
 								</Button>
 							</div>
 							<div className='flex gap-2'>
@@ -631,8 +653,7 @@ SEO-оптимизация требует особого внимания к д�
 									className='flex-1 sm:flex-none hover:bg-blue-500/5 hover:border-blue-500/20'
 								>
 									<Copy className='w-4 h-4 mr-2' />
-									<span className='hidden sm:inline'>Copy Text</span>
-									<span className='sm:hidden'>Text</span>
+									{t('actions.copyText')}
 								</Button>
 								<Button
 									onClick={copyStats}
@@ -642,8 +663,7 @@ SEO-оптимизация требует особого внимания к д�
 									className='flex-1 sm:flex-none bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 shadow-md hover:shadow-lg transition-all'
 								>
 									<BarChart3 className='w-4 h-4 mr-2' />
-									<span className='hidden sm:inline'>Copy Stats</span>
-									<span className='sm:hidden'>Stats</span>
+									{t('actions.copyStats')}
 								</Button>
 							</div>
 						</div>
@@ -656,26 +676,33 @@ SEO-оптимизация требует особого внимания к д�
 								className='mt-4 pt-4 border-t bg-gradient-to-r from-muted/30 via-muted/20 to-muted/30 rounded-lg'
 							>
 								<div className='flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm p-3'>
-									<motion.div 
+									<motion.div
 										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
 										whileHover={{ scale: 1.02 }}
 									>
 										<BookOpen className='w-4 h-4 text-blue-500' />
-										<span className='font-medium'>~{stats.readingTime} min read</span>
+										<span className='font-medium'>
+											~{stats.readingTime} {t('labels.minRead')}
+										</span>
 									</motion.div>
-									<motion.div 
+									<motion.div
 										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
 										whileHover={{ scale: 1.02 }}
 									>
 										<Mic className='w-4 h-4 text-green-500' />
-										<span className='font-medium'>~{stats.speakingTime} min speech</span>
+										<span className='font-medium'>
+											~{stats.speakingTime} {t('labels.minSpeech')}
+										</span>
 									</motion.div>
-									<motion.div 
+									<motion.div
 										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
 										whileHover={{ scale: 1.02 }}
 									>
 										<Type className='w-4 h-4 text-purple-500' />
-										<span className='font-medium'>{stats.avgWordLength.toFixed(1)} avg chars/word</span>
+										<span className='font-medium'>
+											{stats.avgWordLength.toFixed(1)}{' '}
+											{t('labels.avgCharsPerWord')}
+										</span>
 									</motion.div>
 								</div>
 							</motion.div>
@@ -685,7 +712,7 @@ SEO-оптимизация требует особого внимания к д�
 
 				{/* Collapsible Platform Limits Section */}
 				<CollapsibleSection
-					title="Platform Limits"
+					title={t('sections.platformLimits')}
 					icon={<Globe className='w-5 h-5' />}
 					defaultOpen={false}
 				>
@@ -694,31 +721,48 @@ SEO-оптимизация требует особого внимания к д�
 							const progress = getPlatformProgress(platform)
 							const status = getPlatformStatus(platform)
 							const Icon = platform.icon
-							const remaining = platform.limit - (platform.type === 'characters' ? stats.characters : stats.words)
+							const remaining =
+								platform.limit -
+								(platform.type === 'characters'
+									? stats.characters
+									: stats.words)
 
 							return (
-								<div key={`${platform.name}-${platform.description}`} className='space-y-2'>
+								<div
+									key={`${platform.name}-${platform.description}`}
+									className='space-y-2'
+								>
 									<div className='flex items-center justify-between'>
 										<div className='flex items-center gap-2'>
 											<Icon className={cn('w-4 h-4', platform.color)} />
-											<span className='text-sm font-medium'>{platform.name}</span>
+											<span className='text-sm font-medium'>
+												{platform.name}
+											</span>
 											{platform.description && (
 												<span className='text-xs text-muted-foreground'>
 													({platform.description})
 												</span>
 											)}
 										</div>
-										<span className={cn('text-sm font-medium', 
-											remaining < 0 ? 'text-red-600' : 
-											remaining < platform.limit * 0.2 ? 'text-yellow-600' : 
-											'text-green-600'
-										)}>
-											{remaining >= 0 ? `${remaining} left` : `${Math.abs(remaining)} over`}
+										<span
+											className={cn(
+												'text-sm font-medium',
+												remaining < 0
+													? 'text-red-600'
+													: remaining < platform.limit * 0.2
+														? 'text-yellow-600'
+														: 'text-green-600'
+											)}
+										>
+											{remaining >= 0
+												? `${remaining} ${t('labels.left')}`
+												: `${Math.abs(remaining)} ${t('labels.over')}`}
 										</span>
 									</div>
-									<Progress 
-										value={progress} 
-										className={cn('h-2 transition-all', 
+									<Progress
+										value={progress}
+										className={cn(
+											'h-2 transition-all',
 											progress > 100 && 'bg-red-100'
 										)}
 									/>
@@ -731,7 +775,7 @@ SEO-оптимизация требует особого внимания к д�
 				{/* Collapsible Advanced Analysis Section */}
 				{stats.words > 0 && (
 					<CollapsibleSection
-						title="Advanced Analysis"
+						title={t('sections.advancedAnalysis')}
 						icon={<BarChart3 className='w-5 h-5' />}
 						defaultOpen={false}
 					>
@@ -739,33 +783,55 @@ SEO-оптимизация требует особого внимания к д�
 							{/* Detailed Stats */}
 							<div className='space-y-4'>
 								<div>
-									<h4 className='text-sm font-medium mb-3'>Character Analysis</h4>
+									<h4 className='text-sm font-medium mb-3'>
+										{t('sections.characterAnalysis')}
+									</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Without spaces</span>
-											<span className='font-mono'>{stats.charactersNoSpaces}</span>
+											<span className='text-muted-foreground'>
+												{t('stats.charactersNoSpaces')}
+											</span>
+											<span className='font-mono'>
+												{stats.charactersNoSpaces}
+											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Spaces</span>
-											<span className='font-mono'>{stats.characters - stats.charactersNoSpaces}</span>
+											<span className='text-muted-foreground'>
+												{t('stats.spaces')}
+											</span>
+											<span className='font-mono'>
+												{stats.characters - stats.charactersNoSpaces}
+											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Paragraphs</span>
+											<span className='text-muted-foreground'>
+												{t('stats.paragraphs')}
+											</span>
 											<span className='font-mono'>{stats.paragraphs}</span>
 										</div>
 									</div>
 								</div>
 
 								<div>
-									<h4 className='text-sm font-medium mb-3'>Averages</h4>
+									<h4 className='text-sm font-medium mb-3'>
+										{t('sections.averages')}
+									</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Words per sentence</span>
-											<span className='font-mono'>{stats.avgSentenceLength.toFixed(1)}</span>
+											<span className='text-muted-foreground'>
+												{t('labels.wordsPerSentence')}
+											</span>
+											<span className='font-mono'>
+												{stats.avgSentenceLength.toFixed(1)}
+											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Characters per word</span>
-											<span className='font-mono'>{stats.avgWordLength.toFixed(1)}</span>
+											<span className='text-muted-foreground'>
+												{t('labels.charactersPerWord')}
+											</span>
+											<span className='font-mono'>
+												{stats.avgWordLength.toFixed(1)}
+											</span>
 										</div>
 									</div>
 								</div>
@@ -775,21 +841,31 @@ SEO-оптимизация требует особого внимания к д�
 							<div className='space-y-4'>
 								{stats.longestWord && (
 									<div>
-										<h4 className='text-sm font-medium mb-3'>Longest Word</h4>
+										<h4 className='text-sm font-medium mb-3'>
+											{t('sections.longestWord')}
+										</h4>
 										<Badge variant='secondary' className='font-mono'>
-											{stats.longestWord} ({stats.longestWord.length} chars)
+											{stats.longestWord} ({stats.longestWord.length}{' '}
+											{t('labels.chars')})
 										</Badge>
 									</div>
 								)}
 
 								{stats.commonWords.length > 0 && (
 									<div>
-										<h4 className='text-sm font-medium mb-3'>Most Common Words</h4>
+										<h4 className='text-sm font-medium mb-3'>
+											{t('sections.commonWords')}
+										</h4>
 										<div className='space-y-2'>
 											{stats.commonWords.map(({ word, count }) => (
-												<div key={word} className='flex items-center justify-between'>
+												<div
+													key={word}
+													className='flex items-center justify-between'
+												>
 													<span className='font-mono text-sm'>{word}</span>
-													<Badge variant='outline' className='text-xs'>{count}×</Badge>
+													<Badge variant='outline' className='text-xs'>
+														{count}×
+													</Badge>
 												</div>
 											))}
 										</div>

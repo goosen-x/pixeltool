@@ -1,14 +1,11 @@
 'use client'
 
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Search, Clock, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { emojiCategories, type CategoryId } from '@/lib/data/emoji-data'
 
 interface EmojiSearchProps {
-	searchTerm: string
-	onSearchChange: (value: string) => void
 	selectedCategory: CategoryId | 'all' | 'recent'
 	onCategoryChange: (category: CategoryId | 'all' | 'recent') => void
 	hasRecentEmojis: boolean
@@ -28,8 +25,6 @@ const categoryIcons = {
 } as const
 
 export function EmojiSearch({
-	searchTerm,
-	onSearchChange,
 	selectedCategory,
 	onCategoryChange,
 	hasRecentEmojis,
@@ -37,17 +32,6 @@ export function EmojiSearch({
 }: EmojiSearchProps) {
 	return (
 		<div className='space-y-4 p-4 border-b'>
-			{/* Search Input */}
-			<div className='relative'>
-				<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
-				<Input
-					placeholder='Search emojis...'
-					value={searchTerm}
-					onChange={e => onSearchChange(e.target.value)}
-					className='pl-10'
-				/>
-			</div>
-
 			{/* Category Tabs */}
 			<Tabs
 				value={selectedCategory}

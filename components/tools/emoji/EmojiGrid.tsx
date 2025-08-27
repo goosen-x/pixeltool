@@ -10,7 +10,6 @@ interface EmojiGridProps {
 	onDownloadEmoji: (emoji: string) => void
 	copiedEmoji: string | null
 	downloadingEmoji: string | null
-	searchTerm?: string
 }
 
 export function EmojiGrid({
@@ -18,17 +17,12 @@ export function EmojiGrid({
 	onCopyEmoji,
 	onDownloadEmoji,
 	copiedEmoji,
-	downloadingEmoji,
-	searchTerm = ''
+	downloadingEmoji
 }: EmojiGridProps) {
 	if (emojis.length === 0) {
 		return (
 			<div className='text-center py-8'>
-				<p className='text-muted-foreground'>
-					{searchTerm
-						? `No emojis found for "${searchTerm}"`
-						: 'No emojis to display'}
-				</p>
+				<p className='text-muted-foreground'>No emojis to display</p>
 			</div>
 		)
 	}

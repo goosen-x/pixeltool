@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Card } from '@/components/ui/card'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import {
 	ArrowUpDown,
@@ -20,10 +20,38 @@ import {
 	Calculator,
 	Info,
 	Globe,
-	Sparkles
+	Sparkles,
+	Search,
+	Star,
+	History,
+	ChevronDown,
+	ArrowRight,
+	X,
+	Clock
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle
+} from '@/components/ui/dialog'
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList
+} from '@/components/ui/command'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger
+} from '@/components/ui/tooltip'
 
 interface Currency {
 	code: string
@@ -39,6 +67,20 @@ interface ExchangeRate {
 	rate: number
 	trend?: 'up' | 'down' | 'stable'
 	changePercent?: number
+}
+
+// Currency configurations with gradients
+const CURRENCY_GRADIENTS: { [key: string]: string } = {
+	USD: 'from-green-500 to-emerald-600',
+	EUR: 'from-blue-500 to-indigo-600',
+	GBP: 'from-purple-500 to-pink-600',
+	RUB: 'from-red-500 to-rose-600',
+	CNY: 'from-amber-500 to-orange-600',
+	JPY: 'from-pink-500 to-rose-500',
+	INR: 'from-orange-500 to-amber-600',
+	CHF: 'from-gray-500 to-slate-600',
+	CAD: 'from-red-500 to-pink-500',
+	AUD: 'from-blue-500 to-cyan-600'
 }
 
 // Fixed exchange rates (as of example date)
@@ -123,22 +165,18 @@ const EXCHANGE_RATES: { [key: string]: number } = {
 	AUD: 1.52
 }
 
-// Popular conversion pairs
-const POPULAR_PAIRS = [
-	{ from: 'USD', to: 'EUR', label: 'USD/EUR' },
-	{ from: 'EUR', to: 'USD', label: 'EUR/USD' },
-	{ from: 'USD', to: 'RUB', label: 'USD/RUB' },
-	{ from: 'EUR', to: 'RUB', label: 'EUR/RUB' },
-	{ from: 'GBP', to: 'USD', label: 'GBP/USD' },
-	{ from: 'USD', to: 'CNY', label: 'USD/CNY' }
-]
+// Amount presets
+const AMOUNT_PRESETS = [100, 500, 1000, 5000, 10000]
 
 export default function CurrencyConverterPage() {
-	const [amount, setAmount] = useState<string>('100')
+	const t = useTranslations('widgets.currencyConverter')
+	const [amount, setAmount] = useState<string>('1000')
 	const [fromCurrency, setFromCurrency] = useState<Currency>(CURRENCIES[0]) // USD
 	const [toCurrency, setToCurrency] = useState<Currency>(CURRENCIES[1]) // EUR
 	const [result, setResult] = useState<number>(0)
-	const [showAllCurrencies, setShowAllCurrencies] = useState(false)
+	const [showFromDialog, setShowFromDialog] = useState(false)
+	const [showToDialog, setShowToDialog] = useState(false)
+	const [favorites, setFavorites] = useState<string[]>(['USD', 'EUR', 'GBP'])
 	const [history, setHistory] = useState<
 		Array<{
 			from: Currency
@@ -146,9 +184,14 @@ export default function CurrencyConverterPage() {
 			amount: number
 			result: number
 			timestamp: Date
+			rate: number
 		}>
 	>([])
+	const [isConverting, setIsConverting] = useState(false)
+	const [searchFrom, setSearchFrom] = useState('')
+	const [searchTo, setSearchTo] = useState('')
 
+	// Calculate exchange
 	const calculateExchange = useCallback(() => {
 		const numAmount = parseFloat(amount) || 0
 		if (numAmount <= 0) {
@@ -156,59 +199,79 @@ export default function CurrencyConverterPage() {
 			return
 		}
 
-		// Convert from source currency to USD
-		const amountInUSD = numAmount / EXCHANGE_RATES[fromCurrency.code]
-		// Convert from USD to target currency
-		const convertedAmount = amountInUSD * EXCHANGE_RATES[toCurrency.code]
+		setIsConverting(true)
 
-		setResult(convertedAmount)
+		// Simulate API call with animation
+		setTimeout(() => {
+			// Convert from source currency to USD
+			const amountInUSD = numAmount / EXCHANGE_RATES[fromCurrency.code]
+			// Convert from USD to target currency
+			const convertedAmount = amountInUSD * EXCHANGE_RATES[toCurrency.code]
+
+			setResult(convertedAmount)
+			setIsConverting(false)
+
+			// Add to history
+			const rate =
+				EXCHANGE_RATES[toCurrency.code] / EXCHANGE_RATES[fromCurrency.code]
+			const newEntry = {
+				from: fromCurrency,
+				to: toCurrency,
+				amount: numAmount,
+				result: convertedAmount,
+				timestamp: new Date(),
+				rate
+			}
+			setHistory(prev => [newEntry, ...prev.slice(0, 4)])
+		}, 300)
 	}, [amount, fromCurrency, toCurrency])
 
 	useEffect(() => {
 		calculateExchange()
 	}, [calculateExchange])
 
+	// Load favorites from localStorage
+	useEffect(() => {
+		const saved = localStorage.getItem('currency-favorites')
+		if (saved) {
+			try {
+				setFavorites(JSON.parse(saved))
+			} catch {}
+		}
+	}, [])
+
 	const swapCurrencies = () => {
 		setFromCurrency(toCurrency)
 		setToCurrency(fromCurrency)
-		toast.success('Валюты поменяны местами')
+		toast.success(t('toast.swapped') || 'Валюты поменяны местами')
 	}
 
 	const copyResult = () => {
 		const formattedResult = `${amount} ${fromCurrency.code} = ${result.toFixed(2)} ${toCurrency.code}`
 		navigator.clipboard.writeText(formattedResult)
-		toast.success('Результат скопирован!')
+		toast.success(t('toast.copied') || 'Результат скопирован!')
 	}
 
 	const resetCalculator = () => {
-		setAmount('100')
+		setAmount('1000')
 		setFromCurrency(CURRENCIES[0])
 		setToCurrency(CURRENCIES[1])
-		toast.success('Калькулятор сброшен')
+		toast.success(t('toast.reset') || 'Калькулятор сброшен')
 	}
 
-	const loadPopularPair = (pair: (typeof POPULAR_PAIRS)[0]) => {
-		const from = CURRENCIES.find(c => c.code === pair.from)
-		const to = CURRENCIES.find(c => c.code === pair.to)
-		if (from && to) {
-			setFromCurrency(from)
-			setToCurrency(to)
-			toast.success(`Загружена пара ${pair.label}`)
-		}
-	}
+	const toggleFavorite = (code: string) => {
+		const newFavorites = favorites.includes(code)
+			? favorites.filter(f => f !== code)
+			: [...favorites, code]
 
-	const addToHistory = () => {
-		if (parseFloat(amount) > 0 && result > 0) {
-			const newEntry = {
-				from: fromCurrency,
-				to: toCurrency,
-				amount: parseFloat(amount),
-				result: result,
-				timestamp: new Date()
-			}
-			setHistory(prev => [newEntry, ...prev.slice(0, 4)])
-			toast.success('Добавлено в историю')
-		}
+		setFavorites(newFavorites)
+		localStorage.setItem('currency-favorites', JSON.stringify(newFavorites))
+
+		toast.success(
+			favorites.includes(code)
+				? t('toast.removedFromFavorites') || 'Удалено из избранного'
+				: t('toast.addedToFavorites') || 'Добавлено в избранное'
+		)
 	}
 
 	const getExchangeRate = (from: string, to: string): number => {
@@ -226,299 +289,459 @@ export default function CurrencyConverterPage() {
 		}).format(value)
 	}
 
-	return (
-		<div className='max-w-6xl mx-auto space-y-6'>
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Main Converter */}
-				<div className='lg:col-span-2 space-y-6'>
-					<Card className='p-6'>
-						<div className='space-y-6'>
-							{/* Amount Input */}
-							<div>
-								<Label htmlFor='amount'>Сумма</Label>
-								<Input
-									id='amount'
-									type='number'
-									value={amount}
-									onChange={e => setAmount(e.target.value)}
-									placeholder='Введите сумму'
-									className='mt-1 text-lg'
-									min='0'
-									step='0.01'
-								/>
-							</div>
+	const formatNumber = (value: number): string => {
+		return new Intl.NumberFormat('ru-RU', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		}).format(value)
+	}
 
-							{/* Currency Selection */}
-							<div className='grid md:grid-cols-[1fr,auto,1fr] gap-4 items-end'>
-								{/* From Currency */}
-								<div>
-									<Label>Из валюты</Label>
-									<div className='mt-1 space-y-2'>
-										<div className='flex items-center gap-2 p-3 rounded-lg bg-muted'>
-											<span className='text-2xl'>{fromCurrency.flag}</span>
-											<div className='flex-1'>
-												<div className='font-medium'>{fromCurrency.code}</div>
-												<div className='text-sm text-muted-foreground'>
-													{fromCurrency.name}
+	// Currency selector component
+	const CurrencySelector = ({
+		value,
+		onChange,
+		open,
+		onOpenChange,
+		search,
+		onSearchChange,
+		label
+	}: {
+		value: Currency
+		onChange: (currency: Currency) => void
+		open: boolean
+		onOpenChange: (open: boolean) => void
+		search: string
+		onSearchChange: (search: string) => void
+		label: string
+	}) => {
+		const filteredCurrencies = CURRENCIES.filter(
+			currency =>
+				currency.code.toLowerCase().includes(search.toLowerCase()) ||
+				currency.name.toLowerCase().includes(search.toLowerCase())
+		)
+
+		const favoriteCurrencies = filteredCurrencies.filter(c =>
+			favorites.includes(c.code)
+		)
+		const otherCurrencies = filteredCurrencies.filter(
+			c => !favorites.includes(c.code)
+		)
+
+		return (
+			<Dialog open={open} onOpenChange={onOpenChange}>
+				<Button
+					variant='outline'
+					className='w-full justify-between text-left font-normal h-16 px-4'
+					onClick={() => onOpenChange(true)}
+				>
+					<div className='flex items-center gap-3'>
+						<span className='text-2xl'>{value.flag}</span>
+						<div>
+							<div className='font-semibold'>{value.code}</div>
+							<div className='text-xs text-muted-foreground'>{value.name}</div>
+						</div>
+					</div>
+					<ChevronDown className='h-4 w-4 opacity-50' />
+				</Button>
+
+				<DialogContent className='max-w-[400px] p-0'>
+					<DialogHeader className='p-6 pb-0'>
+						<DialogTitle>{label}</DialogTitle>
+					</DialogHeader>
+					<Command className='border-0'>
+						<CommandInput
+							placeholder={t('searchCurrency') || 'Поиск валюты...'}
+							value={search}
+							onValueChange={onSearchChange}
+						/>
+						<CommandList>
+							<CommandEmpty>
+								{t('noCurrencyFound') || 'Валюта не найдена'}
+							</CommandEmpty>
+
+							{favoriteCurrencies.length > 0 && (
+								<CommandGroup heading={t('favorites') || 'Избранные'}>
+									{favoriteCurrencies.map(currency => (
+										<CommandItem
+											key={currency.code}
+											value={currency.code}
+											onSelect={() => {
+												onChange(currency)
+												onOpenChange(false)
+												onSearchChange('')
+											}}
+											className='flex items-center justify-between py-3'
+										>
+											<div className='flex items-center gap-3'>
+												<span className='text-2xl'>{currency.flag}</span>
+												<div>
+													<div className='font-medium'>{currency.code}</div>
+													<div className='text-sm text-muted-foreground'>
+														{currency.name}
+													</div>
 												</div>
 											</div>
-											<fromCurrency.icon className='w-5 h-5 text-muted-foreground' />
-										</div>
+											<div className='flex items-center gap-2'>
+												<Star
+													className={cn(
+														'h-4 w-4',
+														favorites.includes(currency.code)
+															? 'fill-yellow-500 text-yellow-500'
+															: 'text-muted-foreground'
+													)}
+												/>
+												<span className='text-sm font-mono text-muted-foreground'>
+													{currency.symbol}
+												</span>
+											</div>
+										</CommandItem>
+									))}
+								</CommandGroup>
+							)}
+
+							{otherCurrencies.length > 0 && (
+								<CommandGroup heading={t('allCurrencies') || 'Все валюты'}>
+									{otherCurrencies.map(currency => (
+										<CommandItem
+											key={currency.code}
+											value={currency.code}
+											onSelect={() => {
+												onChange(currency)
+												onOpenChange(false)
+												onSearchChange('')
+											}}
+											className='flex items-center justify-between py-3'
+										>
+											<div className='flex items-center gap-3'>
+												<span className='text-2xl'>{currency.flag}</span>
+												<div>
+													<div className='font-medium'>{currency.code}</div>
+													<div className='text-sm text-muted-foreground'>
+														{currency.name}
+													</div>
+												</div>
+											</div>
+											<div className='flex items-center gap-2'>
+												<button
+													onClick={e => {
+														e.stopPropagation()
+														toggleFavorite(currency.code)
+													}}
+													className='p-1 hover:bg-muted rounded'
+												>
+													<Star
+														className={cn(
+															'h-4 w-4',
+															favorites.includes(currency.code)
+																? 'fill-yellow-500 text-yellow-500'
+																: 'text-muted-foreground'
+														)}
+													/>
+												</button>
+												<span className='text-sm font-mono text-muted-foreground'>
+													{currency.symbol}
+												</span>
+											</div>
+										</CommandItem>
+									))}
+								</CommandGroup>
+							)}
+						</CommandList>
+					</Command>
+				</DialogContent>
+			</Dialog>
+		)
+	}
+
+	return (
+		<TooltipProvider>
+			<div className='max-w-4xl mx-auto space-y-6'>
+				{/* Main Converter Card */}
+				<Card className='relative overflow-hidden'>
+					{/* Background gradient */}
+					<div
+						className={cn(
+							'absolute inset-0 bg-gradient-to-br opacity-5',
+							CURRENCY_GRADIENTS[fromCurrency.code]
+						)}
+					/>
+
+					<CardContent className='relative p-6 lg:p-8'>
+						<div className='space-y-6'>
+							{/* Amount Presets */}
+							<div className='flex flex-wrap gap-2'>
+								{AMOUNT_PRESETS.map(preset => (
+									<Button
+										key={preset}
+										variant={
+											amount === preset.toString() ? 'default' : 'outline'
+										}
+										size='sm'
+										onClick={() => setAmount(preset.toString())}
+										className='transition-all'
+									>
+										{preset.toLocaleString('ru-RU')}
+									</Button>
+								))}
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={() => setAmount('')}
+									className='transition-all'
+								>
+									<Calculator className='h-4 w-4' />
+								</Button>
+							</div>
+
+							{/* Conversion Flow */}
+							<div className='grid lg:grid-cols-[1fr,auto,1fr] gap-6 items-center'>
+								{/* From Currency */}
+								<div className='space-y-4'>
+									<label className='text-sm font-medium text-muted-foreground'>
+										{t('from') || 'Из валюты'}
+									</label>
+									<CurrencySelector
+										value={fromCurrency}
+										onChange={setFromCurrency}
+										open={showFromDialog}
+										onOpenChange={setShowFromDialog}
+										search={searchFrom}
+										onSearchChange={setSearchFrom}
+										label={t('selectFromCurrency') || 'Выберите валюту'}
+									/>
+									<div className='relative'>
+										<Input
+											type='number'
+											value={amount}
+											onChange={e => setAmount(e.target.value)}
+											placeholder='0.00'
+											className='text-2xl lg:text-3xl font-bold h-16 pr-12'
+											min='0'
+											step='any'
+										/>
+										<span className='absolute right-4 top-1/2 -translate-y-1/2 text-xl font-medium text-muted-foreground'>
+											{fromCurrency.code}
+										</span>
 									</div>
 								</div>
 
 								{/* Swap Button */}
-								<Button
-									onClick={swapCurrencies}
-									variant='outline'
-									size='icon'
-									className='rounded-full'
-								>
-									<ArrowUpDown className='w-4 h-4' />
-								</Button>
+								<div className='flex justify-center'>
+									<motion.button
+										whileHover={{ scale: 1.1 }}
+										whileTap={{ scale: 0.9, rotate: 180 }}
+										onClick={swapCurrencies}
+										className='p-4 rounded-full bg-primary text-primary-foreground shadow-lg'
+									>
+										<ArrowUpDown className='h-5 w-5' />
+									</motion.button>
+								</div>
 
 								{/* To Currency */}
-								<div>
-									<Label>В валюту</Label>
-									<div className='mt-1 space-y-2'>
-										<div className='flex items-center gap-2 p-3 rounded-lg bg-muted'>
-											<span className='text-2xl'>{toCurrency.flag}</span>
-											<div className='flex-1'>
-												<div className='font-medium'>{toCurrency.code}</div>
-												<div className='text-sm text-muted-foreground'>
-													{toCurrency.name}
-												</div>
-											</div>
-											<toCurrency.icon className='w-5 h-5 text-muted-foreground' />
-										</div>
+								<div className='space-y-4'>
+									<label className='text-sm font-medium text-muted-foreground'>
+										{t('to') || 'В валюту'}
+									</label>
+									<CurrencySelector
+										value={toCurrency}
+										onChange={setToCurrency}
+										open={showToDialog}
+										onOpenChange={setShowToDialog}
+										search={searchTo}
+										onSearchChange={setSearchTo}
+										label={t('selectToCurrency') || 'Выберите валюту'}
+									/>
+									<div className='relative'>
+										<AnimatePresence mode='wait'>
+											{isConverting ? (
+												<motion.div
+													key='loading'
+													initial={{ opacity: 0 }}
+													animate={{ opacity: 1 }}
+													exit={{ opacity: 0 }}
+													className='h-16 flex items-center justify-center'
+												>
+													<div className='flex gap-2'>
+														<div className='w-2 h-2 bg-primary rounded-full animate-bounce' />
+														<div className='w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.1s]' />
+														<div className='w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]' />
+													</div>
+												</motion.div>
+											) : (
+												<motion.div
+													key='result'
+													initial={{ opacity: 0, y: 20 }}
+													animate={{ opacity: 1, y: 0 }}
+													exit={{ opacity: 0, y: -20 }}
+													className='text-2xl lg:text-3xl font-bold h-16 flex items-center px-4 bg-muted rounded-lg'
+												>
+													<span
+														className={cn(
+															'bg-gradient-to-r bg-clip-text text-transparent',
+															CURRENCY_GRADIENTS[toCurrency.code]
+														)}
+													>
+														{formatNumber(result)}
+													</span>
+													<span className='ml-3 text-muted-foreground'>
+														{toCurrency.code}
+													</span>
+												</motion.div>
+											)}
+										</AnimatePresence>
 									</div>
 								</div>
 							</div>
 
-							{/* Currency Grid */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label>Выберите валюту</Label>
-									<Button
-										variant='ghost'
-										size='sm'
-										onClick={() => setShowAllCurrencies(!showAllCurrencies)}
-									>
-										{showAllCurrencies ? 'Показать популярные' : 'Показать все'}
-									</Button>
+							{/* Exchange Rate Info */}
+							<div className='flex flex-wrap items-center justify-between gap-4 p-4 bg-muted/50 rounded-lg'>
+								<div className='flex items-center gap-3'>
+									<div className='p-2 bg-background rounded-lg'>
+										<TrendingUp className='h-4 w-4 text-green-500' />
+									</div>
+									<div className='text-sm'>
+										<p className='font-medium'>
+											1 {fromCurrency.code} ={' '}
+											{getExchangeRate(
+												fromCurrency.code,
+												toCurrency.code
+											).toFixed(4)}{' '}
+											{toCurrency.code}
+										</p>
+										<p className='text-muted-foreground'>
+											{t('exchangeRate') || 'Обменный курс'}
+										</p>
+									</div>
 								</div>
-								<div className='grid grid-cols-5 gap-2'>
-									{(showAllCurrencies
-										? CURRENCIES
-										: CURRENCIES.slice(0, 5)
-									).map(currency => (
-										<div key={currency.code} className='space-y-2'>
-											<Button
-												variant={
-													fromCurrency.code === currency.code
-														? 'default'
-														: 'outline'
-												}
-												size='sm'
-												className='w-full'
-												onClick={() => setFromCurrency(currency)}
-											>
-												<span className='mr-1'>{currency.flag}</span>
-												{currency.code}
+								<div className='flex gap-2'>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button size='icon' variant='ghost' onClick={copyResult}>
+												<Copy className='h-4 w-4' />
 											</Button>
+										</TooltipTrigger>
+										<TooltipContent>
+											<p>{t('copyResult') || 'Копировать результат'}</p>
+										</TooltipContent>
+									</Tooltip>
+									<Tooltip>
+										<TooltipTrigger asChild>
 											<Button
-												variant={
-													toCurrency.code === currency.code
-														? 'default'
-														: 'outline'
-												}
-												size='sm'
-												className='w-full'
-												onClick={() => setToCurrency(currency)}
+												size='icon'
+												variant='ghost'
+												onClick={resetCalculator}
 											>
-												<span className='mr-1'>{currency.flag}</span>
-												{currency.code}
+												<RefreshCw className='h-4 w-4' />
 											</Button>
-										</div>
-									))}
+										</TooltipTrigger>
+										<TooltipContent>
+											<p>{t('reset') || 'Сбросить'}</p>
+										</TooltipContent>
+									</Tooltip>
 								</div>
-							</div>
-
-							{/* Result */}
-							<div className='p-6 rounded-lg bg-primary/10 text-center'>
-								<div className='text-sm text-muted-foreground mb-2'>
-									Результат конвертации
-								</div>
-								<div className='text-3xl font-bold text-primary'>
-									{formatCurrency(result, toCurrency)}
-								</div>
-								<div className='text-sm text-muted-foreground mt-2'>
-									1 {fromCurrency.code} ={' '}
-									{getExchangeRate(fromCurrency.code, toCurrency.code).toFixed(
-										4
-									)}{' '}
-									{toCurrency.code}
-								</div>
-							</div>
-
-							{/* Actions */}
-							<div className='flex flex-wrap gap-2'>
-								<Button onClick={addToHistory} className='gap-2'>
-									<Calculator className='w-4 h-4' />В историю
-								</Button>
-								<Button
-									onClick={copyResult}
-									variant='outline'
-									className='gap-2'
-								>
-									<Copy className='w-4 h-4' />
-									Копировать
-								</Button>
-								<Button
-									onClick={resetCalculator}
-									variant='outline'
-									className='gap-2'
-								>
-									<RefreshCw className='w-4 h-4' />
-									Сбросить
-								</Button>
 							</div>
 						</div>
-					</Card>
+					</CardContent>
+				</Card>
 
-					{/* Exchange Rate Table */}
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4 flex items-center gap-2'>
-							<TrendingUp className='w-5 h-5' />
-							Курсы обмена
-						</h3>
-
-						<div className='overflow-x-auto'>
-							<table className='w-full text-sm'>
-								<thead>
-									<tr className='border-b'>
-										<th className='text-left p-2'>Валюта</th>
-										<th className='text-right p-2'>За 1 USD</th>
-										<th className='text-right p-2'>За 1 EUR</th>
-										<th className='text-right p-2'>За 1 RUB</th>
-									</tr>
-								</thead>
-								<tbody>
-									{CURRENCIES.map(currency => (
-										<tr
-											key={currency.code}
-											className='border-b hover:bg-muted/50'
+				{/* History Section */}
+				{history.length > 0 && (
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.2 }}
+					>
+						<Card>
+							<CardContent className='p-6'>
+								<div className='flex items-center gap-2 mb-4'>
+									<History className='h-5 w-5 text-primary' />
+									<h3 className='font-semibold'>
+										{t('history') || 'История конвертаций'}
+									</h3>
+								</div>
+								<div className='space-y-3'>
+									{history.map((entry, index) => (
+										<motion.div
+											key={index}
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ delay: index * 0.05 }}
+											className='flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer'
+											onClick={() => {
+												setAmount(entry.amount.toString())
+												setFromCurrency(entry.from)
+												setToCurrency(entry.to)
+											}}
 										>
-											<td className='p-2'>
+											<div className='flex items-center gap-3'>
 												<div className='flex items-center gap-2'>
-													<span>{currency.flag}</span>
-													<span className='font-medium'>{currency.code}</span>
-													<span className='text-muted-foreground hidden sm:inline'>
-														• {currency.name}
+													<span className='text-lg'>{entry.from.flag}</span>
+													<span className='font-medium'>
+														{entry.amount.toLocaleString('ru-RU')}
+													</span>
+													<span className='text-muted-foreground'>
+														{entry.from.code}
 													</span>
 												</div>
-											</td>
-											<td className='text-right p-2 font-mono'>
-												{getExchangeRate('USD', currency.code).toFixed(4)}
-											</td>
-											<td className='text-right p-2 font-mono'>
-												{getExchangeRate('EUR', currency.code).toFixed(4)}
-											</td>
-											<td className='text-right p-2 font-mono'>
-												{getExchangeRate('RUB', currency.code).toFixed(4)}
-											</td>
-										</tr>
+												<ArrowRight className='h-4 w-4 text-muted-foreground' />
+												<div className='flex items-center gap-2'>
+													<span className='text-lg'>{entry.to.flag}</span>
+													<span className='font-medium'>
+														{entry.result.toFixed(2)}
+													</span>
+													<span className='text-muted-foreground'>
+														{entry.to.code}
+													</span>
+												</div>
+											</div>
+											<div className='flex items-center gap-2'>
+												<Badge variant='secondary' className='text-xs'>
+													{entry.rate.toFixed(4)}
+												</Badge>
+												<span className='text-xs text-muted-foreground flex items-center gap-1'>
+													<Clock className='h-3 w-3' />
+													{entry.timestamp.toLocaleTimeString('ru-RU', {
+														hour: '2-digit',
+														minute: '2-digit'
+													})}
+												</span>
+											</div>
+										</motion.div>
 									))}
-								</tbody>
-							</table>
-						</div>
-					</Card>
-				</div>
-
-				{/* Sidebar */}
-				<div className='space-y-6'>
-					{/* Popular Pairs */}
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4 flex items-center gap-2'>
-							<Sparkles className='w-5 h-5' />
-							Популярные пары
-						</h3>
-
-						<div className='space-y-2'>
-							{POPULAR_PAIRS.map((pair, index) => (
-								<Button
-									key={index}
-									onClick={() => loadPopularPair(pair)}
-									variant='outline'
-									className='w-full justify-between'
-								>
-									<span>{pair.label}</span>
-									<Badge variant='secondary'>
-										{getExchangeRate(pair.from, pair.to).toFixed(4)}
-									</Badge>
-								</Button>
-							))}
-						</div>
-					</Card>
-
-					{/* History */}
-					{history.length > 0 && (
-						<Card className='p-6'>
-							<h3 className='font-semibold mb-4 flex items-center gap-2'>
-								<Calculator className='w-5 h-5' />
-								История конвертаций
-							</h3>
-
-							<div className='space-y-3'>
-								{history.map((entry, index) => (
-									<div
-										key={index}
-										className='p-3 rounded-lg bg-muted/50 text-sm'
-									>
-										<div className='flex items-center justify-between mb-1'>
-											<span className='font-medium'>
-												{entry.amount} {entry.from.code} → {entry.to.code}
-											</span>
-											<span className='text-muted-foreground'>
-												{entry.timestamp.toLocaleTimeString('ru-RU', {
-													hour: '2-digit',
-													minute: '2-digit'
-												})}
-											</span>
-										</div>
-										<div className='font-mono'>
-											= {entry.result.toFixed(2)} {entry.to.code}
-										</div>
-									</div>
-								))}
-							</div>
+								</div>
+							</CardContent>
 						</Card>
-					)}
+					</motion.div>
+				)}
 
-					{/* Info */}
-					<Card className='p-6 bg-muted/50'>
-						<h3 className='font-semibold mb-3 flex items-center gap-2'>
-							<Info className='w-4 h-4' />
-							Информация
-						</h3>
-						<div className='space-y-2 text-sm text-muted-foreground'>
-							<p>
-								Данный калькулятор использует фиксированные курсы валют для
-								демонстрации.
-							</p>
-							<p>
-								Для получения актуальных курсов используйте официальные
-								источники:
-							</p>
-							<ul className='space-y-1 ml-4'>
-								<li>• Центральный банк РФ</li>
-								<li>• Европейский центральный банк</li>
-								<li>• Финансовые агрегаторы</li>
-							</ul>
-						</div>
+				{/* Info Card */}
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.3 }}
+				>
+					<Card className='bg-muted/50'>
+						<CardContent className='p-6'>
+							<div className='flex items-center gap-2 mb-3'>
+								<Info className='h-4 w-4 text-muted-foreground' />
+								<h3 className='font-medium'>
+									{t('info.title') || 'Информация'}
+								</h3>
+							</div>
+							<div className='space-y-2 text-sm text-muted-foreground'>
+								<p>
+									{t('info.disclaimer') ||
+										'Данный калькулятор использует фиксированные курсы валют для демонстрации.'}
+								</p>
+								<p>
+									{t('info.sources') ||
+										'Для получения актуальных курсов используйте официальные источники.'}
+								</p>
+							</div>
+						</CardContent>
 					</Card>
-				</div>
+				</motion.div>
 			</div>
-		</div>
+		</TooltipProvider>
 	)
 }

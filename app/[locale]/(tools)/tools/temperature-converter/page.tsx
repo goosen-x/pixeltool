@@ -1,34 +1,37 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Slider } from '@/components/ui/slider'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger
+} from '@/components/ui/tooltip'
 import {
 	Thermometer,
-	ArrowRightLeft,
-	Copy,
-	RefreshCw,
 	Snowflake,
 	Flame,
 	Sun,
 	CloudSnow,
-	Info,
-	Zap
+	Wind,
+	Droplets,
+	Coffee,
+	Home,
+	Zap,
+	Copy,
+	RefreshCw,
+	History,
+	Sparkles,
+	Info
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { useTranslations } from 'next-intl'
 
 type TemperatureUnit =
@@ -38,13 +41,6 @@ type TemperatureUnit =
 	| 'rankine'
 	| 'reaumur'
 
-interface TemperatureValue {
-	unit: TemperatureUnit
-	value: number
-	symbol: string
-	name: string
-}
-
 interface ConversionResult {
 	celsius: number
 	fahrenheit: number
@@ -53,552 +49,496 @@ interface ConversionResult {
 	reaumur: number
 }
 
-// Temperature units symbols only (names will come from translations)
-const TEMPERATURE_SYMBOLS: Record<TemperatureUnit, string> = {
-	celsius: '°C',
-	fahrenheit: '°F',
-	kelvin: 'K',
-	rankine: '°R',
-	reaumur: '°Ré'
+interface TemperaturePreset {
+	id: string
+	celsius: number
+	icon: any
+	color: string
 }
 
-const TEMPERATURE_REFERENCES = [
+interface HistoryItem {
+	id: string
+	celsius: number
+	timestamp: Date
+	fromUnit: TemperatureUnit
+}
+
+// Temperature presets with icons and colors
+const TEMPERATURE_PRESETS: TemperaturePreset[] = [
 	{
-		name: 'Абсолютный ноль',
+		id: 'absoluteZero',
 		celsius: -273.15,
-		description: 'Теоретически самая низкая температура'
+		icon: CloudSnow,
+		color: 'from-blue-900 to-indigo-900'
 	},
 	{
-		name: 'Температура жидкого азота',
-		celsius: -195.8,
-		description: 'Кипение азота при нормальном давлении'
-	},
-	{
-		name: 'Сухой лед (сублимация)',
-		celsius: -78.5,
-		description: 'Переход CO₂ из твердого в газообразное'
-	},
-	{
-		name: 'Замерзание воды',
+		id: 'waterFreeze',
 		celsius: 0,
-		description: 'Точка замерзания воды при нормальном давлении'
+		icon: Snowflake,
+		color: 'from-blue-500 to-cyan-500'
 	},
 	{
-		name: 'Комнатная температура',
+		id: 'roomTemp',
 		celsius: 20,
-		description: 'Комфортная температура в помещении'
+		icon: Home,
+		color: 'from-green-500 to-emerald-500'
 	},
 	{
-		name: 'Температура человека',
+		id: 'bodyTemp',
 		celsius: 36.6,
-		description: 'Нормальная температура тела'
+		icon: Sun,
+		color: 'from-yellow-500 to-orange-500'
 	},
 	{
-		name: 'Кипение воды',
+		id: 'waterBoil',
 		celsius: 100,
-		description: 'Точка кипения воды при нормальном давлении'
+		icon: Droplets,
+		color: 'from-orange-500 to-red-500'
 	},
-	{
-		name: 'Температура пара',
-		celsius: 100,
-		description: 'Водяной пар при атмосферном давлении'
-	},
-	{
-		name: 'Температура духовки',
-		celsius: 180,
-		description: 'Средняя температура выпечки'
-	},
-	{ name: 'Температура пайки', celsius: 400, description: 'Плавление припоя' }
+	{ id: 'oven', celsius: 180, icon: Flame, color: 'from-red-500 to-pink-500' }
 ]
 
-const QUICK_CONVERSIONS = [
-	{ name: 'Ноль Цельсия', celsius: 0 },
-	{ name: 'Комнатная', celsius: 20 },
-	{ name: 'Тело человека', celsius: 36.6 },
-	{ name: 'Кипение воды', celsius: 100 },
-	{ name: 'Духовка', celsius: 180 },
-	{ name: 'Ноль Фаренгейта', celsius: -17.78 }
-]
+// Temperature unit configurations
+const UNIT_CONFIGS: Record<
+	TemperatureUnit,
+	{ symbol: string; gradient: string }
+> = {
+	celsius: { symbol: '°C', gradient: 'from-blue-500 to-blue-600' },
+	fahrenheit: { symbol: '°F', gradient: 'from-purple-500 to-purple-600' },
+	kelvin: { symbol: 'K', gradient: 'from-green-500 to-green-600' },
+	rankine: { symbol: '°R', gradient: 'from-orange-500 to-orange-600' },
+	reaumur: { symbol: '°Ré', gradient: 'from-pink-500 to-pink-600' }
+}
 
 export default function TemperatureConverterPage() {
 	const t = useTranslations('widgets.temperatureConverter')
-	const [inputValue, setInputValue] = useState<string>('')
-	const [fromUnit, setFromUnit] = useState<TemperatureUnit>('celsius')
-	const [result, setResult] = useState<ConversionResult | null>(null)
-	const [isConverting, setIsConverting] = useState(false)
+	const [mounted, setMounted] = useState(false)
+	const [activeUnit, setActiveUnit] = useState<TemperatureUnit>('celsius')
+	const [values, setValues] = useState<ConversionResult>({
+		celsius: 20,
+		fahrenheit: 68,
+		kelvin: 293.15,
+		rankine: 527.67,
+		reaumur: 16
+	})
+	const [history, setHistory] = useState<HistoryItem[]>([])
+	const [showHistory, setShowHistory] = useState(false)
 
-	// Auto-convert when input changes
 	useEffect(() => {
-		if (inputValue.trim() && !isNaN(Number(inputValue))) {
-			convertTemperature(Number(inputValue), fromUnit)
-		} else {
-			setResult(null)
-		}
-	}, [inputValue, fromUnit])
-
-	const convertTemperature = async (value: number, from: TemperatureUnit) => {
-		setIsConverting(true)
-
-		// Add small delay for better UX
-		setTimeout(() => {
+		setMounted(true)
+		// Load history from localStorage
+		const saved = localStorage.getItem('temperature-history')
+		if (saved) {
 			try {
-				// Convert everything to Celsius first
-				let celsius: number
+				const parsed = JSON.parse(saved)
+				setHistory(
+					parsed.map((item: any) => ({
+						...item,
+						timestamp: new Date(item.timestamp)
+					}))
+				)
+			} catch {}
+		}
+	}, [])
 
-				switch (from) {
-					case 'celsius':
-						celsius = value
-						break
-					case 'fahrenheit':
-						celsius = ((value - 32) * 5) / 9
-						break
-					case 'kelvin':
-						celsius = value - 273.15
-						break
-					case 'rankine':
-						celsius = ((value - 491.67) * 5) / 9
-						break
-					case 'reaumur':
-						celsius = (value * 5) / 4
-						break
-					default:
-						celsius = value
-				}
+	// Convert from any unit to all others
+	const convertTemperature = useCallback(
+		(value: number, fromUnit: TemperatureUnit): ConversionResult => {
+			// First convert to Celsius
+			let celsius: number
 
-				// Convert from Celsius to all other units
-				const fahrenheit = (celsius * 9) / 5 + 32
-				const kelvin = celsius + 273.15
-				const rankine = ((celsius + 273.15) * 9) / 5
-				const reaumur = (celsius * 4) / 5
-
-				const conversionResult: ConversionResult = {
-					celsius,
-					fahrenheit,
-					kelvin,
-					rankine,
-					reaumur
-				}
-
-				setResult(conversionResult)
-			} catch (error) {
-				toast.error(t('toast.conversionError'))
-				console.error('Temperature conversion error:', error)
-			} finally {
-				setIsConverting(false)
+			switch (fromUnit) {
+				case 'celsius':
+					celsius = value
+					break
+				case 'fahrenheit':
+					celsius = ((value - 32) * 5) / 9
+					break
+				case 'kelvin':
+					celsius = value - 273.15
+					break
+				case 'rankine':
+					celsius = ((value - 491.67) * 5) / 9
+					break
+				case 'reaumur':
+					celsius = (value * 5) / 4
+					break
+				default:
+					celsius = value
 			}
-		}, 100)
+
+			// Then convert from Celsius to all units
+			return {
+				celsius,
+				fahrenheit: (celsius * 9) / 5 + 32,
+				kelvin: celsius + 273.15,
+				rankine: ((celsius + 273.15) * 9) / 5,
+				reaumur: (celsius * 4) / 5
+			}
+		},
+		[]
+	)
+
+	// Handle unit card input
+	const handleUnitChange = useCallback(
+		(unit: TemperatureUnit, value: string) => {
+			const numValue = parseFloat(value)
+			if (!isNaN(numValue)) {
+				const newValues = convertTemperature(numValue, unit)
+				setValues(newValues)
+				setActiveUnit(unit)
+
+				// Add to history
+				const historyItem: HistoryItem = {
+					id: Date.now().toString(),
+					celsius: newValues.celsius,
+					timestamp: new Date(),
+					fromUnit: unit
+				}
+				const newHistory = [historyItem, ...history].slice(0, 10)
+				setHistory(newHistory)
+				localStorage.setItem('temperature-history', JSON.stringify(newHistory))
+			}
+		},
+		[history, convertTemperature]
+	)
+
+	// Load preset
+	const loadPreset = useCallback(
+		(preset: TemperaturePreset) => {
+			const newValues = convertTemperature(preset.celsius, 'celsius')
+			setValues(newValues)
+			setActiveUnit('celsius')
+
+			toast.success(t('toast.presetLoaded'))
+		},
+		[convertTemperature, t]
+	)
+
+	// Copy value
+	const copyValue = useCallback(
+		(unit: TemperatureUnit) => {
+			const value = values[unit]
+			const symbol = UNIT_CONFIGS[unit].symbol
+			const text = `${formatNumber(value)}${symbol}`
+			navigator.clipboard.writeText(text)
+			toast.success(t('toast.copied'))
+		},
+		[values, t]
+	)
+
+	// Format number
+	const formatNumber = (value: number): string => {
+		return parseFloat(value.toFixed(2)).toString()
 	}
 
-	const formatTemperature = (value: number, unit: TemperatureUnit): string => {
-		// Round to 2 decimal places and remove unnecessary zeros
-		const rounded = Math.round(value * 100) / 100
-		return rounded % 1 === 0 ? rounded.toString() : rounded.toFixed(2)
+	// Get temperature color
+	const getTemperatureColor = (celsius: number): string => {
+		if (celsius < -50) return 'from-blue-900 to-blue-800'
+		if (celsius < -20) return 'from-blue-700 to-blue-600'
+		if (celsius < 0) return 'from-blue-500 to-cyan-500'
+		if (celsius < 15) return 'from-cyan-500 to-green-500'
+		if (celsius < 25) return 'from-green-500 to-yellow-500'
+		if (celsius < 35) return 'from-yellow-500 to-orange-500'
+		if (celsius < 50) return 'from-orange-500 to-red-500'
+		if (celsius < 100) return 'from-red-500 to-red-600'
+		return 'from-red-600 to-red-900'
 	}
 
-	const copyToClipboard = (value: string, unit: string) => {
-		navigator.clipboard.writeText(`${value}${unit}`)
-		toast.success(t('toast.copied'))
+	// Get temperature icon
+	const getTemperatureIcon = (celsius: number) => {
+		if (celsius < -50) return CloudSnow
+		if (celsius < 0) return Snowflake
+		if (celsius < 15) return Wind
+		if (celsius < 25) return Home
+		if (celsius < 35) return Sun
+		if (celsius < 100) return Coffee
+		return Flame
 	}
 
-	const copyAllResults = () => {
-		if (!result) return
-
-		const text = `
-Конвертация температуры:
-
-Цельсий: ${formatTemperature(result.celsius, 'celsius')}°C
-Фаренгейт: ${formatTemperature(result.fahrenheit, 'fahrenheit')}°F
-Кельвин: ${formatTemperature(result.kelvin, 'kelvin')}K
-Ранкин: ${formatTemperature(result.rankine, 'rankine')}°R
-Реомюр: ${formatTemperature(result.reaumur, 'reaumur')}°Ré
-    `.trim()
-
-		copyToClipboard(text, '')
-	}
-
-	const swapUnits = () => {
-		// For simplicity, just swap between common units
-		const commonUnits: TemperatureUnit[] = ['celsius', 'fahrenheit', 'kelvin']
-		const currentIndex = commonUnits.indexOf(fromUnit)
-		const nextIndex = (currentIndex + 1) % commonUnits.length
-		setFromUnit(commonUnits[nextIndex])
-	}
-
-	const loadQuickConversion = (celsius: number) => {
-		setInputValue(celsius.toString())
-		setFromUnit('celsius')
-		toast.success(t('toast.valueLoaded'))
-	}
-
+	// Reset all
 	const resetAll = () => {
-		setInputValue('')
-		setResult(null)
-		setFromUnit('celsius')
+		const newValues = convertTemperature(20, 'celsius')
+		setValues(newValues)
+		setActiveUnit('celsius')
 		toast.success(t('toast.reset'))
 	}
 
-	const getTemperatureColor = (celsius: number): string => {
-		if (celsius < -50) return 'text-blue-600'
-		if (celsius < 0) return 'text-cyan-600'
-		if (celsius < 15) return 'text-green-600'
-		if (celsius < 25) return 'text-yellow-600'
-		if (celsius < 35) return 'text-orange-600'
-		return 'text-red-600'
-	}
+	if (!mounted) return null
 
-	const getTemperatureIcon = (celsius: number) => {
-		if (celsius < -50) return <CloudSnow className='w-4 h-4' />
-		if (celsius < 0) return <Snowflake className='w-4 h-4' />
-		if (celsius < 25) return <Thermometer className='w-4 h-4' />
-		if (celsius < 35) return <Sun className='w-4 h-4' />
-		return <Flame className='w-4 h-4' />
-	}
-
-	const getTemperatureDescription = (celsius: number): string => {
-		if (celsius < -100) return 'Экстремально холодно'
-		if (celsius < -50) return 'Очень холодно'
-		if (celsius < 0) return 'Ниже нуля'
-		if (celsius < 10) return 'Холодно'
-		if (celsius < 20) return 'Прохладно'
-		if (celsius < 25) return 'Комфортно'
-		if (celsius < 30) return 'Тепло'
-		if (celsius < 40) return 'Жарко'
-		if (celsius < 100) return 'Очень жарко'
-		if (celsius < 200) return 'Кипяток'
-		return 'Экстремально горячо'
-	}
-
-	const getRelevantReferences = (celsius: number) => {
-		return TEMPERATURE_REFERENCES.map(ref => ({
-			...ref,
-			diff: Math.abs(ref.celsius - celsius)
-		}))
-			.sort((a, b) => a.diff - b.diff)
-			.slice(0, 3)
-	}
-
-	// Helper functions for translation keys
-	const getTemperatureDescriptionKey = (celsius: number): string => {
-		if (celsius < -100) return 'extremelyCold'
-		if (celsius < -50) return 'veryCold'
-		if (celsius < 0) return 'belowZero'
-		if (celsius < 10) return 'cold'
-		if (celsius < 20) return 'cool'
-		if (celsius < 25) return 'comfortable'
-		if (celsius < 30) return 'warm'
-		if (celsius < 40) return 'hot'
-		if (celsius < 100) return 'veryHot'
-		if (celsius < 200) return 'boiling'
-		return 'extremelyHot'
-	}
-
-	const getReferencesKey = (name: string): string => {
-		const keyMap: Record<string, string> = {
-			'Абсолютный ноль': 'absoluteZero',
-			'Температура жидкого азота': 'liquidNitrogen',
-			'Сухой лед (сублимация)': 'dryIce',
-			'Замерзание воды': 'waterFreeze',
-			'Комнатная температура': 'roomTemp',
-			'Температура человека': 'bodyTemp',
-			'Кипение воды': 'waterBoil',
-			'Температура пара': 'steam',
-			'Температура духовки': 'oven',
-			'Температура пайки': 'soldering'
-		}
-		return keyMap[name] || name.toLowerCase()
-	}
+	const TemperatureIcon = getTemperatureIcon(values.celsius)
+	const temperatureColor = getTemperatureColor(values.celsius)
 
 	return (
-		<WidgetLayout>
-			{/* Input Form */}
-			<WidgetSection title={t('sections.input')}>
-				<div className='grid md:grid-cols-3 gap-6 items-end'>
-					<WidgetInput
-						label={t('inputs.temperature.label')}
-						description={t('inputs.temperature.description')}
-					>
-						<Input
-							type='number'
-							value={inputValue}
-							onChange={e => setInputValue(e.target.value)}
-							placeholder={t('inputs.temperature.placeholder')}
-							className='text-lg'
-							step='any'
-						/>
-					</WidgetInput>
-
-					<WidgetInput
-						label={t('inputs.unit.label')}
-						description={t('inputs.unit.description')}
-					>
-						<Select
-							value={fromUnit}
-							onValueChange={(value: TemperatureUnit) => setFromUnit(value)}
-						>
-							<SelectTrigger>
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								{(
-									[
-										'celsius',
-										'fahrenheit',
-										'kelvin',
-										'rankine',
-										'reaumur'
-									] as TemperatureUnit[]
-								).map(unit => (
-									<SelectItem key={unit} value={unit}>
-										{t(`units.${unit}`)} ({TEMPERATURE_SYMBOLS[unit]})
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</WidgetInput>
-
-					<div className='flex gap-2'>
-						<Button onClick={swapUnits} variant='outline' size='sm'>
-							<ArrowRightLeft className='w-4 h-4 mr-2' />
-							{t('actions.swap')}
-						</Button>
-						<Button onClick={resetAll} variant='outline' size='sm'>
-							<RefreshCw className='w-4 h-4 mr-2' />
-							{t('actions.reset')}
-						</Button>
-					</div>
-				</div>
-
-				{/* Quick conversions */}
-				<div className='mt-6'>
-					<label className='mb-3 block text-sm font-medium'>
-						{t('sections.quickValues')}
-					</label>
-					<div className='flex gap-2 flex-wrap'>
-						{QUICK_CONVERSIONS.map((quick, index) => (
-							<Button
-								key={index}
-								onClick={() => loadQuickConversion(quick.celsius)}
-								variant='outline'
-								size='sm'
-							>
-								{t(`quickValues.${quick.name.toLowerCase().replace(' ', '')}`)}
-							</Button>
-						))}
-					</div>
-				</div>
-			</WidgetSection>
-
-			{/* Results */}
-			{result && (
-				<WidgetSection title={t('sections.results')}>
-					<WidgetOutput>
-						<div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-							{Object.entries(result).map(([unit, value]) => {
-								const symbol = TEMPERATURE_SYMBOLS[unit as TemperatureUnit]
-								const formattedValue = formatTemperature(
-									value,
-									unit as TemperatureUnit
-								)
-								const colorClass =
-									unit === 'celsius'
-										? getTemperatureColor(value)
-										: 'text-foreground'
-
-								return (
-									<div
-										key={unit}
-										className={cn(
-											'p-4 rounded-lg border transition-colors',
-											fromUnit === unit
-												? 'bg-primary/10 border-primary/20'
-												: 'bg-muted/30 hover:bg-muted/50'
+		<TooltipProvider>
+			<div className='max-w-6xl mx-auto space-y-6'>
+				{/* Main Temperature Display */}
+				{/* Main Temperature Display */}
+				<Card className='relative overflow-hidden'>
+					<div
+						className={cn(
+							'absolute inset-0 bg-gradient-to-br opacity-10',
+							temperatureColor
+						)}
+					/>
+					<CardContent className='relative p-8'>
+						<div className='flex items-center justify-between'>
+							<div className='flex items-center gap-3'>
+								<motion.div
+									animate={{ rotate: [0, 10, -10, 0] }}
+									transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+								>
+									<TemperatureIcon className='w-8 h-8' />
+								</motion.div>
+								<div>
+									<h2 className='text-3xl font-bold'>
+										{formatNumber(values[activeUnit])}
+										{UNIT_CONFIGS[activeUnit].symbol}
+									</h2>
+									<p className='text-sm text-muted-foreground'>
+										{t(`units.${activeUnit}`)}
+									</p>
+									<div className='mt-2 space-y-1'>
+										{values.celsius < 0 && (
+											<Badge variant='outline' className='gap-1'>
+												<Snowflake className='w-3 h-3' />
+												{t('descriptions.belowFreezing')}
+											</Badge>
 										)}
-									>
+										{values.celsius >= 0 && values.celsius < 100 && (
+											<Badge variant='outline' className='gap-1'>
+												<Droplets className='w-3 h-3' />
+												{t('descriptions.liquidWater')}
+											</Badge>
+										)}
+										{values.celsius >= 100 && (
+											<Badge variant='outline' className='gap-1'>
+												<Flame className='w-3 h-3' />
+												{t('descriptions.aboveBoiling')}
+											</Badge>
+										)}
+										<p className='text-xs text-muted-foreground'>
+											{t('context.fromAbsoluteZero', {
+												value: formatNumber(values.celsius + 273.15)
+											})}
+										</p>
+									</div>
+								</div>
+							</div>
+							<div className='flex items-center gap-2'>
+								<Button
+									size='sm'
+									variant='outline'
+									onClick={() => setShowHistory(!showHistory)}
+								>
+									<History className='w-4 h-4' />
+								</Button>
+								<Button size='sm' variant='outline' onClick={resetAll}>
+									<RefreshCw className='w-4 h-4' />
+								</Button>
+							</div>
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* Unit Cards */}
+				<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
+					{(Object.keys(UNIT_CONFIGS) as TemperatureUnit[]).map(unit => {
+						const config = UNIT_CONFIGS[unit]
+						const value = values[unit]
+						const isActive = activeUnit === unit
+
+						return (
+							<motion.div
+								key={unit}
+								whileHover={{ scale: 1.02 }}
+								whileTap={{ scale: 0.98 }}
+							>
+								<Card
+									onClick={() => setActiveUnit(unit)}
+									className={cn(
+										'relative overflow-hidden cursor-pointer transition-all',
+										isActive && 'ring-2 ring-primary shadow-lg'
+									)}
+								>
+									<div
+										className={cn(
+											'absolute inset-0 bg-gradient-to-br opacity-10',
+											config.gradient
+										)}
+									/>
+									<CardContent className='relative p-4'>
 										<div className='flex items-center justify-between mb-2'>
-											<span className='text-sm font-medium text-muted-foreground'>
+											<span className='text-sm font-medium'>
 												{t(`units.${unit}`)}
 											</span>
-											<Button
-												onClick={() => copyToClipboard(formattedValue, symbol)}
-												variant='ghost'
-												size='sm'
-												className='h-6 w-6 p-0'
-											>
-												<Copy className='w-3 h-3' />
-											</Button>
+											<Tooltip>
+												<TooltipTrigger asChild>
+													<Button
+														size='icon'
+														variant='ghost'
+														className='h-6 w-6'
+														onClick={e => {
+															e.stopPropagation()
+															copyValue(unit)
+														}}
+													>
+														<Copy className='w-3 h-3' />
+													</Button>
+												</TooltipTrigger>
+												<TooltipContent>
+													<p>{t('actions.copy')}</p>
+												</TooltipContent>
+											</Tooltip>
 										</div>
-										<div className={cn('text-2xl font-bold', colorClass)}>
-											{formattedValue}
-											{symbol}
+										<Input
+											type='number'
+											value={formatNumber(value)}
+											onChange={e => handleUnitChange(unit, e.target.value)}
+											onClick={e => e.stopPropagation()}
+											className='text-lg font-bold border-0 p-0 h-auto bg-transparent'
+											step='any'
+										/>
+										<span className='text-sm text-muted-foreground'>
+											{config.symbol}
+										</span>
+									</CardContent>
+								</Card>
+							</motion.div>
+						)
+					})}
+				</div>
+
+				{/* Quick Presets */}
+				<Card>
+					<CardContent className='p-6'>
+						<div className='flex items-center gap-2 mb-4'>
+							<Sparkles className='w-5 h-5 text-primary' />
+							<h3 className='font-semibold'>{t('sections.presets')}</h3>
+						</div>
+						<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
+							{TEMPERATURE_PRESETS.map(preset => {
+								const Icon = preset.icon
+								return (
+									<motion.button
+										key={preset.id}
+										onClick={() => loadPreset(preset)}
+										className={cn(
+											'relative overflow-hidden rounded-lg p-4',
+											'border-2 border-transparent hover:border-primary/50',
+											'transition-all duration-200'
+										)}
+										whileHover={{ scale: 1.05 }}
+										whileTap={{ scale: 0.95 }}
+									>
+										<div
+											className={cn(
+												'absolute inset-0 bg-gradient-to-br opacity-10',
+												preset.color
+											)}
+										/>
+										<div className='relative flex flex-col items-center gap-2'>
+											<Icon className='w-6 h-6' />
+											<span className='text-xs font-medium'>
+												{t(`presets.${preset.id}`)}
+											</span>
+											<span className='text-xs text-muted-foreground'>
+												{preset.celsius}°C
+											</span>
 										</div>
-									</div>
+									</motion.button>
 								)
 							})}
 						</div>
-					</WidgetOutput>
-				</WidgetSection>
-			)}
+					</CardContent>
+				</Card>
 
-			{/* Context Section */}
-			{result && (
-				<WidgetSection title={t('sections.context')}>
-					<div className='grid md:grid-cols-2 gap-6'>
-						<div className='p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border'>
-							<div className='flex items-center gap-3 mb-2'>
-								{getTemperatureIcon(result.celsius)}
-								<span
-									className={cn(
-										'font-semibold',
-										getTemperatureColor(result.celsius)
-									)}
-								>
-									{t(
-										`descriptions.${getTemperatureDescriptionKey(result.celsius)}`
-									)}
-								</span>
+				{/* History */}
+				<AnimatePresence>
+					{showHistory && history.length > 0 && (
+						<motion.div
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: 'auto' }}
+							exit={{ opacity: 0, height: 0 }}
+						>
+							<Card>
+								<CardContent className='p-4'>
+									<h3 className='font-semibold mb-3'>
+										{t('sections.history')}
+									</h3>
+									<div className='space-y-2'>
+										{history.map((item, index) => (
+											<motion.div
+												key={item.id}
+												initial={{ opacity: 0, x: -20 }}
+												animate={{ opacity: 1, x: 0 }}
+												transition={{ delay: index * 0.05 }}
+												className='flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 cursor-pointer'
+												onClick={() =>
+													loadPreset({
+														id: item.id,
+														celsius: item.celsius,
+														icon: Thermometer,
+														color: ''
+													})
+												}
+											>
+												<div className='flex items-center gap-3'>
+													<Badge variant='secondary'>
+														{formatNumber(item.celsius)}°C
+													</Badge>
+													<span className='text-sm text-muted-foreground'>
+														{t(`units.${item.fromUnit}`)}
+													</span>
+												</div>
+												<span className='text-xs text-muted-foreground'>
+													{new Date(item.timestamp).toLocaleTimeString()}
+												</span>
+											</motion.div>
+										))}
+									</div>
+								</CardContent>
+							</Card>
+						</motion.div>
+					)}
+				</AnimatePresence>
+
+				{/* Temperature Context */}
+				<Card>
+					<CardContent className='p-6'>
+						<div className='flex items-center gap-2 mb-4'>
+							<Info className='w-5 h-5 text-primary' />
+							<h3 className='font-semibold'>{t('info.formulas')}</h3>
+						</div>
+						<div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+							<div className='space-y-1'>
+								<p className='text-sm font-medium'>Fahrenheit</p>
+								<p className='text-xs font-mono text-muted-foreground'>
+									°F = (°C × 9/5) + 32
+								</p>
 							</div>
-							<p className='text-sm text-muted-foreground'>
-								{Math.abs(result.celsius) < 273.15
-									? t('context.aboveAbsoluteZero', {
-											value: (273.15 + result.celsius).toFixed(1)
-										})
-									: t('context.aboveAbsoluteZero')}
-							</p>
+							<div className='space-y-1'>
+								<p className='text-sm font-medium'>Kelvin</p>
+								<p className='text-xs font-mono text-muted-foreground'>
+									K = °C + 273.15
+								</p>
+							</div>
+							<div className='space-y-1'>
+								<p className='text-sm font-medium'>Rankine</p>
+								<p className='text-xs font-mono text-muted-foreground'>
+									°R = (°C + 273.15) × 9/5
+								</p>
+							</div>
+							<div className='space-y-1'>
+								<p className='text-sm font-medium'>Réaumur</p>
+								<p className='text-xs font-mono text-muted-foreground'>
+									°Ré = °C × 4/5
+								</p>
+							</div>
 						</div>
-
-						<div className='space-y-2'>
-							<h4 className='text-sm font-medium'>
-								{t('sections.referencePoints')}
-							</h4>
-							{getRelevantReferences(result.celsius).map((ref, index) => (
-								<div
-									key={index}
-									className='flex items-center justify-between text-sm p-2 bg-muted/30 rounded'
-								>
-									<span>{t(`references.${getReferencesKey(ref.name)}`)}</span>
-									<Badge variant='outline' className='text-xs'>
-										{ref.diff < 0.1
-											? t('context.exactly')
-											: `±${ref.diff.toFixed(1)}°C`}
-									</Badge>
-								</div>
-							))}
-						</div>
-					</div>
-				</WidgetSection>
-			)}
-
-			{!result && !isConverting && (
-				<WidgetSection title={t('sections.placeholder')}>
-					<div className='flex items-center justify-center h-40 text-muted-foreground'>
-						<div className='text-center'>
-							<Thermometer className='w-12 h-12 mx-auto mb-3 opacity-50' />
-							<p>{t('placeholder.enterTemperature')}</p>
-						</div>
-					</div>
-				</WidgetSection>
-			)}
-
-			{/* Reference table */}
-			<WidgetSection title={t('sections.references')}>
-				<div className='overflow-x-auto'>
-					<table className='w-full text-sm'>
-						<thead>
-							<tr className='border-b'>
-								<th className='text-left p-2'>{t('table.phenomenon')}</th>
-								<th className='text-right p-2'>°C</th>
-								<th className='text-right p-2'>°F</th>
-								<th className='text-right p-2'>K</th>
-								<th className='text-left p-2'>{t('table.description')}</th>
-							</tr>
-						</thead>
-						<tbody>
-							{TEMPERATURE_REFERENCES.map((ref, index) => (
-								<tr key={index} className='border-b border-muted/30'>
-									<td className='p-2 font-medium'>
-										{t(`references.${getReferencesKey(ref.name)}`)}
-									</td>
-									<td
-										className={cn(
-											'p-2 text-right font-mono',
-											getTemperatureColor(ref.celsius)
-										)}
-									>
-										{ref.celsius}°C
-									</td>
-									<td className='p-2 text-right font-mono'>
-										{formatTemperature(
-											(ref.celsius * 9) / 5 + 32,
-											'fahrenheit'
-										)}
-										°F
-									</td>
-									<td className='p-2 text-right font-mono'>
-										{formatTemperature(ref.celsius + 273.15, 'kelvin')}K
-									</td>
-									<td className='p-2 text-muted-foreground'>
-										{t(`referenceDescriptions.${getReferencesKey(ref.name)}`)}
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			</WidgetSection>
-
-			{/* Info */}
-			<WidgetSection title={t('sections.about')}>
-				<div className='grid md:grid-cols-2 gap-6 text-sm'>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='font-medium mb-1'>{t('info.mainScales')}</h4>
-							<ul className='text-muted-foreground space-y-1'>
-								<li>
-									• <strong>{t('info.celsiusDesc')}</strong>
-								</li>
-								<li>
-									• <strong>{t('info.fahrenheitDesc')}</strong>
-								</li>
-								<li>
-									• <strong>{t('info.kelvinDesc')}</strong>
-								</li>
-								<li>
-									• <strong>{t('info.rankineDesc')}</strong>
-								</li>
-							</ul>
-						</div>
-						<div>
-							<h4 className='font-medium mb-1'>{t('info.formulas')}</h4>
-							<ul className='text-muted-foreground space-y-1 font-mono text-xs'>
-								<li>• °F = (°C × 9/5) + 32</li>
-								<li>• K = °C + 273.15</li>
-								<li>• °R = (°C + 273.15) × 9/5</li>
-								<li>• °Ré = °C × 4/5</li>
-							</ul>
-						</div>
-					</div>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='font-medium mb-1'>{t('info.applications')}</h4>
-							<ul className='text-muted-foreground space-y-1'>
-								<li>• {t('info.cooking')}</li>
-								<li>• {t('info.science')}</li>
-								<li>• {t('info.medical')}</li>
-								<li>• {t('info.engineering')}</li>
-							</ul>
-						</div>
-						<div>
-							<h4 className='font-medium mb-1'>{t('info.facts')}</h4>
-							<ul className='text-muted-foreground space-y-1'>
-								<li>• {t('info.absoluteZero')}</li>
-								<li>• {t('info.sunSurface')}</li>
-								<li>• {t('info.coldestEarth')}</li>
-								<li>• {t('info.hottestEarth')}</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</WidgetSection>
-		</WidgetLayout>
+					</CardContent>
+				</Card>
+			</div>
+		</TooltipProvider>
 	)
 }

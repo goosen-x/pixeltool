@@ -16,9 +16,12 @@ export interface PercentageResult {
 	explanation: string
 }
 
+// Helper function to format numbers
+const formatNumber = (num: number): string => {
+	return parseFloat(num.toFixed(2)).toString()
+}
+
 export function usePercentageCalculator() {
-	const [activeType, setActiveType] =
-		useState<CalculationType>('percentOfNumber')
 	const [values, setValues] = useState({
 		// Percent of number
 		percentOfValue: '',
@@ -98,7 +101,7 @@ export function usePercentageCalculator() {
 				type: 'whatPercent',
 				result,
 				formula: `(${value1} ÷ ${value2}) × 100 = ${result}%`,
-				explanation: `${value1} is ${result.toFixed(2)}% of ${value2}`
+				explanation: `${value1} is ${formatNumber(result)}% of ${value2}`
 			}
 		}))
 	}, [values.whatPercentValue1, values.whatPercentValue2])
@@ -145,7 +148,7 @@ export function usePercentageCalculator() {
 				type: 'percentChange',
 				result,
 				formula: `((${newValue} - ${oldValue}) ÷ ${oldValue}) × 100 = ${result}%`,
-				explanation: `${result > 0 ? 'Increase' : 'Decrease'} of ${Math.abs(result).toFixed(2)}%`
+				explanation: `${result > 0 ? 'Increase' : 'Decrease'} of ${formatNumber(Math.abs(result))}%`
 			}
 		}))
 	}, [values.changeOldValue, values.changeNewValue])
@@ -198,38 +201,27 @@ export function usePercentageCalculator() {
 		}))
 	}, [values.addSubtractValue, values.addSubtractPercentage])
 
-	// Auto-calculate based on active type and values
+	// Auto-calculate all types when values change
 	useEffect(() => {
-		switch (activeType) {
-			case 'percentOfNumber':
-				calculatePercentOfNumber()
-				break
-			case 'whatPercent':
-				calculateWhatPercent()
-				break
-			case 'findTotal':
-				calculateFindTotal()
-				break
-			case 'percentChange':
-				calculatePercentChange()
-				break
-			case 'addPercent':
-				calculateAddPercent()
-				break
-			case 'subtractPercent':
-				calculateSubtractPercent()
-				break
-		}
-	}, [
-		activeType,
-		values,
-		calculatePercentOfNumber,
-		calculateWhatPercent,
-		calculateFindTotal,
-		calculatePercentChange,
-		calculateAddPercent,
-		calculateSubtractPercent
-	])
+		calculatePercentOfNumber()
+	}, [values.percentOfValue, values.percentOfPercentage])
+
+	useEffect(() => {
+		calculateWhatPercent()
+	}, [values.whatPercentValue1, values.whatPercentValue2])
+
+	useEffect(() => {
+		calculateFindTotal()
+	}, [values.findTotalValue, values.findTotalPercentage])
+
+	useEffect(() => {
+		calculatePercentChange()
+	}, [values.changeOldValue, values.changeNewValue])
+
+	useEffect(() => {
+		calculateAddPercent()
+		calculateSubtractPercent()
+	}, [values.addSubtractValue, values.addSubtractPercentage])
 
 	// Copy result
 	const copyResult = useCallback(
@@ -242,7 +234,7 @@ export function usePercentageCalculator() {
 
 			const text = `${result.explanation}\nFormula: ${result.formula}`
 			navigator.clipboard.writeText(text)
-			toast.success('Result copied!')
+			toast.success('Copied!')
 		},
 		[results]
 	)
@@ -269,45 +261,46 @@ export function usePercentageCalculator() {
 			addPercent: null,
 			subtractPercent: null
 		})
-		toast.success('Calculator reset')
+		// Silent reset - no toast needed
 	}, [])
 
-	// Load example for current type
-	const loadExample = useCallback(() => {
-		switch (activeType) {
-			case 'percentOfNumber':
-				updateValue('percentOfValue', '200')
-				updateValue('percentOfPercentage', '15')
-				break
-			case 'whatPercent':
-				updateValue('whatPercentValue1', '25')
-				updateValue('whatPercentValue2', '200')
-				break
-			case 'findTotal':
-				updateValue('findTotalValue', '30')
-				updateValue('findTotalPercentage', '15')
-				break
-			case 'percentChange':
-				updateValue('changeOldValue', '100')
-				updateValue('changeNewValue', '125')
-				break
-			case 'addPercent':
-			case 'subtractPercent':
-				updateValue('addSubtractValue', '100')
-				updateValue('addSubtractPercentage', '20')
-				break
-		}
-		toast.success('Example loaded')
-	}, [activeType, updateValue])
+	// Load example for specific type
+	const loadExample = useCallback(
+		(type: CalculationType) => {
+			switch (type) {
+				case 'percentOfNumber':
+					updateValue('percentOfValue', '200')
+					updateValue('percentOfPercentage', '15')
+					break
+				case 'whatPercent':
+					updateValue('whatPercentValue1', '25')
+					updateValue('whatPercentValue2', '200')
+					break
+				case 'findTotal':
+					updateValue('findTotalValue', '30')
+					updateValue('findTotalPercentage', '15')
+					break
+				case 'percentChange':
+					updateValue('changeOldValue', '100')
+					updateValue('changeNewValue', '125')
+					break
+				case 'addPercent':
+				case 'subtractPercent':
+					updateValue('addSubtractValue', '100')
+					updateValue('addSubtractPercentage', '20')
+					break
+			}
+			// Silent load - no toast needed
+		},
+		[updateValue]
+	)
 
 	return {
 		// State
-		activeType,
 		values,
 		results,
 
 		// Actions
-		setActiveType,
 		updateValue,
 		copyResult,
 		reset,

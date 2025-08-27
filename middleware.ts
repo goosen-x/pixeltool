@@ -8,6 +8,11 @@ export default function middleware(request: NextRequest) {
 	// Get the pathname of the request (e.g. /, /en, /ru, /rufd)
 	const pathname = request.nextUrl.pathname
 
+	// Skip locale processing for social redirect routes
+	if (pathname.startsWith('/s/')) {
+		return
+	}
+
 	// Extract the locale from the pathname
 	const pathnameLocale = pathname.split('/')[1]
 
