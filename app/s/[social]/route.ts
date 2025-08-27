@@ -4,9 +4,9 @@ import { NextRequest } from 'next/server'
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { social: string } }
+	{ params }: { params: Promise<{ social: string }> }
 ) {
-	const { social } = params
+	const { social } = await params
 
 	// Check if it's a valid social link
 	const socialLink = SOCIAL_LINKS[social]
