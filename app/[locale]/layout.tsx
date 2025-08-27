@@ -134,18 +134,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			site: '@pixeltool'
 		},
 		other: {
-			// Telegram
-			'telegram:image': 'https://pixeltool.pro/og-image.png',
-			// Дополнительные OG теги для лучшей совместимости
-			'og:image:secure_url': 'https://pixeltool.pro/og-image.png',
-			'og:image:width': '1024',
-			'og:image:height': '1024',
-			'og:locale:alternate': locale === 'ru' ? 'en_US' : 'ru_RU',
-			// Twitter дополнительные теги
-			'twitter:image': 'https://pixeltool.pro/og-image.png',
-			'twitter:image:alt': 'PixelTool - Professional Developer Tools',
-			// WhatsApp
-			'og:site': 'PixelTool',
 			// VK
 			'vk:image': 'https://pixeltool.pro/og-image.png'
 		},
