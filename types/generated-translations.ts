@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-26T18:51:24.226Z
+// Generated on: 2025-08-27T19:50:57.431Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -822,6 +822,7 @@ export interface GeneratedTranslations {
       parameters: {
         title: string
         viewAll: string
+        showLess: string
       }
       history: {
         title: string
@@ -1414,6 +1415,13 @@ export interface GeneratedTranslations {
         is: string
         ofWhat: string
         equals: string
+        increase: string
+        decrease: string
+        empty: string
+        whatIs: string
+        percentOf: string
+        isWhatPercentOf: string
+        percentOfQuestion: string
       }
       calculate: string
       formula: string
@@ -1424,6 +1432,14 @@ export interface GeneratedTranslations {
         percentChange: string
         increase: string
         decrease: string
+        addPercent: string
+        subtractPercent: string
+      }
+      explanations: {
+        percentOf: string
+        whatPercent: string
+        findTotal: string
+        percentChange: string
         addPercent: string
         subtractPercent: string
       }
@@ -1442,6 +1458,16 @@ export interface GeneratedTranslations {
         loadExample: string
         copy: string
         reset: string
+      }
+      toast: {
+        presetApplied: string
+        copied: string
+        allCleared: string
+        historyCleared: string
+      }
+      quickPresets: string
+      recent: {
+        title: string
       }
       info: {
         title: string
@@ -2101,6 +2127,9 @@ export interface GeneratedTranslations {
         about: string
         referencePoints: string
         placeholder: string
+        presets: string
+        history: string
+        temperatureControl: string
       }
       inputs: {
         temperature: {
@@ -2124,6 +2153,7 @@ export interface GeneratedTranslations {
       actions: {
         swap: string
         reset: string
+        copy: string
       }
       quickValues: {
         "ноль": string
@@ -2145,10 +2175,14 @@ export interface GeneratedTranslations {
         veryHot: string
         boiling: string
         extremelyHot: string
+        belowFreezing: string
+        liquidWater: string
+        aboveBoiling: string
       }
       context: {
         aboveAbsoluteZero: string
         exactly: string
+        fromAbsoluteZero: string
       }
       references: {
         absoluteZero: string
@@ -2183,6 +2217,7 @@ export interface GeneratedTranslations {
         formulas: string
         applications: string
         facts: string
+        currentTemp: string
         celsiusDesc: string
         fahrenheitDesc: string
         kelvinDesc: string
@@ -2201,9 +2236,18 @@ export interface GeneratedTranslations {
         conversionError: string
         valueLoaded: string
         reset: string
+        presetLoaded: string
       }
       placeholder: {
         enterTemperature: string
+      }
+      presets: {
+        absoluteZero: string
+        waterFreeze: string
+        roomTemp: string
+        bodyTemp: string
+        waterBoil: string
+        oven: string
       }
     }
     bmiCalculator: {
@@ -2497,10 +2541,36 @@ export interface GeneratedTranslations {
       longBreakDuration: string
       sessionsUntilLongBreak: string
     }
-    currencyConverter?: {
+    currencyConverter: {
       title: string
       description: string
       useCase: string
+      from: string
+      to: string
+      amount: string
+      result: string
+      searchCurrency: string
+      noCurrencyFound: string
+      favorites: string
+      allCurrencies: string
+      selectFromCurrency: string
+      selectToCurrency: string
+      exchangeRate: string
+      copyResult: string
+      reset: string
+      history: string
+      toast: {
+        swapped: string
+        copied: string
+        reset: string
+        addedToFavorites: string
+        removedFromFavorites: string
+      }
+      info: {
+        title: string
+        disclaimer: string
+        sources: string
+      }
     }
     textDiff?: {
       title: string

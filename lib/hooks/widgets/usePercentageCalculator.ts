@@ -265,32 +265,35 @@ export function usePercentageCalculator() {
 	}, [])
 
 	// Load example for specific type
-	const loadExample = useCallback((type: CalculationType) => {
-		switch (type) {
-			case 'percentOfNumber':
-				updateValue('percentOfValue', '200')
-				updateValue('percentOfPercentage', '15')
-				break
-			case 'whatPercent':
-				updateValue('whatPercentValue1', '25')
-				updateValue('whatPercentValue2', '200')
-				break
-			case 'findTotal':
-				updateValue('findTotalValue', '30')
-				updateValue('findTotalPercentage', '15')
-				break
-			case 'percentChange':
-				updateValue('changeOldValue', '100')
-				updateValue('changeNewValue', '125')
-				break
-			case 'addPercent':
-			case 'subtractPercent':
-				updateValue('addSubtractValue', '100')
-				updateValue('addSubtractPercentage', '20')
-				break
-		}
-		// Silent load - no toast needed
-	}, [updateValue])
+	const loadExample = useCallback(
+		(type: CalculationType) => {
+			switch (type) {
+				case 'percentOfNumber':
+					updateValue('percentOfValue', '200')
+					updateValue('percentOfPercentage', '15')
+					break
+				case 'whatPercent':
+					updateValue('whatPercentValue1', '25')
+					updateValue('whatPercentValue2', '200')
+					break
+				case 'findTotal':
+					updateValue('findTotalValue', '30')
+					updateValue('findTotalPercentage', '15')
+					break
+				case 'percentChange':
+					updateValue('changeOldValue', '100')
+					updateValue('changeNewValue', '125')
+					break
+				case 'addPercent':
+				case 'subtractPercent':
+					updateValue('addSubtractValue', '100')
+					updateValue('addSubtractPercentage', '20')
+					break
+			}
+			// Silent load - no toast needed
+		},
+		[updateValue]
+	)
 
 	return {
 		// State

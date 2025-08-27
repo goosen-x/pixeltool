@@ -11,7 +11,7 @@ import { useTranslations } from 'next-intl'
 
 export default function EmojiListPage() {
 	const t = useTranslations('widgets.emojiList')
-	
+
 	const [selectedCategory, setSelectedCategory] = useState<
 		CategoryId | 'all' | 'recent'
 	>('all')

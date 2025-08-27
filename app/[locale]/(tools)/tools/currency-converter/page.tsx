@@ -36,7 +36,7 @@ import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
-	DialogTitle,
+	DialogTitle
 } from '@/components/ui/dialog'
 import {
 	Command,
@@ -44,13 +44,13 @@ import {
 	CommandGroup,
 	CommandInput,
 	CommandItem,
-	CommandList,
+	CommandList
 } from '@/components/ui/command'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
-	TooltipTrigger,
+	TooltipTrigger
 } from '@/components/ui/tooltip'
 
 interface Currency {
@@ -200,19 +200,20 @@ export default function CurrencyConverterPage() {
 		}
 
 		setIsConverting(true)
-		
+
 		// Simulate API call with animation
 		setTimeout(() => {
 			// Convert from source currency to USD
 			const amountInUSD = numAmount / EXCHANGE_RATES[fromCurrency.code]
 			// Convert from USD to target currency
 			const convertedAmount = amountInUSD * EXCHANGE_RATES[toCurrency.code]
-			
+
 			setResult(convertedAmount)
 			setIsConverting(false)
-			
+
 			// Add to history
-			const rate = EXCHANGE_RATES[toCurrency.code] / EXCHANGE_RATES[fromCurrency.code]
+			const rate =
+				EXCHANGE_RATES[toCurrency.code] / EXCHANGE_RATES[fromCurrency.code]
 			const newEntry = {
 				from: fromCurrency,
 				to: toCurrency,
@@ -262,10 +263,10 @@ export default function CurrencyConverterPage() {
 		const newFavorites = favorites.includes(code)
 			? favorites.filter(f => f !== code)
 			: [...favorites, code]
-		
+
 		setFavorites(newFavorites)
 		localStorage.setItem('currency-favorites', JSON.stringify(newFavorites))
-		
+
 		toast.success(
 			favorites.includes(code)
 				? t('toast.removedFromFavorites') || 'Удалено из избранного'
@@ -296,14 +297,14 @@ export default function CurrencyConverterPage() {
 	}
 
 	// Currency selector component
-	const CurrencySelector = ({ 
-		value, 
-		onChange, 
-		open, 
+	const CurrencySelector = ({
+		value,
+		onChange,
+		open,
 		onOpenChange,
 		search,
 		onSearchChange,
-		label 
+		label
 	}: {
 		value: Currency
 		onChange: (currency: Currency) => void
@@ -314,47 +315,53 @@ export default function CurrencyConverterPage() {
 		label: string
 	}) => {
 		const filteredCurrencies = CURRENCIES.filter(
-			currency => 
+			currency =>
 				currency.code.toLowerCase().includes(search.toLowerCase()) ||
 				currency.name.toLowerCase().includes(search.toLowerCase())
 		)
 
-		const favoriteCurrencies = filteredCurrencies.filter(c => favorites.includes(c.code))
-		const otherCurrencies = filteredCurrencies.filter(c => !favorites.includes(c.code))
+		const favoriteCurrencies = filteredCurrencies.filter(c =>
+			favorites.includes(c.code)
+		)
+		const otherCurrencies = filteredCurrencies.filter(
+			c => !favorites.includes(c.code)
+		)
 
 		return (
 			<Dialog open={open} onOpenChange={onOpenChange}>
 				<Button
-					variant="outline"
-					className="w-full justify-between text-left font-normal h-16 px-4"
+					variant='outline'
+					className='w-full justify-between text-left font-normal h-16 px-4'
 					onClick={() => onOpenChange(true)}
 				>
-					<div className="flex items-center gap-3">
-						<span className="text-2xl">{value.flag}</span>
+					<div className='flex items-center gap-3'>
+						<span className='text-2xl'>{value.flag}</span>
 						<div>
-							<div className="font-semibold">{value.code}</div>
-							<div className="text-xs text-muted-foreground">{value.name}</div>
+							<div className='font-semibold'>{value.code}</div>
+							<div className='text-xs text-muted-foreground'>{value.name}</div>
 						</div>
 					</div>
-					<ChevronDown className="h-4 w-4 opacity-50" />
+					<ChevronDown className='h-4 w-4 opacity-50' />
 				</Button>
 
-				<DialogContent className="max-w-[400px] p-0">
-					<DialogHeader className="p-6 pb-0">
+				<DialogContent className='max-w-[400px] p-0'>
+					<DialogHeader className='p-6 pb-0'>
 						<DialogTitle>{label}</DialogTitle>
 					</DialogHeader>
-					<Command className="border-0">
-						<CommandInput 
-							placeholder={t('searchCurrency') || "Поиск валюты..."}
+					<Command className='border-0'>
+						<CommandInput
+							placeholder={t('searchCurrency') || 'Поиск валюты...'}
 							value={search}
 							onValueChange={onSearchChange}
 						/>
 						<CommandList>
-							<CommandEmpty>{t('noCurrencyFound') || "Валюта не найдена"}</CommandEmpty>
-							
+							<CommandEmpty>
+								{t('noCurrencyFound') || 'Валюта не найдена'}
+							</CommandEmpty>
+
 							{favoriteCurrencies.length > 0 && (
-								<CommandGroup heading={t('favorites') || "Избранные"}>
-									{favoriteCurrencies.map((currency) => (
+								<CommandGroup heading={t('favorites') || 'Избранные'}>
+									{favoriteCurrencies.map(currency => (
 										<CommandItem
 											key={currency.code}
 											value={currency.code}
@@ -363,27 +370,27 @@ export default function CurrencyConverterPage() {
 												onOpenChange(false)
 												onSearchChange('')
 											}}
-											className="flex items-center justify-between py-3"
+											className='flex items-center justify-between py-3'
 										>
-											<div className="flex items-center gap-3">
-												<span className="text-2xl">{currency.flag}</span>
+											<div className='flex items-center gap-3'>
+												<span className='text-2xl'>{currency.flag}</span>
 												<div>
-													<div className="font-medium">{currency.code}</div>
-													<div className="text-sm text-muted-foreground">
+													<div className='font-medium'>{currency.code}</div>
+													<div className='text-sm text-muted-foreground'>
 														{currency.name}
 													</div>
 												</div>
 											</div>
-											<div className="flex items-center gap-2">
+											<div className='flex items-center gap-2'>
 												<Star
 													className={cn(
-														"h-4 w-4",
+														'h-4 w-4',
 														favorites.includes(currency.code)
-															? "fill-yellow-500 text-yellow-500"
-															: "text-muted-foreground"
+															? 'fill-yellow-500 text-yellow-500'
+															: 'text-muted-foreground'
 													)}
 												/>
-												<span className="text-sm font-mono text-muted-foreground">
+												<span className='text-sm font-mono text-muted-foreground'>
 													{currency.symbol}
 												</span>
 											</div>
@@ -391,10 +398,10 @@ export default function CurrencyConverterPage() {
 									))}
 								</CommandGroup>
 							)}
-							
+
 							{otherCurrencies.length > 0 && (
-								<CommandGroup heading={t('allCurrencies') || "Все валюты"}>
-									{otherCurrencies.map((currency) => (
+								<CommandGroup heading={t('allCurrencies') || 'Все валюты'}>
+									{otherCurrencies.map(currency => (
 										<CommandItem
 											key={currency.code}
 											value={currency.code}
@@ -403,35 +410,35 @@ export default function CurrencyConverterPage() {
 												onOpenChange(false)
 												onSearchChange('')
 											}}
-											className="flex items-center justify-between py-3"
+											className='flex items-center justify-between py-3'
 										>
-											<div className="flex items-center gap-3">
-												<span className="text-2xl">{currency.flag}</span>
+											<div className='flex items-center gap-3'>
+												<span className='text-2xl'>{currency.flag}</span>
 												<div>
-													<div className="font-medium">{currency.code}</div>
-													<div className="text-sm text-muted-foreground">
+													<div className='font-medium'>{currency.code}</div>
+													<div className='text-sm text-muted-foreground'>
 														{currency.name}
 													</div>
 												</div>
 											</div>
-											<div className="flex items-center gap-2">
+											<div className='flex items-center gap-2'>
 												<button
-													onClick={(e) => {
+													onClick={e => {
 														e.stopPropagation()
 														toggleFavorite(currency.code)
 													}}
-													className="p-1 hover:bg-muted rounded"
+													className='p-1 hover:bg-muted rounded'
 												>
 													<Star
 														className={cn(
-															"h-4 w-4",
+															'h-4 w-4',
 															favorites.includes(currency.code)
-																? "fill-yellow-500 text-yellow-500"
-																: "text-muted-foreground"
+																? 'fill-yellow-500 text-yellow-500'
+																: 'text-muted-foreground'
 														)}
 													/>
 												</button>
-												<span className="text-sm font-mono text-muted-foreground">
+												<span className='text-sm font-mono text-muted-foreground'>
 													{currency.symbol}
 												</span>
 											</div>
@@ -452,33 +459,37 @@ export default function CurrencyConverterPage() {
 				{/* Main Converter Card */}
 				<Card className='relative overflow-hidden'>
 					{/* Background gradient */}
-					<div className={cn(
-						'absolute inset-0 bg-gradient-to-br opacity-5',
-						CURRENCY_GRADIENTS[fromCurrency.code]
-					)} />
-					
+					<div
+						className={cn(
+							'absolute inset-0 bg-gradient-to-br opacity-5',
+							CURRENCY_GRADIENTS[fromCurrency.code]
+						)}
+					/>
+
 					<CardContent className='relative p-6 lg:p-8'>
 						<div className='space-y-6'>
 							{/* Amount Presets */}
 							<div className='flex flex-wrap gap-2'>
-								{AMOUNT_PRESETS.map((preset) => (
+								{AMOUNT_PRESETS.map(preset => (
 									<Button
 										key={preset}
-										variant={amount === preset.toString() ? 'default' : 'outline'}
-										size="sm"
+										variant={
+											amount === preset.toString() ? 'default' : 'outline'
+										}
+										size='sm'
 										onClick={() => setAmount(preset.toString())}
-										className="transition-all"
+										className='transition-all'
 									>
 										{preset.toLocaleString('ru-RU')}
 									</Button>
 								))}
 								<Button
-									variant="outline"
-									size="sm"
+									variant='outline'
+									size='sm'
 									onClick={() => setAmount('')}
-									className="transition-all"
+									className='transition-all'
 								>
-									<Calculator className="h-4 w-4" />
+									<Calculator className='h-4 w-4' />
 								</Button>
 							</div>
 
@@ -502,7 +513,7 @@ export default function CurrencyConverterPage() {
 										<Input
 											type='number'
 											value={amount}
-											onChange={(e) => setAmount(e.target.value)}
+											onChange={e => setAmount(e.target.value)}
 											placeholder='0.00'
 											className='text-2xl lg:text-3xl font-bold h-16 pr-12'
 											min='0'
@@ -541,10 +552,10 @@ export default function CurrencyConverterPage() {
 										label={t('selectToCurrency') || 'Выберите валюту'}
 									/>
 									<div className='relative'>
-										<AnimatePresence mode="wait">
+										<AnimatePresence mode='wait'>
 											{isConverting ? (
 												<motion.div
-													key="loading"
+													key='loading'
 													initial={{ opacity: 0 }}
 													animate={{ opacity: 1 }}
 													exit={{ opacity: 0 }}
@@ -558,16 +569,18 @@ export default function CurrencyConverterPage() {
 												</motion.div>
 											) : (
 												<motion.div
-													key="result"
+													key='result'
 													initial={{ opacity: 0, y: 20 }}
 													animate={{ opacity: 1, y: 0 }}
 													exit={{ opacity: 0, y: -20 }}
 													className='text-2xl lg:text-3xl font-bold h-16 flex items-center px-4 bg-muted rounded-lg'
 												>
-													<span className={cn(
-														'bg-gradient-to-r bg-clip-text text-transparent',
-														CURRENCY_GRADIENTS[toCurrency.code]
-													)}>
+													<span
+														className={cn(
+															'bg-gradient-to-r bg-clip-text text-transparent',
+															CURRENCY_GRADIENTS[toCurrency.code]
+														)}
+													>
 														{formatNumber(result)}
 													</span>
 													<span className='ml-3 text-muted-foreground'>
@@ -588,7 +601,12 @@ export default function CurrencyConverterPage() {
 									</div>
 									<div className='text-sm'>
 										<p className='font-medium'>
-											1 {fromCurrency.code} = {getExchangeRate(fromCurrency.code, toCurrency.code).toFixed(4)} {toCurrency.code}
+											1 {fromCurrency.code} ={' '}
+											{getExchangeRate(
+												fromCurrency.code,
+												toCurrency.code
+											).toFixed(4)}{' '}
+											{toCurrency.code}
 										</p>
 										<p className='text-muted-foreground'>
 											{t('exchangeRate') || 'Обменный курс'}
@@ -598,11 +616,7 @@ export default function CurrencyConverterPage() {
 								<div className='flex gap-2'>
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<Button
-												size='icon'
-												variant='ghost'
-												onClick={copyResult}
-											>
+											<Button size='icon' variant='ghost' onClick={copyResult}>
 												<Copy className='h-4 w-4' />
 											</Button>
 										</TooltipTrigger>
@@ -641,7 +655,9 @@ export default function CurrencyConverterPage() {
 							<CardContent className='p-6'>
 								<div className='flex items-center gap-2 mb-4'>
 									<History className='h-5 w-5 text-primary' />
-									<h3 className='font-semibold'>{t('history') || 'История конвертаций'}</h3>
+									<h3 className='font-semibold'>
+										{t('history') || 'История конвертаций'}
+									</h3>
 								</div>
 								<div className='space-y-3'>
 									{history.map((entry, index) => (
@@ -660,14 +676,22 @@ export default function CurrencyConverterPage() {
 											<div className='flex items-center gap-3'>
 												<div className='flex items-center gap-2'>
 													<span className='text-lg'>{entry.from.flag}</span>
-													<span className='font-medium'>{entry.amount.toLocaleString('ru-RU')}</span>
-													<span className='text-muted-foreground'>{entry.from.code}</span>
+													<span className='font-medium'>
+														{entry.amount.toLocaleString('ru-RU')}
+													</span>
+													<span className='text-muted-foreground'>
+														{entry.from.code}
+													</span>
 												</div>
 												<ArrowRight className='h-4 w-4 text-muted-foreground' />
 												<div className='flex items-center gap-2'>
 													<span className='text-lg'>{entry.to.flag}</span>
-													<span className='font-medium'>{entry.result.toFixed(2)}</span>
-													<span className='text-muted-foreground'>{entry.to.code}</span>
+													<span className='font-medium'>
+														{entry.result.toFixed(2)}
+													</span>
+													<span className='text-muted-foreground'>
+														{entry.to.code}
+													</span>
 												</div>
 											</div>
 											<div className='flex items-center gap-2'>
@@ -700,11 +724,19 @@ export default function CurrencyConverterPage() {
 						<CardContent className='p-6'>
 							<div className='flex items-center gap-2 mb-3'>
 								<Info className='h-4 w-4 text-muted-foreground' />
-								<h3 className='font-medium'>{t('info.title') || 'Информация'}</h3>
+								<h3 className='font-medium'>
+									{t('info.title') || 'Информация'}
+								</h3>
 							</div>
 							<div className='space-y-2 text-sm text-muted-foreground'>
-								<p>{t('info.disclaimer') || 'Данный калькулятор использует фиксированные курсы валют для демонстрации.'}</p>
-								<p>{t('info.sources') || 'Для получения актуальных курсов используйте официальные источники.'}</p>
+								<p>
+									{t('info.disclaimer') ||
+										'Данный калькулятор использует фиксированные курсы валют для демонстрации.'}
+								</p>
+								<p>
+									{t('info.sources') ||
+										'Для получения актуальных курсов используйте официальные источники.'}
+								</p>
 							</div>
 						</CardContent>
 					</Card>

@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 
 export function EmojiInfo() {
 	const t = useTranslations('widgets.emojiList')
-	
+
 	return (
 		<Card className='p-6 bg-muted/50'>
 			<h3 className='font-semibold mb-3'>{t('aboutTitle')}</h3>
@@ -29,16 +29,12 @@ export function EmojiInfo() {
 					</ul>
 				</div>
 			</div>
-			<p className='text-xs mt-4'>
-				{t('compatibilityNote')}
-			</p>
+			<p className='text-xs mt-4'>{t('compatibilityNote')}</p>
 			<div className='mt-4 p-4 bg-background rounded-lg'>
 				<h4 className='font-medium text-foreground mb-2 text-sm'>
 					{t('usingSocialMedia')}
 				</h4>
-				<p className='text-xs'>
-					{t('socialMediaDescription')}
-				</p>
+				<p className='text-xs'>{t('socialMediaDescription')}</p>
 			</div>
 		</Card>
 	)

@@ -1645,7 +1645,11 @@ export const widgets: Widget[] = [
 		translationKey: 'tipCalculator',
 		path: 'tip-calculator',
 		gradient: 'from-emerald-500 to-teal-600',
-		recommendedTools: ['percentage-calculator', 'currency-converter', 'loan-calculator'],
+		recommendedTools: [
+			'percentage-calculator',
+			'currency-converter',
+			'loan-calculator'
+		],
 		difficulty: 'beginner',
 		tags: ['calculator', 'tip', 'gratuity', 'restaurant', 'service', 'money'],
 		useCase:

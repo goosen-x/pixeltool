@@ -143,19 +143,19 @@ export function getBaseUrl(): string {
 	if (typeof window !== 'undefined') {
 		return window.location.origin
 	}
-	
+
 	// For server-side
 	if (process.env.NEXT_PUBLIC_SITE_URL) {
 		return process.env.NEXT_PUBLIC_SITE_URL
 	}
-	
+
 	// Fallback
 	return 'https://pixeltool.pro'
 }
 
 // Generate full URL with UTM parameters (defaults to English)
 export function generateSocialUrl(
-	shortCode: string, 
+	shortCode: string,
 	additionalParams?: Record<string, string>,
 	locale: string = 'en'
 ): string {
@@ -163,22 +163,22 @@ export function generateSocialUrl(
 	if (!social) {
 		return `${getBaseUrl()}/en`
 	}
-	
+
 	const url = new URL(`${getBaseUrl()}/${locale}`)
 	url.searchParams.set('utm_source', social.utm_source)
 	url.searchParams.set('utm_medium', social.utm_medium)
-	
+
 	if (social.utm_campaign) {
 		url.searchParams.set('utm_campaign', social.utm_campaign)
 	}
-	
+
 	// Add any additional parameters
 	if (additionalParams) {
 		Object.entries(additionalParams).forEach(([key, value]) => {
 			url.searchParams.set(key, value)
 		})
 	}
-	
+
 	return url.toString()
 }
 

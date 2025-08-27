@@ -32,13 +32,13 @@ import {
 	Facebook,
 	Instagram
 } from 'lucide-react'
-import { 
-	FaGoogle, 
-	FaYandex, 
-	FaVk, 
-	FaFacebookF, 
+import {
+	FaGoogle,
+	FaYandex,
+	FaVk,
+	FaFacebookF,
 	FaInstagram,
-	FaEnvelope 
+	FaEnvelope
 } from 'react-icons/fa'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
@@ -72,59 +72,59 @@ interface SavedLink {
 }
 
 const PRESETS: Preset[] = [
-	{ 
+	{
 		id: 'google-ads',
-		name: 'Google Ads', 
-		source: 'google', 
+		name: 'Google Ads',
+		source: 'google',
 		medium: 'cpc',
-		icon: <FaGoogle className="w-5 h-5" />,
+		icon: <FaGoogle className='w-5 h-5' />,
 		color: 'text-blue-600',
 		gradient: 'from-blue-500 to-blue-600',
 		popular: true
 	},
-	{ 
+	{
 		id: 'yandex',
-		name: 'Yandex.Direct', 
-		source: 'yandex', 
+		name: 'Yandex.Direct',
+		source: 'yandex',
 		medium: 'cpc',
-		icon: <FaYandex className="w-5 h-5" />,
+		icon: <FaYandex className='w-5 h-5' />,
 		color: 'text-red-600',
 		gradient: 'from-red-500 to-red-600',
 		popular: true
 	},
-	{ 
+	{
 		id: 'vk',
-		name: 'VKontakte', 
-		source: 'vk', 
+		name: 'VKontakte',
+		source: 'vk',
 		medium: 'social',
-		icon: <FaVk className="w-5 h-5" />,
+		icon: <FaVk className='w-5 h-5' />,
 		color: 'text-blue-500',
 		gradient: 'from-blue-400 to-blue-500'
 	},
-	{ 
+	{
 		id: 'facebook',
-		name: 'Facebook', 
-		source: 'facebook', 
+		name: 'Facebook',
+		source: 'facebook',
 		medium: 'social',
-		icon: <FaFacebookF className="w-5 h-5" />,
+		icon: <FaFacebookF className='w-5 h-5' />,
 		color: 'text-indigo-600',
 		gradient: 'from-indigo-500 to-indigo-600'
 	},
-	{ 
+	{
 		id: 'instagram',
-		name: 'Instagram', 
-		source: 'instagram', 
+		name: 'Instagram',
+		source: 'instagram',
 		medium: 'social',
-		icon: <FaInstagram className="w-5 h-5" />,
+		icon: <FaInstagram className='w-5 h-5' />,
 		color: 'text-pink-600',
 		gradient: 'from-pink-500 to-purple-600'
 	},
-	{ 
+	{
 		id: 'email',
-		name: 'Email', 
-		source: 'newsletter', 
+		name: 'Email',
+		source: 'newsletter',
 		medium: 'email',
-		icon: <FaEnvelope className="w-5 h-5" />,
+		icon: <FaEnvelope className='w-5 h-5' />,
 		color: 'text-green-600',
 		gradient: 'from-green-500 to-green-600',
 		popular: true
@@ -336,8 +336,8 @@ export default function UTMBuilderPage() {
 							>
 								<History className='w-4 h-4' />
 								{history.length > 0 && (
-									<Badge 
-										variant='secondary' 
+									<Badge
+										variant='secondary'
 										className='absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]'
 									>
 										{history.length}
@@ -365,7 +365,8 @@ export default function UTMBuilderPage() {
 								onBlur={() => handleFieldBlur('url')}
 								className={cn(
 									'rounded-l-none flex-1',
-									isFieldInvalid('url', params.url) && 'border-red-500 focus:ring-red-500'
+									isFieldInvalid('url', params.url) &&
+										'border-red-500 focus:ring-red-500'
 								)}
 							/>
 						</div>
@@ -441,11 +442,13 @@ export default function UTMBuilderPage() {
 							onClick={() => handlePresetSelect(preset.id)}
 						>
 							<CardContent className='p-4 text-center space-y-2'>
-								<div className={cn(
-									'w-12 h-12 rounded-lg flex items-center justify-center mx-auto bg-gradient-to-br',
-									preset.gradient,
-									'text-white'
-								)}>
+								<div
+									className={cn(
+										'w-12 h-12 rounded-lg flex items-center justify-center mx-auto bg-gradient-to-br',
+										preset.gradient,
+										'text-white'
+									)}
+								>
 									{preset.icon}
 								</div>
 								<h4 className='font-medium text-sm'>{preset.name}</h4>
@@ -454,7 +457,7 @@ export default function UTMBuilderPage() {
 								</p>
 							</CardContent>
 						</Card>
-				))}
+					))}
 				</div>
 			</div>
 
@@ -477,7 +480,8 @@ export default function UTMBuilderPage() {
 								onChange={e => setParams({ ...params, source: e.target.value })}
 								onBlur={() => handleFieldBlur('source')}
 								className={cn(
-									isFieldInvalid('source', params.source) && 'border-red-500 focus:ring-red-500'
+									isFieldInvalid('source', params.source) &&
+										'border-red-500 focus:ring-red-500'
 								)}
 							/>
 							<p className='text-xs text-muted-foreground'>
@@ -497,7 +501,8 @@ export default function UTMBuilderPage() {
 								onChange={e => setParams({ ...params, medium: e.target.value })}
 								onBlur={() => handleFieldBlur('medium')}
 								className={cn(
-									isFieldInvalid('medium', params.medium) && 'border-red-500 focus:ring-red-500'
+									isFieldInvalid('medium', params.medium) &&
+										'border-red-500 focus:ring-red-500'
 								)}
 							/>
 							<p className='text-xs text-muted-foreground'>
@@ -514,10 +519,13 @@ export default function UTMBuilderPage() {
 								id='campaign'
 								placeholder='summer-sale-2024'
 								value={params.campaign}
-								onChange={e => setParams({ ...params, campaign: e.target.value })}
+								onChange={e =>
+									setParams({ ...params, campaign: e.target.value })
+								}
 								onBlur={() => handleFieldBlur('campaign')}
 								className={cn(
-									isFieldInvalid('campaign', params.campaign) && 'border-red-500 focus:ring-red-500'
+									isFieldInvalid('campaign', params.campaign) &&
+										'border-red-500 focus:ring-red-500'
 								)}
 							/>
 							<p className='text-xs text-muted-foreground'>
@@ -551,7 +559,9 @@ export default function UTMBuilderPage() {
 										id='content'
 										placeholder='banner-header'
 										value={params.content}
-										onChange={e => setParams({ ...params, content: e.target.value })}
+										onChange={e =>
+											setParams({ ...params, content: e.target.value })
+										}
 									/>
 									<p className='text-xs text-muted-foreground'>
 										{t('form.contentHint')}
@@ -565,7 +575,9 @@ export default function UTMBuilderPage() {
 										id='term'
 										placeholder='buy iphone'
 										value={params.term}
-										onChange={e => setParams({ ...params, term: e.target.value })}
+										onChange={e =>
+											setParams({ ...params, term: e.target.value })
+										}
 									/>
 									<p className='text-xs text-muted-foreground'>
 										{t('form.termHint')}
@@ -576,42 +588,54 @@ export default function UTMBuilderPage() {
 					</div>
 
 					{/* Dynamic Parameters Info */}
-					{params.source && (params.source === 'google' || params.source === 'yandex' || params.source === 'vk') && DYNAMIC_PARAMS[params.source] && (
-						<div className='mt-4 p-3 bg-muted rounded-lg'>
-							<div className='flex items-center gap-2 mb-2'>
-								<Info className='w-4 h-4' />
-								<span className='text-sm font-medium'>{t('parameters.title')}</span>
+					{params.source &&
+						(params.source === 'google' ||
+							params.source === 'yandex' ||
+							params.source === 'vk') &&
+						DYNAMIC_PARAMS[params.source] && (
+							<div className='mt-4 p-3 bg-muted rounded-lg'>
+								<div className='flex items-center gap-2 mb-2'>
+									<Info className='w-4 h-4' />
+									<span className='text-sm font-medium'>
+										{t('parameters.title')}
+									</span>
+								</div>
+								<div className='space-y-1'>
+									{DYNAMIC_PARAMS[params.source]
+										.slice(0, showAllParams ? undefined : 3)
+										.map((param, index) => (
+											<div key={index} className='text-xs'>
+												<code className='bg-background px-1 py-0.5 rounded'>
+													{param.param}
+												</code>
+												<span className='text-muted-foreground ml-2'>
+													{param.desc}
+												</span>
+											</div>
+										))}
+									{DYNAMIC_PARAMS[params.source].length > 3 && (
+										<Button
+											variant='link'
+											size='sm'
+											className='p-0 h-auto text-xs'
+											onClick={() => setShowAllParams(!showAllParams)}
+										>
+											{showAllParams ? (
+												<>
+													{t('parameters.showLess')}{' '}
+													<ChevronRight className='w-3 h-3 ml-1 rotate-90' />
+												</>
+											) : (
+												<>
+													{t('parameters.viewAll')}{' '}
+													<ChevronRight className='w-3 h-3 ml-1' />
+												</>
+											)}
+										</Button>
+									)}
+								</div>
 							</div>
-							<div className='space-y-1'>
-								{DYNAMIC_PARAMS[params.source]
-									.slice(0, showAllParams ? undefined : 3)
-									.map((param, index) => (
-									<div key={index} className='text-xs'>
-										<code className='bg-background px-1 py-0.5 rounded'>{param.param}</code>
-										<span className='text-muted-foreground ml-2'>{param.desc}</span>
-									</div>
-								))}
-								{DYNAMIC_PARAMS[params.source].length > 3 && (
-									<Button
-										variant='link'
-										size='sm'
-										className='p-0 h-auto text-xs'
-										onClick={() => setShowAllParams(!showAllParams)}
-									>
-										{showAllParams ? (
-											<>
-												{t('parameters.showLess')} <ChevronRight className='w-3 h-3 ml-1 rotate-90' />
-											</>
-										) : (
-											<>
-												{t('parameters.viewAll')} <ChevronRight className='w-3 h-3 ml-1' />
-											</>
-										)}
-									</Button>
-								)}
-							</div>
-						</div>
-					)}
+						)}
 				</CardContent>
 			</Card>
 
@@ -625,18 +649,10 @@ export default function UTMBuilderPage() {
 								{t('history.title')}
 							</span>
 							<div className='flex gap-2'>
-								<Button
-									variant='ghost'
-									size='sm'
-									onClick={downloadHistory}
-								>
+								<Button variant='ghost' size='sm' onClick={downloadHistory}>
 									<Download className='w-4 h-4' />
 								</Button>
-								<Button
-									variant='ghost'
-									size='sm'
-									onClick={clearHistory}
-								>
+								<Button variant='ghost' size='sm' onClick={clearHistory}>
 									<Trash2 className='w-4 h-4' />
 								</Button>
 							</div>
@@ -645,15 +661,17 @@ export default function UTMBuilderPage() {
 					<CardContent>
 						<div className='space-y-2 max-h-64 overflow-y-auto'>
 							{history.slice(0, 10).map((item, index) => (
-								<div 
-									key={index} 
+								<div
+									key={index}
 									className='group p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors'
 									onClick={() => loadFromHistory(item)}
 								>
 									<div className='flex items-center justify-between'>
 										<div className='flex-1 min-w-0'>
 											<div className='flex items-center gap-2'>
-												<span className='font-medium text-sm truncate'>{item.name}</span>
+												<span className='font-medium text-sm truncate'>
+													{item.name}
+												</span>
 												<Badge variant='secondary' className='text-[10px]'>
 													{new Date(item.timestamp).toLocaleDateString()}
 												</Badge>
@@ -667,7 +685,7 @@ export default function UTMBuilderPage() {
 												size='icon'
 												variant='ghost'
 												className='h-7 w-7'
-												onClick={async (e) => {
+												onClick={async e => {
 													e.stopPropagation()
 													await navigator.clipboard.writeText(item.url)
 													toast.success(t('toast.copied'))

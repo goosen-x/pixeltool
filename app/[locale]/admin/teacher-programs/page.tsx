@@ -59,23 +59,27 @@ export default function TeacherProgramsAdminPage() {
 	const fetchPrograms = async () => {
 		try {
 			addLog('🔄 Получение списка программ...')
-			
+
 			// Попробуем сначала обычный запрос
-			let response = await fetch(`${apiUrl}/products`)
-			
+			const response = await fetch(`${apiUrl}/products`)
+
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 			}
 
 			let programs = await response.json()
-			
+
 			// Если получили ровно 100 записей, возможно есть еще (pagination)
 			if (programs.length === 100) {
-				addLog(`📄 Получено ${programs.length} программ, проверяем пагинацию...`)
-				
+				addLog(
+					`📄 Получено ${programs.length} программ, проверяем пагинацию...`
+				)
+
 				// Попробуем получить больше с параметрами pagination
 				try {
-					const paginatedResponse = await fetch(`${apiUrl}/products?_limit=1000`)
+					const paginatedResponse = await fetch(
+						`${apiUrl}/products?_limit=1000`
+					)
 					if (paginatedResponse.ok) {
 						const allPrograms = await paginatedResponse.json()
 						if (allPrograms.length > programs.length) {
@@ -84,13 +88,15 @@ export default function TeacherProgramsAdminPage() {
 						}
 					}
 				} catch (paginationError) {
-					addLog(`⚠️ Пагинация не поддерживается, используем ${programs.length} программ`)
+					addLog(
+						`⚠️ Пагинация не поддерживается, используем ${programs.length} программ`
+					)
 				}
 			}
 
 			setPrograms(programs)
 			addLog(`✅ Найдено программ: ${programs.length}`)
-			
+
 			return programs
 		} catch (error) {
 			const errorMsg = error instanceof Error ? error.message : 'Unknown error'
@@ -104,38 +110,46 @@ export default function TeacherProgramsAdminPage() {
 	const fetchTeachers = async () => {
 		try {
 			addLog('🔄 Получение списка преподавателей...')
-			
+
 			// Попробуем сначала обычный запрос
-			let response = await fetch(`${apiUrl}/teachers`)
-			
+			const response = await fetch(`${apiUrl}/teachers`)
+
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 			}
 
 			let teachers = await response.json()
-			
+
 			// Если получили ровно 100 записей, возможно есть еще (pagination)
 			if (teachers.length === 100) {
-				addLog(`📄 Получено ${teachers.length} преподавателей, проверяем пагинацию...`)
-				
+				addLog(
+					`📄 Получено ${teachers.length} преподавателей, проверяем пагинацию...`
+				)
+
 				// Попробуем получить больше с параметрами pagination
 				try {
-					const paginatedResponse = await fetch(`${apiUrl}/teachers?_limit=1000`)
+					const paginatedResponse = await fetch(
+						`${apiUrl}/teachers?_limit=1000`
+					)
 					if (paginatedResponse.ok) {
 						const allTeachers = await paginatedResponse.json()
 						if (allTeachers.length > teachers.length) {
 							teachers = allTeachers
-							addLog(`📄 Через пагинацию получено ${teachers.length} преподавателей`)
+							addLog(
+								`📄 Через пагинацию получено ${teachers.length} преподавателей`
+							)
 						}
 					}
 				} catch (paginationError) {
-					addLog(`⚠️ Пагинация не поддерживается, используем ${teachers.length} преподавателей`)
+					addLog(
+						`⚠️ Пагинация не поддерживается, используем ${teachers.length} преподавателей`
+					)
 				}
 			}
 
 			setTeachers(teachers)
 			addLog(`✅ Найдено преподавателей: ${teachers.length}`)
-			
+
 			return teachers
 		} catch (error) {
 			const errorMsg = error instanceof Error ? error.message : 'Unknown error'
@@ -149,27 +163,33 @@ export default function TeacherProgramsAdminPage() {
 	const fetchTeacher = async (id: number) => {
 		try {
 			addLog(`🔄 Получение данных преподавателя ${id}...`)
-			
+
 			// Сначала попробуем найти в уже загруженном списке
 			const teacherFromList = teachers.find(t => t.id === id)
 			if (teacherFromList) {
 				setSelectedTeacher(teacherFromList)
-				addLog(`✅ Преподаватель найден в списке: ${teacherFromList.name} (программ: ${teacherFromList.programs?.length || 0})`)
+				addLog(
+					`✅ Преподаватель найден в списке: ${teacherFromList.name} (программ: ${teacherFromList.programs?.length || 0})`
+				)
 				return teacherFromList
 			}
 
 			// Если не найден в списке, попробуем API запрос
 			const response = await fetch(`${apiUrl}/teachers/${id}`)
-			
+
 			if (!response.ok) {
 				// Если API не поддерживает запрос по ID, попробуем обновить список и найти там
-				addLog(`⚠️ Не удалось получить преподавателя по API (${response.status}), ищем в обновленном списке...`)
+				addLog(
+					`⚠️ Не удалось получить преподавателя по API (${response.status}), ищем в обновленном списке...`
+				)
 				const updatedTeachers = await fetchTeachers()
 				const teacher = updatedTeachers.find((t: Teacher) => t.id === id)
-				
+
 				if (teacher) {
 					setSelectedTeacher(teacher)
-					addLog(`✅ Преподаватель найден в обновленном списке: ${teacher.name} (программ: ${teacher.programs?.length || 0})`)
+					addLog(
+						`✅ Преподаватель найден в обновленном списке: ${teacher.name} (программ: ${teacher.programs?.length || 0})`
+					)
 					return teacher
 				} else {
 					throw new Error(`Преподаватель с ID ${id} не найден`)
@@ -178,8 +198,10 @@ export default function TeacherProgramsAdminPage() {
 
 			const teacher = await response.json()
 			setSelectedTeacher(teacher)
-			addLog(`✅ Преподаватель загружен: ${teacher.name} (программ: ${teacher.programs?.length || 0})`)
-			
+			addLog(
+				`✅ Преподаватель загружен: ${teacher.name} (программ: ${teacher.programs?.length || 0})`
+			)
+
 			return teacher
 		} catch (error) {
 			const errorMsg = error instanceof Error ? error.message : 'Unknown error'
@@ -197,7 +219,7 @@ export default function TeacherProgramsAdminPage() {
 		}
 
 		setLoading(true)
-		
+
 		try {
 			// 1. Получить все программы
 			const programs = await fetchPrograms()
@@ -223,16 +245,17 @@ export default function TeacherProgramsAdminPage() {
 			const result = await updateResponse.json()
 
 			if (updateResponse.ok) {
-				addLog(`✅ Успешно! Преподаватель привязан к ${result.programs?.length || programIds.length} программам`)
+				addLog(
+					`✅ Успешно! Преподаватель привязан к ${result.programs?.length || programIds.length} программам`
+				)
 				toast.success('Преподаватель успешно добавлен ко всем программам!')
-				
+
 				// Обновить списки и данные преподавателя
 				await fetchTeachers() // Обновить список преподавателей
 				await fetchTeacher(teacherId) // Обновить данные конкретного преподавателя
 			} else {
 				throw new Error(JSON.stringify(result))
 			}
-
 		} catch (error) {
 			const errorMsg = error instanceof Error ? error.message : 'Unknown error'
 			addLog(`❌ Ошибка обновления: ${errorMsg}`)
@@ -250,7 +273,7 @@ export default function TeacherProgramsAdminPage() {
 		}
 
 		setLoading(true)
-		
+
 		try {
 			addLog(`🔄 Удаление всех программ у преподавателя ${teacherId}...`)
 			const updateResponse = await fetch(`${apiUrl}/teachers/${teacherId}`, {
@@ -268,14 +291,13 @@ export default function TeacherProgramsAdminPage() {
 			if (updateResponse.ok) {
 				addLog('✅ Все программы удалены!')
 				toast.success('Все программы удалены у преподавателя')
-				
+
 				// Обновить списки и данные преподавателя
 				await fetchTeachers() // Обновить список преподавателей
 				await fetchTeacher(teacherId) // Обновить данные конкретного преподавателя
 			} else {
 				throw new Error(JSON.stringify(result))
 			}
-
 		} catch (error) {
 			const errorMsg = error instanceof Error ? error.message : 'Unknown error'
 			addLog(`❌ Ошибка удаления: ${errorMsg}`)
@@ -289,18 +311,15 @@ export default function TeacherProgramsAdminPage() {
 	const refreshAllData = async () => {
 		setLoading(true)
 		addLog('🔄 Обновление всех данных...')
-		
+
 		try {
-			await Promise.all([
-				fetchPrograms(),
-				fetchTeachers()
-			])
-			
+			await Promise.all([fetchPrograms(), fetchTeachers()])
+
 			// Обновить данные текущего преподавателя если выбран
 			if (teacherId) {
 				await fetchTeacher(teacherId)
 			}
-			
+
 			addLog('✅ Все данные обновлены!')
 			toast.success('Данные обновлены')
 		} catch (error) {
@@ -404,18 +423,18 @@ addTeacherToAllPrograms();
 								<Input
 									id='apiUrl'
 									value={apiUrl}
-									onChange={(e) => setApiUrl(e.target.value)}
+									onChange={e => setApiUrl(e.target.value)}
 									placeholder='http://localhost:1337'
 								/>
 							</div>
-							
+
 							<div className='space-y-2'>
 								<Label htmlFor='teacherId'>ID преподавателя</Label>
 								<Input
 									id='teacherId'
 									type='number'
 									value={teacherId}
-									onChange={(e) => setTeacherId(Number(e.target.value))}
+									onChange={e => setTeacherId(Number(e.target.value))}
 									min='1'
 								/>
 							</div>
@@ -424,8 +443,8 @@ addTeacherToAllPrograms();
 
 							{/* Действия */}
 							<div className='space-y-3'>
-								<Button 
-									onClick={addTeacherToAllPrograms} 
+								<Button
+									onClick={addTeacherToAllPrograms}
 									disabled={loading}
 									className='w-full bg-green-600 hover:bg-green-700'
 								>
@@ -437,8 +456,8 @@ addTeacherToAllPrograms();
 									Добавить ко всем программам
 								</Button>
 
-								<Button 
-									onClick={removeAllPrograms} 
+								<Button
+									onClick={removeAllPrograms}
 									disabled={loading}
 									variant='destructive'
 									className='w-full'
@@ -447,8 +466,8 @@ addTeacherToAllPrograms();
 									Удалить все программы
 								</Button>
 
-								<Button 
-									onClick={refreshAllData} 
+								<Button
+									onClick={refreshAllData}
 									disabled={loading}
 									variant='outline'
 									className='w-full'
@@ -461,8 +480,8 @@ addTeacherToAllPrograms();
 									Обновить данные
 								</Button>
 
-								<Button 
-									onClick={copyScript} 
+								<Button
+									onClick={copyScript}
 									variant='outline'
 									className='w-full'
 								>
@@ -487,7 +506,9 @@ addTeacherToAllPrograms();
 									<div>
 										<div className='flex items-center gap-2 mb-2'>
 											<CheckCircle className='w-4 h-4 text-green-600' />
-											<span className='font-semibold'>{selectedTeacher.name}</span>
+											<span className='font-semibold'>
+												{selectedTeacher.name}
+											</span>
 										</div>
 										{selectedTeacher.email && (
 											<p className='text-sm text-muted-foreground'>
@@ -499,11 +520,12 @@ addTeacherToAllPrograms();
 									<div>
 										<h4 className='font-semibold mb-2 flex items-center gap-2'>
 											<BookOpen className='w-4 h-4' />
-											Привязанные программы ({selectedTeacher.programs?.length || 0})
+											Привязанные программы (
+											{selectedTeacher.programs?.length || 0})
 										</h4>
 										<div className='flex flex-wrap gap-2'>
 											{selectedTeacher.programs?.length ? (
-												selectedTeacher.programs.map((program) => (
+												selectedTeacher.programs.map(program => (
 													<Badge key={program.id} variant='secondary'>
 														{program.title}
 													</Badge>
@@ -532,7 +554,9 @@ addTeacherToAllPrograms();
 						<CardContent className='pt-6'>
 							<div className='flex items-center justify-between'>
 								<div>
-									<p className='text-sm text-muted-foreground'>Всего программ</p>
+									<p className='text-sm text-muted-foreground'>
+										Всего программ
+									</p>
 									<p className='text-2xl font-bold'>{programs.length}</p>
 								</div>
 								<BookOpen className='w-8 h-8 text-blue-500 opacity-50' />
@@ -544,7 +568,9 @@ addTeacherToAllPrograms();
 						<CardContent className='pt-6'>
 							<div className='flex items-center justify-between'>
 								<div>
-									<p className='text-sm text-muted-foreground'>Всего преподавателей</p>
+									<p className='text-sm text-muted-foreground'>
+										Всего преподавателей
+									</p>
 									<p className='text-2xl font-bold'>{teachers.length}</p>
 								</div>
 								<Users className='w-8 h-8 text-green-500 opacity-50' />
@@ -556,8 +582,12 @@ addTeacherToAllPrograms();
 						<CardContent className='pt-6'>
 							<div className='flex items-center justify-between'>
 								<div>
-									<p className='text-sm text-muted-foreground'>У преподавателя программ</p>
-									<p className='text-2xl font-bold'>{selectedTeacher?.programs?.length || 0}</p>
+									<p className='text-sm text-muted-foreground'>
+										У преподавателя программ
+									</p>
+									<p className='text-2xl font-bold'>
+										{selectedTeacher?.programs?.length || 0}
+									</p>
 								</div>
 								<CheckCircle className='w-8 h-8 text-orange-500 opacity-50' />
 							</div>
@@ -599,12 +629,12 @@ addTeacherToAllPrograms();
 					</CardHeader>
 					<CardContent>
 						<div className='space-y-2 max-h-60 overflow-y-auto'>
-							{teachers.map((teacher) => (
-								<div 
+							{teachers.map(teacher => (
+								<div
 									key={teacher.id}
 									className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-										teacher.id === teacherId 
-											? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' 
+										teacher.id === teacherId
+											? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
 											: 'border-border hover:bg-muted/50'
 									}`}
 									onClick={() => setTeacherId(teacher.id)}
@@ -613,11 +643,16 @@ addTeacherToAllPrograms();
 										<div>
 											<p className='font-semibold'>{teacher.name}</p>
 											{teacher.email && (
-												<p className='text-sm text-muted-foreground'>{teacher.email}</p>
+												<p className='text-sm text-muted-foreground'>
+													{teacher.email}
+												</p>
 											)}
 										</div>
-										<Badge variant={teacher.id === teacherId ? 'default' : 'outline'}>
-											ID: {teacher.id} • Программ: {teacher.programs?.length || 0}
+										<Badge
+											variant={teacher.id === teacherId ? 'default' : 'outline'}
+										>
+											ID: {teacher.id} • Программ:{' '}
+											{teacher.programs?.length || 0}
 										</Badge>
 									</div>
 								</div>

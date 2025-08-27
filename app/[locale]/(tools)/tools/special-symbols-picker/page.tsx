@@ -5,12 +5,16 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { useSpecialSymbols } from '@/lib/hooks/useSpecialSymbols'
-import { SymbolGrid, SymbolSearch, SymbolInfo } from '@/components/tools/special-symbols'
+import {
+	SymbolGrid,
+	SymbolSearch,
+	SymbolInfo
+} from '@/components/tools/special-symbols'
 import { useTranslations } from 'next-intl'
 
 export default function SpecialSymbolsPickerPage() {
 	const t = useTranslations('widgets.specialSymbolsPicker')
-	
+
 	const [selectedCategory, setSelectedCategory] = useState<
 		string | 'all' | 'recent'
 	>('all')

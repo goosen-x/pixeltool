@@ -700,7 +700,8 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									>
 										<Type className='w-4 h-4 text-purple-500' />
 										<span className='font-medium'>
-											{stats.avgWordLength.toFixed(1)} {t('labels.avgCharsPerWord')}
+											{stats.avgWordLength.toFixed(1)}{' '}
+											{t('labels.avgCharsPerWord')}
 										</span>
 									</motion.div>
 								</div>
@@ -795,20 +796,26 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>{t('stats.spaces')}</span>
+											<span className='text-muted-foreground'>
+												{t('stats.spaces')}
+											</span>
 											<span className='font-mono'>
 												{stats.characters - stats.charactersNoSpaces}
 											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>{t('stats.paragraphs')}</span>
+											<span className='text-muted-foreground'>
+												{t('stats.paragraphs')}
+											</span>
 											<span className='font-mono'>{stats.paragraphs}</span>
 										</div>
 									</div>
 								</div>
 
 								<div>
-									<h4 className='text-sm font-medium mb-3'>{t('sections.averages')}</h4>
+									<h4 className='text-sm font-medium mb-3'>
+										{t('sections.averages')}
+									</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
@@ -834,9 +841,12 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 							<div className='space-y-4'>
 								{stats.longestWord && (
 									<div>
-										<h4 className='text-sm font-medium mb-3'>{t('sections.longestWord')}</h4>
+										<h4 className='text-sm font-medium mb-3'>
+											{t('sections.longestWord')}
+										</h4>
 										<Badge variant='secondary' className='font-mono'>
-											{stats.longestWord} ({stats.longestWord.length} {t('labels.chars')})
+											{stats.longestWord} ({stats.longestWord.length}{' '}
+											{t('labels.chars')})
 										</Badge>
 									</div>
 								)}

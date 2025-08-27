@@ -30,10 +30,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
-import {
-	WidgetKeyboardShortcuts,
-	ShortcutHint
-} from '@/components/widgets'
+import { WidgetKeyboardShortcuts, ShortcutHint } from '@/components/widgets'
 import {
 	useWidgetKeyboard,
 	commonWidgetShortcuts,
@@ -100,24 +97,20 @@ const CALCULATOR_CARDS = [
 export default function PercentageCalculatorPage() {
 	const t = useTranslations('widgets.percentageCalculator')
 	const [mounted, setMounted] = useState(false)
-	const [recentCalculations, setRecentCalculations] = useState<Array<{
-		id: string
-		type: CalculationType
-		result: string
-		timestamp: Date
-	}>>([])
+	const [recentCalculations, setRecentCalculations] = useState<
+		Array<{
+			id: string
+			type: CalculationType
+			result: string
+			timestamp: Date
+		}>
+	>([])
 	const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
 	const [copiedId, setCopiedId] = useState<string | null>(null)
 
 	// Use the percentage calculator hook
-	const {
-		values,
-		results,
-		updateValue,
-		copyResult,
-		reset,
-		loadExample
-	} = usePercentageCalculator()
+	const { values, results, updateValue, copyResult, reset, loadExample } =
+		usePercentageCalculator()
 
 	// Load recent calculations from localStorage
 	useEffect(() => {
@@ -126,36 +119,44 @@ export default function PercentageCalculatorPage() {
 		if (saved) {
 			try {
 				const parsed = JSON.parse(saved)
-				setRecentCalculations(parsed.map((item: any) => ({
-					...item,
-					timestamp: new Date(item.timestamp)
-				})))
+				setRecentCalculations(
+					parsed.map((item: any) => ({
+						...item,
+						timestamp: new Date(item.timestamp)
+					}))
+				)
 			} catch {}
 		}
 	}, [])
 
 	// Save calculation to recent
-	const saveToRecent = useCallback((type: CalculationType, result: string) => {
-		const newCalc = {
-			id: Date.now().toString(),
-			type,
-			result,
-			timestamp: new Date()
-		}
-		const updated = [newCalc, ...recentCalculations].slice(0, 5)
-		setRecentCalculations(updated)
-		localStorage.setItem('percentage-recent', JSON.stringify(updated))
-	}, [recentCalculations])
+	const saveToRecent = useCallback(
+		(type: CalculationType, result: string) => {
+			const newCalc = {
+				id: Date.now().toString(),
+				type,
+				result,
+				timestamp: new Date()
+			}
+			const updated = [newCalc, ...recentCalculations].slice(0, 5)
+			setRecentCalculations(updated)
+			localStorage.setItem('percentage-recent', JSON.stringify(updated))
+		},
+		[recentCalculations]
+	)
 
 	// Apply preset percentage
-	const applyPreset = useCallback((preset: number) => {
-		setSelectedPreset(preset)
-		// Apply preset to all relevant percentage fields
-		updateValue('percentOfPercentage', preset.toString())
-		updateValue('findTotalPercentage', preset.toString())
-		updateValue('addSubtractPercentage', preset.toString())
-		toast.success(t('toast.presetApplied', { preset }))
-	}, [updateValue])
+	const applyPreset = useCallback(
+		(preset: number) => {
+			setSelectedPreset(preset)
+			// Apply preset to all relevant percentage fields
+			updateValue('percentOfPercentage', preset.toString())
+			updateValue('findTotalPercentage', preset.toString())
+			updateValue('addSubtractPercentage', preset.toString())
+			toast.success(t('toast.presetApplied', { preset }))
+		},
+		[updateValue]
+	)
 
 	// Enhanced copy with animation
 	const copyWithAnimation = useCallback((id: string, text: string) => {
@@ -257,7 +258,6 @@ export default function PercentageCalculatorPage() {
 
 				{/* Calculator Grid */}
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-
 					{CALCULATOR_CARDS.map(card => (
 						<CalculatorCard
 							key={card.id}
@@ -374,7 +374,7 @@ function CalculatorCard({
 	loadExample
 }: CalculatorCardProps) {
 	const [isFocused, setIsFocused] = useState(false)
-	
+
 	// Check if calculator is ready (all required fields filled)
 	const isReady = useCallback(() => {
 		switch (type) {
@@ -397,45 +397,46 @@ function CalculatorCard({
 	// Get translated explanation
 	const getTranslatedExplanation = useCallback(() => {
 		if (!result || result.result === null) return ''
-		
+
 		const formattedResult = parseFloat(result.result.toFixed(2))
-		
+
 		switch (type) {
 			case 'percentOfNumber':
-				return t('explanations.percentOf', { 
-					percentage: parseFloat(values.percentOfPercentage), 
-					value: parseFloat(values.percentOfValue), 
-					result: formattedResult 
+				return t('explanations.percentOf', {
+					percentage: parseFloat(values.percentOfPercentage),
+					value: parseFloat(values.percentOfValue),
+					result: formattedResult
 				})
 			case 'whatPercent':
-				return t('explanations.whatPercent', { 
-					value1: parseFloat(values.whatPercentValue1), 
-					value2: parseFloat(values.whatPercentValue2), 
-					result: formattedResult 
+				return t('explanations.whatPercent', {
+					value1: parseFloat(values.whatPercentValue1),
+					value2: parseFloat(values.whatPercentValue2),
+					result: formattedResult
 				})
 			case 'findTotal':
-				return t('explanations.findTotal', { 
-					value: parseFloat(values.findTotalValue), 
-					percentage: parseFloat(values.findTotalPercentage), 
-					result: formattedResult 
+				return t('explanations.findTotal', {
+					value: parseFloat(values.findTotalValue),
+					percentage: parseFloat(values.findTotalPercentage),
+					result: formattedResult
 				})
 			case 'percentChange':
-				const change = result.result >= 0 ? t('labels.increase') : t('labels.decrease')
-				return t('explanations.percentChange', { 
-					change: change, 
-					result: formattedResult 
+				const change =
+					result.result >= 0 ? t('labels.increase') : t('labels.decrease')
+				return t('explanations.percentChange', {
+					change: change,
+					result: formattedResult
 				})
 			case 'addPercent':
-				return t('explanations.addPercent', { 
-					value: parseFloat(values.addSubtractValue), 
-					percentage: parseFloat(values.addSubtractPercentage), 
-					result: formattedResult 
+				return t('explanations.addPercent', {
+					value: parseFloat(values.addSubtractValue),
+					percentage: parseFloat(values.addSubtractPercentage),
+					result: formattedResult
 				})
 			case 'subtractPercent':
-				return t('explanations.subtractPercent', { 
-					value: parseFloat(values.addSubtractValue), 
-					percentage: parseFloat(values.addSubtractPercentage), 
-					result: formattedResult 
+				return t('explanations.subtractPercent', {
+					value: parseFloat(values.addSubtractValue),
+					percentage: parseFloat(values.addSubtractPercentage),
+					result: formattedResult
 				})
 			default:
 				return result.explanation
@@ -446,7 +447,7 @@ function CalculatorCard({
 	const handleCopyResult = useCallback(() => {
 		if (result && result.result !== null) {
 			const formattedResult = parseFloat(result.result.toFixed(2))
-			const resultText = `${formattedResult}${(type === 'whatPercent' || type === 'percentChange') ? '%' : ''}`
+			const resultText = `${formattedResult}${type === 'whatPercent' || type === 'percentChange' ? '%' : ''}`
 			copyWithAnimation(type, resultText)
 			saveToRecent(type, resultText)
 		}
@@ -459,17 +460,23 @@ function CalculatorCard({
 				return (
 					<div className='space-y-3'>
 						<div className='flex items-center gap-2'>
-							<span className='text-muted-foreground text-sm'>{t('labels.whatIs')}</span>
+							<span className='text-muted-foreground text-sm'>
+								{t('labels.whatIs')}
+							</span>
 							<Input
 								type='number'
 								value={values.percentOfPercentage}
-								onChange={e => updateValue('percentOfPercentage', e.target.value)}
+								onChange={e =>
+									updateValue('percentOfPercentage', e.target.value)
+								}
 								onFocus={() => setIsFocused(true)}
 								onBlur={() => setIsFocused(false)}
 								placeholder='20'
 								className='text-lg font-semibold text-center w-20'
 							/>
-							<span className='text-muted-foreground'>{t('labels.percentOf')}</span>
+							<span className='text-muted-foreground'>
+								{t('labels.percentOf')}
+							</span>
 							<Input
 								type='number'
 								value={values.percentOfValue}
@@ -496,7 +503,9 @@ function CalculatorCard({
 								placeholder='25'
 								className='text-lg font-semibold text-center w-20'
 							/>
-							<span className='text-muted-foreground text-sm'>{t('labels.isWhatPercentOf')}</span>
+							<span className='text-muted-foreground text-sm'>
+								{t('labels.isWhatPercentOf')}
+							</span>
 							<Input
 								type='number'
 								value={values.whatPercentValue2}
@@ -527,13 +536,17 @@ function CalculatorCard({
 							<Input
 								type='number'
 								value={values.findTotalPercentage}
-								onChange={e => updateValue('findTotalPercentage', e.target.value)}
+								onChange={e =>
+									updateValue('findTotalPercentage', e.target.value)
+								}
 								onFocus={() => setIsFocused(true)}
 								onBlur={() => setIsFocused(false)}
 								placeholder='15'
 								className='text-lg font-semibold text-center w-28'
 							/>
-							<span className='text-muted-foreground'>{t('labels.percentOfQuestion')}</span>
+							<span className='text-muted-foreground'>
+								{t('labels.percentOfQuestion')}
+							</span>
 						</div>
 					</div>
 				)
@@ -583,7 +596,9 @@ function CalculatorCard({
 							<Input
 								type='number'
 								value={values.addSubtractPercentage}
-								onChange={e => updateValue('addSubtractPercentage', e.target.value)}
+								onChange={e =>
+									updateValue('addSubtractPercentage', e.target.value)
+								}
 								onFocus={() => setIsFocused(true)}
 								onBlur={() => setIsFocused(false)}
 								placeholder='20'
@@ -611,7 +626,9 @@ function CalculatorCard({
 							<Input
 								type='number'
 								value={values.addSubtractPercentage}
-								onChange={e => updateValue('addSubtractPercentage', e.target.value)}
+								onChange={e =>
+									updateValue('addSubtractPercentage', e.target.value)
+								}
 								onFocus={() => setIsFocused(true)}
 								onBlur={() => setIsFocused(false)}
 								placeholder='20'
@@ -646,11 +663,13 @@ function CalculatorCard({
 					{/* Header */}
 					<div className='flex items-center justify-between mb-4'>
 						<div className='flex items-center gap-2'>
-							<div className={cn(
-								'p-2 rounded-lg bg-gradient-to-br',
-								gradient,
-								'text-white'
-							)}>
+							<div
+								className={cn(
+									'p-2 rounded-lg bg-gradient-to-br',
+									gradient,
+									'text-white'
+								)}
+							>
 								<Icon className='w-5 h-5' />
 							</div>
 							<h3 className='font-semibold text-sm flex items-center gap-2'>
@@ -705,9 +724,7 @@ function CalculatorCard({
 					</div>
 
 					{/* Inputs */}
-					<div className='flex-1'>
-						{renderInputs()}
-					</div>
+					<div className='flex-1'>{renderInputs()}</div>
 
 					{/* Result */}
 					<AnimatePresence mode='wait'>
@@ -722,11 +739,16 @@ function CalculatorCard({
 									<div className='flex items-baseline gap-2'>
 										<span className='text-2xl font-bold'>
 											{parseFloat(result.result.toFixed(2))}
-											{(type === 'whatPercent' || type === 'percentChange') && '%'}
+											{(type === 'whatPercent' || type === 'percentChange') &&
+												'%'}
 										</span>
 										{type === 'percentChange' && (
-											<Badge variant={result.result >= 0 ? 'default' : 'destructive'}>
-												{result.result >= 0 ? t('labels.increase') || 'Increase' : t('labels.decrease') || 'Decrease'}
+											<Badge
+												variant={result.result >= 0 ? 'default' : 'destructive'}
+											>
+												{result.result >= 0
+													? t('labels.increase') || 'Increase'
+													: t('labels.decrease') || 'Decrease'}
 											</Badge>
 										)}
 									</div>

@@ -97,9 +97,21 @@ const emoticonCategories: EmoticonCategory[] = [
 			{ text: '(´∀｀)', name: 'happy', tags: ['happy', 'glad', 'smile'] },
 			{ text: '(◕‿◕)', name: 'happy', tags: ['happy', 'cute', 'smile'] },
 			{ text: '(✿◠‿◠)', name: 'happy', tags: ['happy', 'flower', 'cute'] },
-			{ text: '(ﾉ´ヮ`)ﾉ*: ･ﾟ', name: 'excited', tags: ['happy', 'excited', 'sparkle'] },
-			{ text: '＼(＾▽＾)／', name: 'excited', tags: ['happy', 'excited', 'yay'] },
-			{ text: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', name: 'excited', tags: ['excited', 'sparkle', 'happy'] }
+			{
+				text: '(ﾉ´ヮ`)ﾉ*: ･ﾟ',
+				name: 'excited',
+				tags: ['happy', 'excited', 'sparkle']
+			},
+			{
+				text: '＼(＾▽＾)／',
+				name: 'excited',
+				tags: ['happy', 'excited', 'yay']
+			},
+			{
+				text: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧',
+				name: 'excited',
+				tags: ['excited', 'sparkle', 'happy']
+			}
 		]
 	},
 	{
@@ -108,7 +120,11 @@ const emoticonCategories: EmoticonCategory[] = [
 		emoticons: [
 			{ text: '(╥﹏╥)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
 			{ text: '(ToT)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
-			{ text: '｡ﾟ(ﾟ´Д｀ﾟ)ﾟ｡', name: 'crying', tags: ['crying', 'sad', 'upset'] },
+			{
+				text: '｡ﾟ(ﾟ´Д｀ﾟ)ﾟ｡',
+				name: 'crying',
+				tags: ['crying', 'sad', 'upset']
+			},
 			{ text: '(ಥ﹏ಥ)', name: 'crying', tags: ['crying', 'sad', 'tears'] },
 			{ text: '(T_T)', name: 'crying', tags: ['sad', 'crying', 'simple'] },
 			{ text: '(;_;)', name: 'sad', tags: ['sad', 'tears', 'simple'] },
@@ -136,8 +152,16 @@ const emoticonCategories: EmoticonCategory[] = [
 		emoticons: [
 			{ text: '(♥‿♥)', name: 'love', tags: ['love', 'heart', 'eyes'] },
 			{ text: '(´♡‿♡`)', name: 'love', tags: ['love', 'heart', 'cute'] },
-			{ text: '(*˘︶˘*).｡.:*♡', name: 'love', tags: ['love', 'heart', 'dreamy'] },
-			{ text: '(灬♥ω♥灬)', name: 'love', tags: ['love', 'heart', 'blushing'] },
+			{
+				text: '(*˘︶˘*).｡.:*♡',
+				name: 'love',
+				tags: ['love', 'heart', 'dreamy']
+			},
+			{
+				text: '(灬♥ω♥灬)',
+				name: 'love',
+				tags: ['love', 'heart', 'blushing']
+			},
 			{ text: '(｡♥‿♥｡)', name: 'love', tags: ['love', 'heart', 'happy'] },
 			{ text: '♡(˃͈ દ ˂͈ ༶ )', name: 'love', tags: ['love', 'heart', 'cute'] },
 			{ text: '(づ￣ ³￣)づ', name: 'kiss', tags: ['love', 'kiss', 'hug'] },
@@ -154,7 +178,11 @@ const emoticonCategories: EmoticonCategory[] = [
 			{ text: '(=^･ｪ･^=)', name: 'cat', tags: ['cat', 'animal', 'kawaii'] },
 			{ text: '(^._.^)ﾉ', name: 'cat', tags: ['cat', 'animal', 'wave'] },
 			{ text: 'U･ω･U', name: 'dog', tags: ['dog', 'animal', 'cute'] },
-			{ text: '(･o･;)', name: 'surprised', tags: ['surprised', 'shocked', 'animal'] },
+			{
+				text: '(･o･;)',
+				name: 'surprised',
+				tags: ['surprised', 'shocked', 'animal']
+			},
 			{ text: '<(°)#)><', name: 'fish', tags: ['fish', 'animal', 'water'] }
 		]
 	},
@@ -163,27 +191,67 @@ const emoticonCategories: EmoticonCategory[] = [
 		icon: <Sparkles className='w-4 h-4' />,
 		emoticons: [
 			{ text: '༼ つ ◕_◕ ༽つ', name: 'give', tags: ['give', 'take', 'energy'] },
-			{ text: 'ヽ༼ຈل͜ຈ༽ﾉ', name: 'excited', tags: ['excited', 'dongers', 'raise'] },
+			{
+				text: 'ヽ༼ຈل͜ຈ༽ﾉ',
+				name: 'excited',
+				tags: ['excited', 'dongers', 'raise']
+			},
 			{ text: '(☞ﾟヮﾟ)☞', name: 'pointing', tags: ['point', 'you', 'cool'] },
 			{ text: '☜(ﾟヮﾟ☜)', name: 'pointing', tags: ['point', 'you', 'cool'] },
-			{ text: '(ง\'̀-\'́)ง', name: 'fighting', tags: ['fight', 'determined', 'boxing'] },
+			{
+				text: "(ง'̀-'́)ง",
+				name: 'fighting',
+				tags: ['fight', 'determined', 'boxing']
+			},
 			{ text: 'ᕕ( ᐛ )ᕗ', name: 'happy', tags: ['happy', 'running', 'excited'] },
-			{ text: '♪~ ᕕ(ᐛ)ᕗ', name: 'dancing', tags: ['dancing', 'music', 'happy'] },
-			{ text: '(屮ﾟДﾟ)屮', name: 'shocked', tags: ['shocked', 'surprised', 'yell'] }
+			{
+				text: '♪~ ᕕ(ᐛ)ᕗ',
+				name: 'dancing',
+				tags: ['dancing', 'music', 'happy']
+			},
+			{
+				text: '(屮ﾟДﾟ)屮',
+				name: 'shocked',
+				tags: ['shocked', 'surprised', 'yell']
+			}
 		]
 	},
 	{
 		id: 'japanese',
 		icon: <span className='text-sm'>🌸</span>,
 		emoticons: [
-			{ text: 'φ(゜▽゜*)♪', name: 'singing', tags: ['singing', 'music', 'happy'] },
+			{
+				text: 'φ(゜▽゜*)♪',
+				name: 'singing',
+				tags: ['singing', 'music', 'happy']
+			},
 			{ text: '(￣▽￣)ノ', name: 'goodbye', tags: ['bye', 'wave', 'leaving'] },
 			{ text: 'o(^▽^)o', name: 'excited', tags: ['excited', 'happy', 'yay'] },
-			{ text: '(o・ω・o)', name: 'curious', tags: ['curious', 'wondering', 'cute'] },
-			{ text: '＼(~o~)／', name: 'surprised', tags: ['surprised', 'shocked', 'wow'] },
-			{ text: '(⌒‿⌒)', name: 'content', tags: ['content', 'satisfied', 'smile'] },
-			{ text: '(〃￣︶￣)人(￣︶￣〃)', name: 'friends', tags: ['friends', 'together', 'happy'] },
-			{ text: '(￣ω￣;)', name: 'embarrassed', tags: ['embarrassed', 'awkward', 'sweat'] }
+			{
+				text: '(o・ω・o)',
+				name: 'curious',
+				tags: ['curious', 'wondering', 'cute']
+			},
+			{
+				text: '＼(~o~)／',
+				name: 'surprised',
+				tags: ['surprised', 'shocked', 'wow']
+			},
+			{
+				text: '(⌒‿⌒)',
+				name: 'content',
+				tags: ['content', 'satisfied', 'smile']
+			},
+			{
+				text: '(〃￣︶￣)人(￣︶￣〃)',
+				name: 'friends',
+				tags: ['friends', 'together', 'happy']
+			},
+			{
+				text: '(￣ω￣;)',
+				name: 'embarrassed',
+				tags: ['embarrassed', 'awkward', 'sweat']
+			}
 		]
 	}
 ]
@@ -245,9 +313,11 @@ export default function TextEmoticonsPage() {
 			}))
 		}
 
-		const allEmoticons = selectedCategory === 'all' 
-			? emoticonCategories.flatMap(cat => cat.emoticons)
-			: emoticonCategories.find(cat => cat.id === selectedCategory)?.emoticons || []
+		const allEmoticons =
+			selectedCategory === 'all'
+				? emoticonCategories.flatMap(cat => cat.emoticons)
+				: emoticonCategories.find(cat => cat.id === selectedCategory)
+						?.emoticons || []
 
 		return allEmoticons
 	}
@@ -278,9 +348,9 @@ export default function TextEmoticonsPage() {
 				<div className='flex justify-between items-center'>
 					<h2 className='text-lg font-semibold'>{t('categories.title')}</h2>
 					{recentEmoticons.length > 0 && selectedCategory === 'recent' && (
-						<Button 
-							variant="outline" 
-							size="sm"
+						<Button
+							variant='outline'
+							size='sm'
 							onClick={clearRecentEmoticons}
 							className='whitespace-nowrap'
 						>
@@ -304,7 +374,7 @@ export default function TextEmoticonsPage() {
 						<Sparkles className='w-4 h-4 mr-2' />
 						{t('allCategories')}
 					</Button>
-					
+
 					{recentEmoticons.length > 0 && (
 						<Button
 							variant={selectedCategory === 'recent' ? 'default' : 'outline'}
@@ -319,7 +389,7 @@ export default function TextEmoticonsPage() {
 							{t('recentlyUsed')}
 						</Button>
 					)}
-					
+
 					{emoticonCategories.map(category => (
 						<Button
 							key={category.id}
@@ -342,11 +412,11 @@ export default function TextEmoticonsPage() {
 			<Card className='p-6'>
 				<div className='flex items-center justify-between mb-4'>
 					<h2 className='text-lg font-semibold'>
-						{selectedCategory === 'all' 
+						{selectedCategory === 'all'
 							? t('allCategories')
 							: selectedCategory === 'recent'
-							? t('recentlyUsed')
-							: t(`categories.${selectedCategory}`)}
+								? t('recentlyUsed')
+								: t(`categories.${selectedCategory}`)}
 					</h2>
 					<Badge variant='secondary'>
 						{t('totalEmoticons', { count: filteredEmoticons.length })}
@@ -363,24 +433,27 @@ export default function TextEmoticonsPage() {
 									'h-20 flex flex-col items-center justify-center gap-1 p-2 transition-all duration-200',
 									'group relative overflow-hidden',
 									'hover:border-primary hover:bg-muted/50 hover:shadow-md hover:scale-105',
-									copiedEmoticon === emoticon.text && 'ring-2 ring-green-500 bg-green-50 dark:bg-green-950/20'
+									copiedEmoticon === emoticon.text &&
+										'ring-2 ring-green-500 bg-green-50 dark:bg-green-950/20'
 								)}
 								onClick={() => handleCopyEmoticon(emoticon.text)}
 								title={t('clickToCopy')}
 							>
-								<span className='text-lg font-mono relative z-10 group-hover:text-foreground transition-colors'>{emoticon.text}</span>
+								<span className='text-lg font-mono relative z-10 group-hover:text-foreground transition-colors'>
+									{emoticon.text}
+								</span>
 								{emoticon.name && (
 									<span className='text-xs text-muted-foreground relative z-10 group-hover:text-foreground/80 transition-colors'>
 										{t(`emoticonName.${emoticon.name}`)}
 									</span>
 								)}
-								
+
 								{copiedEmoticon === emoticon.text && (
 									<div className='absolute inset-0 flex items-center justify-center'>
 										<Check className='w-6 h-6 text-green-600 dark:text-green-400' />
 									</div>
 								)}
-								
+
 								<Copy className='absolute bottom-1 right-1 w-3 h-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity z-10' />
 							</Button>
 						))}
@@ -398,7 +471,7 @@ export default function TextEmoticonsPage() {
 				<p className='text-sm text-muted-foreground mb-4'>
 					{t('aboutDescription')}
 				</p>
-				
+
 				<div className='grid md:grid-cols-2 gap-4 mt-4'>
 					<div>
 						<h4 className='font-medium mb-2'>{t('features.title')}</h4>

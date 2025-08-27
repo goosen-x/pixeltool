@@ -7,346 +7,362 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
-import { 
-  Download, 
-  FileJson, 
-  FileText, 
-  RefreshCw,
-  Sparkles,
-  BarChart3,
-  Copy,
-  Lightbulb
+import {
+	Download,
+	FileJson,
+	FileText,
+	RefreshCw,
+	Sparkles,
+	BarChart3,
+	Copy,
+	Lightbulb
 } from 'lucide-react'
 import { toast } from 'sonner'
 import {
-  useWidgetKeyboard,
-  createConverterShortcuts
+	useWidgetKeyboard,
+	createConverterShortcuts
 } from '@/lib/hooks/widgets'
-import { 
-  CaseCard, 
-  caseConfigs, 
-  categories,
-  convertCase, 
-  getTextStats,
-  type CaseType 
+import {
+	CaseCard,
+	caseConfigs,
+	categories,
+	convertCase,
+	getTextStats,
+	type CaseType
 } from '@/components/tools/text-case-converter'
 import { cn } from '@/lib/utils'
 
 export default function TextCaseConverterPage() {
-  const t = useTranslations('widgets.textCaseConverter')
-  const [input, setInput] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())
-  const [mounted, setMounted] = useState(false)
+	const t = useTranslations('widgets.textCaseConverter')
+	const [input, setInput] = useState('')
+	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+	const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())
+	const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-    // Load favorites from localStorage
-    const savedFavorites = localStorage.getItem('textCaseConverterFavorites')
-    if (savedFavorites) {
-      try {
-        setFavorites(new Set(JSON.parse(savedFavorites)))
-      } catch (error) {
-        console.error('Failed to load favorites:', error)
-      }
-    }
-  }, [])
+	useEffect(() => {
+		setMounted(true)
+		// Load favorites from localStorage
+		const savedFavorites = localStorage.getItem('textCaseConverterFavorites')
+		if (savedFavorites) {
+			try {
+				setFavorites(new Set(JSON.parse(savedFavorites)))
+			} catch (error) {
+				console.error('Failed to load favorites:', error)
+			}
+		}
+	}, [])
 
-  const toggleFavorite = useCallback((caseType: CaseType) => {
-    setFavorites(prev => {
-      const newFavorites = new Set(prev)
-      if (newFavorites.has(caseType)) {
-        newFavorites.delete(caseType)
-      } else {
-        newFavorites.add(caseType)
-      }
-      // Save to localStorage
-      localStorage.setItem('textCaseConverterFavorites', JSON.stringify(Array.from(newFavorites)))
-      return newFavorites
-    })
-  }, [])
+	const toggleFavorite = useCallback((caseType: CaseType) => {
+		setFavorites(prev => {
+			const newFavorites = new Set(prev)
+			if (newFavorites.has(caseType)) {
+				newFavorites.delete(caseType)
+			} else {
+				newFavorites.add(caseType)
+			}
+			// Save to localStorage
+			localStorage.setItem(
+				'textCaseConverterFavorites',
+				JSON.stringify(Array.from(newFavorites))
+			)
+			return newFavorites
+		})
+	}, [])
 
-  const filteredCases = useMemo(() => {
-    return Object.entries(caseConfigs).filter(([caseType, config]) => {
-      // Filter by category
-      if (selectedCategory && config.category !== selectedCategory) {
-        return false
-      }
-      
-      return true
-    })
-  }, [selectedCategory])
+	const filteredCases = useMemo(() => {
+		return Object.entries(caseConfigs).filter(([caseType, config]) => {
+			// Filter by category
+			if (selectedCategory && config.category !== selectedCategory) {
+				return false
+			}
 
-  // Sort cases: favorites first, then by category
-  const sortedCases = useMemo(() => {
-    return filteredCases.sort(([aType], [bType]) => {
-      const aIsFavorite = favorites.has(aType as CaseType)
-      const bIsFavorite = favorites.has(bType as CaseType)
-      
-      if (aIsFavorite && !bIsFavorite) return -1
-      if (!aIsFavorite && bIsFavorite) return 1
-      
-      return 0
-    })
-  }, [filteredCases, favorites])
+			return true
+		})
+	}, [selectedCategory])
 
-  const textStats = useMemo(() => getTextStats(input), [input])
+	// Sort cases: favorites first, then by category
+	const sortedCases = useMemo(() => {
+		return filteredCases.sort(([aType], [bType]) => {
+			const aIsFavorite = favorites.has(aType as CaseType)
+			const bIsFavorite = favorites.has(bType as CaseType)
 
-  const handleClear = useCallback(() => {
-    setInput('')
-    setSelectedCategory(null)
-  }, [])
+			if (aIsFavorite && !bIsFavorite) return -1
+			if (!aIsFavorite && bIsFavorite) return 1
 
-  const loadExample = useCallback(() => {
-    const examples = [
-      'Hello World Example Text',
-      'The Quick Brown Fox Jumps Over The Lazy Dog',
-      'Welcome to the Text Case Converter Tool',
-      'Transform Your Text in Multiple Formats',
-      'Web Development Made Easy'
-    ]
-    const randomExample = examples[Math.floor(Math.random() * examples.length)]
-    setInput(randomExample)
-    toast.success(t('exampleLoaded') || 'Example loaded')
-  }, [t])
+			return 0
+		})
+	}, [filteredCases, favorites])
 
-  const exportAsJSON = useCallback(() => {
-    const results: Record<string, string> = {}
-    Object.keys(caseConfigs).forEach((caseType) => {
-      results[caseType] = convertCase(input, caseType as CaseType)
-    })
-    
-    const dataStr = JSON.stringify(results, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-    
-    const exportFileDefaultName = 'text-case-conversions.json'
-    
-    const linkElement = document.createElement('a')
-    linkElement.setAttribute('href', dataUri)
-    linkElement.setAttribute('download', exportFileDefaultName)
-    linkElement.click()
-    
-    toast.success(t('downloaded'))
-  }, [input, t])
+	const textStats = useMemo(() => getTextStats(input), [input])
 
-  const exportAsCSV = useCallback(() => {
-    let csv = 'Case Type,Result\n'
-    Object.entries(caseConfigs).forEach(([caseType]) => {
-      const result = convertCase(input, caseType as CaseType)
-      const translationKey = caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')
-      csv += `"${t(`cases.${translationKey}`)}","${result.replace(/"/g, '""')}"\n`
-    })
-    
-    const dataUri = 'data:text/csv;charset=utf-8,'+ encodeURIComponent(csv)
-    
-    const exportFileDefaultName = 'text-case-conversions.csv'
-    
-    const linkElement = document.createElement('a')
-    linkElement.setAttribute('href', dataUri)
-    linkElement.setAttribute('download', exportFileDefaultName)
-    linkElement.click()
-    
-    toast.success(t('downloaded'))
-  }, [input, t])
+	const handleClear = useCallback(() => {
+		setInput('')
+		setSelectedCategory(null)
+	}, [])
 
-  const copyAllResults = useCallback(() => {
-    const results = Object.entries(caseConfigs).map(([caseType]) => {
-      const translationKey = caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')
-      return `${t(`cases.${translationKey}`)}: ${convertCase(input, caseType as CaseType)}`
-    }).join('\n')
-    
-    navigator.clipboard.writeText(results)
-    toast.success(t('copied'))
-  }, [input, t])
+	const loadExample = useCallback(() => {
+		const examples = [
+			'Hello World Example Text',
+			'The Quick Brown Fox Jumps Over The Lazy Dog',
+			'Welcome to the Text Case Converter Tool',
+			'Transform Your Text in Multiple Formats',
+			'Web Development Made Easy'
+		]
+		const randomExample = examples[Math.floor(Math.random() * examples.length)]
+		setInput(randomExample)
+		toast.success(t('exampleLoaded') || 'Example loaded')
+	}, [t])
 
-  // Keyboard shortcuts
-  useWidgetKeyboard({
-    widgetId: 'text-case-converter',
-    shortcuts: [
-      ...createConverterShortcuts({
-        convert: () => {}, // Not needed in instant conversion
-        copy: copyAllResults,
-        reset: handleClear
-      }),
-      {
-        key: 'j',
-        ctrl: true,
-        action: exportAsJSON,
-        description: 'Export as JSON'
-      }
-    ]
-  })
+	const exportAsJSON = useCallback(() => {
+		const results: Record<string, string> = {}
+		Object.keys(caseConfigs).forEach(caseType => {
+			results[caseType] = convertCase(input, caseType as CaseType)
+		})
 
-  if (!mounted) {
-    return (
-      <WidgetWrapper>
-        <div className='animate-pulse space-y-8'>
-          <div className='h-32 bg-muted rounded-lg'></div>
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className='h-40 bg-muted rounded-lg'></div>
-            ))}
-          </div>
-        </div>
-      </WidgetWrapper>
-    )
-  }
+		const dataStr = JSON.stringify(results, null, 2)
+		const dataUri =
+			'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
 
-  return (
-    <WidgetWrapper>
-      {/* Header Section */}
-      <div className='space-y-6'>
-        {/* Input Area */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center justify-between'>
-              <span className='flex items-center gap-2'>
-                <Sparkles className='w-5 h-5 text-primary' />
-                {t('instantConversion')}
-              </span>
-              <Badge variant='secondary' className='font-mono'>
-                {textStats.characters} {t('stats.characters')}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={t('placeholder')}
-              className='min-h-[120px] font-mono text-sm resize-none'
-              autoFocus
-            />
-            
-            {/* Text Statistics */}
-            {input && (
-              <div className='mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground'>
-                <div className='flex items-center gap-2'>
-                  <BarChart3 className='w-4 h-4' />
-                  <span>{t('textStats')}</span>
-                </div>
-                <div>{textStats.words} {t('stats.words')}</div>
-                <div>{textStats.charactersNoSpaces} {t('charactersNoSpaces')}</div>
-                <div>{textStats.lines} {t('stats.lines')}</div>
-                <div>{textStats.sentences} {t('stats.sentences')}</div>
-              </div>
-            )}
-            
-            {/* Action Buttons */}
-            <div className='mt-4 flex flex-wrap gap-2'>
-              <Button
-                onClick={loadExample}
-                variant='outline'
-                size='sm'
-              >
-                <Lightbulb className='w-4 h-4 mr-2' />
-                {t('loadExample') || 'Example'}
-              </Button>
-              
-              <Button
-                onClick={handleClear}
-                variant='outline'
-                size='sm'
-                disabled={!input}
-              >
-                <RefreshCw className='w-4 h-4 mr-2' />
-                {t('clear')}
-              </Button>
-              
-              <div className='ml-auto flex gap-2'>
-                <Button
-                  onClick={copyAllResults}
-                  variant='outline'
-                  size='sm'
-                  disabled={!input}
-                >
-                  <Copy className='w-4 h-4 mr-2' />
-                  {t('copy')} {t('allCategories')}
-                </Button>
-                
-                <Button
-                  onClick={exportAsJSON}
-                  variant='outline'
-                  size='sm'
-                  disabled={!input}
-                >
-                  <FileJson className='w-4 h-4 mr-2' />
-                  JSON
-                </Button>
-                
-                <Button
-                  onClick={exportAsCSV}
-                  variant='outline'
-                  size='sm'
-                  disabled={!input}
-                >
-                  <FileText className='w-4 h-4 mr-2' />
-                  CSV
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+		const exportFileDefaultName = 'text-case-conversions.json'
 
-        {/* Category Filter */}
-        <div className='flex items-center gap-2 flex-wrap'>
-          <span className='text-sm text-muted-foreground'>{t('filterLabel')}</span>
-          <Badge
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            className={cn(
-              'cursor-pointer transition-colors',
-              selectedCategory === null && 'bg-primary hover:bg-primary/90'
-            )}
-            onClick={() => setSelectedCategory(null)}
-          >
-            {t('allCategories')}
-          </Badge>
-          {Object.entries(categories).map(([key, label]) => (
-            <Badge
-              key={key}
-              variant={selectedCategory === key ? 'default' : 'outline'}
-              className={cn(
-                'cursor-pointer transition-colors',
-                selectedCategory === key && 'bg-primary hover:bg-primary/90'
-              )}
-              onClick={() => setSelectedCategory(key)}
-            >
-              {t(`categories.${key}`)}
-            </Badge>
-          ))}
-          <span className='ml-auto text-sm text-muted-foreground'>
-            {sortedCases.length} {t('resultsFound')}
-          </span>
-        </div>
+		const linkElement = document.createElement('a')
+		linkElement.setAttribute('href', dataUri)
+		linkElement.setAttribute('download', exportFileDefaultName)
+		linkElement.click()
 
-        {/* Results Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {sortedCases.map(([caseType, config]) => {
-            const result = convertCase(input, caseType as CaseType)
-            return (
-              <CaseCard
-                key={caseType}
-                type={caseType}
-                title={t(`cases.${caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')}`)}
-                result={result}
-                icon={config.icon}
-                gradient={config.gradient}
-                isFavorite={favorites.has(caseType as CaseType)}
-                onToggleFavorite={() => toggleFavorite(caseType as CaseType)}
-              />
-            )
-          })}
-        </div>
+		toast.success(t('downloaded'))
+	}, [input, t])
 
-        {/* Empty State */}
-        {sortedCases.length === 0 && (
-          <Card className='text-center p-8'>
-            <p className='text-muted-foreground'>
-              No case types available
-            </p>
-          </Card>
-        )}
-      </div>
-    </WidgetWrapper>
-  )
+	const exportAsCSV = useCallback(() => {
+		let csv = 'Case Type,Result\n'
+		Object.entries(caseConfigs).forEach(([caseType]) => {
+			const result = convertCase(input, caseType as CaseType)
+			const translationKey = caseType
+				.replace('dot.case', 'dotCase')
+				.replace('path/case', 'pathCase')
+			csv += `"${t(`cases.${translationKey}`)}","${result.replace(/"/g, '""')}"\n`
+		})
+
+		const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv)
+
+		const exportFileDefaultName = 'text-case-conversions.csv'
+
+		const linkElement = document.createElement('a')
+		linkElement.setAttribute('href', dataUri)
+		linkElement.setAttribute('download', exportFileDefaultName)
+		linkElement.click()
+
+		toast.success(t('downloaded'))
+	}, [input, t])
+
+	const copyAllResults = useCallback(() => {
+		const results = Object.entries(caseConfigs)
+			.map(([caseType]) => {
+				const translationKey = caseType
+					.replace('dot.case', 'dotCase')
+					.replace('path/case', 'pathCase')
+				return `${t(`cases.${translationKey}`)}: ${convertCase(input, caseType as CaseType)}`
+			})
+			.join('\n')
+
+		navigator.clipboard.writeText(results)
+		toast.success(t('copied'))
+	}, [input, t])
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'text-case-converter',
+		shortcuts: [
+			...createConverterShortcuts({
+				convert: () => {}, // Not needed in instant conversion
+				copy: copyAllResults,
+				reset: handleClear
+			}),
+			{
+				key: 'j',
+				ctrl: true,
+				action: exportAsJSON,
+				description: 'Export as JSON'
+			}
+		]
+	})
+
+	if (!mounted) {
+		return (
+			<WidgetWrapper>
+				<div className='animate-pulse space-y-8'>
+					<div className='h-32 bg-muted rounded-lg'></div>
+					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+						{[1, 2, 3, 4, 5, 6].map(i => (
+							<div key={i} className='h-40 bg-muted rounded-lg'></div>
+						))}
+					</div>
+				</div>
+			</WidgetWrapper>
+		)
+	}
+
+	return (
+		<WidgetWrapper>
+			{/* Header Section */}
+			<div className='space-y-6'>
+				{/* Input Area */}
+				<Card>
+					<CardHeader>
+						<CardTitle className='flex items-center justify-between'>
+							<span className='flex items-center gap-2'>
+								<Sparkles className='w-5 h-5 text-primary' />
+								{t('instantConversion')}
+							</span>
+							<Badge variant='secondary' className='font-mono'>
+								{textStats.characters} {t('stats.characters')}
+							</Badge>
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Textarea
+							value={input}
+							onChange={e => setInput(e.target.value)}
+							placeholder={t('placeholder')}
+							className='min-h-[120px] font-mono text-sm resize-none'
+							autoFocus
+						/>
+
+						{/* Text Statistics */}
+						{input && (
+							<div className='mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground'>
+								<div className='flex items-center gap-2'>
+									<BarChart3 className='w-4 h-4' />
+									<span>{t('textStats')}</span>
+								</div>
+								<div>
+									{textStats.words} {t('stats.words')}
+								</div>
+								<div>
+									{textStats.charactersNoSpaces} {t('charactersNoSpaces')}
+								</div>
+								<div>
+									{textStats.lines} {t('stats.lines')}
+								</div>
+								<div>
+									{textStats.sentences} {t('stats.sentences')}
+								</div>
+							</div>
+						)}
+
+						{/* Action Buttons */}
+						<div className='mt-4 flex flex-wrap gap-2'>
+							<Button onClick={loadExample} variant='outline' size='sm'>
+								<Lightbulb className='w-4 h-4 mr-2' />
+								{t('loadExample') || 'Example'}
+							</Button>
+
+							<Button
+								onClick={handleClear}
+								variant='outline'
+								size='sm'
+								disabled={!input}
+							>
+								<RefreshCw className='w-4 h-4 mr-2' />
+								{t('clear')}
+							</Button>
+
+							<div className='ml-auto flex gap-2'>
+								<Button
+									onClick={copyAllResults}
+									variant='outline'
+									size='sm'
+									disabled={!input}
+								>
+									<Copy className='w-4 h-4 mr-2' />
+									{t('copy')} {t('allCategories')}
+								</Button>
+
+								<Button
+									onClick={exportAsJSON}
+									variant='outline'
+									size='sm'
+									disabled={!input}
+								>
+									<FileJson className='w-4 h-4 mr-2' />
+									JSON
+								</Button>
+
+								<Button
+									onClick={exportAsCSV}
+									variant='outline'
+									size='sm'
+									disabled={!input}
+								>
+									<FileText className='w-4 h-4 mr-2' />
+									CSV
+								</Button>
+							</div>
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* Category Filter */}
+				<div className='flex items-center gap-2 flex-wrap'>
+					<span className='text-sm text-muted-foreground'>
+						{t('filterLabel')}
+					</span>
+					<Badge
+						variant={selectedCategory === null ? 'default' : 'outline'}
+						className={cn(
+							'cursor-pointer transition-colors',
+							selectedCategory === null && 'bg-primary hover:bg-primary/90'
+						)}
+						onClick={() => setSelectedCategory(null)}
+					>
+						{t('allCategories')}
+					</Badge>
+					{Object.entries(categories).map(([key, label]) => (
+						<Badge
+							key={key}
+							variant={selectedCategory === key ? 'default' : 'outline'}
+							className={cn(
+								'cursor-pointer transition-colors',
+								selectedCategory === key && 'bg-primary hover:bg-primary/90'
+							)}
+							onClick={() => setSelectedCategory(key)}
+						>
+							{t(`categories.${key}`)}
+						</Badge>
+					))}
+					<span className='ml-auto text-sm text-muted-foreground'>
+						{sortedCases.length} {t('resultsFound')}
+					</span>
+				</div>
+
+				{/* Results Grid */}
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+					{sortedCases.map(([caseType, config]) => {
+						const result = convertCase(input, caseType as CaseType)
+						return (
+							<CaseCard
+								key={caseType}
+								type={caseType}
+								title={t(
+									`cases.${caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')}`
+								)}
+								result={result}
+								icon={config.icon}
+								gradient={config.gradient}
+								isFavorite={favorites.has(caseType as CaseType)}
+								onToggleFavorite={() => toggleFavorite(caseType as CaseType)}
+							/>
+						)
+					})}
+				</div>
+
+				{/* Empty State */}
+				{sortedCases.length === 0 && (
+					<Card className='text-center p-8'>
+						<p className='text-muted-foreground'>No case types available</p>
+					</Card>
+				)}
+			</div>
+		</WidgetWrapper>
+	)
 }
