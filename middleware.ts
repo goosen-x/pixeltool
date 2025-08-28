@@ -44,7 +44,8 @@ export const config = {
 	// - API routes
 	// - Static files (images, fonts, etc.)
 	// - Internal Next.js routes
+	// - Icon routes (favicon, icon, apple-icon)
 	matcher: [
-		'/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|_not-found).*)'
+		'/((?!api|_next/static|_next/image|favicon.ico|icon|apple-icon|.*\\..*|_not-found).*)'
 	]
 }
