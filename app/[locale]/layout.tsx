@@ -141,8 +141,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			'vk:image': 'https://pixeltool.pro/og-image.png',
 			// Mobile indicators for Yandex
 			'mobile-web-app-capable': 'yes',
-			'HandheldFriendly': 'true',
-			'MobileOptimized': '320'
+			HandheldFriendly: 'true',
+			MobileOptimized: '320'
 		},
 		icons: [
 			{

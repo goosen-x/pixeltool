@@ -162,7 +162,7 @@ export default async function HomePage({ params }: Props) {
 							].map((item, idx) => (
 								<div
 									key={idx}
-									className='group px-2.5 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-2xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105 min-h-[60px] flex items-center'
+									className='group px-2.5 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-2xl bg-background/60 backdrop-blur-sm border border-border/50 min-h-[60px] flex items-center'
 								>
 									<div className='flex items-center gap-1.5 sm:gap-3 w-full'>
 										<div
