@@ -202,10 +202,10 @@ const Header = () => {
 									size='icon'
 									className='h-10 w-10 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 relative overflow-hidden group'
 								>
-									<div className='relative z-10'>
+									<span className='relative z-10'>
 										<MenuIcon className='w-5 h-5 text-muted-foreground' />
-									</div>
-									<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+									</span>
+									<span className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 								</Button>
 							</DrawerTrigger>
 							<DrawerContent className='max-h-[85vh] max-w-full'>
