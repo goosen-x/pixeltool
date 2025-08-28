@@ -141,9 +141,9 @@ export const Footer = async () => {
 									<div className='p-3 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20'>
 										<category.icon className='w-6 h-6 text-primary' />
 									</div>
-									<h3 className='text-xl font-heading font-bold'>
+									<p className='text-xl font-heading font-bold'>
 										{category.title}
-									</h3>
+									</p>
 								</div>
 								<ul className='space-y-3'>
 									{category.tools.map((tool, toolIdx) => (
@@ -171,9 +171,9 @@ export const Footer = async () => {
 									{t('newsletter.badge')}
 								</span>
 							</div>
-							<h3 className='text-3xl md:text-4xl font-heading font-bold mb-4'>
+							<p className='text-3xl md:text-4xl font-heading font-bold mb-4'>
 								{t('newsletter.title')}
-							</h3>
+							</p>
 							<p className='text-lg text-muted-foreground mb-8 max-w-2xl mx-auto'>
 								{t('newsletter.description')}
 							</p>

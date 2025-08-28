@@ -22,9 +22,9 @@ export const FooterNavigation = () => {
 		<div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:flex lg:gap-16'>
 			{/* Navigation Section */}
 			<div className='flex flex-col gap-4'>
-				<h3 className='text-sm font-semibold text-foreground uppercase tracking-wider'>
+				<p className='text-sm font-semibold text-foreground uppercase tracking-wider'>
 					Navigation
-				</h3>
+				</p>
 				<div className='flex flex-col gap-2'>
 					{links.map(link => {
 						const Icon = link.icon
@@ -82,9 +82,9 @@ export const FooterNavigation = () => {
 
 			{/* Support Section */}
 			<div className='flex flex-col gap-4'>
-				<h3 className='text-sm font-semibold text-foreground uppercase tracking-wider'>
+				<p className='text-sm font-semibold text-foreground uppercase tracking-wider'>
 					{tFooter('support.title')}
-				</h3>
+				</p>
 				<div className='flex flex-col gap-2'>
 					<a
 						href='https://www.buymeacoffee.com/yourname'

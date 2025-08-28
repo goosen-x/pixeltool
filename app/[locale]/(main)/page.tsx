@@ -120,16 +120,16 @@ export default async function HomePage({ params }: Props) {
 						{/* Main Title with ripple animation */}
 						<div className='mb-8 sm:mb-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8'>
 							<RippleLoader className='opacity-80 flex-shrink-0 scale-75 sm:scale-100' />
-							<h1 className='text-6xl sm:text-7xl md:text-8xl lg:text-[11rem] font-heading font-black tracking-tight leading-none bg-gradient-to-br from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent animate-gradient bg-300%'>
+							<p className='text-6xl sm:text-7xl md:text-8xl lg:text-[11rem] font-heading font-black tracking-tight leading-none bg-gradient-to-br from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent animate-gradient bg-300%'>
 								PixelTool
-							</h1>
+							</p>
 						</div>
 
 						{/* Enhanced subtitle */}
 						<div className='mx-auto mb-8 sm:mb-10 max-w-4xl px-4'>
-							<p className='text-xl sm:text-2xl md:text-3xl lg:text-4xl text-foreground/90 font-light mb-4 sm:mb-6 leading-relaxed'>
+							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl text-foreground/90 font-light mb-4 sm:mb-6 leading-relaxed'>
 								{t('hero.subtitle')}
-							</p>
+							</h1>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed'>
 								{t('hero.subtitle2')}
 							</p>
@@ -179,33 +179,25 @@ export default async function HomePage({ params }: Props) {
 
 						{/* Enhanced CTA Buttons - mobile optimized */}
 						<div className='flex flex-col gap-4 sm:flex-row sm:gap-6 justify-center items-center px-4 w-full'>
-							<Link href={`/${locale}/tools`} className='w-full sm:w-auto'>
-								<Button
-									size='lg'
-									className='group gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl sm:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 w-full sm:w-auto relative overflow-hidden'
-								>
-									<div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-									<Terminal className='h-5 w-5 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform z-10' />
-									<span className='z-10 font-semibold'>
-										{t('hero.exploreTools')}
-									</span>
-									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform z-10' />
-								</Button>
+							<Link 
+								href={`/${locale}/tools`} 
+								className='group inline-flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl sm:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 w-full sm:w-auto relative overflow-hidden font-semibold text-white'
+							>
+								<div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+								<Terminal className='h-5 w-5 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform z-10' />
+								<span className='z-10'>
+									{t('hero.exploreTools')}
+								</span>
+								<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform z-10' />
 							</Link>
 							<Link
 								href='https://github.com/goosen-x/pixeltool'
 								target='_blank'
-								className='w-full sm:w-auto'
+								className='group inline-flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-background/95 backdrop-blur-sm border-2 border-border hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary transition-all duration-300 w-full sm:w-auto font-medium'
 							>
-								<Button
-									size='lg'
-									variant='outline'
-									className='gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-background/95 backdrop-blur-sm border-2 border-border hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary transition-all duration-300 w-full sm:w-auto'
-								>
-									<Code2 className='h-5 w-5 sm:h-6 sm:w-6' />
-									<span className='font-medium'>{t('hero.viewOnGitHub')}</span>
-									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5' />
-								</Button>
+								<Code2 className='h-5 w-5 sm:h-6 sm:w-6' />
+								<span>{t('hero.viewOnGitHub')}</span>
+								<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5' />
 							</Link>
 						</div>
 
@@ -269,9 +261,9 @@ export default async function HomePage({ params }: Props) {
 									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center mb-4 sm:mb-6'>
 										<Zap className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
-									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
+									<p className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
 										{t('whyChoose.feature1.title')}
-									</h3>
+									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
 										{t('whyChoose.feature1.description')}
 									</p>
@@ -299,9 +291,9 @@ export default async function HomePage({ params }: Props) {
 									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center mb-4 sm:mb-6'>
 										<Globe className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
-									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
+									<p className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
 										{t('whyChoose.feature2.title')}
-									</h3>
+									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
 										{t('whyChoose.feature2.description')}
 									</p>
@@ -329,9 +321,9 @@ export default async function HomePage({ params }: Props) {
 									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-green-500 to-green-500/80 flex items-center justify-center mb-4 sm:mb-6'>
 										<Terminal className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
-									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
+									<p className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
 										{t('whyChoose.feature3.title')}
-									</h3>
+									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
 										{t('whyChoose.feature3.description')}
 									</p>
