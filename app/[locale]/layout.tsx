@@ -130,8 +130,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			title: ogTitle,
 			description: ogDescription,
 			images: [
-				`https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
-				'https://pixeltool.pro/og-image.png'
+				'https://pixeltool.pro/og-image.png',
+				`https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`
 			],
 			creator: '@pixeltool',
 			site: '@pixeltool'
@@ -140,6 +140,69 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			// VK
 			'vk:image': 'https://pixeltool.pro/og-image.png'
 		},
+		icons: [
+			{
+				rel: 'icon',
+				url: '/favicon.ico',
+				sizes: '16x16',
+				type: 'image/x-icon'
+			},
+			{
+				rel: 'icon',
+				url: '/favicon-16x16.ico',
+				sizes: '16x16',
+				type: 'image/x-icon'
+			},
+			{
+				rel: 'icon',
+				url: '/favicon-32x32.png',
+				sizes: '32x32',
+				type: 'image/png'
+			},
+			{
+				rel: 'icon',
+				url: '/favicon-48x48.png',
+				sizes: '48x48',
+				type: 'image/png'
+			},
+			{
+				rel: 'apple-touch-icon',
+				url: '/favicon-57x57.png',
+				sizes: '57x57'
+			},
+			{
+				rel: 'apple-touch-icon',
+				url: '/favicon-76x76.png',
+				sizes: '76x76'
+			},
+			{
+				rel: 'apple-touch-icon',
+				url: '/favicon-120x120.png',
+				sizes: '120x120'
+			},
+			{
+				rel: 'apple-touch-icon',
+				url: '/favicon-152x152.png',
+				sizes: '152x152'
+			},
+			{
+				rel: 'apple-touch-icon',
+				url: '/favicon-180x180.png',
+				sizes: '180x180'
+			},
+			{
+				rel: 'icon',
+				url: '/favicon-192x192.png',
+				sizes: '192x192',
+				type: 'image/png'
+			},
+			{
+				rel: 'icon',
+				url: '/favicon-512x512.png',
+				sizes: '512x512',
+				type: 'image/png'
+			}
+		],
 		alternates: {
 			canonical: siteUrl,
 			languages: {

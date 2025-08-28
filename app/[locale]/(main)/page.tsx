@@ -52,12 +52,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		description: currentMetadata.description,
 		keywords: currentMetadata.keywords,
 		openGraph: {
+			url: `https://pixeltool.pro/${locale}`,
+			type: 'website',
 			title: currentMetadata.title,
 			description: currentMetadata.description,
-			type: 'website',
 			images: [
 				{
-					url: '/og-image.png',
+					url: 'https://pixeltool.pro/og-image.png',
 					width: 1200,
 					height: 630,
 					alt: 'PixelTool - Professional Developer Tools'
@@ -68,13 +69,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: 'summary_large_image',
 			title: currentMetadata.title,
 			description: currentMetadata.description,
-			images: ['/og-image.png']
+			images: ['https://pixeltool.pro/og-image.png']
 		},
 		alternates: {
-			canonical: `/${locale}`,
+			canonical: `https://pixeltool.pro/${locale}`,
 			languages: {
-				en: '/en',
-				ru: '/ru'
+				en: 'https://pixeltool.pro/en',
+				ru: 'https://pixeltool.pro/ru'
 			}
 		}
 	}
