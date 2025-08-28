@@ -160,7 +160,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		},
 		verification: {
 			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
-			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION
+			yandex: 'b2796581b70a9cad'
 		},
 		manifest: '/manifest.json',
 		appleWebApp: {
