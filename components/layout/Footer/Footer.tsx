@@ -96,7 +96,6 @@ export const Footer = async () => {
 						))}
 					</div>
 
-
 					{/* Newsletter Section */}
 					<div className='relative mb-16'>
 						<div className='absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-3xl' />
@@ -169,40 +168,8 @@ export const Footer = async () => {
 
 					{/* Bottom Bar */}
 					<div className='pt-8 border-t border-border/50'>
-						<div className='flex flex-col md:flex-row justify-between items-center gap-6'>
-							<div className='flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm text-muted-foreground'>
-								<span>{t('legal.copyright', { year })}</span>
-								<Link
-									href='/privacy'
-									className='hover:text-primary transition-colors'
-								>
-									{t('legal.privacyPolicy')}
-								</Link>
-								<Link
-									href='/terms'
-									className='hover:text-primary transition-colors'
-								>
-									{t('legal.termsOfService')}
-								</Link>
-								<Link
-									href='/api'
-									className='hover:text-primary transition-colors'
-								>
-									{t('legal.apiDocs')}
-								</Link>
-							</div>
-							<div className='flex items-center gap-2 text-sm text-muted-foreground'>
-								<span>{t('legal.craftedWith')}</span>
-								<Heart className='w-4 h-4 text-red-500 fill-red-500 animate-pulse' />
-								<span>{t('legal.by')}</span>
-								<Link
-									href='https://github.com/goosen-x/pixeltool'
-									className='font-medium text-primary hover:text-accent transition-colors'
-									target='_blank'
-								>
-									{t('legal.author')}
-								</Link>
-							</div>
+						<div className='flex items-center justify-center text-sm text-muted-foreground'>
+							<span>{t('legal.copyright', { year })}</span>
 						</div>
 					</div>
 				</div>
