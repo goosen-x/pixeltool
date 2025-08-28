@@ -17,13 +17,21 @@ import {
 	Heart,
 	Coffee,
 	MessageSquare,
-	Users
+	Users,
+	Keyboard
 } from 'lucide-react'
 import { getWidgetById, getWidgetByPath } from '@/lib/constants/widgets'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FeedbackModal } from '@/components/feedback'
 import { useState, useEffect } from 'react'
+
+// Компонент для отображения клавиши
+const ShortcutKey = ({ children }: { children: React.ReactNode }) => (
+	<kbd className='inline-flex items-center justify-center min-w-[18px] h-5 px-1 text-[10px] font-mono rounded border bg-muted border-border'>
+		{children}
+	</kbd>
+)
 
 interface AnalyticsStats {
 	viewsToday: number
@@ -270,6 +278,65 @@ export function ProjectsRightSidebar() {
 							</span>
 						</div>
 					)}
+				</CardContent>
+			</Card>
+
+			{/* Keyboard Shortcuts Card */}
+			<Card>
+				<CardHeader className='pb-3'>
+					<CardTitle className='text-sm flex items-center gap-2'>
+						<Keyboard className='w-4 h-4' />
+						{tSidebar('keyboardShortcuts.title')}
+					</CardTitle>
+				</CardHeader>
+				<CardContent className='space-y-2'>
+					<div className='space-y-2'>
+						<div className='flex items-center justify-between gap-2'>
+							<span className='text-xs text-muted-foreground'>
+								{tSidebar('keyboardShortcuts.showAll')}
+							</span>
+							<div className='flex items-center gap-1'>
+								<ShortcutKey>Shift</ShortcutKey>
+								<span className='text-xs text-muted-foreground'>+</span>
+								<ShortcutKey>?</ShortcutKey>
+							</div>
+						</div>
+						<div className='flex items-center justify-between gap-2'>
+							<span className='text-xs text-muted-foreground'>
+								{tSidebar('keyboardShortcuts.copyResult')}
+							</span>
+							<div className='flex items-center gap-1'>
+								<ShortcutKey>Ctrl</ShortcutKey>
+								<span className='text-xs text-muted-foreground'>+</span>
+								<ShortcutKey>⇧</ShortcutKey>
+								<span className='text-xs text-muted-foreground'>+</span>
+								<ShortcutKey>C</ShortcutKey>
+							</div>
+						</div>
+						<div className='flex items-center justify-between gap-2'>
+							<span className='text-xs text-muted-foreground'>
+								{tSidebar('keyboardShortcuts.reset')}
+							</span>
+							<div className='flex items-center gap-1'>
+								<ShortcutKey>Ctrl</ShortcutKey>
+								<span className='text-xs text-muted-foreground'>+</span>
+								<ShortcutKey>⇧</ShortcutKey>
+								<span className='text-xs text-muted-foreground'>+</span>
+								<ShortcutKey>R</ShortcutKey>
+							</div>
+						</div>
+						<div className='flex items-center justify-between gap-2'>
+							<span className='text-xs text-muted-foreground'>
+								{tSidebar('keyboardShortcuts.submit')}
+							</span>
+							<div className='flex items-center gap-1'>
+								<ShortcutKey>Enter</ShortcutKey>
+							</div>
+						</div>
+					</div>
+					<p className='text-xs text-muted-foreground text-center pt-2 border-t'>
+						{tSidebar('keyboardShortcuts.helpText')}
+					</p>
 				</CardContent>
 			</Card>
 

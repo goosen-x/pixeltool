@@ -380,6 +380,14 @@
 				"title": "Feedback",
 				"helpText": "Help us improve this tool"
 			},
+			"keyboardShortcuts": {
+				"title": "Keyboard Shortcuts",
+				"showAll": "Show all shortcuts",
+				"copyResult": "Copy result",
+				"reset": "Reset form",
+				"submit": "Submit/Execute",
+				"helpText": "Press Shift+? to see all shortcuts"
+			},
 			"relatedTools": {
 				"title": "Related Tools"
 			},
