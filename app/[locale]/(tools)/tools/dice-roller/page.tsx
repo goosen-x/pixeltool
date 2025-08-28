@@ -3,10 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import { Slider } from '@/components/ui/slider'
-import { Switch } from '@/components/ui/switch'
+
 import {
 	Dices,
 	RotateCcw,
@@ -55,7 +52,6 @@ export default function DiceRollerPage() {
 	const [isRolling, setIsRolling] = useState(false)
 	const [currentRoll, setCurrentRoll] = useState<number[]>([])
 	const [rollHistory, setRollHistory] = useState<DiceResult[]>([])
-	const [showHistory, setShowHistory] = useState(true)
 	const [statistics, setStatistics] = useState<Statistics>({
 		totalRolls: 0,
 		totalSum: 0,
