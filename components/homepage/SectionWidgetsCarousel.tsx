@@ -249,15 +249,12 @@ export function SectionWidgetsCarousel() {
 
 				{/* CTA Button */}
 				<div className='text-center mt-8 sm:mt-12'>
-					<Link href={`/${locale}/tools`}>
-						<Button
-							size='default'
-							variant='outline'
-							className='gap-2 text-sm sm:text-base'
-						>
-							{t('widgetsCarousel.viewAll')}
-							<ArrowRight className='h-3.5 w-3.5 sm:h-4 sm:w-4' />
-						</Button>
+					<Link
+						href={`/${locale}/tools`}
+						className='inline-flex items-center justify-center whitespace-nowrap rounded-xl font-semibold focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-all duration-200 ease-out border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent h-10 px-5 py-2.5 gap-2 text-sm sm:text-base'
+					>
+						{t('widgetsCarousel.viewAll')}
+						<ArrowRight className='h-3.5 w-3.5 sm:h-4 sm:w-4' />
 					</Link>
 				</div>
 			</div>

@@ -58,7 +58,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	return {
 		metadataBase: new URL(siteUrl),
-		title: currentMetadata.title,
+		title: {
+			default: currentMetadata.title.default || 'PixelTool',
+			template: currentMetadata.title.template || '%s | PixelTool'
+		},
 		description: currentMetadata.description,
 		keywords:
 			locale === 'ru'
@@ -157,7 +160,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		},
 		verification: {
 			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
-			yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION
+			yandex: 'b2796581b70a9cad'
 		},
 		manifest: '/manifest.json',
 		appleWebApp: {

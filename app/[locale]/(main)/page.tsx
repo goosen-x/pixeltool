@@ -179,15 +179,13 @@ export default async function HomePage({ params }: Props) {
 
 						{/* Enhanced CTA Buttons - mobile optimized */}
 						<div className='flex flex-col gap-4 sm:flex-row sm:gap-6 justify-center items-center px-4 w-full'>
-							<Link 
-								href={`/${locale}/tools`} 
+							<Link
+								href={`/${locale}/tools`}
 								className='group inline-flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl sm:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 w-full sm:w-auto relative overflow-hidden font-semibold text-white'
 							>
 								<div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 								<Terminal className='h-5 w-5 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform z-10' />
-								<span className='z-10'>
-									{t('hero.exploreTools')}
-								</span>
+								<span className='z-10'>{t('hero.exploreTools')}</span>
 								<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform z-10' />
 							</Link>
 							<Link
