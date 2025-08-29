@@ -110,7 +110,7 @@ export default async function HomePage({ params }: Props) {
 						{/* Status Badge with Online Users */}
 						<div className='flex flex-row gap-3 justify-center items-center mb-6 sm:mb-8'>
 							<OnlineUsers />
-							<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary/15 to-accent/15 border border-primary/30 backdrop-blur-sm shadow-lg hover:shadow-primary/20 transition-all duration-300'>
+							<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary/15 to-accent/15 border border-primary/30 backdrop-blur-sm shadow-lg'>
 								<span className='text-xs sm:text-sm font-medium text-primary'>
 									{t('hero.liveAndFree')}
 								</span>
@@ -162,7 +162,7 @@ export default async function HomePage({ params }: Props) {
 							].map((item, idx) => (
 								<div
 									key={idx}
-									className='group px-2.5 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-2xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105 min-h-[60px] flex items-center'
+									className='group px-2.5 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-2xl bg-background/60 backdrop-blur-sm border border-border/50 min-h-[60px] flex items-center'
 								>
 									<div className='flex items-center gap-1.5 sm:gap-3 w-full'>
 										<div
@@ -213,9 +213,9 @@ export default async function HomePage({ params }: Props) {
 							].map((stat, idx) => (
 								<div
 									key={idx}
-									className='text-center p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-background/40 backdrop-blur-sm border border-border/30 hover:border-primary/30 transition-all duration-300 group'
+									className='text-center p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-background/40 backdrop-blur-sm border border-border/30'
 								>
-									<div className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2 group-hover:scale-110 transition-transform'>
+									<div className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2'>
 										{stat.number}
 									</div>
 									<div className='text-xs sm:text-sm text-muted-foreground font-medium'>

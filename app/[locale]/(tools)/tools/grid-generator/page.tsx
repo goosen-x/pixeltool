@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -23,6 +23,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface GridProps {
 	columns: string
@@ -58,19 +59,23 @@ export default function GridGeneratorPage() {
 	const [showItemNumbers, setShowItemNumbers] = useState(true)
 	const [useUniformGap, setUseUniformGap] = useState(true)
 	const [copiedTailwind, setCopiedTailwind] = useState(false)
+	const [copiedCSS, setCopiedCSS] = useState(false)
 
-	const updateProp = (key: keyof GridProps, value: string | number) => {
-		if (key === 'gap' && useUniformGap) {
-			setProps(prev => ({
-				...prev,
-				gap: value as number,
-				rowGap: value as number,
-				columnGap: value as number
-			}))
-		} else {
-			setProps(prev => ({ ...prev, [key]: value }))
-		}
-	}
+	const updateProp = useCallback(
+		(key: keyof GridProps, value: string | number) => {
+			if (key === 'gap' && useUniformGap) {
+				setProps(prev => ({
+					...prev,
+					gap: value as number,
+					rowGap: value as number,
+					columnGap: value as number
+				}))
+			} else {
+				setProps(prev => ({ ...prev, [key]: value }))
+			}
+		},
+		[useUniformGap]
+	)
 
 	const generateCSS = () => {
 		const css = `.container {
@@ -181,7 +186,13 @@ export default function GridGeneratorPage() {
 	const copyToClipboard = async () => {
 		try {
 			await navigator.clipboard.writeText(generateCSS())
-			toast.success(t('toast.copied'))
+			setCopiedCSS(true)
+			setTimeout(() => setCopiedCSS(false), 2000)
+			toast.success(
+				locale === 'ru'
+					? 'CSS код скопирован в буфер обмена'
+					: 'CSS code copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
@@ -192,16 +203,23 @@ export default function GridGeneratorPage() {
 			await navigator.clipboard.writeText(generateTailwind())
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(t('toast.copied'))
+			toast.success(
+				locale === 'ru'
+					? 'Tailwind классы скопированы в буфер обмена'
+					: 'Tailwind classes copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
 	}
 
-	const resetProps = () => {
+	const resetProps = useCallback(() => {
 		setProps(defaultProps)
 		setUseUniformGap(true)
-	}
+		setItemCount(6)
+		setShowItemNumbers(true)
+		toast.success(locale === 'ru' ? 'Настройки сброшены' : 'Settings reset')
+	}, [locale])
 
 	const renderLabel = (key: string, englishLabel: string) => {
 		if (locale !== 'ru') {
@@ -225,33 +243,37 @@ export default function GridGeneratorPage() {
 		)
 	}
 
-	const addColumn = () => {
+	const addColumn = useCallback(() => {
 		const columns = props.columns.split(' ')
 		columns.push('1fr')
 		updateProp('columns', columns.join(' '))
-	}
+		toast.info(locale === 'ru' ? 'Колонка добавлена' : 'Column added')
+	}, [props.columns, locale, updateProp])
 
-	const removeColumn = () => {
+	const removeColumn = useCallback(() => {
 		const columns = props.columns.split(' ')
 		if (columns.length > 1) {
 			columns.pop()
 			updateProp('columns', columns.join(' '))
+			toast.info(locale === 'ru' ? 'Колонка удалена' : 'Column removed')
 		}
-	}
+	}, [props.columns, locale, updateProp])
 
-	const addRow = () => {
+	const addRow = useCallback(() => {
 		const rows = props.rows.split(' ')
 		rows.push('1fr')
 		updateProp('rows', rows.join(' '))
-	}
+		toast.info(locale === 'ru' ? 'Ряд добавлен' : 'Row added')
+	}, [props.rows, locale, updateProp])
 
-	const removeRow = () => {
+	const removeRow = useCallback(() => {
 		const rows = props.rows.split(' ')
 		if (rows.length > 1) {
 			rows.pop()
 			updateProp('rows', rows.join(' '))
+			toast.info(locale === 'ru' ? 'Ряд удален' : 'Row removed')
 		}
-	}
+	}, [props.rows, locale, updateProp])
 
 	const containerStyle: React.CSSProperties = {
 		display: 'grid',
@@ -271,6 +293,46 @@ export default function GridGeneratorPage() {
 		padding: '20px',
 		border: '2px dashed hsl(var(--border))'
 	}
+
+	// Keyboard shortcuts - matching widgetShortcuts.ts configuration
+	useWidgetKeyboard({
+		widgetId: 'grid-generator',
+		shortcuts: [
+			{
+				key: '1',
+				primary: true,
+				description: 'Copy CSS',
+				action: copyToClipboard
+			},
+			{
+				key: '2',
+				primary: true,
+				description: 'Copy Tailwind',
+				action: copyTailwindToClipboard
+			},
+			{
+				key: 'r',
+				primary: true,
+				shift: true,
+				description: 'Reset',
+				action: resetProps
+			},
+			{
+				key: 'a',
+				primary: true,
+				shift: true,
+				description: 'Add Column',
+				action: addColumn
+			},
+			{
+				key: 'd',
+				primary: true,
+				shift: true,
+				description: 'Remove Column',
+				action: removeColumn
+			}
+		]
+	})
 
 	return (
 		<div className='grid gap-6 lg:grid-cols-3'>
@@ -540,7 +602,11 @@ export default function GridGeneratorPage() {
 									onClick={copyToClipboard}
 									className='h-8 px-2 hover:bg-accent hover:text-white'
 								>
-									<Copy className='h-3 w-3' />
+									{copiedCSS ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
 								</Button>
 							</div>
 							<div className='bg-secondary rounded-lg p-4'>

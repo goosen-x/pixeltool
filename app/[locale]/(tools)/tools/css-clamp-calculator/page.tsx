@@ -16,6 +16,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function ClampCalculatorPage() {
 	const locale = useLocale() as 'en' | 'ru'
@@ -102,7 +103,11 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(result)
 			setCopied(true)
 			setTimeout(() => setCopied(false), 2000)
-			toast.success(t('toast.copied'))
+			toast.success(
+				locale === 'ru'
+					? 'CSS значение скопировано в буфер обмена'
+					: 'CSS value copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
@@ -113,11 +118,51 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(tailwindResult)
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(t('toast.copied'))
+			toast.success(
+				locale === 'ru'
+					? 'Tailwind класс скопирован в буфер обмена'
+					: 'Tailwind class copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
 	}
+
+	// Functions for keyboard shortcuts
+	const resetForm = useCallback(() => {
+		setMinValue(16)
+		setMaxValue(24)
+		setMinViewport(375)
+		setMaxViewport(1440)
+		setUnit('rem')
+		setProperty('font-size')
+		toast.success(locale === 'ru' ? 'Форма сброшена' : 'Form reset')
+	}, [locale])
+
+	const switchUnit = useCallback(() => {
+		setUnit(prev => (prev === 'px' ? 'rem' : 'px'))
+		toast.info(
+			locale === 'ru'
+				? `Переключено на ${unit === 'px' ? 'rem' : 'px'}`
+				: `Switched to ${unit === 'px' ? 'rem' : 'px'}`
+		)
+	}, [unit, locale])
+
+	const switchProperty = useCallback(() => {
+		const properties: Array<'font-size' | 'margin' | 'padding'> = [
+			'font-size',
+			'margin',
+			'padding'
+		]
+		const currentIndex = properties.indexOf(property)
+		const nextIndex = (currentIndex + 1) % properties.length
+		setProperty(properties[nextIndex])
+		toast.info(
+			locale === 'ru'
+				? `Переключено на ${properties[nextIndex]}`
+				: `Switched to ${properties[nextIndex]}`
+		)
+	}, [property, locale])
 
 	const handleValueChange = (
 		value: string,
@@ -172,6 +217,45 @@ export default function ClampCalculatorPage() {
 			setMaxViewport(1440)
 		}
 	}, [])
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'css-clamp-calculator',
+		shortcuts: [
+			{
+				key: '1',
+				primary: true,
+				description: 'Copy CSS',
+				action: copyToClipboard
+			},
+			{
+				key: '2',
+				primary: true,
+				description: 'Copy Tailwind',
+				action: copyTailwindToClipboard
+			},
+			{
+				key: '0',
+				primary: true,
+				description: 'Reset',
+				action: resetForm
+			},
+			{
+				key: 'u',
+				primary: true,
+				shift: true,
+				description: 'Switch Units',
+				action: switchUnit
+			},
+			{
+				key: 'p',
+				primary: true,
+				shift: true,
+				description: 'Switch Property',
+				action: switchProperty
+			}
+		]
+	})
 
 	return (
 		<>

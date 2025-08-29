@@ -26,40 +26,6 @@ export const Footer = async () => {
 	const t = await getTranslations('Footer')
 	const tWidgets = await getTranslations('widgets')
 
-	// Tool categories for quick access
-	const toolCategories = [
-		{
-			title: t('categories.developerTools'),
-			icon: Code2,
-			tools: [
-				t('tools.colorConverter'),
-				t('tools.jsonFormatter'),
-				t('tools.base64Encoder'),
-				t('tools.regexTester')
-			]
-		},
-		{
-			title: t('categories.designTools'),
-			icon: Palette,
-			tools: [
-				t('tools.gradientGenerator'),
-				t('tools.shadowGenerator'),
-				t('tools.paletteCreator'),
-				t('tools.faviconGenerator')
-			]
-		},
-		{
-			title: t('categories.productivity'),
-			icon: Zap,
-			tools: [
-				t('tools.passwordGenerator'),
-				t('tools.loremIpsum'),
-				t('tools.qrCodeGenerator'),
-				t('tools.urlShortener')
-			]
-		}
-	]
-
 	const stats = [
 		{ label: '50+', sublabel: t('stats.professionalTools') },
 		{ label: '5K+', sublabel: t('stats.activeDevelopers') },
@@ -126,37 +92,6 @@ export const Footer = async () => {
 								<div className='text-sm text-muted-foreground font-medium'>
 									{stat.sublabel}
 								</div>
-							</div>
-						))}
-					</div>
-
-					{/* Tool Categories Grid */}
-					<div className='grid md:grid-cols-3 gap-8 mb-16'>
-						{toolCategories.map((category, idx) => (
-							<div
-								key={idx}
-								className='group p-6 rounded-2xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300'
-							>
-								<div className='flex items-center gap-3 mb-4'>
-									<div className='p-3 rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20'>
-										<category.icon className='w-6 h-6 text-primary' />
-									</div>
-									<p className='text-xl font-heading font-bold'>
-										{category.title}
-									</p>
-								</div>
-								<ul className='space-y-3'>
-									{category.tools.map((tool, toolIdx) => (
-										<li key={toolIdx}>
-											<span className='flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-all group/item cursor-not-allowed opacity-60'>
-												<span className='text-muted-foreground'>{tool}</span>
-												<span className='text-xs text-muted-foreground'>
-													soon
-												</span>
-											</span>
-										</li>
-									))}
-								</ul>
 							</div>
 						))}
 					</div>
@@ -233,40 +168,8 @@ export const Footer = async () => {
 
 					{/* Bottom Bar */}
 					<div className='pt-8 border-t border-border/50'>
-						<div className='flex flex-col md:flex-row justify-between items-center gap-6'>
-							<div className='flex flex-wrap items-center justify-center md:justify-start gap-6 text-sm text-muted-foreground'>
-								<span>{t('legal.copyright', { year })}</span>
-								<Link
-									href='/privacy'
-									className='hover:text-primary transition-colors'
-								>
-									{t('legal.privacyPolicy')}
-								</Link>
-								<Link
-									href='/terms'
-									className='hover:text-primary transition-colors'
-								>
-									{t('legal.termsOfService')}
-								</Link>
-								<Link
-									href='/api'
-									className='hover:text-primary transition-colors'
-								>
-									{t('legal.apiDocs')}
-								</Link>
-							</div>
-							<div className='flex items-center gap-2 text-sm text-muted-foreground'>
-								<span>{t('legal.craftedWith')}</span>
-								<Heart className='w-4 h-4 text-red-500 fill-red-500 animate-pulse' />
-								<span>{t('legal.by')}</span>
-								<Link
-									href='https://github.com/goosen-x/pixeltool'
-									className='font-medium text-primary hover:text-accent transition-colors'
-									target='_blank'
-								>
-									{t('legal.author')}
-								</Link>
-							</div>
+						<div className='flex items-center justify-center text-sm text-muted-foreground'>
+							<span>{t('legal.copyright', { year })}</span>
 						</div>
 					</div>
 				</div>

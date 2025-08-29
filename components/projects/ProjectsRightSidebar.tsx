@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,13 +17,37 @@ import {
 	Heart,
 	Coffee,
 	MessageSquare,
-	Users
+	Users,
+	Keyboard
 } from 'lucide-react'
 import { getWidgetById, getWidgetByPath } from '@/lib/constants/widgets'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FeedbackModal } from '@/components/feedback'
 import { useState, useEffect } from 'react'
+import { getWidgetShortcuts } from '@/lib/constants/widgetShortcuts'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { toast } from 'sonner'
+
+// Компонент для отображения клавиши
+const ShortcutKey = ({ children }: { children: React.ReactNode }) => (
+	<kbd className='inline-flex items-center justify-center min-w-[18px] h-5 px-1 text-[10px] font-mono rounded border bg-muted border-border'>
+		{children}
+	</kbd>
+)
+
+// Hook для определения ОС
+const useOperatingSystem = () => {
+	const [isMac, setIsMac] = useState(false)
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.userAgent))
+		}
+	}, [])
+
+	return isMac
+}
 
 interface AnalyticsStats {
 	viewsToday: number
@@ -37,16 +61,22 @@ interface AnalyticsStats {
 
 export function ProjectsRightSidebar() {
 	const pathname = usePathname()
+	const locale = useLocale()
 	const t = useTranslations('widgets')
 	const tSidebar = useTranslations('widgets.rightSidebar')
 	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(
 		null
 	)
 	const [isLoadingStats, setIsLoadingStats] = useState(true)
+	const [showAllShortcuts, setShowAllShortcuts] = useState(false)
+	const isMac = useOperatingSystem()
 
 	// Extract widget path from URL
 	const widgetPath = pathname.split('/').pop()
 	const widget = widgetPath ? getWidgetByPath(widgetPath) : null
+
+	// Get widget shortcuts
+	const widgetShortcuts = getWidgetShortcuts(pathname, isMac)
 
 	// Fetch analytics stats
 	useEffect(() => {
@@ -79,6 +109,101 @@ export function ProjectsRightSidebar() {
 		intermediate: 'bg-yellow-100 text-yellow-800',
 		advanced: 'bg-red-100 text-red-800'
 	}
+
+	const ActionsAndFeedbackCard = (
+		<Card>
+			<CardHeader className='pb-3'>
+				<CardTitle className='text-sm flex items-center gap-2'>
+					<Code2 className='w-4 h-4' />
+					{tSidebar('quickActions.title')}
+				</CardTitle>
+			</CardHeader>
+			<CardContent className='space-y-2'>
+				<Button
+					variant='outline'
+					size='sm'
+					className='w-full justify-start text-xs lg:text-sm'
+					onClick={() => {
+						navigator.clipboard.writeText(window.location.href)
+						toast.success(
+							locale === 'ru' ? 'Ссылка скопирована' : 'Link copied'
+						)
+					}}
+				>
+					<Share2 className='w-3 h-3 lg:w-4 lg:h-4 mr-2 flex-shrink-0' />
+					<span className='truncate'>{tSidebar('quickActions.share')}</span>
+				</Button>
+				<FeedbackModal variant='sidebar' />
+				<p className='text-xs text-muted-foreground text-center pt-2'>
+					{tSidebar('feedback.helpText')}
+				</p>
+			</CardContent>
+		</Card>
+	)
+
+	const KeyboardShortcutsCard = widgetShortcuts && (
+		<Card>
+			<CardHeader className='pb-3'>
+				<CardTitle className='text-sm flex items-center gap-2'>
+					<Keyboard className='w-4 h-4' />
+					{tSidebar('keyboardShortcuts.title')}
+				</CardTitle>
+			</CardHeader>
+			<CardContent className='space-y-2'>
+				<div className='space-y-2'>
+					{(showAllShortcuts
+						? widgetShortcuts.shortcuts
+						: widgetShortcuts.shortcuts.slice(0, 4)
+					).map((shortcut, index) => {
+						const [keys, ...descriptionParts] = shortcut.split(' ')
+						const description = descriptionParts.join(' ')
+
+						return (
+							<div
+								key={index}
+								className='flex items-center justify-between gap-2'
+							>
+								<span className='text-xs text-muted-foreground truncate'>
+									{description}
+								</span>
+								<div className='flex items-center gap-1 whitespace-nowrap'>
+									{keys.split('+').map((key, keyIndex, array) => (
+										<div key={keyIndex} className='flex items-center gap-0.5'>
+											<ShortcutKey>{key}</ShortcutKey>
+											{keyIndex < array.length - 1 && (
+												<span className='text-xs text-muted-foreground'>+</span>
+											)}
+										</div>
+									))}
+								</div>
+							</div>
+						)
+					})}
+				</div>
+				{widgetShortcuts.shortcuts.length > 4 && (
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => setShowAllShortcuts(!showAllShortcuts)}
+						className='w-full h-7 text-xs hover:bg-accent hover:text-accent-foreground mt-2'
+					>
+						{showAllShortcuts ? (
+							<>
+								<ChevronUp className='w-3 h-3 mr-1' />
+								{locale === 'ru' ? 'Скрыть' : 'Show less'}
+							</>
+						) : (
+							<>
+								<ChevronDown className='w-3 h-3 mr-1' />+
+								{widgetShortcuts.shortcuts.length - 4}{' '}
+								{locale === 'ru' ? 'ещё' : 'more'}
+							</>
+						)}
+					</Button>
+				)}
+			</CardContent>
+		</Card>
+	)
 
 	return (
 		<aside className='w-72 xl:w-80 h-full p-3 lg:p-4 space-y-3 lg:space-y-4 overflow-y-auto projects-scroll flex-shrink-0'>
@@ -131,37 +256,8 @@ export function ProjectsRightSidebar() {
 				</CardContent>
 			</Card>
 
-			{/* Quick Actions Card */}
-			<Card>
-				<CardHeader className='pb-3'>
-					<CardTitle className='text-sm flex items-center gap-2'>
-						<Code2 className='w-4 h-4' />
-						{tSidebar('quickActions.title')}
-					</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-2'>
-					<Button
-						variant='outline'
-						size='sm'
-						className='w-full justify-start text-xs lg:text-sm'
-						onClick={() => {
-							navigator.clipboard.writeText(window.location.href)
-						}}
-					>
-						<Share2 className='w-3 h-3 lg:w-4 lg:h-4 mr-2 flex-shrink-0' />
-						<span className='truncate'>{tSidebar('quickActions.share')}</span>
-					</Button>
-					{/* <Button
-            variant="outline"
-            size="sm"
-            className="w-full justify-start"
-            onClick={() => window.print()}
-          >
-            <BookOpen className="w-4 h-4 mr-2" />
-            Export as PDF
-          </Button> */}
-				</CardContent>
-			</Card>
+			{/* Keyboard Shortcuts */}
+			{KeyboardShortcutsCard}
 
 			{/* Use Case Card */}
 			{widget.useCase && (
@@ -273,21 +369,8 @@ export function ProjectsRightSidebar() {
 				</CardContent>
 			</Card>
 
-			{/* Feedback Card */}
-			<Card>
-				<CardHeader className='pb-3'>
-					<CardTitle className='text-sm flex items-center gap-2'>
-						<MessageSquare className='w-4 h-4' />
-						{tSidebar('feedback.title')}
-					</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-2'>
-					<FeedbackModal variant='sidebar' />
-					<p className='text-xs text-muted-foreground text-center'>
-						{tSidebar('feedback.helpText')}
-					</p>
-				</CardContent>
-			</Card>
+			{/* Actions & Feedback */}
+			{ActionsAndFeedbackCard}
 		</aside>
 	)
 }

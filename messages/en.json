@@ -380,6 +380,9 @@
 				"title": "Feedback",
 				"helpText": "Help us improve this tool"
 			},
+			"keyboardShortcuts": {
+				"title": "Keyboard Shortcuts"
+			},
 			"relatedTools": {
 				"title": "Related Tools"
 			},

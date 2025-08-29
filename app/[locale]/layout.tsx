@@ -138,7 +138,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		},
 		other: {
 			// VK
-			'vk:image': 'https://pixeltool.pro/og-image.png'
+			'vk:image': 'https://pixeltool.pro/og-image.png',
+			// Mobile indicators for Yandex
+			'mobile-web-app-capable': 'yes',
+			HandheldFriendly: 'true',
+			MobileOptimized: '320'
 		},
 		icons: [
 			{
@@ -204,10 +208,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			}
 		],
 		alternates: {
-			canonical: siteUrl,
+			canonical: `${siteUrl}/${locale}`,
 			languages: {
 				en: `${siteUrl}/en`,
-				ru: `${siteUrl}/ru`
+				ru: `${siteUrl}/ru`,
+				'x-default': siteUrl
 			}
 		},
 		robots: {
@@ -240,7 +245,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const viewport = {
 	width: 'device-width',
 	initialScale: 1,
-	maximumScale: 5
+	maximumScale: 5,
+	viewportFit: 'cover'
 }
 
 export default async function RootLayout({
