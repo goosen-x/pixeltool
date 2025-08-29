@@ -25,6 +25,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FeedbackModal } from '@/components/feedback'
 import { useState, useEffect } from 'react'
+import { getWidgetShortcuts } from '@/lib/constants/widgetShortcuts'
 
 // Компонент для отображения клавиши
 const ShortcutKey = ({ children }: { children: React.ReactNode }) => (
@@ -32,6 +33,19 @@ const ShortcutKey = ({ children }: { children: React.ReactNode }) => (
 		{children}
 	</kbd>
 )
+
+// Hook для определения ОС
+const useOperatingSystem = () => {
+	const [isMac, setIsMac] = useState(false)
+
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.userAgent))
+		}
+	}, [])
+
+	return isMac
+}
 
 interface AnalyticsStats {
 	viewsToday: number
@@ -51,10 +65,14 @@ export function ProjectsRightSidebar() {
 		null
 	)
 	const [isLoadingStats, setIsLoadingStats] = useState(true)
+	const isMac = useOperatingSystem()
 
 	// Extract widget path from URL
 	const widgetPath = pathname.split('/').pop()
 	const widget = widgetPath ? getWidgetByPath(widgetPath) : null
+
+	// Get widget shortcuts
+	const widgetShortcuts = getWidgetShortcuts(pathname, isMac)
 
 	// Fetch analytics stats
 	useEffect(() => {
@@ -282,63 +300,52 @@ export function ProjectsRightSidebar() {
 			</Card>
 
 			{/* Keyboard Shortcuts Card */}
-			<Card>
-				<CardHeader className='pb-3'>
-					<CardTitle className='text-sm flex items-center gap-2'>
-						<Keyboard className='w-4 h-4' />
-						{tSidebar('keyboardShortcuts.title')}
-					</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-2'>
-					<div className='space-y-2'>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs text-muted-foreground'>
-								{tSidebar('keyboardShortcuts.showAll')}
-							</span>
-							<div className='flex items-center gap-1'>
-								<ShortcutKey>Shift</ShortcutKey>
-								<span className='text-xs text-muted-foreground'>+</span>
-								<ShortcutKey>?</ShortcutKey>
-							</div>
+			{widgetShortcuts && (
+				<Card>
+					<CardHeader className='pb-3'>
+						<CardTitle className='text-sm flex items-center gap-2'>
+							<Keyboard className='w-4 h-4' />
+							{tSidebar('keyboardShortcuts.title')}
+						</CardTitle>
+					</CardHeader>
+					<CardContent className='space-y-2'>
+						<div className='space-y-2'>
+							{widgetShortcuts.shortcuts.slice(0, 4).map((shortcut, index) => {
+								const [keys, ...descriptionParts] = shortcut.split(' ')
+								const description = descriptionParts.join(' ')
+								
+								return (
+									<div key={index} className='flex items-center justify-between gap-2'>
+										<span className='text-xs text-muted-foreground truncate'>
+											{description}
+										</span>
+										<div className='flex items-center gap-1 whitespace-nowrap'>
+											{keys.split('+').map((key, keyIndex, array) => (
+												<div key={keyIndex} className='flex items-center gap-0.5'>
+													<ShortcutKey>{key}</ShortcutKey>
+													{keyIndex < array.length - 1 && (
+														<span className='text-xs text-muted-foreground'>+</span>
+													)}
+												</div>
+											))}
+										</div>
+									</div>
+								)
+							})}
 						</div>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs text-muted-foreground'>
-								{tSidebar('keyboardShortcuts.copyResult')}
-							</span>
-							<div className='flex items-center gap-1'>
-								<ShortcutKey>Ctrl</ShortcutKey>
-								<span className='text-xs text-muted-foreground'>+</span>
-								<ShortcutKey>⇧</ShortcutKey>
-								<span className='text-xs text-muted-foreground'>+</span>
-								<ShortcutKey>C</ShortcutKey>
-							</div>
-						</div>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs text-muted-foreground'>
-								{tSidebar('keyboardShortcuts.reset')}
-							</span>
-							<div className='flex items-center gap-1'>
-								<ShortcutKey>Ctrl</ShortcutKey>
-								<span className='text-xs text-muted-foreground'>+</span>
-								<ShortcutKey>⇧</ShortcutKey>
-								<span className='text-xs text-muted-foreground'>+</span>
-								<ShortcutKey>R</ShortcutKey>
-							</div>
-						</div>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs text-muted-foreground'>
-								{tSidebar('keyboardShortcuts.submit')}
-							</span>
-							<div className='flex items-center gap-1'>
-								<ShortcutKey>Enter</ShortcutKey>
-							</div>
-						</div>
-					</div>
-					<p className='text-xs text-muted-foreground text-center pt-2 border-t'>
-						{tSidebar('keyboardShortcuts.helpText')}
-					</p>
-				</CardContent>
-			</Card>
+						{widgetShortcuts.shortcuts.length > 4 && (
+							<p className='text-xs text-muted-foreground text-center pt-2 border-t'>
+								+{widgetShortcuts.shortcuts.length - 4} more shortcuts - Press Shift+?
+							</p>
+						)}
+						{widgetShortcuts.description && (
+							<p className='text-xs text-muted-foreground text-center pt-1 border-t'>
+								{widgetShortcuts.description}
+							</p>
+						)}
+					</CardContent>
+				</Card>
+			)}
 
 			{/* Feedback Card */}
 			<Card>
