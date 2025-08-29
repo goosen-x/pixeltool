@@ -101,8 +101,7 @@ export default function JSONToolsPage() {
 		shortcuts: [
 			{
 				key: 'f',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Format JSON',
 				action: () => {
 					if (input.trim()) {
@@ -124,8 +123,7 @@ export default function JSONToolsPage() {
 			},
 			{
 				key: 'c',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Copy result',
 				action: () => {
 					if (analysis && analysis.isValid) {
@@ -156,7 +154,7 @@ export default function JSONToolsPage() {
 			},
 			{
 				key: 'k',
-				primary: true,
+				alt: true,
 				description: 'Clear input',
 				action: () => setInput('')
 			}

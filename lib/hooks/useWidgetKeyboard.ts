@@ -347,7 +347,7 @@ export const generatorShortcuts: KeyboardShortcut[] = [
 export const editorShortcuts: KeyboardShortcut[] = [
 	{
 		key: 'f',
-		ctrl: true,
+		primary: true,
 		shift: true,
 		description: 'Format code',
 		action: () => {}

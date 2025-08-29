@@ -106,8 +106,7 @@ export default function CSSGradientGeneratorPage() {
 			},
 			{
 				key: 'c',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Copy CSS',
 				action: copyCSS
 			},

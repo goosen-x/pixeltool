@@ -78,8 +78,7 @@ export default function CompoundInterestCalculatorPage() {
 		},
 		{
 			key: 'c',
-			primary: true,
-			shift: true,
+			alt: true,
 			description: 'Copy results',
 			action: copyResults,
 			enabled: !!result

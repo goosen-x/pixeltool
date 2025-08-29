@@ -220,8 +220,7 @@ export default function TeamRandomizerPage() {
 			},
 			{
 				key: 'c',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Copy Result',
 				action: copyTeamsToClipboard,
 				enabled: teams.length > 0

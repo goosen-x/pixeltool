@@ -469,8 +469,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 			},
 			{
 				key: 'c',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Copy Result',
 				action: () => {
 					if (ageData) {

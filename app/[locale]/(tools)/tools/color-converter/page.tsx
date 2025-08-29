@@ -125,7 +125,7 @@ export default function ColorConverterPage() {
 		},
 		{
 			key: 'c',
-			primary: true,
+			alt: true,
 			shift: true,
 			action: () => copyToClipboard(formatRgb(rgbValue), 'RGB'),
 			description: t('shortcuts.copyRgb')
@@ -138,7 +138,7 @@ export default function ColorConverterPage() {
 		},
 		{
 			key: 'k',
-			primary: true,
+			alt: true,
 			action: () => {
 				setHexValue('#FF9999')
 				updateFromHex('#FF9999')

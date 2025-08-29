@@ -168,8 +168,7 @@ export default function RandomNumberGeneratorPage() {
 			},
 			{
 				key: 'c',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Copy Result',
 				action: () => {
 					if (results[0]) {

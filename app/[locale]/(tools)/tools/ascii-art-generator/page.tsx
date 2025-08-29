@@ -289,8 +289,7 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			key: 'c',
-			primary: true,
-			shift: true,
+			alt: true,
 			description: 'Copy ASCII art',
 			action: handleCopyAscii,
 			enabled: !!asciiOutput

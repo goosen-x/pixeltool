@@ -441,7 +441,7 @@ export default function RegexTesterPage() {
 		},
 		{
 			key: 'k',
-			primary: true,
+			alt: true,
 			action: () => {
 				setPattern('')
 				setTestText('')

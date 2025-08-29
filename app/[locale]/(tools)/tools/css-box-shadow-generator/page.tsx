@@ -427,8 +427,7 @@ export default function CSSBoxShadowGeneratorPage() {
 			},
 			{
 				key: 'c',
-				primary: true,
-				shift: true,
+				alt: true,
 				description: 'Copy CSS',
 				action: copyCSSCode
 			},

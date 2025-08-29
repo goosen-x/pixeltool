@@ -453,7 +453,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 	const shortcuts = [
 		{
 			key: 'k',
-			primary: true,
+			alt: true,
 			action: clearText,
 			description: t('shortcuts.clear')
 		},
