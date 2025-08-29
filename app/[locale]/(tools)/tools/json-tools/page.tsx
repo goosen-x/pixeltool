@@ -101,7 +101,7 @@ export default function JSONToolsPage() {
 		shortcuts: [
 			{
 				key: 'f',
-				ctrl: true,
+				primary: true,
 				shift: true,
 				description: 'Format JSON',
 				action: () => {
@@ -113,7 +113,7 @@ export default function JSONToolsPage() {
 			},
 			{
 				key: 'm',
-				ctrl: true,
+				primary: true,
 				description: 'Minify JSON',
 				action: () => {
 					if (input.trim()) {
@@ -124,7 +124,7 @@ export default function JSONToolsPage() {
 			},
 			{
 				key: 'c',
-				ctrl: true,
+				primary: true,
 				shift: true,
 				description: 'Copy result',
 				action: () => {
@@ -142,7 +142,7 @@ export default function JSONToolsPage() {
 			},
 			{
 				key: 'd',
-				ctrl: true,
+				primary: true,
 				description: 'Download result',
 				action: () => {
 					if (analysis && analysis.isValid) {
@@ -156,7 +156,7 @@ export default function JSONToolsPage() {
 			},
 			{
 				key: 'k',
-				ctrl: true,
+				primary: true,
 				description: 'Clear input',
 				action: () => setInput('')
 			}

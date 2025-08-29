@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useTranslations } from 'next-intl'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface GeneratedResult {
 	numbers: number[]
@@ -71,52 +72,6 @@ export default function RandomNumberGeneratorPage() {
 	const [error, setError] = useState<string | null>(null)
 	const [copiedId, setCopiedId] = useState<string | null>(null)
 	const [mounted, setMounted] = useState(false)
-
-	useEffect(() => {
-		setMounted(true)
-		// Generate initial result
-		handleGenerate()
-	}, [])
-
-	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Ctrl/Cmd + G to generate
-			if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
-				e.preventDefault()
-				handleGenerate()
-			}
-			// Ctrl/Cmd + R to regenerate
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				handleGenerate()
-			}
-			// Ctrl/Cmd + Shift + C to copy latest result
-			if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-				e.preventDefault()
-				if (results[0]) {
-					copyToClipboard(results[0].numbers, results[0].id)
-				}
-			}
-			// Ctrl/Cmd + D to download
-			if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
-				e.preventDefault()
-				if (results.length > 0) {
-					downloadResults()
-				}
-			}
-			// U to toggle unique
-			if (e.key === 'u' || e.key === 'U') {
-				if (document.activeElement?.tagName !== 'INPUT') {
-					e.preventDefault()
-					setUnique(!unique)
-				}
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [results, unique])
 
 	const validate = (): string | null => {
 		if (min < 0 || min > 999999) {
@@ -188,6 +143,55 @@ export default function RandomNumberGeneratorPage() {
 		URL.revokeObjectURL(url)
 		toast.success(t('toast.downloaded'))
 	}
+
+	useEffect(() => {
+		setMounted(true)
+		// Generate initial result
+		handleGenerate()
+	}, [])
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'random-number-generator',
+		shortcuts: [
+			{
+				key: 'g',
+				primary: true,
+				description: 'Generate',
+				action: handleGenerate
+			},
+			{
+				key: 'r',
+				primary: true,
+				description: 'Regenerate',
+				action: handleGenerate
+			},
+			{
+				key: 'c',
+				primary: true,
+				shift: true,
+				description: 'Copy Result',
+				action: () => {
+					if (results[0]) {
+						copyToClipboard(results[0].numbers, results[0].id)
+					}
+				},
+				enabled: results.length > 0
+			},
+			{
+				key: 'd',
+				primary: true,
+				description: 'Download',
+				action: downloadResults,
+				enabled: results.length > 0
+			},
+			{
+				key: 'u',
+				description: 'Toggle Unique',
+				action: () => setUnique(!unique)
+			}
+		]
+	})
 
 	if (!mounted) {
 		return null

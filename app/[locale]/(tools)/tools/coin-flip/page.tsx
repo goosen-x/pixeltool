@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { useTranslations, useLocale } from 'next-intl'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface FlipResult {
 	id: string
@@ -182,30 +183,34 @@ export default function CoinFlipPage() {
 	}, [locale])
 
 	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to flip coin
-			if (e.code === 'Space') {
-				e.preventDefault()
-				flipCoin()
+	useWidgetKeyboard({
+		widgetId: 'coin-flip',
+		shortcuts: [
+			{
+				key: ' ',
+				description: 'Flip Coin',
+				action: flipCoin
+			},
+			{
+				key: 't',
+				primary: true,
+				description: 'Change Coin Type',
+				action: () => {
+					const currentIndex = coinTypes.findIndex(
+						c => c.id === selectedCoin.id
+					)
+					const nextIndex = (currentIndex + 1) % coinTypes.length
+					setSelectedCoin(coinTypes[nextIndex])
+				}
+			},
+			{
+				key: 'r',
+				primary: true,
+				description: 'Reset',
+				action: clearHistory
 			}
-			// Ctrl/Cmd + T to change coin type
-			if ((e.ctrlKey || e.metaKey) && e.key === 't') {
-				e.preventDefault()
-				const currentIndex = coinTypes.findIndex(c => c.id === selectedCoin.id)
-				const nextIndex = (currentIndex + 1) % coinTypes.length
-				setSelectedCoin(coinTypes[nextIndex])
-			}
-			// Ctrl/Cmd + R to reset (clear history)
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				clearHistory()
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [selectedCoin, flipCoin, clearHistory])
+		]
+	})
 
 	const getAnimationDuration = () => {
 		switch (animationSpeed) {

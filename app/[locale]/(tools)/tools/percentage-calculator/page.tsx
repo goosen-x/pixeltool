@@ -188,7 +188,7 @@ export default function PercentageCalculatorPage() {
 		},
 		{
 			key: 'h',
-			ctrl: true,
+			primary: true,
 			description: 'Clear history',
 			action: clearRecent
 		},

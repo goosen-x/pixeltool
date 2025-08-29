@@ -34,6 +34,7 @@ import { KeyboardShortcutInfo } from '@/components/widgets'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { useTranslations, useLocale } from 'next-intl'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface AgeData {
 	years: number
@@ -447,25 +448,39 @@ Chinese zodiac: ${data.chineseZodiac}`
 	}, [t])
 
 	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Ctrl/Cmd + R to reset
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				reset()
-			}
-			// Ctrl/Cmd + Shift + C to copy results
-			if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-				e.preventDefault()
-				if (ageData) {
-					copyToClipboard(formatAgeText(ageData))
+	useWidgetKeyboard({
+		widgetId: 'age-calculator',
+		shortcuts: [
+			{
+				key: 'Enter',
+				primary: true,
+				description: 'Calculate',
+				action: () => {
+					if (birthDate) {
+						setAgeData(calculateAge(birthDate))
+					}
 				}
+			},
+			{
+				key: 'r',
+				primary: true,
+				description: 'Reset',
+				action: reset
+			},
+			{
+				key: 'c',
+				primary: true,
+				shift: true,
+				description: 'Copy Result',
+				action: () => {
+					if (ageData) {
+						copyToClipboard(formatAgeText(ageData))
+					}
+				},
+				enabled: !!ageData
 			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [ageData, copyToClipboard, reset, formatAgeText])
+		]
+	})
 
 	const formatNumber = useCallback((num: number): string => {
 		return num.toLocaleString('ru-RU')

@@ -119,26 +119,26 @@ export default function ColorConverterPage() {
 	const shortcuts = [
 		{
 			key: 'c',
-			ctrl: true,
+			primary: true,
 			action: () => copyToClipboard(hexValue, 'HEX'),
 			description: t('shortcuts.copyHex')
 		},
 		{
 			key: 'c',
-			ctrl: true,
+			primary: true,
 			shift: true,
 			action: () => copyToClipboard(formatRgb(rgbValue), 'RGB'),
 			description: t('shortcuts.copyRgb')
 		},
 		{
 			key: 'a',
-			ctrl: true,
+			primary: true,
 			action: () => copyToClipboard(formatRgba(rgba), 'RGBA'),
 			description: t('shortcuts.copyRgba')
 		},
 		{
 			key: 'k',
-			ctrl: true,
+			primary: true,
 			action: () => {
 				setHexValue('#FF9999')
 				updateFromHex('#FF9999')

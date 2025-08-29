@@ -180,7 +180,7 @@ export default function TextCaseConverterPage() {
 			}),
 			{
 				key: 'j',
-				ctrl: true,
+				primary: true,
 				action: exportAsJSON,
 				description: 'Export as JSON'
 			}

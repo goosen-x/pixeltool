@@ -184,13 +184,13 @@ export default function QRGeneratorPage() {
 	const shortcuts = [
 		{
 			key: 'd',
-			ctrl: true,
+			primary: true,
 			action: downloadQR,
 			description: t('download')
 		},
 		{
 			key: 'c',
-			ctrl: true,
+			primary: true,
 			action: copyQRAsImage,
 			description: t('copy')
 		},

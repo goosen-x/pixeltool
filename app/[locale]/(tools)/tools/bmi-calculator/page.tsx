@@ -147,7 +147,7 @@ export default function BMICalculatorPage() {
 		},
 		{
 			key: 'c',
-			ctrl: true,
+			primary: true,
 			shift: true,
 			description: 'Copy results',
 			action: copyResults,
@@ -155,13 +155,13 @@ export default function BMICalculatorPage() {
 		},
 		{
 			key: 'e',
-			ctrl: true,
+			primary: true,
 			description: 'Load example',
 			action: handleLoadExample
 		},
 		{
 			key: 'u',
-			ctrl: true,
+			primary: true,
 			description: 'Switch units',
 			action: () =>
 				updateField(

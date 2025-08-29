@@ -453,19 +453,19 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 	const shortcuts = [
 		{
 			key: 'k',
-			ctrl: true,
+			primary: true,
 			action: clearText,
 			description: t('shortcuts.clear')
 		},
 		{
 			key: 'c',
-			ctrl: true,
+			primary: true,
 			action: copyStats,
 			description: t('shortcuts.copyStats')
 		},
 		{
 			key: 'h',
-			ctrl: true,
+			primary: true,
 			action: () => {
 				const highlighted = highlightKeywords()
 				setText(highlighted)
@@ -476,7 +476,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 		},
 		{
 			key: 'l',
-			ctrl: true,
+			primary: true,
 			action: () => {
 				toast.info(
 					`${t('shortcuts.limits')}: ${PLATFORM_LIMITS.map(p => p.name).join(', ')}`

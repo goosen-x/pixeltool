@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/ui/badge'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface Lot {
 	id: string
@@ -88,33 +89,36 @@ export default function DrawLotsPage() {
 	}, [])
 
 	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to draw card
-			if (e.code === 'Space' && !isDrawing) {
-				e.preventDefault()
-				startDrawing()
+	useWidgetKeyboard({
+		widgetId: 'draw-lots',
+		shortcuts: [
+			{
+				key: ' ',
+				description: 'Draw Card',
+				action: startDrawing,
+				enabled: !isDrawing
+			},
+			{
+				key: 'Enter',
+				description: 'Reveal Card',
+				action: () => {
+					const availableLots = lots.filter(lot => !lot.isRevealed)
+					if (availableLots.length > 0) {
+						const randomLot =
+							availableLots[Math.floor(Math.random() * availableLots.length)]
+						revealLot(randomLot.id)
+					}
+				},
+				enabled: isDrawing && lots.length > 0
+			},
+			{
+				key: 'r',
+				primary: true,
+				description: 'Reset',
+				action: reset
 			}
-			// Enter to reveal a random card (if cards are available)
-			if (e.key === 'Enter' && isDrawing && lots.length > 0) {
-				e.preventDefault()
-				const availableLots = lots.filter(lot => !lot.isRevealed)
-				if (availableLots.length > 0) {
-					const randomLot =
-						availableLots[Math.floor(Math.random() * availableLots.length)]
-					revealLot(randomLot.id)
-				}
-			}
-			// Ctrl/Cmd + R to reset
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				reset()
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [isDrawing, lots, startDrawing, revealLot, reset])
+		]
+	})
 
 	if (!mounted) {
 		return null
