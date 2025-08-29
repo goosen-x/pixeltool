@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import {
@@ -22,6 +22,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface FlexboxProps {
 	flexDirection: string
@@ -48,6 +49,7 @@ export default function FlexboxGeneratorPage() {
 	const [itemCount, setItemCount] = useState(3)
 	const [showItemNumbers, setShowItemNumbers] = useState(true)
 	const [copiedTailwind, setCopiedTailwind] = useState(false)
+	const [copiedCSS, setCopiedCSS] = useState(false)
 
 	const updateProp = (key: keyof FlexboxProps, value: string | number) => {
 		setProps(prev => ({ ...prev, [key]: value }))
@@ -132,7 +134,13 @@ export default function FlexboxGeneratorPage() {
 	const copyToClipboard = async () => {
 		try {
 			await navigator.clipboard.writeText(generateCSS())
-			toast.success(t('toast.copied'))
+			setCopiedCSS(true)
+			setTimeout(() => setCopiedCSS(false), 2000)
+			toast.success(
+				locale === 'ru'
+					? 'CSS код скопирован в буфер обмена'
+					: 'CSS code copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
@@ -143,15 +151,44 @@ export default function FlexboxGeneratorPage() {
 			await navigator.clipboard.writeText(generateTailwind())
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(t('toast.copied'))
+			toast.success(
+				locale === 'ru'
+					? 'Tailwind классы скопированы в буфер обмена'
+					: 'Tailwind classes copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
 	}
 
-	const resetProps = () => {
+	const resetProps = useCallback(() => {
 		setProps(defaultProps)
-	}
+		setItemCount(3)
+		setShowItemNumbers(true)
+		toast.success(locale === 'ru' ? 'Настройки сброшены' : 'Settings reset')
+	}, [locale])
+
+	const addItem = useCallback(() => {
+		if (itemCount < 12) {
+			setItemCount(prev => prev + 1)
+			toast.info(
+				locale === 'ru'
+					? `Добавлен элемент ${itemCount + 1}`
+					: `Added item ${itemCount + 1}`
+			)
+		}
+	}, [itemCount, locale])
+
+	const removeItem = useCallback(() => {
+		if (itemCount > 1) {
+			setItemCount(prev => prev - 1)
+			toast.info(
+				locale === 'ru'
+					? `Удален элемент ${itemCount}`
+					: `Removed item ${itemCount}`
+			)
+		}
+	}, [itemCount, locale])
 
 	const renderLabel = (key: string, englishLabel: string) => {
 		if (locale !== 'ru') {
@@ -190,6 +227,46 @@ export default function FlexboxGeneratorPage() {
 		border: '2px dashed hsl(var(--border))',
 		overflow: 'hidden'
 	}
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'flexbox-generator',
+		shortcuts: [
+			{
+				key: '1',
+				primary: true,
+				description: 'Copy CSS',
+				action: copyToClipboard
+			},
+			{
+				key: '2',
+				primary: true,
+				description: 'Copy Tailwind',
+				action: copyTailwindToClipboard
+			},
+			{
+				key: 'r',
+				primary: true,
+				shift: true,
+				description: 'Reset',
+				action: resetProps
+			},
+			{
+				key: 'a',
+				primary: true,
+				shift: true,
+				description: 'Add Item',
+				action: addItem
+			},
+			{
+				key: 'd',
+				primary: true,
+				shift: true,
+				description: 'Remove Item',
+				action: removeItem
+			}
+		]
+	})
 
 	return (
 		<div className='grid gap-6 lg:grid-cols-3'>
@@ -402,7 +479,11 @@ export default function FlexboxGeneratorPage() {
 									onClick={copyToClipboard}
 									className='h-8 px-2 hover:bg-accent hover:text-white'
 								>
-									<Copy className='h-3 w-3' />
+									{copiedCSS ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
 								</Button>
 							</div>
 							<div className='bg-secondary rounded-lg p-4'>

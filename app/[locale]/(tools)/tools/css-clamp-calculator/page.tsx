@@ -103,7 +103,11 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(result)
 			setCopied(true)
 			setTimeout(() => setCopied(false), 2000)
-			toast.success(t('toast.copied'))
+			toast.success(
+				locale === 'ru'
+					? 'CSS значение скопировано в буфер обмена'
+					: 'CSS value copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
@@ -114,7 +118,11 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(tailwindResult)
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(t('toast.copied'))
+			toast.success(
+				locale === 'ru'
+					? 'Tailwind класс скопирован в буфер обмена'
+					: 'Tailwind class copied to clipboard'
+			)
 		} catch (err) {
 			toast.error(t('toast.copyError'))
 		}
@@ -132,28 +140,29 @@ export default function ClampCalculatorPage() {
 	}, [locale])
 
 	const switchUnit = useCallback(() => {
-		setUnit(prev => prev === 'px' ? 'rem' : 'px')
-		toast.info(locale === 'ru' ? `Переключено на ${unit === 'px' ? 'rem' : 'px'}` : `Switched to ${unit === 'px' ? 'rem' : 'px'}`)
+		setUnit(prev => (prev === 'px' ? 'rem' : 'px'))
+		toast.info(
+			locale === 'ru'
+				? `Переключено на ${unit === 'px' ? 'rem' : 'px'}`
+				: `Switched to ${unit === 'px' ? 'rem' : 'px'}`
+		)
 	}, [unit, locale])
 
 	const switchProperty = useCallback(() => {
-		const properties: Array<'font-size' | 'margin' | 'padding'> = ['font-size', 'margin', 'padding']
+		const properties: Array<'font-size' | 'margin' | 'padding'> = [
+			'font-size',
+			'margin',
+			'padding'
+		]
 		const currentIndex = properties.indexOf(property)
 		const nextIndex = (currentIndex + 1) % properties.length
 		setProperty(properties[nextIndex])
-		toast.info(locale === 'ru' ? `Переключено на ${properties[nextIndex]}` : `Switched to ${properties[nextIndex]}`)
+		toast.info(
+			locale === 'ru'
+				? `Переключено на ${properties[nextIndex]}`
+				: `Switched to ${properties[nextIndex]}`
+		)
 	}, [property, locale])
-
-	const loadExample = useCallback(() => {
-		// Typography example: 16px on mobile to 20px on desktop
-		setMinValue(16)
-		setMaxValue(20)
-		setMinViewport(320)
-		setMaxViewport(1200)
-		setUnit('px')
-		setProperty('font-size')
-		toast.success(locale === 'ru' ? 'Пример загружен' : 'Example loaded')
-	}, [locale])
 
 	const handleValueChange = (
 		value: string,
@@ -214,42 +223,36 @@ export default function ClampCalculatorPage() {
 		widgetId: 'css-clamp-calculator',
 		shortcuts: [
 			{
-				key: 'c',
-				ctrl: true,
-				shift: true,
+				key: '1',
+				primary: true,
 				description: 'Copy CSS',
 				action: copyToClipboard
 			},
 			{
-				key: 't',
-				ctrl: true,
-				shift: true,
+				key: '2',
+				primary: true,
 				description: 'Copy Tailwind',
 				action: copyTailwindToClipboard
 			},
 			{
-				key: 'r',
-				ctrl: true,
+				key: '0',
+				primary: true,
 				description: 'Reset',
 				action: resetForm
 			},
 			{
 				key: 'u',
-				ctrl: true,
+				primary: true,
+				shift: true,
 				description: 'Switch Units',
 				action: switchUnit
 			},
 			{
 				key: 'p',
-				ctrl: true,
+				primary: true,
+				shift: true,
 				description: 'Switch Property',
 				action: switchProperty
-			},
-			{
-				key: 'l',
-				ctrl: true,
-				description: 'Load Example',
-				action: loadExample
 			}
 		]
 	})

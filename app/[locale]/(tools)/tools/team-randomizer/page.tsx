@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+import { useState, useEffect, useCallback } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -25,6 +25,7 @@ import {
 	Download
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface Team {
 	id: number
@@ -72,6 +73,7 @@ function distributeIntoTeams(
 
 export default function TeamRandomizerPage() {
 	const t = useTranslations('widgets.teamRandomizer')
+	const locale = useLocale()
 	const defaultParticipants =
 		'Alice Johnson\nBob Smith\nCarol Williams\nDavid Brown\nEve Davis\nFrank Miller\nGrace Wilson'
 	const [participantsInput, setParticipantsInput] = useState('')
@@ -90,34 +92,8 @@ export default function TeamRandomizerPage() {
 		setParticipants(parsed)
 	}, [participantsInput])
 
-	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Ctrl/Cmd + G to generate teams
-			if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
-				e.preventDefault()
-				generateTeams()
-			}
-			// Ctrl/Cmd + R to reset
-			if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-				e.preventDefault()
-				resetAll()
-			}
-			// Ctrl/Cmd + Shift + C to copy results
-			if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-				e.preventDefault()
-				if (teams.length > 0) {
-					copyTeamsToClipboard()
-				}
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [teams])
-
 	// Validate inputs
-	const validateInputs = (): string[] => {
+	const validateInputs = useCallback((): string[] => {
 		const validationErrors: string[] = []
 
 		if (participants.length < 2) {
@@ -142,10 +118,10 @@ export default function TeamRandomizerPage() {
 		}
 
 		return validationErrors
-	}
+	}, [participants.length, numberOfTeams, preferredTeamSize, t])
 
 	// Generate teams
-	const generateTeams = () => {
+	const generateTeams = useCallback(() => {
 		const validationErrors = validateInputs()
 		setErrors(validationErrors)
 
@@ -165,33 +141,41 @@ export default function TeamRandomizerPage() {
 
 		const generatedTeams = distributeIntoTeams(participants, teamsToCreate)
 		setTeams(generatedTeams)
-		toast.success(`Generated ${generatedTeams.length} teams!`)
-	}
+		toast.success(
+			locale === 'ru'
+				? `Создано ${generatedTeams.length} команд!`
+				: `Generated ${generatedTeams.length} teams!`
+		)
+	}, [participants, numberOfTeams, preferredTeamSize, locale, validateInputs])
 
 	// Reset all inputs
-	const resetAll = () => {
+	const resetAll = useCallback(() => {
 		setParticipantsInput('')
 		setNumberOfTeams(2)
 		setPreferredTeamSize('')
 		setTeams([])
 		setErrors([])
-		toast.success('All fields reset')
-	}
+		toast.success(locale === 'ru' ? 'Все поля сброшены' : 'All fields reset')
+	}, [locale])
 
 	// Copy teams to clipboard
-	const copyTeamsToClipboard = () => {
+	const copyTeamsToClipboard = useCallback(() => {
 		if (teams.length === 0) return
 
 		const teamsText = teams
 			.map(
 				team =>
-					`${team.name}:\n${team.members.map(member => `- ${member}`).join('\n')}`
+					`${locale === 'ru' ? 'Команда' : 'Team'} ${team.name}:\n${team.members.map(member => `- ${member}`).join('\n')}`
 			)
 			.join('\n\n')
 
 		navigator.clipboard.writeText(teamsText)
-		toast.success(t('teamsExported'))
-	}
+		toast.success(
+			locale === 'ru'
+				? 'Команды скопированы в буфер обмена'
+				: 'Teams copied to clipboard'
+		)
+	}, [teams, locale])
 
 	// Export teams as text file
 	const exportTeams = () => {
@@ -215,6 +199,35 @@ export default function TeamRandomizerPage() {
 		URL.revokeObjectURL(url)
 		toast.success('Teams exported as file')
 	}
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'team-randomizer',
+		shortcuts: [
+			{
+				key: 'Enter',
+				primary: true,
+				description: 'Generate Teams',
+				action: generateTeams,
+				enabled: participants.length >= 2
+			},
+			{
+				key: 'r',
+				primary: true,
+				shift: true,
+				description: 'Reset',
+				action: resetAll
+			},
+			{
+				key: 'c',
+				primary: true,
+				shift: true,
+				description: 'Copy Result',
+				action: copyTeamsToClipboard,
+				enabled: teams.length > 0
+			}
+		]
+	})
 
 	return (
 		<div className='w-full space-y-4'>

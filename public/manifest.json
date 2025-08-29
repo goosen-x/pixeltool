@@ -84,18 +84,7 @@
 			"description": "Code formatters and validators"
 		}
 	],
-	"screenshots": [
-		{
-			"src": "/screenshot-1.png",
-			"sizes": "1280x720",
-			"type": "image/png"
-		},
-		{
-			"src": "/screenshot-2.png",
-			"sizes": "1280x720",
-			"type": "image/png"
-		}
-	],
+	"screenshots": [],
 	"related_applications": [],
 	"prefer_related_applications": false
 }

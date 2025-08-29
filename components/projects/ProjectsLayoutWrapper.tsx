@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation'
 import { ProjectsSidebar } from '@/components/projects/ProjectsSidebar'
-import { ProjectsFooter } from '@/components/projects/ProjectsFooter'
 import { ProjectsRightSidebar } from '@/components/projects/ProjectsRightSidebar'
 import { WidgetWrapper, WidgetHeader } from '@/components/widgets'
 import { WidgetFAQ } from '@/components/widgets/WidgetFAQ'
@@ -87,7 +86,6 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 						{widgetId && <ProjectsRightSidebar />}
 					</div>
 				</div>
-				<ProjectsFooter />
 			</main>
 		</div>
 	)
