@@ -58,10 +58,12 @@ Arrow keys  // For navigation
 
 ## 📋 Currently Used Shortcuts by Widget
 
-**Important**: Most widgets use `primary: true` modifier which automatically maps to:
-- `Cmd` on macOS 
-- `Ctrl` on Windows/Linux
-This prevents conflicts because the hook uses preventDefault() to override browser shortcuts.
+**Important**: Most widgets use `primary: true` modifier which automatically
+maps to:
+
+- `Cmd` on macOS
+- `Ctrl` on Windows/Linux This prevents conflicts because the hook uses
+  preventDefault() to override browser shortcuts.
 
 ### CSS Clamp Calculator ✅
 
@@ -289,13 +291,15 @@ interface SafeShortcut {
 
 ## ✅ Recently Fixed Unsafe Shortcuts (2025-08-29)
 
-The following unsafe shortcuts have been replaced with safe Alt/Option alternatives:
+The following unsafe shortcuts have been replaced with safe Alt/Option
+alternatives:
 
 ### 🔒 **Fixed: Cmd+Shift+C → Alt+C** (Copy Operations)
-**Issue**: Opened DevTools Console in Chrome/Firefox
-**Fixed in 12 widgets**:
+
+**Issue**: Opened DevTools Console in Chrome/Firefox **Fixed in 12 widgets**:
+
 - random-number-generator: Alt+C for copy result
-- age-calculator: Alt+C for copy result  
+- age-calculator: Alt+C for copy result
 - ascii-art-generator: Alt+C for copy result
 - bmi-calculator: Alt+C for copy result
 - compound-interest-calculator: Alt+C for copy result
@@ -305,26 +309,31 @@ The following unsafe shortcuts have been replaced with safe Alt/Option alternati
 - team-randomizer: Alt+C for copy result
 - color-converter: Alt+C+Shift for copy RGB
 
-### 🔒 **Fixed: Cmd+K → Alt+K** (Clear/Reset Operations)  
-**Issue**: Focused search/address bar in most browsers
-**Fixed in 4 widgets**:
+### 🔒 **Fixed: Cmd+K → Alt+K** (Clear/Reset Operations)
+
+**Issue**: Focused search/address bar in most browsers **Fixed in 4 widgets**:
+
 - color-converter: Alt+K for reset
 - regex-tester: Alt+K for clear pattern
 - json-tools: Alt+K for clear input
 - text-counter: Alt+K for clear text
 
 ### 🔒 **Fixed: Cmd+Shift+F → Alt+F** (Format Operations)
+
 **Issue**: "Find in Files" conflicts in many applications  
 **Fixed in 1 widget**:
+
 - json-tools: Alt+F for format JSON
 
 ### 🔒 **Fixed: Cmd+Shift+R → Alt+R** (Reset Operations)
+
 **Issue**: Hard Reload conflicts in Chrome/Firefox  
 **Fixed in 6 widgets and commonWidgetShortcuts**:
+
 - bmi-calculator: Alt+R for reset form
 - team-randomizer: Alt+R for reset
 - text-case-converter: Alt+R for reset
-- percentage-calculator: Alt+R for reset  
+- percentage-calculator: Alt+R for reset
 - compound-interest-calculator: Alt+R for reset
 - loan-calculator: Alt+R for reset
 - flexbox-generator: Alt+R for reset
@@ -332,8 +341,10 @@ The following unsafe shortcuts have been replaced with safe Alt/Option alternati
 - commonWidgetShortcuts.reset preset updated
 
 ### 🔒 **Fixed: Cmd+Shift+A/D → Alt+A/D** (Add/Remove Operations)
-**Issue**: Cmd+Shift+A opens Search tabs/Extensions, Cmd+Shift+D bookmarks all tabs
-**Fixed in 2 widgets**:
+
+**Issue**: Cmd+Shift+A opens Search tabs/Extensions, Cmd+Shift+D bookmarks all
+tabs **Fixed in 2 widgets**:
+
 - flexbox-generator: Alt+A to add item, Alt+D to remove item
 - grid-generator: Alt+A to add column, Alt+D to remove column
 
@@ -357,21 +368,25 @@ As of 2025-08-29, all keyboard shortcuts have been reviewed and fixed:
 ## 📝 Updated Guidelines for New Shortcuts (Post-Security Fix)
 
 ### ✅ **RECOMMENDED: Alt/Option Combinations** (Proven Safe)
+
 1. **Alt+[Letter]** for primary actions - minimal conflicts
-2. **Alt+Shift+[Letter]** for secondary actions - very safe  
+2. **Alt+Shift+[Letter]** for secondary actions - very safe
 3. **Alt+[Number]** for copy operations - excellent choice
 
 ### ✅ **SAFE: Special Key Combinations**
+
 4. **Cmd/Ctrl+Enter** for primary execute actions
 5. **Space** for toggle/play/pause actions
 6. **Enter** for confirm/submit actions
 7. **Escape** for cancel/close actions
 
-### ⚠️ **USE WITH CAUTION: Cmd/Ctrl Combinations** 
+### ⚠️ **USE WITH CAUTION: Cmd/Ctrl Combinations**
+
 8. **Cmd/Ctrl+Shift+[Less Common Letters]** like U, L, Y, X
 9. **Numbers 0-9** with modifiers (may conflict with tab switching)
 
 ### ❌ **NEVER USE: Confirmed Unsafe**
+
 10. **Cmd/Ctrl+Shift+C** → DevTools Console
 11. **Cmd/Ctrl+K** → Search/Address bar focus
 12. **Cmd/Ctrl+Shift+F** → Find in Files
@@ -382,6 +397,7 @@ As of 2025-08-29, all keyboard shortcuts have been reviewed and fixed:
 17. **Single letters without modifiers** → Too many conflicts
 
 ### 🧪 **Testing Requirements**
+
 - Test in Chrome, Firefox, Safari, Edge
 - Test on Mac, Windows, Linux
 - Test with browser extensions enabled
