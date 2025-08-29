@@ -78,21 +78,20 @@ export default function CompoundInterestCalculatorPage() {
 		},
 		{
 			key: 'c',
-			ctrl: true,
-			shift: true,
+			alt: true,
 			description: 'Copy results',
 			action: copyResults,
 			enabled: !!result
 		},
 		{
 			key: 'e',
-			ctrl: true,
+			primary: true,
 			description: 'Load example',
 			action: loadExample
 		},
 		{
 			key: 'a',
-			ctrl: true,
+			primary: true,
 			description: 'Toggle advanced',
 			action: () => setShowAdvanced(!showAdvanced)
 		}
@@ -314,7 +313,7 @@ export default function CompoundInterestCalculatorPage() {
 								<ShortcutHint
 									shortcut={{
 										key: 'e',
-										ctrl: true,
+										primary: true,
 										description: '',
 										action: loadExample
 									}}

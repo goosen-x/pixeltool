@@ -473,13 +473,13 @@ export default function PasswordGeneratorPage() {
 	const shortcuts = [
 		{
 			key: 'r',
-			ctrl: true,
+			primary: true,
 			action: generate,
 			description: t('generate')
 		},
 		{
 			key: 'h',
-			ctrl: true,
+			primary: true,
 			action: () => setShowPassword(!showPassword),
 			description: t('shortcuts.toggleVisibility')
 		}

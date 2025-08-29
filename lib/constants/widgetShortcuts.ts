@@ -21,7 +21,7 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+G Generate',
 				'⌘+R Regenerate',
-				'⌘+⇧+C Copy Result',
+				'⌘+1 Copy Result',
 				'⌘+D Download',
 				'U Toggle Unique'
 			],
@@ -30,8 +30,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'bmi-calculator': {
 			shortcuts: [
 				'⌘+Enter Calculate',
-				'⌘+⇧+R Reset Form',
-				'⌘+⇧+C Copy Result',
+				'⌘+⇧+X Reset Form',
+				'⌘+1 Copy Result',
 				'⌘+E Load Example',
 				'⌘+A Toggle Advanced',
 				'⌘+U Switch Units'
@@ -39,23 +39,23 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			description: '🏥 Advanced BMI and health metrics calculator'
 		},
 		'team-randomizer': {
-			shortcuts: ['⌘+Enter Generate Teams', '⌘+⇧+R Reset', '⌘+⇧+C Copy Result'],
+			shortcuts: ['⌘+Enter Generate Teams', '⌘+⇧+X Reset', '⌘+1 Copy Result'],
 			description: '👥 Fair team distribution with Fisher-Yates algorithm'
 		},
 		'draw-lots': {
-			shortcuts: ['Space Draw Card', '⌘+R Reset', 'Enter Reveal Card'],
+			shortcuts: ['Space Draw Card', '⌘+⇧+X Reset', 'Enter Reveal Card'],
 			description: '🎴 Digital drawing lots with 3D card animations'
 		},
 		'coin-flip': {
-			shortcuts: ['Space Flip Coin', '⌘+T Change Coin Type', '⌘+R Reset'],
+			shortcuts: ['Space Flip Coin', '⌘+T Change Coin Type', '⌘+⇧+X Reset'],
 			description: '🪙 3D coin flip with multiple currency types'
 		},
 		'age-calculator': {
-			shortcuts: ['⌘+Enter Calculate', '⌘+R Reset', '⌘+⇧+C Copy Result'],
+			shortcuts: ['⌘+Enter Calculate', '⌘+⇧+X Reset', '⌘+1 Copy Result'],
 			description: '📅 Detailed age calculation with zodiac and life stages'
 		},
 		'timer-countdown': {
-			shortcuts: ['Space Start/Pause', '⌘+R Reset', '⌘+M Change Mode'],
+			shortcuts: ['Space Start/Pause', '⌘+⇧+X Reset', '⌘+M Change Mode'],
 			description: '⏱️ Multi-mode timer: countdown, stopwatch, Pomodoro'
 		},
 
@@ -74,10 +74,10 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'css-gradient-generator': {
 			shortcuts: [
 				'⌘+G Generate Random',
-				'⌘+R Reset',
-				'⌘+⇧+C Copy CSS',
+				'⌘+⇧+X Reset',
+				'⌘+1 Copy CSS',
 				'⌘+E Export',
-				'⌘+A Add Color Stop'
+				'⌘+⇧+Y Add Color Stop'
 			],
 			description: '🎨 CSS gradient generator with presets'
 		},
@@ -85,21 +85,21 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+⇧+F Format JSON',
 				'⌘+M Minify JSON',
-				'⌘+⇧+C Copy Result',
-				'⌘+D Download',
-				'⌘+K Clear Input'
+				'⌘+1 Copy Result',
+				'⌘+2 Download',
+				'⌘+⇧+L Clear Input'
 			],
 			description: '🔧 JSON formatter, validator and analyzer'
 		},
 		'text-case-converter': {
-			shortcuts: ['⌘+Enter Convert', '⌘+⇧+C Copy Result', '⌘+⇧+R Reset'],
+			shortcuts: ['⌘+Enter Convert', '⌘+1 Copy Result', '⌘+⇧+X Reset'],
 			description: '🔤 Convert text between different case formats'
 		},
 		'css-box-shadow-generator': {
 			shortcuts: [
 				'⌘+G Generate Random',
-				'⌘+R Reset',
-				'⌘+⇧+C Copy CSS',
+				'⌘+⇧+X Reset',
+				'⌘+1 Copy CSS',
 				'⌘+L Add Layer'
 			],
 			description: '🎯 CSS box shadow generator with layers'
@@ -108,9 +108,9 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+1 Copy CSS',
 				'⌘+2 Copy Tailwind',
-				'⌘+⇧+R Reset',
-				'⌘+⇧+A Add Item',
-				'⌘+⇧+D Remove Item'
+				'⌘+⇧+X Reset',
+				'⌘+⇧+Y Add Item',
+				'⌘+⇧+X Remove Item'
 			],
 			description: '📦 Interactive flexbox layout generator'
 		},
@@ -118,27 +118,27 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+1 Copy CSS',
 				'⌘+2 Copy Tailwind',
-				'⌘+⇧+R Reset',
-				'⌘+⇧+A Add Column',
-				'⌘+⇧+D Remove Column'
+				'⌘+⇧+X Reset',
+				'⌘+⇧+Y Add Column',
+				'⌘+⇧+X Remove Column'
 			],
 			description: '🔲 CSS Grid layout generator'
 		},
 		'regex-tester': {
 			shortcuts: [
 				'⌘+Enter Test Pattern',
-				'⌘+⇧+C Copy Result',
+				'⌘+1 Copy Result',
 				'⌘+F Find Matches',
-				'⌘+R Reset'
+				'⌘+⇧+X Reset'
 			],
 			description: '🔍 Regular expression tester with real-time matching'
 		},
 		'js-css-compressor': {
 			shortcuts: [
 				'⌘+Enter Compress',
-				'⌘+⇧+C Copy Result',
-				'⌘+D Download',
-				'⌘+K Clear'
+				'⌘+1 Copy Result',
+				'⌘+2 Download',
+				'⌘+⇧+L Clear'
 			],
 			description: '📦 Minify JavaScript and CSS code'
 		},
@@ -146,17 +146,17 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+Enter Convert',
 				'⌘+S Swap Units',
-				'⌘+⇧+C Copy Result',
-				'⌘+R Reset'
+				'⌘+1 Copy Result',
+				'⌘+⇧+X Reset'
 			],
 			description: '📏 Convert between pixels and rem units'
 		},
 		'color-converter': {
 			shortcuts: [
 				'⌘+Enter Convert',
-				'⌘+⇧+C Copy Result',
+				'⌘+1 Copy Result',
 				'⌘+F Change Format',
-				'⌘+R Reset'
+				'⌘+⇧+X Reset'
 			],
 			description: '🎨 Convert colors between formats (HEX, RGB, HSL)'
 		},
@@ -164,8 +164,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+⇧+F Format',
 				'⌘+V Validate',
-				'⌘+⇧+C Copy Result',
-				'⌘+K Clear'
+				'⌘+1 Copy Result',
+				'⌘+⇧+L Clear'
 			],
 			description: '📝 Parse and format HTML/XML documents'
 		},
@@ -173,8 +173,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+Enter Compare',
 				'⌘+S Switch Sides',
-				'⌘+⇧+C Copy Diff',
-				'⌘+R Reset'
+				'⌘+1 Copy Diff',
+				'⌘+⇧+X Reset'
 			],
 			description: '📊 Compare text differences side by side'
 		},
@@ -183,8 +183,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'percentage-calculator': {
 			shortcuts: [
 				'⌘+Enter Calculate',
-				'⌘+⇧+R Reset',
-				'⌘+⇧+C Copy Result',
+				'⌘+⇧+X Reset',
+				'⌘+1 Copy Result',
 				'⌘+E Load Example'
 			],
 			description: '💯 Calculate percentages with multiple modes'
@@ -192,8 +192,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'compound-interest-calculator': {
 			shortcuts: [
 				'⌘+Enter Calculate',
-				'⌘+⇧+R Reset',
-				'⌘+⇧+C Copy Result',
+				'⌘+⇧+X Reset',
+				'⌘+1 Copy Result',
 				'⌘+G Generate Chart'
 			],
 			description: '💰 Compound interest with visualization'
@@ -201,8 +201,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'loan-calculator': {
 			shortcuts: [
 				'⌘+Enter Calculate',
-				'⌘+⇧+R Reset',
-				'⌘+⇧+C Copy Result',
+				'⌘+⇧+X Reset',
+				'⌘+1 Copy Result',
 				'⌘+P Payment Schedule'
 			],
 			description: '🏦 Loan amortization calculator'
@@ -211,16 +211,16 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+Enter Convert',
 				'⌘+S Swap Currencies',
-				'⌘+⇧+C Copy Result',
-				'⌘+R Reset'
+				'⌘+1 Copy Result',
+				'⌘+⇧+X Reset'
 			],
 			description: '💱 Real-time currency conversion'
 		},
 		'tip-calculator': {
 			shortcuts: [
 				'⌘+Enter Calculate',
-				'⌘+⇧+C Copy Result',
-				'⌘+R Reset',
+				'⌘+1 Copy Result',
+				'⌘+⇧+X Reset',
 				'⌘+S Split Bill'
 			],
 			description: '💵 Calculate tips and split bills'
@@ -229,8 +229,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+Enter Convert',
 				'⌘+S Swap Units',
-				'⌘+⇧+C Copy Result',
-				'⌘+R Reset'
+				'⌘+1 Copy Result',
+				'⌘+⇧+X Reset'
 			],
 			description: '🌡️ Convert between temperature scales'
 		},
@@ -238,8 +238,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+Enter Calculate',
 				'⌘+U Switch Units',
-				'⌘+⇧+C Copy Result',
-				'⌘+R Reset'
+				'⌘+1 Copy Result',
+				'⌘+⇧+X Reset'
 			],
 			description: '⛽ Calculate fuel consumption and costs'
 		},
@@ -247,7 +247,7 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		// Content Creation
 		'special-symbols-picker': {
 			shortcuts: [
-				'⌘+⇧+C Copy Symbol',
+				'⌘+1 Copy Symbol',
 				'⌘+F Search',
 				'Tab Navigate Categories',
 				'⌘+H Add to History'
@@ -257,26 +257,26 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'fancy-text-generator': {
 			shortcuts: [
 				'⌘+G Generate All',
-				'⌘+⇧+C Copy Style',
-				'⌘+R Reset',
+				'⌘+1 Copy Style',
+				'⌘+⇧+X Reset',
 				'⌘+F Toggle Favorites'
 			],
 			description: '✨ Transform text into stylish Unicode fonts'
 		},
 		'emoji-list': {
 			shortcuts: [
-				'⌘+⇧+C Copy Emoji',
+				'⌘+1 Copy Emoji',
 				'⌘+F Search',
 				'Tab Navigate Categories',
-				'⌘+R Recent'
+				'⌘+⇧+X Recent'
 			],
 			description: '😀 Browse and copy emojis with search'
 		},
 		'text-emoticons': {
 			shortcuts: [
-				'⌘+⇧+C Copy Emoticon',
+				'⌘+1 Copy Emoticon',
 				'⌘+F Search',
-				'⌘+R Random',
+				'⌘+⇧+X Random',
 				'⌘+H History'
 			],
 			description: '(◕‿◕) Classic text emoticons collection'
@@ -284,17 +284,17 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'text-counter': {
 			shortcuts: [
 				'⌘+Enter Analyze',
-				'⌘+⇧+C Copy Stats',
-				'⌘+R Reset',
-				'⌘+D Detailed View'
+				'⌘+1 Copy Stats',
+				'⌘+⇧+X Reset',
+				'⌘+2 Detailed View'
 			],
 			description: '📊 Count characters, words, and analyze text'
 		},
 		'utm-link-builder': {
 			shortcuts: [
 				'⌘+Enter Build URL',
-				'⌘+⇧+C Copy URL',
-				'⌘+R Reset',
+				'⌘+1 Copy URL',
+				'⌘+⇧+X Reset',
 				'⌘+S Shorten URL'
 			],
 			description: '🔗 Build UTM tracking links for campaigns'
@@ -302,26 +302,26 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'seo-markdown-generator': {
 			shortcuts: [
 				'⌘+Enter Generate',
-				'⌘+⇧+C Copy Markdown',
+				'⌘+1 Copy Markdown',
 				'⌘+P Preview',
-				'⌘+R Reset'
+				'⌘+⇧+X Reset'
 			],
 			description: '📝 Generate SEO-optimized markdown content'
 		},
 		'social-media-formatter': {
 			shortcuts: [
 				'⌘+Enter Format',
-				'⌘+⇧+C Copy Result',
+				'⌘+1 Copy Result',
 				'⌘+P Preview',
-				'⌘+R Reset'
+				'⌘+⇧+X Reset'
 			],
 			description: '📱 Format text for different social platforms'
 		},
 		'random-list-generator': {
 			shortcuts: [
 				'⌘+G Generate',
-				'⌘+R Regenerate',
-				'⌘+⇧+C Copy List',
+				'⌘+⇧+X Regenerate',
+				'⌘+1 Copy List',
 				'⌘+S Sort'
 			],
 			description: '📋 Generate random lists from templates'
@@ -331,9 +331,9 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'qr-code-generator': {
 			shortcuts: [
 				'⌘+G Generate QR',
-				'⌘+D Download',
-				'⌘+⇧+C Copy Image',
-				'⌘+R Reset'
+				'⌘+2 Download',
+				'⌘+1 Copy Image',
+				'⌘+⇧+X Reset'
 			],
 			description: '📱 Generate QR codes with customization'
 		},
@@ -341,26 +341,26 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'⌘+Enter Download',
 				'⌘+Q Change Quality',
-				'⌘+⇧+C Copy URL',
-				'⌘+R Reset'
+				'⌘+1 Copy URL',
+				'⌘+⇧+X Reset'
 			],
 			description: '📹 Download YouTube video thumbnails'
 		},
 		'image-size-checker': {
 			shortcuts: [
 				'⌘+U Upload Image',
-				'⌘+⇧+C Copy Dimensions',
-				'⌘+R Reset',
-				'⌘+D Download Info'
+				'⌘+1 Copy Dimensions',
+				'⌘+⇧+X Reset',
+				'⌘+2 Download Info'
 			],
 			description: '📐 Check image dimensions and metadata'
 		},
 		'svg-base64-encoder': {
 			shortcuts: [
 				'⌘+Enter Encode',
-				'⌘+D Decode',
-				'⌘+⇧+C Copy Result',
-				'⌘+R Reset'
+				'⌘+2 Decode',
+				'⌘+1 Copy Result',
+				'⌘+⇧+X Reset'
 			],
 			description: '🎨 Convert SVG to Base64 and vice versa'
 		},
@@ -368,7 +368,7 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: [
 				'Space Play/Pause',
 				'⌘+S Stop',
-				'⌘+D Download Audio',
+				'⌘+2 Download Audio',
 				'⌘+V Change Voice'
 			],
 			description: '🔊 Convert text to speech with voices'
@@ -377,17 +377,17 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		// Analytics & Data
 		'system-info': {
 			shortcuts: [
-				'⌘+R Refresh',
-				'⌘+⇧+C Copy Info',
+				'⌘+⇧+X Refresh',
+				'⌘+1 Copy Info',
 				'⌘+E Export',
-				'⌘+D Detailed View'
+				'⌘+2 Detailed View'
 			],
 			description: '💻 View system and browser information'
 		},
 		'world-time': {
 			shortcuts: [
-				'⌘+A Add City',
-				'⌘+R Refresh',
+				'⌘+⇧+Y Add City',
+				'⌘+⇧+X Refresh',
 				'⌘+F Search',
 				'⌘+T Toggle Format'
 			],
@@ -396,15 +396,15 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'internet-speed-test': {
 			shortcuts: [
 				'Space Start Test',
-				'⌘+R Reset',
-				'⌘+⇧+C Copy Results',
+				'⌘+⇧+X Reset',
+				'⌘+1 Copy Results',
 				'⌘+H History'
 			],
 			description: '🚀 Test internet connection speed'
 		},
 		'analytics-dashboard': {
 			shortcuts: [
-				'⌘+R Refresh Data',
+				'⌘+⇧+X Refresh Data',
 				'⌘+P Change Period',
 				'⌘+E Export',
 				'⌘+F Filter'
@@ -416,8 +416,8 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'password-generator': {
 			shortcuts: [
 				'⌘+G Generate',
-				'⌘+⇧+C Copy Password',
-				'⌘+R Regenerate',
+				'⌘+1 Copy Password',
+				'⌘+⇧+X Regenerate',
 				'⌘+S Save Settings'
 			],
 			description: '🔐 Generate secure passwords with options'
@@ -425,7 +425,7 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'uuid-generator': {
 			shortcuts: [
 				'⌘+G Generate',
-				'⌘+⇧+C Copy UUID',
+				'⌘+1 Copy UUID',
 				'⌘+B Bulk Generate',
 				'⌘+F Change Format'
 			],
@@ -434,14 +434,14 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 		'base64-encoder': {
 			shortcuts: [
 				'⌘+E Encode',
-				'⌘+D Decode',
-				'⌘+⇧+C Copy Result',
+				'⌘+2 Decode',
+				'⌘+1 Copy Result',
 				'⌘+F File Mode'
 			],
 			description: '🔤 Encode and decode Base64 strings'
 		},
 		'jwt-decoder': {
-			shortcuts: ['⌘+D Decode', '⌘+V Verify', '⌘+⇧+C Copy JSON', '⌘+R Reset'],
+			shortcuts: ['⌘+2 Decode', '⌘+V Verify', '⌘+1 Copy JSON', '⌘+⇧+X Reset'],
 			description: '🔑 Decode and verify JWT tokens'
 		}
 	}

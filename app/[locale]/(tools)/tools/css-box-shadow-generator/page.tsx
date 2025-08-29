@@ -415,26 +415,25 @@ export default function CSSBoxShadowGeneratorPage() {
 		shortcuts: [
 			{
 				key: 'g',
-				ctrl: true,
+				primary: true,
 				description: 'Generate random shadow',
 				action: generateRandomShadow
 			},
 			{
 				key: 'r',
-				ctrl: true,
+				primary: true,
 				description: 'Reset',
 				action: reset
 			},
 			{
 				key: 'c',
-				ctrl: true,
-				shift: true,
+				alt: true,
 				description: 'Copy CSS',
 				action: copyCSSCode
 			},
 			{
 				key: 'l',
-				ctrl: true,
+				primary: true,
 				description: 'Add layer',
 				action: addShadow
 			}

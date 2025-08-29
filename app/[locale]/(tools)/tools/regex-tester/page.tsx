@@ -33,6 +33,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 import { useTranslations } from 'next-intl'
+import { AdSection } from '@/components/ads'
 
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
@@ -429,19 +430,19 @@ export default function RegexTesterPage() {
 	const shortcuts = [
 		{
 			key: 'Enter',
-			ctrl: true,
+			primary: true,
 			action: testRegex,
 			description: t('shortcuts.test')
 		},
 		{
 			key: 'r',
-			ctrl: true,
+			primary: true,
 			action: () => setShowReplace(!showReplace),
 			description: t('shortcuts.toggleReplace')
 		},
 		{
 			key: 'k',
-			ctrl: true,
+			alt: true,
 			action: () => {
 				setPattern('')
 				setTestText('')
@@ -451,7 +452,7 @@ export default function RegexTesterPage() {
 		},
 		{
 			key: 'g',
-			ctrl: true,
+			primary: true,
 			action: () => {
 				const flag =
 					flavor === 'javascript' ? 'g' : flavor === 'php' ? 'g' : 're.G'
@@ -797,6 +798,9 @@ export default function RegexTesterPage() {
 							<li>• Именованные группы упрощают работу с результатами</li>
 						</ul>
 					</WidgetSection>
+
+					{/* Ad Block */}
+					<AdSection />
 				</div>
 			</div>
 		</WidgetLayout>

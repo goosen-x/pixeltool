@@ -289,15 +289,14 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			key: 'c',
-			ctrl: true,
-			shift: true,
+			alt: true,
 			description: 'Copy ASCII art',
 			action: handleCopyAscii,
 			enabled: !!asciiOutput
 		},
 		{
 			key: 'd',
-			ctrl: true,
+			primary: true,
 			shift: true,
 			description: 'Download as text',
 			action: handleDownloadText,
@@ -305,7 +304,7 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			key: 'i',
-			ctrl: true,
+			primary: true,
 			shift: true,
 			description: 'Download as image',
 			action: handleDownloadImage,
@@ -313,25 +312,25 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			key: '1',
-			ctrl: true,
+			primary: true,
 			description: 'Text to ASCII tab',
 			action: () => setActiveTab('text')
 		},
 		{
 			key: '2',
-			ctrl: true,
+			primary: true,
 			description: 'Image to ASCII tab',
 			action: () => setActiveTab('image')
 		},
 		{
 			key: '3',
-			ctrl: true,
+			primary: true,
 			description: 'Patterns tab',
 			action: () => setActiveTab('patterns')
 		},
 		{
 			key: 'r',
-			ctrl: true,
+			primary: true,
 			shift: true,
 			description: 'Reset all',
 			action: () => {

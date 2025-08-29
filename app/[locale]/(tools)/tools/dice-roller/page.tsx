@@ -24,6 +24,7 @@ import {
 	type ChartConfig
 } from '@/components/ui/chart'
 import { useTranslations } from 'next-intl'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface DiceResult {
 	id: string
@@ -198,24 +199,24 @@ export default function DiceRollerPage() {
 	}
 
 	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyPress = (e: KeyboardEvent) => {
-			// Space to roll dice
-			if (e.code === 'Space' && !isRolling) {
-				e.preventDefault()
-				rollDice()
-			}
+	const shortcuts = [
+		{
+			key: ' ',
+			description: 'Roll Dice',
+			action: rollDice,
+			enabled: !isRolling
+		},
+		...Array.from({ length: 6 }, (_, i) => ({
+			key: (i + 1).toString(),
+			description: `Set ${i + 1} Dice`,
+			action: () => setDiceCount(i + 1)
+		}))
+	]
 
-			// Numbers 1-6 to set dice count
-			const num = parseInt(e.key)
-			if (num >= 1 && num <= 6) {
-				setDiceCount(num)
-			}
-		}
-
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [isRolling, rollDice])
+	useWidgetKeyboard({
+		widgetId: 'dice-roller',
+		shortcuts
+	})
 
 	const copyResults = () => {
 		if (currentRoll.length === 0) {

@@ -271,8 +271,8 @@ export const commonWidgetShortcuts = {
 		description: 'Copy result'
 	},
 	reset: {
-		key: 'r',
-		ctrl: true,
+		key: 'x',
+		primary: true,
 		shift: true,
 		description: 'Reset form'
 	},
@@ -347,7 +347,7 @@ export const generatorShortcuts: KeyboardShortcut[] = [
 export const editorShortcuts: KeyboardShortcut[] = [
 	{
 		key: 'f',
-		ctrl: true,
+		primary: true,
 		shift: true,
 		description: 'Format code',
 		action: () => {}

@@ -157,7 +157,7 @@ export const createEditorShortcuts = (
 		? [
 				{
 					key: 'f',
-					ctrl: true,
+					primary: true,
 					shift: true,
 					description: 'Format',
 					action: actions.format

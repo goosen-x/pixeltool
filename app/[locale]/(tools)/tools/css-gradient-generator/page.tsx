@@ -94,32 +94,31 @@ export default function CSSGradientGeneratorPage() {
 		shortcuts: [
 			{
 				key: 'g',
-				ctrl: true,
+				primary: true,
 				description: 'Generate random gradient',
 				action: generateRandom
 			},
 			{
 				key: 'r',
-				ctrl: true,
+				primary: true,
 				description: 'Reset gradient',
 				action: resetGradient
 			},
 			{
 				key: 'c',
-				ctrl: true,
-				shift: true,
+				alt: true,
 				description: 'Copy CSS',
 				action: copyCSS
 			},
 			{
 				key: 'e',
-				ctrl: true,
+				primary: true,
 				description: 'Export gradient',
 				action: () => exportGradient('css')
 			},
 			{
 				key: 'a',
-				ctrl: true,
+				primary: true,
 				description: 'Add color stop',
 				action: addColorStop
 			}

@@ -147,21 +147,20 @@ export default function BMICalculatorPage() {
 		},
 		{
 			key: 'c',
-			ctrl: true,
-			shift: true,
+			alt: true,
 			description: 'Copy results',
 			action: copyResults,
 			enabled: !!result
 		},
 		{
 			key: 'e',
-			ctrl: true,
+			primary: true,
 			description: 'Load example',
 			action: handleLoadExample
 		},
 		{
 			key: 'u',
-			ctrl: true,
+			primary: true,
 			description: 'Switch units',
 			action: () =>
 				updateField(
@@ -185,7 +184,7 @@ export default function BMICalculatorPage() {
 	}
 
 	return (
-		<div className='max-w-7xl mx-auto space-y-8'>
+		<div className='space-y-8'>
 			{/* Main Calculator Card */}
 			<Card className='relative overflow-hidden'>
 				<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5' />
