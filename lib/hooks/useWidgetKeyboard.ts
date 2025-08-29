@@ -271,8 +271,8 @@ export const commonWidgetShortcuts = {
 		description: 'Copy result'
 	},
 	reset: {
-		key: 'r',
-		ctrl: true,
+		key: 'x',
+		primary: true,
 		shift: true,
 		description: 'Reset form'
 	},

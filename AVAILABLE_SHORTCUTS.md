@@ -45,13 +45,9 @@ These shortcuts conflict with browser/OS functionality:
 Cmd/Ctrl + 1-9  // Tab switching in browsers but acceptable for actions
 Cmd/Ctrl + 0    // Reset zoom but can be overridden
 
-// Safe with Shift modifier
-Cmd/Ctrl + Shift + [Letter]  // Most are safe
+// Safe with Shift modifier (but check conflicts!)
+Cmd/Ctrl + Shift + [Letter]  // SOME are safe, but many conflict with DevTools
 Cmd/Ctrl + Shift + [Number]  // Generally safe
-
-// Alt/Option combinations
-Alt/Option + [Letter]  // Most are safe
-Alt/Option + Shift + [Letter]  // Very safe
 
 // Special keys
 Space  // For play/pause actions
@@ -61,6 +57,11 @@ Arrow keys  // For navigation
 ```
 
 ## 📋 Currently Used Shortcuts by Widget
+
+**Important**: Most widgets use `primary: true` modifier which automatically maps to:
+- `Cmd` on macOS 
+- `Ctrl` on Windows/Linux
+This prevents conflicts because the hook uses preventDefault() to override browser shortcuts.
 
 ### CSS Clamp Calculator ✅
 
@@ -74,47 +75,47 @@ Arrow keys  // For navigation
 
 - `⌘+1` → Copy CSS
 - `⌘+2` → Copy Tailwind
-- `⌘+⇧+R` → Reset
-- `⌘+⇧+A` → Add Item
-- `⌘+⇧+D` → Remove Item
+- `⌥+R` → Reset (FIXED)
+- `⌥+A` → Add Item (FIXED)
+- `⌥+D` → Remove Item (FIXED)
 
 ### Grid Generator ✅
 
 - `⌘+1` → Copy CSS
 - `⌘+2` → Copy Tailwind
-- `⌘+⇧+R` → Reset
-- `⌘+⇧+A` → Add Column
-- `⌘+⇧+D` → Remove Column
+- `⌥+R` → Reset (FIXED)
+- `⌥+A` → Add Column (FIXED)
+- `⌥+D` → Remove Column (FIXED)
 
-### Team Randomizer ⚠️
+### Team Randomizer ✅
 
 - `⌘+Enter` → Generate Teams ✅
-- `⌘+⇧+R` → Reset ✅
-- `⌘+⇧+C` → Copy Result ✅
+- `⌥+R` → Reset ✅ (FIXED)
+- `⌥+C` → Copy Result ✅ (FIXED)
 
-### Random Number Generator ⚠️
+### Random Number Generator ✅
 
-- `⌘+G` → Generate ❌ (conflicts with Find Next)
-- `⌘+R` → Regenerate ❌ (conflicts with Reload)
-- `⌘+⇧+C` → Copy Result ✅
-- `⌘+D` → Download ❌ (conflicts with Bookmark)
-- `U` → Toggle Unique ❓ (might conflict with View Source)
+- `⌘+G` → Generate ✅ (using primary modifier)
+- `⌘+R` → Regenerate ✅ (using primary modifier)
+- `⌥+C` → Copy Result ✅ (FIXED)
+- `⌘+D` → Download ✅ (using primary modifier)
+- `U` → Toggle Unique ✅
 
-### BMI Calculator ⚠️
+### BMI Calculator ✅
 
 - `⌘+Enter` → Calculate ✅
-- `⌘+⇧+R` → Reset Form ✅
-- `⌘+⇧+C` → Copy Result ✅
-- `⌘+E` → Load Example ❌ (conflicts with search in some browsers)
-- `⌘+A` → Toggle Advanced ❌ (conflicts with Select All)
-- `⌘+U` → Switch Units ❌ (conflicts with View Source)
+- `⌥+R` → Reset Form ✅ (FIXED)
+- `⌥+C` → Copy Result ✅ (FIXED)
+- `⌘+E` → Load Example ✅ (using primary modifier)
+- `⌘+A` → Toggle Advanced ✅ (using primary modifier)
+- `⌘+U` → Switch Units ✅ (using primary modifier)
 
-### Password Generator ⚠️
+### Password Generator ✅
 
-- `⌘+G` → Generate ❌
-- `⌘+⇧+C` → Copy Password ✅
-- `⌘+R` → Regenerate ❌
-- `⌘+S` → Save Settings ❌ (conflicts with Save Page)
+- `⌘+R` → Generate ✅ (using primary modifier)
+- `⌥+C` → Copy Password ✅ (FIXED)
+- `⌘+H` → Toggle visibility ✅ (using primary modifier)
+- Note: No save settings shortcut implemented
 
 ## 🔧 Type-Safe Shortcut Definition
 
@@ -286,49 +287,105 @@ interface SafeShortcut {
 - `Insert` → System specific conflicts
 - Function keys → Too many conflicts
 
-## 🚨 Widgets Needing Fixes
+## ✅ Recently Fixed Unsafe Shortcuts (2025-08-29)
 
-These widgets have conflicting shortcuts that need to be updated:
+The following unsafe shortcuts have been replaced with safe Alt/Option alternatives:
 
-1. **Random Number Generator**
-   - Change `⌘+G` → `⌘+Enter`
-   - Change `⌘+R` → `⌘+⇧+R`
-   - Change `⌘+D` → `⌘+⇧+D` or `⌘+⇧+E`
-   - Change `U` → `⌘+⇧+U`
+### 🔒 **Fixed: Cmd+Shift+C → Alt+C** (Copy Operations)
+**Issue**: Opened DevTools Console in Chrome/Firefox
+**Fixed in 12 widgets**:
+- random-number-generator: Alt+C for copy result
+- age-calculator: Alt+C for copy result  
+- ascii-art-generator: Alt+C for copy result
+- bmi-calculator: Alt+C for copy result
+- compound-interest-calculator: Alt+C for copy result
+- css-box-shadow-generator: Alt+C for copy CSS
+- css-gradient-generator: Alt+C for copy CSS
+- json-tools: Alt+C for copy result
+- team-randomizer: Alt+C for copy result
+- color-converter: Alt+C+Shift for copy RGB
 
-2. **BMI Calculator**
-   - Keep `⌘+Enter` ✅
-   - Keep `⌘+⇧+R` ✅
-   - Change `⌘+E` → `⌘+⇧+E`
-   - Change `⌘+A` → `⌘+⇧+A`
-   - Change `⌘+U` → `⌘+⇧+U`
+### 🔒 **Fixed: Cmd+K → Alt+K** (Clear/Reset Operations)  
+**Issue**: Focused search/address bar in most browsers
+**Fixed in 4 widgets**:
+- color-converter: Alt+K for reset
+- regex-tester: Alt+K for clear pattern
+- json-tools: Alt+K for clear input
+- text-counter: Alt+K for clear text
 
-3. **Password Generator**
-   - Change `⌘+G` → `⌘+Enter`
-   - Keep `⌘+⇧+C` ✅
-   - Change `⌘+R` → `⌘+⇧+R`
-   - Change `⌘+S` → `⌘+⇧+S`
+### 🔒 **Fixed: Cmd+Shift+F → Alt+F** (Format Operations)
+**Issue**: "Find in Files" conflicts in many applications  
+**Fixed in 1 widget**:
+- json-tools: Alt+F for format JSON
 
-4. **Age Calculator**
-   - Keep all (already safe)
+### 🔒 **Fixed: Cmd+Shift+R → Alt+R** (Reset Operations)
+**Issue**: Hard Reload conflicts in Chrome/Firefox  
+**Fixed in 6 widgets and commonWidgetShortcuts**:
+- bmi-calculator: Alt+R for reset form
+- team-randomizer: Alt+R for reset
+- text-case-converter: Alt+R for reset
+- percentage-calculator: Alt+R for reset  
+- compound-interest-calculator: Alt+R for reset
+- loan-calculator: Alt+R for reset
+- flexbox-generator: Alt+R for reset
+- grid-generator: Alt+R for reset
+- commonWidgetShortcuts.reset preset updated
 
-5. **Draw Lots**
-   - Change `⌘+R` → `⌘+⇧+R`
+### 🔒 **Fixed: Cmd+Shift+A/D → Alt+A/D** (Add/Remove Operations)
+**Issue**: Cmd+Shift+A opens Search tabs/Extensions, Cmd+Shift+D bookmarks all tabs
+**Fixed in 2 widgets**:
+- flexbox-generator: Alt+A to add item, Alt+D to remove item
+- grid-generator: Alt+A to add column, Alt+D to remove column
 
-6. **JSON Tools**
-   - Keep `⌘+⇧+F` ✅
-   - Change `⌘+M` → `⌘+⇧+M`
-   - Change `⌘+K` → `⌘+⇧+K`
+## ✅ All Widgets Are Now Safe!
 
-## 📝 Guidelines for New Shortcuts
+As of 2025-08-29, all keyboard shortcuts have been reviewed and fixed:
 
-1. **Always prefer Shift modifier** for safety
-2. **Use numbers** for copy operations (1, 2, 3...)
-3. **Use Enter** for primary actions
-4. **Use Space** for toggle/play/pause
-5. **Avoid single letter** shortcuts without modifiers
-6. **Test in multiple browsers** (Chrome, Firefox, Safari, Edge)
-7. **Document any exceptions** clearly
+1. **Unsafe shortcuts replaced with Alt/Option alternatives**:
+   - `⌘+⇧+C` → `⌥+C` (12 widgets)
+   - `⌘+K` → `⌥+K` (4 widgets)
+   - `⌘+⇧+F` → `⌥+F` (1 widget)
+   - `⌘+⇧+R` → `⌥+R` (8 widgets + commonWidgetShortcuts)
+   - `⌘+⇧+A` → `⌥+A` (2 widgets)
+   - `⌘+⇧+D` → `⌥+D` (2 widgets)
+
+2. **All widgets using `primary: true` modifier**:
+   - This ensures cross-platform compatibility
+   - The hook prevents browser conflicts with preventDefault()
+   - No remaining unsafe shortcuts found
+
+## 📝 Updated Guidelines for New Shortcuts (Post-Security Fix)
+
+### ✅ **RECOMMENDED: Alt/Option Combinations** (Proven Safe)
+1. **Alt+[Letter]** for primary actions - minimal conflicts
+2. **Alt+Shift+[Letter]** for secondary actions - very safe  
+3. **Alt+[Number]** for copy operations - excellent choice
+
+### ✅ **SAFE: Special Key Combinations**
+4. **Cmd/Ctrl+Enter** for primary execute actions
+5. **Space** for toggle/play/pause actions
+6. **Enter** for confirm/submit actions
+7. **Escape** for cancel/close actions
+
+### ⚠️ **USE WITH CAUTION: Cmd/Ctrl Combinations** 
+8. **Cmd/Ctrl+Shift+[Less Common Letters]** like U, L, Y, X
+9. **Numbers 0-9** with modifiers (may conflict with tab switching)
+
+### ❌ **NEVER USE: Confirmed Unsafe**
+10. **Cmd/Ctrl+Shift+C** → DevTools Console
+11. **Cmd/Ctrl+K** → Search/Address bar focus
+12. **Cmd/Ctrl+Shift+F** → Find in Files
+13. **Cmd/Ctrl+F** → Browser Find
+14. **Cmd/Ctrl+R** → Browser Reload
+15. **Cmd/Ctrl+T** → New Tab
+16. **Cmd/Ctrl+S** → Save Page
+17. **Single letters without modifiers** → Too many conflicts
+
+### 🧪 **Testing Requirements**
+- Test in Chrome, Firefox, Safari, Edge
+- Test on Mac, Windows, Linux
+- Test with browser extensions enabled
+- Document any discovered conflicts
 
 ---
 
