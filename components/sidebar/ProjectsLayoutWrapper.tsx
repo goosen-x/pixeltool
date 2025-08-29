@@ -1,8 +1,8 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { ProjectsSidebar } from '@/components/projects/ProjectsSidebar'
-import { ProjectsRightSidebar } from '@/components/projects/ProjectsRightSidebar'
+import { ProjectsSidebar } from '@/components/sidebar/ProjectsSidebar'
+import { ProjectsRightSidebar } from '@/components/sidebar/ProjectsRightSidebar'
 import { WidgetWrapper, WidgetHeader } from '@/components/widgets'
 import { WidgetFAQ } from '@/components/widgets/WidgetFAQ'
 import { RelatedTools } from '@/components/seo/RelatedTools'

@@ -22,7 +22,9 @@ interface WidgetStatsCardProps {
 
 export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 	const tSidebar = useTranslations('widgets.rightSidebar')
-	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(null)
+	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(
+		null
+	)
 	const [isLoadingStats, setIsLoadingStats] = useState(true)
 
 	// Fetch analytics stats

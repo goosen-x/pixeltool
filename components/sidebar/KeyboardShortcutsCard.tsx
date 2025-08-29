@@ -19,7 +19,9 @@ interface KeyboardShortcutsCardProps {
 	} | null
 }
 
-export function KeyboardShortcutsCard({ widgetShortcuts }: KeyboardShortcutsCardProps) {
+export function KeyboardShortcutsCard({
+	widgetShortcuts
+}: KeyboardShortcutsCardProps) {
 	const locale = useLocale()
 	const tSidebar = useTranslations('widgets.rightSidebar')
 	const [showAllShortcuts, setShowAllShortcuts] = useState(false)
