@@ -33,7 +33,6 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 import { useTranslations } from 'next-intl'
-import { AdSection } from '@/components/ads'
 
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
@@ -798,9 +797,6 @@ export default function RegexTesterPage() {
 							<li>• Именованные группы упрощают работу с результатами</li>
 						</ul>
 					</WidgetSection>
-
-					{/* Ad Block */}
-					<AdSection />
 				</div>
 			</div>
 		</WidgetLayout>

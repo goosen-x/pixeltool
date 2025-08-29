@@ -271,10 +271,12 @@ export default async function RootLayout({
 		>
 			<head>
 				{/* Yandex.RTB */}
-				<script dangerouslySetInnerHTML={{
-					__html: `window.yaContextCb=window.yaContextCb||[]`
-				}} />
-				<script src="https://yandex.ru/ads/system/context.js" async />
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `window.yaContextCb=window.yaContextCb||[]`
+					}}
+				/>
+				<script src='https://yandex.ru/ads/system/context.js' async />
 			</head>
 			<NextIntlClientProvider messages={messages}>
 				<body
