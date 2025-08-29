@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-28T11:19:28.622Z
+// Generated on: 2025-08-29T03:03:18.213Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -383,6 +383,9 @@ export interface GeneratedTranslations {
       feedback: {
         title: string
         helpText: string
+      }
+      keyboardShortcuts: {
+        title: string
       }
       relatedTools: {
         title: string

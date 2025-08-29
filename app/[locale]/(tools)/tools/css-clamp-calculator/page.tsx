@@ -16,6 +16,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function ClampCalculatorPage() {
 	const locale = useLocale() as 'en' | 'ru'
@@ -119,6 +120,41 @@ export default function ClampCalculatorPage() {
 		}
 	}
 
+	// Functions for keyboard shortcuts
+	const resetForm = useCallback(() => {
+		setMinValue(16)
+		setMaxValue(24)
+		setMinViewport(375)
+		setMaxViewport(1440)
+		setUnit('rem')
+		setProperty('font-size')
+		toast.success(locale === 'ru' ? 'Форма сброшена' : 'Form reset')
+	}, [locale])
+
+	const switchUnit = useCallback(() => {
+		setUnit(prev => prev === 'px' ? 'rem' : 'px')
+		toast.info(locale === 'ru' ? `Переключено на ${unit === 'px' ? 'rem' : 'px'}` : `Switched to ${unit === 'px' ? 'rem' : 'px'}`)
+	}, [unit, locale])
+
+	const switchProperty = useCallback(() => {
+		const properties: Array<'font-size' | 'margin' | 'padding'> = ['font-size', 'margin', 'padding']
+		const currentIndex = properties.indexOf(property)
+		const nextIndex = (currentIndex + 1) % properties.length
+		setProperty(properties[nextIndex])
+		toast.info(locale === 'ru' ? `Переключено на ${properties[nextIndex]}` : `Switched to ${properties[nextIndex]}`)
+	}, [property, locale])
+
+	const loadExample = useCallback(() => {
+		// Typography example: 16px on mobile to 20px on desktop
+		setMinValue(16)
+		setMaxValue(20)
+		setMinViewport(320)
+		setMaxViewport(1200)
+		setUnit('px')
+		setProperty('font-size')
+		toast.success(locale === 'ru' ? 'Пример загружен' : 'Example loaded')
+	}, [locale])
+
 	const handleValueChange = (
 		value: string,
 		setter: (v: number | '') => void
@@ -172,6 +208,51 @@ export default function ClampCalculatorPage() {
 			setMaxViewport(1440)
 		}
 	}, [])
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'css-clamp-calculator',
+		shortcuts: [
+			{
+				key: 'c',
+				ctrl: true,
+				shift: true,
+				description: 'Copy CSS',
+				action: copyToClipboard
+			},
+			{
+				key: 't',
+				ctrl: true,
+				shift: true,
+				description: 'Copy Tailwind',
+				action: copyTailwindToClipboard
+			},
+			{
+				key: 'r',
+				ctrl: true,
+				description: 'Reset',
+				action: resetForm
+			},
+			{
+				key: 'u',
+				ctrl: true,
+				description: 'Switch Units',
+				action: switchUnit
+			},
+			{
+				key: 'p',
+				ctrl: true,
+				description: 'Switch Property',
+				action: switchProperty
+			},
+			{
+				key: 'l',
+				ctrl: true,
+				description: 'Load Example',
+				action: loadExample
+			}
+		]
+	})
 
 	return (
 		<>

@@ -54,6 +54,17 @@ export const widgetShortcuts: Record<string, WidgetShortcutConfig> = {
 	},
 
 	// Web Development
+	'css-clamp-calculator': {
+		shortcuts: [
+			'⌘+⇧+C Copy CSS',
+			'⌘+⇧+T Copy Tailwind',
+			'⌘+R Reset',
+			'⌘+U Switch Units',
+			'⌘+P Switch Property',
+			'⌘+L Load Example'
+		],
+		description: '📐 Generate fluid CSS clamp() values for responsive typography'
+	},
 	'css-gradient-generator': {
 		shortcuts: [
 			'⌘+G Generate Random',

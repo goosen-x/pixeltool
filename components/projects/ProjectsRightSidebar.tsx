@@ -313,18 +313,26 @@ export function ProjectsRightSidebar() {
 							{widgetShortcuts.shortcuts.slice(0, 4).map((shortcut, index) => {
 								const [keys, ...descriptionParts] = shortcut.split(' ')
 								const description = descriptionParts.join(' ')
-								
+
 								return (
-									<div key={index} className='flex items-center justify-between gap-2'>
+									<div
+										key={index}
+										className='flex items-center justify-between gap-2'
+									>
 										<span className='text-xs text-muted-foreground truncate'>
 											{description}
 										</span>
 										<div className='flex items-center gap-1 whitespace-nowrap'>
 											{keys.split('+').map((key, keyIndex, array) => (
-												<div key={keyIndex} className='flex items-center gap-0.5'>
+												<div
+													key={keyIndex}
+													className='flex items-center gap-0.5'
+												>
 													<ShortcutKey>{key}</ShortcutKey>
 													{keyIndex < array.length - 1 && (
-														<span className='text-xs text-muted-foreground'>+</span>
+														<span className='text-xs text-muted-foreground'>
+															+
+														</span>
 													)}
 												</div>
 											))}
@@ -335,7 +343,8 @@ export function ProjectsRightSidebar() {
 						</div>
 						{widgetShortcuts.shortcuts.length > 4 && (
 							<p className='text-xs text-muted-foreground text-center pt-2 border-t'>
-								+{widgetShortcuts.shortcuts.length - 4} more shortcuts - Press Shift+?
+								+{widgetShortcuts.shortcuts.length - 4} more shortcuts - Press
+								Shift+?
 							</p>
 						)}
 						{widgetShortcuts.description && (
