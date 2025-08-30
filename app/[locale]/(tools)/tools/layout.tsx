@@ -1,4 +1,4 @@
-import { ProjectsLayoutWrapper } from '@/components/projects/ProjectsLayoutWrapper'
+import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
 import { ReactNode } from 'react'
 import '../../../widget-transitions.css'
 

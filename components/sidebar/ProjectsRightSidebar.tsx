@@ -37,25 +37,13 @@ export function ProjectsRightSidebar() {
 
 	if (!widget) return null
 
-
 	return (
 		<aside className='w-72 xl:w-80 h-full p-3 lg:p-4 space-y-3 lg:space-y-4 overflow-y-auto projects-scroll flex-shrink-0'>
-			{/* Widget Info */}
 			<WidgetInfoCard widget={widget} />
-
-			{/* Advertisement */}
 			<AdSection />
-
-			{/* Keyboard Shortcuts */}
 			<KeyboardShortcutsCard widgetShortcuts={widgetShortcuts} />
-
-			{/* Use Case */}
 			<UseCaseCard widget={widget} />
-
-			{/* Widget Stats */}
 			<WidgetStatsCard widget={widget} />
-
-			{/* Actions & Feedback */}
 			<ActionsAndFeedbackCard />
 		</aside>
 	)
