@@ -29,8 +29,7 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title:
-				'Рассчитать CSS Clamp - Адаптивная Типографика | Онлайн Бесплатно',
+			title: 'Рассчитать CSS Clamp - Адаптивная Типографика | Онлайн Бесплатно',
 			description:
 				'Рассчитайте CSS clamp() значения онлайн бесплатно. Создавайте адаптивную типографику и отступы. Генерируйте clamp() значения с визуальным превью 2025.',
 			keywords: [
@@ -111,7 +110,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-specificity': {
 		en: {
-			title: 'Calculate CSS Specificity - Analyze Selector Weight | Free Online 2025',
+			title:
+				'Calculate CSS Specificity - Analyze Selector Weight | Free Online 2025',
 			description:
 				'Calculate CSS selector specificity instantly online free. Understand selector weight and cascade. Visual breakdown of IDs, classes, and elements 2025.',
 			keywords: [
@@ -127,7 +127,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Рассчитать Специфичность CSS - Анализ Селекторов | Онлайн Бесплатно',
+			title:
+				'Рассчитать Специфичность CSS - Анализ Селекторов | Онлайн Бесплатно',
 			description:
 				'Рассчитайте специфичность CSS селекторов мгновенно онлайн бесплатно. Понимайте вес селекторов и каскад. Визуальная разбивка по ID, классам и элементам 2025.',
 			keywords: [
@@ -161,7 +162,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать Flexbox CSS - Визуальный Конструктор | Онлайн Бесплатно',
+			title:
+				'Сгенерировать Flexbox CSS - Визуальный Конструктор | Онлайн Бесплатно',
 			description:
 				'Визуальный генератор CSS flexbox с живым превью онлайн бесплатно. Создавайте гибкие макеты легко. Экспортируйте чистый CSS код 2025.',
 			keywords: [
@@ -175,7 +177,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'grid-generator': {
 		en: {
-			title: 'Generate CSS Grid - Visual Grid Layout Builder | Free Online 2025',
+			title:
+				'Generate CSS Grid - Visual Grid Layout Builder | Free Online 2025',
 			description:
 				'Create CSS Grid layouts visually online free. Generate grid-template code with live preview. Perfect tool for responsive grid design 2025.',
 			keywords: [
@@ -192,7 +195,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать CSS Grid - Визуальный Конструктор Сеток | Онлайн Бесплатно',
+			title:
+				'Сгенерировать CSS Grid - Визуальный Конструктор Сеток | Онлайн Бесплатно',
 			description:
 				'Создавайте CSS Grid макеты визуально онлайн бесплатно. Генерируйте grid-template код с живым превью. Идеальный инструмент для адаптивных сеток 2025.',
 			keywords: [
@@ -206,7 +210,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'password-generator': {
 		en: {
-			title: 'Generate Strong Passwords - Secure Random Passwords | Free Online 2025',
+			title:
+				'Generate Strong Passwords - Secure Random Passwords | Free Online 2025',
 			description:
 				'Generate strong, secure passwords instantly online free. Customize length and character types. Create unbreakable passwords for maximum security 2025.',
 			keywords: [
@@ -222,7 +227,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать Надежные Пароли - Безопасные Пароли | Онлайн Бесплатно',
+			title:
+				'Сгенерировать Надежные Пароли - Безопасные Пароли | Онлайн Бесплатно',
 			description:
 				'Генерируйте надежные, безопасные пароли мгновенно онлайн бесплатно. Настройте длину и типы символов. Создавайте невзламываемые пароли 2025.',
 			keywords: [
@@ -352,7 +358,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'seo-markdown-generator': {
 		en: {
-			title: 'Generate SEO Markdown - Create Optimized Blog Posts | Free Online 2025',
+			title:
+				'Generate SEO Markdown - Create Optimized Blog Posts | Free Online 2025',
 			description:
 				'Generate SEO-optimized markdown files for blog posts online free. Create structured content with metadata, keywords, and proper formatting. Perfect for bloggers and content creators 2025.',
 			keywords: [
@@ -439,7 +446,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'tip-calculator': {
 		en: {
-			title: 'Calculate Tips & Gratuity - Split Bills Calculator | Free Online 2025',
+			title:
+				'Calculate Tips & Gratuity - Split Bills Calculator | Free Online 2025',
 			description:
 				'Calculate tips for restaurants, bars, and services online free. Split bills among multiple people. Free tip calculator with customizable percentages and tipping guide 2025.',
 			keywords: [
@@ -455,7 +463,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Рассчитать Чаевые - Калькулятор Разделения Счёта | Онлайн Бесплатно',
+			title:
+				'Рассчитать Чаевые - Калькулятор Разделения Счёта | Онлайн Бесплатно',
 			description:
 				'Рассчитайте чаевые для ресторанов, баров и услуг онлайн бесплатно. Делите счета между людьми. Калькулятор с гидом по чаевым 2025.',
 			keywords: [
@@ -490,7 +499,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Конвертировать Регистр Текста - Изменить Регистр | Онлайн Бесплатно',
+			title:
+				'Конвертировать Регистр Текста - Изменить Регистр | Онлайн Бесплатно',
 			description:
 				'Конвертируйте текст между разными регистрами: ПРОПИСНЫЕ, строчные, camelCase, snake_case, Заголовочный и другие. Бесплатный онлайн конвертер.',
 			keywords: [
@@ -583,7 +593,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать Тестовые Данные - Создание Mock Данных | Онлайн Бесплатно',
+			title:
+				'Сгенерировать Тестовые Данные - Создание Mock Данных | Онлайн Бесплатно',
 			description:
 				'Генерируйте реалистичные тестовые данные для разработки. Создавайте JSON датасеты с именами, email, адресами. Экспорт в разных форматах.',
 			keywords: [
@@ -759,7 +770,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Рассчитать Проценты - Калькулятор Процентов Онлайн | Бесплатно 2025',
+			title:
+				'Рассчитать Проценты - Калькулятор Процентов Онлайн | Бесплатно 2025',
 			description:
 				'Рассчитайте проценты онлайн бесплатно. Расчет процентного изменения и разницы. Найдите сколько процентов X от Y. Для скидок и расчётов 2025.',
 			keywords: [
@@ -776,7 +788,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'temperature-converter': {
 		en: {
-			title: 'Convert Temperature - Celsius, Fahrenheit, Kelvin | Free Online 2025',
+			title:
+				'Convert Temperature - Celsius, Fahrenheit, Kelvin | Free Online 2025',
 			description:
 				'Convert temperature between Celsius, Fahrenheit, Kelvin online free. Instant conversion with formula explanations. Perfect for science and cooking 2025.',
 			keywords: [
@@ -792,7 +805,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Конвертировать Температуру - Цельсий, Фаренгейт | Онлайн Бесплатно',
+			title:
+				'Конвертировать Температуру - Цельсий, Фаренгейт | Онлайн Бесплатно',
 			description:
 				'Конвертируйте температуру между Цельсием, Фаренгейтом, Кельвином онлайн бесплатно. Мгновенная конвертация с формулами 2025.',
 			keywords: [
@@ -825,7 +839,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Рассчитать ИМТ - Калькулятор Индекса Массы Тела | Онлайн Бесплатно',
+			title:
+				'Рассчитать ИМТ - Калькулятор Индекса Массы Тела | Онлайн Бесплатно',
 			description:
 				'Рассчитайте индекс массы тела (ИМТ) онлайн бесплатно по росту и весу. Узнайте категорию здоровья и идеальный вес. Рекомендации по здоровью 2025.',
 			keywords: [
@@ -906,7 +921,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'compound-interest-calculator': {
 		en: {
-			title: 'Calculate Compound Interest - Investment Calculator | Free Online 2025',
+			title:
+				'Calculate Compound Interest - Investment Calculator | Free Online 2025',
 			description:
 				'Calculate compound interest for investments online free. Compare simple vs compound interest. Visualize growth with charts. Perfect for financial planning 2025.',
 			keywords: [
@@ -970,7 +986,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'fuel-consumption-calculator': {
 		en: {
-			title: 'Calculate Fuel Consumption - MPG & L/100km Calculator | Free Online',
+			title:
+				'Calculate Fuel Consumption - MPG & L/100km Calculator | Free Online',
 			description:
 				'Calculate fuel consumption, cost per mile, and trip expenses online free. Convert between MPG and L/100km. Track fuel efficiency and optimize driving costs 2025.',
 			keywords: [
@@ -1128,7 +1145,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать UUID - Уникальные Идентификаторы | Онлайн Бесплатно',
+			title:
+				'Сгенерировать UUID - Уникальные Идентификаторы | Онлайн Бесплатно',
 			description:
 				'Генерируйте UUID v1, v3, v4, v5 онлайн бесплатно. Массовая генерация, валидация. Идеально для ID в базах данных 2025.',
 			keywords: [
@@ -1231,7 +1249,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-specificity-calculator': {
 		en: {
-			title: 'Calculate CSS Specificity - Analyze Selector Weight | Free Online 2025',
+			title:
+				'Calculate CSS Specificity - Analyze Selector Weight | Free Online 2025',
 			description:
 				'Calculate CSS selector specificity online free. Understand selector weight, cascade order, and inheritance. Visual breakdown with detailed explanations.',
 			keywords: [
@@ -1247,7 +1266,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Рассчитать Специфичность CSS - Анализ Селекторов | Бесплатно Онлайн',
+			title:
+				'Рассчитать Специфичность CSS - Анализ Селекторов | Бесплатно Онлайн',
 			description:
 				'Рассчитайте специфичность CSS селекторов онлайн бесплатно. Понимайте вес селекторов и каскад. Визуальная разбивка с объяснениями 2025.',
 			keywords: [
@@ -1264,7 +1284,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-bezier-curve-generator': {
 		en: {
-			title: 'Generate CSS Bezier Curves - Custom Animation Easing | Free Online 2025',
+			title:
+				'Generate CSS Bezier Curves - Custom Animation Easing | Free Online 2025',
 			description:
 				'Create custom cubic-bezier curves for CSS animations online free. Visual curve editor with real-time preview. Generate smooth easing functions for transitions 2025.',
 			keywords: [
@@ -1281,7 +1302,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать Кривые Безье CSS - Плавные Анимации | Онлайн Бесплатно',
+			title:
+				'Сгенерировать Кривые Безье CSS - Плавные Анимации | Онлайн Бесплатно',
 			description:
 				'Создавайте кубические кривые Безье для CSS анимаций онлайн бесплатно. Визуальный редактор с превью. Генерируйте плавные функции для переходов 2025.',
 			keywords: [
@@ -1527,7 +1549,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать Красивый Текст - Стильные Шрифты | Онлайн Бесплатно',
+			title:
+				'Сгенерировать Красивый Текст - Стильные Шрифты | Онлайн Бесплатно',
 			description:
 				'Конвертируйте обычный текст в красивые шрифты и стили онлайн бесплатно. Создавайте крутой текст для соцсетей. Генератор с 50+ стилями 2025.',
 			keywords: [
@@ -1541,7 +1564,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'random-list-generator': {
 		en: {
-			title: 'Generate Random Lists - Shuffle & Randomize Lists | Free Online 2025',
+			title:
+				'Generate Random Lists - Shuffle & Randomize Lists | Free Online 2025',
 			description:
 				'Generate random lists or shuffle existing ones online free. Perfect for creating random orders, selections, and sequences. Export results easily 2025.',
 			keywords: [
@@ -1558,7 +1582,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать Случайные Списки - Перемешать Список | Онлайн Бесплатно',
+			title:
+				'Сгенерировать Случайные Списки - Перемешать Список | Онлайн Бесплатно',
 			description:
 				'Генерируйте случайные списки или перемешивайте существующие онлайн бесплатно. Идеально для случайного порядка и выбора. Легкий экспорт 2025.',
 			keywords: [
@@ -1910,7 +1935,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Конвертировать PX в REM - Калькулятор CSS Единиц | Онлайн Бесплатно',
+			title:
+				'Конвертировать PX в REM - Калькулятор CSS Единиц | Онлайн Бесплатно',
 			description:
 				'Конвертируйте пиксели в rem единицы для адаптивного дизайна онлайн бесплатно. Рассчитывайте rem на основе базового размера шрифта 2025.',
 			keywords: [
@@ -1927,7 +1953,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-box-shadow-generator': {
 		en: {
-			title: 'Generate CSS Box Shadow - Visual Shadow Builder | Free Online 2025',
+			title:
+				'Generate CSS Box Shadow - Visual Shadow Builder | Free Online 2025',
 			description:
 				'Create beautiful CSS box shadows visually online free. Adjust blur, spread, color, and position. Generate code for multiple shadows and inset effects 2025.',
 			keywords: [
@@ -1944,7 +1971,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать CSS Box Shadow - Визуальный Конструктор | Онлайн Бесплатно',
+			title:
+				'Сгенерировать CSS Box Shadow - Визуальный Конструктор | Онлайн Бесплатно',
 			description:
 				'Создавайте красивые CSS тени визуально онлайн бесплатно. Настройте размытие, распространение, цвет. Генерируйте код для множественных теней 2025.',
 			keywords: [
@@ -1958,7 +1986,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-gradient-generator': {
 		en: {
-			title: 'Generate CSS Gradients - Linear & Radial Gradients | Free Online 2025',
+			title:
+				'Generate CSS Gradients - Linear & Radial Gradients | Free Online 2025',
 			description:
 				'Create stunning CSS gradients with visual editor online free. Generate linear, radial, and conic gradients. Export code with vendor prefixes 2025.',
 			keywords: [
@@ -1975,7 +2004,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать CSS Градиенты - Линейные и Радиальные | Онлайн Бесплатно',
+			title:
+				'Сгенерировать CSS Градиенты - Линейные и Радиальные | Онлайн Бесплатно',
 			description:
 				'Создавайте потрясающие CSS градиенты с визуальным редактором онлайн бесплатно. Линейные, радиальные и конические градиенты 2025.',
 			keywords: [
@@ -2032,7 +2062,8 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		},
 		ru: {
-			title: 'Сгенерировать CSS Keyframes - Конструктор Анимаций | Онлайн Бесплатно',
+			title:
+				'Сгенерировать CSS Keyframes - Конструктор Анимаций | Онлайн Бесплатно',
 			description:
 				'Создавайте CSS @keyframes анимации визуально онлайн бесплатно. Проектируйте сложные анимации с редактором таймлайна 2025.',
 			keywords: [

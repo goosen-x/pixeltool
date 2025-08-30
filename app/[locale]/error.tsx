@@ -35,6 +35,17 @@ export default function Error({
 		}
 	}
 
+	const handleReset = () => {
+		console.log('Try again button clicked')
+		try {
+			reset()
+		} catch (err) {
+			console.error('Reset failed:', err)
+			// Fallback: перезагрузка страницы
+			window.location.reload()
+		}
+	}
+
 	return (
 		<div className='grid h-screen place-content-center bg-background px-4'>
 			<div className='text-center max-w-lg'>
@@ -102,7 +113,7 @@ export default function Error({
 				)}
 
 				<div className='flex gap-4 justify-center'>
-					<Button onClick={reset} variant='default'>
+					<Button onClick={handleReset} variant='default'>
 						{t('tryAgain')}
 					</Button>
 					<Button asChild variant='outline'>
