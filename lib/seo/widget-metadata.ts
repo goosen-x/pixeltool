@@ -13,49 +13,59 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	'css-clamp-calculator': {
 		en: {
 			title:
-				'CSS Clamp Calculator - Create Responsive Typography | Online Tool',
+				'Calculate CSS Clamp Values - Responsive Typography Tool | Free Online',
 			description:
-				'Free online CSS clamp() calculator. Create fluid responsive typography and spacing. Generate clamp() values with visual preview. Perfect for responsive web design.',
+				'Calculate CSS clamp() values online free. Create fluid responsive typography and spacing. Generate clamp() values with visual preview. Perfect for responsive web design in 2025.',
 			keywords: [
-				'css clamp',
-				'clamp calculator',
-				'responsive typography',
-				'fluid typography',
-				'css calculator',
-				'responsive design'
+				'calculate css clamp',
+				'clamp calculator online',
+				'responsive typography calculator',
+				'fluid typography tool',
+				'css calculator free',
+				'calculate clamp values',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
 			title:
-				'CSS Clamp Калькулятор - Адаптивная Типографика | Онлайн Инструмент',
+				'Рассчитать CSS Clamp - Адаптивная Типографика | Онлайн Бесплатно',
 			description:
-				'Бесплатный онлайн калькулятор CSS clamp(). Создавайте адаптивную типографику и отступы. Генерируйте clamp() значения с визуальным превью.',
+				'Рассчитайте CSS clamp() значения онлайн бесплатно. Создавайте адаптивную типографику и отступы. Генерируйте clamp() значения с визуальным превью 2025.',
 			keywords: [
-				'css clamp калькулятор',
+				'рассчитать css clamp',
+				'посчитать clamp',
+				'калькулятор css онлайн',
 				'адаптивная типографика',
-				'калькулятор css',
-				'адаптивный дизайн',
-				'clamp функция'
+				'расчет css',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'color-converter': {
 		en: {
-			title: 'Color Converter - HEX to RGB, HSL, CMYK | Free Online Tool',
+			title: 'Convert Colors - HEX to RGB, HSL, CMYK | Free Online 2025',
 			description:
-				'Convert colors between HEX, RGB, HSL, HSB, CMYK, LAB, and XYZ formats. Free online color converter with instant preview and one-click copy.',
+				'Convert colors between HEX, RGB, HSL, HSB, CMYK, LAB, and XYZ formats online free. Instant preview and one-click copy. Perfect color conversion tool 2025.',
 			keywords: [
-				'color converter',
-				'hex to rgb',
-				'rgb to hex',
-				'color picker',
-				'cmyk converter',
-				'hsl converter',
-				'color tool'
+				'convert colors',
+				'color converter online',
+				'hex to rgb converter',
+				'rgb to hex free',
+				'color picker online',
+				'cmyk converter tool',
+				'hsl converter online',
+				'color tool free',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Конвертер Цветов - HEX в RGB, HSL, CMYK | Бесплатный Онлайн',
+			title: 'Конвертировать Цвета - HEX в RGB, HSL, CMYK | Онлайн Бесплатно',
 			description:
 				'Конвертируйте цвета между форматами HEX, RGB, HSL, HSB, CMYK, LAB и XYZ. Бесплатный онлайн конвертер с мгновенным превью.',
 			keywords: [
@@ -70,22 +80,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'bezier-curve': {
 		en: {
-			title: 'Bezier Curve Generator - CSS Animation Easing | Online Tool',
+			title: 'Generate Bezier Curves - CSS Animation Easing | Free Online 2025',
 			description:
-				'Create custom cubic bezier curves for CSS animations. Visual curve editor with 30+ presets. Generate cubic-bezier() values for smooth animations.',
+				'Create custom cubic bezier curves for CSS animations online free. Visual curve editor with 30+ presets. Generate cubic-bezier() values for smooth animations 2025.',
 			keywords: [
-				'bezier curve',
-				'cubic bezier',
-				'css animation',
-				'easing function',
-				'animation curve',
-				'bezier generator'
+				'generate bezier curve',
+				'bezier curve generator online',
+				'cubic bezier generator',
+				'css animation tool',
+				'easing function generator',
+				'animation curve tool',
+				'bezier generator free',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Кривых Безье - CSS Анимация | Онлайн Инструмент',
+			title: 'Сгенерировать Кривые Безье - CSS Анимация | Онлайн Бесплатно',
 			description:
-				'Создавайте кубические кривые Безье для CSS анимаций. Визуальный редактор с 30+ пресетами. Генерируйте cubic-bezier() значения.',
+				'Создавайте кубические кривые Безье для CSS анимаций онлайн бесплатно. Визуальный редактор с 30+ пресетами. Генерируйте cubic-bezier() значения 2025.',
 			keywords: [
 				'кривые безье',
 				'генератор безье',
@@ -97,49 +111,59 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-specificity': {
 		en: {
-			title: 'CSS Specificity Calculator - Analyze Selector Weight | Free Tool',
+			title: 'Calculate CSS Specificity - Analyze Selector Weight | Free Online 2025',
 			description:
-				'Calculate CSS selector specificity instantly. Understand selector weight and cascade. Visual breakdown of IDs, classes, and elements.',
+				'Calculate CSS selector specificity instantly online free. Understand selector weight and cascade. Visual breakdown of IDs, classes, and elements 2025.',
 			keywords: [
-				'css specificity',
-				'specificity calculator',
-				'css selector',
-				'selector weight',
-				'css cascade',
-				'css priority'
+				'calculate css specificity',
+				'css specificity calculator online',
+				'css selector calculator',
+				'selector weight tool',
+				'css cascade calculator',
+				'css priority checker',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Специфичности CSS - Анализ Селекторов | Бесплатно',
+			title: 'Рассчитать Специфичность CSS - Анализ Селекторов | Онлайн Бесплатно',
 			description:
-				'Рассчитайте специфичность CSS селекторов мгновенно. Понимайте вес селекторов и каскад. Визуальная разбивка по ID, классам и элементам.',
+				'Рассчитайте специфичность CSS селекторов мгновенно онлайн бесплатно. Понимайте вес селекторов и каскад. Визуальная разбивка по ID, классам и элементам 2025.',
 			keywords: [
-				'специфичность css',
-				'калькулятор специфичности',
+				'рассчитать специфичность css',
+				'калькулятор специфичности онлайн',
 				'css селекторы',
 				'вес селектора',
-				'css каскад'
+				'css каскад',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'flexbox-generator': {
 		en: {
-			title: 'Flexbox Generator - Visual CSS Flexbox Builder | Online Tool',
+			title: 'Generate Flexbox CSS - Visual Flexbox Builder | Free Online 2025',
 			description:
-				'Visual flexbox CSS generator with live preview. Create flexible layouts easily. Export clean CSS code for flex containers and items.',
+				'Visual flexbox CSS generator with live preview online free. Create flexible layouts easily. Export clean CSS code for flex containers and items 2025.',
 			keywords: [
-				'flexbox generator',
-				'css flexbox',
-				'flex layout',
-				'flexbox builder',
-				'css generator',
-				'flex container'
+				'generate flexbox css',
+				'flexbox generator online',
+				'css flexbox generator',
+				'flex layout builder',
+				'flexbox builder free',
+				'css generator online',
+				'flex container tool',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Flexbox - Визуальный Конструктор CSS | Онлайн',
+			title: 'Сгенерировать Flexbox CSS - Визуальный Конструктор | Онлайн Бесплатно',
 			description:
-				'Визуальный генератор CSS flexbox с живым превью. Создавайте гибкие макеты легко. Экспортируйте чистый CSS код.',
+				'Визуальный генератор CSS flexbox с живым превью онлайн бесплатно. Создавайте гибкие макеты легко. Экспортируйте чистый CSS код 2025.',
 			keywords: [
 				'генератор flexbox',
 				'css flexbox',
@@ -151,22 +175,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'grid-generator': {
 		en: {
-			title: 'CSS Grid Generator - Visual Grid Layout Builder | Free Tool',
+			title: 'Generate CSS Grid - Visual Grid Layout Builder | Free Online 2025',
 			description:
-				'Create CSS Grid layouts visually. Generate grid-template code with live preview. Perfect tool for responsive grid design.',
+				'Create CSS Grid layouts visually online free. Generate grid-template code with live preview. Perfect tool for responsive grid design 2025.',
 			keywords: [
-				'css grid generator',
-				'grid layout',
-				'css grid',
-				'grid builder',
-				'grid template',
-				'responsive grid'
+				'generate css grid',
+				'css grid generator online',
+				'grid layout builder',
+				'css grid generator free',
+				'grid builder online',
+				'grid template generator',
+				'responsive grid tool',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор CSS Grid - Визуальный Конструктор Сеток | Бесплатно',
+			title: 'Сгенерировать CSS Grid - Визуальный Конструктор Сеток | Онлайн Бесплатно',
 			description:
-				'Создавайте CSS Grid макеты визуально. Генерируйте grid-template код с живым превью. Идеальный инструмент для адаптивных сеток.',
+				'Создавайте CSS Grid макеты визуально онлайн бесплатно. Генерируйте grid-template код с живым превью. Идеальный инструмент для адаптивных сеток 2025.',
 			keywords: [
 				'генератор css grid',
 				'grid макет',
@@ -178,49 +206,60 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'password-generator': {
 		en: {
-			title: 'Strong Password Generator - Secure Random Passwords | Free Tool',
+			title: 'Generate Strong Passwords - Secure Random Passwords | Free Online 2025',
 			description:
-				'Generate strong, secure passwords instantly. Customize length and character types. Create unbreakable passwords for maximum security.',
+				'Generate strong, secure passwords instantly online free. Customize length and character types. Create unbreakable passwords for maximum security 2025.',
 			keywords: [
-				'password generator',
-				'strong password',
-				'secure password',
-				'random password',
-				'password creator',
-				'password tool'
+				'generate strong password',
+				'password generator online',
+				'secure password generator',
+				'random password generator free',
+				'password creator online',
+				'password tool free',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Паролей - Надежные Случайные Пароли | Бесплатно',
+			title: 'Сгенерировать Надежные Пароли - Безопасные Пароли | Онлайн Бесплатно',
 			description:
-				'Генерируйте надежные, безопасные пароли мгновенно. Настройте длину и типы символов. Создавайте невзламываемые пароли.',
+				'Генерируйте надежные, безопасные пароли мгновенно онлайн бесплатно. Настройте длину и типы символов. Создавайте невзламываемые пароли 2025.',
 			keywords: [
-				'генератор паролей',
+				'сгенерировать пароль',
+				'генератор паролей онлайн',
 				'надежный пароль',
 				'безопасный пароль',
 				'случайный пароль',
-				'создать пароль'
+				'создать пароль',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'qr-generator': {
 		en: {
-			title: 'QR Code Generator - Create Custom QR Codes | Free Online Tool',
+			title: 'Generate QR Codes - Create Custom QR Codes | Free Online 2025',
 			description:
-				'Generate QR codes for URLs, text, WiFi, and more. Customize colors, add logos, download in multiple formats. Free QR code maker.',
+				'Generate QR codes for URLs, text, WiFi, and more online free. Customize colors, add logos, download in multiple formats. Free QR code maker 2025.',
 			keywords: [
-				'qr code generator',
-				'qr generator',
-				'create qr code',
-				'qr code maker',
-				'custom qr code',
-				'free qr code'
+				'generate qr code',
+				'qr code generator online',
+				'qr generator free',
+				'create qr code online',
+				'qr code maker tool',
+				'custom qr code generator',
+				'free qr code',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор QR Кодов - Создать QR Код Онлайн | Бесплатно',
+			title: 'Сгенерировать QR Код - Создать QR Код | Онлайн Бесплатно',
 			description:
-				'Генерируйте QR коды для URL, текста, WiFi и другого. Настройте цвета, добавьте логотип, скачайте в разных форматах.',
+				'Генерируйте QR коды для URL, текста, WiFi и другого онлайн бесплатно. Настройте цвета, добавьте логотип, скачайте в разных форматах 2025.',
 			keywords: [
 				'генератор qr кода',
 				'qr генератор',
@@ -313,21 +352,25 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'seo-markdown-generator': {
 		en: {
-			title: 'SEO Markdown Generator - Create Optimized Blog Posts | Free Tool',
+			title: 'Generate SEO Markdown - Create Optimized Blog Posts | Free Online 2025',
 			description:
-				'Generate SEO-optimized markdown files for blog posts. Create structured content with metadata, keywords, and proper formatting. Perfect for bloggers and content creators.',
+				'Generate SEO-optimized markdown files for blog posts online free. Create structured content with metadata, keywords, and proper formatting. Perfect for bloggers and content creators 2025.',
 			keywords: [
-				'seo markdown',
-				'markdown generator',
-				'blog post generator',
-				'seo content',
-				'markdown creator',
-				'content generator'
+				'generate seo markdown',
+				'seo markdown generator online',
+				'markdown generator free',
+				'blog post generator online',
+				'seo content creator',
+				'markdown creator tool',
+				'content generator free',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
 			title:
-				'SEO Markdown Генератор - Создание Оптимизированных Постов | Бесплатно',
+				'Сгенерировать SEO Markdown - Создание Оптимизированных Постов | Онлайн Бесплатно',
 			description:
 				'Генерируйте SEO-оптимизированные markdown файлы для блога. Создавайте структурированный контент с метаданными и ключевыми словами.',
 			keywords: [
@@ -396,50 +439,58 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'tip-calculator': {
 		en: {
-			title: 'Tip Calculator - Calculate Gratuity & Split Bills | Free Tool',
+			title: 'Calculate Tips & Gratuity - Split Bills Calculator | Free Online 2025',
 			description:
-				'Calculate tips for restaurants, bars, and services. Split bills among multiple people. Free tip calculator with customizable percentages and tipping guide.',
+				'Calculate tips for restaurants, bars, and services online free. Split bills among multiple people. Free tip calculator with customizable percentages and tipping guide 2025.',
 			keywords: [
-				'tip calculator',
-				'gratuity calculator',
-				'split bill',
-				'restaurant tip',
-				'service tip',
-				'bill splitter',
-				'tip percentage'
+				'calculate tips',
+				'tip calculator online',
+				'calculate gratuity',
+				'split bill calculator',
+				'restaurant tip calculator',
+				'calculate service tip',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Чаевых - Расчёт и Разделение Счёта | Бесплатно',
+			title: 'Рассчитать Чаевые - Калькулятор Разделения Счёта | Онлайн Бесплатно',
 			description:
-				'Рассчитывайте чаевые для ресторанов, баров и услуг. Делите счета между несколькими людьми. Бесплатный калькулятор с гидом по чаевым.',
+				'Рассчитайте чаевые для ресторанов, баров и услуг онлайн бесплатно. Делите счета между людьми. Калькулятор с гидом по чаевым 2025.',
 			keywords: [
+				'рассчитать чаевые',
+				'посчитать чаевые онлайн',
 				'калькулятор чаевых',
 				'разделить счёт',
-				'чаевые в ресторане',
-				'расчёт чаевых',
-				'процент чаевых',
-				'калькулятор счёта'
+				'расчёт процента чаевых',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'text-case-converter': {
 		en: {
-			title: 'Text Case Converter - Change Letter Case Online | Free Tool',
+			title: 'Convert Text Case - Change Letter Case Online | Free 2025',
 			description:
-				'Convert text between different cases: UPPERCASE, lowercase, camelCase, snake_case, Title Case and more. Free online text case converter with instant results.',
+				'Convert text between different cases: UPPERCASE, lowercase, camelCase, snake_case, Title Case and more online free. Instant results and batch processing 2025.',
 			keywords: [
-				'text case converter',
-				'case converter',
-				'uppercase converter',
-				'lowercase converter',
-				'camelcase converter',
-				'snake case',
-				'text transformation'
+				'convert text case',
+				'text case converter online',
+				'case converter free',
+				'uppercase converter online',
+				'lowercase converter tool',
+				'camelcase converter free',
+				'snake case online',
+				'text transformation tool',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Конвертер Регистра Текста - Изменить Регистр Онлайн | Бесплатно',
+			title: 'Конвертировать Регистр Текста - Изменить Регистр | Онлайн Бесплатно',
 			description:
 				'Конвертируйте текст между разными регистрами: ПРОПИСНЫЕ, строчные, camelCase, snake_case, Заголовочный и другие. Бесплатный онлайн конвертер.',
 			keywords: [
@@ -514,21 +565,25 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'mock-data-generator': {
 		en: {
-			title: 'Mock Data Generator - Create Test Data Sets | Free Online Tool',
+			title: 'Generate Mock Data - Create Test Data Sets | Free Online 2025',
 			description:
-				'Generate realistic mock data for testing and development. Create JSON datasets with names, emails, addresses, and custom fields. Export in multiple formats.',
+				'Generate realistic mock data for testing and development online free. Create JSON datasets with names, emails, addresses, and custom fields. Export in multiple formats 2025.',
 			keywords: [
-				'mock data generator',
-				'test data',
-				'fake data',
-				'json generator',
-				'sample data',
-				'dummy data',
-				'test dataset'
+				'generate mock data',
+				'mock data generator online',
+				'test data generator',
+				'fake data generator free',
+				'json generator online',
+				'sample data creator',
+				'dummy data generator',
+				'test dataset tool',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Тестовых Данных - Создание Mock Данных | Бесплатно',
+			title: 'Сгенерировать Тестовые Данные - Создание Mock Данных | Онлайн Бесплатно',
 			description:
 				'Генерируйте реалистичные тестовые данные для разработки. Создавайте JSON датасеты с именами, email, адресами. Экспорт в разных форматах.',
 			keywords: [
@@ -623,181 +678,223 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'age-calculator': {
 		en: {
-			title: 'Age Calculator - Calculate Exact Age Online | Free Tool',
+			title: 'Calculate Age - Exact Age Calculator Online | Free 2025',
 			description:
-				'Calculate your exact age in years, months, days, hours, and minutes. Find age difference between dates. Birthday countdown and zodiac sign calculator.',
+				'Calculate your exact age in years, months, days, hours online free. Find age difference between dates. Birthday countdown and zodiac sign calculator 2025.',
 			keywords: [
-				'age calculator',
-				'birthday calculator',
-				'age in days',
-				'age difference',
-				'date calculator',
-				'zodiac calculator'
+				'calculate age',
+				'age calculator online',
+				'calculate birthday',
+				'calculate age in days',
+				'age difference calculator',
+				'date calculator free',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Возраста - Точный Расчёт Возраста | Бесплатно',
+			title: 'Рассчитать Возраст - Калькулятор Лет Онлайн | Бесплатно 2025',
 			description:
-				'Рассчитайте точный возраст в годах, месяцах, днях. Найдите разницу между датами. Обратный отсчёт до дня рождения.',
+				'Рассчитайте точный возраст в годах, месяцах, днях онлайн бесплатно. Найдите разницу между датами. Обратный отсчёт до дня рождения 2025.',
 			keywords: [
-				'калькулятор возраста',
-				'сколько лет',
-				'возраст в днях',
+				'рассчитать возраст',
+				'посчитать сколько лет',
+				'калькулятор возраста онлайн',
+				'расчет возраста в днях',
 				'разница дат',
-				'знак зодиака'
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'text-counter': {
 		en: {
-			title: 'Text Counter - Word & Character Count Tool | Free Online',
+			title: 'Count Words & Characters - Text Counter Tool | Free Online 2025',
 			description:
-				'Count words, characters, sentences, and paragraphs instantly. Check text length for social media, SEO, and essays. Reading time calculator included.',
+				'Count words, characters, sentences online free. Check text length for social media, SEO, and essays. Reading time calculator included. Free text counter 2025.',
 			keywords: [
-				'word counter',
-				'character counter',
-				'text counter',
-				'word count',
-				'letter count',
-				'text length'
+				'count words',
+				'count characters',
+				'text counter online',
+				'word counter free',
+				'character counter online',
+				'count text',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Счётчик Текста - Подсчёт Слов и Символов | Бесплатно',
+			title: 'Посчитать Слова и Символы - Счётчик Текста | Онлайн Бесплатно',
 			description:
-				'Считайте слова, символы, предложения и абзацы мгновенно. Проверка длины текста для соцсетей и SEO. Время чтения.',
+				'Посчитайте слова, символы, предложения онлайн бесплатно. Проверка длины текста для соцсетей и SEO. Время чтения 2025.',
 			keywords: [
-				'счётчик слов',
-				'счётчик символов',
-				'подсчёт текста',
-				'количество слов',
-				'длина текста'
+				'посчитать слова',
+				'посчитать символы',
+				'счётчик текста онлайн',
+				'подсчёт слов',
+				'количество символов',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'percentage-calculator': {
 		en: {
-			title: 'Percentage Calculator - Calculate Percentages Online | Free',
+			title: 'Calculate Percentage - Online Percentage Calculator | Free 2025',
 			description:
-				'Calculate percentages, percentage change, and percentage difference. Find what percent X is of Y. Perfect for discounts, tips, and math problems.',
+				'Calculate percentages online free. Calculate percentage change, difference, and what percent X is of Y. Perfect for discounts, tips, and math problems 2025.',
 			keywords: [
-				'percentage calculator',
-				'percent calculator',
-				'percentage change',
 				'calculate percentage',
-				'percent difference'
+				'percentage calculator online',
+				'calculate percent',
+				'percentage change calculator',
+				'calculate percentage difference',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Процентов - Расчёт Процентов Онлайн | Бесплатно',
+			title: 'Рассчитать Проценты - Калькулятор Процентов Онлайн | Бесплатно 2025',
 			description:
-				'Рассчитывайте проценты, процентное изменение и разницу. Найдите сколько процентов X от Y. Для скидок и расчётов.',
+				'Рассчитайте проценты онлайн бесплатно. Расчет процентного изменения и разницы. Найдите сколько процентов X от Y. Для скидок и расчётов 2025.',
 			keywords: [
-				'калькулятор процентов',
+				'рассчитать проценты',
+				'посчитать процент',
+				'калькулятор процентов онлайн',
 				'расчёт процентов',
-				'процентное изменение',
-				'вычислить проценты'
+				'вычислить проценты',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'temperature-converter': {
 		en: {
-			title: 'Temperature Converter - Celsius, Fahrenheit, Kelvin | Free Tool',
+			title: 'Convert Temperature - Celsius, Fahrenheit, Kelvin | Free Online 2025',
 			description:
-				'Convert between Celsius, Fahrenheit, Kelvin, and Rankine temperature scales. Instant conversion with formula explanations. Perfect for science and cooking.',
+				'Convert temperature between Celsius, Fahrenheit, Kelvin online free. Instant conversion with formula explanations. Perfect for science and cooking 2025.',
 			keywords: [
-				'temperature converter',
-				'celsius to fahrenheit',
-				'fahrenheit to celsius',
-				'kelvin converter',
-				'temperature conversion'
+				'convert temperature',
+				'temperature converter online',
+				'convert celsius to fahrenheit',
+				'fahrenheit to celsius converter',
+				'kelvin converter free',
+				'temperature conversion online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Конвертер Температуры - Цельсий, Фаренгейт, Кельвин | Бесплатно',
+			title: 'Конвертировать Температуру - Цельсий, Фаренгейт | Онлайн Бесплатно',
 			description:
-				'Конвертируйте между Цельсием, Фаренгейтом, Кельвином. Мгновенная конвертация с формулами. Для науки и кулинарии.',
+				'Конвертируйте температуру между Цельсием, Фаренгейтом, Кельвином онлайн бесплатно. Мгновенная конвертация с формулами 2025.',
 			keywords: [
-				'конвертер температуры',
+				'конвертировать температуру',
+				'конвертер температуры онлайн',
 				'цельсий в фаренгейт',
-				'фаренгейт в цельсий',
-				'кельвин',
-				'перевод температуры'
+				'перевод температуры',
+				'кельвин конвертер',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'bmi-calculator': {
 		en: {
-			title: 'BMI Calculator - Body Mass Index Calculator | Free Health Tool',
+			title: 'Calculate BMI - Body Mass Index Calculator Online | Free 2025',
 			description:
-				'Calculate your Body Mass Index (BMI) using height and weight. Get health category, ideal weight range, and personalized health recommendations.',
+				'Calculate your Body Mass Index (BMI) online free using height and weight. Get health category, ideal weight range, and personalized recommendations 2025.',
 			keywords: [
-				'bmi calculator',
-				'body mass index',
-				'bmi chart',
-				'healthy weight',
-				'obesity calculator',
-				'weight calculator'
+				'calculate bmi',
+				'bmi calculator online',
+				'calculate body mass index',
+				'bmi chart free',
+				'calculate healthy weight',
+				'weight calculator online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор ИМТ - Индекс Массы Тела | Бесплатно',
+			title: 'Рассчитать ИМТ - Калькулятор Индекса Массы Тела | Онлайн Бесплатно',
 			description:
-				'Рассчитайте индекс массы тела (ИМТ) по росту и весу. Узнайте категорию здоровья и идеальный вес. Рекомендации по здоровью.',
+				'Рассчитайте индекс массы тела (ИМТ) онлайн бесплатно по росту и весу. Узнайте категорию здоровья и идеальный вес. Рекомендации по здоровью 2025.',
 			keywords: [
-				'калькулятор имт',
-				'индекс массы тела',
 				'рассчитать имт',
-				'идеальный вес',
-				'калькулятор веса'
+				'посчитать имт',
+				'калькулятор имт онлайн',
+				'индекс массы тела',
+				'расчет веса',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'currency-converter': {
 		en: {
-			title: 'Currency Converter - Real-Time Exchange Rates | Free Tool',
+			title: 'Convert Currency - Real-Time Exchange Rates | Free Online 2025',
 			description:
-				'Convert between 150+ currencies with live exchange rates. Historical rates, currency charts, and offline mode. Perfect for travel and business.',
+				'Convert currency between 150+ currencies with live exchange rates online free. Historical rates, currency charts, and offline mode. Perfect for travel and business 2025.',
 			keywords: [
-				'currency converter',
-				'exchange rates',
-				'currency exchange',
-				'money converter',
-				'forex rates',
-				'currency calculator'
+				'convert currency',
+				'currency converter online',
+				'exchange rates free',
+				'currency exchange calculator',
+				'money converter online',
+				'forex calculator',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Конвертер Валют - Актуальные Курсы Обмена | Бесплатно',
+			title: 'Конвертировать Валюту - Актуальные Курсы | Онлайн Бесплатно',
 			description:
-				'Конвертируйте между 150+ валютами с актуальными курсами. Исторические курсы и графики. Для путешествий и бизнеса.',
+				'Конвертируйте валюту между 150+ валютами онлайн бесплатно с актуальными курсами. Исторические курсы и графики 2025.',
 			keywords: [
-				'конвертер валют',
+				'конвертировать валюту',
+				'конвертер валют онлайн',
 				'курсы валют',
 				'обмен валют',
 				'калькулятор валют',
-				'курс обмена'
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'random-number-generator': {
 		en: {
-			title: 'Random Number Generator - Generate Random Numbers | Free Tool',
+			title: 'Generate Random Numbers - Number Generator | Free Online 2025',
 			description:
-				'Generate truly random numbers with custom ranges. Create integer or decimal numbers, multiple numbers at once. Perfect for lottery, raffles, and testing.',
+				'Generate truly random numbers with custom ranges online free. Create integer or decimal numbers, multiple numbers at once. Perfect for lottery, raffles, and testing 2025.',
 			keywords: [
-				'random number generator',
-				'number generator',
-				'random numbers',
-				'rng',
-				'lottery numbers',
-				'random picker'
+				'generate random numbers',
+				'random number generator online',
+				'number generator free',
+				'random numbers online',
+				'rng tool',
+				'lottery numbers generator',
+				'random picker online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Случайных Чисел - ГСЧ Онлайн | Бесплатно',
+			title: 'Сгенерировать Случайные Числа - ГСЧ | Онлайн Бесплатно',
 			description:
-				'Генерируйте случайные числа в заданном диапазоне. Целые или дробные числа. Идеально для лотерей и тестирования.',
+				'Генерируйте случайные числа в заданном диапазоне онлайн бесплатно. Целые или дробные числа. Идеально для лотерей и тестирования 2025.',
 			keywords: [
 				'генератор случайных чисел',
 				'гсч',
@@ -809,80 +906,98 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'compound-interest-calculator': {
 		en: {
-			title: 'Compound Interest Calculator - Investment Growth | Free Tool',
+			title: 'Calculate Compound Interest - Investment Calculator | Free Online 2025',
 			description:
-				'Calculate compound interest for investments and savings. Compare simple vs compound interest. Visualize growth with charts. Perfect for financial planning.',
+				'Calculate compound interest for investments online free. Compare simple vs compound interest. Visualize growth with charts. Perfect for financial planning 2025.',
 			keywords: [
-				'compound interest calculator',
-				'investment calculator',
-				'interest calculator',
-				'compound interest',
-				'roi calculator'
+				'calculate compound interest',
+				'compound interest calculator online',
+				'investment calculator free',
+				'calculate interest',
+				'roi calculator online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Сложных Процентов - Рост Инвестиций | Бесплатно',
+			title: 'Рассчитать Сложные Проценты - Калькулятор Инвестиций | Онлайн',
 			description:
-				'Рассчитайте сложные проценты для инвестиций. Сравните простые и сложные проценты. Визуализация роста. Для планирования.',
+				'Рассчитайте сложные проценты для инвестиций онлайн бесплатно. Сравните простые и сложные проценты. Визуализация роста 2025.',
 			keywords: [
-				'калькулятор сложных процентов',
-				'инвестиционный калькулятор',
-				'сложный процент',
-				'калькулятор доходности'
+				'рассчитать сложные проценты',
+				'посчитать сложный процент',
+				'калькулятор инвестиций онлайн',
+				'расчет доходности',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'loan-calculator': {
 		en: {
-			title: 'Loan Calculator - Mortgage & Payment Calculator | Free Tool',
+			title: 'Calculate Loan Payments - Mortgage Calculator | Free Online 2025',
 			description:
-				'Calculate loan payments, interest, and amortization schedules. Compare different loan terms. Perfect for mortgages, auto loans, and personal loans.',
+				'Calculate loan payments, interest, and amortization online free. Compare different loan terms. Perfect for mortgages, auto loans, and personal loans 2025.',
 			keywords: [
-				'loan calculator',
-				'mortgage calculator',
-				'payment calculator',
-				'amortization calculator',
-				'loan payment',
-				'interest calculator'
+				'calculate loan payment',
+				'loan calculator online',
+				'calculate mortgage',
+				'payment calculator free',
+				'amortization calculator online',
+				'calculate interest',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Кредитный Калькулятор - Расчёт Платежей | Бесплатно',
+			title: 'Рассчитать Кредит - Калькулятор Платежей | Онлайн Бесплатно',
 			description:
-				'Рассчитайте платежи по кредиту, проценты и график погашения. Сравните условия. Для ипотеки и автокредитов.',
+				'Рассчитайте платежи по кредиту онлайн бесплатно, проценты и график погашения. Сравните условия. Для ипотеки и автокредитов 2025.',
 			keywords: [
-				'кредитный калькулятор',
-				'ипотечный калькулятор',
-				'расчёт платежей',
-				'калькулятор кредита',
-				'график платежей'
+				'рассчитать кредит',
+				'посчитать платеж по кредиту',
+				'кредитный калькулятор онлайн',
+				'расчёт ипотеки',
+				'график платежей',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'fuel-consumption-calculator': {
 		en: {
-			title: 'Fuel Consumption Calculator - MPG & L/100km | Free Tool',
+			title: 'Calculate Fuel Consumption - MPG & L/100km Calculator | Free Online',
 			description:
-				'Calculate fuel consumption, cost per mile, and trip expenses. Convert between MPG and L/100km. Track fuel efficiency and optimize driving costs.',
+				'Calculate fuel consumption, cost per mile, and trip expenses online free. Convert between MPG and L/100km. Track fuel efficiency and optimize driving costs 2025.',
 			keywords: [
-				'fuel calculator',
-				'mpg calculator',
-				'gas mileage',
-				'fuel consumption',
-				'fuel cost calculator',
-				'fuel efficiency'
+				'calculate fuel consumption',
+				'fuel calculator online',
+				'calculate mpg',
+				'gas mileage calculator',
+				'fuel cost calculator free',
+				'calculate fuel efficiency',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Расхода Топлива - Литры на 100км | Бесплатно',
+			title: 'Рассчитать Расход Топлива - Калькулятор Л/100км | Онлайн',
 			description:
-				'Рассчитайте расход топлива, стоимость поездки. Конвертация между л/100км и MPG. Отслеживайте эффективность.',
+				'Рассчитайте расход топлива онлайн бесплатно, стоимость поездки. Конвертация между л/100км и MPG. Отслеживайте эффективность 2025.',
 			keywords: [
-				'расход топлива',
-				'калькулятор бензина',
-				'расход бензина',
+				'рассчитать расход топлива',
+				'посчитать расход бензина',
+				'калькулятор топлива онлайн',
+				'расчет бензина',
 				'стоимость поездки',
-				'калькулятор топлива'
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
@@ -996,22 +1111,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'uuid-generator': {
 		en: {
-			title: 'UUID Generator - Generate Unique IDs | Free Online Tool',
+			title: 'Generate UUID - Create Unique IDs | Free Online 2025',
 			description:
-				'Generate UUID v1, v3, v4, v5 and NIL UUIDs. Bulk generation, validation, and custom namespaces. Perfect for database IDs and unique identifiers.',
+				'Generate UUID v1, v3, v4, v5 and NIL UUIDs online free. Bulk generation, validation, and custom namespaces. Perfect for database IDs and unique identifiers 2025.',
 			keywords: [
-				'uuid generator',
-				'guid generator',
-				'unique id generator',
-				'uuid v4',
 				'generate uuid',
-				'random uuid'
+				'uuid generator online',
+				'guid generator free',
+				'unique id generator online',
+				'uuid v4 generator',
+				'create uuid online',
+				'random uuid generator',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор UUID - Уникальные Идентификаторы | Бесплатно',
+			title: 'Сгенерировать UUID - Уникальные Идентификаторы | Онлайн Бесплатно',
 			description:
-				'Генерируйте UUID v1, v3, v4, v5. Массовая генерация, валидация. Идеально для ID в базах данных.',
+				'Генерируйте UUID v1, v3, v4, v5 онлайн бесплатно. Массовая генерация, валидация. Идеально для ID в базах данных 2025.',
 			keywords: [
 				'генератор uuid',
 				'генератор guid',
@@ -1050,22 +1169,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'favicon-generator': {
 		en: {
-			title: 'Favicon Generator - Create Website Icons | Free Online Tool',
+			title: 'Generate Favicon - Create Website Icons | Free Online 2025',
 			description:
-				'Generate favicons in all sizes from any image. Create ico, png, and apple-touch-icon formats. Perfect for website branding and mobile apps.',
+				'Generate favicons in all sizes from any image online free. Create ico, png, and apple-touch-icon formats. Perfect for website branding and mobile apps 2025.',
 			keywords: [
-				'favicon generator',
-				'icon generator',
-				'website icon',
-				'favicon creator',
-				'ico generator',
-				'apple touch icon'
+				'generate favicon',
+				'favicon generator online',
+				'icon generator free',
+				'website icon creator',
+				'favicon creator online',
+				'ico generator tool',
+				'apple touch icon generator',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Favicon - Создание Иконок Сайта | Бесплатно',
+			title: 'Сгенерировать Favicon - Создание Иконок Сайта | Онлайн Бесплатно',
 			description:
-				'Генерируйте favicon всех размеров из любого изображения. Создавайте ico, png форматы. Для брендинга сайта.',
+				'Генерируйте favicon всех размеров из любого изображения онлайн бесплатно. Создавайте ico, png форматы. Для брендинга сайта 2025.',
 			keywords: [
 				'генератор favicon',
 				'создать иконку',
@@ -1077,22 +1200,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'ascii-art-generator': {
 		en: {
-			title: 'ASCII Art Generator - Text to ASCII Art | Free Online Tool',
+			title: 'Generate ASCII Art - Text to ASCII Art | Free Online 2025',
 			description:
-				'Convert text to ASCII art with multiple fonts and styles. Create banners, signatures, and decorative text. Export as text or image.',
+				'Convert text to ASCII art with multiple fonts and styles online free. Create banners, signatures, and decorative text. Export as text or image 2025.',
 			keywords: [
-				'ascii art generator',
-				'text to ascii',
-				'ascii text',
-				'ascii banner',
-				'text art generator',
-				'ascii converter'
+				'generate ascii art',
+				'ascii art generator online',
+				'text to ascii free',
+				'ascii text generator',
+				'ascii banner creator',
+				'text art generator online',
+				'ascii converter tool',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор ASCII Арт - Текст в ASCII | Бесплатно',
+			title: 'Сгенерировать ASCII Арт - Текст в ASCII | Онлайн Бесплатно',
 			description:
-				'Конвертируйте текст в ASCII арт с разными шрифтами. Создавайте баннеры и подписи. Экспорт как текст или изображение.',
+				'Конвертируйте текст в ASCII арт с разными шрифтами онлайн бесплатно. Создавайте баннеры и подписи. Экспорт как текст или изображение 2025.',
 			keywords: [
 				'генератор ascii',
 				'текст в ascii',
@@ -1104,49 +1231,59 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-specificity-calculator': {
 		en: {
-			title: 'CSS Specificity Calculator - Analyze Selector Weight | Free Tool',
+			title: 'Calculate CSS Specificity - Analyze Selector Weight | Free Online 2025',
 			description:
-				'Calculate CSS selector specificity instantly. Understand selector weight, cascade order, and inheritance. Visual breakdown with detailed explanations.',
+				'Calculate CSS selector specificity online free. Understand selector weight, cascade order, and inheritance. Visual breakdown with detailed explanations.',
 			keywords: [
-				'css specificity calculator',
-				'selector specificity',
-				'css weight',
-				'cascade calculator',
-				'css priority',
-				'selector strength'
+				'calculate css specificity',
+				'css specificity calculator online',
+				'selector weight calculator',
+				'cascade calculator free',
+				'css priority tool',
+				'calculate selector strength',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Калькулятор Специфичности CSS - Анализ Селекторов | Бесплатно',
+			title: 'Рассчитать Специфичность CSS - Анализ Селекторов | Бесплатно Онлайн',
 			description:
-				'Рассчитайте специфичность CSS селекторов мгновенно. Понимайте вес селекторов и каскад. Визуальная разбивка с объяснениями.',
+				'Рассчитайте специфичность CSS селекторов онлайн бесплатно. Понимайте вес селекторов и каскад. Визуальная разбивка с объяснениями 2025.',
 			keywords: [
-				'калькулятор специфичности css',
-				'специфичность селекторов',
-				'вес css',
+				'рассчитать специфичность css',
+				'посчитать вес селекторов',
+				'калькулятор css онлайн',
 				'приоритет css',
-				'сила селектора'
+				'расчет селекторов',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'css-bezier-curve-generator': {
 		en: {
-			title: 'CSS Bezier Curve Generator - Custom Animation Easing | Free Tool',
+			title: 'Generate CSS Bezier Curves - Custom Animation Easing | Free Online 2025',
 			description:
-				'Create custom cubic-bezier curves for CSS animations. Visual curve editor with real-time preview. Generate smooth easing functions for transitions.',
+				'Create custom cubic-bezier curves for CSS animations online free. Visual curve editor with real-time preview. Generate smooth easing functions for transitions 2025.',
 			keywords: [
-				'bezier curve generator',
-				'css cubic bezier',
-				'animation easing',
-				'transition timing',
-				'easing generator',
-				'css animation tool'
+				'generate bezier curve',
+				'bezier curve generator online',
+				'css cubic bezier generator',
+				'animation easing tool',
+				'transition timing generator',
+				'easing generator free',
+				'css animation tool online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Кривых Безье CSS - Плавные Анимации | Бесплатно',
+			title: 'Сгенерировать Кривые Безье CSS - Плавные Анимации | Онлайн Бесплатно',
 			description:
-				'Создавайте кубические кривые Безье для CSS анимаций. Визуальный редактор с превью. Генерируйте плавные функции для переходов.',
+				'Создавайте кубические кривые Безье для CSS анимаций онлайн бесплатно. Визуальный редактор с превью. Генерируйте плавные функции для переходов 2025.',
 			keywords: [
 				'генератор кривых безье',
 				'css cubic bezier',
@@ -1373,22 +1510,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'fancy-text-generator': {
 		en: {
-			title: 'Fancy Text Generator - Stylish Font Converter | Free Tool',
+			title: 'Generate Fancy Text - Stylish Font Converter | Free Online 2025',
 			description:
-				'Convert plain text to fancy fonts and styles. Create cool text for social media, usernames, and bios. Unicode font generator with 50+ styles.',
+				'Convert plain text to fancy fonts and styles online free. Create cool text for social media, usernames, and bios. Unicode font generator with 50+ styles 2025.',
 			keywords: [
-				'fancy text generator',
-				'font generator',
-				'stylish text',
-				'cool fonts',
-				'text converter',
-				'unicode fonts'
+				'generate fancy text',
+				'fancy text generator online',
+				'font generator free',
+				'stylish text generator',
+				'cool fonts online',
+				'text converter tool',
+				'unicode fonts generator',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Красивого Текста - Стильные Шрифты | Бесплатно',
+			title: 'Сгенерировать Красивый Текст - Стильные Шрифты | Онлайн Бесплатно',
 			description:
-				'Конвертируйте обычный текст в красивые шрифты и стили. Создавайте крутой текст для соцсетей. Генератор с 50+ стилями.',
+				'Конвертируйте обычный текст в красивые шрифты и стили онлайн бесплатно. Создавайте крутой текст для соцсетей. Генератор с 50+ стилями 2025.',
 			keywords: [
 				'генератор красивого текста',
 				'генератор шрифтов',
@@ -1400,22 +1541,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'random-list-generator': {
 		en: {
-			title: 'Random List Generator - Shuffle & Randomize Lists | Free Tool',
+			title: 'Generate Random Lists - Shuffle & Randomize Lists | Free Online 2025',
 			description:
-				'Generate random lists or shuffle existing ones. Perfect for creating random orders, selections, and sequences. Export results easily.',
+				'Generate random lists or shuffle existing ones online free. Perfect for creating random orders, selections, and sequences. Export results easily 2025.',
 			keywords: [
-				'random list generator',
-				'list randomizer',
-				'shuffle list',
-				'random order',
-				'list shuffler',
-				'randomize items'
+				'generate random list',
+				'random list generator online',
+				'list randomizer free',
+				'shuffle list online',
+				'random order generator',
+				'list shuffler tool',
+				'randomize items online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор Случайных Списков - Перемешать Список | Бесплатно',
+			title: 'Сгенерировать Случайные Списки - Перемешать Список | Онлайн Бесплатно',
 			description:
-				'Генерируйте случайные списки или перемешивайте существующие. Идеально для случайного порядка и выбора. Легкий экспорт.',
+				'Генерируйте случайные списки или перемешивайте существующие онлайн бесплатно. Идеально для случайного порядка и выбора. Легкий экспорт 2025.',
 			keywords: [
 				'генератор случайных списков',
 				'рандомайзер списка',
@@ -1749,49 +1894,59 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'px-rem-converter': {
 		en: {
-			title: 'PX to REM Converter - CSS Unit Calculator | Web Design Tool',
+			title: 'Convert PX to REM - CSS Unit Calculator | Free Online 2025',
 			description:
-				'Convert pixels to rem units for responsive design. Calculate rem values based on root font size. Batch conversion with custom base size.',
+				'Convert pixels to rem units for responsive design online free. Calculate rem values based on root font size. Batch conversion with custom base size 2025.',
 			keywords: [
 				'px to rem converter',
-				'rem calculator',
-				'css units',
-				'pixel to rem',
-				'responsive units',
-				'font size converter'
+				'rem calculator online',
+				'css units converter',
+				'pixel to rem free',
+				'responsive units calculator',
+				'font size converter online',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Конвертер PX в REM - Калькулятор CSS Единиц | Инструмент',
+			title: 'Конвертировать PX в REM - Калькулятор CSS Единиц | Онлайн Бесплатно',
 			description:
-				'Конвертируйте пиксели в rem единицы для адаптивного дизайна. Рассчитывайте rem на основе базового размера шрифта.',
+				'Конвертируйте пиксели в rem единицы для адаптивного дизайна онлайн бесплатно. Рассчитывайте rem на основе базового размера шрифта 2025.',
 			keywords: [
 				'конвертер px в rem',
-				'калькулятор rem',
+				'калькулятор rem онлайн',
 				'css единицы',
-				'пиксели в rem',
-				'адаптивные единицы'
+				'пиксели в rem бесплатно',
+				'адаптивные единицы',
+				'онлайн',
+				'бесплатно',
+				'2025'
 			]
 		}
 	},
 	'css-box-shadow-generator': {
 		en: {
-			title: 'CSS Box Shadow Generator - Visual Shadow Builder | Free Tool',
+			title: 'Generate CSS Box Shadow - Visual Shadow Builder | Free Online 2025',
 			description:
-				'Create beautiful CSS box shadows visually. Adjust blur, spread, color, and position. Generate code for multiple shadows and inset effects.',
+				'Create beautiful CSS box shadows visually online free. Adjust blur, spread, color, and position. Generate code for multiple shadows and inset effects 2025.',
 			keywords: [
-				'box shadow generator',
-				'css shadow',
-				'shadow builder',
-				'css generator',
-				'box shadow css',
-				'shadow effects'
+				'generate box shadow',
+				'box shadow generator online',
+				'css shadow generator',
+				'shadow builder tool',
+				'css generator free',
+				'box shadow css online',
+				'shadow effects generator',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор CSS Box Shadow - Визуальный Конструктор | Бесплатно',
+			title: 'Сгенерировать CSS Box Shadow - Визуальный Конструктор | Онлайн Бесплатно',
 			description:
-				'Создавайте красивые CSS тени визуально. Настройте размытие, распространение, цвет. Генерируйте код для множественных теней.',
+				'Создавайте красивые CSS тени визуально онлайн бесплатно. Настройте размытие, распространение, цвет. Генерируйте код для множественных теней 2025.',
 			keywords: [
 				'генератор box shadow',
 				'css тени',
@@ -1803,22 +1958,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-gradient-generator': {
 		en: {
-			title: 'CSS Gradient Generator - Linear & Radial Gradients | Free',
+			title: 'Generate CSS Gradients - Linear & Radial Gradients | Free Online 2025',
 			description:
-				'Create stunning CSS gradients with visual editor. Generate linear, radial, and conic gradients. Export code with vendor prefixes.',
+				'Create stunning CSS gradients with visual editor online free. Generate linear, radial, and conic gradients. Export code with vendor prefixes 2025.',
 			keywords: [
-				'css gradient generator',
-				'gradient builder',
-				'linear gradient',
-				'radial gradient',
-				'css backgrounds',
-				'gradient tool'
+				'generate css gradient',
+				'css gradient generator online',
+				'gradient builder free',
+				'linear gradient generator',
+				'radial gradient online',
+				'css backgrounds generator',
+				'gradient tool free',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор CSS Градиентов - Линейные и Радиальные | Бесплатно',
+			title: 'Сгенерировать CSS Градиенты - Линейные и Радиальные | Онлайн Бесплатно',
 			description:
-				'Создавайте потрясающие CSS градиенты с визуальным редактором. Линейные, радиальные и конические градиенты.',
+				'Создавайте потрясающие CSS градиенты с визуальным редактором онлайн бесплатно. Линейные, радиальные и конические градиенты 2025.',
 			keywords: [
 				'генератор css градиентов',
 				'конструктор градиентов',
@@ -1856,22 +2015,26 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 	},
 	'css-keyframes-generator': {
 		en: {
-			title: 'CSS Keyframes Generator - Animation Builder | Free Tool',
+			title: 'Generate CSS Keyframes - Animation Builder | Free Online 2025',
 			description:
-				'Create CSS @keyframes animations visually. Design complex animations with timeline editor. Export optimized animation code.',
+				'Create CSS @keyframes animations visually online free. Design complex animations with timeline editor. Export optimized animation code 2025.',
 			keywords: [
-				'css keyframes generator',
-				'animation builder',
-				'css animations',
-				'keyframe editor',
-				'animation tool',
-				'css motion'
+				'generate css keyframes',
+				'css keyframes generator online',
+				'animation builder free',
+				'css animations generator',
+				'keyframe editor online',
+				'animation tool free',
+				'css motion generator',
+				'online',
+				'free',
+				'2025'
 			]
 		},
 		ru: {
-			title: 'Генератор CSS Keyframes - Конструктор Анимаций | Бесплатно',
+			title: 'Сгенерировать CSS Keyframes - Конструктор Анимаций | Онлайн Бесплатно',
 			description:
-				'Создавайте CSS @keyframes анимации визуально. Проектируйте сложные анимации с редактором таймлайна.',
+				'Создавайте CSS @keyframes анимации визуально онлайн бесплатно. Проектируйте сложные анимации с редактором таймлайна 2025.',
 			keywords: [
 				'генератор css keyframes',
 				'конструктор анимаций',
