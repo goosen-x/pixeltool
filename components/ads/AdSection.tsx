@@ -34,7 +34,7 @@ export function AdSection() {
 	return (
 		<div
 			id='yandex_rtb_R-A-17015351-1'
-			className='w-full min-h-[250px] rounded-lg border bg-muted/20 flex items-center justify-center'
+			className='w-full min-h-[250px] flex items-center justify-center'
 		>
 			<div className='text-center p-4'>
 				<Megaphone className='h-8 w-8 mx-auto mb-2 text-muted-foreground/40' />
