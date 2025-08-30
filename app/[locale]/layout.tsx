@@ -19,6 +19,7 @@ import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { interFont, openSansFont } from '@/lib/fonts/fonts'
+import Script from 'next/script'
 
 interface Props {
 	children: ReactNode
@@ -95,9 +96,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 						'HTML parser',
 						'code minifier'
 					],
-		authors: [
-			{ name: 'Dmitry Borisenko', url: 'https://github.com/goosen-x/pixeltool' }
-		],
 		creator: 'Dmitry Borisenko',
 		publisher: 'PixelTool',
 		category: 'technology',
@@ -269,15 +267,19 @@ export default async function RootLayout({
 			)}
 			suppressHydrationWarning
 		>
-			<head>
-				{/* Yandex.RTB */}
-				<script
-					dangerouslySetInnerHTML={{
-						__html: `window.yaContextCb=window.yaContextCb||[]`
-					}}
-				/>
-				<script src='https://yandex.ru/ads/system/context.js' async />
-			</head>
+			{/* Yandex.RTB */}
+			<Script
+				id="yandex-rtb-init"
+				strategy="beforeInteractive"
+				dangerouslySetInnerHTML={{
+					__html: `window.yaContextCb=window.yaContextCb||[]`
+				}}
+			/>
+			<Script
+				src="https://yandex.ru/ads/system/context.js"
+				strategy="beforeInteractive"
+			/>
+			
 			<NextIntlClientProvider messages={messages}>
 				<body
 					className={cn(
