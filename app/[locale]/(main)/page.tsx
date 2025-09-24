@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+// import { getTranslations } from 'next-intl/server' // Removed translations
 import Link from 'next/link'
 import {
 	ArrowRight,
@@ -27,63 +27,48 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const { locale } = await params
+	// const { locale } = await params // Not needed for Russian-only
 
 	const metadata = {
-		en: {
-			title: `PixelTool - Free Online Developer Tools & Utilities | ${widgets.length}+ Tools`,
-			description: `Professional web developer tools collection: CSS generators, color converters, formatters, validators, and ${widgets.length}+ more utilities. No installation required, 100% free, works offline.`,
-			keywords:
-				'developer tools, online tools, CSS generator, color converter, code formatter, web development, programming utilities, free tools, password generator, QR code generator'
-		},
-		ru: {
-			title: `PixelTool - Бесплатные Онлайн Инструменты для Разработчиков | ${widgets.length}+ Инструментов`,
-			description: `Профессиональная коллекция инструментов для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики, валидаторы и ${widgets.length}+ утилит. Без установки, 100% бесплатно, работает офлайн.`,
-			keywords:
-				'инструменты разработчика, онлайн инструменты, CSS генератор, конвертер цветов, форматировщик кода, веб разработка, утилиты программирования, бесплатные инструменты'
-		}
+		title: `Рассчитать и Посчитать Онлайн - ${widgets.length}+ Калькуляторов`,
+		description: `Рассчитайте и посчитайте всё онлайн бесплатно! Калькуляторы процентов, ИМТ, валют. CSS генераторы, конвертеры. 100% бесплатно.`,
+		keywords:
+			'рассчитать онлайн, посчитать онлайн, калькулятор онлайн бесплатно, инструменты разработчика, онлайн калькуляторы, CSS генератор, конвертер цветов, форматировщик кода, веб разработка, бесплатные инструменты'
 	}
 
-	const currentMetadata =
-		metadata[locale as keyof typeof metadata] || metadata.en
-
 	return {
-		title: currentMetadata.title,
-		description: currentMetadata.description,
-		keywords: currentMetadata.keywords,
+		title: metadata.title,
+		description: metadata.description,
+		keywords: metadata.keywords,
 		openGraph: {
-			url: `https://pixeltool.pro/${locale}`,
+			url: 'https://pixeltool.pro',
 			type: 'website',
-			title: currentMetadata.title,
-			description: currentMetadata.description,
+			title: metadata.title,
+			description: metadata.description,
 			images: [
 				{
 					url: 'https://pixeltool.pro/og-image.png',
 					width: 1200,
 					height: 630,
-					alt: 'PixelTool - Professional Developer Tools'
+					alt: 'PixelTool - Профессиональные инструменты разработчика'
 				}
 			]
 		},
 		twitter: {
 			card: 'summary_large_image',
-			title: currentMetadata.title,
-			description: currentMetadata.description,
+			title: metadata.title,
+			description: metadata.description,
 			images: ['https://pixeltool.pro/og-image.png']
 		},
 		alternates: {
-			canonical: `https://pixeltool.pro/${locale}`,
-			languages: {
-				en: 'https://pixeltool.pro/en',
-				ru: 'https://pixeltool.pro/ru'
-			}
+			canonical: 'https://pixeltool.pro'
 		}
 	}
 }
 
 export default async function HomePage({ params }: Props) {
 	const { locale } = await params
-	const t = await getTranslations('HomePage')
+	// const t = await getTranslations('HomePage') // Removed translations
 
 	return (
 		<>
@@ -112,7 +97,7 @@ export default async function HomePage({ params }: Props) {
 							<OnlineUsers />
 							<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary/15 to-accent/15 border border-primary/30 backdrop-blur-sm shadow-lg'>
 								<span className='text-xs sm:text-sm font-medium text-primary'>
-									{t('hero.liveAndFree')}
+									Бесплатно
 								</span>
 								<DollarSign className='w-3 h-3 sm:w-4 sm:h-4 text-primary' />
 							</div>
@@ -129,10 +114,10 @@ export default async function HomePage({ params }: Props) {
 						{/* Enhanced subtitle */}
 						<div className='mx-auto mb-8 sm:mb-10 max-w-4xl px-4'>
 							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl text-foreground/90 font-light mb-4 sm:mb-6 leading-relaxed'>
-								{t('hero.subtitle')}
+								Мощные онлайн-инструменты для разработчиков и дизайнеров без установки
 							</h1>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed'>
-								{t('hero.subtitle2')}
+								Профессиональные инструменты для разработчиков, дизайнеров. Всё что нужно, прямо в браузере
 							</p>
 						</div>
 
@@ -141,22 +126,22 @@ export default async function HomePage({ params }: Props) {
 							{[
 								{
 									icon: Sparkles,
-									label: `${widgets.length}+ ${t('hero.features.professionalTools')}`,
+									label: `${widgets.length}+ Профессиональных Инструментов`,
 									color: 'from-primary to-accent'
 								},
 								{
 									icon: Zap,
-									label: t('hero.features.noInstallation'),
+									label: 'Установка Не Требуется',
 									color: 'from-yellow-500 to-orange-500'
 								},
 								{
 									icon: Globe,
-									label: t('hero.features.freeForever'),
+									label: '100% Бесплатно Навсегда',
 									color: 'from-green-500 to-emerald-500'
 								},
 								{
 									icon: Zap,
-									label: t('hero.features.lightningFast'),
+									label: 'Молниеносно Быстро',
 									color: 'from-blue-500 to-cyan-500'
 								}
 							].map((item, idx) => (
@@ -186,7 +171,7 @@ export default async function HomePage({ params }: Props) {
 							>
 								<div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 								<Terminal className='h-5 w-5 sm:h-6 sm:w-6 group-hover:rotate-12 transition-transform z-10' />
-								<span className='z-10'>{t('hero.exploreTools')}</span>
+								<span className='z-10'>Исследовать инструменты</span>
 								<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform z-10' />
 							</Link>
 							<Link
@@ -195,7 +180,7 @@ export default async function HomePage({ params }: Props) {
 								className='group inline-flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-xl px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-background/95 backdrop-blur-sm border-2 border-border hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary transition-all duration-300 w-full sm:w-auto font-medium'
 							>
 								<Code2 className='h-5 w-5 sm:h-6 sm:w-6' />
-								<span>{t('hero.viewOnGitHub')}</span>
+								<span>Открыть в GitHub</span>
 								<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5' />
 							</Link>
 						</div>
@@ -205,11 +190,11 @@ export default async function HomePage({ params }: Props) {
 							{[
 								{
 									number: `${widgets.length}+`,
-									label: t('hero.stats.toolsAvailable')
+									label: 'Доступных Инструментов'
 								},
-								{ number: '2.5K+', label: t('hero.stats.happyUsers') },
-								{ number: '99.9%', label: t('hero.stats.uptime') },
-								{ number: '0$', label: t('hero.stats.alwaysFree') }
+								{ number: '2.5K+', label: 'Довольных Пользователей' },
+								{ number: '99.9%', label: 'Время Работы' },
+								{ number: '0$', label: 'Всегда Бесплатно' }
 							].map((stat, idx) => (
 								<div
 									key={idx}
@@ -240,14 +225,14 @@ export default async function HomePage({ params }: Props) {
 							<div className='inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 sm:mb-6'>
 								<Sparkles className='w-3 h-3 sm:w-4 sm:h-4 text-primary' />
 								<span className='text-xs sm:text-sm font-medium text-primary'>
-									{t('whyChoose.trustedBy')}
+									Доверяют разработчики
 								</span>
 							</div>
 							<h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-								{t('whyChoose.title')}
+								Почему выбирают PixelTool?
 							</h2>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4'>
-								{t('whyChoose.subtitle')}
+								Мы создали платформу, которая экономит время разработчиков и дизайнеров, предоставляя все необходимые инструменты в одном месте
 							</p>
 						</div>
 
@@ -261,22 +246,22 @@ export default async function HomePage({ params }: Props) {
 										<Zap className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<p className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										{t('whyChoose.feature1.title')}
+										Молниеносная скорость
 									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										{t('whyChoose.feature1.description')}
+										Все инструменты работают прямо в браузере без задержек. Никаких загрузок, установок или ожидания.
 									</p>
 									<div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 										<div className='flex items-center gap-2'>
 											<div className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
 											<span className='text-xs sm:text-sm text-muted-foreground'>
-												{t('whyChoose.feature1.point1')}
+												0ms задержка
 											</span>
 										</div>
 										<div className='flex items-center gap-2'>
 											<div className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
 											<span className='text-xs sm:text-sm text-muted-foreground'>
-												{t('whyChoose.feature1.point2')}
+												Офлайн режим
 											</span>
 										</div>
 									</div>
@@ -291,22 +276,22 @@ export default async function HomePage({ params }: Props) {
 										<Globe className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<p className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										{t('whyChoose.feature2.title')}
+										100% Бесплатно
 									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										{t('whyChoose.feature2.description')}
+										Никаких скрытых платежей, подписок или ограничений. Все инструменты доступны бесплатно навсегда.
 									</p>
 									<div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 										<div className='flex items-center gap-2'>
 											<div className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
 											<span className='text-xs sm:text-sm text-muted-foreground'>
-												{t('whyChoose.feature2.point1')}
+												Без регистрации
 											</span>
 										</div>
 										<div className='flex items-center gap-2'>
 											<div className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
 											<span className='text-xs sm:text-sm text-muted-foreground'>
-												{t('whyChoose.feature2.point2')}
+												Без лимитов
 											</span>
 										</div>
 									</div>
@@ -321,22 +306,22 @@ export default async function HomePage({ params }: Props) {
 										<Terminal className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<p className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										{t('whyChoose.feature3.title')}
+										50+ Инструментов
 									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										{t('whyChoose.feature3.description')}
+										От CSS генераторов до конвертеров изображений - всё что нужно современному разработчику.
 									</p>
 									<div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 										<div className='flex items-center gap-2'>
 											<div className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
 											<span className='text-xs sm:text-sm text-muted-foreground'>
-												{t('whyChoose.feature3.point1')}
+												Новые каждую неделю
 											</span>
 										</div>
 										<div className='flex items-center gap-2'>
 											<div className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
 											<span className='text-xs sm:text-sm text-muted-foreground'>
-												{t('whyChoose.feature3.point2')}
+												Open Source
 											</span>
 										</div>
 									</div>
@@ -354,7 +339,7 @@ export default async function HomePage({ params }: Props) {
 											2.5K+
 										</div>
 										<div className='text-xs sm:text-sm text-muted-foreground'>
-											{t('whyChoose.stats.activeUsers')}
+											Довольных разработчиков
 										</div>
 									</div>
 									<div className='text-center'>
@@ -362,7 +347,7 @@ export default async function HomePage({ params }: Props) {
 											50K+
 										</div>
 										<div className='text-xs sm:text-sm text-muted-foreground'>
-											{t('whyChoose.stats.monthlyUsage')}
+											Задач выполнено
 										</div>
 									</div>
 									<div className='text-center'>
@@ -370,7 +355,7 @@ export default async function HomePage({ params }: Props) {
 											15+
 										</div>
 										<div className='text-xs sm:text-sm text-muted-foreground'>
-											{t('whyChoose.stats.countries')}
+											Стран охвачено
 										</div>
 									</div>
 									<div className='text-center'>
@@ -382,6 +367,137 @@ export default async function HomePage({ params }: Props) {
 										</div>
 									</div>
 								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				{/* What Can You Calculate Section */}
+				<section className='relative px-4 py-16 sm:py-24 md:py-32 sm:px-6 lg:px-8 bg-gradient-to-b from-muted/10 to-background'>
+					{/* Background decoration */}
+					<div className='absolute inset-0 -z-10'>
+						<div className='absolute top-10 left-10 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl opacity-60' />
+						<div className='absolute bottom-10 right-10 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-accent/10 to-primary/10 rounded-full blur-2xl opacity-60' />
+					</div>
+
+					<div className='relative mx-auto max-w-7xl'>
+						{/* Section Header */}
+						<div className='text-center mb-12 sm:mb-16 md:mb-20'>
+							<div className='inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 sm:mb-6'>
+								<Sparkles className='w-3 h-3 sm:w-4 sm:h-4 text-primary' />
+								<span className='text-xs sm:text-sm font-medium text-primary'>
+									Калькуляторы и счетчики
+								</span>
+							</div>
+							<h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
+								Что можно рассчитать и посчитать?
+							</h2>
+							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4'>
+								Мощные онлайн калькуляторы для расчёта финансов, математических вычислений и конвертации единиц измерения. Всё бесплатно и без регистрации.
+							</p>
+						</div>
+
+						{/* Calculation Categories Grid */}
+						<div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16'>
+							{/* Financial Calculations */}
+							<div className='group relative'>
+								<div className='absolute inset-0 bg-gradient-to-r from-green-500/20 via-green-500/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
+								<div className='relative h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-green-500/30 transition-all duration-300'>
+									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-green-500 to-green-500/80 flex items-center justify-center mb-4 sm:mb-6'>
+										<DollarSign className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
+									</div>
+									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
+										Финансовые расчёты
+									</h3>
+									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
+										Рассчитайте проценты, скидки, курсы валют и многое другое
+									</p>
+									<div className='space-y-2'>
+										{[
+											'Посчитать проценты от суммы',
+											'Рассчитать скидки и наценки',
+											'Конвертация валют',
+											'Калькулятор НДС и налогов'
+										].map((item: string, idx: number) => (
+											<div key={idx} className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'>
+												<div className='w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0' />
+												<span>{item}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+
+							{/* Mathematical Calculations */}
+							<div className='group relative'>
+								<div className='absolute inset-0 bg-gradient-to-r from-blue-500/20 via-blue-500/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
+								<div className='relative h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-blue-500/30 transition-all duration-300'>
+									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-500 to-blue-500/80 flex items-center justify-center mb-4 sm:mb-6'>
+										<Terminal className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
+									</div>
+									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
+										Математические вычисления
+									</h3>
+									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
+										От простых вычислений до сложных математических операций
+									</p>
+									<div className='space-y-2'>
+										{[
+											'Посчитать количество дней между датами',
+											'Рассчитать площадь и объём',
+											'Генератор случайных чисел',
+											'Математические формулы и константы'
+										].map((item: string, idx: number) => (
+											<div key={idx} className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'>
+												<div className='w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0' />
+												<span>{item}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+
+							{/* Unit Conversions */}
+							<div className='group relative'>
+								<div className='absolute inset-0 bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
+								<div className='relative h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-purple-500/30 transition-all duration-300'>
+									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-500 to-purple-500/80 flex items-center justify-center mb-4 sm:mb-6'>
+										<Layers className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
+									</div>
+									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
+										Конвертация единиц
+									</h3>
+									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
+										Лёгкое преобразование единиц измерения в любой системе
+									</p>
+									<div className='space-y-2'>
+										{[
+											'Перевод веса, длины, объёма',
+											'Конвертация температуры',
+											'Преобразование цветов',
+											'Конвертер систем счисления'
+										].map((item: string, idx: number) => (
+											<div key={idx} className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'>
+												<div className='w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0' />
+												<span>{item}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* CTA Section */}
+						<div className='text-center'>
+							<div className='inline-flex items-center justify-center gap-3 px-8 sm:px-12 h-14 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105'>
+								<Link
+									href={`/${locale}/tools`}
+									className='flex items-center gap-3 text-base sm:text-xl font-semibold text-white'
+								>
+									<Terminal className='h-5 w-5 sm:h-6 sm:w-6' />
+									<span>Начать считать</span>
+									<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5' />
+								</Link>
 							</div>
 						</div>
 					</div>

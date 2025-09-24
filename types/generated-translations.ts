@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-08-30T15:42:49.096Z
+// Generated on: 2025-08-30T21:02:41.341Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {
@@ -27,6 +27,38 @@ export interface GeneratedTranslations {
         happyUsers: string
         uptime: string
         alwaysFree: string
+      }
+      calculation: {
+        badge: string
+        title: string
+        subtitle: string
+        cta: string
+        categories: {
+          financial: {
+            title: string
+            description: string
+            item1: string
+            item2: string
+            item3: string
+            item4: string
+          }
+          mathematical: {
+            title: string
+            description: string
+            item1: string
+            item2: string
+            item3: string
+            item4: string
+          }
+          conversions: {
+            title: string
+            description: string
+            item1: string
+            item2: string
+            item3: string
+            item4: string
+          }
+        }
       }
     }
     features: {

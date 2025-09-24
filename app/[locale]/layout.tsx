@@ -269,17 +269,17 @@ export default async function RootLayout({
 		>
 			{/* Yandex.RTB */}
 			<Script
-				id="yandex-rtb-init"
-				strategy="beforeInteractive"
+				id='yandex-rtb-init'
+				strategy='beforeInteractive'
 				dangerouslySetInnerHTML={{
 					__html: `window.yaContextCb=window.yaContextCb||[]`
 				}}
 			/>
 			<Script
-				src="https://yandex.ru/ads/system/context.js"
-				strategy="beforeInteractive"
+				src='https://yandex.ru/ads/system/context.js'
+				strategy='beforeInteractive'
 			/>
-			
+
 			<NextIntlClientProvider messages={messages}>
 				<body
 					className={cn(
