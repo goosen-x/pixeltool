@@ -6,8 +6,8 @@
 	},
 	"HomePage": {
 		"hero": {
-			"subtitle": "Professional tools for developers, designers, and digital creators. Everything you need, right in your browser",
-			"subtitle2": "Professional tools for developers, designers, and digital creators. Everything you need, right in your browser",
+			"subtitle": "Calculate and Count Everything Online Free",
+			"subtitle2": "Professional calculators, converters & developer tools in your browser",
 			"exploreTools": "Explore Tools",
 			"viewOnGitHub": "View on GitHub",
 			"browseCategories": "Browse Categories",
@@ -23,6 +23,38 @@
 				"happyUsers": "Happy Users",
 				"uptime": "Uptime",
 				"alwaysFree": "Always Free"
+			},
+			"calculation": {
+				"badge": "Calculators & Counters",
+				"title": "What Can You Calculate and Count?",
+				"subtitle": "Powerful online calculators for financial calculations, mathematical computations, and unit conversions. Everything is free and no registration required.",
+				"cta": "Start Calculating",
+				"categories": {
+					"financial": {
+						"title": "Financial Calculations",
+						"description": "Calculate percentages, discounts, currency rates and much more",
+						"item1": "Calculate percentages from amount",
+						"item2": "Calculate discounts and markups", 
+						"item3": "Currency conversion",
+						"item4": "VAT and tax calculator"
+					},
+					"mathematical": {
+						"title": "Mathematical Computations",
+						"description": "From simple calculations to complex mathematical operations",
+						"item1": "Count days between dates",
+						"item2": "Calculate area and volume",
+						"item3": "Random number generator",
+						"item4": "Mathematical formulas and constants"
+					},
+					"conversions": {
+						"title": "Unit Conversions",
+						"description": "Easy conversion of units of measurement in any system",
+						"item1": "Convert weight, length, volume",
+						"item2": "Temperature conversion",
+						"item3": "Color conversion",
+						"item4": "Number system converter"
+					}
+				}
 			}
 		},
 		"features": {
@@ -526,9 +558,9 @@
 			}
 		},
 		"flexboxGenerator": {
-			"title": "Flexbox Generator",
-			"description": "Visual tool for creating CSS Flexbox layouts",
-			"useCase": "Visual tool for creating and learning CSS Flexbox layouts",
+			"title": "CSS Flexbox Generator Online",
+			"description": "Free online CSS Flexbox generator. Visual tool for creating and learning CSS Flexbox layouts with generated code",
+			"useCase": "Free Flexbox generator for creating responsive CSS layouts and learning flexbox",
 			"properties": "Properties",
 			"preview": "Preview",
 			"generatedCss": "Generated CSS",
@@ -548,7 +580,7 @@
 			}
 		},
 		"gridGenerator": {
-			"title": "Grid Generator",
+			"title": "CSS Grid Generator Online",
 			"description": "Visual tool for creating CSS Grid layouts",
 			"useCase": "Visual tool for creating and learning CSS Grid layouts",
 			"properties": "Properties",
@@ -572,9 +604,9 @@
 			}
 		},
 		"qrGenerator": {
-			"title": "QR Code Generator",
-			"description": "Generate QR codes for URLs, App Store links, and WiFi passwords with customizable colors and sizes",
-			"useCase": "Generate QR codes for URLs, WiFi networks, and mobile app promotion",
+			"title": "Free QR Code Generator Online - Create QR Codes",
+			"description": "Free online QR code generator. Create QR codes for URLs, WiFi, App Store in seconds. Free QR generator works without registration",
+			"useCase": "Free online QR code generator for URLs, WiFi networks, business cards and mobile apps",
 			"settings": {
 				"title": "Settings"
 			},
@@ -690,9 +722,9 @@
 			}
 		},
 		"passwordGenerator": {
-			"title": "Password Generator",
-			"description": "Generate strong, secure passwords with customizable options and strength analysis",
-			"useCase": "Generate secure passwords with customizable complexity",
+			"title": "Password Generator Online",
+			"description": "Free online password generator. Create strong passwords instantly. Secure password generator with customizable strength analysis",
+			"useCase": "Free online password generator for social media, email, accounts and data protection",
 			"placeholder": "Your generated password",
 			"generate": "Generate New Password",
 			"copy": "Copy",
@@ -1350,14 +1382,14 @@
 			}
 		},
 		"fancyTextGenerator": {
-			"title": "Fancy Text Generator",
-			"description": "Transform your text into beautiful Unicode styles for social media",
-			"useCase": "Create stylized Unicode text for social media posts and profiles"
+			"title": "Free Text Generator Online - Create Stylized Text",
+			"description": "Free online text generator. Create beautiful stylized text in Unicode styles for social media, posts and messages instantly",
+			"useCase": "Free online fancy text generator for social media, posts, profiles and creative messages"
 		},
 		"randomNumberGenerator": {
-			"title": "Random Number Generator",
-			"description": "Generate cryptographically secure random numbers with no duplicates option",
-			"useCase": "Generate secure random numbers for games, sampling, or security purposes",
+			"title": "Random Number Generator Online",
+			"description": "Free online random number generator. Generate cryptographically secure random numbers with no duplicates option for games and giveaways",
+			"useCase": "Free random number generator for games, sampling, giveaways and security purposes",
 			"sections": {
 				"settings": "Generator Settings",
 				"result": "Generated Numbers",
@@ -1633,7 +1665,7 @@
 			}
 		},
 		"mockDataGenerator": {
-			"title": "Mock Data Generator",
+			"title": "Mock Data Generator Online API",
 			"description": "Fetch sample data from popular free public APIs for testing",
 			"useCase": "Generate realistic test data for development and prototyping"
 		},
