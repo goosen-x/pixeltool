@@ -23,7 +23,7 @@ import {
 	ChartTooltipContent,
 	type ChartConfig
 } from '@/components/ui/chart'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface DiceResult {
@@ -47,7 +47,7 @@ interface Statistics {
 // Dice symbols removed - using DiceFace component instead
 
 export default function DiceRollerPage() {
-	const t = useTranslations('widgets.diceRoller')
+	// const t = useTranslations('widgets.diceRoller') // Removed
 	const [mounted, setMounted] = useState(false)
 	const [diceCount, setDiceCount] = useState(2)
 	const [isRolling, setIsRolling] = useState(false)
@@ -169,14 +169,14 @@ export default function DiceRollerPage() {
 				const isDoubles = values.length > 1 && new Set(values).size === 1
 				if (isDoubles) {
 					toast.success(
-						t('toast.doubles', { value: values[0], count: values.length }),
+						`Дубль ${values[0]} (${values.length} раз)!`,
 						{
 							icon: '🎯'
 						}
 					)
 				} else {
-					toast.success(t('toast.total', { total: result.total }), {
-						description: t('toast.rolled', { values: values.join(', ') })
+					toast.success(`Общий результат: ${result.total}`, {
+						description: `Брошено: ${values.join(', ')}`
 					})
 				}
 			}
@@ -195,7 +195,7 @@ export default function DiceRollerPage() {
 			totalDiceRolled: 0
 		})
 		localStorage.removeItem('diceRollHistory')
-		toast.success(t('toast.historyCleared'))
+		toast.success('История очищена')
 	}
 
 	// Keyboard shortcuts
@@ -220,14 +220,14 @@ export default function DiceRollerPage() {
 
 	const copyResults = () => {
 		if (currentRoll.length === 0) {
-			toast.error(t('toast.noDiceRolled'))
+			toast.error('Нет брошенных костей для копирования')
 			return
 		}
 
 		const text = `🎲 Dice Roll: ${currentRoll.join(', ')} = ${currentRoll.reduce((a, b) => a + b, 0)}`
 		navigator.clipboard.writeText(text)
 		setCopiedText(true)
-		toast.success(t('toast.copiedToClipboard'))
+		toast.success('Результаты скопированы в буфер обмена')
 		setTimeout(() => setCopiedText(false), 2000)
 	}
 
@@ -283,7 +283,7 @@ export default function DiceRollerPage() {
 				<div className='relative p-6 space-y-6'>
 					{/* Dice Count Selector - Compact at top */}
 					<div className='flex items-center justify-center gap-2'>
-						<span className='text-sm font-medium mr-2'>{t('diceLabel')}</span>
+						<span className='text-sm font-medium mr-2'>Костей:</span>
 						{[1, 2, 3, 4, 5, 6].map(num => (
 							<Button
 								key={num}
@@ -417,7 +417,9 @@ export default function DiceRollerPage() {
 									</p>
 								</motion.div>
 							) : (
-								<div className='text-muted-foreground'>{t('pressToRoll')}</div>
+								<div className='text-muted-foreground'>
+									Нажмите, чтобы бросить кости
+								</div>
 							)}
 						</AnimatePresence>
 
@@ -427,7 +429,7 @@ export default function DiceRollerPage() {
 								<Dices
 									className={cn('w-4 h-4 mr-2', isRolling && 'animate-spin')}
 								/>
-								{isRolling ? t('rolling') : t('roll')}
+								{isRolling ? 'Бросаем...' : 'Бросить'}
 							</Button>
 							<Button
 								onClick={copyResults}
@@ -453,20 +455,20 @@ export default function DiceRollerPage() {
 					<div className='px-5 pt-5 pb-0'>
 						<div className='flex items-center gap-2 mb-4'>
 							<TrendingUp className='w-4 h-4 text-primary' />
-							<h3 className='font-medium'>{t('statistics')}</h3>
+							<h3 className='font-medium'>Статистика</h3>
 						</div>
 
 						{/* Stats Grid */}
 						<div className='grid grid-cols-4 gap-3 mb-4'>
 							<div className='text-center'>
 								<p className='text-xl font-bold'>{statistics.totalRolls}</p>
-								<p className='text-xs text-muted-foreground'>{t('rolls')}</p>
+								<p className='text-xs text-muted-foreground'>Броски</p>
 							</div>
 							<div className='text-center'>
 								<p className='text-xl font-bold'>
 									{statistics.average.toFixed(1)}
 								</p>
-								<p className='text-xs text-muted-foreground'>{t('average')}</p>
+								<p className='text-xs text-muted-foreground'>Среднее</p>
 							</div>
 							{statistics.doubles > 0 && (
 								<div className='text-center'>
@@ -538,7 +540,7 @@ export default function DiceRollerPage() {
 																</div>
 																<div>
 																	<p className='font-semibold text-base'>
-																		{data.value} {t('rollsCount')}
+																		{data.value} бросков
 																	</p>
 																	<p className='text-sm text-muted-foreground'>
 																		{data.payload.percentage}%
@@ -556,9 +558,7 @@ export default function DiceRollerPage() {
 							</div>
 						) : (
 							<div className='h-[200px] flex items-center justify-center'>
-								<p className='text-sm text-muted-foreground'>
-									{t('noDataYet')}
-								</p>
+								<p className='text-sm text-muted-foreground'>Пока нет данных</p>
 							</div>
 						)}
 					</div>
@@ -601,7 +601,7 @@ export default function DiceRollerPage() {
 					<div className='flex items-center justify-between mb-3'>
 						<h3 className='font-medium flex items-center gap-2'>
 							<History className='w-4 h-4' />
-							{t('history')}
+							История
 						</h3>
 						{rollHistory.length > 0 && (
 							<Button
@@ -649,7 +649,7 @@ export default function DiceRollerPage() {
 						</div>
 					) : (
 						<div className='text-center py-8 text-muted-foreground text-sm'>
-							{t('noRollsYet')}
+							Пока нет бросков
 						</div>
 					)}
 				</Card>
