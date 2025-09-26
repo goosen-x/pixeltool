@@ -83,6 +83,9 @@ export interface Widget {
 	translationKey: string
 	path: string
 	gradient: string
+	title?: string
+	description?: string
+	useCase?: string
 	recommendedTools?: string[] // Widget IDs that are related/recommended
 	faqs?: {
 		en: WidgetFAQ[]
@@ -91,7 +94,6 @@ export interface Widget {
 	}
 	tags?: string[] // For SEO and search
 	difficulty?: 'beginner' | 'intermediate' | 'advanced'
-	useCase?: string // Brief description of when to use this tool
 	metaDescription?: string // For SEO
 }
 
@@ -104,11 +106,14 @@ export const widgets: Widget[] = [
 		translationKey: 'clampCalculator',
 		path: 'css-clamp-calculator',
 		gradient: 'from-amber-500 to-orange-500',
+		title: 'CSS Clamp калькулятор',
+		description:
+			'Создавайте адаптивную типографику и отступы, которые плавно масштабируются между размерами экрана',
+		useCase:
+			'Создание адаптивной типографики и отступов, масштабируемых между размерами экрана',
 		recommendedTools: ['flexbox-generator', 'grid-generator', 'bezier-curve'],
 		difficulty: 'intermediate',
 		tags: ['css', 'responsive', 'typography', 'fluid', 'clamp'],
-		useCase:
-			'Perfect for creating responsive typography that scales smoothly between mobile and desktop',
 		metaDescription:
 			'Generate CSS clamp() functions for fluid typography. Create responsive text that scales perfectly between viewports.',
 		faqs: {
@@ -175,6 +180,11 @@ export const widgets: Widget[] = [
 		translationKey: 'flexboxGenerator',
 		path: 'flexbox-generator',
 		gradient: 'from-blue-500 to-indigo-500',
+		title: 'Генератор CSS Flexbox онлайн',
+		description:
+			'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом',
+		useCase:
+			'Бесплатный генератор Flexbox для создания адаптивных CSS макетов и изучения flexbox',
 		recommendedTools: [
 			'grid-generator',
 			'css-clamp-calculator',
@@ -182,8 +192,6 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['css', 'flexbox', 'layout', 'responsive', 'alignment'],
-		useCase:
-			'Visual flexbox playground for creating responsive layouts with proper alignment',
 		metaDescription:
 			'Interactive Flexbox CSS generator. Visualize and generate flexbox layouts with real-time preview.',
 		faqs: {
@@ -250,6 +258,11 @@ export const widgets: Widget[] = [
 		translationKey: 'gridGenerator',
 		path: 'grid-generator',
 		gradient: 'from-green-500 to-emerald-500',
+		title: 'Генератор CSS Grid онлайн',
+		description:
+			'Бесплатный онлайн генератор CSS Grid. Визуальный инструмент для создания и изучения CSS Grid макетов с кодом',
+		useCase:
+			'Бесплатный генератор CSS Grid для создания адаптивных сеток и изучения grid макетов',
 		recommendedTools: [
 			'flexbox-generator',
 			'css-clamp-calculator',
@@ -257,8 +270,6 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'intermediate',
 		tags: ['css', 'grid', 'layout', 'responsive', 'css-grid'],
-		useCase:
-			'Build complex grid layouts visually with automatic CSS generation',
 		metaDescription:
 			'CSS Grid layout generator with visual editor. Create complex responsive grid layouts easily.',
 		faqs: {
@@ -322,11 +333,14 @@ export const widgets: Widget[] = [
 		translationKey: 'cssSpecificity',
 		path: 'css-specificity-calculator',
 		gradient: 'from-indigo-500 to-blue-600',
+		title: 'CSS калькулятор специфичности',
+		description:
+			'Анализируйте специфичность CSS селекторов для понимания правил каскада',
+		useCase:
+			'Отладка CSS конфликтов путём расчёта и сравнения специфичности селекторов',
 		recommendedTools: ['html-tree', 'flexbox-generator', 'grid-generator'],
 		difficulty: 'advanced',
 		tags: ['css', 'specificity', 'selectors', 'debugging', 'cascade'],
-		useCase:
-			'Debug CSS conflicts by calculating and comparing selector specificity',
 		metaDescription:
 			'CSS Specificity calculator and analyzer. Understand cascade and debug CSS conflicts.',
 		faqs: {
@@ -390,11 +404,13 @@ export const widgets: Widget[] = [
 		translationKey: 'bezierCurve',
 		path: 'css-bezier-curve-generator',
 		gradient: 'from-purple-500 to-indigo-500',
+		title: 'Генератор кривых Безье',
+		description:
+			'Создавайте пользовательские функции плавности cubic-bezier для CSS анимаций',
+		useCase: 'Создание пользовательских функций плавности для CSS анимаций',
 		recommendedTools: ['css-clamp-calculator', 'flexbox-generator'],
 		difficulty: 'intermediate',
 		tags: ['css', 'animation', 'bezier', 'easing', 'transition'],
-		useCase:
-			'Create custom easing functions for smooth CSS animations and transitions',
 		metaDescription:
 			'Interactive cubic-bezier curve generator for CSS animations. Create custom easing functions visually.',
 		faqs: {
@@ -460,10 +476,13 @@ export const widgets: Widget[] = [
 		translationKey: 'svgEncoder',
 		path: 'svg-to-base64-encoder',
 		gradient: 'from-teal-500 to-cyan-500',
+		title: 'SVG URL кодировщик',
+		description:
+			'Кодируйте SVG для использования в CSS свойстве background-image',
+		useCase: 'Кодирование SVG изображений для CSS фонов без внешних файлов',
 		recommendedTools: ['qr-generator', 'color-converter', 'youtube-thumbnail'],
 		difficulty: 'beginner',
 		tags: ['svg', 'encoder', 'base64', 'css', 'background'],
-		useCase: 'Encode SVG images for CSS backgrounds without external files',
 		metaDescription:
 			'SVG to CSS encoder. Convert SVG images to data URLs for CSS backgrounds.',
 		faqs: {
@@ -527,11 +546,14 @@ export const widgets: Widget[] = [
 		translationKey: 'youtubeThumbnail',
 		path: 'youtube-thumbnail-downloader',
 		gradient: 'from-red-500 to-pink-500',
+		title: 'YouTube превью граббер',
+		description:
+			'Извлекайте изображения превью из любого видео YouTube в различных разрешениях',
+		useCase:
+			'Извлечение превью YouTube видео в разных разрешениях для создания контента',
 		recommendedTools: ['qr-generator', 'svg-encoder', 'utm-builder'],
 		difficulty: 'beginner',
 		tags: ['youtube', 'thumbnail', 'download', 'media', 'video'],
-		useCase:
-			'Extract and download YouTube video thumbnails in all available resolutions',
 		metaDescription:
 			'YouTube thumbnail downloader. Get video thumbnails in all resolutions from any YouTube URL.',
 		faqs: {
@@ -595,11 +617,14 @@ export const widgets: Widget[] = [
 		translationKey: 'qrGenerator',
 		path: 'qr-generator',
 		gradient: 'from-violet-500 to-purple-500',
+		title: 'Генератор QR кодов онлайн - создать QR код бесплатно',
+		description:
+			'Бесплатный генератор QR кодов онлайн. Создайте QR код для URL, WiFi, App Store за секунды. Генератор qr работает без регистрации',
+		useCase:
+			'Бесплатный онлайн генератор qr кодов для URL, WiFi сетей, визиток и мобильных приложений',
 		recommendedTools: ['utm-builder', 'svg-encoder', 'youtube-thumbnail'],
 		difficulty: 'beginner',
 		tags: ['qr', 'qrcode', 'generator', 'wifi', 'mobile'],
-		useCase:
-			'Generate QR codes for URLs, WiFi credentials, and app store links',
 		metaDescription:
 			'QR code generator for URLs, WiFi, and apps. Create customizable QR codes with colors and logos.',
 		faqs: {
@@ -663,11 +688,14 @@ export const widgets: Widget[] = [
 		translationKey: 'colorConverter',
 		path: 'color-converter',
 		gradient: 'from-pink-500 to-purple-500',
+		title: 'Конвертер цветов',
+		description:
+			'Конвертируйте цвета между HEX, RGB, HSL, CMYK, LAB и другими цветовыми моделями',
+		useCase:
+			'Конвертация цветов между различными форматами для дизайна и разработки',
 		recommendedTools: ['svg-encoder', 'bezier-curve', 'css-clamp-calculator'],
 		difficulty: 'beginner',
 		tags: ['color', 'converter', 'hex', 'rgb', 'hsl', 'cmyk'],
-		useCase:
-			'Convert colors between HEX, RGB, HSL, CMYK, LAB, and other formats',
 		metaDescription:
 			'Universal color converter. Convert between HEX, RGB, HSL, CMYK, LAB, and XYZ color formats.',
 		faqs: {
@@ -733,10 +761,12 @@ export const widgets: Widget[] = [
 		translationKey: 'htmlTree',
 		path: 'html-tree-visualizer',
 		gradient: 'from-purple-500 to-indigo-500',
+		title: 'HTML древо визуализатор',
+		description: 'Визуализируйте HTML структуру в виде дерева с валидацией БЭМ',
+		useCase: 'Визуализация HTML структуры и валидация БЭМ соглашений',
 		recommendedTools: ['css-specificity', 'speed-test', 'flexbox-generator'],
 		difficulty: 'intermediate',
 		tags: ['html', 'tree', 'bem', 'structure', 'visualization'],
-		useCase: 'Visualize HTML structure and validate BEM naming conventions',
 		metaDescription:
 			'HTML tree visualizer with BEM validation. Analyze HTML structure and class naming.',
 		faqs: {
@@ -800,10 +830,12 @@ export const widgets: Widget[] = [
 		translationKey: 'speedTest',
 		path: 'internet-speed-test',
 		gradient: 'from-slate-500 to-gray-600',
+		title: 'Тест скорости интернета',
+		description: 'Проверьте скорость вашего интернет-соединения',
+		useCase: 'Тестирование скорости интернет-соединения и задержки',
 		recommendedTools: ['html-tree', 'css-specificity', 'svg-encoder'],
 		difficulty: 'beginner',
 		tags: ['speed', 'performance', 'internet', 'bandwidth', 'latency'],
-		useCase: 'Test your internet connection speed and latency',
 		metaDescription:
 			'Internet speed test tool. Measure download, upload speeds and latency.',
 		faqs: {
@@ -867,11 +899,14 @@ export const widgets: Widget[] = [
 		translationKey: 'mockDataGenerator',
 		path: 'mock-data-generator',
 		gradient: 'from-emerald-500 to-teal-600',
+		title: 'Генератор тестовых данных онлайн API',
+		description:
+			'Бесплатный онлайн генератор тестовых данных. Получайте примеры данных из бесплатных API для тестирования',
+		useCase:
+			'Бесплатный генератор реалистичных тестовых данных для разработки и прототипирования',
 		recommendedTools: ['html-tree', 'speed-test', 'qr-generator'],
 		difficulty: 'beginner',
 		tags: ['api', 'mock', 'data', 'json', 'testing', 'development'],
-		useCase:
-			'Fetch sample data from popular free public APIs for testing and prototyping',
 		metaDescription:
 			'Mock data generator using free public APIs. Get sample users, posts, products, and more.',
 		faqs: {
@@ -937,10 +972,14 @@ export const widgets: Widget[] = [
 		translationKey: 'passwordGenerator',
 		path: 'password-generator',
 		gradient: 'from-emerald-500 to-teal-600',
+		title: 'Генератор паролей онлайн',
+		description:
+			'Бесплатный генератор паролей онлайн. Создать пароль любой сложности. Генератор надежных паролей с анализом стойкости',
+		useCase:
+			'Бесплатный онлайн генератор паролей для соцсетей, почты, аккаунтов и защиты данных',
 		recommendedTools: ['qr-generator', 'utm-builder'],
 		difficulty: 'beginner',
 		tags: ['password', 'security', 'generator', 'random', 'secure'],
-		useCase: 'Generate secure passwords with customizable complexity',
 		metaDescription:
 			'Secure password generator. Create strong passwords with custom length and character sets.',
 		faqs: {
@@ -1009,9 +1048,12 @@ export const widgets: Widget[] = [
 			'seo-markdown-generator',
 			'youtube-thumbnail'
 		],
+		title: 'UTM конструктор ссылок',
+		description:
+			'Создавайте отслеживаемые ссылки с UTM параметрами для маркетинговых кампаний',
+		useCase: 'Создание UTM-меток для отслеживания маркетинговых кампаний',
 		difficulty: 'beginner',
 		tags: ['utm', 'marketing', 'analytics', 'tracking', 'campaign'],
-		useCase: 'Build UTM-tagged URLs for marketing campaign tracking',
 		metaDescription:
 			'UTM link builder for marketing campaigns. Track traffic sources in Google Analytics.',
 		faqs: {

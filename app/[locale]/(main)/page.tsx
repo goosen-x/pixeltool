@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { HomePageStructuredData } from '@/components/seo/HomePageStructuredData'
+// import { HomePageStructuredData } from '@/components/seo/HomePageStructuredData' // Removed due to script rendering issue
 import { OnlineUsers } from '@/components/global/OnlineUsers'
 import { RippleLoader } from '@/components/global/RippleLoader'
 import { HomePageTracker } from '@/components/analytics/HomePageTracker'
@@ -62,6 +62,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		},
 		alternates: {
 			canonical: 'https://pixeltool.pro'
+		},
+		other: {
+			'application-ld+json': JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'WebApplication',
+				name: 'PixelTool',
+				alternateName: 'PixelTool Developer Tools',
+				url: 'https://pixeltool.pro',
+				description: metadata.description,
+				applicationCategory: 'DeveloperApplication',
+				operatingSystem: 'All',
+				offers: {
+					'@type': 'Offer',
+					price: '0',
+					priceCurrency: 'USD'
+				}
+			})
 		}
 	}
 }
@@ -72,7 +89,6 @@ export default async function HomePage({ params }: Props) {
 
 	return (
 		<>
-			<HomePageStructuredData />
 			<HomePageTracker />
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
 				{/* Hero Section */}
@@ -114,10 +130,12 @@ export default async function HomePage({ params }: Props) {
 						{/* Enhanced subtitle */}
 						<div className='mx-auto mb-8 sm:mb-10 max-w-4xl px-4'>
 							<h1 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl text-foreground/90 font-light mb-4 sm:mb-6 leading-relaxed'>
-								Мощные онлайн-инструменты для разработчиков и дизайнеров без установки
+								Мощные онлайн-инструменты для разработчиков и дизайнеров без
+								установки
 							</h1>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed'>
-								Профессиональные инструменты для разработчиков, дизайнеров. Всё что нужно, прямо в браузере
+								Профессиональные инструменты для разработчиков, дизайнеров. Всё
+								что нужно, прямо в браузере
 							</p>
 						</div>
 
@@ -232,7 +250,9 @@ export default async function HomePage({ params }: Props) {
 								Почему выбирают PixelTool?
 							</h2>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4'>
-								Мы создали платформу, которая экономит время разработчиков и дизайнеров, предоставляя все необходимые инструменты в одном месте
+								Мы создали платформу, которая экономит время разработчиков и
+								дизайнеров, предоставляя все необходимые инструменты в одном
+								месте
 							</p>
 						</div>
 
@@ -249,7 +269,8 @@ export default async function HomePage({ params }: Props) {
 										Молниеносная скорость
 									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										Все инструменты работают прямо в браузере без задержек. Никаких загрузок, установок или ожидания.
+										Все инструменты работают прямо в браузере без задержек.
+										Никаких загрузок, установок или ожидания.
 									</p>
 									<div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 										<div className='flex items-center gap-2'>
@@ -279,7 +300,8 @@ export default async function HomePage({ params }: Props) {
 										100% Бесплатно
 									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										Никаких скрытых платежей, подписок или ограничений. Все инструменты доступны бесплатно навсегда.
+										Никаких скрытых платежей, подписок или ограничений. Все
+										инструменты доступны бесплатно навсегда.
 									</p>
 									<div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 										<div className='flex items-center gap-2'>
@@ -309,7 +331,8 @@ export default async function HomePage({ params }: Props) {
 										50+ Инструментов
 									</p>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										От CSS генераторов до конвертеров изображений - всё что нужно современному разработчику.
+										От CSS генераторов до конвертеров изображений - всё что
+										нужно современному разработчику.
 									</p>
 									<div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 										<div className='flex items-center gap-2'>
@@ -393,7 +416,9 @@ export default async function HomePage({ params }: Props) {
 								Что можно рассчитать и посчитать?
 							</h2>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4'>
-								Мощные онлайн калькуляторы для расчёта финансов, математических вычислений и конвертации единиц измерения. Всё бесплатно и без регистрации.
+								Мощные онлайн калькуляторы для расчёта финансов, математических
+								вычислений и конвертации единиц измерения. Всё бесплатно и без
+								регистрации.
 							</p>
 						</div>
 
@@ -419,7 +444,10 @@ export default async function HomePage({ params }: Props) {
 											'Конвертация валют',
 											'Калькулятор НДС и налогов'
 										].map((item: string, idx: number) => (
-											<div key={idx} className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'>
+											<div
+												key={idx}
+												className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'
+											>
 												<div className='w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0' />
 												<span>{item}</span>
 											</div>
@@ -448,7 +476,10 @@ export default async function HomePage({ params }: Props) {
 											'Генератор случайных чисел',
 											'Математические формулы и константы'
 										].map((item: string, idx: number) => (
-											<div key={idx} className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'>
+											<div
+												key={idx}
+												className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'
+											>
 												<div className='w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0' />
 												<span>{item}</span>
 											</div>
@@ -477,7 +508,10 @@ export default async function HomePage({ params }: Props) {
 											'Преобразование цветов',
 											'Конвертер систем счисления'
 										].map((item: string, idx: number) => (
-											<div key={idx} className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'>
+											<div
+												key={idx}
+												className='flex items-center gap-2 text-xs sm:text-sm text-muted-foreground'
+											>
 												<div className='w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0' />
 												<span>{item}</span>
 											</div>
