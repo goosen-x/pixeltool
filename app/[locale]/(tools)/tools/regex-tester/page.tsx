@@ -32,7 +32,7 @@ import {
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
@@ -235,7 +235,7 @@ const REGEX_FLAGS = {
 }
 
 export default function RegexTesterPage() {
-	const t = useTranslations('widgets.regexTester')
+	// const t = useTranslations('widgets.regexTester') // Removed
 	const [pattern, setPattern] = useState('')
 	const [testText, setTestText] = useState('')
 	const [flavor, setFlavor] = useState<RegexFlavor>('javascript')
@@ -431,13 +431,13 @@ export default function RegexTesterPage() {
 			key: 'Enter',
 			primary: true,
 			action: testRegex,
-			description: t('shortcuts.test')
+			description: 'Тестировать'
 		},
 		{
 			key: 'r',
 			primary: true,
 			action: () => setShowReplace(!showReplace),
-			description: t('shortcuts.toggleReplace')
+			description: 'Переключить замену'
 		},
 		{
 			key: 'k',
@@ -447,7 +447,7 @@ export default function RegexTesterPage() {
 				setTestText('')
 				setReplacePattern('')
 			},
-			description: t('shortcuts.clear')
+			description: 'Очистить'
 		},
 		{
 			key: 'g',
@@ -460,7 +460,7 @@ export default function RegexTesterPage() {
 					: [...flags, flag]
 				setFlags(newFlags)
 			},
-			description: t('shortcuts.toggleGlobal')
+			description: 'Переключить глобальный поиск'
 		}
 	]
 

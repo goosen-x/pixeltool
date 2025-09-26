@@ -631,7 +631,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									className='flex-1 sm:flex-none hover:bg-primary/5 hover:border-primary/20'
 								>
 									<Zap className='w-4 h-4 mr-2' />
-									{t('actions.example')}
+									Пример
 								</Button>
 								<Button
 									onClick={clearText}
@@ -641,7 +641,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									disabled={!text}
 								>
 									<RefreshCw className='w-4 h-4 mr-2' />
-									{t('actions.clear')}
+									Очистить
 								</Button>
 							</div>
 							<div className='flex gap-2'>
@@ -653,7 +653,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									className='flex-1 sm:flex-none hover:bg-blue-500/5 hover:border-blue-500/20'
 								>
 									<Copy className='w-4 h-4 mr-2' />
-									{t('actions.copyText')}
+									Копировать текст
 								</Button>
 								<Button
 									onClick={copyStats}
@@ -663,7 +663,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									className='flex-1 sm:flex-none bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 shadow-md hover:shadow-lg transition-all'
 								>
 									<BarChart3 className='w-4 h-4 mr-2' />
-									{t('actions.copyStats')}
+									Копировать статистику
 								</Button>
 							</div>
 						</div>

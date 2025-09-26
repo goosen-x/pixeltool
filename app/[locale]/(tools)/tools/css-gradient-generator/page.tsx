@@ -33,7 +33,7 @@ import {
 	generateGradientCSS,
 	DEFAULT_GRADIENT_SETTINGS
 } from '@/lib/data/css-gradient-data'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
@@ -44,7 +44,7 @@ import {
 } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function CSSGradientGeneratorPage() {
-	const t = useTranslations('widgets.cssGradientGenerator')
+	// const t = useTranslations('widgets.cssGradientGenerator') // Removed
 
 	const {
 		settings,
@@ -79,12 +79,12 @@ export default function CSSGradientGeneratorPage() {
 		resetGradient
 	} = useCSSGradientGenerator({
 		translations: {
-			copied: t('toast.copied'),
-			copyError: t('toast.copyError'),
-			gradientApplied: t('toast.gradientApplied'),
-			colorStopAdded: t('toast.colorStopAdded'),
-			colorStopRemoved: t('toast.colorStopRemoved'),
-			gradientRandomized: t('toast.gradientRandomized')
+			copied: 'CSS скопирован в буфер обмена!',
+			copyError: 'Ошибка при копировании CSS',
+			gradientApplied: 'Градиент применен!',
+			colorStopAdded: 'Цветовая точка добавлена',
+			colorStopRemoved: 'Цветовая точка удалена',
+			gradientRandomized: 'Случайный градиент сгенерирован!'
 		}
 	})
 
@@ -130,7 +130,7 @@ export default function CSSGradientGeneratorPage() {
 			{/* Preview Section */}
 			<WidgetSection
 				icon={Palette}
-				title={t('sections.preview')}
+				title='Предварительный просмотр'
 				className='w-full'
 			>
 				<div className='space-y-4'>
@@ -167,7 +167,7 @@ export default function CSSGradientGeneratorPage() {
 						</Select>
 						<Button onClick={copyCSS} className='gap-2'>
 							<Copy className='w-4 h-4' />
-							{t('actions.copy')}
+							Копировать
 						</Button>
 						<Button
 							onClick={generateRandom}
@@ -175,11 +175,11 @@ export default function CSSGradientGeneratorPage() {
 							className='gap-2'
 						>
 							<Sparkles className='w-4 h-4' />
-							{t('actions.random')}
+							Случайный
 						</Button>
 						<Button onClick={resetGradient} variant='outline' className='gap-2'>
 							<RefreshCw className='w-4 h-4' />
-							{t('actions.reset')}
+							Сброс
 						</Button>
 					</div>
 				</div>
@@ -187,12 +187,12 @@ export default function CSSGradientGeneratorPage() {
 
 			<div className='grid gap-6 lg:grid-cols-2 mt-6'>
 				{/* Controls Section */}
-				<WidgetSection icon={Sliders} title={t('sections.controls')}>
+				<WidgetSection icon={Sliders} title='Настройки'>
 					<div className='space-y-6'>
 						{/* Gradient Type */}
 						<div className='space-y-3'>
 							<Label className='text-sm font-medium'>
-								{t('controls.gradientType')}
+								Тип градиента
 							</Label>
 							<div className='grid grid-cols-3 gap-2'>
 								{(['linear', 'radial', 'conic'] as const).map(type => (
@@ -215,7 +215,7 @@ export default function CSSGradientGeneratorPage() {
 							{/* Repeating Toggle */}
 							<div className='flex items-center justify-between p-3 rounded-xl bg-muted/50'>
 								<Label htmlFor='repeating' className='text-sm'>
-									{t('controls.repeating')}
+									Повторяющийся
 								</Label>
 								<Button
 									id='repeating'
@@ -235,7 +235,7 @@ export default function CSSGradientGeneratorPage() {
 						{/* Type-specific Controls */}
 						{settings.type === 'linear' && (
 							<div className='space-y-4'>
-								<WidgetInput label={t('controls.direction')}>
+								<WidgetInput label='Направление'>
 									<div className='grid grid-cols-3 gap-2'>
 										{(
 											[
@@ -269,7 +269,7 @@ export default function CSSGradientGeneratorPage() {
 								</WidgetInput>
 
 								<WidgetInput
-									label={`${t('controls.angle')}: ${settings.linearAngle}°`}
+									label={`Угол: ${settings.linearAngle}°`}
 								>
 									<Slider
 										value={[settings.linearAngle]}
@@ -284,7 +284,7 @@ export default function CSSGradientGeneratorPage() {
 
 						{settings.type === 'radial' && (
 							<div className='space-y-4'>
-								<WidgetInput label={t('controls.shape')}>
+								<WidgetInput label='Форма'>
 									<div className='grid grid-cols-2 gap-2'>
 										{(['circle', 'ellipse'] as const).map(shape => (
 											<Button
@@ -306,7 +306,7 @@ export default function CSSGradientGeneratorPage() {
 									</div>
 								</WidgetInput>
 
-								<WidgetInput label={t('controls.size')}>
+								<WidgetInput label='Размер'>
 									<Select
 										value={settings.radialSize}
 										onValueChange={value => updateRadialSize(value as any)}
@@ -359,7 +359,7 @@ export default function CSSGradientGeneratorPage() {
 						{settings.type === 'conic' && (
 							<div className='space-y-4'>
 								<WidgetInput
-									label={`${t('controls.angle')}: ${settings.conicAngle}°`}
+									label={`Угол: ${settings.conicAngle}°`}
 								>
 									<Slider
 										value={[settings.conicAngle]}
@@ -400,7 +400,7 @@ export default function CSSGradientGeneratorPage() {
 				</WidgetSection>
 
 				{/* Color Stops Section */}
-				<WidgetSection icon={Layers} title={t('sections.colorStops')}>
+				<WidgetSection icon={Layers} title='Цветовые точки'>
 					<div className='space-y-4'>
 						{/* Color Stop List */}
 						<div className='space-y-2'>
@@ -447,13 +447,13 @@ export default function CSSGradientGeneratorPage() {
 
 						<Button onClick={addColorStop} className='w-full gap-2'>
 							<Plus className='w-4 h-4' />
-							{t('actions.addColorStop')}
+							Добавить точку
 						</Button>
 
 						{/* Selected Color Stop Editor */}
 						{selectedStop && (
 							<div className='space-y-4 pt-4 border-t'>
-								<WidgetInput label={t('controls.color')}>
+								<WidgetInput label='Цвет'>
 									<div className='flex gap-2'>
 										<Input
 											type='color'
@@ -475,7 +475,7 @@ export default function CSSGradientGeneratorPage() {
 								</WidgetInput>
 
 								<WidgetInput
-									label={`${t('controls.position')}: ${selectedStop.position}%`}
+									label={`Позиция: ${selectedStop.position}%`}
 								>
 									<Slider
 										value={[selectedStop.position]}
@@ -489,7 +489,7 @@ export default function CSSGradientGeneratorPage() {
 								</WidgetInput>
 
 								<WidgetInput
-									label={`${t('controls.opacity')}: ${selectedStop.opacity}%`}
+									label={`Прозрачность: ${selectedStop.opacity}%`}
 								>
 									<Slider
 										value={[selectedStop.opacity]}
@@ -510,7 +510,7 @@ export default function CSSGradientGeneratorPage() {
 			{/* Presets Section */}
 			<WidgetSection
 				icon={Sparkles}
-				title={t('sections.presets')}
+				title='Готовые градиенты'
 				className='mt-6'
 			>
 				<div className='space-y-4'>
@@ -521,7 +521,7 @@ export default function CSSGradientGeneratorPage() {
 							<Input
 								value={searchQuery}
 								onChange={e => setSearchQuery(e.target.value)}
-								placeholder={t('presets.searchPlaceholder')}
+								placeholder='Поиск градиентов...'
 								className='pl-10'
 							/>
 						</div>
@@ -531,7 +531,7 @@ export default function CSSGradientGeneratorPage() {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value='all'>
-									{t('presets.allCategories')}
+									Все категории
 								</SelectItem>
 								{categories.map(category => (
 									<SelectItem

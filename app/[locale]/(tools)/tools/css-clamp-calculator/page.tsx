@@ -9,7 +9,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Copy, Check, AlertCircle, HelpCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
-import { useLocale } from 'next-intl'
 import {
 	Tooltip,
 	TooltipContent,
@@ -19,7 +18,6 @@ import {
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function ClampCalculatorPage() {
-	const locale = useLocale() as 'en' | 'ru'
 	// const t = useTranslations('widgets.clampCalculator') // Removed
 	const [unit, setUnit] = useState<'px' | 'rem'>('rem')
 	const [property, setProperty] = useState<'font-size' | 'margin' | 'padding'>(
@@ -105,11 +103,7 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(result)
 			setCopied(true)
 			setTimeout(() => setCopied(false), 2000)
-			toast.success(
-				locale === 'ru'
-					? 'CSS значение скопировано в буфер обмена'
-					: 'CSS value copied to clipboard'
-			)
+			toast.success('CSS значение скопировано в буфер обмена')
 		} catch (err) {
 			toast.error('Ошибка копирования')
 		}
@@ -120,11 +114,7 @@ export default function ClampCalculatorPage() {
 			await navigator.clipboard.writeText(tailwindResult)
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(
-				locale === 'ru'
-					? 'Tailwind класс скопирован в буфер обмена'
-					: 'Tailwind class copied to clipboard'
-			)
+			toast.success('Tailwind класс скопирован в буфер обмена')
 		} catch (err) {
 			toast.error('Ошибка копирования')
 		}
@@ -138,17 +128,13 @@ export default function ClampCalculatorPage() {
 		setMaxViewport(1440)
 		setUnit('rem')
 		setProperty('font-size')
-		toast.success(locale === 'ru' ? 'Форма сброшена' : 'Form reset')
-	}, [locale])
+		toast.success('Форма сброшена')
+	}, [])
 
 	const switchUnit = useCallback(() => {
 		setUnit(prev => (prev === 'px' ? 'rem' : 'px'))
-		toast.info(
-			locale === 'ru'
-				? `Переключено на ${unit === 'px' ? 'rem' : 'px'}`
-				: `Switched to ${unit === 'px' ? 'rem' : 'px'}`
-		)
-	}, [unit, locale])
+		toast.info(`Переключено на ${unit === 'px' ? 'rem' : 'px'}`)
+	}, [unit])
 
 	const switchProperty = useCallback(() => {
 		const properties: Array<'font-size' | 'margin' | 'padding'> = [
@@ -159,12 +145,8 @@ export default function ClampCalculatorPage() {
 		const currentIndex = properties.indexOf(property)
 		const nextIndex = (currentIndex + 1) % properties.length
 		setProperty(properties[nextIndex])
-		toast.info(
-			locale === 'ru'
-				? `Переключено на ${properties[nextIndex]}`
-				: `Switched to ${properties[nextIndex]}`
-		)
-	}, [property, locale])
+		toast.info(`Переключено на ${properties[nextIndex]}`)
+	}, [property])
 
 	const handleValueChange = (
 		value: string,

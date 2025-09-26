@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { Badge } from '@/components/ui/badge'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
@@ -31,7 +31,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function DrawLotsPage() {
-	const t = useTranslations('widgets.drawLots')
+	// const t = useTranslations('widgets.drawLots') // Removed
 	const [mounted, setMounted] = useState(false)
 	const defaultValues =
 		'Albert Einstein\nMarie Curie\nLeonardo da Vinci\nNikola Tesla'
@@ -51,12 +51,12 @@ export default function DrawLotsPage() {
 			.filter(line => line.trim() !== '')
 
 		if (lines.length === 0) {
-			setError(t('errors.empty'))
+			setError('Нет элементов для жребьевки')
 			return
 		}
 
 		if (lines.length > 100) {
-			setError(t('errors.tooMany'))
+			setError('Слишком много элементов (макс. 100)')
 			return
 		}
 
@@ -132,7 +132,7 @@ export default function DrawLotsPage() {
 					<Card className='p-6'>
 						<div className='flex items-center justify-between mb-2 h-9'>
 							<Label htmlFor='items' className='text-base font-semibold'>
-								{t('inputLabel')}
+								Участники жребьевки
 							</Label>
 							<Button
 								variant='ghost'
@@ -146,19 +146,19 @@ export default function DrawLotsPage() {
 								)}
 							>
 								<RotateCcw className='w-3 h-3 mr-1' />
-								{t('fillDefaults')}
+								Вернуть пример
 							</Button>
 						</div>
 						<Textarea
 							id='items'
 							value={inputText}
 							onChange={e => setInputText(e.target.value)}
-							placeholder={t('inputPlaceholder')}
+							placeholder="Иван\nПетр\nМария\nАнна"
 							className='min-h-[200px] font-mono'
 							spellCheck={false}
 						/>
 						<p className='text-sm text-muted-foreground mt-2'>
-							{t('inputHint')}
+							Один участник на строку
 						</p>
 
 						{error && (
@@ -169,18 +169,18 @@ export default function DrawLotsPage() {
 
 						<Button onClick={startDrawing} className='w-full mt-4' size='lg'>
 							<Shuffle className='w-4 h-4 mr-2' />
-							{t('startDrawing')}
+							Начать жребьевку
 						</Button>
 					</Card>
 
 					{/* Instructions */}
 					<Card className='p-6 bg-muted/50 h-fit'>
-						<h3 className='font-semibold mb-3'>{t('howToUse.title')}</h3>
+						<h3 className='font-semibold mb-3'>Как использовать</h3>
 						<ol className='space-y-2 text-sm text-muted-foreground'>
-							<li>{t('howToUse.step1')}</li>
-							<li>{t('howToUse.step2')}</li>
-							<li>{t('howToUse.step3')}</li>
-							<li>{t('howToUse.step4')}</li>
+							<li>1. Введите имена участников или варианты</li>
+							<li>2. Нажмите Начать жребьевку</li>
+							<li>3. Кликните на карточку для открытия</li>
+							<li>4. Повторите для следующего участника</li>
 						</ol>
 					</Card>
 				</div>
@@ -189,10 +189,10 @@ export default function DrawLotsPage() {
 					{/* Drawing Area */}
 					<Card className='p-6'>
 						<div className='flex items-center justify-between mb-4'>
-							<h3 className='text-lg font-semibold'>{t('clickToReveal')}</h3>
+							<h3 className='text-lg font-semibold'>Кликните для открытия</h3>
 							<Button onClick={reset} variant='outline' size='sm'>
 								<RotateCcw className='w-4 h-4 mr-2' />
-								{t('reset')}
+								Сброс
 							</Button>
 						</div>
 
@@ -245,7 +245,7 @@ export default function DrawLotsPage() {
 													<div className='text-primary-foreground'>
 														<div className='text-4xl font-bold mb-2'>?</div>
 														<div className='text-sm opacity-80'>
-															{t('clickToDraw')}
+															Кликните
 														</div>
 													</div>
 												</div>
@@ -271,7 +271,7 @@ export default function DrawLotsPage() {
 															{lot.value}
 														</p>
 														<div className='mt-2 text-white/80 text-sm'>
-															{t('selected')}
+															Выбрано
 														</div>
 													</div>
 												</div>
@@ -284,7 +284,7 @@ export default function DrawLotsPage() {
 
 						{lots.filter(lot => lot.isRevealed).length > 0 && (
 							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<h4 className='font-medium mb-2'>{t('revealed')}</h4>
+								<h4 className='font-medium mb-2'>Открытые</h4>
 								<div className='flex flex-wrap gap-2'>
 									{lots
 										.filter(lot => lot.isRevealed)
@@ -302,11 +302,11 @@ export default function DrawLotsPage() {
 
 			{/* About Section */}
 			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>{t('about.title')}</h3>
+				<h3 className='font-semibold mb-3'>О виджете</h3>
 				<div className='space-y-2 text-sm text-muted-foreground'>
-					<p>{t('about.description')}</p>
-					<p>{t('about.useCases')}</p>
-					<p className='text-xs mt-4'>{t('about.disclaimer')}</p>
+					<p>Жребьевка для честного и случайного выбора. Используется криптографически стойкий алгоритм перемешивания.</p>
+					<p>Используйте для: определения порядка, выбора победителей, распределения задач, игр и конкурсов.</p>
+					<p className='text-xs mt-4'>Каждый выбор абсолютно случаен и непредсказуем.</p>
 				</div>
 			</Card>
 		</div>

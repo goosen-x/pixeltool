@@ -27,13 +27,13 @@ import {
 	PopoverTrigger
 } from '@/components/ui/popover'
 import { format } from 'date-fns'
-import { ru, enUS } from 'date-fns/locale'
+import { ru } from 'date-fns/locale'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { KeyboardShortcutInfo } from '@/components/widgets'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import { useTranslations, useLocale } from 'next-intl'
+// import { useTranslations, useLocale } from 'next-intl' // Removed
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface AgeData {
@@ -148,120 +148,19 @@ const FAMOUS_PEOPLE = [
 ]
 
 export default function AgeCalculatorPage() {
-	const t = useTranslations('widgets.ageCalculator')
-	const locale = useLocale()
+	// const t = useTranslations('widgets.ageCalculator') // Removed
+	// const locale = useLocale() // Removed
 	const [birthDate, setBirthDate] = useState<Date | undefined>()
 	const [ageData, setAgeData] = useState<AgeData | null>(null)
 	const [isCalculating, setIsCalculating] = useState(false)
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
-	// Locale-specific data
-	const ZODIAC_SIGNS_LOCALE =
-		locale === 'ru'
-			? ZODIAC_SIGNS
-			: [
-					{ name: 'Capricorn', start: '12-22', end: '01-19' },
-					{ name: 'Aquarius', start: '01-20', end: '02-18' },
-					{ name: 'Pisces', start: '02-19', end: '03-20' },
-					{ name: 'Aries', start: '03-21', end: '04-19' },
-					{ name: 'Taurus', start: '04-20', end: '05-20' },
-					{ name: 'Gemini', start: '05-21', end: '06-20' },
-					{ name: 'Cancer', start: '06-21', end: '07-22' },
-					{ name: 'Leo', start: '07-23', end: '08-22' },
-					{ name: 'Virgo', start: '08-23', end: '09-22' },
-					{ name: 'Libra', start: '09-23', end: '10-22' },
-					{ name: 'Scorpio', start: '10-23', end: '11-21' },
-					{ name: 'Sagittarius', start: '11-22', end: '12-21' }
-				]
-
-	const CHINESE_ZODIAC_LOCALE =
-		locale === 'ru'
-			? CHINESE_ZODIAC
-			: [
-					'Rat',
-					'Ox',
-					'Tiger',
-					'Rabbit',
-					'Dragon',
-					'Snake',
-					'Horse',
-					'Goat',
-					'Monkey',
-					'Rooster',
-					'Dog',
-					'Pig'
-				]
-
-	const LIFE_STAGES_LOCALE =
-		locale === 'ru'
-			? LIFE_STAGES
-			: [
-					{ name: 'Infant', min: 0, max: 1 },
-					{ name: 'Toddler', min: 1, max: 3 },
-					{ name: 'Preschooler', min: 3, max: 6 },
-					{ name: 'School Age', min: 6, max: 12 },
-					{ name: 'Teenager', min: 12, max: 18 },
-					{ name: 'Young Adult', min: 18, max: 30 },
-					{ name: 'Adult', min: 30, max: 50 },
-					{ name: 'Middle Age', min: 50, max: 65 },
-					{ name: 'Senior', min: 65, max: 80 },
-					{ name: 'Elderly', min: 80, max: 150 }
-				]
-
-	const DAY_NAMES_LOCALE =
-		locale === 'ru'
-			? DAY_NAMES
-			: [
-					'Sunday',
-					'Monday',
-					'Tuesday',
-					'Wednesday',
-					'Thursday',
-					'Friday',
-					'Saturday'
-				]
-
-	const FAMOUS_PEOPLE_LOCALE =
-		locale === 'ru'
-			? FAMOUS_PEOPLE
-			: [
-					{
-						name: 'Albert Einstein',
-						date: new Date('1879-03-14'),
-						category: 'Scientists',
-						icon: '🧪'
-					},
-					{
-						name: 'Leonardo da Vinci',
-						date: new Date('1452-04-15'),
-						category: 'Artists',
-						icon: '🎨'
-					},
-					{
-						name: 'Steve Jobs',
-						date: new Date('1955-02-24'),
-						category: 'Entrepreneurs',
-						icon: '💼'
-					},
-					{
-						name: 'Marie Curie',
-						date: new Date('1867-11-07'),
-						category: 'Scientists',
-						icon: '⚗️'
-					},
-					{
-						name: 'William Shakespeare',
-						date: new Date('1564-04-23'),
-						category: 'Writers',
-						icon: '📚'
-					},
-					{
-						name: 'Nelson Mandela',
-						date: new Date('1918-07-18'),
-						category: 'Politicians',
-						icon: '🌍'
-					}
-				]
+	// Use Russian data directly
+	const ZODIAC_SIGNS_LOCALE = ZODIAC_SIGNS
+	const CHINESE_ZODIAC_LOCALE = CHINESE_ZODIAC
+	const LIFE_STAGES_LOCALE = LIFE_STAGES
+	const DAY_NAMES_LOCALE = DAY_NAMES
+	const FAMOUS_PEOPLE_LOCALE = FAMOUS_PEOPLE
 
 	const getZodiacSign = useCallback(
 		(date: Date): string => {
@@ -304,13 +203,9 @@ export default function AgeCalculatorPage() {
 	const getLifeStage = useCallback(
 		(age: number): string => {
 			const stage = LIFE_STAGES_LOCALE.find(s => age >= s.min && age < s.max)
-			return stage
-				? stage.name
-				: locale === 'ru'
-					? 'Неопределенный возраст'
-					: 'Undefined age'
+			return stage ? stage.name : 'Неопределенный возраст'
 		},
-		[LIFE_STAGES_LOCALE, locale]
+		[LIFE_STAGES_LOCALE]
 	)
 
 	const calculateAge = useCallback(
@@ -391,27 +286,17 @@ export default function AgeCalculatorPage() {
 		[getZodiacSign, getChineseZodiac, getLifeStage, DAY_NAMES_LOCALE]
 	)
 
-	const formatAgeText = useCallback(
-		(data: AgeData): string => {
-			if (locale === 'ru') {
-				return `Мне ${data.years} лет, ${data.months} месяцев и ${data.days} дней
+	const formatAgeText = useCallback((data: AgeData): string => {
+		return `Мне ${data.years} лет, ${data.months} месяцев и ${data.days} дней
 Всего дней прожито: ${data.totalDays.toLocaleString()}
 До следующего дня рождения: ${data.nextBirthday.daysUntil} дней
 Знак зодиака: ${data.zodiacSign}
 Китайский гороскоп: ${data.chineseZodiac}`
-			}
-			return `I am ${data.years} years, ${data.months} months and ${data.days} days old
-Total days lived: ${data.totalDays.toLocaleString()}
-Days until next birthday: ${data.nextBirthday.daysUntil}
-Zodiac sign: ${data.zodiacSign}
-Chinese zodiac: ${data.chineseZodiac}`
-		},
-		[locale]
-	)
+	}, [])
 
 	const handleCalculate = useCallback(() => {
 		if (!birthDate) {
-			toast.error(t('validation.dateRequired'))
+			toast.error('Пожалуйста, введите дату рождения')
 			return
 		}
 
@@ -421,31 +306,28 @@ Chinese zodiac: ${data.chineseZodiac}`
 			try {
 				const result = calculateAge(birthDate)
 				setAgeData(result)
-				toast.success(t('toast.calculated'))
+				toast.success('Возраст рассчитан!')
 			} catch (error) {
 				toast.error(
-					error instanceof Error ? error.message : t('toast.calculationError')
+					error instanceof Error ? error.message : 'Ошибка при расчете возраста'
 				)
 				setAgeData(null)
 			} finally {
 				setIsCalculating(false)
 			}
 		}, 300)
-	}, [birthDate, t, calculateAge])
+	}, [birthDate, calculateAge])
 
-	const copyToClipboard = useCallback(
-		(text: string) => {
-			navigator.clipboard.writeText(text)
-			toast.success(t('toast.copied'))
-		},
-		[t]
-	)
+	const copyToClipboard = useCallback((text: string) => {
+		navigator.clipboard.writeText(text)
+		toast.success('Скопировано в буфер обмена!')
+	}, [])
 
 	const reset = useCallback(() => {
 		setBirthDate(undefined)
 		setAgeData(null)
-		toast.success(t('toast.reset'))
-	}, [t])
+		toast.success('Данные сброшены')
+	}, [])
 
 	// Keyboard shortcuts
 	useWidgetKeyboard({
@@ -514,7 +396,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 						<div className='space-y-6'>
 							<div>
 								<label className='text-sm font-medium mb-2 block'>
-									{t('inputs.birthDate.label')}
+									Дата рождения
 								</label>
 								<div className='flex gap-2'>
 									<Popover
@@ -532,10 +414,10 @@ Chinese zodiac: ${data.chineseZodiac}`
 												<CalendarIcon className='mr-2 h-4 w-4' />
 												{birthDate ? (
 													format(birthDate, 'PPP', {
-														locale: locale === 'ru' ? ru : enUS
+														locale: ru
 													})
 												) : (
-													<span>{t('inputs.birthDate.placeholder')}</span>
+													<span>Выберите дату</span>
 												)}
 											</Button>
 										</PopoverTrigger>
@@ -551,7 +433,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 													date > new Date() || date < new Date('1900-01-01')
 												}
 												initialFocus
-												locale={locale === 'ru' ? ru : enUS}
+												locale={ru}
 												captionLayout='dropdown'
 												fromYear={1900}
 												toYear={new Date().getFullYear()}
@@ -575,7 +457,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 							<div>
 								<h3 className='text-sm font-medium mb-3 flex items-center gap-2'>
 									<Users className='w-4 h-4' />
-									{t('famousPeople.title')}
+									Примеры известных личностей
 								</h3>
 								<div className='grid grid-cols-2 gap-2'>
 									{FAMOUS_PEOPLE_LOCALE.map((person, index) => (
@@ -609,10 +491,10 @@ Chinese zodiac: ${data.chineseZodiac}`
 									<div className='text-center'>
 										<CalendarIcon className='w-16 h-16 mx-auto mb-4 text-muted-foreground/30' />
 										<p className='text-lg font-medium text-muted-foreground'>
-											{t('placeholder.enterDate')}
+											Введите дату рождения для расчета возраста
 										</p>
 										<p className='text-sm text-muted-foreground/80 mt-1'>
-											{t('placeholder.description')}
+											Узнайте свой точный возраст в различных единицах времени
 										</p>
 									</div>
 								</div>
@@ -628,7 +510,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 													{ageData.years}
 												</div>
 												<div className='text-sm text-muted-foreground mt-1'>
-													{t('timeUnits.years', { count: ageData.years })}
+													лет
 												</div>
 												<div className='flex gap-6 mt-4 text-sm'>
 													<div>
@@ -636,7 +518,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 															{ageData.months}
 														</span>
 														<span className='text-muted-foreground ml-1'>
-															{t('timeUnits.months')}
+															месяцев
 														</span>
 													</div>
 													<div>
@@ -644,7 +526,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 															{ageData.days}
 														</span>
 														<span className='text-muted-foreground ml-1'>
-															{t('timeUnits.days')}
+															дней
 														</span>
 													</div>
 												</div>
@@ -659,7 +541,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 												{formatNumber(ageData.totalDays)}
 											</div>
 											<div className='text-xs text-muted-foreground'>
-												{t('statistics.totalDays')}
+												дней прожито
 											</div>
 										</Card>
 
@@ -668,7 +550,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 												{formatNumber(ageData.totalWeeks)}
 											</div>
 											<div className='text-xs text-muted-foreground'>
-												{t('statistics.totalWeeks')}
+												недель
 											</div>
 										</Card>
 
@@ -676,18 +558,14 @@ Chinese zodiac: ${data.chineseZodiac}`
 											<div className='text-2xl font-bold text-green-600'>
 												{formatNumber(ageData.totalHours)}
 											</div>
-											<div className='text-xs text-muted-foreground'>
-												{t('statistics.totalHours')}
-											</div>
+											<div className='text-xs text-muted-foreground'>часов</div>
 										</Card>
 
 										<Card className='p-4 text-center'>
 											<div className='text-2xl font-bold text-orange-600'>
 												{formatNumber(ageData.totalMinutes)}
 											</div>
-											<div className='text-xs text-muted-foreground'>
-												{t('statistics.totalMinutes')}
-											</div>
+											<div className='text-xs text-muted-foreground'>минут</div>
 										</Card>
 									</div>
 
@@ -698,7 +576,7 @@ Chinese zodiac: ${data.chineseZodiac}`
 										className='w-full'
 									>
 										<Copy className='w-4 h-4 mr-2' />
-										{t('actions.copy')}
+										Копировать
 									</Button>
 								</div>
 							)}
@@ -717,21 +595,17 @@ Chinese zodiac: ${data.chineseZodiac}`
 								<Cake className='w-6 h-6 text-pink-600' />
 							</div>
 							<div className='flex-1'>
-								<h3 className='font-semibold mb-1'>
-									{t('additionalInfo.nextBirthday')}
-								</h3>
+								<h3 className='font-semibold mb-1'>Следующий день рождения</h3>
 								<p className='text-2xl font-bold text-pink-600 mb-1'>
 									{ageData.nextBirthday.daysUntil === 0
-										? t('birthdayStatus.today')
+										? 'Сегодня!'
 										: ageData.nextBirthday.daysUntil === 1
-											? t('birthdayStatus.tomorrow')
-											: t('birthdayStatus.inDays', {
-													days: ageData.nextBirthday.daysUntil
-												})}
+											? 'Завтра!'
+											: `Через ${ageData.nextBirthday.daysUntil} дней`}
 								</p>
 								<p className='text-sm text-muted-foreground'>
 									{format(ageData.nextBirthday.date, 'dd MMMM yyyy', {
-										locale: locale === 'ru' ? ru : enUS
+										locale: ru
 									})}{' '}
 									({ageData.nextBirthday.dayOfWeek})
 								</p>
@@ -746,14 +620,12 @@ Chinese zodiac: ${data.chineseZodiac}`
 								<Star className='w-6 h-6 text-purple-600' />
 							</div>
 							<div className='flex-1'>
-								<h3 className='font-semibold mb-1'>
-									{t('additionalInfo.zodiacSign')}
-								</h3>
+								<h3 className='font-semibold mb-1'>Знак зодиака</h3>
 								<p className='text-2xl font-bold text-purple-600 mb-1'>
 									{ageData.zodiacSign}
 								</p>
 								<p className='text-sm text-muted-foreground'>
-									{t('additionalInfo.chineseZodiac')}: {ageData.chineseZodiac}
+									Китайский гороскоп: {ageData.chineseZodiac}
 								</p>
 							</div>
 						</div>
@@ -766,14 +638,12 @@ Chinese zodiac: ${data.chineseZodiac}`
 								<Heart className='w-6 h-6 text-green-600' />
 							</div>
 							<div className='flex-1'>
-								<h3 className='font-semibold mb-1'>
-									{t('additionalInfo.lifeStage')}
-								</h3>
+								<h3 className='font-semibold mb-1'>Жизненный этап</h3>
 								<p className='text-2xl font-bold text-green-600 mb-1'>
 									{ageData.lifeStage}
 								</p>
 								<p className='text-sm text-muted-foreground'>
-									{t('additionalInfo.lifeStageDescription')}
+									Определяется на основе возраста
 								</p>
 							</div>
 						</div>
@@ -789,12 +659,12 @@ Chinese zodiac: ${data.chineseZodiac}`
 							<TrendingUp className='w-6 h-6 text-blue-600' />
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>{t('info.whatCalculated')}</h4>
+							<h4 className='font-semibold mb-2'>Что рассчитывается</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
-								<li>• {t('info.features.exactAge')}</li>
-								<li>• {t('info.features.totalTime')}</li>
-								<li>• {t('info.features.nextBirthday')}</li>
-								<li>• {t('info.features.zodiacSigns')}</li>
+								<li>• Точный возраст в годах, месяцах и днях</li>
+								<li>• Общее количество прожитых дней, недель, часов</li>
+								<li>• Время до следующего дня рождения</li>
+								<li>• Знак зодиака и китайский гороскоп</li>
 							</ul>
 						</div>
 					</div>
@@ -806,14 +676,12 @@ Chinese zodiac: ${data.chineseZodiac}`
 							<Sparkles className='w-6 h-6 text-amber-600' />
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>
-								{t('info.interestingFacts')}
-							</h4>
+							<h4 className='font-semibold mb-2'>Интересные факты</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
-								<li>• {t('info.features.leapYears')}</li>
-								<li>• {t('info.features.lifeStage')}</li>
-								<li>• {t('info.features.dayOfWeek')}</li>
-								<li>• {t('info.features.realTime')}</li>
+								<li>• Учитываются високосные годы</li>
+								<li>• Определяется жизненный этап</li>
+								<li>• Показывается день недели для следующего ДР</li>
+								<li>• Все расчеты выполняются в реальном времени</li>
 							</ul>
 						</div>
 					</div>

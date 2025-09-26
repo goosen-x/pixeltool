@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,7 +33,7 @@ import {
 import { cn } from '@/lib/utils'
 
 export default function TextCaseConverterPage() {
-	const t = useTranslations('widgets.textCaseConverter')
+	// const t = useTranslations('widgets.textCaseConverter') // Removed
 	const [input, setInput] = useState('')
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 	const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())
@@ -110,8 +110,8 @@ export default function TextCaseConverterPage() {
 		]
 		const randomExample = examples[Math.floor(Math.random() * examples.length)]
 		setInput(randomExample)
-		toast.success(t('exampleLoaded') || 'Example loaded')
-	}, [t])
+		toast.success('Пример загружен!')
+	}, [])
 
 	const exportAsJSON = useCallback(() => {
 		const results: Record<string, string> = {}
@@ -130,8 +130,8 @@ export default function TextCaseConverterPage() {
 		linkElement.setAttribute('download', exportFileDefaultName)
 		linkElement.click()
 
-		toast.success(t('downloaded'))
-	}, [input, t])
+		toast.success('Файл загружен!')
+	}, [input])
 
 	const exportAsCSV = useCallback(() => {
 		let csv = 'Case Type,Result\n'
@@ -140,7 +140,7 @@ export default function TextCaseConverterPage() {
 			const translationKey = caseType
 				.replace('dot.case', 'dotCase')
 				.replace('path/case', 'pathCase')
-			csv += `"${t(`cases.${translationKey}`)}","${result.replace(/"/g, '""')}"\n`
+			csv += `"${translationKey}","${result.replace(/"/g, '""')}"\n`
 		})
 
 		const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv)
@@ -152,8 +152,8 @@ export default function TextCaseConverterPage() {
 		linkElement.setAttribute('download', exportFileDefaultName)
 		linkElement.click()
 
-		toast.success(t('downloaded'))
-	}, [input, t])
+		toast.success('Файл загружен!')
+	}, [input])
 
 	const copyAllResults = useCallback(() => {
 		const results = Object.entries(caseConfigs)
@@ -161,13 +161,13 @@ export default function TextCaseConverterPage() {
 				const translationKey = caseType
 					.replace('dot.case', 'dotCase')
 					.replace('path/case', 'pathCase')
-				return `${t(`cases.${translationKey}`)}: ${convertCase(input, caseType as CaseType)}`
+				return `${translationKey}: ${convertCase(input, caseType as CaseType)}`
 			})
 			.join('\n')
 
 		navigator.clipboard.writeText(results)
-		toast.success(t('copied'))
-	}, [input, t])
+		toast.success('Скопировано в буфер обмена!')
+	}, [input])
 
 	// Keyboard shortcuts
 	useWidgetKeyboard({
@@ -212,10 +212,10 @@ export default function TextCaseConverterPage() {
 						<CardTitle className='flex items-center justify-between'>
 							<span className='flex items-center gap-2'>
 								<Sparkles className='w-5 h-5 text-primary' />
-								{t('instantConversion')}
+								{'Мгновенное преобразование'}
 							</span>
 							<Badge variant='secondary' className='font-mono'>
-								{textStats.characters} {t('stats.characters')}
+								{textStats.characters} {'символов'}
 							</Badge>
 						</CardTitle>
 					</CardHeader>
@@ -223,7 +223,7 @@ export default function TextCaseConverterPage() {
 						<Textarea
 							value={input}
 							onChange={e => setInput(e.target.value)}
-							placeholder={t('placeholder')}
+							placeholder={'Введите текст для преобразования...'}
 							className='min-h-[120px] font-mono text-sm resize-none'
 							autoFocus
 						/>
@@ -233,19 +233,19 @@ export default function TextCaseConverterPage() {
 							<div className='mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground'>
 								<div className='flex items-center gap-2'>
 									<BarChart3 className='w-4 h-4' />
-									<span>{t('textStats')}</span>
+									<span>{'Статистика текста'}</span>
 								</div>
 								<div>
-									{textStats.words} {t('stats.words')}
+									{textStats.words} {'слов'}
 								</div>
 								<div>
-									{textStats.charactersNoSpaces} {t('charactersNoSpaces')}
+									{textStats.charactersNoSpaces} {'без пробелов'}
 								</div>
 								<div>
-									{textStats.lines} {t('stats.lines')}
+									{textStats.lines} {'строк'}
 								</div>
 								<div>
-									{textStats.sentences} {t('stats.sentences')}
+									{textStats.sentences} {'предложений'}
 								</div>
 							</div>
 						)}
@@ -254,7 +254,7 @@ export default function TextCaseConverterPage() {
 						<div className='mt-4 flex flex-wrap gap-2'>
 							<Button onClick={loadExample} variant='outline' size='sm'>
 								<Lightbulb className='w-4 h-4 mr-2' />
-								{t('loadExample') || 'Example'}
+								{'Загрузить пример'}
 							</Button>
 
 							<Button
@@ -264,7 +264,7 @@ export default function TextCaseConverterPage() {
 								disabled={!input}
 							>
 								<RefreshCw className='w-4 h-4 mr-2' />
-								{t('clear')}
+								{'Очистить'}
 							</Button>
 
 							<div className='ml-auto flex gap-2'>
@@ -275,7 +275,7 @@ export default function TextCaseConverterPage() {
 									disabled={!input}
 								>
 									<Copy className='w-4 h-4 mr-2' />
-									{t('copy')} {t('allCategories')}
+									{'Копировать'} {'Все категории'}
 								</Button>
 
 								<Button
@@ -305,7 +305,7 @@ export default function TextCaseConverterPage() {
 				{/* Category Filter */}
 				<div className='flex items-center gap-2 flex-wrap'>
 					<span className='text-sm text-muted-foreground'>
-						{t('filterLabel')}
+						{'Фильтр:'}
 					</span>
 					<Badge
 						variant={selectedCategory === null ? 'default' : 'outline'}
@@ -315,7 +315,7 @@ export default function TextCaseConverterPage() {
 						)}
 						onClick={() => setSelectedCategory(null)}
 					>
-						{t('allCategories')}
+						{'Все категории'}
 					</Badge>
 					{Object.entries(categories).map(([key, label]) => (
 						<Badge
@@ -327,11 +327,11 @@ export default function TextCaseConverterPage() {
 							)}
 							onClick={() => setSelectedCategory(key)}
 						>
-							{t(`categories.${key}`)}
+							{key}
 						</Badge>
 					))}
 					<span className='ml-auto text-sm text-muted-foreground'>
-						{sortedCases.length} {t('resultsFound')}
+						{sortedCases.length} {'результатов'}
 					</span>
 				</div>
 
@@ -343,9 +343,7 @@ export default function TextCaseConverterPage() {
 							<CaseCard
 								key={caseType}
 								type={caseType}
-								title={t(
-									`cases.${caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')}`
-								)}
+								title={caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')}
 								result={result}
 								icon={config.icon}
 								gradient={config.gradient}
