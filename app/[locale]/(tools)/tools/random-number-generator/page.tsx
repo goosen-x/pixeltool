@@ -330,7 +330,7 @@ export default function RandomNumberGeneratorPage() {
 										className='gap-2'
 									>
 										<Download className='w-4 h-4' />
-										{t('actions.downloadAll')}
+										Скачать все
 									</Button>
 								)}
 							</>
@@ -364,7 +364,7 @@ export default function RandomNumberGeneratorPage() {
 							className='h-8 text-xs'
 						>
 							<Download className='w-3.5 h-3.5 mr-1' />
-							{t('actions.downloadAll')}
+							Скачать все
 						</Button>
 					</div>
 

@@ -253,9 +253,7 @@ export default function BMICalculatorPage() {
 													htmlFor='metric'
 													className='cursor-pointer text-center'
 												>
-													<div className='font-medium'>
-														Метрическая
-													</div>
+													<div className='font-medium'>Метрическая</div>
 													<div className='text-xs text-muted-foreground'>
 														кг, см
 													</div>
@@ -278,9 +276,7 @@ export default function BMICalculatorPage() {
 													htmlFor='imperial'
 													className='cursor-pointer text-center'
 												>
-													<div className='font-medium'>
-														Империческая
-													</div>
+													<div className='font-medium'>Империческая</div>
 													<div className='text-xs text-muted-foreground'>
 														lbs, ft
 													</div>
@@ -317,9 +313,7 @@ export default function BMICalculatorPage() {
 														className='pr-12'
 													/>
 													<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-														{input.unitSystem === 'metric'
-															? 'кг'
-															: 'фунты'}
+														{input.unitSystem === 'metric' ? 'кг' : 'фунты'}
 													</span>
 												</div>
 											</div>
@@ -431,12 +425,8 @@ export default function BMICalculatorPage() {
 														<SelectValue />
 													</SelectTrigger>
 													<SelectContent>
-														<SelectItem value='male'>
-															Мужской
-														</SelectItem>
-														<SelectItem value='female'>
-															Женский
-														</SelectItem>
+														<SelectItem value='male'>Мужской</SelectItem>
+														<SelectItem value='female'>Женский</SelectItem>
 													</SelectContent>
 												</Select>
 											</div>
@@ -680,9 +670,7 @@ export default function BMICalculatorPage() {
 															className='pr-12'
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-															{input.unitSystem === 'metric'
-																? 'см'
-																: 'дюймы'}
+															{input.unitSystem === 'metric' ? 'см' : 'дюймы'}
 														</span>
 													</div>
 												</div>
@@ -703,9 +691,7 @@ export default function BMICalculatorPage() {
 															className='pr-12'
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-															{input.unitSystem === 'metric'
-																? 'см'
-																: 'дюймы'}
+															{input.unitSystem === 'metric' ? 'см' : 'дюймы'}
 														</span>
 													</div>
 												</div>
@@ -727,9 +713,7 @@ export default function BMICalculatorPage() {
 																className='pr-12'
 															/>
 															<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-																{input.unitSystem === 'metric'
-																	? 'см'
-																	: 'дюймы'}
+																{input.unitSystem === 'metric' ? 'см' : 'дюймы'}
 															</span>
 														</div>
 													</div>
@@ -794,9 +778,7 @@ export default function BMICalculatorPage() {
 															</span>
 															<span className='text-2xl font-bold'>
 																{healthMetrics.leanMass.toFixed(1)}{' '}
-																{input.unitSystem === 'metric'
-																	? 'кг'
-																	: 'фунты'}
+																{input.unitSystem === 'metric' ? 'кг' : 'фунты'}
 															</span>
 														</div>
 														<div className='flex items-center gap-2 text-xs text-muted-foreground'>
@@ -941,7 +923,8 @@ export default function BMICalculatorPage() {
 												Расширенный анализ
 											</h3>
 											<p className='text-muted-foreground'>
-												Введите дополнительные измерения для расчета процента жира и детального анализа состава тела
+												Введите дополнительные измерения для расчета процента
+												жира и детального анализа состава тела
 											</p>
 										</div>
 									)}
@@ -1009,9 +992,7 @@ export default function BMICalculatorPage() {
 							<Zap className='w-6 h-6 text-green-600' />
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>
-								Дополнительные метрики
-							</h4>
+							<h4 className='font-semibold mb-2'>Дополнительные метрики</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
 								<li>Процент жира в организме</li>
 								<li>Соотношение талия/рост</li>

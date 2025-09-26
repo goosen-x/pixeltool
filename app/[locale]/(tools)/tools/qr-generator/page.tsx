@@ -300,9 +300,7 @@ export default function QRGeneratorPage() {
 											</p>
 										</div>
 										<div>
-											<Label htmlFor='androidId'>
-												Android Package ID
-											</Label>
+											<Label htmlFor='androidId'>Android Package ID</Label>
 											<Input
 												id='androidId'
 												placeholder='com.netflix.mediaclient'
@@ -321,7 +319,8 @@ export default function QRGeneratorPage() {
 									</div>
 									<div className='p-3 bg-muted rounded-lg'>
 										<p className='text-xs text-muted-foreground'>
-											Создаст универсальную ссылку, которая откроет правильное приложение
+											Создаст универсальную ссылку, которая откроет правильное
+											приложение
 										</p>
 									</div>
 								</>
@@ -407,9 +406,7 @@ export default function QRGeneratorPage() {
 										<SelectContent>
 											<SelectItem value='WPA'>WPA/WPA2</SelectItem>
 											<SelectItem value='WEP'>WEP</SelectItem>
-											<SelectItem value='nopass'>
-												Без пароля
-											</SelectItem>
+											<SelectItem value='nopass'>Без пароля</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>

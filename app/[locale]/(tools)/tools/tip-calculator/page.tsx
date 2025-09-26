@@ -161,9 +161,7 @@ export default function TipCalculatorPage() {
 					<CardContent className='space-y-4'>
 						{/* Tip Amount */}
 						<div className='p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg'>
-							<div className='text-sm text-muted-foreground'>
-								Чаевые
-							</div>
+							<div className='text-sm text-muted-foreground'>Чаевые</div>
 							<div className='text-3xl font-bold text-emerald-600 dark:text-emerald-400'>
 								${result.tipAmount}
 							</div>
@@ -206,9 +204,7 @@ export default function TipCalculatorPage() {
 						{/* Bill Breakdown */}
 						<div className='border-t pt-4 space-y-2 text-sm'>
 							<div className='flex justify-between'>
-								<span className='text-muted-foreground'>
-									Оригинальный счет
-								</span>
+								<span className='text-muted-foreground'>Оригинальный счет</span>
 								<span>${parseFloat(billAmount || '0').toFixed(2)}</span>
 							</div>
 							<div className='flex justify-between'>
