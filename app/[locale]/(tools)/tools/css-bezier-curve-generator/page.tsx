@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
 import {
 	Card,
 	CardContent,
@@ -36,7 +35,6 @@ import {
 } from '@/lib/utils/bezier-easing'
 
 export default function BezierCurvePage() {
-	const t = useTranslations('widgets.bezierCurve')
 
 	// State
 	const [curve, setCurve] = useState<BezierCurve>({
@@ -72,7 +70,7 @@ export default function BezierCurvePage() {
 	// Copy to clipboard
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text)
-		toast.success(t('toast.copied'))
+		toast.success('CSS значение скопировано в буфер обмена')
 	}
 
 	// Draw grid on canvas
@@ -390,14 +388,14 @@ export default function BezierCurvePage() {
 	return (
 		<Card>
 			<CardHeader className='sr-only'>
-				<CardTitle>{t('title')}</CardTitle>
-				<CardDescription>{t('description')}</CardDescription>
+				<CardTitle>Генератор кривых Безье</CardTitle>
+				<CardDescription>Создавайте пользовательские функции плавности cubic-bezier для CSS анимаций</CardDescription>
 			</CardHeader>
 			<CardContent className='space-y-6'>
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 					{/* Canvas Editor */}
 					<div className='space-y-4'>
-						<Label>{t('curveEditor')}</Label>
+						<Label>Редактор кривой</Label>
 						<div className='relative inline-block'>
 							<canvas
 								ref={canvasRef}
@@ -422,12 +420,12 @@ export default function BezierCurvePage() {
 								{isPlaying ? (
 									<>
 										<Pause className='w-4 h-4' />
-										{t('pause')}
+										Пауза
 									</>
 								) : (
 									<>
 										<Play className='w-4 h-4' />
-										{t('play')}
+										Воспроизвести
 									</>
 								)}
 							</Button>
@@ -439,12 +437,12 @@ export default function BezierCurvePage() {
 								className='gap-2'
 							>
 								<RotateCcw className='w-4 h-4' />
-								{t('reset')}
+								Сброс
 							</Button>
 
 							<div className='flex-1 space-y-1'>
 								<Label className='text-xs'>
-									{t('duration')} ({duration}s)
+									Длительность ({duration}s)
 								</Label>
 								<Slider
 									value={[duration]}
@@ -462,13 +460,13 @@ export default function BezierCurvePage() {
 					<div className='space-y-4'>
 						{/* Presets */}
 						<div className='space-y-2'>
-							<Label>{t('presets')}</Label>
+							<Label>Предустановки</Label>
 							<Select value={selectedPreset} onValueChange={handlePresetChange}>
 								<SelectTrigger>
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value='custom'>{t('custom')}</SelectItem>
+									<SelectItem value='custom'>Пользовательская</SelectItem>
 									{Object.entries(EASING_PRESETS).map(([key, preset]) => (
 										<SelectItem key={key} value={key}>
 											{preset.name}
@@ -480,7 +478,7 @@ export default function BezierCurvePage() {
 
 						{/* Manual Input */}
 						<div className='space-y-2'>
-							<Label>{t('controlPoints')}</Label>
+							<Label>Контрольные точки</Label>
 							<div className='grid grid-cols-2 gap-4'>
 								<div className='space-y-2'>
 									<Label className='text-xs text-muted-foreground'>
@@ -537,7 +535,7 @@ export default function BezierCurvePage() {
 
 						{/* CSS Output */}
 						<div className='space-y-4 pt-4 border-t'>
-							<h3 className='font-semibold'>{t('cssOutput')}</h3>
+							<h3 className='font-semibold'>CSS выход</h3>
 
 							<div className='space-y-2'>
 								<div className='flex items-center justify-between p-3 rounded-lg bg-muted/50 group'>
@@ -574,7 +572,7 @@ export default function BezierCurvePage() {
 
 						{/* Preview */}
 						<div className='space-y-2 pt-4 border-t'>
-							<Label>{t('preview')}</Label>
+							<Label>Предпросмотр анимации</Label>
 							<div className='space-y-4 p-4 rounded-lg border bg-background'>
 								<div
 									className='h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg transform-gpu'

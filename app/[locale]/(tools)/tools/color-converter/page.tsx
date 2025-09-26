@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
@@ -44,7 +43,6 @@ import {
 } from '@/lib/utils/color-converter'
 
 export default function ColorConverterPage() {
-	const t = useTranslations('widgets.colorConverter')
 
 	// State
 	const [hexValue, setHexValue] = useState('#FF9999')
@@ -105,7 +103,7 @@ export default function ColorConverterPage() {
 	// Copy to clipboard
 	const copyToClipboard = (text: string, label: string) => {
 		navigator.clipboard.writeText(text)
-		toast.success(`${label} ${t('toast.copied')}`)
+		toast.success(`${label} скопировано в буфер обмена`)
 	}
 
 	// Get all conversions
@@ -121,20 +119,20 @@ export default function ColorConverterPage() {
 			key: 'c',
 			primary: true,
 			action: () => copyToClipboard(hexValue, 'HEX'),
-			description: t('shortcuts.copyHex')
+			description: 'Копировать HEX'
 		},
 		{
 			key: 'c',
 			alt: true,
 			shift: true,
 			action: () => copyToClipboard(formatRgb(rgbValue), 'RGB'),
-			description: t('shortcuts.copyRgb')
+			description: 'Копировать RGB'
 		},
 		{
 			key: 'a',
 			primary: true,
 			action: () => copyToClipboard(formatRgba(rgba), 'RGBA'),
-			description: t('shortcuts.copyRgba')
+			description: 'Копировать RGBA'
 		},
 		{
 			key: 'k',
@@ -143,9 +141,9 @@ export default function ColorConverterPage() {
 				setHexValue('#FF9999')
 				updateFromHex('#FF9999')
 				setAlpha(1)
-				toast.success(t('shortcuts.reset'))
+				toast.success('Сброшено')
 			},
-			description: t('shortcuts.reset')
+			description: 'Сбросить'
 		}
 	]
 
@@ -160,14 +158,14 @@ export default function ColorConverterPage() {
 				{/* Input Section */}
 				<WidgetSection
 					icon={<Palette className='w-5 h-5' />}
-					title={t('sections.input')}
+					title='Ввод цвета'
 				>
 					<div className='space-y-4'>
 						{/* Color Preview */}
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
 								<Label className='text-sm font-medium mb-2 block'>
-									{t('preview')}
+									Превью
 								</Label>
 								<div
 									className='h-24 rounded-xl border-2 border-border/50 transition-colors'
@@ -176,7 +174,7 @@ export default function ColorConverterPage() {
 							</div>
 							<div>
 								<Label className='text-sm font-medium mb-2 block'>
-									{t('previewWithAlpha')}
+									Превью с альфа
 								</Label>
 								<div className='h-24 rounded-xl border-2 border-border/50 bg-checkered relative overflow-hidden'>
 									<div
@@ -346,7 +344,7 @@ export default function ColorConverterPage() {
 						</WidgetInput>
 
 						{/* Alpha Channel */}
-						<WidgetInput label={`${t('alphaChannel')} (${alpha.toFixed(2)})`}>
+						<WidgetInput label={`Альфа-канал (${alpha.toFixed(2)})`}>
 							<Slider
 								value={[alpha]}
 								onValueChange={([v]) => setAlpha(v)}
@@ -362,7 +360,7 @@ export default function ColorConverterPage() {
 				{/* Output Section */}
 				<WidgetSection
 					icon={<Layers className='w-5 h-5' />}
-					title={t('sections.output')}
+					title='Конвертация цветов'
 				>
 					<WidgetOutput>
 						<div className='space-y-4'>
@@ -615,12 +613,12 @@ export default function ColorConverterPage() {
 			{/* Settings Section */}
 			<WidgetSection
 				icon={<Settings2 className='w-5 h-5' />}
-				title={t('sections.settings')}
+				title='Настройки'
 				className='mt-6'
 			>
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 					{/* Precision */}
-					<WidgetInput label={t('precision')}>
+					<WidgetInput label='Точность десятичных'>
 						<Input
 							type='number'
 							min='0'
@@ -632,7 +630,7 @@ export default function ColorConverterPage() {
 					</WidgetInput>
 
 					{/* Background Color for RGBA to RGB */}
-					<WidgetInput label={t('backgroundColor')}>
+					<WidgetInput label='Цвет фона (для RGBA → RGB)'>
 						<div className='flex items-center gap-2'>
 							<div
 								className='w-10 h-10 rounded border cursor-pointer flex-shrink-0'
