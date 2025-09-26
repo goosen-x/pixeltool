@@ -1123,7 +1123,8 @@ export const widgets: Widget[] = [
 		path: 'seo-markdown-generator',
 		gradient: 'from-yellow-500 to-amber-500',
 		title: 'SEO Markdown генератор',
-		description: 'Генерируйте SEO-оптимизированные markdown файлы для блог постов',
+		description:
+			'Генерируйте SEO-оптимизированные markdown файлы для блог постов',
 		useCase: 'Генерация SEO-оптимизированных markdown файлов для блог постов',
 		recommendedTools: ['utm-builder', 'password-generator', 'html-tree'],
 		difficulty: 'intermediate',
@@ -1203,8 +1204,10 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['team', 'random', 'groups', 'picker', 'fair'],
 		title: 'Рандомайзер команд',
-		description: 'Создавайте случайные команды быстро и честно. Отлично подходит для игр, работы или развлечений',
-		useCase: 'Случайное деление людей на сбалансированные команды для игр или активностей',
+		description:
+			'Создавайте случайные команды быстро и честно. Отлично подходит для игр, работы или развлечений',
+		useCase:
+			'Случайное деление людей на сбалансированные команды для игр или активностей',
 		metaDescription:
 			'Random team generator. Create fair and balanced teams from a list of names.',
 		faqs: {
@@ -1276,7 +1279,8 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['random', 'draw', 'lots', 'picker', 'selection', 'straws'],
 		title: 'Жеребьёвка',
-		description: 'Цифровая жеребьёвка - выбирайте имена или делайте случайный выбор честно',
+		description:
+			'Цифровая жеребьёвка - выбирайте имена или делайте случайный выбор честно',
 		useCase: 'Честный случайный выбор из списка опций или имён',
 		metaDescription:
 			'Digital draw lots tool. Draw straws, pick cards randomly for fair selection and decision making.',
@@ -1349,7 +1353,8 @@ export const widgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['email', 'validation', 'syntax', 'domain', 'disposable', 'bulk'],
 		title: 'Валидатор Email',
-		description: 'Проверка email адресов на синтаксис, домен и временные адреса',
+		description:
+			'Проверка email адресов на синтаксис, домен и временные адреса',
 		useCase: 'Проверка email адресов на подлинность и доставляемость',
 		metaDescription:
 			'Email validator tool. Check email syntax, domain MX records, disposable addresses, and bulk validation.',
@@ -1415,8 +1420,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['symbols', 'unicode', 'characters', 'copy', 'paste'],
-		useCase:
-			'Quickly copy special symbols and Unicode characters for use in any text',
+		title: 'Выбор специальных символов',
+		description: 'Кликните для копирования специальных символов и Unicode символов для любого текста',
+		useCase: 'Быстрое копирование специальных символов и Unicode символов для использования в тексте',
 		metaDescription:
 			'Special symbols picker with one-click copy. Access Unicode symbols, emojis, and special characters.',
 		faqs: {
@@ -1487,8 +1493,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['text', 'unicode', 'fonts', 'style', 'generator'],
-		useCase:
-			'Transform plain text into stylish Unicode fonts for social media and creative projects',
+		title: 'Генератор текста онлайн - создать стилизованный текст бесплатно',
+		description: 'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов',
+		useCase: 'Бесплатный онлайн генератор стилизованного текста для соцсетей, постов, профилей и сообщений',
 		metaDescription:
 			'Fancy text generator with Unicode fonts. Convert text to bold, italic, script, and decorative styles.',
 		faqs: {
@@ -1559,8 +1566,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['random', 'number', 'generator', 'crypto', 'secure'],
-		useCase:
-			'Generate cryptographically secure random numbers for games, lottery, or cryptographic applications',
+		title: 'Генератор случайных чисел онлайн',
+		description: 'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей',
+		useCase: 'Бесплатный генератор случайных чисел для игр, выборки, розыгрышей и безопасности',
 		metaDescription:
 			'Cryptographically secure random number generator. Generate random numbers with no duplicates option.',
 		faqs: {
@@ -1627,8 +1635,9 @@ export const widgets: Widget[] = [
 		recommendedTools: ['random-number-generator', 'password-generator'],
 		difficulty: 'beginner',
 		tags: ['calculator', 'percentage', 'math', 'finance', 'discount'],
-		useCase:
-			'Calculate percentages for discounts, taxes, tips, investments, and price changes',
+		title: 'Калькулятор процентов',
+		description: 'Рассчитывайте проценты для скидок, налогов, чаевых и инвестиций',
+		useCase: 'Расчёт процентов для скидок, чаевых, налогов и финансового планирования',
 		metaDescription:
 			'Percentage calculator for multiple scenarios. Calculate discounts, taxes, tips, and percentage changes.',
 		faqs: {
@@ -1699,8 +1708,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['calculator', 'tip', 'gratuity', 'restaurant', 'service', 'money'],
-		useCase:
-			'Calculate tips for restaurants, bars, taxis, and services with bill splitting',
+		title: 'Калькулятор чаевых',
+		description: 'Рассчитывайте чаевые и делите счета для ресторанов и услуг',
+		useCase: 'Расчёт чаевых и деление счетов между несколькими людьми',
 		metaDescription:
 			'Tip calculator with bill splitting. Calculate gratuity for restaurants, bars, and services.',
 		faqs: {
