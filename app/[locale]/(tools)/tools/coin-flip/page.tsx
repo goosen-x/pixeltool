@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import Image from 'next/image'
-import { useTranslations, useLocale } from 'next-intl'
+const locale = 'ru'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface FlipResult {
@@ -60,8 +60,6 @@ const coinTypes: CoinType[] = [
 ]
 
 export default function CoinFlipPage() {
-	const locale = useLocale()
-	const t = useTranslations('widgets.coinFlip')
 	const [mounted, setMounted] = useState(false)
 	const [isFlipping, setIsFlipping] = useState(false)
 	const [currentResult, setCurrentResult] = useState<'heads' | 'tails' | null>(
