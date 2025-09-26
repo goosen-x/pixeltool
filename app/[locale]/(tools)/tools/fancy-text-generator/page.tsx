@@ -20,7 +20,6 @@ import { cn } from '@/lib/utils'
 import { useFancyTextGenerator } from '@/lib/hooks/widgets'
 
 export default function FancyTextGeneratorPage() {
-
 	const {
 		inputText,
 		copiedStyle,

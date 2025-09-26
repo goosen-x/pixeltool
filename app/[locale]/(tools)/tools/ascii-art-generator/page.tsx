@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { useTranslations } from 'next-intl'
 import {
 	Type,
 	Image as ImageIcon,
@@ -49,7 +48,6 @@ import {
 } from '@/lib/utils/ascii-converter'
 
 export default function AsciiArtGeneratorPage() {
-	const t = useTranslations('widgets.asciiArtGenerator')
 	const [activeTab, setActiveTab] = useState<'text' | 'image' | 'patterns'>(
 		'text'
 	)

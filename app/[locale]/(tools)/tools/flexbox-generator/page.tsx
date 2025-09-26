@@ -15,7 +15,7 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Copy, RotateCcw, HelpCircle, Check } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import {
 	Tooltip,
 	TooltipContent,
@@ -43,7 +43,6 @@ const defaultProps: FlexboxProps = {
 }
 
 export default function FlexboxGeneratorPage() {
-	const t = useTranslations('widgets.flexboxGenerator')
 	const locale = useLocale()
 	const [props, setProps] = useState<FlexboxProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(3)
@@ -142,7 +141,7 @@ export default function FlexboxGeneratorPage() {
 					: 'CSS code copied to clipboard'
 			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -157,7 +156,7 @@ export default function FlexboxGeneratorPage() {
 					: 'Tailwind classes copied to clipboard'
 			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -192,7 +191,7 @@ export default function FlexboxGeneratorPage() {
 
 	const renderLabel = (key: string, englishLabel: string) => {
 		if (locale !== 'ru') {
-			return <Label className='text-xs'>{t(key)}</Label>
+			return <Label className='text-xs'>{englishLabel}</Label>
 		}
 
 		return (
@@ -204,7 +203,7 @@ export default function FlexboxGeneratorPage() {
 							<HelpCircle className='h-3 w-3 text-muted-foreground' />
 						</TooltipTrigger>
 						<TooltipContent>
-							<p className='text-xs'>{t(key)}</p>
+							<p className='text-xs'>Описание свойства CSS Flexbox</p>
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>
@@ -274,7 +273,7 @@ export default function FlexboxGeneratorPage() {
 			<Card className='lg:col-span-1'>
 				<CardHeader>
 					<CardTitle className='flex items-center justify-between'>
-						<span>{t('properties')}</span>
+						<span>Свойства</span>
 						<Button
 							variant='ghost'
 							size='sm'
@@ -282,7 +281,7 @@ export default function FlexboxGeneratorPage() {
 							className='h-8 hover:bg-accent hover:text-white'
 						>
 							<RotateCcw className='w-4 h-4 mr-1' />
-							{t('reset')}
+							Сброс
 						</Button>
 					</CardTitle>
 				</CardHeader>
@@ -385,7 +384,7 @@ export default function FlexboxGeneratorPage() {
 						</div>
 
 						<div className='space-y-1'>
-							<Label className='text-xs'>{t('showNumbers')}</Label>
+							<Label className='text-xs'>Показать номера</Label>
 							<div className='h-9 flex items-center'>
 								<Switch
 									checked={showItemNumbers}
@@ -406,15 +405,13 @@ export default function FlexboxGeneratorPage() {
 												<HelpCircle className='h-3 w-3 text-muted-foreground' />
 											</TooltipTrigger>
 											<TooltipContent>
-												<p className='text-xs'>{t('gap')}</p>
+												<p className='text-xs'>Отступ между элементами</p>
 											</TooltipContent>
 										</Tooltip>
 									</TooltipProvider>
 								</div>
 							) : (
-								<Label className='text-xs'>
-									{t('gap')}: {props.gap}px
-								</Label>
+								<Label className='text-xs'>Отступ: {props.gap}px</Label>
 							)}
 							<Slider
 								value={[props.gap]}
@@ -427,9 +424,7 @@ export default function FlexboxGeneratorPage() {
 						</div>
 
 						<div className='space-y-1'>
-							<Label className='text-xs'>
-								{t('items')}: {itemCount}
-							</Label>
+							<Label className='text-xs'>Элементы: {itemCount}</Label>
 							<Slider
 								value={[itemCount]}
 								onValueChange={([value]) => setItemCount(value)}
@@ -446,7 +441,7 @@ export default function FlexboxGeneratorPage() {
 			{/* Preview */}
 			<Card className='lg:col-span-2'>
 				<CardHeader>
-					<CardTitle>{t('preview')}</CardTitle>
+					<CardTitle>Превью</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div style={containerStyle}>
@@ -465,7 +460,7 @@ export default function FlexboxGeneratorPage() {
 			{/* Generated CSS */}
 			<Card className='lg:col-span-3'>
 				<CardHeader>
-					<CardTitle>{t('generatedCss')}</CardTitle>
+					<CardTitle>Сгенерированный CSS</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className='grid md:grid-cols-2 gap-4'>

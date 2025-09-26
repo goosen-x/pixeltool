@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Copy, Check, AlertCircle, HelpCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import {
 	Tooltip,
 	TooltipContent,
@@ -20,7 +20,7 @@ import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function ClampCalculatorPage() {
 	const locale = useLocale() as 'en' | 'ru'
-	const t = useTranslations('widgets.clampCalculator')
+	// const t = useTranslations('widgets.clampCalculator') // Removed
 	const [unit, setUnit] = useState<'px' | 'rem'>('rem')
 	const [property, setProperty] = useState<'font-size' | 'margin' | 'padding'>(
 		'font-size'
@@ -75,28 +75,30 @@ export default function ClampCalculatorPage() {
 			typeof maxViewport === 'number' &&
 			(minViewport < 0 || maxViewport < 1)
 		) {
-			newErrors.push(t('errors.viewportValues'))
+			newErrors.push('Значения viewport должны быть положительными')
 		}
 		if (
 			typeof minValue === 'number' &&
 			typeof maxValue === 'number' &&
 			minValue >= maxValue
 		) {
-			newErrors.push(t('errors.minMax'))
+			newErrors.push('Минимальное значение должно быть меньше максимального')
 		}
 		if (
 			typeof minViewport === 'number' &&
 			typeof maxViewport === 'number' &&
 			minViewport >= maxViewport
 		) {
-			newErrors.push(t('errors.minMaxViewport'))
+			newErrors.push(
+				'Минимальная ширина viewport должна быть меньше максимальной'
+			)
 		}
 		if ([minValue, maxValue, minViewport, maxViewport].some(v => v === '')) {
-			newErrors.push(t('errors.allFields'))
+			newErrors.push('Все поля должны быть заполнены')
 		}
 
 		setErrors(newErrors)
-	}, [minValue, maxValue, minViewport, maxViewport, t])
+	}, [minValue, maxValue, minViewport, maxViewport])
 
 	const copyToClipboard = async () => {
 		try {
@@ -109,7 +111,7 @@ export default function ClampCalculatorPage() {
 					: 'CSS value copied to clipboard'
 			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -124,7 +126,7 @@ export default function ClampCalculatorPage() {
 					: 'Tailwind class copied to clipboard'
 			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -262,7 +264,7 @@ export default function ClampCalculatorPage() {
 			<div className='grid gap-6 md:grid-cols-2'>
 				<Card className='p-6'>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='font-semibold'>{t('values')}</h3>
+						<h3 className='font-semibold'>Значения</h3>
 						<RadioGroup
 							value={unit}
 							onValueChange={v => setUnit(v as 'px' | 'rem')}
@@ -283,14 +285,14 @@ export default function ClampCalculatorPage() {
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
 							<div className='flex items-center gap-1 mb-2'>
-								<Label htmlFor='min-value'>{t('min')}</Label>
+								<Label htmlFor='min-value'>Минимум</Label>
 								<TooltipProvider>
 									<Tooltip>
 										<TooltipTrigger asChild>
 											<HelpCircle className='h-3.5 w-3.5 text-muted-foreground' />
 										</TooltipTrigger>
 										<TooltipContent className='max-w-[200px]'>
-											<p className='text-xs'>{t('tooltips.negative')}</p>
+											<p className='text-xs'>Может быть отрицательным</p>
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
@@ -317,7 +319,7 @@ export default function ClampCalculatorPage() {
 						</div>
 
 						<div>
-							<Label htmlFor='max-value'>{t('max')}</Label>
+							<Label htmlFor='max-value'>Максимум</Label>
 							<div className='relative'>
 								<Input
 									id='max-value'
@@ -342,10 +344,10 @@ export default function ClampCalculatorPage() {
 				</Card>
 
 				<Card className='p-6'>
-					<h3 className='font-semibold mb-4'>{t('viewport')}</h3>
+					<h3 className='font-semibold mb-4'>Viewport</h3>
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
-							<Label htmlFor='min-viewport'>{t('min')}</Label>
+							<Label htmlFor='min-viewport'>Минимум</Label>
 							<div className='relative'>
 								<Input
 									id='min-viewport'
@@ -367,7 +369,7 @@ export default function ClampCalculatorPage() {
 						</div>
 
 						<div>
-							<Label htmlFor='max-viewport'>{t('max')}</Label>
+							<Label htmlFor='max-viewport'>Максимум</Label>
 							<div className='relative'>
 								<Input
 									id='max-viewport'
@@ -395,7 +397,7 @@ export default function ClampCalculatorPage() {
 				<Alert variant='destructive' className='mt-6'>
 					<AlertCircle className='h-4 w-4' />
 					<AlertDescription>
-						<strong>{t('errors.title')}</strong>
+						<strong>Ошибки</strong>
 						<ul className='list-disc list-inside mt-2'>
 							{errors.map((error, index) => (
 								<li key={index}>{error}</li>
@@ -407,7 +409,7 @@ export default function ClampCalculatorPage() {
 
 			<Card className='mt-6 p-6'>
 				<div className='flex items-start justify-between mb-4'>
-					<h3 className='font-semibold'>{t('result')}</h3>
+					<h3 className='font-semibold'>Результат</h3>
 					<div>
 						<RadioGroup
 							value={property}
@@ -492,14 +494,14 @@ export default function ClampCalculatorPage() {
 			</Card>
 
 			<Card className='mt-6 p-6'>
-				<h3 className='font-semibold mb-4'>{t('liveExample')}</h3>
+				<h3 className='font-semibold mb-4'>Пример в действии</h3>
 				<p
 					className='text-lg leading-relaxed'
 					style={{ [property]: clampValue }}
 					contentEditable
 					suppressContentEditableWarning
 				>
-					{t('liveExampleText')}
+					Этот текст демонстрирует динамическое изменение размера
 				</p>
 			</Card>
 		</>

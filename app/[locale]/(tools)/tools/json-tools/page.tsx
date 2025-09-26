@@ -34,7 +34,6 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import { useTranslations } from 'next-intl'
 import {
 	useWidgetKeyboard,
 	editorShortcuts
@@ -89,7 +88,6 @@ const JSON_EXAMPLES = [
 ]
 
 export default function JSONToolsPage() {
-	const t = useTranslations('widgets.jsonTools')
 	const [input, setInput] = useState('')
 	const [analysis, setAnalysis] = useState<JSONAnalysis | null>(null)
 	const [indentSize, setIndentSize] = useState('2')
@@ -349,7 +347,7 @@ export default function JSONToolsPage() {
 		<WidgetLayout>
 			<div className='grid gap-6 lg:grid-cols-2'>
 				{/* Input Section */}
-				<WidgetSection icon={Code2} title={t('sections.input')}>
+				<WidgetSection icon={Code2} title='Ввод JSON'>
 					<div className='space-y-4'>
 						<WidgetInput label='JSON Input' className='h-full'>
 							<Textarea
@@ -422,7 +420,7 @@ export default function JSONToolsPage() {
 									type='file'
 									accept='.json'
 									onChange={handleFileUpload}
-									aria-label={t('uploadJSON')}
+									aria-label='Загрузить JSON файл'
 									className='hidden'
 								/>
 							</label>
@@ -450,7 +448,7 @@ export default function JSONToolsPage() {
 				</WidgetSection>
 
 				{/* Output Section */}
-				<WidgetSection icon={Braces} title={t('sections.output')}>
+				<WidgetSection icon={Braces} title='Обработка JSON'>
 					{analysis && analysis.isValid ? (
 						<Tabs
 							value={activeTab}
@@ -667,11 +665,7 @@ export default function JSONToolsPage() {
 			</div>
 
 			{/* Settings Section */}
-			<WidgetSection
-				icon={Settings2}
-				title={t('sections.settings')}
-				className='mt-6'
-			>
+			<WidgetSection icon={Settings2} title='Настройки' className='mt-6'>
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 					<WidgetInput label='Indent Size'>
 						<Select value={indentSize} onValueChange={setIndentSize}>
