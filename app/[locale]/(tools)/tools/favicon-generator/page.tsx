@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useRef, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { WidgetWrapper } from '@/components/widgets/WidgetWrapper'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -34,7 +33,6 @@ const FAVICON_SIZES = [
 ]
 
 export default function FaviconGeneratorPage() {
-	const t = useTranslations('widgets.faviconGenerator')
 	const [selectedImage, setSelectedImage] = useState<File | null>(null)
 	const [previewUrl, setPreviewUrl] = useState<string>('')
 	const [generatedFavicons, setGeneratedFavicons] = useState<

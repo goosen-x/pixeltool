@@ -18,10 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 import { useFancyTextGenerator } from '@/lib/hooks/widgets'
-import { useTranslations } from 'next-intl'
 
 export default function FancyTextGeneratorPage() {
-	const t = useTranslations('widgets.fancyTextGenerator')
 
 	const {
 		inputText,

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -78,7 +77,6 @@ const SCREEN_SIZES = {
 }
 
 export default function PxRemConverterPage() {
-	const t = useTranslations('widgets.pxRemConverter')
 	const [inputValue, setInputValue] = useState<string>('16')
 	const [inputUnit, setInputUnit] = useState<'px' | 'rem' | 'em'>('px')
 	const [baseFontSize, setBaseFontSize] = useState<number>(16)
@@ -244,7 +242,7 @@ export default function PxRemConverterPage() {
 									onChange={e =>
 										setInputUnit(e.target.value as 'px' | 'rem' | 'em')
 									}
-									aria-label={t('selectUnit')}
+									aria-label='Выберите единицу измерения'
 									className='px-3 py-2 rounded-md border bg-background'
 								>
 									<option value='px'>px</option>

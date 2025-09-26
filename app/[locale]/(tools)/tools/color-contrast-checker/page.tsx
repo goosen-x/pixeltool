@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -76,7 +75,6 @@ const WCAG_GUIDELINES = {
 }
 
 export default function ColorContrastCheckerPage() {
-	const t = useTranslations('widgets.colorContrastChecker')
 	const [foreground, setForeground] = useState('#000000')
 	const [background, setBackground] = useState('#ffffff')
 	const [fontSize, setFontSize] = useState(16)
@@ -314,14 +312,14 @@ export default function ColorContrastCheckerPage() {
 			<div className='grid lg:grid-cols-2 gap-6'>
 				{/* Color Inputs */}
 				<Card className='p-6'>
-					<h3 className='font-semibold mb-4'>{t('sections.colorInput')}</h3>
+					<h3 className='font-semibold mb-4'>Ввод цветов</h3>
 
 					<div className='space-y-6'>
 						{/* Foreground Color */}
 						<div>
 							<Label htmlFor='foreground' className='flex items-center gap-2'>
 								<Type className='w-4 h-4' />
-								{t('inputs.foreground')}
+								Цвет текста
 							</Label>
 							<div className='flex gap-2 mt-2'>
 								<Input
@@ -335,7 +333,7 @@ export default function ColorContrastCheckerPage() {
 									type='text'
 									value={foreground}
 									onChange={e => setForeground(e.target.value)}
-									placeholder={t('inputs.foregroundPlaceholder')}
+									placeholder='#000000'
 									className='flex-1 font-mono'
 								/>
 							</div>

@@ -43,7 +43,6 @@ import {
 } from '@/lib/utils/color-converter'
 
 export default function ColorConverterPage() {
-
 	// State
 	const [hexValue, setHexValue] = useState('#FF9999')
 	const [rgbValue, setRgbValue] = useState<RGB>({ r: 255, g: 153, b: 153 })
@@ -164,9 +163,7 @@ export default function ColorConverterPage() {
 						{/* Color Preview */}
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
-								<Label className='text-sm font-medium mb-2 block'>
-									Превью
-								</Label>
+								<Label className='text-sm font-medium mb-2 block'>Превью</Label>
 								<div
 									className='h-24 rounded-xl border-2 border-border/50 transition-colors'
 									style={{ backgroundColor: hexValue }}

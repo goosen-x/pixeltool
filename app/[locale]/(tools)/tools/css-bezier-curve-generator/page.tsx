@@ -35,7 +35,6 @@ import {
 } from '@/lib/utils/bezier-easing'
 
 export default function BezierCurvePage() {
-
 	// State
 	const [curve, setCurve] = useState<BezierCurve>({
 		p1: { x: 0.25, y: 0.1 },
@@ -389,7 +388,10 @@ export default function BezierCurvePage() {
 		<Card>
 			<CardHeader className='sr-only'>
 				<CardTitle>Генератор кривых Безье</CardTitle>
-				<CardDescription>Создавайте пользовательские функции плавности cubic-bezier для CSS анимаций</CardDescription>
+				<CardDescription>
+					Создавайте пользовательские функции плавности cubic-bezier для CSS
+					анимаций
+				</CardDescription>
 			</CardHeader>
 			<CardContent className='space-y-6'>
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
@@ -441,9 +443,7 @@ export default function BezierCurvePage() {
 							</Button>
 
 							<div className='flex-1 space-y-1'>
-								<Label className='text-xs'>
-									Длительность ({duration}s)
-								</Label>
+								<Label className='text-xs'>Длительность ({duration}s)</Label>
 								<Slider
 									value={[duration]}
 									onValueChange={([v]) => setDuration(v)}
