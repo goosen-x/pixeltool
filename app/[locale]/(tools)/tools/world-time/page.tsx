@@ -31,12 +31,11 @@ import {
 	Sunrise
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { useWorldTime } from '@/lib/hooks/widgets'
 import { AnalogClock } from '@/components/ui/analog-clock'
 
 export default function WorldTimePage() {
-	const t = useTranslations('widgets.worldTime')
 	const locale = useLocale()
 
 	const {
@@ -56,11 +55,11 @@ export default function WorldTimePage() {
 		popularTimezones
 	} = useWorldTime({
 		translations: {
-			alreadyAdded: t('toast.alreadyAdded'),
+			alreadyAdded: 'Город уже добавлен',
 			cityAdded:
 				locale === 'ru' ? '__CITY__ добавлен' : '{city} has been added',
-			enterTimeDate: t('toast.enterTimeDate'),
-			invalidDateTime: t('toast.invalidDateTime')
+			enterTimeDate: 'Введите время и дату',
+			invalidDateTime: 'Неверный формат времени'
 		}
 	})
 
@@ -78,7 +77,7 @@ export default function WorldTimePage() {
 						<div>
 							<h3 className='text-xl font-semibold mb-3 flex items-center gap-2'>
 								<MapPin className='w-5 h-5' />
-								{t('localTime')}
+								Местное время
 							</h3>
 							<div className='flex items-center gap-6'>
 								<div className='text-5xl font-mono font-bold tracking-tight'>
@@ -126,11 +125,11 @@ export default function WorldTimePage() {
 				<TabsList className='grid w-full grid-cols-2'>
 					<TabsTrigger value='clocks' className='gap-2'>
 						<Clock className='w-4 h-4' />
-						{t('tabs.worldClocks')}
+						Мировое время
 					</TabsTrigger>
 					<TabsTrigger value='converter' className='gap-2'>
 						<Timer className='w-4 h-4' />
-						{t('tabs.converter')}
+						Конвертер
 					</TabsTrigger>
 				</TabsList>
 
@@ -139,7 +138,7 @@ export default function WorldTimePage() {
 					<div className='flex items-center justify-between'>
 						<h2 className='text-2xl font-semibold flex items-center gap-2'>
 							<Sparkles className='w-6 h-6 text-primary' />
-							{t('worldClocks')}
+							Мировые часы
 						</h2>
 						<Select
 							onValueChange={value => {
@@ -148,7 +147,7 @@ export default function WorldTimePage() {
 							}}
 						>
 							<SelectTrigger className='w-[250px]'>
-								<SelectValue placeholder={t('addCity')} />
+								<SelectValue placeholder='Выберите город' />
 							</SelectTrigger>
 							<SelectContent>
 								{popularTimezones.map((tz, index) => (
@@ -244,7 +243,7 @@ export default function WorldTimePage() {
 									<div className='text-center'>
 										<Plus className='w-12 h-12 mx-auto mb-3 text-muted-foreground' />
 										<p className='text-sm text-muted-foreground'>
-											{t('addMoreCities')}
+											Добавьте больше городов
 										</p>
 									</div>
 								</CardContent>
@@ -259,14 +258,14 @@ export default function WorldTimePage() {
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
 								<ArrowRight className='w-5 h-5' />
-								{t('timezoneConverter')}
+								Конвертер часовых поясов
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='space-y-6'>
 							<div className='grid md:grid-cols-2 gap-8'>
 								<div className='space-y-4'>
 									<div>
-										<Label htmlFor='from-time'>{t('fromTime')}</Label>
+										<Label htmlFor='from-time'>Время</Label>
 										<div className='grid grid-cols-2 gap-2 mt-2'>
 											<div className='relative'>
 												<Clock className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
@@ -295,7 +294,7 @@ export default function WorldTimePage() {
 									</div>
 
 									<div>
-										<Label htmlFor='from-timezone'>{t('fromTimezone')}</Label>
+										<Label htmlFor='from-timezone'>Исходный часовой пояс</Label>
 										<Select
 											value={conversion.fromTimezone}
 											onValueChange={value =>
@@ -308,7 +307,7 @@ export default function WorldTimePage() {
 											<SelectContent>
 												<div className='p-2'>
 													<Input
-														placeholder={t('searchTimezone')}
+														placeholder='Поиск часового пояса'
 														value={searchTerm}
 														onChange={e => setSearchTerm(e.target.value)}
 														className='mb-2'
@@ -326,7 +325,7 @@ export default function WorldTimePage() {
 
 								<div className='space-y-4'>
 									<div>
-										<Label htmlFor='to-timezone'>{t('toTimezone')}</Label>
+										<Label htmlFor='to-timezone'>Целевой часовой пояс</Label>
 										<Select
 											value={conversion.toTimezone}
 											onValueChange={value =>
@@ -351,7 +350,7 @@ export default function WorldTimePage() {
 
 									<Button onClick={convertTime} className='w-full' size='lg'>
 										<ArrowRight className='w-4 h-4 mr-2' />
-										{t('convertTime')}
+										Конвертировать
 									</Button>
 								</div>
 							</div>
@@ -361,7 +360,7 @@ export default function WorldTimePage() {
 									<div className='flex items-center justify-between'>
 										<div>
 											<p className='text-sm text-muted-foreground mb-2'>
-												{t('result')}
+												Результат
 											</p>
 											<p className='text-4xl font-mono font-bold mb-2'>
 												{conversion.result.time}
@@ -388,7 +387,7 @@ export default function WorldTimePage() {
 												className='text-lg px-4 py-2'
 											>
 												{conversion.result.dayDifference > 0 ? '+' : ''}
-												{conversion.result.dayDifference} {t('day')}
+												{conversion.result.dayDifference} дн.
 											</Badge>
 										)}
 									</div>
@@ -403,24 +402,24 @@ export default function WorldTimePage() {
 			<Card className='overflow-hidden'>
 				<div className='bg-gradient-to-r from-muted/50 to-muted/30'>
 					<CardContent className='p-6'>
-						<h3 className='font-semibold text-lg mb-4'>{t('about.title')}</h3>
+						<h3 className='font-semibold text-lg mb-4'>О мировом времени</h3>
 						<div className='grid md:grid-cols-2 gap-6'>
 							<div className='space-y-4'>
 								<div className='flex items-start gap-3'>
 									<Globe className='w-5 h-5 mt-0.5 text-primary' />
 									<div>
-										<h4 className='font-medium mb-1'>{t('about.accurate')}</h4>
+										<h4 className='font-medium mb-1'>Точность</h4>
 										<p className='text-sm text-muted-foreground'>
-											{t('about.accurateDesc')}
+											Получайте точное время с учётом часовых поясов
 										</p>
 									</div>
 								</div>
 								<div className='flex items-start gap-3'>
 									<Sunrise className='w-5 h-5 mt-0.5 text-primary' />
 									<div>
-										<h4 className='font-medium mb-1'>{t('about.dst')}</h4>
+										<h4 className='font-medium mb-1'>Летнее время</h4>
 										<p className='text-sm text-muted-foreground'>
-											{t('about.dstDesc')}
+											Автоматический учёт перехода на летнее время
 										</p>
 									</div>
 								</div>
@@ -429,18 +428,18 @@ export default function WorldTimePage() {
 								<div className='flex items-start gap-3'>
 									<MapPin className='w-5 h-5 mt-0.5 text-primary' />
 									<div>
-										<h4 className='font-medium mb-1'>{t('about.popular')}</h4>
+										<h4 className='font-medium mb-1'>Популярные города</h4>
 										<p className='text-sm text-muted-foreground'>
-											{t('about.popularDesc')}
+											Быстрый доступ к времени основных городов мира
 										</p>
 									</div>
 								</div>
 								<div className='flex items-start gap-3'>
 									<HardDrive className='w-5 h-5 mt-0.5 text-primary' />
 									<div>
-										<h4 className='font-medium mb-1'>{t('about.storage')}</h4>
+										<h4 className='font-medium mb-1'>Локальное хранение</h4>
 										<p className='text-sm text-muted-foreground'>
-											{t('about.storageDesc')}
+											Ваши настройки сохраняются локально
 										</p>
 									</div>
 								</div>
