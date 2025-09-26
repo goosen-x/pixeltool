@@ -7,11 +7,8 @@ import { toast } from 'sonner'
 import { useEmoji } from '@/lib/hooks/useEmoji'
 import { EmojiGrid, EmojiSearch, EmojiInfo } from '@/components/tools/emoji'
 import { type CategoryId } from '@/lib/data/emoji-data'
-import { useTranslations } from 'next-intl'
 
 export default function EmojiListPage() {
-	const t = useTranslations('widgets.emojiList')
-
 	const [selectedCategory, setSelectedCategory] = useState<
 		CategoryId | 'all' | 'recent'
 	>('all')
@@ -32,9 +29,9 @@ export default function EmojiListPage() {
 	const handleCopyEmoji = async (emoji: string) => {
 		const success = await copyEmoji(emoji)
 		if (success) {
-			toast.success(t('copied', { emoji }))
+			toast.success(`Эмодзи ${emoji} скопирован!`)
 		} else {
-			toast.error(t('copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -42,9 +39,9 @@ export default function EmojiListPage() {
 	const handleDownloadEmoji = async (emoji: string) => {
 		const success = await downloadEmojiAsImage(emoji)
 		if (success) {
-			toast.success(t('downloaded', { emoji }))
+			toast.success(`Эмодзи ${emoji} скачан!`)
 		} else {
-			toast.error(t('downloadError'))
+			toast.error('Ошибка скачивания')
 		}
 	}
 
@@ -81,8 +78,8 @@ export default function EmojiListPage() {
 						<div className='px-4 py-2 bg-muted/50 border-b'>
 							<p className='text-sm text-muted-foreground'>
 								{selectedCategory === 'recent'
-									? t('recentEmojis', { count: filteredEmojis.length })
-									: t('totalEmojis', { count: filteredEmojis.length })}
+									? `Недавние эмодзи: ${filteredEmojis.length}`
+									: `Всего эмодзи: ${filteredEmojis.length}`}
 							</p>
 						</div>
 

@@ -10,11 +10,8 @@ import {
 	SymbolSearch,
 	SymbolInfo
 } from '@/components/tools/special-symbols'
-import { useTranslations } from 'next-intl'
 
 export default function SpecialSymbolsPickerPage() {
-	const t = useTranslations('widgets.specialSymbolsPicker')
-
 	const [selectedCategory, setSelectedCategory] = useState<
 		string | 'all' | 'recent'
 	>('all')
@@ -34,9 +31,9 @@ export default function SpecialSymbolsPickerPage() {
 	const handleCopySymbol = async (symbol: string) => {
 		const success = await copySymbol(symbol)
 		if (success) {
-			toast.success(t('copied', { symbol }))
+			toast.success(`Символ ${symbol} скопирован!`)
 		} else {
-			toast.error(t('copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -75,8 +72,8 @@ export default function SpecialSymbolsPickerPage() {
 						<div className='px-4 py-2 bg-muted/50 border-b'>
 							<p className='text-sm text-muted-foreground'>
 								{selectedCategory === 'recent'
-									? t('recentSymbols', { count: filteredSymbols.length })
-									: t('totalSymbols', { count: filteredSymbols.length })}
+									? `Недавние символы: ${filteredSymbols.length}`
+									: `Всего символов: ${filteredSymbols.length}`}
 							</p>
 						</div>
 
