@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -72,7 +72,6 @@ function distributeIntoTeams(
 }
 
 export default function TeamRandomizerPage() {
-	const t = useTranslations('widgets.teamRandomizer')
 	const locale = useLocale()
 	const defaultParticipants =
 		'Alice Johnson\nBob Smith\nCarol Williams\nDavid Brown\nEve Davis\nFrank Miller\nGrace Wilson'
@@ -97,28 +96,30 @@ export default function TeamRandomizerPage() {
 		const validationErrors: string[] = []
 
 		if (participants.length < 2) {
-			validationErrors.push(t('validationErrors.minParticipants'))
+			validationErrors.push('Минимум 2 участника')
 		}
 
 		if (numberOfTeams < 2) {
-			validationErrors.push(t('validationErrors.minTeams'))
+			validationErrors.push('Минимум 2 команды')
 		}
 
 		if (numberOfTeams > participants.length) {
-			validationErrors.push(t('validationErrors.maxTeams'))
+			validationErrors.push('Максимум 10 команд')
 		}
 
 		if (preferredTeamSize) {
 			const teamSizeNum = parseInt(preferredTeamSize)
 			if (isNaN(teamSizeNum) || teamSizeNum < 1) {
-				validationErrors.push(t('validationErrors.teamSizeInvalid'))
+				validationErrors.push('Размер команды должен быть больше 0')
 			} else if (teamSizeNum * numberOfTeams > participants.length * 2) {
-				validationErrors.push(t('validationErrors.teamSizeTooLarge'))
+				validationErrors.push(
+					'Размер команды слишком большой для количества участников'
+				)
 			}
 		}
 
 		return validationErrors
-	}, [participants.length, numberOfTeams, preferredTeamSize, t])
+	}, [participants.length, numberOfTeams, preferredTeamSize])
 
 	// Generate teams
 	const generateTeams = useCallback(() => {
@@ -239,9 +240,7 @@ export default function TeamRandomizerPage() {
 						<div className='flex items-center justify-between mb-4'>
 							<div className='flex items-center gap-2'>
 								<Users className='w-5 h-5 text-muted-foreground' />
-								<h2 className='text-lg font-semibold'>
-									{t('participantsList')}
-								</h2>
+								<h2 className='text-lg font-semibold'>Список участников</h2>
 								{participants.length > 0 && (
 									<Badge variant='secondary' className='ml-2'>
 										{participants.length}
@@ -260,13 +259,13 @@ export default function TeamRandomizerPage() {
 								)}
 							>
 								<RotateCcw className='w-3 h-3 mr-1' />
-								{t('fillDefaults')}
+								Заполнить пример
 							</Button>
 						</div>
 
 						{/* Participants Input */}
 						<Textarea
-							placeholder={t('participantsPlaceholder')}
+							placeholder='Введите имена участников (по одному на строку)'
 							value={participantsInput}
 							onChange={e => setParticipantsInput(e.target.value)}
 							className='min-h-[200px] resize-none'
@@ -276,14 +275,14 @@ export default function TeamRandomizerPage() {
 					{/* Right Column - Settings */}
 					<div className='flex flex-col justify-between'>
 						<div className='space-y-4'>
-							<h3 className='font-semibold text-base'>{t('teamSettings')}</h3>
+							<h3 className='font-semibold text-base'>Настройки команд</h3>
 							<div className='space-y-4'>
 								<div className='space-y-2'>
 									<Label
 										htmlFor='numberOfTeams'
 										className='text-sm font-medium'
 									>
-										{t('numberOfTeams')}
+										Количество команд
 									</Label>
 									<Input
 										id='numberOfTeams'
@@ -299,7 +298,7 @@ export default function TeamRandomizerPage() {
 								</div>
 								<div className='space-y-2'>
 									<Label htmlFor='teamSize' className='text-sm font-medium'>
-										{t('teamSize')}
+										Размер команды
 									</Label>
 									<Input
 										id='teamSize'
@@ -311,7 +310,7 @@ export default function TeamRandomizerPage() {
 										className='w-full'
 									/>
 									<p className='text-xs text-muted-foreground'>
-										{t('teamSizeDesc')}
+										Оставьте пустым для автоматического распределения
 									</p>
 								</div>
 							</div>
@@ -323,7 +322,9 @@ export default function TeamRandomizerPage() {
 							size='lg'
 						>
 							<Shuffle className='w-4 h-4 mr-2' />
-							{teams.length === 0 ? t('generateTeams') : t('regenerateTeams')}
+							{teams.length === 0
+								? 'Сгенерировать команды'
+								: 'Перегенерировать'}
 						</Button>
 					</div>
 				</div>
@@ -345,13 +346,13 @@ export default function TeamRandomizerPage() {
 			{teams.length > 0 && (
 				<div className='space-y-4'>
 					<div className='flex items-center justify-between'>
-						<h3 className='text-lg font-semibold'>{t('results')}</h3>
+						<h3 className='text-lg font-semibold'>Результаты</h3>
 						<div className='flex gap-2'>
 							<Button
 								variant='outline'
 								size='sm'
 								onClick={copyTeamsToClipboard}
-								title={t('copyToClipboard')}
+								title='Копировать в буфер обмена'
 							>
 								<Copy className='w-4 h-4' />
 							</Button>
@@ -359,7 +360,7 @@ export default function TeamRandomizerPage() {
 								variant='outline'
 								size='sm'
 								onClick={exportTeams}
-								title={t('exportTeams')}
+								title='Экспортировать команды'
 							>
 								<Download className='w-4 h-4' />
 							</Button>
@@ -367,7 +368,7 @@ export default function TeamRandomizerPage() {
 								variant='outline'
 								size='sm'
 								onClick={resetAll}
-								title={t('resetAll')}
+								title='Сбросить всё'
 							>
 								<RotateCcw className='w-4 h-4' />
 							</Button>
@@ -390,16 +391,14 @@ export default function TeamRandomizerPage() {
 							return (
 								<Card key={team.id} className={cn('p-4 border-2', colorClass)}>
 									<div className='flex items-center justify-between mb-3'>
-										<h4 className='font-semibold'>
-											{t('team')} {team.name}
-										</h4>
+										<h4 className='font-semibold'>Команда {team.name}</h4>
 										<Badge variant='secondary' className='text-xs'>
 											{team.members.length}
 										</Badge>
 									</div>
 									{team.members.length === 0 ? (
 										<p className='text-sm text-muted-foreground italic'>
-											{t('emptyTeam')}
+											Пустая команда
 										</p>
 									) : (
 										<div className='space-y-1'>

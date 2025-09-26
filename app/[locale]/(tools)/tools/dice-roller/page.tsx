@@ -168,12 +168,9 @@ export default function DiceRollerPage() {
 				// Show result
 				const isDoubles = values.length > 1 && new Set(values).size === 1
 				if (isDoubles) {
-					toast.success(
-						`Дубль ${values[0]} (${values.length} раз)!`,
-						{
-							icon: '🎯'
-						}
-					)
+					toast.success(`Дубль ${values[0]} (${values.length} раз)!`, {
+						icon: '🎯'
+					})
 				} else {
 					toast.success(`Общий результат: ${result.total}`, {
 						description: `Брошено: ${values.join(', ')}`
