@@ -29,7 +29,6 @@ import {
 	Settings
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 type QRType = 'url' | 'appstore' | 'wifi'
@@ -48,7 +47,6 @@ interface AppStoreConfig {
 }
 
 export default function QRGeneratorPage() {
-	const t = useTranslations('widgets.qrGenerator')
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const [mounted, setMounted] = useState(false)
 	const [hasGeneratedOnce, setHasGeneratedOnce] = useState(false)
@@ -110,7 +108,7 @@ export default function QRGeneratorPage() {
 
 		const data = generateQRData()
 		if (!data) {
-			toast.error(t('toast.emptyData'))
+			toast.error('Введите данные для генерации QR-кода')
 			return
 		}
 
@@ -128,7 +126,7 @@ export default function QRGeneratorPage() {
 			// Don't show success toast on every update
 		} catch (err) {
 			console.error(err)
-			toast.error(t('toast.generateError'))
+			toast.error('Ошибка генерации QR-кода')
 		}
 	}
 
@@ -140,7 +138,7 @@ export default function QRGeneratorPage() {
 		link.download = `qr-code-${Date.now()}.png`
 		link.href = canvas.toDataURL()
 		link.click()
-		toast.success(t('toast.downloaded'))
+		toast.success('QR-код скачан')
 	}
 
 	const copyQRAsImage = async () => {
@@ -155,9 +153,9 @@ export default function QRGeneratorPage() {
 			await navigator.clipboard.write([
 				new ClipboardItem({ 'image/png': blob })
 			])
-			toast.success(t('toast.copied'))
+			toast.success('QR-код скопирован в буфер обмена')
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования QR-кода')
 		}
 	}
 
@@ -186,18 +184,18 @@ export default function QRGeneratorPage() {
 			key: 'd',
 			primary: true,
 			action: downloadQR,
-			description: t('download')
+			description: 'Скачать'
 		},
 		{
 			key: 'c',
 			primary: true,
 			action: copyQRAsImage,
-			description: t('copy')
+			description: 'Копировать'
 		},
 		{
 			key: 'Enter',
 			action: generateQR,
-			description: t('shortcuts.generate')
+			description: 'Генерировать'
 		}
 	]
 
@@ -212,31 +210,31 @@ export default function QRGeneratorPage() {
 			<div className='lg:col-span-2'>
 				<WidgetSection
 					icon={<Settings className='w-5 h-5' />}
-					title={t('settings.title')}
+					title='Настройки'
 				>
 					<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
 						<TabsList className='grid w-full grid-cols-3'>
 							<TabsTrigger value='url'>
 								<Link className='w-4 h-4 mr-2' />
-								{t('types.url')}
+								URL
 							</TabsTrigger>
 							<TabsTrigger value='appstore'>
 								<Smartphone className='w-4 h-4 mr-2' />
-								{t('types.appStore')}
+								App Store
 							</TabsTrigger>
 							<TabsTrigger value='wifi'>
 								<Wifi className='w-4 h-4 mr-2' />
-								{t('types.wifi')}
+								Wi-Fi
 							</TabsTrigger>
 						</TabsList>
 
 						<TabsContent value='url' className='space-y-4'>
 							<div>
-								<Label htmlFor='url'>{t('url.label')}</Label>
+								<Label htmlFor='url'>URL-адрес</Label>
 								<Input
 									id='url'
 									type='url'
-									placeholder={t('url.placeholder')}
+									placeholder='https://example.com'
 									value={url}
 									onChange={e => setUrl(e.target.value)}
 								/>
@@ -245,7 +243,7 @@ export default function QRGeneratorPage() {
 
 						<TabsContent value='appstore' className='space-y-4'>
 							<div>
-								<Label>{t('appStore.platform')}</Label>
+								<Label>Платформа</Label>
 								<Select
 									value={appStoreConfig.platform}
 									onValueChange={v =>
@@ -262,7 +260,7 @@ export default function QRGeneratorPage() {
 										<SelectItem value='universal'>
 											<div className='flex items-center gap-2'>
 												<Smartphone className='w-4 h-4' />
-												{t('appStore.universal')}
+												Универсальная
 											</div>
 										</SelectItem>
 										<SelectItem value='ios'>
@@ -285,7 +283,7 @@ export default function QRGeneratorPage() {
 								<>
 									<div className='grid grid-cols-2 gap-4'>
 										<div>
-											<Label htmlFor='iosId'>{t('appStore.iosAppId')}</Label>
+											<Label htmlFor='iosId'>iOS App ID</Label>
 											<Input
 												id='iosId'
 												placeholder='363590051'
@@ -298,12 +296,12 @@ export default function QRGeneratorPage() {
 												}
 											/>
 											<p className='text-xs text-muted-foreground mt-1'>
-												{t('appStore.iosHint')}
+												Найдите в URL App Store после /id/
 											</p>
 										</div>
 										<div>
 											<Label htmlFor='androidId'>
-												{t('appStore.androidAppId')}
+												Android Package ID
 											</Label>
 											<Input
 												id='androidId'
@@ -317,19 +315,19 @@ export default function QRGeneratorPage() {
 												}
 											/>
 											<p className='text-xs text-muted-foreground mt-1'>
-												{t('appStore.androidHint')}
+												Например: com.example.app
 											</p>
 										</div>
 									</div>
 									<div className='p-3 bg-muted rounded-lg'>
 										<p className='text-xs text-muted-foreground'>
-											{t('appStore.universalHint')}
+											Создаст универсальную ссылку, которая откроет правильное приложение
 										</p>
 									</div>
 								</>
 							) : (
 								<div>
-									<Label htmlFor='appId'>{t('appStore.appId')}</Label>
+									<Label htmlFor='appId'>App ID</Label>
 									<Input
 										id='appId'
 										placeholder={
@@ -358,8 +356,8 @@ export default function QRGeneratorPage() {
 									/>
 									<p className='text-xs text-muted-foreground mt-1'>
 										{appStoreConfig.platform === 'ios'
-											? t('appStore.iosHint')
-											: t('appStore.androidHint')}
+											? 'Найдите в URL App Store после /id/'
+											: 'Например: com.example.app'}
 									</p>
 								</div>
 							)}
@@ -368,10 +366,10 @@ export default function QRGeneratorPage() {
 						<TabsContent value='wifi' className='space-y-4'>
 							<div className='grid grid-cols-2 gap-4'>
 								<div>
-									<Label htmlFor='ssid'>{t('wifi.networkName')}</Label>
+									<Label htmlFor='ssid'>Название сети</Label>
 									<Input
 										id='ssid'
-										placeholder={t('wifi.networkNamePlaceholder')}
+										placeholder='Название Wi-Fi сети'
 										value={wifiConfig.ssid}
 										onChange={e =>
 											setWifiConfig({ ...wifiConfig, ssid: e.target.value })
@@ -379,11 +377,11 @@ export default function QRGeneratorPage() {
 									/>
 								</div>
 								<div>
-									<Label htmlFor='password'>{t('wifi.password')}</Label>
+									<Label htmlFor='password'>Пароль</Label>
 									<Input
 										id='password'
 										type='password'
-										placeholder={t('wifi.passwordPlaceholder')}
+										placeholder='Пароль от Wi-Fi'
 										value={wifiConfig.password}
 										onChange={e =>
 											setWifiConfig({ ...wifiConfig, password: e.target.value })
@@ -393,7 +391,7 @@ export default function QRGeneratorPage() {
 							</div>
 							<div className='grid grid-cols-2 gap-4'>
 								<div>
-									<Label>{t('wifi.security')}</Label>
+									<Label>Тип безопасности</Label>
 									<Select
 										value={wifiConfig.security}
 										onValueChange={v =>
@@ -410,14 +408,14 @@ export default function QRGeneratorPage() {
 											<SelectItem value='WPA'>WPA/WPA2</SelectItem>
 											<SelectItem value='WEP'>WEP</SelectItem>
 											<SelectItem value='nopass'>
-												{t('wifi.noPassword')}
+												Без пароля
 											</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>
 								<div>
 									<Label htmlFor='hidden' className='block mb-2'>
-										{t('wifi.hidden')}
+										Скрытая сеть
 									</Label>
 									<div className='flex items-center h-10'>
 										<Switch
@@ -434,11 +432,11 @@ export default function QRGeneratorPage() {
 					</Tabs>
 
 					<div className='mt-6 space-y-4'>
-						<h3 className='text-lg font-semibold'>{t('qrSettings')}</h3>
+						<h3 className='text-lg font-semibold'>Настройки QR-кода</h3>
 
 						<div className='grid grid-cols-3 gap-4'>
 							<div>
-								<Label htmlFor='darkColor'>{t('darkColor')}</Label>
+								<Label htmlFor='darkColor'>Темный цвет</Label>
 								<div className='flex gap-2'>
 									<Input
 										id='darkColor'
@@ -455,7 +453,7 @@ export default function QRGeneratorPage() {
 								</div>
 							</div>
 							<div>
-								<Label htmlFor='lightColor'>{t('lightColor')}</Label>
+								<Label htmlFor='lightColor'>Светлый цвет</Label>
 								<div className='flex gap-2'>
 									<Input
 										id='lightColor'
@@ -472,7 +470,7 @@ export default function QRGeneratorPage() {
 								</div>
 							</div>
 							<div>
-								<Label>{t('errorCorrection')}</Label>
+								<Label>Коррекция ошибок</Label>
 								<Select
 									value={errorCorrection}
 									onValueChange={v =>
@@ -483,10 +481,10 @@ export default function QRGeneratorPage() {
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='L'>{t('errorLevels.L')}</SelectItem>
-										<SelectItem value='M'>{t('errorLevels.M')}</SelectItem>
-										<SelectItem value='Q'>{t('errorLevels.Q')}</SelectItem>
-										<SelectItem value='H'>{t('errorLevels.H')}</SelectItem>
+										<SelectItem value='L'>Низкий (7%)</SelectItem>
+										<SelectItem value='M'>Средний (15%)</SelectItem>
+										<SelectItem value='Q'>Высокий (25%)</SelectItem>
+										<SelectItem value='H'>Очень высокий (30%)</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
