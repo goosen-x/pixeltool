@@ -73,7 +73,7 @@ export const OnlineUsers = () => {
 					</span>
 				)}
 				<span className='text-[10px] sm:text-xs font-medium text-green-600/80 dark:text-green-400/80'>
-					online
+					онлайн
 				</span>
 			</div>
 		</div>

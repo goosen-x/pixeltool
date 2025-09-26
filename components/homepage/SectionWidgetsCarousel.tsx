@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl' // Removed useTranslations
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react'
@@ -10,8 +10,8 @@ import { widgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
 
 export function SectionWidgetsCarousel() {
-	const t = useTranslations('HomePage')
-	const tWidgets = useTranslations('widgets')
+	// const t = useTranslations('HomePage') // Removed translations
+	// const tWidgets = useTranslations('widgets') // Removed translations
 	const locale = useLocale()
 	const [activeIndex, setActiveIndex] = useState(0)
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true)
@@ -122,14 +122,16 @@ export function SectionWidgetsCarousel() {
 					<div className='inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 backdrop-blur-sm mb-4 sm:mb-6'>
 						<Sparkles className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary' />
 						<span className='text-xs sm:text-sm font-medium text-primary'>
-							{t('widgetsCarousel.badge')}
+							Популярные инструменты
 						</span>
 					</div>
 					<h2 className='text-3xl sm:text-4xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-						{t('widgetsCarousel.title')}
+						Исследуйте наши самые используемые инструменты
 					</h2>
 					<p className='text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0'>
-						{t('widgetsCarousel.description')}
+						От CSS генераторов до утилит безопасности - откройте для себя
+						профессиональные инструменты, которые тысячи разработчиков
+						используют ежедневно
 					</p>
 				</div>
 
@@ -243,7 +245,7 @@ export function SectionWidgetsCarousel() {
 
 					{/* Touch hint - shown only on mobile */}
 					<p className='sm:hidden text-xs text-muted-foreground text-center mt-4'>
-						{t('widgetsCarousel.swipeHint')}
+						Свайпайте для просмотра
 					</p>
 				</div>
 
@@ -253,7 +255,7 @@ export function SectionWidgetsCarousel() {
 						href={`/${locale}/tools`}
 						className='inline-flex items-center justify-center whitespace-nowrap rounded-xl font-semibold focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-all duration-200 ease-out border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent h-10 px-5 py-2.5 gap-2 text-sm sm:text-base'
 					>
-						{t('widgetsCarousel.viewAll')}
+						Все инструменты
 						<ArrowRight className='h-3.5 w-3.5 sm:h-4 sm:w-4' />
 					</Link>
 				</div>

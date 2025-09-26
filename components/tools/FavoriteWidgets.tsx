@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed translations
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -19,8 +19,8 @@ interface FavoriteWidgetsProps {
 export function FavoriteWidgets({ locale, className }: FavoriteWidgetsProps) {
 	const { favorites, removeFavorite, clearFavorites, isLoading } =
 		useFavorites()
-	const t = useTranslations('widgets')
-	const favT = useTranslations('widgets.favorites')
+	// const t = useTranslations('widgets') // Removed translations
+	// const favT = useTranslations('widgets.favorites') // Removed translations
 
 	const favoriteWidgets = useMemo(() => {
 		return favorites.map(id => widgets.find(w => w.id === id)).filter(Boolean)
@@ -48,7 +48,9 @@ export function FavoriteWidgets({ locale, className }: FavoriteWidgetsProps) {
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-2'>
 					<Heart className='w-5 h-5 text-red-500 fill-current' />
-					<h2 className='text-xl font-heading font-bold'>{favT('title')}</h2>
+					<h2 className='text-xl font-heading font-bold'>
+						Избранные инструменты
+					</h2>
 					<Badge variant='outline' className='ml-2'>
 						{favorites.length}
 					</Badge>
@@ -62,7 +64,7 @@ export function FavoriteWidgets({ locale, className }: FavoriteWidgetsProps) {
 						className='text-muted-foreground hover:text-foreground'
 					>
 						<X className='w-4 h-4 mr-1' />
-						{favT('clearAll')}
+						Очистить всё
 					</Button>
 				)}
 			</div>
@@ -75,7 +77,7 @@ export function FavoriteWidgets({ locale, className }: FavoriteWidgetsProps) {
 					return (
 						<Link
 							key={widget.id}
-							href={`/${locale}/tools/${widget.path}`}
+							href={`/tools/${widget.path}`}
 							className='block group'
 						>
 							<Card className='h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50 bg-gradient-to-br from-background to-muted/10 relative'>
@@ -99,12 +101,12 @@ export function FavoriteWidgets({ locale, className }: FavoriteWidgetsProps) {
 										<Icon className='w-6 h-6' />
 									</div>
 									<CardTitle className='text-base font-heading line-clamp-1 transition-all duration-300 group-hover:text-primary'>
-										{t(`${widget.translationKey}.title`)}
+										{widget.title || widget.translationKey}
 									</CardTitle>
 								</CardHeader>
 								<CardContent className='pt-0'>
 									<p className='text-xs text-muted-foreground line-clamp-2'>
-										{t(`${widget.translationKey}.description`)}
+										{widget.description}
 									</p>
 								</CardContent>
 							</Card>

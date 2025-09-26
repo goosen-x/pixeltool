@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed translations
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -24,15 +24,15 @@ export function ToolCard({
 	showFavoriteButton = true,
 	className
 }: ToolCardProps) {
-	const t = useTranslations('widgets')
+	// const t = useTranslations('widgets') // Removed translations
 	const Icon = widget.icon
 
-	const title = t(`${widget.translationKey}.title`)
-	const description = t(`${widget.translationKey}.description`)
+	const title = widget.title || widget.translationKey
+	const description = widget.description || ''
 
 	return (
 		<Link
-			href={`/${locale}/tools/${widget.path}`}
+			href={`/tools/${widget.path}`}
 			className='block group/card'
 			style={{
 				display: 'block',

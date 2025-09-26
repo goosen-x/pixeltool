@@ -6,7 +6,7 @@ export function HomePageStructuredData() {
 		alternateName: 'PixelTool Developer Tools',
 		url: 'https://pixeltool.pro',
 		description:
-			'Professional web developer tools: CSS generators, color converters, formatters, validators, and 50+ more utilities. No installation required, 100% free.',
+			'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики, валидаторы и более 50 утилит. Без установки, 100% бесплатно.',
 		applicationCategory: 'DeveloperApplication',
 		operatingSystem: 'All',
 		offers: {
@@ -48,14 +48,14 @@ export function HomePageStructuredData() {
 			}
 		],
 		featureList: [
-			'CSS Clamp Calculator',
-			'Color Converter',
-			'Password Generator',
-			'QR Code Generator',
-			'HTML/XML Parser',
-			'Image Size Checker',
-			'Text Case Converter',
-			'And 50+ more tools'
+			'CSS Clamp Калькулятор',
+			'Конвертер Цветов',
+			'Генератор Паролей',
+			'Генератор QR Кодов',
+			'HTML/XML Парсер',
+			'Проверка Размера Изображений',
+			'Конвертер Регистра Текста',
+			'И более 50 инструментов'
 		],
 		screenshot: [
 			{

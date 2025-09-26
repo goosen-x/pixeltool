@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed translations
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -47,43 +47,28 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 	const inputRef = useRef<HTMLInputElement>(null)
 
-	const t = useTranslations('widgets')
-	const searchT = useTranslations('widgets.search')
+	// const t = useTranslations('widgets') // Removed translations
+	// const searchT = useTranslations('widgets.search') // Removed translations
 	const { history, addToHistory, removeFromHistory, clearHistory } =
 		useSearchHistory()
 
-	// Convert widgets to project cards with translations
+	// Convert widgets to project cards
 	const allProjectCards: ProjectCard[] = useMemo(() => {
 		return widgets.map(widget => {
 			const Icon = widget.icon
-			try {
-				return {
-					id: widget.id,
-					title: t(`${widget.translationKey}.title`),
-					description: t(`${widget.translationKey}.description`),
-					icon: <Icon className='w-8 h-8' />,
-					gradient: widget.gradient,
-					path: widget.path,
-					category: widget.category,
-					tags: widget.tags || [],
-					widget
-				}
-			} catch (error) {
-				// Fallback if translation fails
-				return {
-					id: widget.id,
-					title: widget.translationKey,
-					description: '',
-					icon: <Icon className='w-8 h-8' />,
-					gradient: widget.gradient,
-					path: widget.path,
-					category: widget.category,
-					tags: widget.tags || [],
-					widget
-				}
+			return {
+				id: widget.id,
+				title: widget.title || widget.translationKey,
+				description: widget.description || '',
+				icon: <Icon className='w-8 h-8' />,
+				gradient: widget.gradient,
+				path: widget.path,
+				category: widget.category,
+				tags: widget.tags || [],
+				widget
 			}
 		})
-	}, [t])
+	}, [])
 
 	// Filter widgets based on search query and category
 	const filteredWidgets = useMemo(() => {
@@ -169,7 +154,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 						<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
 						<Input
 							ref={inputRef}
-							placeholder={searchT('placeholder')}
+							placeholder='Поиск инструментов...'
 							value={searchQuery}
 							onChange={e => {
 								const value = e.target.value
@@ -207,7 +192,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 							onClick={() => setSelectedCategory('')}
 							className='rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
 						>
-							{searchT('allCategories')}
+							Все категории
 						</Button>
 
 						{Object.entries(widgetCategories).map(([key, title]) => (
@@ -218,7 +203,29 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 								onClick={() => setSelectedCategory(key)}
 								className='rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
 							>
-								{t(`categories.${key}`)}
+								{key === 'css'
+									? 'CSS'
+									: key === 'colors'
+										? 'Цвета'
+										: key === 'text'
+											? 'Текст'
+											: key === 'converters'
+												? 'Конвертеры'
+												: key === 'generators'
+													? 'Генераторы'
+													: key === 'security'
+														? 'Безопасность'
+														: key === 'parsers'
+															? 'Парсеры'
+															: key === 'images'
+																? 'Изображения'
+																: key === 'time'
+																	? 'Время и дата'
+																	: key === 'calculations'
+																		? 'Калькуляторы'
+																		: key === 'utilities'
+																			? 'Утилиты'
+																			: title}
 							</Button>
 						))}
 					</div>
@@ -227,7 +234,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 					<div className='flex items-center justify-between'>
 						<div className='flex items-center gap-2'>
 							<span className='text-sm font-medium text-muted-foreground'>
-								{searchT('results', { count: filteredWidgets.length })}
+								Найдено: {filteredWidgets.length}
 							</span>
 							{hasActiveFilters && (
 								<Button
@@ -237,7 +244,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 									className='h-7 px-2'
 								>
 									<X className='w-3 h-3 mr-1' />
-									{searchT('clearFilters')}
+									Очистить фильтры
 								</Button>
 							)}
 						</div>
@@ -271,15 +278,15 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 						<Search className='w-10 h-10 text-muted-foreground' />
 					</div>
 					<h3 className='text-xl font-heading font-semibold mb-2'>
-						{searchT('noResults')}
+						Ничего не найдено
 					</h3>
 					<p className='text-muted-foreground mb-6 max-w-md mx-auto'>
-						{searchT('noResultsDescription')}
+						Попробуйте изменить параметры поиска или выбрать другую категорию
 					</p>
 					{hasActiveFilters && (
 						<Button onClick={clearSearch} size='lg' className='rounded-full'>
 							<X className='w-4 h-4 mr-2' />
-							{searchT('clearFilters')}
+							Очистить фильтры
 						</Button>
 					)}
 				</div>
@@ -289,7 +296,29 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 						<section key={category}>
 							<div className='flex items-center gap-3 mb-6'>
 								<h2 className='text-2xl font-heading font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-									{t(`categories.${category}`)}
+									{category === 'css'
+										? 'CSS'
+										: category === 'colors'
+											? 'Цвета'
+											: category === 'text'
+												? 'Текст'
+												: category === 'converters'
+													? 'Конвертеры'
+													: category === 'generators'
+														? 'Генераторы'
+														: category === 'security'
+															? 'Безопасность'
+															: category === 'parsers'
+																? 'Парсеры'
+																: category === 'images'
+																	? 'Изображения'
+																	: category === 'time'
+																		? 'Время и дата'
+																		: category === 'calculations'
+																			? 'Калькуляторы'
+																			: category === 'utilities'
+																				? 'Утилиты'
+																				: category}
 								</h2>
 								<Badge variant='secondary' className='font-medium px-3 py-1'>
 									{projects.length}
