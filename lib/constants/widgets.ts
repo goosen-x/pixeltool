@@ -1421,8 +1421,10 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['symbols', 'unicode', 'characters', 'copy', 'paste'],
 		title: 'Выбор специальных символов',
-		description: 'Кликните для копирования специальных символов и Unicode символов для любого текста',
-		useCase: 'Быстрое копирование специальных символов и Unicode символов для использования в тексте',
+		description:
+			'Кликните для копирования специальных символов и Unicode символов для любого текста',
+		useCase:
+			'Быстрое копирование специальных символов и Unicode символов для использования в тексте',
 		metaDescription:
 			'Special symbols picker with one-click copy. Access Unicode symbols, emojis, and special characters.',
 		faqs: {
@@ -1494,8 +1496,10 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['text', 'unicode', 'fonts', 'style', 'generator'],
 		title: 'Генератор текста онлайн - создать стилизованный текст бесплатно',
-		description: 'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов',
-		useCase: 'Бесплатный онлайн генератор стилизованного текста для соцсетей, постов, профилей и сообщений',
+		description:
+			'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов',
+		useCase:
+			'Бесплатный онлайн генератор стилизованного текста для соцсетей, постов, профилей и сообщений',
 		metaDescription:
 			'Fancy text generator with Unicode fonts. Convert text to bold, italic, script, and decorative styles.',
 		faqs: {
@@ -1567,8 +1571,10 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['random', 'number', 'generator', 'crypto', 'secure'],
 		title: 'Генератор случайных чисел онлайн',
-		description: 'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей',
-		useCase: 'Бесплатный генератор случайных чисел для игр, выборки, розыгрышей и безопасности',
+		description:
+			'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей',
+		useCase:
+			'Бесплатный генератор случайных чисел для игр, выборки, розыгрышей и безопасности',
 		metaDescription:
 			'Cryptographically secure random number generator. Generate random numbers with no duplicates option.',
 		faqs: {
@@ -1636,8 +1642,10 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['calculator', 'percentage', 'math', 'finance', 'discount'],
 		title: 'Калькулятор процентов',
-		description: 'Рассчитывайте проценты для скидок, налогов, чаевых и инвестиций',
-		useCase: 'Расчёт процентов для скидок, чаевых, налогов и финансового планирования',
+		description:
+			'Рассчитывайте проценты для скидок, налогов, чаевых и инвестиций',
+		useCase:
+			'Расчёт процентов для скидок, чаевых, налогов и финансового планирования',
 		metaDescription:
 			'Percentage calculator for multiple scenarios. Calculate discounts, taxes, tips, and percentage changes.',
 		faqs: {
@@ -1777,6 +1785,10 @@ export const widgets: Widget[] = [
 		translationKey: 'textCaseConverter',
 		path: 'text-case-converter',
 		gradient: 'from-indigo-500 to-purple-600',
+		title: 'Конвертер регистра текста',
+		description:
+			'Конвертируйте текст в различные форматы регистра одним кликом',
+		useCase: 'Изменение регистра текста для заголовков, кода или стилизации',
 		recommendedTools: [
 			'text-counter',
 			'social-media-formatter',
@@ -1792,8 +1804,6 @@ export const widgets: Widget[] = [
 			'camelCase',
 			'snake_case'
 		],
-		useCase:
-			'Convert text between different letter cases and formatting styles',
 		metaDescription:
 			'Text case converter for uppercase, lowercase, camelCase, snake_case, kebab-case, and more formatting styles.',
 		faqs: {
@@ -1860,6 +1870,11 @@ export const widgets: Widget[] = [
 		translationKey: 'imageSizeChecker',
 		path: 'image-size-checker',
 		gradient: 'from-cyan-500 to-blue-600',
+		title: 'Проверка размера изображений',
+		description:
+			'Мгновенно проверьте размеры, размер файла и формат изображений',
+		useCase:
+			'Быстрая проверка размера и метаданных изображений для веб-оптимизации',
 		recommendedTools: [
 			'favicon-generator',
 			'qr-generator',
@@ -1874,7 +1889,6 @@ export const widgets: Widget[] = [
 			'analyzer',
 			'aspect-ratio'
 		],
-		useCase: 'Check image dimensions, file size, and aspect ratio instantly',
 		metaDescription:
 			'Image size checker and analyzer. Check dimensions, file size, format, and aspect ratio of multiple images.',
 		faqs: {
@@ -1941,6 +1955,11 @@ export const widgets: Widget[] = [
 		translationKey: 'htmlXmlParser',
 		path: 'html-xml-parser',
 		gradient: 'from-amber-500 to-orange-600',
+		title: 'HTML/XML парсер',
+		description:
+			'Парсинг и валидация HTML/XML документов с подсветкой синтаксиса',
+		useCase:
+			'Отладка и валидация HTML/XML кода с визуальным представлением структуры',
 		recommendedTools: [
 			'json-yaml-formatter',
 			'javascript-syntax-checker',
@@ -1948,7 +1967,6 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'intermediate',
 		tags: ['html', 'xml', 'parser', 'formatter', 'validator', 'minify'],
-		useCase: 'Parse, format, validate, and minify HTML and XML documents',
 		metaDescription:
 			'HTML/XML parser and formatter. Beautify, minify, validate, and extract data from HTML and XML documents.',
 		faqs: {
@@ -2015,6 +2033,11 @@ export const widgets: Widget[] = [
 		translationKey: 'randomListGenerator',
 		path: 'random-list-generator',
 		gradient: 'from-violet-500 to-purple-600',
+		title: 'Генератор случайных списков',
+		description:
+			'Создавайте случайные списки элементов для тестирования или творчества',
+		useCase:
+			'Генерация случайных списков для тестов, розыгрышей или вдохновения',
 		recommendedTools: [
 			'draw-lots',
 			'random-number-generator',
@@ -2022,8 +2045,6 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['random', 'list', 'shuffle', 'sort', 'generator', 'cryptographic'],
-		useCase:
-			'Randomly shuffle and sort lists with cryptographically secure randomization',
 		metaDescription:
 			'Random list generator using crypto.getRandomValues. Shuffle names, items, or numbers with true randomness.',
 		faqs: {
@@ -2102,6 +2123,9 @@ export const widgets: Widget[] = [
 		translationKey: 'coinFlip',
 		path: 'coin-flip',
 		gradient: 'from-amber-500 to-yellow-600',
+		title: 'Подбрасывание монеты',
+		description:
+			'Виртуальное подбрасывание монеты с анимацией для принятия решений',
 		recommendedTools: [
 			'draw-lots',
 			'random-number-generator',
@@ -2109,8 +2133,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['coin', 'flip', 'random', 'decision', 'heads', 'tails', '3d'],
-		useCase:
-			'Flip a coin online with realistic 3D animation for making quick decisions',
+		useCase: 'Принятие случайных решений орёл/решка с красивой анимацией',
 		metaDescription:
 			'Online coin flip with 3D animation. Heads or tails with multiple coin types and statistics.',
 		faqs: {
@@ -2189,10 +2212,13 @@ export const widgets: Widget[] = [
 		translationKey: 'worldTime',
 		path: 'world-time',
 		gradient: 'from-blue-500 to-cyan-600',
+		title: 'Мировое время',
+		description: 'Проверьте время в любой часовой зоне мира мгновенно',
 		recommendedTools: ['timer-countdown', 'unit-converter', 'speed-test'],
 		difficulty: 'beginner',
 		tags: ['time', 'timezone', 'world', 'clock', 'converter', 'dst'],
-		useCase: 'Track time across multiple cities and convert between timezones',
+		useCase:
+			'Отслеживание времени в разных часовых поясах для удалённой работы',
 		metaDescription:
 			'World time converter with live clocks for multiple cities. Convert times between any timezone.',
 		faqs: {
@@ -2270,11 +2296,13 @@ export const widgets: Widget[] = [
 		translationKey: 'diceRoller',
 		path: 'dice-roller',
 		gradient: 'from-red-500 to-pink-600',
+		title: 'Бросок костей',
+		description:
+			'Виртуальный бросок костей с несколькими конфигурациями и анимациями',
 		recommendedTools: ['coin-flip', 'draw-lots', 'random-number-generator'],
 		difficulty: 'beginner',
 		tags: ['dice', 'random', 'game', '3d', 'probability', 'roll'],
-		useCase:
-			'Roll virtual dice with 3D animation for games and decision making',
+		useCase: 'Бросок костей для настольных игр или случайной генерации чисел',
 		metaDescription:
 			'Online dice roller with 3D animation. Roll up to 6 dice with true random numbers.',
 		faqs: {
@@ -2353,6 +2381,9 @@ export const widgets: Widget[] = [
 		translationKey: 'socialMediaFormatter',
 		path: 'social-media-formatter',
 		gradient: 'from-blue-500 to-purple-600',
+		title: 'Форматтер для соцсетей',
+		description: 'Оптимизируйте тексты для Twitter, Instagram, LinkedIn',
+		useCase: 'Подготовка идеальных постов для социальных сетей',
 		recommendedTools: [
 			'fancy-text-generator',
 			'special-symbols-picker',
@@ -2368,8 +2399,6 @@ export const widgets: Widget[] = [
 			'spaces',
 			'text'
 		],
-		useCase:
-			'Format text with multiple spaces and line breaks for social media posts',
 		metaDescription:
 			'Social media text formatter. Add multiple spaces and line breaks for Facebook, Instagram posts.',
 		faqs: {
@@ -2448,6 +2477,8 @@ export const widgets: Widget[] = [
 		translationKey: 'emojiList',
 		path: 'emoji-list',
 		gradient: 'from-yellow-400 to-orange-500',
+		title: 'Список эмодзи',
+		description: 'Просмотрите и скопируйте 1800+ эмодзи по категориям',
 		recommendedTools: [
 			'special-symbols-picker',
 			'fancy-text-generator',
@@ -2455,7 +2486,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['emoji', 'emoticons', 'unicode', 'copy', 'paste', 'symbols'],
-		useCase: 'Browse and copy 1800+ emojis organized by categories',
+		useCase: 'Быстрый поиск и копирование эмодзи для соцсетей и чатов',
 		metaDescription:
 			'Complete emoji list with instant copy. Browse 1800+ emojis in 8 categories.',
 		faqs: {
@@ -2535,6 +2566,8 @@ export const widgets: Widget[] = [
 		translationKey: 'textEmoticons',
 		path: 'text-emoticons',
 		gradient: 'from-purple-500 to-pink-600',
+		title: 'Текстовые эмотиконы',
+		description: 'ASCII смайлики и японские каомодзи для чатов',
 		recommendedTools: [
 			'emoji-list',
 			'special-symbols-picker',
@@ -2542,8 +2575,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['emoticons', 'ascii', 'kaomoji', 'text', 'expressions', 'japanese'],
-		useCase:
-			'Collection of ASCII emoticons and Japanese kaomoji for text expressions',
+		useCase: 'Коллекция текстовых смайликов для выражения эмоций',
 		metaDescription:
 			'Text emoticons and kaomoji collection. Copy ASCII art faces and Japanese emoticons.',
 		faqs: {
@@ -2622,6 +2654,8 @@ export const widgets: Widget[] = [
 		translationKey: 'textToSpeech',
 		path: 'text-to-speech',
 		gradient: 'from-green-500 to-teal-600',
+		title: 'Текст в речь',
+		description: 'Превращайте текст в речь с разными голосами',
 		recommendedTools: [
 			'special-symbols-picker',
 			'social-media-formatter',
@@ -2629,8 +2663,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['tts', 'speech', 'voice', 'audio', 'accessibility', 'synthesis'],
-		useCase:
-			'Convert text to speech with customizable voice settings and multiple languages',
+		useCase: 'Озвучивание текстов для аудиокниг или доступности',
 		metaDescription:
 			'Text to speech converter with voice customization. Convert any text to audio with different voices.',
 		faqs: {
@@ -2803,6 +2836,9 @@ export const widgets: Widget[] = [
 		translationKey: 'jsonTools',
 		path: 'json-tools',
 		gradient: 'from-orange-500 to-red-600',
+		title: 'JSON инструменты',
+		description: 'Форматирование, валидация, минификация и сравнение JSON',
+		useCase: 'Комплексная обработка JSON файлов для разработки',
 		recommendedTools: ['html-css-formatter', 'base64-converter', 'url-encoder'],
 		difficulty: 'beginner',
 		tags: [
@@ -2813,8 +2849,6 @@ export const widgets: Widget[] = [
 			'minifier',
 			'parser'
 		],
-		useCase:
-			'Validate, format, and analyze JSON data with detailed error reporting and structure analysis',
 		metaDescription:
 			'JSON validator and formatter tool. Validate JSON syntax, format/beautify code, minify for production.',
 		faqs: {
@@ -2893,6 +2927,10 @@ export const widgets: Widget[] = [
 		translationKey: 'jsCssCompressor',
 		path: 'js-css-compressor',
 		gradient: 'from-yellow-500 to-orange-600',
+		title: 'JS/CSS компрессор',
+		description:
+			'Минифицируйте JavaScript и CSS для улучшения производительности',
+		useCase: 'Оптимизация размера файлов для быстрой загрузки сайтов',
 		recommendedTools: ['json-tools', 'html-css-formatter', 'base64-converter'],
 		difficulty: 'beginner',
 		tags: [
@@ -2903,8 +2941,6 @@ export const widgets: Widget[] = [
 			'optimization',
 			'performance'
 		],
-		useCase:
-			'Compress and minify JavaScript and CSS code to reduce file sizes for production',
 		metaDescription:
 			'JavaScript and CSS compressor tool. Minify JS/CSS code, reduce file sizes, optimize for production.',
 		faqs: {
@@ -2983,6 +3019,9 @@ export const widgets: Widget[] = [
 		translationKey: 'jsValidator',
 		path: 'js-validator',
 		gradient: 'from-red-500 to-pink-600',
+		title: 'JavaScript валидатор',
+		description: 'Найдите ошибки в JavaScript коде',
+		useCase: 'Быстрая проверка JavaScript на ошибки',
 		recommendedTools: ['js-css-compressor', 'json-tools', 'html-css-formatter'],
 		difficulty: 'beginner',
 		tags: [
@@ -2993,8 +3032,6 @@ export const widgets: Widget[] = [
 			'debugging',
 			'quality'
 		],
-		useCase:
-			'Static analysis tool for JavaScript code to check for syntax errors and quality issues',
 		metaDescription:
 			'JavaScript validator and syntax checker. Detect JS errors, validate code quality, debug syntax issues.',
 		faqs: {
@@ -3073,6 +3110,8 @@ export const widgets: Widget[] = [
 		translationKey: 'ageCalculator',
 		path: 'age-calculator',
 		gradient: 'from-purple-500 to-pink-600',
+		title: 'Калькулятор возраста',
+		description: 'Рассчитайте точный возраст в годах, месяцах, днях и часах',
 		recommendedTools: [
 			'temperature-converter',
 			'bmi-calculator',
@@ -3080,8 +3119,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['age', 'calculator', 'birthday', 'date', 'time'],
-		useCase:
-			'Calculate exact age in years, months, days, hours, and minutes from birthdate',
+		useCase: 'Подсчёт точного возраста для документов или празднования',
 		metaDescription:
 			'Age calculator with precise calculations. Get your exact age in years, months, days, hours.',
 		faqs: {
@@ -3150,6 +3188,8 @@ export const widgets: Widget[] = [
 		translationKey: 'temperatureConverter',
 		path: 'temperature-converter',
 		gradient: 'from-blue-500 to-cyan-600',
+		title: 'Конвертер температур',
+		description: 'Конвертируйте между Цельсием, Фаренгейтом и Кельвином',
 		recommendedTools: [
 			'age-calculator',
 			'bmi-calculator',
@@ -3158,7 +3198,7 @@ export const widgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['temperature', 'converter', 'celsius', 'fahrenheit', 'kelvin'],
 		useCase:
-			'Convert between Celsius, Fahrenheit, and Kelvin temperature scales instantly',
+			'Мгновенное преобразование температурных шкал для рецептов и науки',
 		metaDescription:
 			'Temperature converter for Celsius, Fahrenheit, and Kelvin. Convert temperatures between scales.',
 		faqs: {
@@ -3226,6 +3266,8 @@ export const widgets: Widget[] = [
 		translationKey: 'bmiCalculator',
 		path: 'bmi-calculator',
 		gradient: 'from-green-500 to-emerald-600',
+		title: 'Калькулятор ИМТ',
+		description: 'Рассчитайте индекс массы тела с интерпретацией результатов',
 		recommendedTools: [
 			'age-calculator',
 			'temperature-converter',
@@ -3233,8 +3275,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['bmi', 'health', 'weight', 'calculator', 'fitness'],
-		useCase:
-			'Calculate Body Mass Index (BMI) with health status interpretation',
+		useCase: 'Оценка состояния здоровья по индексу массы тела',
 		metaDescription:
 			'BMI calculator with health interpretation. Calculate your Body Mass Index and health status.',
 		faqs: {
@@ -3302,6 +3343,9 @@ export const widgets: Widget[] = [
 		translationKey: 'textCounter',
 		path: 'text-counter',
 		gradient: 'from-indigo-500 to-purple-600',
+		title: 'Счётчик текста',
+		description: 'Подсчитайте слова, символы, абзацы и время чтения мгновенно',
+		useCase: 'Анализ длины текста для соцсетей, статей или эссе',
 		recommendedTools: [
 			'social-media-formatter',
 			'text-to-speech',
@@ -3309,8 +3353,6 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['text', 'counter', 'seo', 'words', 'characters', 'social-media'],
-		useCase:
-			'Count characters, words, sentences, and paragraphs for SEO and social media',
 		metaDescription:
 			'Text counter for SEO and social media. Count characters, words, sentences with platform limits.',
 		faqs: {
@@ -3378,11 +3420,12 @@ export const widgets: Widget[] = [
 		translationKey: 'timerCountdown',
 		path: 'timer-countdown',
 		gradient: 'from-orange-500 to-red-600',
+		title: 'Таймер и секундомер',
+		description: 'Таймер, обратный отсчёт и секундомер с уведомлениями',
 		recommendedTools: ['world-time', 'age-calculator', 'bmi-calculator'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
-		useCase:
-			'Timer, countdown, and stopwatch with notifications for time management',
+		useCase: 'Управление временем для работы, спорта или готовки',
 		metaDescription:
 			'Timer and countdown tool with notifications. Stopwatch, timer, and countdown in one tool.',
 		faqs: {
@@ -3450,6 +3493,8 @@ export const widgets: Widget[] = [
 		translationKey: 'currencyConverter',
 		path: 'currency-converter',
 		gradient: 'from-yellow-500 to-orange-600',
+		title: 'Конвертер валют',
+		description: 'Конвертируйте между основными мировыми валютами',
 		recommendedTools: [
 			'percentage-calculator',
 			'temperature-converter',
@@ -3457,7 +3502,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['currency', 'converter', 'exchange', 'money', 'finance'],
-		useCase: 'Convert between currencies with fixed exchange rates',
+		useCase: 'Конвертация валют для путешествий, покупок и бизнеса',
 		metaDescription:
 			'Currency converter with fixed rates. Convert between 10 major world currencies.',
 		faqs: {
@@ -3528,10 +3573,12 @@ export const widgets: Widget[] = [
 		translationKey: 'textDiff',
 		path: 'text-diff-tool',
 		gradient: 'from-purple-500 to-indigo-600',
+		title: 'Сравнение текстов',
+		description: 'Сравнивайте два текста и находите различия',
 		recommendedTools: ['json-tools', 'html-css-formatter', 'js-validator'],
 		difficulty: 'intermediate',
 		tags: ['diff', 'compare', 'text', 'code', 'changes'],
-		useCase: 'Compare two texts and highlight differences line by line',
+		useCase: 'Анализ изменений в коде или документах',
 		metaDescription:
 			'Text difference tool. Compare two texts and see changes highlighted line by line.',
 		faqs: {
@@ -3598,6 +3645,8 @@ export const widgets: Widget[] = [
 		translationKey: 'phpSyntaxChecker',
 		path: 'php-syntax-checker',
 		gradient: 'from-indigo-500 to-blue-600',
+		title: 'PHP валидатор',
+		description: 'Проверка синтаксиса PHP для версий 5, 7 и 8',
 		recommendedTools: [
 			'mysql-syntax-checker',
 			'javascript-syntax-checker',
@@ -3605,7 +3654,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'intermediate',
 		tags: ['php', 'syntax', 'checker', 'validator', 'code'],
-		useCase: 'Check PHP syntax for errors with support for PHP 5, 7, and 8',
+		useCase: 'Валидация PHP кода перед размещением на сервере',
 		metaDescription:
 			'PHP syntax checker for PHP 5/7/8. Validate PHP code and find syntax errors.',
 		faqs: {
@@ -3672,10 +3721,12 @@ export const widgets: Widget[] = [
 		translationKey: 'mysqlSyntaxChecker',
 		path: 'mysql-syntax-checker',
 		gradient: 'from-blue-500 to-teal-600',
+		title: 'MySQL валидатор',
+		description: 'Проверка синтаксиса MySQL запросов на ошибки',
 		recommendedTools: ['php-syntax-checker', 'json-tools', 'regex-tester'],
 		difficulty: 'intermediate',
 		tags: ['mysql', 'sql', 'database', 'syntax', 'validator'],
-		useCase: 'Validate MySQL queries and check for syntax errors',
+		useCase: 'Проверка SQL запросов перед выполнением в базе',
 		metaDescription:
 			'MySQL syntax checker and validator. Check SQL queries for syntax errors.',
 		faqs: {
@@ -3743,6 +3794,8 @@ export const widgets: Widget[] = [
 		translationKey: 'regexTester',
 		path: 'regex-tester',
 		gradient: 'from-green-500 to-teal-600',
+		title: 'Тестер регулярных выражений',
+		description: 'Тестируйте регулярные выражения для JavaScript, PHP и Python',
 		recommendedTools: [
 			'javascript-syntax-checker',
 			'php-syntax-checker',
@@ -3750,8 +3803,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'advanced',
 		tags: ['regex', 'regular-expression', 'pattern', 'test', 'match'],
-		useCase:
-			'Test regular expressions with support for JavaScript, PHP, and Python',
+		useCase: 'Отладка и тестирование регулярных выражений',
 		metaDescription:
 			'Regex tester for JavaScript, PHP, Python. Test and debug regular expressions.',
 		faqs: {
@@ -3819,10 +3871,12 @@ export const widgets: Widget[] = [
 		translationKey: 'javascriptSyntaxChecker',
 		path: 'javascript-syntax-checker',
 		gradient: 'from-yellow-500 to-red-600',
+		title: 'JavaScript валидатор',
+		description: 'Проверка синтаксиса JavaScript/ES6/ES2020+ с JSX',
 		recommendedTools: ['json-tools', 'js-css-compressor', 'regex-tester'],
 		difficulty: 'intermediate',
 		tags: ['javascript', 'es6', 'syntax', 'checker', 'validator'],
-		useCase: 'Check JavaScript/ES6/ES2020+ syntax with JSX support',
+		useCase: 'Проверка JavaScript кода перед развёртыванием',
 		metaDescription:
 			'JavaScript syntax checker for ES6/ES2020+. Validate JS code with JSX support.',
 		faqs: {
@@ -4248,6 +4302,8 @@ export const widgets: Widget[] = [
 		translationKey: 'jsonYamlFormatter',
 		path: 'json-yaml-formatter',
 		gradient: 'from-orange-500 to-yellow-600',
+		title: 'JSON/YAML форматтер',
+		description: 'Форматирование, валидация и конвертация JSON/YAML',
 		recommendedTools: [
 			'json-tools',
 			'base64-encoder',
@@ -4255,7 +4311,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['json', 'yaml', 'formatter', 'validator', 'converter'],
-		useCase: 'Format, validate, and convert between JSON and YAML formats',
+		useCase: 'Обработка и конвертация конфигурационных файлов',
 		metaDescription:
 			'JSON/YAML formatter and converter. Validate and convert between formats.',
 		faqs: {
@@ -4324,11 +4380,12 @@ export const widgets: Widget[] = [
 		translationKey: 'faviconGenerator',
 		path: 'favicon-generator',
 		gradient: 'from-blue-500 to-purple-600',
+		title: 'Генератор Favicon',
+		description: 'Создайте favicon для вашего веб-сайта всех размеров',
+		useCase: 'Создание иконок сайта всех необходимых размеров',
 		recommendedTools: ['color-converter', 'css-box-shadow', 'html-tree'],
 		difficulty: 'beginner',
 		tags: ['favicon', 'icon', 'generator', 'upload', 'png'],
-		useCase:
-			'Generate favicon files in multiple sizes and formats for web and mobile platforms',
 		metaDescription:
 			'Free favicon generator tool. Upload an image and generate favicon files in multiple sizes for websites and mobile apps.',
 		faqs: {
@@ -4386,10 +4443,13 @@ export const widgets: Widget[] = [
 		translationKey: 'base64Encoder',
 		path: 'base64-encoder',
 		gradient: 'from-green-500 to-teal-600',
+		title: 'Base64 кодировщик',
+		description: 'Кодируйте и декодируйте данные в формате Base64',
 		recommendedTools: ['jwt-decoder', 'hash-generator', 'json-tools'],
 		difficulty: 'beginner',
 		tags: ['base64', 'encode', 'decode', 'converter', 'encryption'],
-		useCase: 'Encode and decode data in Base64 format with file support',
+		useCase:
+			'Кодирование изображений и файлов в Base64 для встраивания в CSS/HTML',
 		metaDescription:
 			'Base64 encoder/decoder with file support. Encode and decode Base64 data.',
 		faqs: {
@@ -4457,10 +4517,12 @@ export const widgets: Widget[] = [
 		translationKey: 'jwtDecoder',
 		path: 'jwt-decoder',
 		gradient: 'from-purple-500 to-pink-600',
+		title: 'JWT декодер',
+		description: 'Декодируйте и анализируйте JSON Web Token без ключа',
 		recommendedTools: ['base64-encoder', 'json-tools', 'uuid-generator'],
 		difficulty: 'intermediate',
 		tags: ['jwt', 'json', 'token', 'decoder', 'authentication'],
-		useCase: 'Decode and analyze JSON Web Tokens (JWT) structure',
+		useCase: 'Анализ структуры JWT токенов для отладки авторизации',
 		metaDescription:
 			'JWT decoder and analyzer. Decode JSON Web Tokens and inspect claims.',
 		faqs: {
@@ -4528,10 +4590,12 @@ export const widgets: Widget[] = [
 		translationKey: 'uuidGenerator',
 		path: 'uuid-generator',
 		gradient: 'from-indigo-500 to-blue-600',
+		title: 'Генератор UUID',
+		description: 'Создавайте уникальные идентификаторы UUID всех версий',
 		recommendedTools: ['hash-generator', 'password-generator', 'jwt-decoder'],
 		difficulty: 'beginner',
 		tags: ['uuid', 'guid', 'generator', 'unique', 'identifier'],
-		useCase: 'Generate UUID/GUID in various versions (v1, v3, v4, v5)',
+		useCase: 'Генерация уникальных идентификаторов для API и баз данных',
 		metaDescription:
 			'UUID generator for all versions. Generate unique identifiers (UUID/GUID).',
 		faqs: {
@@ -4600,6 +4664,8 @@ export const widgets: Widget[] = [
 		translationKey: 'compoundInterest',
 		path: 'compound-interest-calculator',
 		gradient: 'from-green-500 to-emerald-600',
+		title: 'Сложные проценты',
+		description: 'Рассчитайте сложные проценты с детализацией',
 		recommendedTools: [
 			'loan-calculator',
 			'percentage-calculator',
@@ -4607,7 +4673,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'intermediate',
 		tags: ['compound', 'interest', 'finance', 'calculator', 'investment'],
-		useCase: 'Calculate compound interest with detailed breakdown and charts',
+		useCase: 'Расчёт роста инвестиций со сложными процентами',
 		metaDescription:
 			'Compound interest calculator with charts. Calculate investment growth over time.',
 		faqs: {
@@ -4680,6 +4746,8 @@ export const widgets: Widget[] = [
 		translationKey: 'loanCalculator',
 		path: 'loan-calculator',
 		gradient: 'from-red-500 to-pink-600',
+		title: 'Кредитный калькулятор',
+		description: 'Рассчитайте платежи по кредиту с графиком погашения',
 		recommendedTools: [
 			'compound-interest',
 			'percentage-calculator',
@@ -4687,7 +4755,7 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'intermediate',
 		tags: ['loan', 'mortgage', 'calculator', 'finance', 'annuity'],
-		useCase: 'Calculate loan/mortgage payments with amortization schedule',
+		useCase: 'Расчёт ежемесячных платежей по кредитам и ипотеке',
 		metaDescription:
 			'Loan and mortgage calculator. Calculate monthly payments and amortization.',
 		faqs: {
@@ -4755,6 +4823,9 @@ export const widgets: Widget[] = [
 		translationKey: 'fuelCalculator',
 		path: 'fuel-consumption-calculator',
 		gradient: 'from-blue-500 to-green-600',
+		title: 'Калькулятор топлива',
+		description: 'Рассчитайте расход топлива и стоимость поездки',
+		useCase: 'Планирование расходов на топливо для автопутешествий',
 		recommendedTools: [
 			'currency-converter',
 			'percentage-calculator',
@@ -4762,8 +4833,6 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['fuel', 'consumption', 'calculator', 'car', 'gas', 'mileage'],
-		useCase:
-			'Calculate fuel consumption, cost, and average consumption per 100 km',
 		metaDescription:
 			'Fuel consumption calculator. Calculate fuel costs and consumption per 100 km.',
 		faqs: {
@@ -4831,6 +4900,8 @@ export const widgets: Widget[] = [
 		translationKey: 'asciiArtGenerator',
 		path: 'ascii-art-generator',
 		gradient: 'from-green-500 to-emerald-600',
+		title: 'Генератор ASCII арта',
+		description: 'Превращайте текст в ASCII искусство',
 		recommendedTools: [
 			'text-case-converter',
 			'emoji-list',
@@ -4846,7 +4917,7 @@ export const widgets: Widget[] = [
 			'generator',
 			'creative'
 		],
-		useCase: 'Convert text and images to ASCII art, or use pre-made patterns',
+		useCase: 'Создание ASCII арта для терминалов или подписей',
 		metaDescription:
 			'ASCII art generator - convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.',
 		faqs: {
@@ -4904,10 +4975,11 @@ export const widgets: Widget[] = [
 		icon: Globe,
 		gradient: 'from-blue-500 to-purple-600',
 		category: 'webdev',
+		title: 'OpenGraph валидатор',
+		description: 'Проверяйте OpenGraph теги для соцсетей',
 		tags: ['opengraph', 'meta', 'social', 'seo', 'preview', 'validator'],
 		difficulty: 'intermediate',
-		useCase:
-			'Validate and preview Open Graph meta tags for social media sharing',
+		useCase: 'Оптимизация превью ссылок в социальных сетях',
 		metaDescription:
 			'OpenGraph validator and previewer. Test how your webpage appears when shared on social platforms.',
 		recommendedTools: [
