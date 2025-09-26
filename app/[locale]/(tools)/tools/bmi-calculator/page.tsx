@@ -54,12 +54,12 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 
 // Activity levels will be handled by translations
 
 export default function BMICalculatorPage() {
-	const t = useTranslations('widgets.bmiCalculator')
+	// const t = useTranslations('widgets.bmiCalculator') // Removed
 	const [showAdvanced, setShowAdvanced] = useState(false)
 	const [activeTab, setActiveTab] = useState('basic')
 
@@ -68,43 +68,43 @@ export default function BMICalculatorPage() {
 		{
 			min: 0,
 			max: 16,
-			label: t('categories.severeUnderweight'),
+			label: 'Выраженный дефицит',
 			color: 'from-red-600 to-red-500'
 		},
 		{
 			min: 16,
 			max: 18.5,
-			label: t('categories.underweight'),
+			label: 'Недостаточная масса',
 			color: 'from-orange-600 to-orange-500'
 		},
 		{
 			min: 18.5,
 			max: 25,
-			label: t('categories.normal'),
+			label: 'Норма',
 			color: 'from-green-600 to-green-500'
 		},
 		{
 			min: 25,
 			max: 30,
-			label: t('categories.overweight'),
+			label: 'Избыточная масса',
 			color: 'from-yellow-600 to-yellow-500'
 		},
 		{
 			min: 30,
 			max: 35,
-			label: t('categories.obesityClass1'),
+			label: 'Ожирение I степени',
 			color: 'from-orange-600 to-orange-500'
 		},
 		{
 			min: 35,
 			max: 40,
-			label: t('categories.obesityClass2'),
+			label: 'Ожирение II степени',
 			color: 'from-red-600 to-red-500'
 		},
 		{
 			min: 40,
 			max: 100,
-			label: t('categories.obesityClass3'),
+			label: 'Ожирение III степени',
 			color: 'from-red-700 to-red-600'
 		}
 	]
@@ -199,11 +199,11 @@ export default function BMICalculatorPage() {
 						<TabsList className='grid w-full max-w-md mx-auto grid-cols-2'>
 							<TabsTrigger value='basic' className='gap-2'>
 								<Calculator className='w-4 h-4' />
-								{t('tabs.basic')}
+								Базовый расчет
 							</TabsTrigger>
 							<TabsTrigger value='advanced' className='gap-2'>
 								<BarChart3 className='w-4 h-4' />
-								{t('tabs.advanced')}
+								Расширенный анализ
 							</TabsTrigger>
 						</TabsList>
 
@@ -214,7 +214,7 @@ export default function BMICalculatorPage() {
 									<div className='flex items-center justify-between'>
 										<h3 className='text-lg font-semibold flex items-center gap-2'>
 											<User className='w-5 h-5' />
-											{t('input.yourParameters')}
+											Ваши параметры
 										</h3>
 										<Button
 											onClick={handleLoadExample}
@@ -223,7 +223,7 @@ export default function BMICalculatorPage() {
 											className='gap-2'
 										>
 											<Sparkles className='w-4 h-4' />
-											{t('input.example')}
+											Пример
 										</Button>
 									</div>
 
@@ -254,10 +254,10 @@ export default function BMICalculatorPage() {
 													className='cursor-pointer text-center'
 												>
 													<div className='font-medium'>
-														{t('unitSystem.metric')}
+														Метрическая
 													</div>
 													<div className='text-xs text-muted-foreground'>
-														{t('unitSystem.metricUnits')}
+														кг, см
 													</div>
 												</Label>
 											</div>
@@ -279,10 +279,10 @@ export default function BMICalculatorPage() {
 													className='cursor-pointer text-center'
 												>
 													<div className='font-medium'>
-														{t('unitSystem.imperial')}
+														Империческая
 													</div>
 													<div className='text-xs text-muted-foreground'>
-														{t('unitSystem.imperialUnits')}
+														lbs, ft
 													</div>
 												</Label>
 											</div>
@@ -299,7 +299,7 @@ export default function BMICalculatorPage() {
 													className='flex items-center gap-2'
 												>
 													<Scale className='w-4 h-4' />
-													{t('input.weight')}
+													Вес
 												</Label>
 												<div className='relative'>
 													<Input
@@ -318,8 +318,8 @@ export default function BMICalculatorPage() {
 													/>
 													<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
 														{input.unitSystem === 'metric'
-															? t('units.kg')
-															: t('units.lbs')}
+															? 'кг'
+															: 'фунты'}
 													</span>
 												</div>
 											</div>
@@ -331,7 +331,7 @@ export default function BMICalculatorPage() {
 														className='flex items-center gap-2'
 													>
 														<Ruler className='w-4 h-4' />
-														{t('input.height')}
+														Рост
 													</Label>
 													<div className='relative'>
 														<Input
@@ -347,7 +347,7 @@ export default function BMICalculatorPage() {
 															className='pr-12'
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-															{t('units.cm')}
+															см
 														</span>
 													</div>
 												</div>
@@ -355,7 +355,7 @@ export default function BMICalculatorPage() {
 												<div className='space-y-2'>
 													<Label className='flex items-center gap-2'>
 														<Ruler className='w-4 h-4' />
-														{t('input.height')}
+														Рост
 													</Label>
 													<div className='grid grid-cols-2 gap-2'>
 														<div className='relative'>
@@ -403,7 +403,7 @@ export default function BMICalculatorPage() {
 													className='flex items-center gap-2'
 												>
 													<Calendar className='w-4 h-4' />
-													{t('input.age')}
+													Возраст
 												</Label>
 												<Input
 													id='age'
@@ -419,7 +419,7 @@ export default function BMICalculatorPage() {
 											<div className='space-y-2'>
 												<Label className='flex items-center gap-2'>
 													<Users className='w-4 h-4' />
-													{t('input.gender')}
+													Пол
 												</Label>
 												<Select
 													value={input.gender}
@@ -432,10 +432,10 @@ export default function BMICalculatorPage() {
 													</SelectTrigger>
 													<SelectContent>
 														<SelectItem value='male'>
-															{t('input.male')}
+															Мужской
 														</SelectItem>
 														<SelectItem value='female'>
-															{t('input.female')}
+															Женский
 														</SelectItem>
 													</SelectContent>
 												</Select>
@@ -446,7 +446,7 @@ export default function BMICalculatorPage() {
 										<div className='space-y-2'>
 											<Label className='flex items-center gap-2'>
 												<Activity className='w-4 h-4' />
-												{t('input.activityLevel')}
+												Уровень активности
 											</Label>
 											<Select
 												value={input.activityLevel}
@@ -459,19 +459,19 @@ export default function BMICalculatorPage() {
 												</SelectTrigger>
 												<SelectContent>
 													<SelectItem value='sedentary'>
-														{t('input.activityLevels.sedentary')}
+														Малоподвижный (мало или нет упражнений)
 													</SelectItem>
 													<SelectItem value='light'>
-														{t('input.activityLevels.light')}
+														Легкая активность (1-3 дня в неделю)
 													</SelectItem>
 													<SelectItem value='moderate'>
-														{t('input.activityLevels.moderate')}
+														Умеренная активность (3-5 дней в неделю)
 													</SelectItem>
 													<SelectItem value='active'>
-														{t('input.activityLevels.active')}
+														Высокая активность (6-7 дней в неделю)
 													</SelectItem>
 													<SelectItem value='very-active'>
-														{t('input.activityLevels.veryActive')}
+														Очень высокая активность (тяжелая работа)
 													</SelectItem>
 												</SelectContent>
 											</Select>
@@ -484,7 +484,7 @@ export default function BMICalculatorPage() {
 											className='w-full gap-2'
 										>
 											<Calculator className='w-5 h-5' />
-											{t('actions.calculate')}
+											Рассчитать ИМТ
 											<ShortcutHint
 												shortcut={{
 													key: 'Enter',
@@ -549,14 +549,14 @@ export default function BMICalculatorPage() {
 															</div>
 															<div>
 																<p className='text-sm text-muted-foreground'>
-																	{t('results.idealWeight')}
+																	Идеальный вес
 																</p>
 																<p className='font-semibold'>
 																	{result.idealWeight.min.toFixed(0)}-
 																	{result.idealWeight.max.toFixed(0)}{' '}
 																	{input.unitSystem === 'metric'
-																		? t('units.kg')
-																		: t('units.lbs')}
+																		? 'кг'
+																		: 'фунты'}
 																</p>
 															</div>
 														</div>
@@ -569,7 +569,7 @@ export default function BMICalculatorPage() {
 															</div>
 															<div>
 																<p className='text-sm text-muted-foreground'>
-																	{t('results.healthRisk')}
+																	Риск для здоровья
 																</p>
 																<p className='font-semibold'>
 																	{result.healthRisk}
@@ -585,12 +585,12 @@ export default function BMICalculatorPage() {
 													<Card className='p-6 bg-muted/50'>
 														<h4 className='font-medium mb-3 flex items-center gap-2'>
 															<TrendingUp className='w-5 h-5' />
-															{t('results.weightRecommendation')}
+															Рекомендация по весу
 														</h4>
 														{result.weightToLose > 0 && (
 															<div className='flex items-center justify-between'>
 																<span className='text-muted-foreground'>
-																	{t('results.recommendedToLose')}
+																	Рекомендуется снизить:
 																</span>
 																<Badge
 																	variant='destructive'
@@ -598,21 +598,21 @@ export default function BMICalculatorPage() {
 																>
 																	-{result.weightToLose.toFixed(1)}{' '}
 																	{input.unitSystem === 'metric'
-																		? t('units.kg')
-																		: t('units.lbs')}
+																		? 'кг'
+																		: 'фунты'}
 																</Badge>
 															</div>
 														)}
 														{result.weightToGain > 0 && (
 															<div className='flex items-center justify-between'>
 																<span className='text-muted-foreground'>
-																	{t('results.recommendedToGain')}
+																	Рекомендуется набрать:
 																</span>
 																<Badge variant='secondary' className='text-lg'>
 																	+{result.weightToGain.toFixed(1)}{' '}
 																	{input.unitSystem === 'metric'
-																		? t('units.kg')
-																		: t('units.lbs')}
+																		? 'кг'
+																		: 'фунты'}
 																</Badge>
 															</div>
 														)}
@@ -621,7 +621,7 @@ export default function BMICalculatorPage() {
 																<div className='flex items-center justify-center gap-2 text-green-600'>
 																	<CheckCircle className='w-5 h-5' />
 																	<span className='font-medium'>
-																		{t('results.weightNormal')}
+																		Ваш вес в пределах нормы!
 																	</span>
 																</div>
 															)}
@@ -635,10 +635,10 @@ export default function BMICalculatorPage() {
 												<Calculator className='w-12 h-12 text-muted-foreground' />
 											</div>
 											<h3 className='text-lg font-medium mb-2'>
-												{t('results.enterData')}
+												Введите ваши данные
 											</h3>
 											<p className='text-muted-foreground'>
-												{t('results.fillForm')}
+												Заполните форму слева для расчета индекса массы тела
 											</p>
 										</div>
 									)}
@@ -652,7 +652,7 @@ export default function BMICalculatorPage() {
 								<div className='space-y-6'>
 									<h3 className='text-lg font-semibold flex items-center gap-2'>
 										<BarChart3 className='w-5 h-5' />
-										{t('input.additionalParameters')}
+										Дополнительные параметры
 									</h3>
 
 									<div className='space-y-4'>
@@ -660,12 +660,12 @@ export default function BMICalculatorPage() {
 										<Card className='p-4 space-y-4'>
 											<h4 className='font-medium flex items-center gap-2'>
 												<Ruler className='w-4 h-4' />
-												{t('input.bodyMeasurements')}
+												Измерения тела
 											</h4>
 
 											<div className='grid gap-4'>
 												<div className='space-y-2'>
-													<Label htmlFor='waist'>{t('input.waist')}</Label>
+													<Label htmlFor='waist'>Обхват талии</Label>
 													<div className='relative'>
 														<Input
 															id='waist'
@@ -681,14 +681,14 @@ export default function BMICalculatorPage() {
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
 															{input.unitSystem === 'metric'
-																? t('units.cm')
-																: t('units.in')}
+																? 'см'
+																: 'дюймы'}
 														</span>
 													</div>
 												</div>
 
 												<div className='space-y-2'>
-													<Label htmlFor='neck'>{t('input.neck')}</Label>
+													<Label htmlFor='neck'>Обхват шеи</Label>
 													<div className='relative'>
 														<Input
 															id='neck'
@@ -704,15 +704,15 @@ export default function BMICalculatorPage() {
 														/>
 														<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
 															{input.unitSystem === 'metric'
-																? t('units.cm')
-																: t('units.in')}
+																? 'см'
+																: 'дюймы'}
 														</span>
 													</div>
 												</div>
 
 												{input.gender === 'female' && (
 													<div className='space-y-2'>
-														<Label htmlFor='hip'>{t('input.hip')}</Label>
+														<Label htmlFor='hip'>Обхват бедер</Label>
 														<div className='relative'>
 															<Input
 																id='hip'
@@ -728,8 +728,8 @@ export default function BMICalculatorPage() {
 															/>
 															<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
 																{input.unitSystem === 'metric'
-																	? t('units.cm')
-																	: t('units.in')}
+																	? 'см'
+																	: 'дюймы'}
 															</span>
 														</div>
 													</div>
@@ -743,7 +743,7 @@ export default function BMICalculatorPage() {
 											className='w-full gap-2'
 										>
 											<BarChart3 className='w-5 h-5' />
-											{t('actions.calculateFull')}
+											Рассчитать полный анализ
 										</Button>
 									</div>
 								</div>
@@ -756,7 +756,7 @@ export default function BMICalculatorPage() {
 											<Card className='p-6 space-y-6'>
 												<h3 className='font-semibold flex items-center gap-2'>
 													<Dumbbell className='w-5 h-5' />
-													{t('results.bodyComposition')}
+													Состав тела
 												</h3>
 
 												<div className='grid gap-4'>
@@ -764,7 +764,7 @@ export default function BMICalculatorPage() {
 													<div className='space-y-3'>
 														<div className='flex justify-between items-center'>
 															<span className='text-sm text-muted-foreground'>
-																{t('results.bodyFat')}
+																Процент жира
 															</span>
 															<Badge
 																variant={
@@ -781,7 +781,7 @@ export default function BMICalculatorPage() {
 															className='h-3'
 														/>
 														<p className='text-xs text-muted-foreground'>
-															{t('results.normal')}:{' '}
+															Норма:{' '}
 															{input.gender === 'male' ? '10-20%' : '20-30%'}
 														</p>
 													</div>
@@ -790,13 +790,13 @@ export default function BMICalculatorPage() {
 													<div className='p-4 rounded-lg bg-muted/50'>
 														<div className='flex justify-between items-center mb-2'>
 															<span className='text-sm font-medium'>
-																{t('results.leanMass')}
+																Мышечная масса
 															</span>
 															<span className='text-2xl font-bold'>
 																{healthMetrics.leanMass.toFixed(1)}{' '}
 																{input.unitSystem === 'metric'
-																	? t('units.kg')
-																	: t('units.lbs')}
+																	? 'кг'
+																	: 'фунты'}
 															</span>
 														</div>
 														<div className='flex items-center gap-2 text-xs text-muted-foreground'>
@@ -807,7 +807,7 @@ export default function BMICalculatorPage() {
 																		parseFloat(input.weight)) *
 																	100
 																).toFixed(0)}
-																% {t('results.ofTotalMass')}
+																% от общей массы
 															</span>
 														</div>
 													</div>
@@ -816,7 +816,7 @@ export default function BMICalculatorPage() {
 													<div className='p-4 rounded-lg bg-muted/50'>
 														<div className='flex justify-between items-center mb-2'>
 															<span className='text-sm font-medium'>
-																{t('results.waistToHeight')}
+																Соотношение талия/рост
 															</span>
 															<Badge
 																variant={
@@ -829,7 +829,7 @@ export default function BMICalculatorPage() {
 															</Badge>
 														</div>
 														<p className='text-xs text-muted-foreground'>
-															{t('results.healthyRange')}: &lt; 0.5
+															Здоровый диапазон: &lt; 0.5
 														</p>
 													</div>
 												</div>
@@ -839,7 +839,7 @@ export default function BMICalculatorPage() {
 											<Card className='p-6 space-y-4'>
 												<h3 className='font-semibold flex items-center gap-2'>
 													<Flame className='w-5 h-5' />
-													{t('results.calorieIntake')}
+													Калорийность рациона
 												</h3>
 
 												<div className='space-y-3'>
@@ -847,14 +847,14 @@ export default function BMICalculatorPage() {
 													<div className='p-4 rounded-lg border-2 border-primary/20 bg-primary/5'>
 														<div className='flex justify-between items-center mb-1'>
 															<span className='font-medium'>
-																{t('results.maintenance')}
+																Поддержание веса
 															</span>
 															<span className='text-2xl font-bold text-primary'>
 																{result?.calories.maintenance}
 															</span>
 														</div>
 														<p className='text-xs text-muted-foreground'>
-															{t('results.perDay')}
+															ккал/день
 														</p>
 													</div>
 
@@ -864,7 +864,7 @@ export default function BMICalculatorPage() {
 															<>
 																<div className='p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/20'>
 																	<div className='text-sm font-medium mb-1'>
-																		{t('results.slowWeightLoss')}
+																		Медленное похудение
 																	</div>
 																	<div className='text-xl font-bold text-yellow-700 dark:text-yellow-400'>
 																		{result.calories.mildLoss}
@@ -872,14 +872,14 @@ export default function BMICalculatorPage() {
 																	<p className='text-xs text-muted-foreground'>
 																		-0.25{' '}
 																		{input.unitSystem === 'metric'
-																			? t('units.kg')
-																			: t('units.lbs')}
-																		/{t('results.perWeek')}
+																			? 'кг'
+																			: 'фунты'}
+																		/в неделю
 																	</p>
 																</div>
 																<div className='p-3 rounded-lg bg-orange-50 dark:bg-orange-950/20'>
 																	<div className='text-sm font-medium mb-1'>
-																		{t('results.weightLoss')}
+																		Похудение
 																	</div>
 																	<div className='text-xl font-bold text-orange-700 dark:text-orange-400'>
 																		{result.calories.loss}
@@ -887,9 +887,9 @@ export default function BMICalculatorPage() {
 																	<p className='text-xs text-muted-foreground'>
 																		-0.5{' '}
 																		{input.unitSystem === 'metric'
-																			? t('units.kg')
-																			: t('units.lbs')}
-																		/{t('results.perWeek')}
+																			? 'кг'
+																			: 'фунты'}
+																		/в неделю
 																	</p>
 																</div>
 															</>
@@ -898,7 +898,7 @@ export default function BMICalculatorPage() {
 															<>
 																<div className='p-3 rounded-lg bg-green-50 dark:bg-green-950/20'>
 																	<div className='text-sm font-medium mb-1'>
-																		{t('results.slowWeightGain')}
+																		Медленный набор
 																	</div>
 																	<div className='text-xl font-bold text-green-700 dark:text-green-400'>
 																		{result.calories.mildGain}
@@ -906,14 +906,14 @@ export default function BMICalculatorPage() {
 																	<p className='text-xs text-muted-foreground'>
 																		+0.25{' '}
 																		{input.unitSystem === 'metric'
-																			? t('units.kg')
-																			: t('units.lbs')}
-																		/{t('results.perWeek')}
+																			? 'кг'
+																			: 'фунты'}
+																		/в неделю
 																	</p>
 																</div>
 																<div className='p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20'>
 																	<div className='text-sm font-medium mb-1'>
-																		{t('results.weightGain')}
+																		Набор массы
 																	</div>
 																	<div className='text-xl font-bold text-emerald-700 dark:text-emerald-400'>
 																		{result.calories.gain}
@@ -921,9 +921,9 @@ export default function BMICalculatorPage() {
 																	<p className='text-xs text-muted-foreground'>
 																		+0.5{' '}
 																		{input.unitSystem === 'metric'
-																			? t('units.kg')
-																			: t('units.lbs')}
-																		/{t('results.perWeek')}
+																			? 'кг'
+																			: 'фунты'}
+																		/в неделю
 																	</p>
 																</div>
 															</>
@@ -938,10 +938,10 @@ export default function BMICalculatorPage() {
 												<BarChart3 className='w-12 h-12 text-muted-foreground' />
 											</div>
 											<h3 className='text-lg font-medium mb-2'>
-												{t('results.extendedAnalysis')}
+												Расширенный анализ
 											</h3>
 											<p className='text-muted-foreground'>
-												{t('results.enterMeasurements')}
+												Введите дополнительные измерения для расчета процента жира и детального анализа состава тела
 											</p>
 										</div>
 									)}
@@ -959,11 +959,11 @@ export default function BMICalculatorPage() {
 							className='gap-2'
 						>
 							<Copy className='w-4 h-4' />
-							{t('actions.copy')}
+							Копировать
 						</Button>
 						<Button onClick={handleReset} variant='outline' className='gap-2'>
 							<RefreshCw className='w-4 h-4' />
-							{t('actions.reset')}
+							Сбросить
 						</Button>
 					</div>
 				</div>
@@ -977,11 +977,11 @@ export default function BMICalculatorPage() {
 							<Info className='w-6 h-6 text-primary' />
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>{t('info.whatIsBMI')}</h4>
+							<h4 className='font-semibold mb-2'>Что такое ИМТ?</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
-								<li>{t('info.bmiDescription.0')}</li>
-								<li>{t('info.bmiDescription.1')}</li>
-								<li>{t('info.bmiDescription.2')}</li>
+								<li>Отношение массы к квадрату роста</li>
+								<li>Оценка соответствия массы и роста</li>
+								<li>Индикатор возможных проблем</li>
 							</ul>
 						</div>
 					</div>
@@ -993,11 +993,11 @@ export default function BMICalculatorPage() {
 							<AlertCircle className='w-6 h-6 text-accent' />
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>{t('info.limitations')}</h4>
+							<h4 className='font-semibold mb-2'>Ограничения ИМТ</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
-								<li>{t('info.limitationsDescription.0')}</li>
-								<li>{t('info.limitationsDescription.2')}</li>
-								<li>{t('info.limitationsDescription.3')}</li>
+								<li>Не различает жир и мышцы</li>
+								<li>Менее точен для спортсменов</li>
+								<li>Зависит от возраста и пола</li>
 							</ul>
 						</div>
 					</div>
@@ -1010,12 +1010,12 @@ export default function BMICalculatorPage() {
 						</div>
 						<div>
 							<h4 className='font-semibold mb-2'>
-								{t('info.additionalMetrics')}
+								Дополнительные метрики
 							</h4>
 							<ul className='text-sm text-muted-foreground space-y-1'>
-								<li>{t('info.additionalMetricsDescription.0')}</li>
-								<li>{t('info.additionalMetricsDescription.1')}</li>
-								<li>{t('info.additionalMetricsDescription.3')}</li>
+								<li>Процент жира в организме</li>
+								<li>Соотношение талия/рост</li>
+								<li>Консультация врача</li>
 							</ul>
 						</div>
 					</div>
