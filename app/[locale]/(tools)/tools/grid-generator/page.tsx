@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Copy, RotateCcw, Plus, Minus, HelpCircle, Check } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import {
 	Tooltip,
 	TooltipContent,
@@ -52,7 +52,6 @@ const defaultProps: GridProps = {
 }
 
 export default function GridGeneratorPage() {
-	const t = useTranslations('widgets.gridGenerator')
 	const locale = useLocale()
 	const [props, setProps] = useState<GridProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(6)
@@ -194,7 +193,7 @@ export default function GridGeneratorPage() {
 					: 'CSS code copied to clipboard'
 			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -209,7 +208,7 @@ export default function GridGeneratorPage() {
 					: 'Tailwind classes copied to clipboard'
 			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -223,7 +222,7 @@ export default function GridGeneratorPage() {
 
 	const renderLabel = (key: string, englishLabel: string) => {
 		if (locale !== 'ru') {
-			return <Label className='text-xs'>{t(key)}</Label>
+			return <Label className='text-xs'>{englishLabel}</Label>
 		}
 
 		return (
@@ -235,7 +234,7 @@ export default function GridGeneratorPage() {
 							<HelpCircle className='h-3 w-3 text-muted-foreground' />
 						</TooltipTrigger>
 						<TooltipContent>
-							<p className='text-xs'>{t(key)}</p>
+							<p className='text-xs'>Описание свойства CSS Grid</p>
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>
@@ -340,7 +339,7 @@ export default function GridGeneratorPage() {
 			<Card className='lg:col-span-1'>
 				<CardHeader>
 					<CardTitle className='flex items-center justify-between'>
-						<span>{t('properties')}</span>
+						<span>Свойства</span>
 						<Button
 							variant='ghost'
 							size='sm'
@@ -348,7 +347,7 @@ export default function GridGeneratorPage() {
 							className='h-8 hover:bg-accent hover:text-white'
 						>
 							<RotateCcw className='w-4 h-4 mr-1' />
-							{t('reset')}
+							Сброс
 						</Button>
 					</CardTitle>
 				</CardHeader>
@@ -422,13 +421,13 @@ export default function GridGeneratorPage() {
 												<HelpCircle className='h-3 w-3 text-muted-foreground' />
 											</TooltipTrigger>
 											<TooltipContent>
-												<p className='text-xs'>{t('gap')}</p>
+												<p className='text-xs'>Отступ между элементами</p>
 											</TooltipContent>
 										</Tooltip>
 									</TooltipProvider>
 								</div>
 							) : (
-								<Label className='text-xs'>{t('gap')}</Label>
+								<Label className='text-xs'>Отступ</Label>
 							)}
 							<Switch
 								checked={useUniformGap}
@@ -540,9 +539,7 @@ export default function GridGeneratorPage() {
 
 					<div className='grid grid-cols-2 gap-3'>
 						<div className='space-y-1'>
-							<Label className='text-xs'>
-								{t('items')}: {itemCount}
-							</Label>
+							<Label className='text-xs'>Элементы: {itemCount}</Label>
 							<Slider
 								value={[itemCount]}
 								onValueChange={([value]) => setItemCount(value)}
@@ -554,7 +551,7 @@ export default function GridGeneratorPage() {
 						</div>
 
 						<div className='space-y-1'>
-							<Label className='text-xs'>{t('showNumbers')}</Label>
+							<Label className='text-xs'>Показать номера</Label>
 							<div className='h-8 flex items-center'>
 								<Switch
 									checked={showItemNumbers}
@@ -569,7 +566,7 @@ export default function GridGeneratorPage() {
 			{/* Preview */}
 			<Card className='lg:col-span-2'>
 				<CardHeader>
-					<CardTitle>{t('preview')}</CardTitle>
+					<CardTitle>Превью</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div style={containerStyle}>
@@ -588,7 +585,7 @@ export default function GridGeneratorPage() {
 			{/* Generated CSS */}
 			<Card className='lg:col-span-3'>
 				<CardHeader>
-					<CardTitle>{t('generatedCss')}</CardTitle>
+					<CardTitle>Сгенерированный CSS</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className='grid md:grid-cols-2 gap-4'>
