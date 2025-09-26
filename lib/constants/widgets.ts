@@ -1122,10 +1122,12 @@ export const widgets: Widget[] = [
 		translationKey: 'seoMarkdownGenerator',
 		path: 'seo-markdown-generator',
 		gradient: 'from-yellow-500 to-amber-500',
+		title: 'SEO Markdown генератор',
+		description: 'Генерируйте SEO-оптимизированные markdown файлы для блог постов',
+		useCase: 'Генерация SEO-оптимизированных markdown файлов для блог постов',
 		recommendedTools: ['utm-builder', 'password-generator', 'html-tree'],
 		difficulty: 'intermediate',
 		tags: ['seo', 'markdown', 'blog', 'content', 'generator'],
-		useCase: 'Generate SEO-optimized markdown files for blog posts',
 		metaDescription:
 			'SEO markdown generator for blogs. Create optimized blog post templates with metadata.',
 		faqs: {
@@ -1200,8 +1202,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['team', 'random', 'groups', 'picker', 'fair'],
-		useCase:
-			'Randomly distribute people into balanced teams for games, work or activities',
+		title: 'Рандомайзер команд',
+		description: 'Создавайте случайные команды быстро и честно. Отлично подходит для игр, работы или развлечений',
+		useCase: 'Случайное деление людей на сбалансированные команды для игр или активностей',
 		metaDescription:
 			'Random team generator. Create fair and balanced teams from a list of names.',
 		faqs: {
@@ -1272,8 +1275,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['random', 'draw', 'lots', 'picker', 'selection', 'straws'],
-		useCase:
-			'Draw lots digitally - pick names, make decisions, or select winners fairly',
+		title: 'Жеребьёвка',
+		description: 'Цифровая жеребьёвка - выбирайте имена или делайте случайный выбор честно',
+		useCase: 'Честный случайный выбор из списка опций или имён',
 		metaDescription:
 			'Digital draw lots tool. Draw straws, pick cards randomly for fair selection and decision making.',
 		faqs: {
@@ -1344,8 +1348,9 @@ export const widgets: Widget[] = [
 		],
 		difficulty: 'intermediate',
 		tags: ['email', 'validation', 'syntax', 'domain', 'disposable', 'bulk'],
-		useCase:
-			'Validate email addresses for syntax, domain existence, and quality checks',
+		title: 'Валидатор Email',
+		description: 'Проверка email адресов на синтаксис, домен и временные адреса',
+		useCase: 'Проверка email адресов на подлинность и доставляемость',
 		metaDescription:
 			'Email validator tool. Check email syntax, domain MX records, disposable addresses, and bulk validation.',
 		faqs: {
