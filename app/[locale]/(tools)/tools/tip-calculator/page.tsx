@@ -13,11 +13,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import { useTranslations } from 'next-intl'
 import { RelatedTools } from '@/components/seo/RelatedTools'
 
 export default function TipCalculatorPage() {
-	const t = useTranslations('widgets.tipCalculator')
 	const [billAmount, setBillAmount] = useState<string>('100')
 	const [tipPercent, setTipPercent] = useState<number>(15)
 	const [numberOfPeople, setNumberOfPeople] = useState<string>('1')
@@ -53,7 +51,7 @@ export default function TipCalculatorPage() {
 					<CardHeader>
 						<CardTitle className='flex items-center gap-2'>
 							<Calculator className='h-5 w-5' />
-							{t('inputSection')}
+							Настройки
 						</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-6'>
@@ -62,7 +60,7 @@ export default function TipCalculatorPage() {
 							<div className='space-y-2'>
 								<Label htmlFor='bill' className='flex items-center gap-2'>
 									<DollarSign className='h-4 w-4' />
-									{t('billAmount')}
+									Сумма счета
 								</Label>
 								<Input
 									id='bill'
@@ -79,7 +77,7 @@ export default function TipCalculatorPage() {
 							<div className='space-y-2'>
 								<Label htmlFor='people' className='flex items-center gap-2'>
 									<Users className='h-4 w-4' />
-									{t('numberOfPeople')}
+									Количество людей
 								</Label>
 								<Input
 									id='people'
@@ -97,7 +95,7 @@ export default function TipCalculatorPage() {
 						<div className='space-y-3'>
 							<Label className='flex items-center gap-2'>
 								<Percent className='h-4 w-4' />
-								{t('tipPercentage')}
+								Процент чаевых
 							</Label>
 
 							{/* Preset Buttons */}
@@ -126,7 +124,7 @@ export default function TipCalculatorPage() {
 								type='number'
 								value={customTipPercent}
 								onChange={e => setCustomTipPercent(e.target.value)}
-								placeholder={t('customTip')}
+								placeholder='Свой процент'
 								min='0'
 								max='100'
 								className='text-sm'
@@ -157,14 +155,14 @@ export default function TipCalculatorPage() {
 				{/* Results Section */}
 				<Card>
 					<CardHeader>
-						<CardTitle>{t('results')}</CardTitle>
-						<CardDescription>{t('resultsDescription')}</CardDescription>
+						<CardTitle>Результат</CardTitle>
+						<CardDescription>Подробный расчёт счёта с чаевыми</CardDescription>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						{/* Tip Amount */}
 						<div className='p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg'>
 							<div className='text-sm text-muted-foreground'>
-								{t('tipAmount')}
+								Чаевые
 							</div>
 							<div className='text-3xl font-bold text-emerald-600 dark:text-emerald-400'>
 								${result.tipAmount}
@@ -174,7 +172,7 @@ export default function TipCalculatorPage() {
 						{/* Total with Tip */}
 						<div className='p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg'>
 							<div className='text-sm text-muted-foreground'>
-								{t('totalWithTip')}
+								Итого с чаевыми
 							</div>
 							<div className='text-3xl font-bold text-blue-600 dark:text-blue-400'>
 								${result.totalAmount}
@@ -184,11 +182,11 @@ export default function TipCalculatorPage() {
 						{parseInt(numberOfPeople) > 1 && (
 							<>
 								<div className='border-t pt-4'>
-									<h3 className='font-semibold mb-3'>{t('perPerson')}</h3>
+									<h3 className='font-semibold mb-3'>На человека</h3>
 
 									{/* Tip per Person */}
 									<div className='flex justify-between items-center p-3 bg-muted/30 rounded-lg mb-2'>
-										<span className='text-sm'>{t('tipPerPerson')}</span>
+										<span className='text-sm'>Чаевые</span>
 										<span className='font-semibold text-lg'>
 											${result.tipPerPerson}
 										</span>
@@ -196,7 +194,7 @@ export default function TipCalculatorPage() {
 
 									{/* Total per Person */}
 									<div className='flex justify-between items-center p-3 bg-muted/30 rounded-lg'>
-										<span className='text-sm'>{t('totalPerPerson')}</span>
+										<span className='text-sm'>Итого</span>
 										<span className='font-semibold text-lg'>
 											${result.totalPerPerson}
 										</span>
@@ -209,20 +207,20 @@ export default function TipCalculatorPage() {
 						<div className='border-t pt-4 space-y-2 text-sm'>
 							<div className='flex justify-between'>
 								<span className='text-muted-foreground'>
-									{t('originalBill')}
+									Оригинальный счет
 								</span>
 								<span>${parseFloat(billAmount || '0').toFixed(2)}</span>
 							</div>
 							<div className='flex justify-between'>
 								<span className='text-muted-foreground'>
-									{t('tip')} ({customTipPercent || tipPercent}%)
+									Чаевые ({customTipPercent || tipPercent}%)
 								</span>
 								<span className='text-emerald-600 dark:text-emerald-400'>
 									+${result.tipAmount}
 								</span>
 							</div>
 							<div className='flex justify-between font-semibold text-base border-t pt-2'>
-								<span>{t('total')}</span>
+								<span>Итого</span>
 								<span>${result.totalAmount}</span>
 							</div>
 						</div>
@@ -233,26 +231,26 @@ export default function TipCalculatorPage() {
 			{/* Tip Guide */}
 			<Card>
 				<CardHeader>
-					<CardTitle>{t('tipGuide.title')}</CardTitle>
+					<CardTitle>Гид по чаевым</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className='grid sm:grid-cols-2 md:grid-cols-3 gap-4'>
 						<div className='p-3 bg-muted/30 rounded-lg'>
 							<div className='font-semibold'>10-15%</div>
 							<div className='text-sm text-muted-foreground'>
-								{t('tipGuide.basic')}
+								<strong>10-15%:</strong> Обычное обслуживание
 							</div>
 						</div>
 						<div className='p-3 bg-muted/30 rounded-lg'>
 							<div className='font-semibold'>15-20%</div>
 							<div className='text-sm text-muted-foreground'>
-								{t('tipGuide.good')}
+								<strong>18-20%:</strong> Хорошее обслуживание
 							</div>
 						</div>
 						<div className='p-3 bg-muted/30 rounded-lg'>
 							<div className='font-semibold'>20%+</div>
 							<div className='text-sm text-muted-foreground'>
-								{t('tipGuide.excellent')}
+								<strong>22-25%:</strong> Отличное обслуживание
 							</div>
 						</div>
 					</div>
