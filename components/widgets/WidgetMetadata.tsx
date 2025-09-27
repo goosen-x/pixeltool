@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { getWidgetById } from '@/lib/constants/widgets'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface WidgetMetadataProps {
 	widgetId: string
@@ -17,7 +17,7 @@ export function WidgetMetadata({
 	showDifficulty = true,
 	showUseCase = true
 }: WidgetMetadataProps) {
-	const t = useTranslations('widgets.metadata')
+	// const t = useTranslations('widgets.metadata')
 	const widget = getWidgetById(widgetId)
 
 	if (!widget) return null
@@ -30,29 +30,36 @@ export function WidgetMetadata({
 		advanced: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
 	}
 
+	// Russian translations
+	const difficultyLabels = {
+		beginner: 'Начинающий',
+		intermediate: 'Средний',
+		advanced: 'Продвинутый'
+	}
+
 	return (
 		<div className='space-y-3'>
 			{showDifficulty && widget.difficulty && (
 				<div className='flex items-center gap-2'>
 					<span className='text-sm font-medium text-muted-foreground'>
-						{t('difficulty')}:
+						Сложность:
 					</span>
 					<Badge className={difficultyColors[widget.difficulty]}>
-						{t(`levels.${widget.difficulty}`)}
+						{difficultyLabels[widget.difficulty]}
 					</Badge>
 				</div>
 			)}
 
 			{showUseCase && widget.useCase && (
 				<p className='text-sm text-muted-foreground'>
-					<span className='font-medium'>{t('useCase')}:</span> {widget.useCase}
+					<span className='font-medium'>Применение:</span> {widget.useCase}
 				</p>
 			)}
 
 			{showTags && widget.tags && widget.tags.length > 0 && (
 				<div className='flex items-start gap-2'>
 					<span className='text-sm font-medium text-muted-foreground'>
-						{t('tags')}:
+						Теги:
 					</span>
 					<div className='flex flex-wrap gap-1'>
 						{widget.tags.map(tag => (

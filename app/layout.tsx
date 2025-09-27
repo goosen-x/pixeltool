@@ -245,24 +245,24 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 			/>
 
 			{/* <NextIntlClientProvider messages={messages}> */}
-				<body
-					className={cn(
-						'min-h-screen bg-background font-sans antialiased',
-						interFont.className
-					)}
-				>
-					<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-						<NavigationProgress />
-						<YandexMetrika />
-						<GlobalGoalsTracker />
-						<ServiceWorkerRegistration />
-						<WebVitals />
-						{children}
-						<ScrollToTop />
-						<Toaster />
-						<CookieConsent />
-					</ThemeProvider>
-				</body>
+			<body
+				className={cn(
+					'min-h-screen bg-background font-sans antialiased',
+					interFont.className
+				)}
+			>
+				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+					<NavigationProgress />
+					<YandexMetrika />
+					<GlobalGoalsTracker />
+					<ServiceWorkerRegistration />
+					<WebVitals />
+					{children}
+					<ScrollToTop />
+					<Toaster />
+					<CookieConsent />
+				</ThemeProvider>
+			</body>
 			{/* </NextIntlClientProvider> */}
 		</html>
 	)

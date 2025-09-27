@@ -57,7 +57,10 @@ export default function Error({
 					Упс! Что-то пошло не так
 				</h1>
 
-				<p className='mb-4 text-muted-foreground'>К сожалению, произошла неожиданная ошибка. Мы уже работаем над её устранением.</p>
+				<p className='mb-4 text-muted-foreground'>
+					К сожалению, произошла неожиданная ошибка. Мы уже работаем над её
+					устранением.
+				</p>
 
 				{/* Показываем детали ошибки только в development */}
 				{process.env.NODE_ENV === 'development' && (

@@ -11,18 +11,18 @@ import {
 
 import { TechStackData } from './constants'
 import { SectionTitle } from '@/components/global/SectionTitle'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 export const SectionTechStack = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	const t = useTranslations('SectionTechStack')
+	// const t = useTranslations('SectionTechStack')
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
 	return (
 		<section className={cn('py-20 mb-24', className)} {...rest}>
-			<SectionTitle className='mb-12 text-center' title={t('title')} />
+			<SectionTitle className='mb-12 text-center' title='Стек технологий' />
 
 			<div className='flex flex-col lg:flex-row gap-4 max-w-7xl mx-auto'>
 				{TechStackData.map((category, index) => (
@@ -62,10 +62,14 @@ export const SectionTechStack = ({
 									<div className='flex items-center justify-between mb-6 gap-2'>
 										<h3 className='text-lg font-bold text-foreground flex-1'>
 											{category.name === 'DevOps & Cloud'
-												? t('devops')
+												? 'DevOps и Облако'
 												: category.name === 'Other Tools'
-													? t('other')
-													: t(category.name.toLowerCase())}
+													? 'Другие инструменты'
+													: category.name === 'Frontend'
+														? 'Фронтенд'
+														: category.name === 'Backend'
+															? 'Бекенд'
+															: category.name}
 										</h3>
 										<span
 											className={cn(

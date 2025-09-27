@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { WidgetShareSection } from './WidgetShareSection'
 import { usePathname } from 'next/navigation'
 import { widgets } from '@/lib/constants/widgets'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface WidgetLayoutProps {
 	children: ReactNode
@@ -16,13 +16,41 @@ interface WidgetLayoutProps {
 	}
 }
 
+// Widget translations mapping for Russian
+const WIDGET_TRANSLATIONS = {
+	'css-clamp-calculator': {
+		title: 'CSS Clamp калькулятор',
+		description:
+			'Создавайте адаптивную типографику и отступы, которые плавно масштабируются между размерами экрана'
+	},
+	'flexbox-generator': {
+		title: 'Генератор CSS Flexbox онлайн',
+		description:
+			'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом'
+	},
+	'grid-generator': {
+		title: 'Генератор CSS Grid онлайн',
+		description:
+			'Бесплатный онлайн генератор CSS Grid. Визуальный инструмент для создания и изучения CSS Grid макетов с кодом'
+	},
+	'qr-generator': {
+		title: 'Генератор QR кодов онлайн - создать QR код бесплатно',
+		description:
+			'Бесплатный генератор QR кодов онлайн. Создайте QR код для URL, WiFi, App Store за секунды. Генератор qr работает без регистрации'
+	},
+	'tip-calculator': {
+		title: 'Калькулятор чаевых',
+		description: 'Рассчитывайте чаевые и делите счета для ресторанов и услуг'
+	}
+} as const
+
 export function WidgetLayout({
 	children,
 	showShare = true,
 	customShareData
 }: WidgetLayoutProps) {
 	const pathname = usePathname()
-	const t = useTranslations('widgets')
+	// const t = useTranslations('widgets')
 
 	// Extract widget path from URL
 	const widgetPath = pathname.split('/').pop()
@@ -32,8 +60,12 @@ export function WidgetLayout({
 		return <>{children}</>
 	}
 
-	const widgetTitle = t(`${widget.translationKey}.title`)
-	const widgetDescription = t(`${widget.translationKey}.description`)
+	// Get translations from mapping or fallback
+	const widgetData =
+		WIDGET_TRANSLATIONS[widget.id as keyof typeof WIDGET_TRANSLATIONS]
+	const widgetTitle = widgetData?.title || widget.id
+	const widgetDescription =
+		widgetData?.description || 'Инструмент для веб-разработки'
 
 	return (
 		<>

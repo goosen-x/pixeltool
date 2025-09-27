@@ -1,5 +1,5 @@
 import { Block } from '@/components/ui/block'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { OptimizedImage } from '@/components/ui/optimized-image'
 import Link from 'next/link'
 import React from 'react'
@@ -21,11 +21,11 @@ import { Badge } from '@/components/ui/badge'
 import avatarImg from '@/public/images/avatar.jpeg'
 
 export const HeaderBlock = () => {
-	const t = useTranslations('SectionMain')
+	// const t = useTranslations('SectionMain')
 
 	const email = 'dmitryborisenko.msk@gmail.com'
-	const subject = t('email.subject')
-	const body = t('email.body')
+	const subject = 'Возможность работы: Позиция фронтенд разработчика'
+	const body = 'Дорогой Дмитрий Борисенко,\\n\\nЯ наткнулся на ваше портфолио и был впечатлен вашими навыками и опытом. Я хотел бы обсудить с вами потенциальную возможность работы.\\n\\nМожем ли мы запланировать звонок, чтобы поговорить о [кратко опишите позицию или проект]?\\n\\nЖду с нетерпением ответа.\\n\\nС наилучшими пожеланиями,\\n[Ваше имя]\\n[Ваша компания]'
 
 	const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
 		subject
@@ -70,11 +70,11 @@ export const HeaderBlock = () => {
 				<div className='mb-8'>
 					<h1 className='text-4xl lg:text-5xl xl:text-6xl font-heading font-bold leading-tight mb-4'>
 						<span className='bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent'>
-							{t('name')}
+							'Борисенко Дмитрий'
 						</span>
 					</h1>
 					<p className='text-xl lg:text-2xl text-muted-foreground font-medium mb-2'>
-						{t('job')}
+						'Фуллстек разработчик'
 					</p>
 					<p className='text-lg text-muted-foreground max-w-lg leading-relaxed'>
 						Building exceptional digital experiences with modern tools and
@@ -127,7 +127,7 @@ export const HeaderBlock = () => {
 					>
 						<Link href={mailtoLink}>
 							<Mail className='w-5 h-5' />
-							{t('contact')}
+							'Написать мне'
 							<ArrowRight className='w-4 h-4' />
 						</Link>
 					</Button>

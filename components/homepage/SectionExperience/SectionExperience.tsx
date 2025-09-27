@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { SectionTitle } from '@/components/global/SectionTitle'
 import { Timeline } from '@/components/ui/timeline'
 import { ExperienceItem } from './widgets/experienceItem'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 export type ExperienceData = {
 	title: string
@@ -20,7 +20,7 @@ export const SectionExperience = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	const t = useTranslations('SectionExperience')
+	// const t = useTranslations('SectionExperience')
 
 	const companies = [
 		{
@@ -35,21 +35,55 @@ export const SectionExperience = ({
 		{ name: 'mbloq', images: ['/images/mbloq.png'] }
 	]
 
+	// Static experience data in Russian
+	const experienceData = {
+		mba: {
+			title: '2023-Сейчас',
+			job: 'Фуллстек разработчик',
+			company: 'MBA',
+			city: 'Москва',
+			companyUrl: 'https://www.moscow.mba/',
+			description: 'Разрабатывал и поддерживал веб-приложения для Московской бизнес-академии и нескольких образовательных организаций, используя Next.js на фронтенде, Strapi с PostgreSQL на бэкенде. Работал с Portainer для управления контейнерами, исправлял ошибки и занимался DevOps задачами, связанными с CI/CD и автоматизацией развертывания'
+		},
+		dobrostock: {
+			title: 'Начало 2023',
+			job: 'Фуллстек разработчик',
+			company: 'Dobrostok',
+			city: 'Москва',
+			companyUrl: 'https://dobrostock.ru/',
+			description: 'Разработал панель администратора для авторов фотостока Dobrostok, используя T3 стек и Next.js, предоставляя простой в использовании интерфейс для управления контентом. Реализовал систему аутентификации с использованием NextAuth. Оптимизировал изображения на бэкенде, что улучшило производительность сайта и сократило время загрузки'
+		},
+		inspro: {
+			title: '2020-2022',
+			job: 'Фронтенд разработчик',
+			company: 'InsPro',
+			city: 'Москва',
+			companyUrl: '',
+			description: 'Разработал фронтенд части для CRM системы страховой компании InsPro, используя React.js и TypeScript. Интегрировал с различными API для работы со страховыми продуктами. Создал интерактивные дашборды для анализа страховых случаев и управления клиентской базой'
+		},
+		mbloq: {
+			title: '2019-2020',
+			job: 'Junior разработчик',
+			company: 'MBLOQ',
+			city: 'Москва',
+			companyUrl: '',
+			description: 'Начинал карьеру разработчика в команде MBLOQ, работая над различными веб-проектами. Изучал современные технологии веб-разработки, включая JavaScript, HTML5, CSS3. Участвовал в разработке корпоративных веб-сайтов и небольших веб-приложений'
+		}
+	}
+
 	const timelineData = companies.map(company => {
+		const data = experienceData[company.name as keyof typeof experienceData]
 		return {
-			title: t(`companies.${company.name}.title`),
+			title: data.title,
 			content: (
 				<ExperienceItem
 					itemData={{
-						title: t(`companies.${company.name}.title`),
-						job: t(`companies.${company.name}.job`),
-						company: t(`companies.${company.name}.company`),
-						city: t(`companies.${company.name}.city`),
-						companyUrl:
-							t(`companies.${company.name}.companyUrl`) === ''
-								? null
-								: t(`companies.${company.name}.companyUrl`),
-						description: t(`companies.${company.name}.description`),
+						title: data.title,
+						job: data.job,
+						company: data.company,
+						city: data.city,
+						companyUrl: data.companyUrl === '' ? null : data.companyUrl,
+						description: data.description,
 						images: company.images
 					}}
 				/>
@@ -59,7 +93,7 @@ export const SectionExperience = ({
 
 	return (
 		<section className={cn(className)} {...rest}>
-			<SectionTitle className='col-span-12' title={t('title')} />
+			<SectionTitle className='col-span-12' title='Опыт работы' />
 			<Timeline data={timelineData} />
 		</section>
 	)

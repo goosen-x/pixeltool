@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+// import { getTranslations } from 'next-intl/server'
 import { BlogCarousel } from './widgets/BlogCarousel'
 import { getLatestPosts } from '@/lib/actions/posts'
 
@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const SectionBlog = async ({ locale }: Props) => {
-	const t = await getTranslations('SectionBlog')
+	// const t = await getTranslations('SectionBlog')
 
 	let posts: any[] = []
 	try {
@@ -26,10 +26,10 @@ export const SectionBlog = async ({ locale }: Props) => {
 			<div className='mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8'>
 				<div className='flex flex-col items-center text-center'>
 					<h2 className='text-3xl font-heading font-bold tracking-tighter sm:text-4xl md:text-5xl text-foreground'>
-						{t('title')}
+						'Последнее из блога'
 					</h2>
 					<p className='mt-4 max-w-2xl text-gray-600 dark:text-gray-400 md:text-lg'>
-						{t('description')}
+						'Инсайты о веб-разработке, паттернах проектирования и технологических трендах'
 					</p>
 				</div>
 				<div className='mt-12'>
