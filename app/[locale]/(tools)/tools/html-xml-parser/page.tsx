@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import {
 	Copy,
 	Download,
@@ -41,7 +41,7 @@ interface ParseResult {
 }
 
 export default function HtmlXmlParserPage() {
-	const t = useTranslations('widgets.htmlXmlParser')
+	// const t = useTranslations('widgets.htmlXmlParser') // Removed
 	const [input, setInput] = useState('')
 	const [result, setResult] = useState<ParseResult | null>(null)
 	const [mode, setMode] = useState<ParseMode>('format')
@@ -195,7 +195,7 @@ export default function HtmlXmlParserPage() {
 
 	const processInput = useCallback(() => {
 		if (!input.trim()) {
-			toast.error(t('emptyInput'))
+			toast.error('Введите HTML или XML код')
 			return
 		}
 
@@ -224,7 +224,7 @@ export default function HtmlXmlParserPage() {
 					output = minifyDocument(input)
 					break
 				case 'validate':
-					output = t('validDocument')
+					output = 'Документ валиден'
 					break
 				case 'extract':
 					output = extractData(doc)
@@ -246,13 +246,13 @@ export default function HtmlXmlParserPage() {
 		} finally {
 			setIsProcessing(false)
 		}
-	}, [input, mode, indentSize, preserveComments, t])
+	}, [input, mode, indentSize, preserveComments])
 
 	const handleCopy = useCallback(() => {
 		if (!result?.output) return
 		navigator.clipboard.writeText(result.output)
-		toast.success(t('copied'))
-	}, [result, t])
+		toast.success('Скопировано в буфер обмена')
+	}, [result])
 
 	const handleDownload = useCallback(() => {
 		if (!result?.output) return
@@ -265,21 +265,21 @@ export default function HtmlXmlParserPage() {
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-		toast.success(t('downloaded'))
-	}, [result, mode, input, t])
+		toast.success('Файл загружен')
+	}, [result, mode, input])
 
 	return (
 		<WidgetWrapper>
 			<div className='grid gap-6 lg:grid-cols-2'>
 				<Card>
 					<CardHeader>
-						<CardTitle>{t('input')}</CardTitle>
+						<CardTitle>Ввод</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Textarea
 							value={input}
 							onChange={e => setInput(e.target.value)}
-							placeholder={t('placeholder')}
+							placeholder='Вставьте HTML или XML код здесь...'
 							className='min-h-[400px] font-mono text-sm'
 						/>
 					</CardContent>
@@ -288,7 +288,7 @@ export default function HtmlXmlParserPage() {
 				<Card>
 					<CardHeader>
 						<CardTitle className='flex items-center justify-between'>
-							{t('output')}
+							Результат
 							{result && (
 								<span
 									className={cn(
@@ -299,12 +299,12 @@ export default function HtmlXmlParserPage() {
 									{result.isValid ? (
 										<>
 											<CheckCircle2 className='w-4 h-4' />
-											{t('valid')}
+											Валидный
 										</>
 									) : (
 										<>
 											<AlertCircle className='w-4 h-4' />
-											{t('invalid')}
+											Невалидный
 										</>
 									)}
 								</span>
@@ -315,7 +315,7 @@ export default function HtmlXmlParserPage() {
 						{result?.errors.length ? (
 							<div className='mb-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg'>
 								<p className='font-medium text-red-600 dark:text-red-400 mb-2'>
-									{t('errors')}:
+									Ошибки:
 								</p>
 								<ul className='list-disc list-inside space-y-1'>
 									{result.errors.map((error, index) => (
@@ -333,26 +333,26 @@ export default function HtmlXmlParserPage() {
 						<Textarea
 							value={result?.output || ''}
 							readOnly
-							placeholder={t('outputPlaceholder')}
+							placeholder='Результат обработки появится здесь'
 							className='min-h-[400px] font-mono text-sm'
 						/>
 
 						{result?.stats && (
 							<div className='mt-4 grid grid-cols-2 gap-2 text-sm'>
 								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>{t('elements')}:</span>
+									<span>Элементы:</span>
 									<span className='font-mono'>{result.stats.elements}</span>
 								</div>
 								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>{t('attributes')}:</span>
+									<span>Атрибуты:</span>
 									<span className='font-mono'>{result.stats.attributes}</span>
 								</div>
 								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>{t('textNodes')}:</span>
+									<span>Текстовые узлы:</span>
 									<span className='font-mono'>{result.stats.textNodes}</span>
 								</div>
 								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>{t('comments')}:</span>
+									<span>Комментарии:</span>
 									<span className='font-mono'>{result.stats.comments}</span>
 								</div>
 							</div>
@@ -366,7 +366,7 @@ export default function HtmlXmlParserPage() {
 								disabled={!result?.output}
 							>
 								<Copy className='w-4 h-4 mr-2' />
-								{t('copy')}
+								Копировать
 							</Button>
 							<Button
 								onClick={handleDownload}
@@ -375,7 +375,7 @@ export default function HtmlXmlParserPage() {
 								disabled={!result?.output}
 							>
 								<Download className='w-4 h-4 mr-2' />
-								{t('download')}
+								Скачать
 							</Button>
 						</div>
 					</CardContent>
@@ -384,11 +384,11 @@ export default function HtmlXmlParserPage() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>{t('settings')}</CardTitle>
+					<CardTitle>Настройки</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<div>
-						<Label htmlFor='mode'>{t('mode')}</Label>
+						<Label htmlFor='mode'>Режим</Label>
 						<Select
 							value={mode}
 							onValueChange={value => setMode(value as ParseMode)}
@@ -400,25 +400,25 @@ export default function HtmlXmlParserPage() {
 								<SelectItem value='format'>
 									<div className='flex items-center gap-2'>
 										<Code className='w-4 h-4' />
-										{t('modes.format')}
+										Форматирование
 									</div>
 								</SelectItem>
 								<SelectItem value='minify'>
 									<div className='flex items-center gap-2'>
 										<FileCode className='w-4 h-4' />
-										{t('modes.minify')}
+										Минификация
 									</div>
 								</SelectItem>
 								<SelectItem value='validate'>
 									<div className='flex items-center gap-2'>
 										<CheckCircle2 className='w-4 h-4' />
-										{t('modes.validate')}
+										Валидация
 									</div>
 								</SelectItem>
 								<SelectItem value='extract'>
 									<div className='flex items-center gap-2'>
 										<AlertCircle className='w-4 h-4' />
-										{t('modes.extract')}
+										Извлечение данных
 									</div>
 								</SelectItem>
 							</SelectContent>
@@ -428,7 +428,7 @@ export default function HtmlXmlParserPage() {
 					{mode === 'format' && (
 						<>
 							<div>
-								<Label htmlFor='indent'>{t('indentSize')}</Label>
+								<Label htmlFor='indent'>Размер отступа</Label>
 								<Select
 									value={indentSize.toString()}
 									onValueChange={value => setIndentSize(parseInt(value))}
@@ -437,9 +437,9 @@ export default function HtmlXmlParserPage() {
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='2'>2 {t('spaces')}</SelectItem>
-										<SelectItem value='4'>4 {t('spaces')}</SelectItem>
-										<SelectItem value='8'>8 {t('spaces')}</SelectItem>
+										<SelectItem value='2'>2 пробелов</SelectItem>
+										<SelectItem value='4'>4 пробелов</SelectItem>
+										<SelectItem value='8'>8 пробелов</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
@@ -450,7 +450,7 @@ export default function HtmlXmlParserPage() {
 									checked={preserveComments}
 									onCheckedChange={setPreserveComments}
 								/>
-								<Label htmlFor='comments'>{t('preserveComments')}</Label>
+								<Label htmlFor='comments'>Сохранять комментарии</Label>
 							</div>
 						</>
 					)}
@@ -461,7 +461,7 @@ export default function HtmlXmlParserPage() {
 						size='lg'
 						disabled={!input || isProcessing}
 					>
-						{isProcessing ? t('processing') : t('process')}
+						{isProcessing ? 'Обработка...' : 'Обработать'}
 					</Button>
 				</CardContent>
 			</Card>

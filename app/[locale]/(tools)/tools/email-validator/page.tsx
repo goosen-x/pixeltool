@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { toast } from 'sonner'
 import {
 	Mail,
@@ -90,7 +90,7 @@ const FREE_PROVIDERS = [
 ]
 
 export default function EmailValidatorPage() {
-	const t = useTranslations('widgets.emailValidator')
+	// const t = useTranslations('widgets.emailValidator') // Removed
 	const { trackEvent } = useAnalytics('email-validator')
 
 	const [email, setEmail] = useState('')
@@ -162,24 +162,24 @@ export default function EmailValidatorPage() {
 
 			const checks = [
 				{
-					name: t('checks.syntax'),
+					name: 'Синтаксис',
 					passed: syntax.valid,
-					description: t('checks.syntaxDesc')
+					description: 'Правильный формат email адреса'
 				},
 				{
-					name: t('checks.domain'),
+					name: 'Домен',
 					passed: mx.exists,
-					description: t('checks.domainDesc')
+					description: 'Домен существует и принимает почту'
 				},
 				{
-					name: t('checks.disposable'),
+					name: 'Не временный',
 					passed: !disposable,
-					description: t('checks.disposableDesc')
+					description: 'Не временный email адрес'
 				},
 				{
-					name: t('checks.roleEmail'),
+					name: 'Не ролевой',
 					passed: !role,
-					description: t('checks.roleEmailDesc')
+					description: 'Не общий ролевой адрес'
 				}
 			]
 
@@ -196,12 +196,12 @@ export default function EmailValidatorPage() {
 				checks
 			}
 		},
-		[t]
+		[]
 	)
 
 	const handleValidate = useCallback(async () => {
 		if (!email.trim()) {
-			toast.error(t('errors.emptyEmail'))
+			toast.error('Введите email адрес')
 			return
 		}
 
@@ -213,27 +213,27 @@ export default function EmailValidatorPage() {
 			setResults([result])
 
 			if (result.isValid) {
-				toast.success(t('success.valid'))
+				toast.success('Email адрес действителен')
 			} else {
-				toast.error(t('errors.invalid'))
+				toast.error('Email адрес недействителен')
 			}
 		} catch (error) {
-			toast.error(t('errors.validationFailed'))
+			toast.error('Ошибка валидации')
 		} finally {
 			setIsValidating(false)
 		}
-	}, [email, t, trackEvent, validateEmail])
+	}, [email, trackEvent, validateEmail])
 
 	const handleBulkValidate = useCallback(async () => {
 		const emails = bulkEmails.split('\n').filter(e => e.trim())
 
 		if (emails.length === 0) {
-			toast.error(t('errors.emptyBulk'))
+			toast.error('Введите email адреса для проверки')
 			return
 		}
 
 		if (emails.length > 100) {
-			toast.error(t('errors.tooMany'))
+			toast.error('Слишком много адресов. Максимум 100')
 			return
 		}
 
@@ -252,21 +252,21 @@ export default function EmailValidatorPage() {
 
 			const validCount = validationResults.filter(r => r.isValid).length
 			toast.success(
-				t('success.bulk', { valid: validCount, total: emails.length })
+				`Проверено: ${validCount} из ${emails.length} действительны`
 			)
 		} catch (error) {
-			toast.error(t('errors.validationFailed'))
+			toast.error('Ошибка валидации')
 		} finally {
 			setIsValidating(false)
 		}
-	}, [bulkEmails, t, trackEvent, validateEmail])
+	}, [bulkEmails, trackEvent, validateEmail])
 
 	const copyToClipboard = useCallback(
 		(text: string) => {
 			navigator.clipboard.writeText(text)
-			toast.success(t('copied'))
+			toast.success('Скопировано в буфер обмена')
 		},
-		[t]
+		[]
 	)
 
 	const exportResults = useCallback(() => {
@@ -285,9 +285,9 @@ export default function EmailValidatorPage() {
 		a.download = 'email-validation-results.csv'
 		a.click()
 
-		toast.success(t('exported'))
+		toast.success('Результаты экспортированы')
 		trackEvent('export', { format: 'csv', count: results.length })
-	}, [results, t, trackEvent])
+	}, [results, trackEvent])
 
 	useWidgetKeyboard({
 		shortcuts: [
@@ -323,35 +323,35 @@ export default function EmailValidatorPage() {
 
 	return (
 		<WidgetLayout>
-			<WidgetSection title={t('sections.input')}>
+			<WidgetSection title={'Ввод'}>
 				<div className='text-center space-y-2 mb-6'>
 					<div className='flex items-center justify-center gap-2 text-primary'>
 						<Mail className='h-8 w-8' />
-						<h1 className='text-3xl font-bold'>{t('title')}</h1>
+						<h1 className='text-3xl font-bold'>{'Валидатор Email'}</h1>
 					</div>
-					<p className='text-muted-foreground'>{t('description')}</p>
+					<p className='text-muted-foreground'>{'Проверьте валидность email адресов'}</p>
 				</div>
 
 				<Tabs value={activeTab} onValueChange={setActiveTab}>
 					<TabsList className='grid w-full grid-cols-2'>
-						<TabsTrigger value='single'>{t('tabs.single')}</TabsTrigger>
-						<TabsTrigger value='bulk'>{t('tabs.bulk')}</TabsTrigger>
+						<TabsTrigger value='single'>{'Одиночный'}</TabsTrigger>
+						<TabsTrigger value='bulk'>{'Массовый'}</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value='single' className='space-y-4'>
 						<WidgetInput
-							label={t('single.label')}
-							description={t('single.description')}
+							label={'Email адрес'}
+							description={'Введите email адрес для проверки'}
 						>
 							<div className='flex gap-2'>
 								<Input
 									type='email'
 									value={email}
 									onChange={e => setEmail(e.target.value)}
-									placeholder={t('placeholder')}
+									placeholder={'example@domain.com'}
 									className='flex-1'
 									disabled={isValidating}
-									aria-label={t('placeholder')}
+									aria-label={'example@domain.com'}
 								/>
 								<Button
 									onClick={handleValidate}
@@ -362,7 +362,7 @@ export default function EmailValidatorPage() {
 									) : (
 										<Shield className='h-4 w-4' />
 									)}
-									<span className='ml-2'>{t('validate')}</span>
+									<span className='ml-2'>{'Проверить'}</span>
 								</Button>
 							</div>
 						</WidgetInput>
@@ -370,23 +370,21 @@ export default function EmailValidatorPage() {
 
 					<TabsContent value='bulk' className='space-y-4'>
 						<WidgetInput
-							label={t('bulk.label')}
-							description={t('bulk.description')}
+							label={'Email адреса'}
+							description={'Введите несколько email адресов (по одному на строку)'}
 						>
 							<div className='space-y-2'>
 								<textarea
 									value={bulkEmails}
 									onChange={e => setBulkEmails(e.target.value)}
-									placeholder={t('bulkPlaceholder')}
+									placeholder={'example1@domain.com\nexample2@domain.com\nexample3@domain.com'}
 									className='w-full min-h-[150px] p-3 rounded-md border bg-background resize-y'
 									disabled={isValidating}
-									aria-label={t('bulkPlaceholder')}
+									aria-label={'example1@domain.com\nexample2@domain.com\nexample3@domain.com'}
 								/>
 								<div className='flex justify-between items-center'>
 									<span className='text-sm text-muted-foreground'>
-										{t('emailCount', {
-											count: bulkEmails.split('\n').filter(e => e.trim()).length
-										})}
+										{`Email адресов: ${bulkEmails.split('\n').filter(e => e.trim()).length}`}
 									</span>
 									<Button
 										onClick={handleBulkValidate}
@@ -397,7 +395,7 @@ export default function EmailValidatorPage() {
 										) : (
 											<Shield className='h-4 w-4' />
 										)}
-										<span className='ml-2'>{t('validateAll')}</span>
+										<span className='ml-2'>{'Проверить все'}</span>
 									</Button>
 								</div>
 							</div>
@@ -407,14 +405,14 @@ export default function EmailValidatorPage() {
 			</WidgetSection>
 
 			{results.length > 0 && (
-				<WidgetSection title={t('sections.results')}>
+				<WidgetSection title={'Результаты'}>
 					<WidgetOutput>
 						<div className='space-y-4'>
 							<div className='flex justify-between items-center'>
-								<h3 className='text-lg font-semibold'>{t('results')}</h3>
+								<h3 className='text-lg font-semibold'>{'Результаты проверки'}</h3>
 								{results.length > 1 && (
 									<Button onClick={exportResults} variant='outline' size='sm'>
-										{t('export')}
+										{'Экспортировать CSV'}
 									</Button>
 								)}
 							</div>
@@ -445,7 +443,7 @@ export default function EmailValidatorPage() {
 												<div className='flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400'>
 													<AlertCircle className='h-4 w-4' />
 													<span>
-														{t('suggestion')}: {result.suggestion}
+														{'Возможно вы имели в виду'}: {result.suggestion}
 													</span>
 												</div>
 											)}
@@ -459,10 +457,10 @@ export default function EmailValidatorPage() {
 											</span>
 											<Badge variant={getScoreBadge(result.score) as any}>
 												{result.score >= 80
-													? t('quality.high')
+													? 'Высокое'
 													: result.score >= 60
-														? t('quality.medium')
-														: t('quality.low')}
+														? 'Среднее'
+														: 'Низкое'}
 											</Badge>
 										</div>
 									</div>
@@ -495,14 +493,14 @@ export default function EmailValidatorPage() {
 										<div className='flex flex-wrap gap-2 text-xs'>
 											{result.disposable && (
 												<Badge variant='destructive'>
-													{t('flags.disposable')}
+													{'Временный'}
 												</Badge>
 											)}
 											{result.role && (
-												<Badge variant='secondary'>{t('flags.role')}</Badge>
+												<Badge variant='secondary'>{'Ролевой'}</Badge>
 											)}
 											{result.freeProvider && (
-												<Badge variant='outline'>{t('flags.free')}</Badge>
+												<Badge variant='outline'>{'Бесплатный'}</Badge>
 											)}
 										</div>
 									</div>
@@ -517,7 +515,7 @@ export default function EmailValidatorPage() {
 												{results.filter(r => r.isValid).length}
 											</div>
 											<div className='text-sm text-muted-foreground'>
-												{t('stats.valid')}
+												{'Действительные'}
 											</div>
 										</div>
 										<div>
@@ -525,7 +523,7 @@ export default function EmailValidatorPage() {
 												{results.filter(r => !r.isValid).length}
 											</div>
 											<div className='text-sm text-muted-foreground'>
-												{t('stats.invalid')}
+												{'Недействительные'}
 											</div>
 										</div>
 										<div>
@@ -533,7 +531,7 @@ export default function EmailValidatorPage() {
 												{results.filter(r => r.disposable).length}
 											</div>
 											<div className='text-sm text-muted-foreground'>
-												{t('stats.disposable')}
+												{'Временные'}
 											</div>
 										</div>
 										<div>
@@ -544,7 +542,7 @@ export default function EmailValidatorPage() {
 												)}
 											</div>
 											<div className='text-sm text-muted-foreground'>
-												{t('stats.avgScore')}
+												{'Средний балл'}
 											</div>
 										</div>
 									</div>
