@@ -145,8 +145,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 												)}
 											>
 												{categoryWidgets.map((widget, index) => {
-													const isActive =
-														pathname === `/tools/${widget.path}`
+													const isActive = pathname === `/tools/${widget.path}`
 													const Icon = widget.icon
 
 													return (
@@ -232,9 +231,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 					>
 						<Settings className='w-4 h-4' />
 						<span className='flex-1 text-left truncate'>Настройки</span>
-						{pathname === '/settings' && (
-							<ChevronRight className='w-4 h-4' />
-						)}
+						{pathname === '/settings' && <ChevronRight className='w-4 h-4' />}
 					</Link>
 				</div>
 			</div>

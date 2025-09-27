@@ -160,7 +160,9 @@ export default function SettingsPage() {
 				<Settings className='w-8 h-8' />
 				<h1 className='text-3xl font-bold'>Настройки</h1>
 			</div>
-			<p className='text-muted-foreground mb-8'>Настройте внешний вид и поведение приложения под ваши предпочтения.</p>
+			<p className='text-muted-foreground mb-8'>
+				Настройте внешний вид и поведение приложения под ваши предпочтения.
+			</p>
 
 			<div className='space-y-8'>
 				{/* Appearance Section */}
@@ -171,7 +173,9 @@ export default function SettingsPage() {
 								<SunMoon className='w-5 h-5' />
 								Тема
 							</CardTitle>
-							<CardDescription>Выберите предпочитаемую цветовую схему для интерфейса.</CardDescription>
+							<CardDescription>
+								Выберите предпочитаемую цветовую схему для интерфейса.
+							</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
@@ -201,10 +205,18 @@ export default function SettingsPage() {
 												</div>
 												<div>
 													<h3 className='font-semibold'>
-														{themeOption.value === 'light' ? 'Светлая' : themeOption.value === 'dark' ? 'Тёмная' : 'Системная'}
+														{themeOption.value === 'light'
+															? 'Светлая'
+															: themeOption.value === 'dark'
+																? 'Тёмная'
+																: 'Системная'}
 													</h3>
 													<p className='text-sm text-muted-foreground mt-1'>
-														{themeOption.value === 'light' ? 'Яркая тема для дневного использования' : themeOption.value === 'dark' ? 'Тёмная тема для ночного использования' : 'Следовать настройкам системы'}
+														{themeOption.value === 'light'
+															? 'Яркая тема для дневного использования'
+															: themeOption.value === 'dark'
+																? 'Тёмная тема для ночного использования'
+																: 'Следовать настройкам системы'}
 													</p>
 												</div>
 												{isActive && <Check className='w-4 h-4 text-accent' />}
@@ -222,7 +234,9 @@ export default function SettingsPage() {
 								<Sparkles className='w-5 h-5' />
 								Переходы
 							</CardTitle>
-							<CardDescription>Выберите тип анимации при смене темы.</CardDescription>
+							<CardDescription>
+								Выберите тип анимации при смене темы.
+							</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='grid grid-cols-2 md:grid-cols-5 gap-3'>
@@ -248,7 +262,15 @@ export default function SettingsPage() {
 												className={cn('w-5 h-5', isActive && 'text-accent')}
 											/>
 											<div className='text-xs font-medium'>
-												{transition.value === 'fade' ? 'Затухание' : transition.value === 'scale' ? 'Масштаб' : transition.value === 'slide' ? 'Скольжение' : transition.value === 'circle' ? 'Круг' : 'Без анимации'}
+												{transition.value === 'fade'
+													? 'Затухание'
+													: transition.value === 'scale'
+														? 'Масштаб'
+														: transition.value === 'slide'
+															? 'Скольжение'
+															: transition.value === 'circle'
+																? 'Круг'
+																: 'Без анимации'}
 											</div>
 										</button>
 									)
@@ -256,7 +278,8 @@ export default function SettingsPage() {
 							</div>
 							{!supportsViewTransitions && (
 								<div className='text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg'>
-									Ваш браузер не поддерживает плавные переходы. Анимации могут работать не так, как ожидается.
+									Ваш браузер не поддерживает плавные переходы. Анимации могут
+									работать не так, как ожидается.
 								</div>
 							)}
 						</CardContent>

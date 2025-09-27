@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { TbWorld } from 'react-icons/tb'
 import { FaLocationDot } from 'react-icons/fa6'
 
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { ExperienceData } from '../SectionExperience'
 
 type Props = {

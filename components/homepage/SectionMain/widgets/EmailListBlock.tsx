@@ -1,21 +1,21 @@
 import { Block } from '@/components/ui/block'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 import React from 'react'
 import { FiMail } from 'react-icons/fi'
 
 export const EmailListBlock = () => {
-	const t = useTranslations('SectionMain')
+	// const t = useTranslations('SectionMain')
 
 	return (
 		<Block className='col-span-12 md:col-span-4'>
-			<p className='mb-3 text-lg'>{t('subscribeTitle')}</p>
+			<p className='mb-3 text-lg'>Подписаться на рассылку</p>
 			<form className='flex flex-col md:flex-row items-conter gap-2'>
-				<Input type='email' placeholder={t('subscribePlaceholder')} />
+				<Input type='email' placeholder='Введите ваш email' />
 				<Button className='flex gap-2'>
-					<FiMail /> {t('subscribeButton')}
+					<FiMail /> Подписаться
 				</Button>
 			</form>
 		</Block>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { MessageSquare, Bug, Lightbulb, Send } from 'lucide-react'
 import { toast } from 'sonner'
 import {
@@ -32,7 +32,7 @@ interface FeedbackData {
 }
 
 export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
-	const t = useTranslations('Feedback')
+	// const t = useTranslations('Feedback')
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
@@ -46,7 +46,7 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 
 	const handleSubmit = async (type: FeedbackType) => {
 		if (!formData.title.trim() || !formData.description.trim()) {
-			toast.error(t('validation.required'))
+			toast.error('Пожалуйста, заполните все обязательные поля')
 			return
 		}
 
@@ -72,7 +72,7 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 			const result = await response.json()
 			console.log('Feedback submitted successfully:', result)
 
-			toast.success(t('success.submitted'))
+			toast.success('Отзыв успешно отправлен')
 			setFormData({
 				type: 'bug',
 				title: '',
@@ -83,7 +83,7 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 			setOpen(false)
 		} catch (error) {
 			console.error('Error submitting feedback:', error)
-			toast.error(t('error.failed'))
+			toast.error('Ошибка при отправке отзыва')
 		} finally {
 			setLoading(false)
 		}
@@ -96,13 +96,13 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 	const renderForm = (type: FeedbackType) => (
 		<div className='space-y-4'>
 			<Input
-				placeholder={t(`placeholders.${type}.title`)}
+				placeholder={type === 'bug' ? 'Краткое описание ошибки' : type === 'feature' ? 'Название функции' : 'Заголовок сообщения'}
 				value={formData.title}
 				onChange={e => updateFormData('title', e.target.value)}
 			/>
 
 			<Textarea
-				placeholder={t(`placeholders.${type}.description`)}
+				placeholder={type === 'bug' ? 'Шаги для воспроизведения ошибки, ожидаемое и фактическое поведение, информация о браузере...' : type === 'feature' ? 'Опишите вашу идею функции, случаи использования и как это принесет пользу пользователям...' : 'Опишите ваш отзыв или вопрос подробно...'}
 				value={formData.description}
 				onChange={e => updateFormData('description', e.target.value)}
 				rows={4}
@@ -110,7 +110,7 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 
 			<Input
 				type='email'
-				placeholder={t('placeholders.email')}
+				placeholder='Ваш email (опционально)'
 				value={formData.email}
 				onChange={e => updateFormData('email', e.target.value)}
 			/>
@@ -125,12 +125,12 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 				{loading ? (
 					<div className='flex items-center gap-2'>
 						<div className='w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin' />
-						{t('states.sending')}
+						'Отправка...'
 					</div>
 				) : (
 					<div className='flex items-center gap-2'>
 						<Send className='w-4 h-4' />
-						{t('actions.submit')}
+						'Отправить'
 					</div>
 				)}
 			</Button>
@@ -143,48 +143,48 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 				<DialogTrigger asChild>
 					<Button variant='outline' size='sm' className='w-full justify-start'>
 						<MessageSquare className='w-4 h-4 mr-2' />
-						{t('title')}
+						'Обратная связь'
 					</Button>
 				</DialogTrigger>
 				<DialogContent className='sm:max-w-[500px]'>
 					<DialogHeader>
-						<DialogTitle>{t('title')}</DialogTitle>
-						<DialogDescription>{t('description')}</DialogDescription>
+						<DialogTitle>Обратная связь</DialogTitle>
+						<DialogDescription>Помогите нам улучшиться, сообщив об ошибках, предложив функции или поделившись своими мыслями.</DialogDescription>
 					</DialogHeader>
 
 					<Tabs defaultValue='bug' className='w-full'>
 						<TabsList className='grid w-full grid-cols-3'>
 							<TabsTrigger value='bug' className='flex items-center gap-1'>
 								<Bug className='w-3 h-3' />
-								<span className='hidden sm:inline'>{t('tabs.bug')}</span>
+								<span className='hidden sm:inline'>Отчёт об ошибке</span>
 							</TabsTrigger>
 							<TabsTrigger value='feature' className='flex items-center gap-1'>
 								<Lightbulb className='w-3 h-3' />
-								<span className='hidden sm:inline'>{t('tabs.feature')}</span>
+								<span className='hidden sm:inline'>Запрос функции</span>
 							</TabsTrigger>
 							<TabsTrigger value='general' className='flex items-center gap-1'>
 								<MessageSquare className='w-3 h-3' />
-								<span className='hidden sm:inline'>{t('tabs.general')}</span>
+								<span className='hidden sm:inline'>Общее</span>
 							</TabsTrigger>
 						</TabsList>
 
 						<TabsContent value='bug' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								{t('descriptions.bug')}
+								'Нашли ошибку? Помогите нам исправить её, предоставив подробности о проблеме.'
 							</div>
 							{renderForm('bug')}
 						</TabsContent>
 
 						<TabsContent value='feature' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								{t('descriptions.feature')}
+								'Есть идея для улучшения? Мы хотели бы услышать ваши предложения!'
 							</div>
 							{renderForm('feature')}
 						</TabsContent>
 
 						<TabsContent value='general' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								{t('descriptions.general')}
+								'Любые другие отзывы или вопросы? Дайте нам знать!'
 							</div>
 							{renderForm('general')}
 						</TabsContent>

@@ -10,7 +10,7 @@ import { ProjectDataType } from '../types'
 import { TbWorld } from 'react-icons/tb'
 import { useState } from 'react'
 import { ModalDrawer } from '@/components/global/ModalDrawer'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 type Props = {
 	project: ProjectDataType
@@ -19,18 +19,44 @@ type Props = {
 export const ProjectBlock = ({ project }: Props) => {
 	const [open, setOpen] = useState(false)
 
-	const t = useTranslations('SectionProjects')
-	const description = t(`projects.${project.name}.description`)
+	// const t = useTranslations('SectionProjects')
+	
+	// Static project data in Russian
+	const projectData = {
+		komponenta: {
+			name: 'Komponenta',
+			description: 'Этот проект представляет собой одностраничное приложение (SPA), разработанное с использованием чистого JavaScript (ES6+) без использования фреймворков, реализуя модульную структуру кода по шаблону MVC для улучшения масштабируемости и поддержки.',
+			company: 'Компания специализируется на предоставлении профессиональной помощи в области личного банкротства. Предлагает комплексные услуги для клиентов, столкнувшихся с финансовыми трудностями.'
+		},
+		mba: {
+			name: 'Московская Бизнес Академия',
+			description: 'Проект включает в себя полную переработку и обновление веб-платформы Московской Бизнес Академии с использованием современного технологического стека. Разработка основана на Next.js, обеспечивая высокую производительность и SEO-оптимизацию.',
+			company: 'Московская Бизнес Академия - это коммерческий институт онлайн бизнес-образования. Компания специализируется на предоставлении высококачественных образовательных программ в области бизнеса и менеджмента.'
+		},
+		digitalDyatel: {
+			name: 'Digital Dyatel',
+			description: 'Проект Digital Dyatel находится в активной разработке и представляет собой современную веб-платформу для управления репутацией и интернет-маркетинга. Разработка ведется с использованием Next.js.',
+			company: 'Digital Dyatel специализируется на маркетинге и управлении онлайн-репутацией с использованием SEO. Компания предоставляет комплексные услуги ORM.'
+		},
+		healthshop: {
+			name: 'Health Shop',
+			description: 'Интернет-магазин здорового питания и спортивного питания с современным дизайном и удобной системой заказов.',
+			company: 'Магазин товаров для здоровья и спорта'
+		}
+	}
+
+	const currentProject = projectData[project.name as keyof typeof projectData]
+	const description = currentProject?.description || project.title
 
 	const popupData = {
-		title: t(`projects.${project.name}.name`),
-		description: t(`projects.${project.name}.description`),
-		company: t(`projects.${project.name}.company`),
+		title: currentProject?.name || project.title,
+		description: currentProject?.description || project.title,
+		company: currentProject?.company || '',
 		image: project.image,
 		github: project.github,
 		link: project.link,
 		techs: project.techs,
-		about: t('about')
+		about: 'О проекте'
 	}
 
 	return (
@@ -48,7 +74,7 @@ export const ProjectBlock = ({ project }: Props) => {
 					src={project.image}
 					width={1000}
 					height={2000}
-					alt={t(`projects.${project.name}.name`)}
+					alt={currentProject?.name || project.title}
 				/>
 			</Block>
 			<div className='flex justify-between items-center gap-4 my-4'>
@@ -85,7 +111,7 @@ export const ProjectBlock = ({ project }: Props) => {
 				variant='link'
 				onClick={() => setOpen(true)}
 			>
-				{`${t('moreButton')} >`}
+				{'Узнать больше >'}
 			</Button>
 		</div>
 	)
