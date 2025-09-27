@@ -1,11 +1,10 @@
-import '../globals.css'
+import './globals.css'
 import '@/lib/utils/suppress-warnings'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Footer } from '@/components/layout'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
 import { ReactNode } from 'react'
@@ -23,11 +22,10 @@ import Script from 'next/script'
 
 interface Props {
 	children: ReactNode
-	params: Promise<{ locale: string }>
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const { locale } = await params
+export async function generateMetadata(): Promise<Metadata> {
+	const locale = 'en' // Default locale for flattened structure
 
 	const metadata = {
 		en: {
@@ -64,44 +62,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			template: currentMetadata.title.template || '%s | PixelTool'
 		},
 		description: currentMetadata.description,
-		keywords:
-			locale === 'ru'
-				? [
-						'онлайн инструменты',
-						'веб разработка',
-						'CSS генератор',
-						'конвертер цветов',
-						'форматировщик кода',
-						'бесплатные утилиты',
-						'инструменты разработчика',
-						'калькулятор CSS',
-						'генератор паролей',
-						'QR код генератор',
-						'конвертер изображений',
-						'парсер HTML',
-						'минификатор кода'
-					]
-				: [
-						'online tools',
-						'web development',
-						'CSS generator',
-						'color converter',
-						'code formatter',
-						'free utilities',
-						'developer tools',
-						'CSS calculator',
-						'password generator',
-						'QR code generator',
-						'image converter',
-						'HTML parser',
-						'code minifier'
-					],
+		keywords: [
+				'online tools',
+				'web development',
+				'CSS generator',
+				'color converter',
+				'code formatter',
+				'free utilities',
+				'developer tools',
+				'CSS calculator',
+				'password generator',
+				'QR code generator',
+				'image converter',
+				'HTML parser',
+				'code minifier'
+			],
 		creator: 'Dmitry Borisenko',
 		publisher: 'PixelTool',
 		category: 'technology',
 		openGraph: {
 			type: 'website',
-			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
+			locale: 'en_US',
 			url: siteUrl,
 			title: ogTitle,
 			description: ogDescription,
@@ -247,12 +228,8 @@ export const viewport = {
 	viewportFit: 'cover'
 }
 
-export default async function RootLayout({
-	children,
-	params
-}: Readonly<Props>) {
-	const locale = (await params).locale
-	if (!routing.locales.includes(locale as any)) notFound()
+export default async function RootLayout({ children }: Readonly<Props>) {
+	const locale = 'en' // Default locale for flattened structure
 	const messages = await getMessages()
 
 	if (!dev) console.log = () => undefined
