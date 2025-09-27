@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { Upload, Download, X, ImageIcon, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
@@ -23,7 +23,7 @@ interface ImageInfo {
 }
 
 export default function ImageSizeCheckerPage() {
-	const t = useTranslations('widgets.imageSizeChecker')
+	// const t = useTranslations('widgets.imageSizeChecker') // Removed
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
 
@@ -85,7 +85,7 @@ export default function ImageSizeCheckerPage() {
 			)
 
 			if (imageFiles.length === 0) {
-				toast.error(t('noImages'))
+				toast.error('Выберите изображения')
 				return
 			}
 
@@ -96,14 +96,14 @@ export default function ImageSizeCheckerPage() {
 					const imageInfo = await processImage(file)
 					newImages.push(imageInfo)
 				} catch (error) {
-					toast.error(`${t('errorProcessing')} ${file.name}`)
+					toast.error(`Ошибка обработки ${file.name}`)
 				}
 			}
 
 			setImages(prev => [...prev, ...newImages])
-			toast.success(`${newImages.length} ${t('imagesProcessed')}`)
+			toast.success(`${newImages.length} изображений обработано`)
 		},
-		[t]
+		[]
 	)
 
 	const handleDrop = useCallback(
@@ -170,14 +170,14 @@ export default function ImageSizeCheckerPage() {
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
 
-		toast.success(t('exported'))
-	}, [images, t])
+		toast.success('Данные экспортированы')
+	}, [images])
 
 	return (
 		<WidgetWrapper>
 			<Card>
 				<CardHeader>
-					<CardTitle>{t('uploadArea')}</CardTitle>
+					<CardTitle>Загрузка изображений</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div
@@ -196,19 +196,19 @@ export default function ImageSizeCheckerPage() {
 							multiple
 							accept='image/*'
 							onChange={handleInputChange}
-							aria-label={t('uploadImages')}
+							aria-label='Загрузить изображения'
 							className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
 						/>
 
 						<ImageIcon className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
-						<p className='text-lg font-semibold mb-2'>{t('dragDrop')}</p>
-						<p className='text-sm text-muted-foreground mb-4'>{t('or')}</p>
+						<p className='text-lg font-semibold mb-2'>Перетащите изображения сюда</p>
+						<p className='text-sm text-muted-foreground mb-4'>или</p>
 						<Button>
 							<Upload className='w-4 h-4 mr-2' />
-							{t('browseFiles')}
+							Выберите файлы
 						</Button>
 						<p className='text-xs text-muted-foreground mt-4'>
-							{t('supportedFormats')}
+							Поддерживаются JPG, PNG, GIF, WebP, SVG
 						</p>
 					</div>
 				</CardContent>
@@ -218,16 +218,16 @@ export default function ImageSizeCheckerPage() {
 				<>
 					<div className='flex justify-between items-center my-6'>
 						<h2 className='text-2xl font-bold'>
-							{t('results')} ({images.length})
+							Результаты ({images.length})
 						</h2>
 						<div className='flex gap-2'>
 							<Button onClick={exportData} variant='outline'>
 								<Download className='w-4 h-4 mr-2' />
-								{t('exportCSV')}
+								Экспорт CSV
 							</Button>
 							<Button onClick={clearAll} variant='outline'>
 								<X className='w-4 h-4 mr-2' />
-								{t('clearAll')}
+								Очистить все
 							</Button>
 						</div>
 					</div>
@@ -261,7 +261,7 @@ export default function ImageSizeCheckerPage() {
 									<div className='space-y-1 text-sm'>
 										<div className='flex justify-between'>
 											<span className='text-muted-foreground'>
-												{t('dimensions')}:
+												Размеры:
 											</span>
 											<span className='font-mono'>
 												{image.width} × {image.height}px
@@ -269,13 +269,13 @@ export default function ImageSizeCheckerPage() {
 										</div>
 										<div className='flex justify-between'>
 											<span className='text-muted-foreground'>
-												{t('aspectRatio')}:
+												Соотношение сторон:
 											</span>
 											<span className='font-mono'>{image.aspectRatio}</span>
 										</div>
 										<div className='flex justify-between'>
 											<span className='text-muted-foreground'>
-												{t('fileSize')}:
+												Размер файла:
 											</span>
 											<span className='font-mono'>
 												{image.fileSizeFormatted}
@@ -283,7 +283,7 @@ export default function ImageSizeCheckerPage() {
 										</div>
 										<div className='flex justify-between'>
 											<span className='text-muted-foreground'>
-												{t('format')}:
+												Формат:
 											</span>
 											<span className='font-mono'>
 												{image.format.split('/')[1]?.toUpperCase() || 'Unknown'}
@@ -301,63 +301,63 @@ export default function ImageSizeCheckerPage() {
 				<CardHeader>
 					<CardTitle className='flex items-center gap-2'>
 						<Info className='w-5 h-5' />
-						{t('commonAspectRatios')}
+						Распространенные соотношения сторон
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className='grid gap-4 md:grid-cols-2'>
 						<div>
-							<h4 className='font-semibold mb-2'>{t('photography')}</h4>
+							<h4 className='font-semibold mb-2'>Фотография</h4>
 							<div className='space-y-1 text-sm'>
 								<div className='flex justify-between'>
 									<span>1:1</span>
-									<span className='text-muted-foreground'>{t('square')}</span>
+									<span className='text-muted-foreground'>Квадрат</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>4:3</span>
 									<span className='text-muted-foreground'>
-										{t('traditional')}
+										Традиционный
 									</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>3:2</span>
 									<span className='text-muted-foreground'>
-										{t('classic35mm')}
+										Классический 35мм
 									</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>16:9</span>
 									<span className='text-muted-foreground'>
-										{t('widescreen')}
+										Широкоэкранный
 									</span>
 								</div>
 							</div>
 						</div>
 						<div>
-							<h4 className='font-semibold mb-2'>{t('socialMedia')}</h4>
+							<h4 className='font-semibold mb-2'>Социальные сети</h4>
 							<div className='space-y-1 text-sm'>
 								<div className='flex justify-between'>
 									<span>1:1</span>
 									<span className='text-muted-foreground'>
-										Instagram {t('post')}
+										Instagram пост
 									</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>9:16</span>
 									<span className='text-muted-foreground'>
-										Instagram {t('story')}
+										Instagram сторис
 									</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>16:9</span>
 									<span className='text-muted-foreground'>
-										YouTube {t('thumbnail')}
+										YouTube миниатюра
 									</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>2:1</span>
 									<span className='text-muted-foreground'>
-										Twitter {t('header')}
+										Twitter шапка
 									</span>
 								</div>
 							</div>

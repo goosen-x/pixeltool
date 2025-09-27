@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 
 const EXAMPLE_HTML = `<div class="container">
   <header class="header">
@@ -35,7 +35,7 @@ interface TreeNode {
 }
 
 export default function HTMLTreePage() {
-	const t = useTranslations('widgets.htmlTree')
+	// const t = useTranslations('widgets.htmlTree') // Removed
 	const [htmlInput, setHtmlInput] = useState('')
 	const [treeData, setTreeData] = useState<TreeNode | null>(null)
 	const [maxDepth, setMaxDepth] = useState(10)
@@ -43,8 +43,7 @@ export default function HTMLTreePage() {
 	const [bemWarnings, setBemWarnings] = useState<string[]>([])
 
 	const parseHTML = (
-		htmlString: string,
-		t: any
+		htmlString: string
 	): { tree: TreeNode | null; warnings: string[] } => {
 		try {
 			const parser = new DOMParser()
@@ -67,14 +66,14 @@ export default function HTMLTreePage() {
 							!element.parentElement?.classList.contains(blockName)
 						) {
 							warnings.push(
-								t('warnings.blockNotFound', { className, blockName })
+								`Класс '${className}' не содержит блок '${blockName}'`
 							)
 						}
 					}
 					if (className.includes('--')) {
 						const baseName = className.split('--')[0]
 						if (!classes.includes(baseName)) {
-							warnings.push(t('warnings.baseNotFound', { className, baseName }))
+							warnings.push(`Класс '${className}' не содержит базовый класс '${baseName}'`)
 						}
 					}
 				})
@@ -108,7 +107,7 @@ export default function HTMLTreePage() {
 			return { tree, warnings }
 		} catch (error) {
 			console.error('Error parsing HTML:', error)
-			toast.error(t('toast.parseError'))
+			toast.error('Ошибка разбора HTML')
 			return { tree: null, warnings: [] }
 		}
 	}
@@ -116,18 +115,15 @@ export default function HTMLTreePage() {
 	const handleInputChange = (value: string) => {
 		setHtmlInput(value)
 		if (value.trim()) {
-			const result = parseHTML(value, t)
+			const result = parseHTML(value)
 			setTreeData(result.tree)
 			setBemWarnings(result.warnings)
 			if (result.tree && result.warnings.length === 0) {
-				toast.success(t('toast.parsed'))
+				toast.success('HTML успешно разобран')
 			} else if (result.tree && result.warnings.length > 0) {
 				const plural = result.warnings.length > 1 ? 'ями' : 'ем'
 				toast.warning(
-					t('toast.parsedWithWarnings', {
-						count: result.warnings.length,
-						plural
-					})
+					`HTML разобран с ${result.warnings.length} предупреждени${plural}`
 				)
 			}
 		} else {
@@ -165,11 +161,11 @@ export default function HTMLTreePage() {
 			<div className='grid gap-6 lg:grid-cols-2'>
 				<Card>
 					<CardHeader>
-						<CardTitle>{t('htmlInput')}</CardTitle>
+						<CardTitle>Ввод HTML</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<Textarea
-							placeholder={t('placeholder')}
+							placeholder='Вставьте HTML код здесь...'
 							value={htmlInput}
 							onChange={e => handleInputChange(e.target.value)}
 							className='min-h-[300px] font-mono text-sm'
@@ -179,11 +175,11 @@ export default function HTMLTreePage() {
 							variant='outline'
 							onClick={() => {
 								handleInputChange(EXAMPLE_HTML)
-								toast.success(t('toast.exampleLoaded'))
+								toast.success('Пример загружен')
 							}}
 							className='w-full'
 						>
-							{t('loadExample')}
+							Загрузить пример
 						</Button>
 					</CardContent>
 				</Card>
@@ -191,11 +187,11 @@ export default function HTMLTreePage() {
 				<Card>
 					<CardHeader>
 						<CardTitle className='flex items-center justify-between'>
-							<span>{t('treeStructure')}</span>
+							<span>Структура дерева</span>
 							{treeData && (
 								<div className='flex items-center gap-2'>
 									<span className='text-sm text-muted-foreground'>
-										{t('depth')}: {visibleDepth}/{maxDepth}
+										Глубина: {visibleDepth}/{maxDepth}
 									</span>
 									<div className='w-32'>
 										<Slider
@@ -217,7 +213,7 @@ export default function HTMLTreePage() {
 							</div>
 						) : (
 							<div className='text-center py-12 text-muted-foreground'>
-								{t('emptyState')}
+								Вставьте HTML код для визуализации дерева
 							</div>
 						)}
 					</CardContent>
@@ -228,7 +224,7 @@ export default function HTMLTreePage() {
 				<Alert>
 					<AlertCircle className='h-4 w-4' />
 					<AlertDescription>
-						<div className='font-semibold mb-2'>{t('bemWarnings')}</div>
+						<div className='font-semibold mb-2'>Предупреждения BEM</div>
 						<ul className='list-disc list-inside space-y-1'>
 							{bemWarnings.map((warning, index) => (
 								<li key={index} className='text-sm'>
