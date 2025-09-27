@@ -116,7 +116,17 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 												className='w-full flex items-center justify-between mb-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground hover:bg-primary/5 transition-all duration-200 rounded-md group relative z-10'
 											>
 												<span className='group-hover:translate-x-1 transition-transform duration-200'>
-													{categoryKey === 'text' ? 'Текст' : categoryKey === 'generators' ? 'Генераторы' : categoryKey === 'converters' ? 'Конвертеры' : categoryKey === 'calculators' ? 'Калькуляторы' : categoryKey === 'utilities' ? 'Утилиты' : categoryKey}
+													{categoryKey === 'text'
+														? 'Текст'
+														: categoryKey === 'generators'
+															? 'Генераторы'
+															: categoryKey === 'converters'
+																? 'Конвертеры'
+																: categoryKey === 'calculators'
+																	? 'Калькуляторы'
+																	: categoryKey === 'utilities'
+																		? 'Утилиты'
+																		: categoryKey}
 												</span>
 												<ChevronDown
 													className={cn(
@@ -164,7 +174,34 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 															>
 																<Icon className='w-4 h-4' />
 																<span className='flex-1 text-left truncate'>
-																	{widget.translationKey === 'qrGenerator' ? 'QR-Код Генератор' : widget.translationKey === 'tipCalculator' ? 'Калькулятор чаевых' : widget.translationKey === 'worldTime' ? 'Мировое время' : widget.translationKey === 'passwordGenerator' ? 'Генератор паролей' : widget.translationKey === 'textCaseConverter' ? 'Конвертер регистра' : widget.translationKey === 'colorPalette' ? 'Цветовая палитра' : widget.translationKey === 'randomTeam' ? 'Случайная команда' : widget.translationKey === 'dice' ? 'Кости' : widget.translationKey === 'grid' ? 'Генератор сетки' : widget.translationKey === 'loremIpsum' ? 'Lorem Ipsum' : widget.title}
+																	{widget.translationKey === 'qrGenerator'
+																		? 'QR-Код Генератор'
+																		: widget.translationKey === 'tipCalculator'
+																			? 'Калькулятор чаевых'
+																			: widget.translationKey === 'worldTime'
+																				? 'Мировое время'
+																				: widget.translationKey ===
+																					  'passwordGenerator'
+																					? 'Генератор паролей'
+																					: widget.translationKey ===
+																						  'textCaseConverter'
+																						? 'Конвертер регистра'
+																						: widget.translationKey ===
+																							  'colorPalette'
+																							? 'Цветовая палитра'
+																							: widget.translationKey ===
+																								  'randomTeam'
+																								? 'Случайная команда'
+																								: widget.translationKey ===
+																									  'dice'
+																									? 'Кости'
+																									: widget.translationKey ===
+																										  'grid'
+																										? 'Генератор сетки'
+																										: widget.translationKey ===
+																											  'loremIpsum'
+																											? 'Lorem Ipsum'
+																											: widget.title}
 																</span>
 																{isActive && (
 																	<ChevronRight className='w-4 h-4' />
@@ -193,9 +230,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 						)}
 					>
 						<Settings className='w-4 h-4' />
-						<span className='flex-1 text-left truncate'>
-							Настройки
-						</span>
+						<span className='flex-1 text-left truncate'>Настройки</span>
 						{pathname === `/${locale}/settings` && (
 							<ChevronRight className='w-4 h-4' />
 						)}

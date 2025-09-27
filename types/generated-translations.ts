@@ -1,5 +1,5 @@
 // Auto-generated translation types from en.json
-// Generated on: 2025-09-27T20:26:58.845Z
+// Generated on: 2025-09-27T21:02:34.561Z
 // DO NOT EDIT MANUALLY - Run npm run generate:types instead
 
 export interface GeneratedTranslations {

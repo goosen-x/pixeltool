@@ -38,7 +38,11 @@ export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
 						<Badge
 							className={cn(difficultyColors[widget.difficulty], 'text-xs')}
 						>
-							{widget.difficulty === 'beginner' ? 'Начинающий' : widget.difficulty === 'intermediate' ? 'Средний' : 'Продвинутый'}
+							{widget.difficulty === 'beginner'
+								? 'Начинающий'
+								: widget.difficulty === 'intermediate'
+									? 'Средний'
+									: 'Продвинутый'}
 						</Badge>
 					</div>
 				)}
@@ -48,7 +52,21 @@ export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
 						Категория
 					</span>
 					<Badge variant='outline' className='text-xs'>
-						{widget.category === 'webdev' ? 'Веб-разработка' : widget.category === 'multimedia' ? 'Мультимедиа' : widget.category === 'content' ? 'Контент' : widget.category === 'security' ? 'Безопасность' : widget.category === 'business' ? 'Бизнес и финансы' : widget.category === 'analytics' ? 'Аналитика' : widget.category === 'lifestyle' ? 'Стиль жизни' : widget.category}
+						{widget.category === 'webdev'
+							? 'Веб-разработка'
+							: widget.category === 'multimedia'
+								? 'Мультимедиа'
+								: widget.category === 'content'
+									? 'Контент'
+									: widget.category === 'security'
+										? 'Безопасность'
+										: widget.category === 'business'
+											? 'Бизнес и финансы'
+											: widget.category === 'analytics'
+												? 'Аналитика'
+												: widget.category === 'lifestyle'
+													? 'Стиль жизни'
+													: widget.category}
 					</Badge>
 				</div>
 

@@ -46,7 +46,9 @@ export default function ContactForm() {
 				<h3 className='text-xl font-semibold text-foreground mb-2'>
 					Спасибо за сообщение!
 				</h3>
-				<p className='text-muted-foreground'>Мы ответим вам как можно скорее.</p>
+				<p className='text-muted-foreground'>
+					Мы ответим вам как можно скорее.
+				</p>
 			</div>
 		)
 	}

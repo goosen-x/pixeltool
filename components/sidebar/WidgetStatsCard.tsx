@@ -93,9 +93,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 						<div className='flex items-center justify-between gap-2'>
 							<span className='text-xs lg:text-sm text-muted-foreground flex items-center gap-1'>
 								<Users className='w-3 h-3 flex-shrink-0' />
-								<span className='truncate'>
-									Сейчас онлайн
-								</span>
+								<span className='truncate'>Сейчас онлайн</span>
 							</span>
 							<span className='text-xs lg:text-sm font-medium text-green-600 dark:text-green-400 whitespace-nowrap'>
 								{analyticsStats.onlineUsers || 0}
@@ -130,9 +128,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 					</>
 				) : (
 					<div className='text-center py-2'>
-						<span className='text-sm text-muted-foreground'>
-							Нет данных
-						</span>
+						<span className='text-sm text-muted-foreground'>Нет данных</span>
 					</div>
 				)}
 			</CardContent>

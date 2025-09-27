@@ -15,39 +15,48 @@ interface WidgetSEOWrapperProps {
 const WIDGET_TRANSLATIONS = {
 	'css-clamp-calculator': {
 		title: 'CSS Clamp калькулятор',
-		description: 'Создавайте адаптивную типографику и отступы, которые плавно масштабируются между размерами экрана'
+		description:
+			'Создавайте адаптивную типографику и отступы, которые плавно масштабируются между размерами экрана'
 	},
 	'flexbox-generator': {
 		title: 'Генератор CSS Flexbox онлайн',
-		description: 'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом'
+		description:
+			'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом'
 	},
 	'grid-generator': {
 		title: 'Генератор CSS Grid онлайн',
-		description: 'Бесплатный онлайн генератор CSS Grid. Визуальный инструмент для создания и изучения CSS Grid макетов с кодом'
+		description:
+			'Бесплатный онлайн генератор CSS Grid. Визуальный инструмент для создания и изучения CSS Grid макетов с кодом'
 	},
 	'css-specificity': {
 		title: 'CSS калькулятор специфичности',
-		description: 'Анализируйте специфичность CSS селекторов для понимания правил каскада'
+		description:
+			'Анализируйте специфичность CSS селекторов для понимания правил каскада'
 	},
 	'bezier-curve': {
 		title: 'Генератор кривых Безье',
-		description: 'Создавайте пользовательские функции плавности cubic-bezier для CSS анимаций'
+		description:
+			'Создавайте пользовательские функции плавности cubic-bezier для CSS анимаций'
 	},
 	'svg-encoder': {
 		title: 'SVG URL кодировщик',
-		description: 'Кодируйте SVG для использования в CSS свойстве background-image'
+		description:
+			'Кодируйте SVG для использования в CSS свойстве background-image'
 	},
 	'youtube-thumbnail': {
 		title: 'YouTube превью граббер',
-		description: 'Извлекайте изображения превью из любого видео YouTube в различных разрешениях'
+		description:
+			'Извлекайте изображения превью из любого видео YouTube в различных разрешениях'
 	},
 	'qr-generator': {
 		title: 'Генератор QR кодов онлайн - создать QR код бесплатно',
-		description: 'Бесплатный генератор QR кодов онлайн. Создайте QR код для URL, WiFi, App Store за секунды. Генератор qr работает без регистрации'
+		description:
+			'Бесплатный генератор QR кодов онлайн. Создайте QR код для URL, WiFi, App Store за секунды. Генератор qr работает без регистрации'
 	},
 	'color-converter': {
 		title: 'Конвертер цветов',
-		description: 'Конвертируйте цвета между HEX, RGB, HSL, CMYK, LAB и другими цветовыми моделями'
+		description:
+			'Конвертируйте цвета между HEX, RGB, HSL, CMYK, LAB и другими цветовыми моделями'
 	},
 	'html-tree': {
 		title: 'HTML древо визуализатор',
@@ -59,27 +68,33 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'mock-data-generator': {
 		title: 'Генератор тестовых данных онлайн API',
-		description: 'Бесплатный онлайн генератор тестовых данных. Получайте примеры данных из бесплатных API для тестирования'
+		description:
+			'Бесплатный онлайн генератор тестовых данных. Получайте примеры данных из бесплатных API для тестирования'
 	},
 	'password-generator': {
 		title: 'Генератор паролей онлайн',
-		description: 'Бесплатный генератор паролей онлайн. Создать пароль любой сложности. Генератор надежных паролей с анализом стойкости'
+		description:
+			'Бесплатный генератор паролей онлайн. Создать пароль любой сложности. Генератор надежных паролей с анализом стойкости'
 	},
 	'utm-builder': {
 		title: 'UTM конструктор ссылок',
-		description: 'Создавайте отслеживаемые ссылки с UTM параметрами для маркетинговых кампаний'
+		description:
+			'Создавайте отслеживаемые ссылки с UTM параметрами для маркетинговых кампаний'
 	},
 	'seo-markdown-generator': {
 		title: 'SEO Markdown генератор',
-		description: 'Генерируйте SEO-оптимизированные markdown файлы для блог постов'
+		description:
+			'Генерируйте SEO-оптимизированные markdown файлы для блог постов'
 	},
 	'team-randomizer': {
 		title: 'Рандомайзер команд',
-		description: 'Создавайте случайные команды быстро и честно. Отлично подходит для игр, работы или развлечений'
+		description:
+			'Создавайте случайные команды быстро и честно. Отлично подходит для игр, работы или развлечений'
 	},
 	'draw-lots': {
 		title: 'Жеребьёвка',
-		description: 'Цифровая жеребьёвка - выбирайте имена или делайте случайный выбор честно'
+		description:
+			'Цифровая жеребьёвка - выбирайте имена или делайте случайный выбор честно'
 	},
 	'email-validator': {
 		title: 'Валидатор Email',
@@ -87,19 +102,23 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'special-symbols-picker': {
 		title: 'Выбор специальных символов',
-		description: 'Кликните для копирования специальных символов и Unicode символов для любого текста'
+		description:
+			'Кликните для копирования специальных символов и Unicode символов для любого текста'
 	},
 	'fancy-text-generator': {
 		title: 'Генератор текста онлайн - создать стилизованный текст бесплатно',
-		description: 'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов'
+		description:
+			'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов'
 	},
 	'random-number-generator': {
 		title: 'Генератор случайных чисел онлайн',
-		description: 'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей'
+		description:
+			'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей'
 	},
 	'percentage-calculator': {
 		title: 'Калькулятор процентов',
-		description: 'Рассчитывайте проценты для скидок, налогов, чаевых и инвестиций'
+		description:
+			'Рассчитывайте проценты для скидок, налогов, чаевых и инвестиций'
 	},
 	'tip-calculator': {
 		title: 'Калькулятор чаевых',
@@ -111,19 +130,23 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'image-size-checker': {
 		title: 'Проверка размера изображений',
-		description: 'Мгновенно проверьте размеры, размер файла и формат изображений'
+		description:
+			'Мгновенно проверьте размеры, размер файла и формат изображений'
 	},
 	'html-xml-parser': {
 		title: 'HTML/XML парсер',
-		description: 'Парсинг и валидация HTML/XML документов с подсветкой синтаксиса'
+		description:
+			'Парсинг и валидация HTML/XML документов с подсветкой синтаксиса'
 	},
 	'random-list-generator': {
 		title: 'Генератор случайных списков',
-		description: 'Создавайте случайные списки элементов для тестирования или творчества'
+		description:
+			'Создавайте случайные списки элементов для тестирования или творчества'
 	},
 	'coin-flip': {
 		title: 'Подбрасывание монеты',
-		description: 'Виртуальное подбрасывание монеты с анимацией для принятия решений'
+		description:
+			'Виртуальное подбрасывание монеты с анимацией для принятия решений'
 	},
 	'world-time': {
 		title: 'Мировое время',
@@ -131,7 +154,8 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'dice-roller': {
 		title: 'Бросок костей',
-		description: 'Виртуальный бросок костей с несколькими конфигурациями и анимациями'
+		description:
+			'Виртуальный бросок костей с несколькими конфигурациями и анимациями'
 	},
 	'social-media-formatter': {
 		title: 'Форматтер для соцсетей',
@@ -151,7 +175,8 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'system-info': {
 		title: 'Информация о системе',
-		description: 'Получите детальную информацию о вашем браузере, устройстве и операционной системе'
+		description:
+			'Получите детальную информацию о вашем браузере, устройстве и операционной системе'
 	},
 	'json-tools': {
 		title: 'JSON инструменты',
@@ -159,7 +184,8 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'js-css-compressor': {
 		title: 'JS/CSS компрессор',
-		description: 'Минифицируйте JavaScript и CSS для улучшения производительности'
+		description:
+			'Минифицируйте JavaScript и CSS для улучшения производительности'
 	},
 	'js-validator': {
 		title: 'JavaScript валидатор',
@@ -211,23 +237,28 @@ const WIDGET_TRANSLATIONS = {
 	},
 	'px-rem-converter': {
 		title: 'Конвертер px в rem/em',
-		description: 'Конвертируйте между px, rem и em единицами с настройкой базового размера шрифта'
+		description:
+			'Конвертируйте между px, rem и em единицами с настройкой базового размера шрифта'
 	},
 	'css-box-shadow': {
 		title: 'Генератор CSS box-shadow',
-		description: 'Создавайте CSS тени с визуальным предпросмотром и множественными тенями'
+		description:
+			'Создавайте CSS тени с визуальным предпросмотром и множественными тенями'
 	},
 	'css-gradient': {
 		title: 'Генератор CSS градиентов',
-		description: 'Создавайте красивые CSS градиенты с визуальным редактором и предпросмотром'
+		description:
+			'Создавайте красивые CSS градиенты с визуальным редактором и предпросмотром'
 	},
 	'color-contrast': {
 		title: 'Проверка контрастности цветов',
-		description: 'Проверьте контрастность цветов для соответствия стандартам доступности WCAG'
+		description:
+			'Проверьте контрастность цветов для соответствия стандартам доступности WCAG'
 	},
 	'css-keyframes': {
 		title: 'Генератор CSS анимаций',
-		description: 'Создавайте CSS анимации с keyframes с визуальным предпросмотром'
+		description:
+			'Создавайте CSS анимации с keyframes с визуальным предпросмотром'
 	},
 	'json-yaml-formatter': {
 		title: 'JSON/YAML форматтер',
@@ -277,7 +308,8 @@ export function WidgetSEOWrapper({ widget, children }: WidgetSEOWrapperProps) {
 	const locale = pathname.split('/')[1]
 
 	// Get title and description from the comprehensive mapping using widget.id
-	const widgetData = WIDGET_TRANSLATIONS[widget.id as keyof typeof WIDGET_TRANSLATIONS]
+	const widgetData =
+		WIDGET_TRANSLATIONS[widget.id as keyof typeof WIDGET_TRANSLATIONS]
 	const title = widgetData?.title || widget.id
 	const description = widgetData?.description || 'Инструмент для веб-разработки'
 
