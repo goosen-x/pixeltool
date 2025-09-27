@@ -31,7 +31,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import {
 	Dialog,
 	DialogContent,
@@ -169,7 +169,7 @@ const EXCHANGE_RATES: { [key: string]: number } = {
 const AMOUNT_PRESETS = [100, 500, 1000, 5000, 10000]
 
 export default function CurrencyConverterPage() {
-	const t = useTranslations('widgets.currencyConverter')
+	// const t = useTranslations('widgets.currencyConverter') // Removed
 	const [amount, setAmount] = useState<string>('1000')
 	const [fromCurrency, setFromCurrency] = useState<Currency>(CURRENCIES[0]) // USD
 	const [toCurrency, setToCurrency] = useState<Currency>(CURRENCIES[1]) // EUR
@@ -243,20 +243,20 @@ export default function CurrencyConverterPage() {
 	const swapCurrencies = () => {
 		setFromCurrency(toCurrency)
 		setToCurrency(fromCurrency)
-		toast.success(t('toast.swapped') || 'Валюты поменяны местами')
+		toast.success('Валюты поменяны местами')
 	}
 
 	const copyResult = () => {
 		const formattedResult = `${amount} ${fromCurrency.code} = ${result.toFixed(2)} ${toCurrency.code}`
 		navigator.clipboard.writeText(formattedResult)
-		toast.success(t('toast.copied') || 'Результат скопирован!')
+		toast.success('Результат скопирован!')
 	}
 
 	const resetCalculator = () => {
 		setAmount('1000')
 		setFromCurrency(CURRENCIES[0])
 		setToCurrency(CURRENCIES[1])
-		toast.success(t('toast.reset') || 'Калькулятор сброшен')
+		toast.success('Калькулятор сброшен')
 	}
 
 	const toggleFavorite = (code: string) => {
@@ -269,8 +269,8 @@ export default function CurrencyConverterPage() {
 
 		toast.success(
 			favorites.includes(code)
-				? t('toast.removedFromFavorites') || 'Удалено из избранного'
-				: t('toast.addedToFavorites') || 'Добавлено в избранное'
+				? 'Удалено из избранного'
+				: 'Добавлено в избранное'
 		)
 	}
 
@@ -350,17 +350,17 @@ export default function CurrencyConverterPage() {
 					</DialogHeader>
 					<Command className='border-0'>
 						<CommandInput
-							placeholder={t('searchCurrency') || 'Поиск валюты...'}
+							placeholder='Поиск валюты...'
 							value={search}
 							onValueChange={onSearchChange}
 						/>
 						<CommandList>
 							<CommandEmpty>
-								{t('noCurrencyFound') || 'Валюта не найдена'}
+								Валюта не найдена
 							</CommandEmpty>
 
 							{favoriteCurrencies.length > 0 && (
-								<CommandGroup heading={t('favorites') || 'Избранные'}>
+								<CommandGroup heading='Избранные'>
 									{favoriteCurrencies.map(currency => (
 										<CommandItem
 											key={currency.code}
@@ -400,7 +400,7 @@ export default function CurrencyConverterPage() {
 							)}
 
 							{otherCurrencies.length > 0 && (
-								<CommandGroup heading={t('allCurrencies') || 'Все валюты'}>
+								<CommandGroup heading='Все валюты'>
 									{otherCurrencies.map(currency => (
 										<CommandItem
 											key={currency.code}
@@ -498,7 +498,7 @@ export default function CurrencyConverterPage() {
 								{/* From Currency */}
 								<div className='space-y-4'>
 									<label className='text-sm font-medium text-muted-foreground'>
-										{t('from') || 'Из валюты'}
+										Из валюты
 									</label>
 									<CurrencySelector
 										value={fromCurrency}
@@ -507,7 +507,7 @@ export default function CurrencyConverterPage() {
 										onOpenChange={setShowFromDialog}
 										search={searchFrom}
 										onSearchChange={setSearchFrom}
-										label={t('selectFromCurrency') || 'Выберите валюту'}
+										label='Выберите валюту'
 									/>
 									<div className='relative'>
 										<Input
@@ -540,7 +540,7 @@ export default function CurrencyConverterPage() {
 								{/* To Currency */}
 								<div className='space-y-4'>
 									<label className='text-sm font-medium text-muted-foreground'>
-										{t('to') || 'В валюту'}
+										В валюту
 									</label>
 									<CurrencySelector
 										value={toCurrency}
@@ -549,7 +549,7 @@ export default function CurrencyConverterPage() {
 										onOpenChange={setShowToDialog}
 										search={searchTo}
 										onSearchChange={setSearchTo}
-										label={t('selectToCurrency') || 'Выберите валюту'}
+										label='Выберите валюту'
 									/>
 									<div className='relative'>
 										<AnimatePresence mode='wait'>
@@ -609,7 +609,7 @@ export default function CurrencyConverterPage() {
 											{toCurrency.code}
 										</p>
 										<p className='text-muted-foreground'>
-											{t('exchangeRate') || 'Обменный курс'}
+											Обменный курс
 										</p>
 									</div>
 								</div>
@@ -621,7 +621,7 @@ export default function CurrencyConverterPage() {
 											</Button>
 										</TooltipTrigger>
 										<TooltipContent>
-											<p>{t('copyResult') || 'Копировать результат'}</p>
+											<p>Копировать результат</p>
 										</TooltipContent>
 									</Tooltip>
 									<Tooltip>
@@ -635,7 +635,7 @@ export default function CurrencyConverterPage() {
 											</Button>
 										</TooltipTrigger>
 										<TooltipContent>
-											<p>{t('reset') || 'Сбросить'}</p>
+											<p>Сбросить</p>
 										</TooltipContent>
 									</Tooltip>
 								</div>
@@ -656,7 +656,7 @@ export default function CurrencyConverterPage() {
 								<div className='flex items-center gap-2 mb-4'>
 									<History className='h-5 w-5 text-primary' />
 									<h3 className='font-semibold'>
-										{t('history') || 'История конвертаций'}
+										История конвертаций
 									</h3>
 								</div>
 								<div className='space-y-3'>
@@ -725,17 +725,15 @@ export default function CurrencyConverterPage() {
 							<div className='flex items-center gap-2 mb-3'>
 								<Info className='h-4 w-4 text-muted-foreground' />
 								<h3 className='font-medium'>
-									{t('info.title') || 'Информация'}
+									Информация
 								</h3>
 							</div>
 							<div className='space-y-2 text-sm text-muted-foreground'>
 								<p>
-									{t('info.disclaimer') ||
-										'Данный калькулятор использует фиксированные курсы валют для демонстрации.'}
+									Данный калькулятор использует фиксированные курсы валют для демонстрации.
 								</p>
 								<p>
-									{t('info.sources') ||
-										'Для получения актуальных курсов используйте официальные источники.'}
+									Для получения актуальных курсов используйте официальные источники.
 								</p>
 							</div>
 						</CardContent>
