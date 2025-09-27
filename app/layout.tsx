@@ -3,9 +3,9 @@ import '@/lib/utils/suppress-warnings'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Footer } from '@/components/layout'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
-import { routing } from '@/i18n/routing'
+// import { NextIntlClientProvider } from 'next-intl'
+// import { getMessages } from 'next-intl/server'
+// import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
 import { ReactNode } from 'react'
 import YandexMetrika from '@/components/analytics/YandexMetrika'
@@ -25,29 +25,17 @@ interface Props {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-	const locale = 'en' // Default locale for flattened structure
+	const locale = 'ru' // Only Russian locale now
 
-	const metadata = {
-		en: {
-			title: {
-				default: 'PixelTool - Free Developer Tools',
-				template: '%s | PixelTool'
-			},
-			description:
-				'Professional web developer tools: CSS generators, formatters, validators. Free & works offline.'
+	// Only Russian metadata
+	const currentMetadata = {
+		title: {
+			default: 'PixelTool - Инструменты Разработчика',
+			template: '%s | PixelTool'
 		},
-		ru: {
-			title: {
-				default: 'PixelTool - Инструменты Разработчика',
-				template: '%s | PixelTool'
-			},
-			description:
-				'Профессиональные инструменты для веб-разработчиков: CSS генераторы, форматировщики. Бесплатно.'
-		}
+		description:
+			'Профессиональные инструменты для веб-разработчиков: CSS генераторы, форматировщики. Бесплатно.'
 	}
-
-	const currentMetadata =
-		metadata[locale as keyof typeof metadata] || metadata.en
 	// Жестко задаем URL для Open Graph, так как env переменные могут не работать корректно
 	const siteUrl = 'https://pixeltool.pro'
 
@@ -82,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
 		category: 'technology',
 		openGraph: {
 			type: 'website',
-			locale: 'en_US',
+			locale: 'ru_RU',
 			url: siteUrl,
 			title: ogTitle,
 			description: ogDescription,
@@ -187,7 +175,7 @@ export async function generateMetadata(): Promise<Metadata> {
 			}
 		],
 		alternates: {
-			canonical: `${siteUrl}/${locale}`,
+			canonical: siteUrl,
 			languages: {
 				en: `${siteUrl}/en`,
 				ru: `${siteUrl}/ru`,
@@ -229,8 +217,7 @@ export const viewport = {
 }
 
 export default async function RootLayout({ children }: Readonly<Props>) {
-	const locale = 'en' // Default locale for flattened structure
-	const messages = await getMessages()
+	const locale = 'ru' // Only Russian locale now
 
 	if (!dev) console.log = () => undefined
 
@@ -257,7 +244,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 				strategy='beforeInteractive'
 			/>
 
-			<NextIntlClientProvider messages={messages}>
+			{/* <NextIntlClientProvider messages={messages}> */}
 				<body
 					className={cn(
 						'min-h-screen bg-background font-sans antialiased',
@@ -276,7 +263,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						<CookieConsent />
 					</ThemeProvider>
 				</body>
-			</NextIntlClientProvider>
+			{/* </NextIntlClientProvider> */}
 		</html>
 	)
 }

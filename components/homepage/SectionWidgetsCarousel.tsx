@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useLocale } from 'next-intl' // Removed useTranslations
+// import { useLocale } from 'next-intl' // Removed useTranslations
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react'
@@ -12,7 +12,8 @@ import { ToolCard } from '@/components/tools/ToolCard'
 export function SectionWidgetsCarousel() {
 	// const t = useTranslations('HomePage') // Removed translations
 	// const tWidgets = useTranslations('widgets') // Removed translations
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	const [activeIndex, setActiveIndex] = useState(0)
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 	const [itemsPerView, setItemsPerView] = useState(3)
@@ -252,7 +253,7 @@ export function SectionWidgetsCarousel() {
 				{/* CTA Button */}
 				<div className='text-center mt-8 sm:mt-12'>
 					<Link
-						href={`/${locale}/tools`}
+						href='/tools'
 						className='inline-flex items-center justify-center whitespace-nowrap rounded-xl font-semibold focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transition-all duration-200 ease-out border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent h-10 px-5 py-2.5 gap-2 text-sm sm:text-base'
 					>
 						Все инструменты

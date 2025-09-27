@@ -14,8 +14,8 @@ export function generateWidgetMetadata(
 		return {}
 	}
 
-	const url = `${BASE_URL}/${locale}/tools/${widgetKey}`
-	const canonicalUrl = `${BASE_URL}/en/tools/${widgetKey}`
+	const url = `${BASE_URL}/tools/${widgetKey}`
+	const canonicalUrl = `${BASE_URL}/tools/${widgetKey}`
 
 	// Get widget emoji icon
 	const icon = getWidgetEmoji(widgetKey)

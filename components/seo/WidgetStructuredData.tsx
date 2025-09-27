@@ -20,7 +20,7 @@ export function WidgetStructuredData({
 	description
 }: WidgetStructuredDataProps) {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
-	const url = `${baseUrl}/${locale}/tools/${widget.path}`
+	const url = `${baseUrl}/tools/${widget.path}`
 
 	// SoftwareApplication schema for tools
 	const softwareApplicationSchema = {
@@ -80,7 +80,7 @@ export function WidgetStructuredData({
 					'@type': 'ListItem',
 					position: 2,
 					name: 'Tools',
-					item: `${baseUrl}/${locale}/tools`
+					item: `${baseUrl}/tools`
 				},
 				{
 					'@type': 'ListItem',

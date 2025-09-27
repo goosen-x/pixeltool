@@ -342,7 +342,7 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 									{projects.map(project => (
 										<div key={project.id} className='relative'>
 											<Link
-												href={`/${locale}/tools/${project.path}`}
+												href={`/tools/${project.path}`}
 												className='block group'
 											>
 												<Card className='transition-all duration-300 hover:shadow-xl border-border/50 bg-background/60 backdrop-blur-sm relative group overflow-hidden'>

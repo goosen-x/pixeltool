@@ -218,7 +218,7 @@ export function GlobalWidgetSearch({
 						system: 'Система'
 					}[widget.category] || widget.category,
 				isFavorite: favorites.includes(widget.id),
-				path: `/${locale}/tools/${widget.path}`
+				path: `/tools/${widget.path}`
 			}
 		})
 	}, [favorites, locale])

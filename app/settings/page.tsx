@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
+// import { useRouter, usePathname } from 'next/navigation'
+// import { useLocale, useTranslations } from 'next-intl'
 import {
 	Settings,
 	SunMoon,
@@ -14,10 +14,7 @@ import {
 	Circle,
 	Square,
 	Ban,
-	Languages,
-	Check,
-	Palette,
-	Globe
+	Check
 } from 'lucide-react'
 import useThemeWithTransition, {
 	TransitionType
@@ -30,7 +27,7 @@ import {
 	CardTitle,
 	CardDescription
 } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Theme settings types and data
 const themes = [
@@ -92,39 +89,13 @@ const transitions: {
 	}
 ]
 
-// Language settings types and data
-interface Language {
-	code: string
-	name: string
-	nativeName: string
-	flag: string
-	description: string
-	rtl?: boolean
-	inDevelopment?: boolean
-}
-
-const languages: Language[] = [
-	{
-		code: 'en',
-		name: 'English',
-		nativeName: 'English',
-		flag: '🇺🇸',
-		description: 'United States'
-	},
-	{
-		code: 'ru',
-		name: 'Russian',
-		nativeName: 'Русский',
-		flag: '🇷🇺',
-		description: 'Россия'
-	}
-]
+// Language settings removed - only Russian is supported now
 
 export default function SettingsPage() {
-	const t = useTranslations('Settings')
-	const router = useRouter()
-	const pathname = usePathname()
-	const locale = useLocale()
+	// const t = useTranslations('Settings')
+	// const router = useRouter()
+	// const pathname = usePathname()
+	// const locale = useLocale()
 	const { theme, setTheme, transitionType, setTransitionType } =
 		useThemeWithTransition()
 	const [supportsViewTransitions, setSupportsViewTransitions] = useState(true)
@@ -137,10 +108,11 @@ export default function SettingsPage() {
 		)
 	}, [])
 
-	const handleLanguageChange = (newLocale: string) => {
-		const newPathname = pathname.replace(`/${locale}/`, `/${newLocale}/`)
-		router.push(newPathname)
-	}
+	// const handleLanguageChange = (newLocale: string) => {
+	//	// For now, keep the same pathname since locale is no longer in URL
+	//	const newPathname = pathname
+	//	router.push(newPathname)
+	// }
 
 	const handleTransitionTypeChange = (newType: TransitionType) => {
 		setTransitionType(newType)
@@ -173,7 +145,7 @@ export default function SettingsPage() {
 			<div className='container mx-auto py-8 px-4 max-w-4xl'>
 				<div className='flex items-center gap-3 mb-8'>
 					<Settings className='w-8 h-8' />
-					<h1 className='text-3xl font-bold'>{t('title')}</h1>
+					<h1 className='text-3xl font-bold'>Настройки</h1>
 				</div>
 				<div className='animate-pulse space-y-8'>
 					<div className='h-96 bg-muted rounded-lg'></div>
@@ -186,31 +158,20 @@ export default function SettingsPage() {
 		<div className='container mx-auto py-8 px-4 max-w-4xl'>
 			<div className='flex items-center gap-3 mb-2'>
 				<Settings className='w-8 h-8' />
-				<h1 className='text-3xl font-bold'>{t('title')}</h1>
+				<h1 className='text-3xl font-bold'>Настройки</h1>
 			</div>
-			<p className='text-muted-foreground mb-8'>{t('description')}</p>
+			<p className='text-muted-foreground mb-8'>Настройте внешний вид и поведение приложения под ваши предпочтения.</p>
 
-			<Tabs defaultValue='appearance' className='space-y-8'>
-				<TabsList className='grid w-full grid-cols-2'>
-					<TabsTrigger value='appearance' className='flex items-center gap-2'>
-						<Palette className='w-4 h-4' />
-						{t('tabs.appearance')}
-					</TabsTrigger>
-					<TabsTrigger value='language' className='flex items-center gap-2'>
-						<Globe className='w-4 h-4' />
-						{t('tabs.language')}
-					</TabsTrigger>
-				</TabsList>
-
-				{/* Appearance Tab */}
-				<TabsContent value='appearance' className='space-y-8'>
+			<div className='space-y-8'>
+				{/* Appearance Section */}
+				<div className='space-y-8'>
 					<Card>
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
 								<SunMoon className='w-5 h-5' />
-								{t('theme.title')}
+								Тема
 							</CardTitle>
-							<CardDescription>{t('theme.description')}</CardDescription>
+							<CardDescription>Выберите предпочитаемую цветовую схему для интерфейса.</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
@@ -240,12 +201,10 @@ export default function SettingsPage() {
 												</div>
 												<div>
 													<h3 className='font-semibold'>
-														{t(`theme.options.${themeOption.value}.label`)}
+														{themeOption.value === 'light' ? 'Светлая' : themeOption.value === 'dark' ? 'Тёмная' : 'Системная'}
 													</h3>
 													<p className='text-sm text-muted-foreground mt-1'>
-														{t(
-															`theme.options.${themeOption.value}.description`
-														)}
+														{themeOption.value === 'light' ? 'Яркая тема для дневного использования' : themeOption.value === 'dark' ? 'Тёмная тема для ночного использования' : 'Следовать настройкам системы'}
 													</p>
 												</div>
 												{isActive && <Check className='w-4 h-4 text-accent' />}
@@ -261,9 +220,9 @@ export default function SettingsPage() {
 						<CardHeader>
 							<CardTitle className='flex items-center gap-2'>
 								<Sparkles className='w-5 h-5' />
-								{t('transition.title')}
+								Переходы
 							</CardTitle>
-							<CardDescription>{t('transition.description')}</CardDescription>
+							<CardDescription>Выберите тип анимации при смене темы.</CardDescription>
 						</CardHeader>
 						<CardContent className='space-y-4'>
 							<div className='grid grid-cols-2 md:grid-cols-5 gap-3'>
@@ -289,7 +248,7 @@ export default function SettingsPage() {
 												className={cn('w-5 h-5', isActive && 'text-accent')}
 											/>
 											<div className='text-xs font-medium'>
-												{t(`transition.options.${transition.value}`)}
+												{transition.value === 'fade' ? 'Затухание' : transition.value === 'scale' ? 'Масштаб' : transition.value === 'slide' ? 'Скольжение' : transition.value === 'circle' ? 'Круг' : 'Без анимации'}
 											</div>
 										</button>
 									)
@@ -297,115 +256,16 @@ export default function SettingsPage() {
 							</div>
 							{!supportsViewTransitions && (
 								<div className='text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg'>
-									{t('transition.notSupported')}
+									Ваш браузер не поддерживает плавные переходы. Анимации могут работать не так, как ожидается.
 								</div>
 							)}
 						</CardContent>
 					</Card>
-				</TabsContent>
-
-				{/* Language Tab */}
-				<TabsContent value='language' className='space-y-8'>
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center gap-2'>
-								<Languages className='w-5 h-5' />
-								{t('language.title')}
-							</CardTitle>
-							<CardDescription>{t('language.description')}</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-								{languages.map(language => {
-									const isActive = locale === language.code
-
-									return (
-										<div
-											key={language.code}
-											className={cn(
-												'rounded-lg border-2 p-6 transition-all',
-												language.inDevelopment
-													? 'opacity-50 cursor-not-allowed border-border'
-													: 'cursor-pointer hover:shadow-md',
-												isActive && 'border-accent bg-accent/5'
-											)}
-											onClick={() =>
-												!language.inDevelopment &&
-												handleLanguageChange(language.code)
-											}
-										>
-											<div className='flex flex-col items-center text-center space-y-3'>
-												<div className='text-4xl'>{language.flag}</div>
-												<div>
-													<h3 className='font-semibold'>{language.name}</h3>
-													<p className='text-sm text-muted-foreground mt-1'>
-														{language.nativeName}
-													</p>
-												</div>
-												{language.inDevelopment ? (
-													<div className='text-xs text-muted-foreground'>
-														{t('language.inDevelopment')}
-													</div>
-												) : isActive ? (
-													<Check className='w-4 h-4 text-accent' />
-												) : null}
-											</div>
-										</div>
-									)
-								})}
-							</div>
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardHeader>
-							<CardTitle>{t('language.features.title')}</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className='space-y-3'>
-								<div className='flex items-start space-x-3'>
-									<Check className='w-5 h-5 text-green-500 mt-0.5' />
-									<div>
-										<div className='font-medium'>
-											{t('language.features.autoTranslation.title')}
-										</div>
-										<div className='text-sm text-muted-foreground'>
-											{t('language.features.autoTranslation.description')}
-										</div>
-									</div>
-								</div>
-
-								<div className='flex items-start space-x-3'>
-									<Check className='w-5 h-5 text-green-500 mt-0.5' />
-									<div>
-										<div className='font-medium'>
-											{t('language.features.rtlSupport.title')}
-										</div>
-										<div className='text-sm text-muted-foreground'>
-											{t('language.features.rtlSupport.description')}
-										</div>
-									</div>
-								</div>
-
-								<div className='flex items-start space-x-3'>
-									<Check className='w-5 h-5 text-green-500 mt-0.5' />
-									<div>
-										<div className='font-medium'>
-											{t('language.features.persistent.title')}
-										</div>
-										<div className='text-sm text-muted-foreground'>
-											{t('language.features.persistent.description')}
-										</div>
-									</div>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-			</Tabs>
+				</div>
+			</div>
 
 			<div className='mt-8 text-sm text-muted-foreground text-center'>
-				{t('footer')}
+				Настройки сохраняются автоматически в локальном хранилище браузера.
 			</div>
 		</div>
 	)

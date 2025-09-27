@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 // import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { Home, ChevronRight, Settings, ChevronDown } from 'lucide-react'
@@ -19,7 +19,8 @@ interface ProjectsSidebarProps {
 
 export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	const pathname = usePathname()
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	// const t = useTranslations('projectsPage')
 	// const widgetT = useTranslations('widgets')
 	// const categoriesT = useTranslations('widgets.categories')
@@ -79,11 +80,11 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 				<nav className='flex-1 overflow-y-auto p-3 lg:p-4 projects-scroll'>
 					<div className='space-y-1'>
 						<Link
-							href={`/${locale}/tools`}
+							href='/tools'
 							onClick={onLinkClick}
 							className={cn(
 								'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-primary/10 hover:text-primary',
-								pathname === `/${locale}/tools` && 'bg-primary text-white'
+								pathname === '/tools' && 'bg-primary text-white'
 							)}
 						>
 							<Home className='w-4 h-4' />
@@ -145,7 +146,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 											>
 												{categoryWidgets.map((widget, index) => {
 													const isActive =
-														pathname === `/${locale}/tools/${widget.path}`
+														pathname === `/tools/${widget.path}`
 													const Icon = widget.icon
 
 													return (
@@ -165,7 +166,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 															}}
 														>
 															<Link
-																href={`/${locale}/tools/${widget.path}`}
+																href={`/tools/${widget.path}`}
 																onClick={onLinkClick}
 																className={cn(
 																	'relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:translate-x-1 isolate',
@@ -222,16 +223,16 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 				{/* Settings section at the bottom */}
 				<div className='border-t p-4'>
 					<Link
-						href={`/${locale}/settings`}
+						href='/settings'
 						onClick={onLinkClick}
 						className={cn(
 							'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-primary/10 hover:text-primary',
-							pathname === `/${locale}/settings` && 'bg-primary text-white'
+							pathname === '/settings' && 'bg-primary text-white'
 						)}
 					>
 						<Settings className='w-4 h-4' />
 						<span className='flex-1 text-left truncate'>Настройки</span>
-						{pathname === `/${locale}/settings` && (
+						{pathname === '/settings' && (
 							<ChevronRight className='w-4 h-4' />
 						)}
 					</Link>
