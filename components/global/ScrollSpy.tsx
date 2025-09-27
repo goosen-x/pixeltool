@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import {
 	Home,
 	Layers,
@@ -18,18 +18,18 @@ interface ScrollSpyProps {
 }
 
 export const ScrollSpy = ({ className }: ScrollSpyProps) => {
-	const t = useTranslations('Header.nav')
+	// const t = useTranslations('Header.nav')
 	const [activeSection, setActiveSection] = useState('main')
 	const [isVisible, setIsVisible] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)
 
 	const sections = [
-		{ id: 'main', label: t('main'), icon: Home },
-		{ id: 'techstack', label: t('techstack'), icon: Layers },
-		{ id: 'projects', label: t('projects'), icon: FolderOpen },
-		{ id: 'experience', label: t('experience'), icon: Briefcase },
-		{ id: 'blog', label: t('blog'), icon: BookOpen },
-		{ id: 'contact', label: t('contact'), icon: Mail }
+		{ id: 'main', label: 'Главная', icon: Home },
+		{ id: 'techstack', label: 'Технологии', icon: Layers },
+		{ id: 'projects', label: 'Проекты', icon: FolderOpen },
+		{ id: 'experience', label: 'Опыт', icon: Briefcase },
+		{ id: 'blog', label: 'Блог', icon: BookOpen },
+		{ id: 'contact', label: 'Контакты', icon: Mail }
 	]
 
 	useEffect(() => {
@@ -73,7 +73,7 @@ export const ScrollSpy = ({ className }: ScrollSpyProps) => {
 			window.removeEventListener('scroll', handleScroll)
 			observer.disconnect()
 		}
-	}, [sections])
+	}, [])
 
 	const handleClick = (sectionId: string) => {
 		const element = document.getElementById(sectionId)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { Mail, MapPin, Clock, Phone } from 'lucide-react'
 import { FaTelegram, FaGithub, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
@@ -10,29 +10,29 @@ type Props = {
 }
 
 export default function ContactInfo({ locale }: Props) {
-	const t = useTranslations('contact.info')
+	// const t = useTranslations('contact.info')
 
 	const contactItems = [
 		{
 			icon: Mail,
-			label: t('email'),
+			label: 'Email',
 			value: 'dmitryborisenko.msk@gmail.com',
 			href: 'mailto:dmitryborisenko.msk@gmail.com'
 		},
 		{
 			icon: Phone,
-			label: t('telegram'),
+			label: 'Telegram',
 			value: '@borisenko_dmitry',
 			href: 'https://t.me/borisenko_dmitry'
 		},
 		{
 			icon: MapPin,
-			label: t('location'),
-			value: t('locationValue')
+			label: 'Местоположение',
+			value: 'Москва, Россия'
 		},
 		{
 			icon: Clock,
-			label: t('timezone'),
+			label: 'Часовой пояс',
 			value: 'GMT+3 (Moscow)'
 		}
 	]
@@ -102,7 +102,7 @@ export default function ContactInfo({ locale }: Props) {
 
 			{/* Social Media */}
 			<div>
-				<h3 className='font-semibold text-foreground mb-4'>{t('social')}</h3>
+				<h3 className='font-semibold text-foreground mb-4'>Социальные сети</h3>
 				<div className='flex gap-4'>
 					{socialLinks.map(social => (
 						<a

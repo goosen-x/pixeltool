@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import {
 	Dialog,
 	DialogContent,
@@ -50,40 +50,175 @@ export function GlobalWidgetSearch({
 	const open = controlledOpen !== undefined ? controlledOpen : internalOpen
 	const setOpen = onOpenChange || setInternalOpen
 
-	const t = useTranslations('widgets')
-	const searchT = useTranslations('widgets.search')
+	// const t = useTranslations('widgets')
+	// const searchT = useTranslations('widgets.search')
 	const { history, addToHistory } = useSearchHistory()
 	const { favorites } = useFavorites()
 
 	// Convert widgets to searchable items
 	const searchableWidgets = useMemo(() => {
 		return widgets.map(widget => {
-			const title = safeTranslate(
-				t,
-				`${widget.translationKey}.title`,
-				widget.translationKey
-			)
-			const description = safeTranslate(
-				t,
-				`${widget.translationKey}.description`,
-				`Widget: ${widget.translationKey}`
-			)
+			// Hardcoded Russian titles and descriptions
+			const titles: Record<string, string> = {
+				'qrGenerator': 'QR-код генератор',
+				'passwordGenerator': 'Генератор паролей',
+				'colorPalette': 'Палитра цветов',
+				'textCounter': 'Счетчик символов',
+				'urlShortener': 'Сокращение ссылок',
+				'tipCalculator': 'Калькулятор чаевых',
+				'worldTime': 'Мировое время',
+				'bmiCalculator': 'Калькулятор ИМТ',
+				'unitConverter': 'Конвертер единиц',
+				'hashGenerator': 'Генератор хэшей',
+				'base64Encoder': 'Base64 кодировщик',
+				'jsonFormatter': 'JSON форматтер',
+				'regexTester': 'Тестер регулярных выражений',
+				'imageCompressor': 'Сжатие изображений',
+				'markdownPreview': 'Предпросмотр Markdown',
+				'caseConverter': 'Конвертер регистра',
+				'uuidGenerator': 'Генератор UUID',
+				'randomNumber': 'Случайные числа',
+				'dice': 'Игральные кости',
+				'coinFlip': 'Подбрасывание монеты',
+				'teamRandomizer': 'Рандомизатор команд',
+				'gridGenerator': 'Генератор сеток',
+				'gradientGenerator': 'Генератор градиентов',
+				'paletteExtractor': 'Извлечение палитры',
+				'shadcnTheme': 'Генератор тем Shadcn',
+				'loremIpsum': 'Lorem Ipsum',
+				'nameGenerator': 'Генератор имён',
+				'htmlMinifier': 'Минификатор HTML',
+				'cssMinifier': 'Минификатор CSS',
+				'jsMinifier': 'Минификатор JavaScript',
+				'csvParser': 'Парсер CSV',
+				'sqlFormatter': 'Форматтер SQL',
+				'imageConverter': 'Конвертер изображений',
+				'pdfTools': 'Инструменты PDF',
+				'textDiff': 'Сравнение текста',
+				'characterMap': 'Карта символов',
+				'colorBlindnessSimulator': 'Симулятор дальтонизма',
+				'mimeTypeDetector': 'Детектор MIME-типов',
+				'asciiArt': 'ASCII арт',
+				'barcodeGenerator': 'Генератор штрих-кодов',
+				'httpStatusChecker': 'Проверка HTTP статуса',
+				'dnslookup': 'DNS запросы',
+				'ipInfo': 'Информация об IP',
+				'whoisLookup': 'WHOIS запросы',
+				'sslChecker': 'Проверка SSL',
+				'metaTagsExtractor': 'Извлечение мета-тегов',
+				'robotsTxtGenerator': 'Генератор robots.txt',
+				'sitemapGenerator': 'Генератор sitemap',
+				'openGraphPreview': 'Предпросмотр Open Graph',
+				'twitterCardPreview': 'Предпросмотр Twitter Card',
+				'faviconGenerator': 'Генератор фавиконок',
+				'browserInfo': 'Информация о браузере',
+				'screenInfo': 'Информация об экране',
+				'deviceInfo': 'Информация об устройстве',
+				'networkInfo': 'Информация о сети',
+				'batteryInfo': 'Информация о батарее',
+				'geolocationInfo': 'Информация о геолокации',
+				'timeZoneInfo': 'Информация о часовых поясах',
+				'languageInfo': 'Информация о языках',
+				'storageInfo': 'Информация о хранилище',
+				'performanceInfo': 'Информация о производительности'
+			}
+			
+			const descriptions: Record<string, string> = {
+				'qrGenerator': 'Создавайте QR-коды для текста, ссылок и данных',
+				'passwordGenerator': 'Генерируйте безопасные пароли с настройками',
+				'colorPalette': 'Создавайте и исследуйте цветовые палитры',
+				'textCounter': 'Подсчитывайте символы, слова и строки в тексте',
+				'urlShortener': 'Сокращайте длинные URL для удобства',
+				'tipCalculator': 'Рассчитывайте чаевые и разделите счет',
+				'worldTime': 'Просматривайте время в разных часовых поясах',
+				'bmiCalculator': 'Рассчитайте индекс массы тела',
+				'unitConverter': 'Конвертируйте между различными единицами измерения',
+				'hashGenerator': 'Генерируйте хэши MD5, SHA1, SHA256',
+				'base64Encoder': 'Кодируйте и декодируйте Base64',
+				'jsonFormatter': 'Форматируйте и валидируйте JSON',
+				'regexTester': 'Тестируйте регулярные выражения',
+				'imageCompressor': 'Сжимайте изображения без потери качества',
+				'markdownPreview': 'Предпросмотр Markdown в реальном времени',
+				'caseConverter': 'Конвертируйте текст в разные регистры',
+				'uuidGenerator': 'Генерируйте уникальные идентификаторы',
+				'randomNumber': 'Генерируйте случайные числа',
+				'dice': 'Виртуальные игральные кости',
+				'coinFlip': 'Виртуальное подбрасывание монеты',
+				'teamRandomizer': 'Случайное распределение по командам',
+				'gridGenerator': 'Создавайте CSS Grid макеты',
+				'gradientGenerator': 'Создавайте CSS градиенты',
+				'paletteExtractor': 'Извлекайте цвета из изображений',
+				'shadcnTheme': 'Генератор тем для Shadcn UI',
+				'loremIpsum': 'Генератор текста-заполнителя',
+				'nameGenerator': 'Генератор случайных имён',
+				'htmlMinifier': 'Минифицируйте HTML код',
+				'cssMinifier': 'Минифицируйте CSS код',
+				'jsMinifier': 'Минифицируйте JavaScript код',
+				'csvParser': 'Парсинг и анализ CSV файлов',
+				'sqlFormatter': 'Форматирование SQL запросов',
+				'imageConverter': 'Конвертация между форматами изображений',
+				'pdfTools': 'Инструменты для работы с PDF',
+				'textDiff': 'Сравнение и анализ различий в тексте',
+				'characterMap': 'Карта символов и эмодзи',
+				'colorBlindnessSimulator': 'Симуляция восприятия цветов',
+				'mimeTypeDetector': 'Определение MIME-типов файлов',
+				'asciiArt': 'Создание ASCII арта',
+				'barcodeGenerator': 'Генерация штрих-кодов',
+				'httpStatusChecker': 'Проверка HTTP статус кодов',
+				'dnslookup': 'DNS запросы и анализ',
+				'ipInfo': 'Подробная информация об IP адресах',
+				'whoisLookup': 'WHOIS информация о доменах',
+				'sslChecker': 'Проверка SSL сертификатов',
+				'metaTagsExtractor': 'Извлечение мета-тегов из веб-страниц',
+				'robotsTxtGenerator': 'Генерация файлов robots.txt',
+				'sitemapGenerator': 'Генерация XML карт сайта',
+				'openGraphPreview': 'Предпросмотр Open Graph мета-тегов',
+				'twitterCardPreview': 'Предпросмотр Twitter Card',
+				'faviconGenerator': 'Генерация фавиконок',
+				'browserInfo': 'Информация о браузере пользователя',
+				'screenInfo': 'Информация о разрешении экрана',
+				'deviceInfo': 'Информация об устройстве',
+				'networkInfo': 'Информация о сетевом подключении',
+				'batteryInfo': 'Информация о состоянии батареи',
+				'geolocationInfo': 'Информация о геолокации',
+				'timeZoneInfo': 'Информация о часовых поясах',
+				'languageInfo': 'Информация о языковых настройках',
+				'storageInfo': 'Информация о хранилище браузера',
+				'performanceInfo': 'Информация о производительности'
+			}
+			
+			const title = titles[widget.translationKey] || widget.translationKey
+			const description = descriptions[widget.translationKey] || `Виджет: ${widget.translationKey}`
 
 			return {
 				widget,
 				title,
 				description,
 				category: widget.category,
-				categoryName: safeTranslate(
-					t,
-					`categories.${widget.category}`,
-					widget.category
-				),
+				categoryName: {
+					'webdev': 'Веб-разработка',
+					'business': 'Бизнес и финансы',
+					'content': 'Создание контента',
+					'lifestyle': 'Стиль жизни',
+					'multimedia': 'Мультимедиа',
+					'analytics': 'Аналитика',
+					'security': 'Безопасность',
+					'generators': 'Генераторы',
+					'converters': 'Конвертеры',
+					'formatters': 'Форматтеры',
+					'utilities': 'Утилиты',
+					'developers': 'Разработчикам',
+					'design': 'Дизайн',
+					'calculators': 'Калькуляторы',
+					'random': 'Случайное',
+					'web': 'Веб',
+					'system': 'Система'
+				}[widget.category] || widget.category,
 				isFavorite: favorites.includes(widget.id),
 				path: `/${locale}/tools/${widget.path}`
 			}
 		})
-	}, [t, favorites, locale])
+	}, [favorites, locale])
 
 	// Filter widgets based on search
 	const filteredWidgets = useMemo(() => {
@@ -202,14 +337,14 @@ export function GlobalWidgetSearch({
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent className='sm:max-w-2xl p-0 overflow-hidden fixed inset-0 sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] w-full h-full sm:h-auto sm:max-h-[85vh] m-0 rounded-none sm:rounded-lg'>
 					<DialogHeader className='sr-only'>
-						<DialogTitle>{searchT('title')}</DialogTitle>
+						<DialogTitle>Поиск инструментов</DialogTitle>
 					</DialogHeader>
 
 					{/* Search input */}
 					<div className='flex items-center border-b px-4 pr-4 sm:pr-12 h-14'>
 						<Search className='w-5 h-5 text-muted-foreground shrink-0' />
 						<Input
-							placeholder={searchT('placeholder')}
+							placeholder='Поиск инструментов...'
 							value={searchQuery}
 							onChange={e => setSearchQuery(e.target.value)}
 							className='flex-1 border-0 focus-visible:ring-0 text-base px-3 h-full'
@@ -225,7 +360,7 @@ export function GlobalWidgetSearch({
 						{filteredWidgets.length === 0 ? (
 							<div className='p-8 text-center text-muted-foreground'>
 								<Search className='w-12 h-12 mx-auto mb-4 opacity-50' />
-								<p className='text-sm'>{searchT('noResults')}</p>
+								<p className='text-sm'>Ничего не найдено</p>
 							</div>
 						) : (
 							<div className='p-2'>
@@ -233,8 +368,8 @@ export function GlobalWidgetSearch({
 								{!searchQuery.trim() && (
 									<div className='px-3 py-2 text-xs font-medium text-muted-foreground'>
 										{favorites.length > 0
-											? searchT('suggestedAndFavorites')
-											: searchT('suggested')}
+											? 'Рекомендуемые и избранные'
+											: 'Рекомендуемые'}
 									</div>
 								)}
 
@@ -304,24 +439,24 @@ export function GlobalWidgetSearch({
 								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
 									↓
 								</kbd>
-								{searchT('navigate')}
+								навигация
 							</span>
 							<span className='flex items-center gap-1'>
 								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
 									↵
 								</kbd>
-								{searchT('select')}
+								выбрать
 							</span>
 							<span className='flex items-center gap-1'>
 								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
 									esc
 								</kbd>
-								{searchT('close')}
+								закрыть
 							</span>
 						</div>
 						<span className='flex items-center gap-1 mx-auto sm:mx-0'>
 							<Sparkles className='w-3 h-3' />
-							{widgets.length} {t('tools')}
+							{widgets.length} инструментов
 						</span>
 					</div>
 				</DialogContent>

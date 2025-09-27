@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
+import { useLocale } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { Home, ChevronRight, Settings, ChevronDown } from 'lucide-react'
 import {
@@ -19,9 +20,9 @@ interface ProjectsSidebarProps {
 export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	const pathname = usePathname()
 	const locale = useLocale()
-	const t = useTranslations('projectsPage')
-	const widgetT = useTranslations('widgets')
-	const categoriesT = useTranslations('widgets.categories')
+	// const t = useTranslations('projectsPage')
+	// const widgetT = useTranslations('widgets')
+	// const categoriesT = useTranslations('widgets.categories')
 
 	// State for collapsed categories with localStorage persistence
 	const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
@@ -68,10 +69,10 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 			<div className='flex h-full flex-col'>
 				<div className='border-b bg-background/50 px-4 lg:px-6 py-4 pt-8 lg:pt-4'>
 					<h2 className='text-base lg:text-lg font-heading font-semibold'>
-						{t('title')}
+						Инструменты
 					</h2>
 					<p className='text-xs lg:text-sm text-muted-foreground mt-1 break-words'>
-						{t('description')}
+						Полезные сервисы для работы с текстом, данными и мультимедиа
 					</p>
 				</div>
 
@@ -86,7 +87,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 							)}
 						>
 							<Home className='w-4 h-4' />
-							<span>{t('overview')}</span>
+							<span>Обзор</span>
 						</Link>
 
 						<div className='my-4 space-y-2'>
@@ -115,7 +116,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 												className='w-full flex items-center justify-between mb-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground hover:bg-primary/5 transition-all duration-200 rounded-md group relative z-10'
 											>
 												<span className='group-hover:translate-x-1 transition-transform duration-200'>
-													{categoriesT(categoryKey)}
+													{categoryKey === 'text' ? 'Текст' : categoryKey === 'generators' ? 'Генераторы' : categoryKey === 'converters' ? 'Конвертеры' : categoryKey === 'calculators' ? 'Калькуляторы' : categoryKey === 'utilities' ? 'Утилиты' : categoryKey}
 												</span>
 												<ChevronDown
 													className={cn(
@@ -163,7 +164,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 															>
 																<Icon className='w-4 h-4' />
 																<span className='flex-1 text-left truncate'>
-																	{widgetT(`${widget.translationKey}.title`)}
+																	{widget.translationKey === 'qrGenerator' ? 'QR-Код Генератор' : widget.translationKey === 'tipCalculator' ? 'Калькулятор чаевых' : widget.translationKey === 'worldTime' ? 'Мировое время' : widget.translationKey === 'passwordGenerator' ? 'Генератор паролей' : widget.translationKey === 'textCaseConverter' ? 'Конвертер регистра' : widget.translationKey === 'colorPalette' ? 'Цветовая палитра' : widget.translationKey === 'randomTeam' ? 'Случайная команда' : widget.translationKey === 'dice' ? 'Кости' : widget.translationKey === 'grid' ? 'Генератор сетки' : widget.translationKey === 'loremIpsum' ? 'Lorem Ipsum' : widget.title}
 																</span>
 																{isActive && (
 																	<ChevronRight className='w-4 h-4' />
@@ -193,7 +194,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 					>
 						<Settings className='w-4 h-4' />
 						<span className='flex-1 text-left truncate'>
-							{t('categories.settings.title')}
+							Настройки
 						</span>
 						{pathname === `/${locale}/settings` && (
 							<ChevronRight className='w-4 h-4' />

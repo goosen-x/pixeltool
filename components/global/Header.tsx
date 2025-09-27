@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useLocale, useTranslations } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import ThemeToggle from '@/components/global/ThemeToggle'
 import { LanguageSelect } from '@/components/global/LanguageSelect'
@@ -34,7 +34,6 @@ import {
 
 const Header = () => {
 	const locale = useLocale()
-	const t = useTranslations('Header')
 	const pathname = usePathname()
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 	const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -134,7 +133,7 @@ const Header = () => {
 								)}
 							>
 								<Home className='w-4 h-4' />
-								<span>{t('nav.main')}</span>
+								<span>Главная</span>
 							</Link>
 
 							<Link
@@ -147,7 +146,7 @@ const Header = () => {
 								)}
 							>
 								<Wrench className='w-4 h-4' />
-								<span>{t('nav.tools')}</span>
+								<span>Инструменты</span>
 							</Link>
 							<Link
 								href={`/${locale}/blog`}
@@ -159,7 +158,7 @@ const Header = () => {
 								)}
 							>
 								<BookOpen className='w-4 h-4' />
-								<span>{t('nav.blog')}</span>
+								<span>Блог</span>
 							</Link>
 							<Link
 								href={`/${locale}/contact`}
@@ -171,7 +170,7 @@ const Header = () => {
 								)}
 							>
 								<Mail className='w-4 h-4' />
-								<span>{t('nav.contact')}</span>
+								<span>Контакты</span>
 							</Link>
 						</nav>
 						<div className='hidden md:flex items-center gap-2'>
@@ -182,7 +181,7 @@ const Header = () => {
 								aria-label='Search tools'
 							>
 								<Search className='w-4 h-4 text-muted-foreground' />
-								<span className='text-muted-foreground'>{t('search')}</span>
+								<span className='text-muted-foreground'>Поиск</span>
 								<kbd className='hidden lg:inline-flex h-5 select-none items-center gap-1 rounded-lg border border-border/50 bg-muted/50 px-1.5 font-mono text-xs font-medium text-muted-foreground'>
 									<span className='text-xs'>⌘</span>K
 								</kbd>
@@ -212,7 +211,7 @@ const Header = () => {
 								<DrawerHeader className='text-left'>
 									<div className='flex items-center justify-between'>
 										<DrawerTitle className='text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-											{t('nav.menu')}
+											Меню
 										</DrawerTitle>
 										<DrawerClose asChild>
 											<Button
@@ -242,7 +241,7 @@ const Header = () => {
 											<Search className='w-5 h-5' />
 											<div className='absolute inset-0 bg-primary/20 blur-xl opacity-50' />
 										</div>
-										<span className='font-semibold'>{t('search')}</span>
+										<span className='font-semibold'>Поиск</span>
 										<kbd className='ml-auto text-xs px-2 py-1 rounded-lg border border-border/50 bg-muted/50 text-muted-foreground'>
 											⌘K
 										</kbd>
@@ -268,7 +267,7 @@ const Header = () => {
 											<Home className='w-5 h-5' />
 										</div>
 										<span className='relative z-10 font-semibold'>
-											{t('nav.main')}
+											Главная
 										</span>
 										{pathname !== `/${locale}` && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
@@ -292,7 +291,7 @@ const Header = () => {
 											<Wrench className='w-5 h-5' />
 										</div>
 										<span className='relative z-10 font-semibold'>
-											{t('nav.tools')}
+											Инструменты
 										</span>
 										{!pathname.startsWith(`/${locale}/tools`) && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
@@ -316,7 +315,7 @@ const Header = () => {
 											<BookOpen className='w-5 h-5' />
 										</div>
 										<span className='relative z-10 font-semibold'>
-											{t('nav.blog')}
+											Блог
 										</span>
 										{!pathname.startsWith(`/${locale}/blog`) && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
@@ -340,7 +339,7 @@ const Header = () => {
 											<Mail className='w-5 h-5' />
 										</div>
 										<span className='relative z-10 font-semibold'>
-											{t('nav.contact')}
+											Контакты
 										</span>
 										{pathname !== `/${locale}/contact` && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
@@ -354,7 +353,7 @@ const Header = () => {
 										<div className='flex items-center justify-between mb-3'>
 											<span className='text-sm font-medium text-muted-foreground flex items-center gap-2'>
 												<Sparkles className='w-4 h-4' />
-												{t('settings')}
+												Настройки
 											</span>
 										</div>
 										<div className='flex items-center gap-3'>

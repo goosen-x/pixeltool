@@ -1,6 +1,7 @@
 'use client'
 
-import { useTranslations, useLocale } from 'next-intl'
+// import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Code2, Share2 } from 'lucide-react'
@@ -9,14 +10,14 @@ import { toast } from 'sonner'
 
 export function ActionsAndFeedbackCard() {
 	const locale = useLocale()
-	const tSidebar = useTranslations('widgets.rightSidebar')
+	// const tSidebar = useTranslations('widgets.rightSidebar')
 
 	return (
 		<Card>
 			<CardHeader className='pb-3'>
 				<CardTitle className='text-sm flex items-center gap-2'>
 					<Code2 className='w-4 h-4' />
-					{tSidebar('quickActions.title')}
+					Быстрые действия
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-2'>
@@ -32,11 +33,11 @@ export function ActionsAndFeedbackCard() {
 					}}
 				>
 					<Share2 className='w-3 h-3 lg:w-4 lg:h-4 mr-2 flex-shrink-0' />
-					<span className='truncate'>{tSidebar('quickActions.share')}</span>
+					<span className='truncate'>Поделиться</span>
 				</Button>
 				<FeedbackModal variant='sidebar' />
 				<p className='text-xs text-muted-foreground text-center pt-2'>
-					{tSidebar('feedback.helpText')}
+					Помогите нам стать лучше
 				</p>
 			</CardContent>
 		</Card>

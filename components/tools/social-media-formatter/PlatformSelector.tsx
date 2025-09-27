@@ -180,7 +180,9 @@ export function PlatformSelector({
 						<span className='text-2xl'>
 							{platforms.find(p => p.id === selectedPlatform)?.icon}
 						</span>
-						Предварительный просмотр для {platforms.find(p => p.id === selectedPlatform)?.name || selectedPlatform}
+						Предварительный просмотр для{' '}
+						{platforms.find(p => p.id === selectedPlatform)?.name ||
+							selectedPlatform}
 					</h3>
 
 					<div className='flex justify-center'>

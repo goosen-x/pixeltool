@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+// import { getTranslations } from 'next-intl/server'
 import ContactForm from '@/components/contact/ContactForm'
 import ContactInfo from '@/components/contact/ContactInfo'
 
@@ -10,7 +10,7 @@ type Props = {
 
 export default async function ContactPage(props: Props) {
 	const params = await props.params
-	const t = await getTranslations('contact')
+	// const t = await getTranslations('contact')
 
 	return (
 		<main className='min-h-screen bg-background'>
@@ -18,10 +18,10 @@ export default async function ContactPage(props: Props) {
 				{/* Header */}
 				<div className='text-center mb-16'>
 					<h1 className='text-4xl md:text-6xl font-bold text-foreground mb-4'>
-						{t('title')}
+						Свяжитесь с нами
 					</h1>
 					<p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
-						{t('subtitle')}
+						Мы всегда рады помочь и ответить на ваши вопросы
 					</p>
 				</div>
 
@@ -31,10 +31,10 @@ export default async function ContactPage(props: Props) {
 					<div className='space-y-8'>
 						<div>
 							<h2 className='text-2xl font-bold text-foreground mb-4'>
-								{t('form.title')}
+								Отправить сообщение
 							</h2>
 							<p className='text-muted-foreground mb-6'>
-								{t('form.description')}
+								Заполните форму ниже, и мы ответим вам в течение 24 часов
 							</p>
 						</div>
 						<ContactForm />
@@ -44,10 +44,10 @@ export default async function ContactPage(props: Props) {
 					<div className='space-y-8'>
 						<div>
 							<h2 className='text-2xl font-bold text-foreground mb-4'>
-								{t('info.title')}
+								Контактная информация
 							</h2>
 							<p className='text-muted-foreground mb-6'>
-								{t('info.description')}
+								Найдите нас в социальных сетях или напишите на email
 							</p>
 						</div>
 						<ContactInfo locale={params.locale} />
