@@ -355,9 +355,7 @@ export default function CurrencyConverterPage() {
 							onValueChange={onSearchChange}
 						/>
 						<CommandList>
-							<CommandEmpty>
-								Валюта не найдена
-							</CommandEmpty>
+							<CommandEmpty>Валюта не найдена</CommandEmpty>
 
 							{favoriteCurrencies.length > 0 && (
 								<CommandGroup heading='Избранные'>
@@ -608,9 +606,7 @@ export default function CurrencyConverterPage() {
 											).toFixed(4)}{' '}
 											{toCurrency.code}
 										</p>
-										<p className='text-muted-foreground'>
-											Обменный курс
-										</p>
+										<p className='text-muted-foreground'>Обменный курс</p>
 									</div>
 								</div>
 								<div className='flex gap-2'>
@@ -655,9 +651,7 @@ export default function CurrencyConverterPage() {
 							<CardContent className='p-6'>
 								<div className='flex items-center gap-2 mb-4'>
 									<History className='h-5 w-5 text-primary' />
-									<h3 className='font-semibold'>
-										История конвертаций
-									</h3>
+									<h3 className='font-semibold'>История конвертаций</h3>
 								</div>
 								<div className='space-y-3'>
 									{history.map((entry, index) => (
@@ -724,16 +718,16 @@ export default function CurrencyConverterPage() {
 						<CardContent className='p-6'>
 							<div className='flex items-center gap-2 mb-3'>
 								<Info className='h-4 w-4 text-muted-foreground' />
-								<h3 className='font-medium'>
-									Информация
-								</h3>
+								<h3 className='font-medium'>Информация</h3>
 							</div>
 							<div className='space-y-2 text-sm text-muted-foreground'>
 								<p>
-									Данный калькулятор использует фиксированные курсы валют для демонстрации.
+									Данный калькулятор использует фиксированные курсы валют для
+									демонстрации.
 								</p>
 								<p>
-									Для получения актуальных курсов используйте официальные источники.
+									Для получения актуальных курсов используйте официальные
+									источники.
 								</p>
 							</div>
 						</CardContent>

@@ -37,7 +37,8 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations, useLocale } from 'next-intl'
+// import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 
 interface Voice {
 	voice: SpeechSynthesisVoice
@@ -57,7 +58,7 @@ interface HistoryItem {
 }
 
 export default function TextToSpeechPage() {
-	const t = useTranslations('widgets.textToSpeech')
+	// const t = useTranslations('widgets.textToSpeech')
 	const locale = useLocale()
 	const [mounted, setMounted] = useState(false)
 	const [text, setText] = useState('')
@@ -197,8 +198,8 @@ export default function TextToSpeechPage() {
 	const clearHistory = useCallback(() => {
 		setHistory([])
 		localStorage.removeItem('tts-history')
-		toast.success(t('success.historyCleared'))
-	}, [t])
+		toast.success('История очищена')
+	}, [])
 
 	const getVolumeIcon = () => {
 		if (volume[0] === 0) return VolumeX
@@ -208,7 +209,7 @@ export default function TextToSpeechPage() {
 
 	const speak = useCallback(() => {
 		if (!text.trim()) {
-			toast.error(t('errors.emptyText'))
+			toast.error('Введите текст для озвучивания')
 			return
 		}
 
@@ -242,7 +243,7 @@ export default function TextToSpeechPage() {
 			setIsPlaying(false)
 			setIsPaused(false)
 			setCurrentUtterance(null)
-			toast.error(t('errors.speechFailed'))
+			toast.error('Ошибка при воспроизведении речи')
 		}
 
 		setCurrentUtterance(utterance)
@@ -250,7 +251,7 @@ export default function TextToSpeechPage() {
 
 		// Add to history
 		addToHistory(text, selectedVoice, rate[0], pitch[0])
-	}, [text, voices, selectedVoice, rate, pitch, volume, t, addToHistory])
+	}, [text, voices, selectedVoice, rate, pitch, volume, addToHistory])
 
 	const pause = useCallback(() => {
 		if (speechSynthesis.speaking && !speechSynthesis.paused) {
@@ -281,14 +282,14 @@ export default function TextToSpeechPage() {
 		a.download = 'speech-text.txt'
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success(t('success.textExported'))
-	}, [text, t])
+		toast.success('Текст экспортирован')
+	}, [text])
 
 	const copyToClipboard = useCallback(() => {
 		navigator.clipboard.writeText(text).then(() => {
-			toast.success(t('success.textCopied'))
+			toast.success('Текст скопирован')
 		})
-	}, [text, t])
+	}, [text])
 
 	if (!mounted) {
 		return null
@@ -306,11 +307,11 @@ export default function TextToSpeechPage() {
 					<div className='space-y-3'>
 						<div className='flex items-center justify-between'>
 							<Label htmlFor='text-input' className='text-base font-medium'>
-								{t('enterText')}
+								Введите текст
 							</Label>
 							<div className='flex items-center gap-2'>
 								<Badge variant='outline' className='text-xs'>
-									{text.length} {t('characters')}
+									{text.length} символов
 								</Badge>
 							</div>
 						</div>
@@ -318,13 +319,22 @@ export default function TextToSpeechPage() {
 						{/* Quick Examples */}
 						<div className='flex flex-wrap gap-2'>
 							{[
-								{ key: 'examples.greeting', text: t('examples.greeting') },
+								{
+									key: 'examples.greeting',
+									text: 'Привет! Добро пожаловать на наш сайт. Мы рады вас видеть!'
+								},
 								{
 									key: 'examples.announcement',
-									text: t('examples.announcement')
+									text: 'Внимание! Завтра состоится важное собрание в 14:00.'
 								},
-								{ key: 'examples.story', text: t('examples.story') },
-								{ key: 'examples.poem', text: t('examples.poem') }
+								{
+									key: 'examples.story',
+									text: 'Жил-был в лесу маленький ёжик, который очень любил собирать грибы.'
+								},
+								{
+									key: 'examples.poem',
+									text: 'Белая берёза под моим окном принакрылась снегом, точно серебром.'
+								}
 							].map((example, index) => (
 								<Button
 									key={example.key}
@@ -345,7 +355,7 @@ export default function TextToSpeechPage() {
 									ref={textareaRef}
 									value={text}
 									onChange={e => setText(e.target.value)}
-									placeholder={t('placeholder')}
+									placeholder='Введите текст для озвучивания...'
 									className='min-h-[120px] text-base leading-relaxed resize-none w-full pr-20'
 									maxLength={5000}
 								/>
@@ -357,7 +367,7 @@ export default function TextToSpeechPage() {
 										size='icon'
 										disabled={!text.trim()}
 										className='w-8 h-8'
-										title={t('copy')}
+										title='Копировать'
 									>
 										<Copy className='w-4 h-4' />
 									</Button>
@@ -367,7 +377,7 @@ export default function TextToSpeechPage() {
 										size='icon'
 										disabled={!text.trim()}
 										className='w-8 h-8'
-										title={t('export')}
+										title='Экспортировать'
 									>
 										<Download className='w-4 h-4' />
 									</Button>
@@ -429,10 +439,10 @@ export default function TextToSpeechPage() {
 						<div className='flex items-center gap-3'>
 							<Mic className='w-4 h-4 text-muted-foreground flex-shrink-0' />
 							<div className='flex-1 space-y-1'>
-								<Label className='text-xs'>{t('voice')}</Label>
+								<Label className='text-xs'>Голос</Label>
 								<Select value={selectedVoice} onValueChange={setSelectedVoice}>
 									<SelectTrigger className='h-8 text-xs'>
-										<SelectValue placeholder={t('selectVoice')} />
+										<SelectValue placeholder='Выберите голос' />
 									</SelectTrigger>
 									<SelectContent className='max-h-[300px]'>
 										{Object.entries(voicesByLanguage).map(
@@ -459,7 +469,7 @@ export default function TextToSpeechPage() {
 																			variant='secondary'
 																			className='text-[10px] h-4 px-1 bg-green-50 text-green-700'
 																		>
-																			{t('local')}
+																			Локальный
 																		</Badge>
 																	)}
 																</div>
@@ -479,7 +489,7 @@ export default function TextToSpeechPage() {
 							<FastForward className='w-4 h-4 text-muted-foreground flex-shrink-0' />
 							<div className='flex-1 space-y-1'>
 								<div className='flex items-center justify-between'>
-									<Label className='text-xs'>{t('speed')}</Label>
+									<Label className='text-xs'>Скорость</Label>
 									<span className='text-xs font-mono text-muted-foreground'>
 										{rate[0].toFixed(1)}x
 									</span>
@@ -500,7 +510,7 @@ export default function TextToSpeechPage() {
 							<AudioWaveform className='w-4 h-4 text-muted-foreground flex-shrink-0' />
 							<div className='flex-1 space-y-1'>
 								<div className='flex items-center justify-between'>
-									<Label className='text-xs'>{t('pitch')}</Label>
+									<Label className='text-xs'>Тон</Label>
 									<span className='text-xs font-mono text-muted-foreground'>
 										{pitch[0].toFixed(1)}
 									</span>
@@ -526,7 +536,7 @@ export default function TextToSpeechPage() {
 							})()}
 							<div className='flex-1 space-y-1'>
 								<div className='flex items-center justify-between'>
-									<Label className='text-xs'>{t('volume')}</Label>
+									<Label className='text-xs'>Громкость</Label>
 									<span className='text-xs font-mono text-muted-foreground'>
 										{Math.round(volume[0] * 100)}%
 									</span>
@@ -552,10 +562,10 @@ export default function TextToSpeechPage() {
 						<div className='flex items-center justify-between'>
 							<CardTitle className='flex items-center gap-2'>
 								<History className='w-5 h-5' />
-								{t('history')}
+								История
 							</CardTitle>
 							<Button onClick={clearHistory} variant='outline' size='sm'>
-								{t('clearAll')}
+								Очистить всё
 							</Button>
 						</div>
 					</CardHeader>

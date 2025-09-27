@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Copy, Check, Download, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface ThumbnailType {
 	name: string
@@ -52,7 +52,7 @@ const thumbnailTypes = [
 ]
 
 export default function YouTubeThumbnailPage() {
-	const t = useTranslations('widgets.youtubeThumbnail')
+	// const t = useTranslations('widgets.youtubeThumbnail')
 	const [url, setUrl] = useState('')
 	const [videoId, setVideoId] = useState('')
 	const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
@@ -87,7 +87,7 @@ export default function YouTubeThumbnailPage() {
 			}
 		}
 
-		setError(t('errors.invalid'))
+		setError('Неверная ссылка YouTube')
 		setVideoId('')
 	}
 
@@ -101,9 +101,9 @@ export default function YouTubeThumbnailPage() {
 			await navigator.clipboard.writeText(text)
 			setCopiedUrl(text)
 			setTimeout(() => setCopiedUrl(null), 2000)
-			toast.success(t('toast.copied'))
+			toast.success('Скопировано в буфер обмена')
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -119,10 +119,10 @@ export default function YouTubeThumbnailPage() {
 			a.click()
 			document.body.removeChild(a)
 			URL.revokeObjectURL(url)
-			toast.success(t('toast.downloaded'))
+			toast.success('Изображение загружено')
 		} catch (error) {
 			console.error('Download failed:', error)
-			toast.error(t('toast.downloadError'))
+			toast.error('Ошибка загрузки')
 		}
 	}
 
@@ -141,7 +141,7 @@ export default function YouTubeThumbnailPage() {
 							htmlFor='youtube-url'
 							className='text-base font-semibold mb-2 block'
 						>
-							{t('inputLabel')}
+							Введите ссылку YouTube
 						</Label>
 						<div className='flex gap-2'>
 							<div className='flex-1 flex gap-2'>
@@ -176,14 +176,14 @@ export default function YouTubeThumbnailPage() {
 								variant='outline'
 								onClick={() => handleUrlChange(exampleUrls[0])}
 							>
-								{t('example')}
+								Пример
 							</Button>
 						</div>
 						{error && <p className='text-sm text-destructive mt-2'>{error}</p>}
 					</div>
 
 					<div className='flex items-center gap-2 text-xs text-muted-foreground flex-wrap'>
-						<span>{t('supportedFormats')}:</span>
+						<span>Поддерживаемые форматы:</span>
 						{exampleUrls.map((example, index) => (
 							<span key={index} className='flex items-center gap-2'>
 								{index > 0 && <span>•</span>}
@@ -204,13 +204,22 @@ export default function YouTubeThumbnailPage() {
 					<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 						{thumbnailTypes.map(type => {
 							const imageUrl = type.getUrl(videoId)
-							const nameKey = `resolution.${type.quality === 'maxresdefault' ? 'max' : type.quality === 'sddefault' ? 'standard' : type.quality === 'hqdefault' ? 'high' : type.quality === 'mqdefault' ? 'medium' : 'default'}`
+							const nameKey =
+								type.quality === 'maxresdefault'
+									? 'Максимальное качество'
+									: type.quality === 'sddefault'
+										? 'Стандартное качество'
+										: type.quality === 'hqdefault'
+											? 'Высокое качество'
+											: type.quality === 'mqdefault'
+												? 'Среднее качество'
+												: 'Миниатюрное качество'
 							return (
 								<Card key={type.quality} className='overflow-hidden group'>
 									<div className='relative aspect-video bg-muted'>
 										<Image
 											src={imageUrl}
-											alt={`${t(nameKey)} thumbnail`}
+											alt={`${nameKey} миниатюра`}
 											fill
 											className='object-cover transition-transform group-hover:scale-105'
 											unoptimized
@@ -222,7 +231,7 @@ export default function YouTubeThumbnailPage() {
 													const errorDiv = document.createElement('div')
 													errorDiv.className =
 														'absolute inset-0 flex items-center justify-center text-muted-foreground text-sm'
-													errorDiv.textContent = t('notAvailable')
+													errorDiv.textContent = 'Недоступно'
 													parent.appendChild(errorDiv)
 												}
 											}}
@@ -234,7 +243,7 @@ export default function YouTubeThumbnailPage() {
 												variant='secondary'
 												className='h-8 w-8 bg-background/90 backdrop-blur-sm'
 												onClick={() => copyToClipboard(imageUrl)}
-												title={t('copyUrl')}
+												title='Копировать ссылку'
 											>
 												{copiedUrl === imageUrl ? (
 													<Check className='h-4 w-4 text-green-500' />
@@ -252,7 +261,7 @@ export default function YouTubeThumbnailPage() {
 														`${videoId}-${type.quality}.jpg`
 													)
 												}
-												title={t('download')}
+												title='Скачать'
 											>
 												<Download className='h-4 w-4' />
 											</Button>
@@ -260,7 +269,7 @@ export default function YouTubeThumbnailPage() {
 									</div>
 									<div className='p-3'>
 										<div className='flex items-center justify-between'>
-											<h3 className='font-medium text-sm'>{t(nameKey)}</h3>
+											<h3 className='font-medium text-sm'>{nameKey}</h3>
 											<span className='text-xs text-muted-foreground'>
 												{type.width} × {type.height}
 											</span>
@@ -274,7 +283,7 @@ export default function YouTubeThumbnailPage() {
 					{/* Alternative thumbnails */}
 					<div className='mt-8'>
 						<h3 className='text-sm font-medium text-muted-foreground mb-4'>
-							{t('alternativeUrls')}
+							Альтернативные миниатюры
 						</h3>
 						<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 							{[1, 2, 3].map(num => {
@@ -284,7 +293,7 @@ export default function YouTubeThumbnailPage() {
 										<div className='relative aspect-video bg-muted'>
 											<Image
 												src={imageUrl}
-												alt={`${t('thumbnail')} ${num}`}
+												alt={`Миниатюра ${num}`}
 												fill
 												className='object-cover transition-transform group-hover:scale-105'
 												unoptimized
@@ -296,7 +305,7 @@ export default function YouTubeThumbnailPage() {
 														const errorDiv = document.createElement('div')
 														errorDiv.className =
 															'absolute inset-0 flex items-center justify-center text-muted-foreground text-sm'
-														errorDiv.textContent = t('notAvailable')
+														errorDiv.textContent = 'Недоступно'
 														parent.appendChild(errorDiv)
 													}
 												}}
@@ -308,7 +317,7 @@ export default function YouTubeThumbnailPage() {
 													variant='secondary'
 													className='h-8 w-8 bg-background/90 backdrop-blur-sm'
 													onClick={() => copyToClipboard(imageUrl)}
-													title={t('copyUrl')}
+													title='Копировать ссылку'
 												>
 													{copiedUrl === imageUrl ? (
 														<Check className='h-4 w-4 text-green-500' />
@@ -323,7 +332,7 @@ export default function YouTubeThumbnailPage() {
 													onClick={() =>
 														downloadImage(imageUrl, `${videoId}-alt${num}.jpg`)
 													}
-													title={t('download')}
+													title='Скачать'
 												>
 													<Download className='h-4 w-4' />
 												</Button>
@@ -331,9 +340,7 @@ export default function YouTubeThumbnailPage() {
 										</div>
 										<div className='p-3'>
 											<div className='flex items-center justify-between'>
-												<h3 className='font-medium text-sm'>
-													{t('thumbnail')} {num}
-												</h3>
+												<h3 className='font-medium text-sm'>Миниатюра {num}</h3>
 												<span className='text-xs text-muted-foreground'>
 													Alternative
 												</span>

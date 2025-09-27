@@ -333,8 +333,8 @@ export default function BingoGeneratorPage() {
 			<Card className='p-6'>
 				<div className='grid md:grid-cols-2 gap-6'>
 					<WidgetInput
-						label="Размер сетки"
-						description="Количество ячеек по вертикали и горизонтали"
+						label='Размер сетки'
+						description='Количество ячеек по вертикали и горизонтали'
 					>
 						<div className='flex items-center gap-4'>
 							<Button
@@ -363,9 +363,7 @@ export default function BingoGeneratorPage() {
 					</WidgetInput>
 
 					<div className='space-y-3'>
-						<label className='text-sm font-medium'>
-							Шаблоны
-						</label>
+						<label className='text-sm font-medium'>Шаблоны</label>
 						<p className='text-xs text-muted-foreground'>
 							Выберите готовый набор элементов для игры
 						</p>
@@ -391,7 +389,8 @@ export default function BingoGeneratorPage() {
 			<Card className='p-6'>
 				<div className='space-y-4'>
 					<p className='text-sm text-muted-foreground'>
-						Добавьте элементы для вашей карточки бинго. Рекомендуется не менее 25 элементов для сетки 5x5.
+						Добавьте элементы для вашей карточки бинго. Рекомендуется не менее
+						25 элементов для сетки 5x5.
 					</p>
 
 					{bingoItems.map((item, index) => (
@@ -402,7 +401,7 @@ export default function BingoGeneratorPage() {
 							<Input
 								value={item}
 								onChange={e => updateBingoItem(index, e.target.value)}
-								placeholder="Введите элемент бинго..."
+								placeholder='Введите элемент бинго...'
 								className='flex-1'
 							/>
 							<Button
@@ -541,7 +540,9 @@ export default function BingoGeneratorPage() {
 							<ul className='text-muted-foreground space-y-1'>
 								<li>• Создайте сетку с вашими элементами</li>
 								<li>• Нажимайте на ячейки для отметки</li>
-								<li>• Соберите линию по горизонтали, вертикали или диагонали</li>
+								<li>
+									• Соберите линию по горизонтали, вертикали или диагонали
+								</li>
 								<li>• Поделитесь прогрессом с друзьями</li>
 							</ul>
 						</div>

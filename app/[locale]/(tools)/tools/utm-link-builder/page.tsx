@@ -505,9 +505,7 @@ export default function UTMBuilderPage() {
 										'border-red-500 focus:ring-red-500'
 								)}
 							/>
-							<p className='text-xs text-muted-foreground'>
-								Тип трафика
-							</p>
+							<p className='text-xs text-muted-foreground'>Тип трафика</p>
 						</div>
 
 						{/* Campaign */}
@@ -627,8 +625,7 @@ export default function UTMBuilderPage() {
 												</>
 											) : (
 												<>
-													Показать все{' '}
-													<ChevronRight className='w-3 h-3 ml-1' />
+													Показать все <ChevronRight className='w-3 h-3 ml-1' />
 												</>
 											)}
 										</Button>

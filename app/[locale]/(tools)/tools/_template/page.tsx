@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -34,7 +34,7 @@ const WIDGET_CONFIG = {
 
 export default function TemplateWidgetPage() {
 	// TODO: Update translation key
-	const t = useTranslations('widgets.templateWidget')
+	// const t = useTranslations('widgets.templateWidget')
 
 	// Initialize widget with creation hook
 	const widget = useWidgetCreation({
@@ -55,7 +55,7 @@ export default function TemplateWidgetPage() {
 		validationRules: {
 			mainInput: value => {
 				if (!value || value.trim().length === 0) {
-					return t('validation.required')
+					return 'Это поле обязательно'
 				}
 				// TODO: Add more validation rules
 				return true
@@ -91,15 +91,15 @@ export default function TemplateWidgetPage() {
 			}
 
 			widget.setResult(result)
-			toast.success(t('toast.success'))
+			toast.success('Успешно обработано')
 		} catch (error) {
-			widget.setError(t('toast.error'))
-			toast.error(t('toast.error'))
+			widget.setError('Произошла ошибка')
+			toast.error('Произошла ошибка')
 		} finally {
 			widget.setLoading(false)
 			setIsProcessing(false)
 		}
-	}, [widget, t])
+	}, [widget])
 
 	// Keyboard shortcuts
 	useEffect(() => {
@@ -135,10 +135,10 @@ export default function TemplateWidgetPage() {
 		if (widget.result) {
 			widget.copyToClipboard(
 				JSON.stringify(widget.result, null, 2),
-				t('toast.copied')
+				'Скопировано в буфер обмена'
 			)
 		}
-	}, [widget, t])
+	}, [widget])
 
 	// Download result as file
 	const handleDownloadResult = useCallback(() => {
@@ -159,8 +159,8 @@ export default function TemplateWidgetPage() {
 				className='w-full'
 			>
 				<TabsList className='grid w-full grid-cols-2'>
-					<TabsTrigger value='input'>{t('tabs.input')}</TabsTrigger>
-					<TabsTrigger value='settings'>{t('tabs.settings')}</TabsTrigger>
+					<TabsTrigger value='input'>Ввод</TabsTrigger>
+					<TabsTrigger value='settings'>Настройки</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value='input' className='space-y-4'>
@@ -168,7 +168,7 @@ export default function TemplateWidgetPage() {
 						<div className='space-y-4'>
 							{/* Main Input */}
 							<div>
-								<Label htmlFor='mainInput'>{t('inputs.mainInput')}</Label>
+								<Label htmlFor='mainInput'>Основной ввод</Label>
 								<Input
 									id='mainInput'
 									type='text'
@@ -176,7 +176,7 @@ export default function TemplateWidgetPage() {
 									onChange={e =>
 										widget.updateInput('mainInput', e.target.value)
 									}
-									placeholder={t('inputs.placeholder')}
+									placeholder='Введите текст для обработки'
 									disabled={widget.isLoading}
 									className='font-mono'
 								/>
@@ -194,9 +194,7 @@ export default function TemplateWidgetPage() {
 									) : (
 										<Sparkles className='w-4 h-4 mr-2' />
 									)}
-									{widget.isLoading
-										? t('actions.processing')
-										: t('actions.process')}
+									{widget.isLoading ? 'Обработка...' : 'Обработать'}
 								</Button>
 
 								<Button
@@ -205,7 +203,7 @@ export default function TemplateWidgetPage() {
 									disabled={widget.isLoading}
 								>
 									<RefreshCw className='w-4 h-4 mr-2' />
-									{t('actions.reset')}
+									{'Сбросить'}
 								</Button>
 							</div>
 
@@ -215,13 +213,13 @@ export default function TemplateWidgetPage() {
 									<kbd className='px-2 py-0.5 bg-muted rounded text-xs'>
 										Ctrl + Enter
 									</kbd>
-									<span>{t('shortcuts.process')}</span>
+									<span>Обработать</span>
 								</div>
 								<div className='flex items-center gap-2'>
 									<kbd className='px-2 py-0.5 bg-muted rounded text-xs'>
 										Esc
 									</kbd>
-									<span>{t('shortcuts.reset')}</span>
+									<span>Сбросить</span>
 								</div>
 							</div>
 						</div>
@@ -233,7 +231,7 @@ export default function TemplateWidgetPage() {
 						<div className='space-y-4'>
 							{/* Select Option */}
 							<div>
-								<Label htmlFor='option'>{t('settings.option')}</Label>
+								<Label htmlFor='option'>Опция</Label>
 								<Select
 									value={widget.inputs.option}
 									onValueChange={value => widget.updateInput('option', value)}
@@ -242,15 +240,9 @@ export default function TemplateWidgetPage() {
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value='option1'>
-											{t('settings.option1')}
-										</SelectItem>
-										<SelectItem value='option2'>
-											{t('settings.option2')}
-										</SelectItem>
-										<SelectItem value='option3'>
-											{t('settings.option3')}
-										</SelectItem>
+										<SelectItem value='option1'>Опция 1</SelectItem>
+										<SelectItem value='option2'>Опция 2</SelectItem>
+										<SelectItem value='option3'>Опция 3</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
@@ -258,9 +250,9 @@ export default function TemplateWidgetPage() {
 							{/* Toggle Option */}
 							<div className='flex items-center justify-between'>
 								<Label htmlFor='enabled' className='flex-1'>
-									<div>{t('settings.enableFeature')}</div>
+									<div>Включить функцию</div>
 									<div className='text-xs text-muted-foreground font-normal'>
-										{t('settings.enableFeatureDescription')}
+										Включает дополнительную обработку данных
 									</div>
 								</Label>
 								<Switch
@@ -281,11 +273,11 @@ export default function TemplateWidgetPage() {
 				<Card className='p-4'>
 					<div className='space-y-4'>
 						<div className='flex items-center justify-between'>
-							<div className='font-semibold'>{t('results.title')}</div>
+							<div className='font-semibold'>Результат</div>
 							<div className='flex gap-2'>
 								<Button onClick={handleCopyResult} size='sm' variant='outline'>
 									<Copy className='w-4 h-4 mr-2' />
-									{t('actions.copy')}
+									{'Копировать'}
 								</Button>
 
 								<Button
@@ -294,7 +286,7 @@ export default function TemplateWidgetPage() {
 									variant='outline'
 								>
 									<Download className='w-4 h-4 mr-2' />
-									{t('actions.download')}
+									{'Скачать'}
 								</Button>
 							</div>
 						</div>
@@ -339,20 +331,23 @@ export default function TemplateWidgetPage() {
 					<Info className='w-5 h-5 text-muted-foreground shrink-0 mt-0.5' />
 					<div className='space-y-2 text-sm text-muted-foreground'>
 						<div className='font-semibold text-foreground'>
-							{t('info.title')}
+							Информация о виджете
 						</div>
 						<ul className='space-y-1'>
-							<li>• {t('info.point1')}</li>
-							<li>• {t('info.point2')}</li>
-							<li>• {t('info.point3')}</li>
+							<li>• Это шаблон для создания новых виджетов</li>
+							<li>• Поддерживает горячие клавиши для быстрой работы</li>
+							<li>• Включает валидацию и обработку ошибок</li>
 						</ul>
 
 						{/* Pro Tip */}
 						<div className='mt-3 p-3 bg-background rounded-lg border'>
 							<div className='font-semibold text-foreground mb-1'>
-								{t('info.proTip')}
+								Полезный совет
 							</div>
-							<p>{t('info.proTipDescription')}</p>
+							<p>
+								Используйте горячие клавиши для ускорения работы. Ctrl+Enter для
+								обработки, Esc для сброса.
+							</p>
 						</div>
 					</div>
 				</div>

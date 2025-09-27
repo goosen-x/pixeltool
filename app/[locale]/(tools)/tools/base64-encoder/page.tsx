@@ -271,7 +271,11 @@ export default function Base64EncoderPage() {
 	const copyToClipboard = async (text: string, type: 'plain' | 'base64') => {
 		try {
 			await navigator.clipboard.writeText(text)
-			toast.success(type === 'plain' ? 'Обычный текст скопирован!' : 'Base64 текст скопирован!')
+			toast.success(
+				type === 'plain'
+					? 'Обычный текст скопирован!'
+					: 'Base64 текст скопирован!'
+			)
 		} catch (error) {
 			toast.error('Ошибка копирования')
 		}
@@ -573,9 +577,7 @@ export default function Base64EncoderPage() {
 			{stats && (
 				<div className='flex justify-center'>
 					<div className='inline-flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg text-sm'>
-						<span className='text-muted-foreground'>
-							Изменение размера:
-						</span>
+						<span className='text-muted-foreground'>Изменение размера:</span>
 						<span
 							className={cn(
 								'font-semibold',

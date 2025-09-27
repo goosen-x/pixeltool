@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 export default function TestRedirectPage() {
-	const t = useTranslations('widgets.qrGenerator')
+	// const t = useTranslations('widgets.qrGenerator')
 	const [userAgent, setUserAgent] = useState('')
 	const [platform, setPlatform] = useState('')
 

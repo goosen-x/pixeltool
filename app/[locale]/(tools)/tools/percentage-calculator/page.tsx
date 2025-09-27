@@ -467,9 +467,7 @@ function CalculatorCard({
 								placeholder='20'
 								className='text-lg font-semibold text-center w-20'
 							/>
-							<span className='text-muted-foreground'>
-								% от
-							</span>
+							<span className='text-muted-foreground'>% от</span>
 							<Input
 								type='number'
 								value={values.percentOfValue}
@@ -537,9 +535,7 @@ function CalculatorCard({
 								placeholder='15'
 								className='text-lg font-semibold text-center w-28'
 							/>
-							<span className='text-muted-foreground'>
-								% от чего?
-							</span>
+							<span className='text-muted-foreground'>% от чего?</span>
 						</div>
 					</div>
 				)
@@ -739,9 +735,7 @@ function CalculatorCard({
 											<Badge
 												variant={result.result >= 0 ? 'default' : 'destructive'}
 											>
-												{result.result >= 0
-													? 'Увеличение'
-													: 'Уменьшение'}
+												{result.result >= 0 ? 'Увеличение' : 'Уменьшение'}
 											</Badge>
 										)}
 									</div>

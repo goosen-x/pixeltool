@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -112,7 +112,7 @@ const formatOptions: { id: string; transform: (text: string) => string }[] = [
 ]
 
 export default function SocialMediaFormatterPage() {
-	const t = useTranslations('widgets.socialMediaFormatter')
+	// const t = useTranslations('widgets.socialMediaFormatter')
 
 	// State
 	const [mounted, setMounted] = useState(false)
@@ -196,17 +196,17 @@ export default function SocialMediaFormatterPage() {
 
 	const copyToClipboard = async () => {
 		if (!outputText) {
-			toast.error(t('toast.errorEmptyText'))
+			toast.error('Ошибка: текст пуст')
 			return
 		}
 
 		try {
 			await navigator.clipboard.writeText(outputText)
 			setCopiedOutput(true)
-			toast.success(t('toast.copiedToClipboard'))
+			toast.success('Скопировано в буфер обмена')
 			setTimeout(() => setCopiedOutput(false), 2000)
 		} catch (err) {
-			toast.error(t('toast.errorClipboard'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -214,9 +214,9 @@ export default function SocialMediaFormatterPage() {
 		try {
 			const text = await navigator.clipboard.readText()
 			setInputText(text)
-			toast.success(t('toast.pastedFromClipboard'))
+			toast.success('Вставлено из буфера обмена')
 		} catch (err) {
-			toast.error(t('toast.errorClipboard'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -231,18 +231,18 @@ export default function SocialMediaFormatterPage() {
 			{ id: 'fullFormat', enabled: false }
 		])
 		setSelectedPlatform('instagram')
-		toast.success(t('toast.resetComplete'))
+		toast.success('Настройки сброшены')
 	}
 
 	const clearText = () => {
 		setInputText('')
 		setOutputText('')
-		toast.success(t('toast.textCleared'))
+		toast.success('Текст очищен')
 	}
 
 	const applyTemplate = (template: Template) => {
 		setInputText(template.example)
-		toast.success(t('toast.templateApplied'))
+		toast.success('Шаблон применён')
 		setShowTemplates(false)
 	}
 
@@ -285,7 +285,7 @@ export default function SocialMediaFormatterPage() {
 							className='bg-white/50 dark:bg-gray-800/50'
 						>
 							<Wand2 className='w-4 h-4 mr-2' />
-							{showTemplates ? 'Hide Templates' : 'Show Templates'}
+							{showTemplates ? 'Скрыть шаблоны' : 'Показать шаблоны'}
 						</Button>
 						<Button
 							variant='outline'
@@ -294,7 +294,7 @@ export default function SocialMediaFormatterPage() {
 							className='bg-white/50 dark:bg-gray-800/50'
 						>
 							<Upload className='w-4 h-4 mr-2' />
-							{t('textInput.pasteFromClipboard')}
+							Вставить из буфера
 						</Button>
 						<Button
 							variant='outline'
@@ -306,7 +306,7 @@ export default function SocialMediaFormatterPage() {
 							)}
 						>
 							<Zap className='w-4 h-4 mr-2' />
-							{t('actions.autoFormat')}
+							Автоформатирование
 						</Button>
 					</div>
 				</CardContent>
@@ -314,7 +314,7 @@ export default function SocialMediaFormatterPage() {
 
 			{/* Templates Section */}
 			{showTemplates && (
-				<PresetTemplates onSelectTemplate={applyTemplate} t={t} />
+				<PresetTemplates onSelectTemplate={applyTemplate} />
 			)}
 
 			{/* Main Editor */}
@@ -324,16 +324,16 @@ export default function SocialMediaFormatterPage() {
 					<CardHeader>
 						<CardTitle className='flex items-center gap-2'>
 							<Sparkles className='w-5 h-5 text-primary' />
-							{t('textInput.label')}
+							Ввод текста
 						</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='space-y-2'>
 							<div className='flex items-center justify-between'>
-								<Label htmlFor='input-text'>{t('textInput.label')}</Label>
+								<Label htmlFor='input-text'>Ввод текста</Label>
 								<div className='flex items-center gap-2'>
 									<Badge variant='outline'>
-										{t('preview.characterCount', { count: inputCharCount })}
+										{`Символов: ${inputCharCount}`}
 									</Badge>
 								</div>
 							</div>
@@ -342,7 +342,7 @@ export default function SocialMediaFormatterPage() {
 								id='input-text'
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
-								placeholder={t('textInput.placeholder')}
+								placeholder={'Введите текст для форматирования'}
 								className='min-h-[300px] font-mono text-sm resize-none'
 								spellCheck={false}
 							/>
@@ -355,7 +355,7 @@ export default function SocialMediaFormatterPage() {
 								className='flex-1'
 							>
 								<RefreshCw className='w-4 h-4 mr-2' />
-								{t('actions.format')}
+								{'Форматировать'}
 							</Button>
 							<Button
 								onClick={clearText}
@@ -363,7 +363,7 @@ export default function SocialMediaFormatterPage() {
 								disabled={!inputText.trim()}
 							>
 								<RotateCcw className='w-4 h-4 mr-2' />
-								{t('textInput.clearText')}
+								{'Очистить текст'}
 							</Button>
 						</div>
 					</CardContent>
@@ -374,24 +374,22 @@ export default function SocialMediaFormatterPage() {
 					<CardHeader>
 						<CardTitle className='flex items-center gap-2'>
 							<Copy className='w-5 h-5 text-green-600' />
-							{t('preview.title')}
+							{'Предварительный просмотр'}
 						</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='space-y-2'>
 							<div className='flex items-center justify-between'>
 								<Label htmlFor='output-text'>
-									{t('actions.copyFormatted')}
+									Скопировать форматированный
 								</Label>
 								<div className='flex items-center gap-2'>
 									<Badge variant='outline'>
-										{t('preview.characterCount', { count: outputCharCount })}
+										{`Символов: ${outputCharCount}`}
 									</Badge>
 									{invisibleCharsCount > 0 && (
 										<Badge variant='secondary'>
-											{t('preview.invisibleChars', {
-												count: invisibleCharsCount
-											})}
+											{`Невидимых: ${invisibleCharsCount}`}
 										</Badge>
 									)}
 								</div>
@@ -416,18 +414,18 @@ export default function SocialMediaFormatterPage() {
 								{copiedOutput ? (
 									<>
 										<Check className='w-4 h-4 mr-2' />
-										{t('actions.copy')}d!
+										{'Копировать'}d!
 									</>
 								) : (
 									<>
 										<Copy className='w-4 h-4 mr-2' />
-										{t('actions.copyFormatted')}
+										Копировать
 									</>
 								)}
 							</Button>
 							<Button onClick={resetAll} variant='outline'>
 								<RotateCcw className='w-4 h-4 mr-2' />
-								{t('actions.reset')}
+								{'Сбросить'}
 							</Button>
 						</div>
 					</CardContent>
@@ -439,7 +437,7 @@ export default function SocialMediaFormatterPage() {
 				<CardHeader>
 					<CardTitle className='flex items-center gap-2'>
 						<Palette className='w-5 h-5 text-orange-600' />
-						{t('formatOptions.title')}
+						Опции форматирования
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
@@ -453,7 +451,17 @@ export default function SocialMediaFormatterPage() {
 								className='justify-start h-auto p-3 flex-col items-start'
 							>
 								<span className='font-medium text-sm'>
-									{t(`formatOptions.${option.id}`)}
+									{option.id === 'preserveSpaces'
+										? 'Сохранять пробелы'
+										: option.id === 'preserveNewlines'
+											? 'Сохранять переносы строк'
+											: option.id === 'addIndentation'
+												? 'Добавить отступы'
+												: option.id === 'centerText'
+													? 'Центрировать текст'
+													: option.id === 'fullFormat'
+														? 'Полное форматирование'
+														: option.id}
 								</span>
 							</Button>
 						))}
@@ -468,7 +476,6 @@ export default function SocialMediaFormatterPage() {
 				selectedPlatform={selectedPlatform}
 				onSelectPlatform={setSelectedPlatform}
 				text={outputText || inputText}
-				t={t}
 			/>
 
 			{/* How it Works */}
@@ -476,11 +483,14 @@ export default function SocialMediaFormatterPage() {
 				<CardHeader>
 					<CardTitle className='flex items-center gap-2'>
 						<Sparkles className='w-5 h-5 text-green-600' />
-						{t('howItWorks.title')}
+						Как это работает
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
-					<p className='text-muted-foreground'>{t('howItWorks.description')}</p>
+					<p className='text-muted-foreground'>
+						Использует невидимые символы для сохранения форматирования в
+						соцсетях
+					</p>
 					<div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4'>
 						{[1, 2, 3, 4].map(step => (
 							<div key={step} className='flex items-center gap-3'>
@@ -488,7 +498,15 @@ export default function SocialMediaFormatterPage() {
 									{step}
 								</div>
 								<span className='text-sm font-medium'>
-									{t(`howItWorks.step${step}`)}
+									{step === 1
+										? 'Введите текст'
+										: step === 2
+											? 'Выберите опции'
+											: step === 3
+												? 'Получите результат'
+												: step === 4
+													? 'Копируйте и вставьте'
+													: ''}
 								</span>
 							</div>
 						))}

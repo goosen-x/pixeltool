@@ -770,7 +770,13 @@ export default function PasswordGeneratorPage() {
 												}}
 												className='h-7 text-[10px] px-2'
 											>
-												{theme === 'nature' ? 'Природа' : theme === 'tech' ? 'Технологии' : theme === 'fantasy' ? 'Фэнтези' : 'Космос'}
+												{theme === 'nature'
+													? 'Природа'
+													: theme === 'tech'
+														? 'Технологии'
+														: theme === 'fantasy'
+															? 'Фэнтези'
+															: 'Космос'}
 											</Button>
 										))}
 									</div>

@@ -109,9 +109,7 @@ export default function RandomNumberGeneratorPage() {
 			}
 			setResults([newResult, ...results.slice(0, 9)]) // Keep last 10 results
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : 'Ошибка генерации'
-			)
+			setError(err instanceof Error ? err.message : 'Ошибка генерации')
 		}
 	}
 
@@ -287,8 +285,7 @@ export default function RandomNumberGeneratorPage() {
 								))}
 							</div>
 							<p className='text-xs text-muted-foreground'>
-								Сгенерировано в{' '}
-								{latestResult.timestamp.toLocaleString()}
+								Сгенерировано в {latestResult.timestamp.toLocaleString()}
 							</p>
 						</div>
 					)}
@@ -419,7 +416,10 @@ export default function RandomNumberGeneratorPage() {
 			<Card className='p-6'>
 				<h2 className='text-lg font-semibold mb-4'>О виджете</h2>
 				<div className='space-y-3 text-sm text-muted-foreground'>
-					<p>Генератор криптографически стойких случайных чисел для различных применений.</p>
+					<p>
+						Генератор криптографически стойких случайных чисел для различных
+						применений.
+					</p>
 					<p>Использует Web Crypto API для истинной случайности.</p>
 					<ul className='list-disc list-inside space-y-1 mt-3'>
 						<li>Диапазон чисел от 0 до 999,999</li>

@@ -304,9 +304,7 @@ export default function TextCaseConverterPage() {
 
 				{/* Category Filter */}
 				<div className='flex items-center gap-2 flex-wrap'>
-					<span className='text-sm text-muted-foreground'>
-						{'Фильтр:'}
-					</span>
+					<span className='text-sm text-muted-foreground'>{'Фильтр:'}</span>
 					<Badge
 						variant={selectedCategory === null ? 'default' : 'outline'}
 						className={cn(
@@ -343,7 +341,9 @@ export default function TextCaseConverterPage() {
 							<CaseCard
 								key={caseType}
 								type={caseType}
-								title={caseType.replace('dot.case', 'dotCase').replace('path/case', 'pathCase')}
+								title={caseType
+									.replace('dot.case', 'dotCase')
+									.replace('path/case', 'pathCase')}
 								result={result}
 								icon={config.icon}
 								gradient={config.gradient}

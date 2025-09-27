@@ -8,11 +8,11 @@ import { Label } from '@/components/ui/label'
 import { Copy, Check, Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function SVGEncoderPage() {
-	const t = useTranslations('widgets.svgEncoder')
+	// const t = useTranslations('widgets.svgEncoder')
 	const [svgInput, setSvgInput] = useState('')
 	const [encodedResult, setEncodedResult] = useState('')
 	const [cssResult, setCssResult] = useState('')
@@ -119,9 +119,15 @@ export default function SVGEncoderPage() {
 					: field === 'css'
 						? 'toast.cssCopied'
 						: 'toast.tailwindCopied'
-			toast.success(t(toastKey))
+			toast.success(
+				field === 'encoded'
+					? 'Код скопирован'
+					: field === 'css'
+						? 'CSS скопирован'
+						: 'Tailwind скопирован'
+			)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -143,11 +149,11 @@ export default function SVGEncoderPage() {
 			const reader = new FileReader()
 			reader.onload = e => {
 				setSvgInput(e.target?.result as string)
-				toast.success(t('toast.fileLoaded'))
+				toast.success('Файл загружен')
 			}
 			reader.readAsText(file)
 		} else if (file) {
-			toast.error(t('toast.invalidFile'))
+			toast.error('Неверный формат файла')
 		}
 	}
 
@@ -169,7 +175,7 @@ export default function SVGEncoderPage() {
 					<Card className='h-full'>
 						<CardHeader>
 							<div className='flex items-center justify-between'>
-								<CardTitle>{t('insertSvg')}</CardTitle>
+								<CardTitle>Вставить SVG</CardTitle>
 								<div className='flex gap-2'>
 									{svgInput && (
 										<Button
@@ -177,7 +183,7 @@ export default function SVGEncoderPage() {
 											variant='ghost'
 											onClick={() => setSvgInput('')}
 										>
-											{t('clear')}
+											Очистить
 										</Button>
 									)}
 									<Button
@@ -185,7 +191,7 @@ export default function SVGEncoderPage() {
 										variant='outline'
 										onClick={() => setSvgInput(exampleSvg)}
 									>
-										{t('example')}
+										Пример
 									</Button>
 								</div>
 							</div>
@@ -194,25 +200,21 @@ export default function SVGEncoderPage() {
 							<textarea
 								value={svgInput}
 								onChange={e => setSvgInput(e.target.value)}
-								aria-label={t('placeholder')}
+								aria-label='Вставьте ваш SVG код здесь'
 								className='w-full h-64 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all'
-								placeholder={t('placeholder')}
+								placeholder='Вставьте ваш SVG код здесь'
 								spellCheck={false}
 							/>
 							<div className='mt-3 flex items-center justify-between text-xs text-muted-foreground'>
-								<p>{t('dragDropHint')}</p>
-								{svgInput && (
-									<span>
-										{svgInput.length} {t('characters')}
-									</span>
-								)}
+								<p>Перетащите SVG файл сюда или вставьте код</p>
+								{svgInput && <span>{svgInput.length} символов</span>}
 							</div>
 						</CardContent>
 						{isDragging && (
 							<div className='absolute inset-0 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-lg'>
 								<div className='text-center'>
 									<Upload className='w-12 h-12 mx-auto mb-3 text-primary animate-pulse' />
-									<p className='text-sm font-medium'>{t('dropFile')}</p>
+									<p className='text-sm font-medium'>Отпустите файл здесь</p>
 								</div>
 							</div>
 						)}
@@ -223,24 +225,22 @@ export default function SVGEncoderPage() {
 				<Card>
 					<CardHeader className='pb-3'>
 						<div className='flex items-center justify-between'>
-							<CardTitle>{t('preview')}</CardTitle>
+							<CardTitle>Предварительный просмотр</CardTitle>
 							<div className='flex items-center gap-2'>
-								<Label className='text-xs text-muted-foreground'>
-									{t('background')}:
-								</Label>
+								<Label className='text-xs text-muted-foreground'>Фон:</Label>
 								<div className='flex gap-1'>
 									{[
 										{
 											color: 'white',
-											label: t('white'),
+											label: 'Белый',
 											class: 'bg-white border'
 										},
 										{
 											color: '#f3f4f6',
-											label: t('silver'),
+											label: 'Серебряный',
 											class: 'bg-gray-100'
 										},
-										{ color: 'black', label: t('black'), class: 'bg-black' }
+										{ color: 'black', label: 'Чёрный', class: 'bg-black' }
 									].map(bg => (
 										<button
 											key={bg.color}
@@ -281,7 +281,7 @@ export default function SVGEncoderPage() {
 								/>
 							) : (
 								<p className='text-muted-foreground text-sm'>
-									{t('previewEmpty')}
+									Предварительный просмотр появится здесь
 								</p>
 							)}
 						</div>
@@ -294,10 +294,10 @@ export default function SVGEncoderPage() {
 				<Card>
 					<CardHeader>
 						<div className='flex items-center justify-between'>
-							<CardTitle>{t('output')}</CardTitle>
+							<CardTitle>Результат</CardTitle>
 							{activeTab !== 'tailwind' && (
 								<div className='flex items-center gap-4'>
-									<Label className='text-sm'>{t('quotes')}:</Label>
+									<Label className='text-sm'>Кавычки:</Label>
 									<RadioGroup
 										value={quotes}
 										onValueChange={v => setQuotes(v as 'single' | 'double')}
@@ -309,7 +309,7 @@ export default function SVGEncoderPage() {
 												htmlFor='single'
 												className='text-sm cursor-pointer'
 											>
-												{t('single')} (')
+												Одинарные (')
 											</Label>
 										</div>
 										<div className='flex items-center space-x-2'>
@@ -318,7 +318,7 @@ export default function SVGEncoderPage() {
 												htmlFor='double'
 												className='text-sm cursor-pointer'
 											>
-												{t('double')} (")
+												Двойные (")
 											</Label>
 										</div>
 									</RadioGroup>
@@ -334,15 +334,15 @@ export default function SVGEncoderPage() {
 							className='w-full'
 						>
 							<TabsList className='grid w-full grid-cols-3'>
-								<TabsTrigger value='encoded'>{t('encoded')}</TabsTrigger>
-								<TabsTrigger value='css'>{t('css')}</TabsTrigger>
-								<TabsTrigger value='tailwind'>{t('tailwind')}</TabsTrigger>
+								<TabsTrigger value='encoded'>Кодированный</TabsTrigger>
+								<TabsTrigger value='css'>CSS</TabsTrigger>
+								<TabsTrigger value='tailwind'>Tailwind</TabsTrigger>
 							</TabsList>
 
 							<TabsContent value='encoded' className='mt-4'>
 								<div className='space-y-3'>
 									<div className='flex items-center justify-between'>
-										<Label className='text-sm'>{t('encodedResult')}</Label>
+										<Label className='text-sm'>Кодированный результат</Label>
 										<Button
 											size='sm'
 											variant='outline'
@@ -355,19 +355,19 @@ export default function SVGEncoderPage() {
 											) : (
 												<Copy className='h-4 w-4' />
 											)}
-											{t('copy')}
+											Копировать
 										</Button>
 									</div>
 									<textarea
 										value={encodedResult}
 										onChange={e => handleEncodedChange(e.target.value)}
-										aria-label={t('encodedPlaceholder')}
+										aria-label='Кодированный SVG появится здесь'
 										className='w-full h-32 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all'
-										placeholder={t('encodedPlaceholder')}
+										placeholder='Кодированный SVG появится здесь'
 										spellCheck={false}
 									/>
 									<p className='text-xs text-muted-foreground'>
-										{t('editHint')}
+										Можно редактировать для отладки
 									</p>
 								</div>
 							</TabsContent>
@@ -375,7 +375,7 @@ export default function SVGEncoderPage() {
 							<TabsContent value='css' className='mt-4'>
 								<div className='space-y-3'>
 									<div className='flex items-center justify-between'>
-										<Label className='text-sm'>{t('cssResult')}</Label>
+										<Label className='text-sm'>CSS результат</Label>
 										<Button
 											size='sm'
 											variant='outline'
@@ -388,19 +388,19 @@ export default function SVGEncoderPage() {
 											) : (
 												<Copy className='h-4 w-4' />
 											)}
-											{t('copy')}
+											Копировать
 										</Button>
 									</div>
 									<textarea
 										value={cssResult}
 										readOnly
-										aria-label={t('cssPlaceholder')}
+										aria-label='CSS код появится здесь'
 										className='w-full h-32 p-4 font-mono text-sm border rounded-lg bg-muted resize-none'
-										placeholder={t('cssPlaceholder')}
+										placeholder='CSS код появится здесь'
 										spellCheck={false}
 									/>
 									<p className='text-xs text-muted-foreground'>
-										{t('cssHint')}
+										Готово для использования в CSS
 									</p>
 								</div>
 							</TabsContent>
@@ -408,7 +408,7 @@ export default function SVGEncoderPage() {
 							<TabsContent value='tailwind' className='mt-4'>
 								<div className='space-y-3'>
 									<div className='flex items-center justify-between'>
-										<Label className='text-sm'>{t('tailwindResult')}</Label>
+										<Label className='text-sm'>Tailwind результат</Label>
 										<Button
 											size='sm'
 											variant='outline'
@@ -423,19 +423,19 @@ export default function SVGEncoderPage() {
 											) : (
 												<Copy className='h-4 w-4' />
 											)}
-											{t('copy')}
+											Копировать
 										</Button>
 									</div>
 									<textarea
 										value={tailwindResult}
 										readOnly
-										aria-label={t('tailwindPlaceholder')}
+										aria-label='Tailwind класс появится здесь'
 										className='w-full h-32 p-4 font-mono text-sm border rounded-lg bg-muted resize-none'
-										placeholder={t('tailwindPlaceholder')}
+										placeholder='Tailwind класс появится здесь'
 										spellCheck={false}
 									/>
 									<p className='text-xs text-muted-foreground'>
-										{t('tailwindHint')}
+										Готово для использования в Tailwind CSS
 									</p>
 								</div>
 							</TabsContent>

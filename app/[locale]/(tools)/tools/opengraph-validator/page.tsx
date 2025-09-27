@@ -562,7 +562,9 @@ export default function OpenGraphValidatorPage() {
 			{/* Social Media Previews */}
 			{ogData && (
 				<div className='space-y-3'>
-					<h3 className='font-semibold text-sm'>{'Превью в социальных сетях'}</h3>
+					<h3 className='font-semibold text-sm'>
+						{'Превью в социальных сетях'}
+					</h3>
 					<div className='w-full'>
 						<TelegramPreview data={ogData} />
 					</div>
@@ -579,7 +581,9 @@ export default function OpenGraphValidatorPage() {
 			{validationResult && validationResult.missingTags.length > 0 && (
 				<Card className='p-4'>
 					<div className='space-y-3'>
-						<h3 className='font-semibold text-sm'>{'Генератор недостающих тегов'}</h3>
+						<h3 className='font-semibold text-sm'>
+							{'Генератор недостающих тегов'}
+						</h3>
 						<p className='text-xs text-muted-foreground'>
 							{'Добавьте эти теги в <head> вашей страницы'}
 						</p>
@@ -657,9 +661,7 @@ export default function OpenGraphValidatorPage() {
 					{/* Found Tags - Compact Version */}
 					{Object.keys(validationResult.foundTags).length > 0 && (
 						<Card className='p-3'>
-							<h3 className='font-semibold text-sm mb-2'>
-								{'Найденные теги'}
-							</h3>
+							<h3 className='font-semibold text-sm mb-2'>{'Найденные теги'}</h3>
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-1.5'>
 								{Object.entries(validationResult.foundTags).map(
 									([property, content]) => (
@@ -709,16 +711,35 @@ export default function OpenGraphValidatorPage() {
 							{'Что такое Open Graph?'}
 						</div>
 						<ul className='space-y-1'>
-							<li>• {'Open Graph - это протокол для создания превью ссылок в социальных сетях'}</li>
-							<li>• {'Помогает контролировать, как ваша страница выглядит при репосте'}</li>
-							<li>• {'Используется Facebook, Twitter, LinkedIn, Telegram и другими платформами'}</li>
+							<li>
+								•{' '}
+								{
+									'Open Graph - это протокол для создания превью ссылок в социальных сетях'
+								}
+							</li>
+							<li>
+								•{' '}
+								{
+									'Помогает контролировать, как ваша страница выглядит при репосте'
+								}
+							</li>
+							<li>
+								•{' '}
+								{
+									'Используется Facebook, Twitter, LinkedIn, Telegram и другими платформами'
+								}
+							</li>
 						</ul>
 
 						<div className='mt-3 p-3 bg-background rounded-lg border'>
 							<div className='font-semibold text-foreground mb-1'>
 								{'Совет'}
 							</div>
-							<p>{'Используйте изображения размером 1200x630 пикселей для оптимального отображения в социальных сетях. Убедитесь, что все изображения доступны по HTTPS.'}</p>
+							<p>
+								{
+									'Используйте изображения размером 1200x630 пикселей для оптимального отображения в социальных сетях. Убедитесь, что все изображения доступны по HTTPS.'
+								}
+							</p>
 						</div>
 					</div>
 				</div>

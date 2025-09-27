@@ -21,10 +21,10 @@ import {
 } from '@/components/ui/select'
 import { Copy, Download, FileText, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 export default function SEOMarkdownGeneratorPage() {
-	const t = useTranslations('widgets.seoMarkdownGenerator')
+	// const t = useTranslations('widgets.seoMarkdownGenerator')
 
 	const [formData, setFormData] = useState({
 		title: '',
@@ -181,7 +181,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(generatedMarkdown)
-		toast.success(t('copied'))
+		toast.success('Скопировано в буфер обмена')
 	}
 
 	const downloadMarkdown = () => {
@@ -194,7 +194,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-		toast.success(t('downloaded'))
+		toast.success('Файл успешно загружен')
 	}
 
 	return (
@@ -202,75 +202,77 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 			<div className='space-y-6'>
 				<Card>
 					<CardHeader>
-						<CardTitle>{t('articleSettings')}</CardTitle>
-						<CardDescription>{t('articleSettingsDesc')}</CardDescription>
+						<CardTitle>Настройки статьи</CardTitle>
+						<CardDescription>
+							Настройте основные параметры вашей статьи
+						</CardDescription>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div>
-							<Label htmlFor='title'>{t('articleTitle')}</Label>
+							<Label htmlFor='title'>Заголовок статьи</Label>
 							<Input
 								id='title'
 								value={formData.title}
 								onChange={e =>
 									setFormData({ ...formData, title: e.target.value })
 								}
-								placeholder={t('titlePlaceholder')}
+								placeholder='Введите заголовок статьи'
 							/>
 						</div>
 
 						<div>
-							<Label htmlFor='excerpt'>{t('articleExcerpt')}</Label>
+							<Label htmlFor='excerpt'>Описание статьи</Label>
 							<Textarea
 								id='excerpt'
 								value={formData.excerpt}
 								onChange={e =>
 									setFormData({ ...formData, excerpt: e.target.value })
 								}
-								placeholder={t('excerptPlaceholder')}
+								placeholder='Краткое описание статьи'
 								rows={3}
 							/>
 						</div>
 
 						<div>
-							<Label htmlFor='keywords'>{t('keywords')}</Label>
+							<Label htmlFor='keywords'>Ключевые слова</Label>
 							<Input
 								id='keywords'
 								value={formData.keywords}
 								onChange={e =>
 									setFormData({ ...formData, keywords: e.target.value })
 								}
-								placeholder={t('keywordsPlaceholder')}
+								placeholder='keyword1, keyword2, keyword3'
 							/>
 						</div>
 
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
-								<Label htmlFor='author'>{t('authorName')}</Label>
+								<Label htmlFor='author'>Имя автора</Label>
 								<Input
 									id='author'
 									value={formData.author}
 									onChange={e =>
 										setFormData({ ...formData, author: e.target.value })
 									}
-									placeholder={t('authorPlaceholder')}
+									placeholder='Имя автора'
 								/>
 							</div>
 
 							<div>
-								<Label htmlFor='category'>{t('category')}</Label>
+								<Label htmlFor='category'>Категория</Label>
 								<Input
 									id='category'
 									value={formData.category}
 									onChange={e =>
 										setFormData({ ...formData, category: e.target.value })
 									}
-									placeholder={t('categoryPlaceholder')}
+									placeholder='Веб-разработка'
 								/>
 							</div>
 						</div>
 
 						<div>
-							<Label htmlFor='contentType'>{t('contentType')}</Label>
+							<Label htmlFor='contentType'>Тип контента</Label>
 							<Select
 								value={formData.contentType}
 								onValueChange={value =>
@@ -301,19 +303,21 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 
 				<Card>
 					<CardHeader>
-						<CardTitle>{t('contentStructure')}</CardTitle>
-						<CardDescription>{t('contentStructureDesc')}</CardDescription>
+						<CardTitle>Структура контента</CardTitle>
+						<CardDescription>
+							Определите структуру и дополнительные разделы
+						</CardDescription>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div>
-							<Label htmlFor='outline'>{t('contentOutline')}</Label>
+							<Label htmlFor='outline'>План контента</Label>
 							<Textarea
 								id='outline'
 								value={formData.contentOutline}
 								onChange={e =>
 									setFormData({ ...formData, contentOutline: e.target.value })
 								}
-								placeholder={t('outlinePlaceholder')}
+								placeholder='Введение\nОсновная часть\nЗаключение\n(каждый раздел с новой строки)'
 								rows={6}
 							/>
 						</div>
@@ -331,7 +335,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 									}
 									className='rounded'
 								/>
-								<span>{t('includeTableOfContents')}</span>
+								<span>Включить оглавление</span>
 							</label>
 
 							<label className='flex items-center space-x-2'>
@@ -343,7 +347,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 									}
 									className='rounded'
 								/>
-								<span>{t('includeFAQ')}</span>
+								<span>Включить раздел FAQ</span>
 							</label>
 
 							<label className='flex items-center space-x-2'>
@@ -358,7 +362,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 									}
 									className='rounded'
 								/>
-								<span>{t('includeRelatedLinks')}</span>
+								<span>Включить связанные ссылки</span>
 							</label>
 						</div>
 
@@ -370,7 +374,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 							}
 						>
 							<Sparkles className='w-4 h-4 mr-2' />
-							{t('generateMarkdown')}
+							Генерировать Markdown
 						</Button>
 					</CardContent>
 				</Card>
@@ -380,7 +384,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 				<Card className='h-full'>
 					<CardHeader>
 						<CardTitle className='flex items-center justify-between'>
-							<span>{t('preview')}</span>
+							<span>Предварительный просмотр</span>
 							{generatedMarkdown && (
 								<div className='flex gap-2'>
 									<Button size='sm' variant='outline' onClick={copyToClipboard}>
@@ -405,7 +409,7 @@ liveCodeExample: ${formData.contentType === 'tutorial' ? 'true' : 'false'}
 						) : (
 							<div className='flex flex-col items-center justify-center h-[400px] text-muted-foreground'>
 								<FileText className='w-12 h-12 mb-4' />
-								<p>{t('noPreview')}</p>
+								<p>Предварительный просмотр появится здесь</p>
 							</div>
 						)}
 					</CardContent>
