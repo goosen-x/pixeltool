@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Info, BarChart3, Copy, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { cn } from '@/lib/utils'
 
 interface SpecificityResult {
@@ -27,7 +27,7 @@ interface SpecificityResult {
 }
 
 export default function CSSSpecificityPage() {
-	const t = useTranslations('widgets.cssSpecificity')
+	// const t = useTranslations('widgets.cssSpecificity') // Removed
 	const [input, setInput] = useState('')
 	const [results, setResults] = useState<SpecificityResult[]>([])
 	const [sortBy, setSortBy] = useState<'order' | 'weight'>('order')
@@ -193,7 +193,7 @@ export default function CSSSpecificityPage() {
 
 	const analyzeSelectors = () => {
 		if (!input.trim()) {
-			toast.error(t('toast.emptyInput'))
+			toast.error('Введите CSS селекторы для анализа')
 			return
 		}
 
@@ -261,7 +261,7 @@ export default function CSSSpecificityPage() {
 		]
 
 		if (uniqueSelectors.length === 0) {
-			toast.error(t('toast.noSelectors'))
+			toast.error('Селекторы не найдены')
 			return
 		}
 
@@ -275,7 +275,7 @@ export default function CSSSpecificityPage() {
 		}
 
 		setResults(newResults)
-		toast.success(t('toast.analyzed', { count: newResults.length }))
+		toast.success(`Проанализировано ${newResults.length} селекторов`)
 	}
 
 	const copyResults = () => {
@@ -287,7 +287,7 @@ export default function CSSSpecificityPage() {
 			.join('\n')
 
 		navigator.clipboard.writeText(text)
-		toast.success(t('toast.copied'))
+		toast.success('Скопировано в буфер обмена!')
 	}
 
 	const loadExample = () => {
@@ -306,7 +306,7 @@ div.container > p::first-line
 [data-theme="dark"] .header`
 
 		setInput(example)
-		toast.success(t('toast.exampleLoaded'))
+		toast.success('Пример загружен')
 	}
 
 	const getSpecificityColor = (weight: number) => {
@@ -323,15 +323,15 @@ div.container > p::first-line
 				<Card>
 					<CardHeader>
 						<CardTitle className='flex items-center justify-between'>
-							{t('input')}
+							Ввод CSS
 							<Button variant='outline' size='sm' onClick={loadExample}>
-								{t('loadExample')}
+								Загрузить пример
 							</Button>
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Textarea
-							placeholder={t('placeholder')}
+							placeholder='Введите CSS селекторы или целые CSS правила...'
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							rows={12}
@@ -340,7 +340,7 @@ div.container > p::first-line
 						<div className='flex gap-2 mt-4'>
 							<Button onClick={analyzeSelectors} className='flex-1'>
 								<BarChart3 className='w-4 h-4 mr-2' />
-								{t('analyze')}
+								Анализировать
 							</Button>
 							<Button
 								variant='outline'
@@ -359,7 +359,7 @@ div.container > p::first-line
 				<Card>
 					<CardHeader>
 						<CardTitle className='flex items-center justify-between'>
-							{t('results')}
+							Результаты
 							{results.length > 0 && (
 								<div className='flex gap-2'>
 									<Button
@@ -369,7 +369,7 @@ div.container > p::first-line
 											setSortBy(sortBy === 'order' ? 'weight' : 'order')
 										}
 									>
-										{t(sortBy === 'order' ? 'sortByWeight' : 'sortByOrder')}
+										{sortBy === 'order' ? 'По весу' : 'По порядку'}
 									</Button>
 									<Button
 										variant='outline'
@@ -464,7 +464,7 @@ div.container > p::first-line
 										</div>
 
 										<div className='text-xs text-muted-foreground'>
-											{t('weight')}: {result.weight}
+											Вес: {result.weight}
 										</div>
 									</div>
 								))}
@@ -472,7 +472,7 @@ div.container > p::first-line
 						) : (
 							<div className='text-center py-12 text-muted-foreground'>
 								<BarChart3 className='w-12 h-12 mx-auto mb-4 opacity-50' />
-								<p>{t('emptyState')}</p>
+								<p>Введите CSS селекторы для анализа</p>
 							</div>
 						)}
 					</CardContent>
@@ -484,42 +484,42 @@ div.container > p::first-line
 				<CardHeader>
 					<CardTitle className='flex items-center gap-2'>
 						<Info className='w-5 h-5' />
-						{t('howItWorks.title')}
+						Как работает специфичность CSS
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<p className='text-sm text-muted-foreground'>
-						{t('howItWorks.description')}
+						Специфичность определяет, какие CSS правила применяются к элементу. Более специфичные селекторы имеют приоритет.
 					</p>
 
 					<div className='grid gap-4 md:grid-cols-2'>
 						<div className='space-y-2'>
 							<h4 className='font-medium text-sm'>
-								{t('howItWorks.calculation')}
+								Расчет специфичности
 							</h4>
 							<div className='space-y-1 text-sm'>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>1-0-0-0</Badge>
-									<span>{t('howItWorks.inline')}</span>
+									<span>Инлайн стили</span>
 								</div>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>0-1-0-0</Badge>
-									<span>{t('howItWorks.id')}</span>
+									<span>Каждый ID (#example)</span>
 								</div>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>0-0-1-0</Badge>
-									<span>{t('howItWorks.class')}</span>
+									<span>Каждый класс (.example), атрибут ([type="text"]), псевдокласс (:hover)</span>
 								</div>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>0-0-0-1</Badge>
-									<span>{t('howItWorks.element')}</span>
+									<span>Каждый элемент (div, p, a) и псевдоэлемент (::before)</span>
 								</div>
 							</div>
 						</div>
 
 						<div className='space-y-2'>
 							<h4 className='font-medium text-sm'>
-								{t('howItWorks.examples')}
+								Примеры
 							</h4>
 							<div className='space-y-1 text-sm font-mono'>
 								<div className='flex items-center justify-between'>

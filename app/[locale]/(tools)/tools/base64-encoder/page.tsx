@@ -41,7 +41,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 
 type InputMethod = 'text' | 'file' | 'dataurl'
@@ -63,7 +62,6 @@ interface EncodingStats {
 const FILE_SIZE_LIMIT = 10 * 1024 * 1024 // 10MB
 
 export default function Base64EncoderPage() {
-	const t = useTranslations('widgets.base64Encoder')
 	const [plainText, setPlainText] = useState('')
 	const [base64Text, setBase64Text] = useState('')
 	const [isProcessing, setIsProcessing] = useState(false)
@@ -157,7 +155,7 @@ export default function Base64EncoderPage() {
 				// Check for valid Base64 characters
 				const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
 				if (!base64Regex.test(toDecode)) {
-					return { result: '', error: t('errors.invalidBase64Characters') }
+					return { result: '', error: 'Неверные символы Base64' }
 				}
 
 				// Decode
@@ -171,14 +169,14 @@ export default function Base64EncoderPage() {
 						const result = atob(toDecode)
 						return { result, error: null }
 					} catch (e2) {
-						return { result: '', error: t('errors.invalidBase64Format') }
+						return { result: '', error: 'Неверный формат Base64' }
 					}
 				}
 			} catch (error) {
-				return { result: '', error: t('errors.decodeFailed') }
+				return { result: '', error: 'Ошибка декодирования' }
 			}
 		},
-		[urlSafe, t]
+		[urlSafe]
 	)
 
 	// Handle plain text changes
@@ -257,7 +255,7 @@ export default function Base64EncoderPage() {
 
 	const handleFileSelect = (selectedFile: File) => {
 		if (selectedFile.size > FILE_SIZE_LIMIT) {
-			toast.error(t('errors.fileTooLarge'))
+			toast.error('Файл слишком большой. Максимальный размер: 10MB')
 			return
 		}
 
@@ -273,9 +271,9 @@ export default function Base64EncoderPage() {
 	const copyToClipboard = async (text: string, type: 'plain' | 'base64') => {
 		try {
 			await navigator.clipboard.writeText(text)
-			toast.success(t(`success.${type}Copied`))
+			toast.success(type === 'plain' ? 'Обычный текст скопирован!' : 'Base64 текст скопирован!')
 		} catch (error) {
-			toast.error(t('errors.copyFailed'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -287,7 +285,7 @@ export default function Base64EncoderPage() {
 		a.download = `${type === 'base64' ? 'base64-encoded' : 'plain-text'}-${Date.now()}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success(t('success.downloaded'))
+		toast.success('Файл загружен!')
 	}
 
 	const reset = () => {
@@ -298,13 +296,13 @@ export default function Base64EncoderPage() {
 		setImagePreview(null)
 		setBase64Error(null)
 		setLastEditedField('plain')
-		toast.success(t('success.cleared'))
+		toast.success('Поля очищены!')
 	}
 
 	const clearHistory = () => {
 		setHistory([])
 		localStorage.removeItem('base64-history')
-		toast.success(t('success.historyCleared'))
+		toast.success('История очищена!')
 	}
 
 	const loadFromHistory = (item: HistoryItem) => {
@@ -312,7 +310,7 @@ export default function Base64EncoderPage() {
 		setBase64Text(item.base64Text)
 		setLastEditedField('plain')
 		setBase64Error(null)
-		toast.success(t('success.historyLoaded'))
+		toast.success('Данные загружены из истории!')
 	}
 
 	const addToHistory = useCallback(() => {
@@ -352,31 +350,31 @@ export default function Base64EncoderPage() {
 							<div className='flex items-center gap-2 mb-3'>
 								<Sparkles className='w-4 h-4 text-muted-foreground' />
 								<span className='text-sm font-medium text-muted-foreground'>
-									{t('examples.title')}
+									Быстрые примеры
 								</span>
 							</div>
 							<div className='flex flex-wrap gap-2'>
 								{[
 									{
-										title: t('examples.text'),
+										title: 'Текст',
 										icon: <FileText className='w-3 h-3' />,
 										plainValue: 'Hello, World!',
 										base64Value: 'SGVsbG8sIFdvcmxkIQ=='
 									},
 									{
-										title: t('examples.json'),
+										title: 'JSON',
 										icon: <Braces className='w-3 h-3' />,
 										plainValue: '{"name": "John", "age": 30}',
 										base64Value: 'eyJuYW1lIjogIkpvaG4iLCAiYWdlIjogMzB9'
 									},
 									{
-										title: t('examples.html'),
+										title: 'HTML',
 										icon: <Code2 className='w-3 h-3' />,
 										plainValue: '<h1>Hello World</h1>',
 										base64Value: 'PGgxPkhlbGxvIFdvcmxkPC9oMT4='
 									},
 									{
-										title: t('examples.emoji'),
+										title: 'Эмодзи',
 										icon: <Hash className='w-3 h-3' />,
 										plainValue: '🚀 Ready to launch!',
 										base64Value: '8J+agCBSZWFkeSB0byBsYXVuY2gh'
@@ -416,7 +414,7 @@ export default function Base64EncoderPage() {
 									htmlFor='url-safe'
 									className='text-xs cursor-pointer whitespace-nowrap'
 								>
-									{t('options.urlSafe')}
+									URL-безопасный
 								</Label>
 								<Switch
 									id='url-safe'
@@ -429,7 +427,7 @@ export default function Base64EncoderPage() {
 									htmlFor='line-breaks'
 									className='text-xs cursor-pointer whitespace-nowrap'
 								>
-									{t('options.lineBreaks')}
+									Разбить на строки
 								</Label>
 								<Switch
 									id='line-breaks'
@@ -450,7 +448,7 @@ export default function Base64EncoderPage() {
 						<div className='flex items-center justify-between'>
 							<CardTitle className='text-lg flex items-center gap-2'>
 								<FileText className='w-5 h-5' />
-								{t('input.plainText')}
+								Обычный текст
 							</CardTitle>
 							{plainText && (
 								<div className='flex items-center gap-2'>
@@ -461,7 +459,7 @@ export default function Base64EncoderPage() {
 										className='h-8'
 									>
 										<Copy className='w-3.5 h-3.5 mr-1.5' />
-										{t('actions.copy')}
+										Копировать
 									</Button>
 									<Button
 										size='sm'
@@ -470,7 +468,7 @@ export default function Base64EncoderPage() {
 										className='h-8'
 									>
 										<Download className='w-3.5 h-3.5 mr-1.5' />
-										{t('actions.download')}
+										Скачать
 									</Button>
 								</div>
 							)}
@@ -484,7 +482,7 @@ export default function Base64EncoderPage() {
 									setPlainText(e.target.value)
 									setLastEditedField('plain')
 								}}
-								placeholder={t('input.placeholder.plainText')}
+								placeholder='Введите текст для кодирования...'
 								className='min-h-[300px] font-mono text-sm resize-none'
 								spellCheck={false}
 							/>
@@ -508,7 +506,7 @@ export default function Base64EncoderPage() {
 								)}
 							>
 								<Binary className='w-5 h-5' />
-								{t('output.base64')}
+								Base64 текст
 								{base64Error && <AlertCircle className='w-4 h-4' />}
 							</CardTitle>
 							{base64Text && !base64Error && (
@@ -520,7 +518,7 @@ export default function Base64EncoderPage() {
 										className='h-8'
 									>
 										<Copy className='w-3.5 h-3.5 mr-1.5' />
-										{t('actions.copy')}
+										Копировать
 									</Button>
 									<Button
 										size='sm'
@@ -529,7 +527,7 @@ export default function Base64EncoderPage() {
 										className='h-8'
 									>
 										<Download className='w-3.5 h-3.5 mr-1.5' />
-										{t('actions.download')}
+										Скачать
 									</Button>
 								</div>
 							)}
@@ -549,7 +547,7 @@ export default function Base64EncoderPage() {
 									setBase64Text(e.target.value)
 									setLastEditedField('base64')
 								}}
-								placeholder={t('output.placeholder.base64')}
+								placeholder='Введите Base64 текст для декодирования...'
 								className={cn(
 									'min-h-[300px] font-mono text-sm resize-none',
 									base64Error && 'border-destructive focus:border-destructive'
@@ -576,7 +574,7 @@ export default function Base64EncoderPage() {
 				<div className='flex justify-center'>
 					<div className='inline-flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg text-sm'>
 						<span className='text-muted-foreground'>
-							{t('stats.sizeChange')}:
+							Изменение размера:
 						</span>
 						<span
 							className={cn(
@@ -599,7 +597,7 @@ export default function Base64EncoderPage() {
 				<div className='flex justify-center'>
 					<Button variant='outline' size='sm' onClick={reset}>
 						<RotateCcw className='w-4 h-4 mr-2' />
-						{t('actions.clear')}
+						Очистить
 					</Button>
 				</div>
 			)}
@@ -611,15 +609,15 @@ export default function Base64EncoderPage() {
 						<div className='flex items-center justify-between'>
 							<CardTitle className='text-lg flex items-center gap-2'>
 								<History className='w-5 h-5' />
-								{t('history.title')}
+								История
 							</CardTitle>
 							<div className='flex items-center gap-2'>
 								<Button variant='outline' size='sm' onClick={reset}>
 									<RotateCcw className='w-3 h-3 mr-1.5' />
-									{t('actions.clear')}
+									Очистить
 								</Button>
 								<Button variant='ghost' size='sm' onClick={clearHistory}>
-									{t('history.clear')}
+									Очистить историю
 								</Button>
 							</div>
 						</div>
@@ -637,7 +635,7 @@ export default function Base64EncoderPage() {
 											<div className='flex items-center gap-2 mb-2'>
 												<ArrowRightLeft className='w-4 h-4' />
 												<span className='text-sm font-medium'>
-													{t('history.conversion')}
+													Преобразование
 												</span>
 												<Badge variant='outline' className='text-xs'>
 													{new Date(item.timestamp).toLocaleTimeString()}
@@ -646,7 +644,7 @@ export default function Base64EncoderPage() {
 											<div className='grid md:grid-cols-2 gap-3'>
 												<div>
 													<Label className='text-xs text-muted-foreground'>
-														{t('input.plainText')}
+														Обычный текст
 													</Label>
 													<div className='text-xs font-mono bg-background rounded p-2 mt-1 truncate'>
 														{item.plainText
@@ -659,7 +657,7 @@ export default function Base64EncoderPage() {
 												</div>
 												<div>
 													<Label className='text-xs text-muted-foreground'>
-														{t('output.base64')}
+														Base64 текст
 													</Label>
 													<div className='text-xs font-mono bg-background rounded p-2 mt-1 truncate'>
 														{item.base64Text
