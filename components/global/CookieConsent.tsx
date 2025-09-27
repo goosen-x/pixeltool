@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 import { Cookie, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function CookieConsent() {
 	const [isVisible, setIsVisible] = useState(false)
-	const t = useTranslations('cookieConsent')
+	// const t = useTranslations('cookieConsent')
 
 	useEffect(() => {
 		// Check if user has already accepted cookies
@@ -45,7 +45,7 @@ export function CookieConsent() {
 							<button
 								onClick={handleDecline}
 								className='absolute top-3 right-3 p-1.5 rounded-lg hover:bg-muted transition-colors'
-								aria-label={t('close')}
+								aria-label='Закрыть'
 							>
 								<X className='h-4 w-4' />
 							</button>
@@ -58,7 +58,7 @@ export function CookieConsent() {
 								</div>
 
 								<div className='flex-1'>
-									<p className='text-sm text-foreground'>{t('description')}</p>
+									<p className='text-sm text-foreground'>Мы используем файлы cookie для улучшения вашего опыта. Продолжая, вы соглашаетесь с их использованием.</p>
 								</div>
 
 								<Button
@@ -66,7 +66,7 @@ export function CookieConsent() {
 									size='sm'
 									className='flex-shrink-0 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90'
 								>
-									{t('accept')}
+									Принять
 								</Button>
 							</div>
 						</div>

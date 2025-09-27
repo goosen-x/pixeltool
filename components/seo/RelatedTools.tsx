@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import {
 	widgets,
 	getWidgetById,
@@ -18,7 +18,6 @@ export function RelatedTools({
 	currentTool,
 	category = 'css'
 }: RelatedToolsProps) {
-	const t = useTranslations('widgets')
 	const locale = useLocale()
 
 	// First try to get recommended tools from widget data
@@ -46,12 +45,10 @@ export function RelatedTools({
 		<Card className='mt-8 border-border/50 bg-background/60 backdrop-blur-sm'>
 			<CardHeader>
 				<CardTitle className='text-xl font-heading bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-					{locale === 'ru' ? 'Похожие инструменты' : 'Related Tools'}
+					Похожие инструменты
 				</CardTitle>
 				<p className='text-sm text-muted-foreground'>
-					{locale === 'ru'
-						? 'Другие полезные инструменты из той же категории'
-						: 'Other useful tools from the same category'}
+					Другие полезные инструменты из той же категории
 				</p>
 			</CardHeader>
 			<CardContent>

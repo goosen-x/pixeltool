@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
+// import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Keyboard, ChevronDown, ChevronUp } from 'lucide-react'
@@ -23,7 +24,7 @@ export function KeyboardShortcutsCard({
 	widgetShortcuts
 }: KeyboardShortcutsCardProps) {
 	const locale = useLocale()
-	const tSidebar = useTranslations('widgets.rightSidebar')
+	// const tSidebar = useTranslations('widgets.rightSidebar')
 	const [showAllShortcuts, setShowAllShortcuts] = useState(false)
 
 	if (!widgetShortcuts) return null
@@ -33,7 +34,7 @@ export function KeyboardShortcutsCard({
 			<CardHeader className='pb-3'>
 				<CardTitle className='text-sm flex items-center gap-2'>
 					<Keyboard className='w-4 h-4' />
-					{tSidebar('keyboardShortcuts.title')}
+					Горячие клавиши
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-2'>

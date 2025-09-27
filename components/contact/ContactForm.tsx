@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Mail, Send } from 'lucide-react'
 
 export default function ContactForm() {
-	const t = useTranslations('contact.form')
+	// const t = useTranslations('contact.form')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -44,9 +44,9 @@ export default function ContactForm() {
 					<Mail className='w-8 h-8 text-green-600 dark:text-green-400' />
 				</div>
 				<h3 className='text-xl font-semibold text-foreground mb-2'>
-					{t('success.title')}
+					Спасибо за сообщение!
 				</h3>
-				<p className='text-muted-foreground'>{t('success.message')}</p>
+				<p className='text-muted-foreground'>Мы ответим вам как можно скорее.</p>
 			</div>
 		)
 	}
@@ -55,23 +55,23 @@ export default function ContactForm() {
 		<form onSubmit={handleSubmit} className='space-y-6'>
 			<div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
 				<div className='space-y-2'>
-					<Label htmlFor='name'>{t('fields.name')}</Label>
+					<Label htmlFor='name'>Имя</Label>
 					<Input
 						id='name'
 						name='name'
 						type='text'
-						placeholder={t('placeholders.name')}
+						placeholder='Ваше имя'
 						required
 						className='w-full'
 					/>
 				</div>
 				<div className='space-y-2'>
-					<Label htmlFor='email'>{t('fields.email')}</Label>
+					<Label htmlFor='email'>Email</Label>
 					<Input
 						id='email'
 						name='email'
 						type='email'
-						placeholder={t('placeholders.email')}
+						placeholder='your@email.com'
 						required
 						className='w-full'
 					/>
@@ -79,23 +79,23 @@ export default function ContactForm() {
 			</div>
 
 			<div className='space-y-2'>
-				<Label htmlFor='subject'>{t('fields.subject')}</Label>
+				<Label htmlFor='subject'>Тема</Label>
 				<Input
 					id='subject'
 					name='subject'
 					type='text'
-					placeholder={t('placeholders.subject')}
+					placeholder='О чём ваше сообщение?'
 					required
 					className='w-full'
 				/>
 			</div>
 
 			<div className='space-y-2'>
-				<Label htmlFor='message'>{t('fields.message')}</Label>
+				<Label htmlFor='message'>Сообщение</Label>
 				<Textarea
 					id='message'
 					name='message'
-					placeholder={t('placeholders.message')}
+					placeholder='Расскажите нам о вашем проекте...'
 					required
 					rows={6}
 					className='w-full resize-none'
@@ -110,12 +110,12 @@ export default function ContactForm() {
 				{isSubmitting ? (
 					<div className='flex items-center gap-2'>
 						<div className='w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin' />
-						{t('sending')}
+						Отправляем...
 					</div>
 				) : (
 					<div className='flex items-center gap-2'>
 						<Send className='w-4 h-4' />
-						{t('submit')}
+						Отправить сообщение
 					</div>
 				)}
 			</Button>

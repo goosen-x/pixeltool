@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import {
 	Code2,
 	Palette,
@@ -21,16 +20,14 @@ import { Logo } from '@/components/global/Logo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-export const Footer = async () => {
+export const Footer = () => {
 	const year = new Date().getFullYear()
-	const t = await getTranslations('Footer')
-	const tWidgets = await getTranslations('widgets')
 
 	const stats = [
-		{ label: '50+', sublabel: t('stats.professionalTools') },
-		{ label: '5K+', sublabel: t('stats.activeDevelopers') },
-		{ label: '99.9%', sublabel: t('stats.uptime') },
-		{ label: 'Free', sublabel: t('stats.forever') }
+		{ label: '50+', sublabel: 'Профессиональных инструментов' },
+		{ label: '5K+', sublabel: 'Активных разработчиков' },
+		{ label: '99.9%', sublabel: 'Время работы' },
+		{ label: 'Free', sublabel: 'Навсегда' }
 	]
 
 	return (
@@ -50,16 +47,16 @@ export const Footer = async () => {
 						<div className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6'>
 							<Rocket className='w-4 h-4 text-primary' />
 							<span className='text-sm font-medium text-primary'>
-								{t('badge')}
+								Создано с любовью для разработчиков
 							</span>
 						</div>
 						<h2 className='text-4xl md:text-5xl font-heading font-bold mb-4'>
 							<span className='bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent'>
-								{t('title')}
+								Все инструменты в одном месте
 							</span>
 						</h2>
 						<p className='text-xl text-muted-foreground max-w-2xl mx-auto mb-8'>
-							{t('heroDescription')}
+							Экономьте время с нашими профессиональными веб-инструментами. Работают прямо в браузере.
 						</p>
 
 						{/* CTA Buttons */}
@@ -69,11 +66,11 @@ export const Footer = async () => {
 								className='gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90'
 							>
 								<Terminal className='w-5 h-5' />
-								{t('exploreTools')}
+								Исследовать инструменты
 							</Button>
 							<Button size='lg' variant='outline' className='gap-2'>
 								<Github className='w-5 h-5' />
-								{t('starOnGitHub')}
+								Звезда на GitHub
 								<ExternalLink className='w-4 h-4' />
 							</Button>
 						</div>
@@ -103,27 +100,27 @@ export const Footer = async () => {
 							<div className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/80 border border-border/50 mb-6'>
 								<Mail className='w-4 h-4 text-primary' />
 								<span className='text-sm font-medium'>
-									{t('newsletter.badge')}
+									Новости и обновления
 								</span>
 							</div>
 							<p className='text-3xl md:text-4xl font-heading font-bold mb-4'>
-								{t('newsletter.title')}
+								Оставайтесь в курсе событий
 							</p>
 							<p className='text-lg text-muted-foreground mb-8 max-w-2xl mx-auto'>
-								{t('newsletter.description')}
+								Получайте уведомления о новых инструментах и обновлениях первыми.
 							</p>
 							<form className='flex flex-col sm:flex-row gap-4 max-w-md mx-auto'>
 								<input
 									type='email'
-									placeholder={t('newsletter.placeholder')}
-									aria-label={t('newsletter.placeholder')}
+									placeholder='Ваш email'
+									aria-label='Ваш email'
 									className='flex-1 px-6 py-3 rounded-xl border border-border/50 bg-background/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
 								/>
 								<Button
 									size='lg'
 									className='gap-2 bg-gradient-to-r from-primary to-accent'
 								>
-									{t('newsletter.subscribe')}
+									Подписаться
 									<Sparkles className='w-4 h-4' />
 								</Button>
 							</form>
@@ -169,7 +166,7 @@ export const Footer = async () => {
 					{/* Bottom Bar */}
 					<div className='pt-8 border-t border-border/50'>
 						<div className='flex items-center justify-center text-sm text-muted-foreground'>
-							<span>{t('legal.copyright', { year })}</span>
+							<span>© {year} PixelTool. Все права защищены.</span>
 						</div>
 					</div>
 				</div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BarChart, Users } from 'lucide-react'
 import type { Widget } from '@/lib/constants/widgets'
@@ -21,7 +21,7 @@ interface WidgetStatsCardProps {
 }
 
 export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
-	const tSidebar = useTranslations('widgets.rightSidebar')
+	// const tSidebar = useTranslations('widgets.rightSidebar')
 	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(
 		null
 	)
@@ -56,7 +56,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 			<CardHeader className='pb-3'>
 				<CardTitle className='text-sm flex items-center gap-2'>
 					<BarChart className='w-4 h-4' />
-					{tSidebar('usageStats.title')}
+					Статистика использования
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-2'>
@@ -65,25 +65,25 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 						<div className='flex items-center justify-between'>
 							<span className='text-sm text-muted-foreground flex items-center gap-1'>
 								<Users className='w-3 h-3' />
-								{tSidebar('usageStats.onlineNow')}
+								Сейчас онлайн
 							</span>
 							<div className='w-6 h-4 bg-muted animate-pulse rounded'></div>
 						</div>
 						<div className='flex items-center justify-between'>
 							<span className='text-sm text-muted-foreground'>
-								{tSidebar('usageStats.viewsToday')}
+								Просмотров сегодня
 							</span>
 							<div className='w-8 h-4 bg-muted animate-pulse rounded'></div>
 						</div>
 						<div className='flex items-center justify-between'>
 							<span className='text-sm text-muted-foreground'>
-								{tSidebar('usageStats.totalUses')}
+								Всего использований
 							</span>
 							<div className='w-12 h-4 bg-muted animate-pulse rounded'></div>
 						</div>
 						<div className='flex items-center justify-between'>
 							<span className='text-sm text-muted-foreground'>
-								{tSidebar('usageStats.avgSession')}
+								Средняя сессия
 							</span>
 							<div className='w-10 h-4 bg-muted animate-pulse rounded'></div>
 						</div>
@@ -94,7 +94,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 							<span className='text-xs lg:text-sm text-muted-foreground flex items-center gap-1'>
 								<Users className='w-3 h-3 flex-shrink-0' />
 								<span className='truncate'>
-									{tSidebar('usageStats.onlineNow')}
+									Сейчас онлайн
 								</span>
 							</span>
 							<span className='text-xs lg:text-sm font-medium text-green-600 dark:text-green-400 whitespace-nowrap'>
@@ -103,7 +103,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 						</div>
 						<div className='flex items-center justify-between gap-2'>
 							<span className='text-xs lg:text-sm text-muted-foreground truncate'>
-								{tSidebar('usageStats.viewsToday')}
+								Просмотров сегодня
 							</span>
 							<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
 								{analyticsStats.viewsToday.toLocaleString()}
@@ -111,7 +111,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 						</div>
 						<div className='flex items-center justify-between gap-2'>
 							<span className='text-xs lg:text-sm text-muted-foreground truncate'>
-								{tSidebar('usageStats.totalUses')}
+								Всего использований
 							</span>
 							<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
 								{analyticsStats.totalViews >= 1000
@@ -121,7 +121,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 						</div>
 						<div className='flex items-center justify-between gap-2'>
 							<span className='text-xs lg:text-sm text-muted-foreground truncate'>
-								{tSidebar('usageStats.avgSession')}
+								Средняя сессия
 							</span>
 							<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
 								{analyticsStats.averageSessionDuration || '0s'}
@@ -131,7 +131,7 @@ export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
 				) : (
 					<div className='text-center py-2'>
 						<span className='text-sm text-muted-foreground'>
-							{tSidebar('usageStats.noData')}
+							Нет данных
 						</span>
 					</div>
 				)}

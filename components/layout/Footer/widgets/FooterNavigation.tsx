@@ -1,21 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { Home, FolderOpen, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
 
 export const FooterNavigation = () => {
-	const t = useTranslations('Header.nav')
-	const tFooter = useTranslations('Footer')
 	const locale = useLocale()
 	const pathname = usePathname()
 
 	const links = [
-		{ title: t('main'), href: `/${locale}`, icon: Home },
-		{ title: t('tools'), href: `/${locale}/tools`, icon: FolderOpen },
-		{ title: t('blog'), href: `/${locale}/blog`, icon: BookOpen },
-		{ title: t('contact'), href: `/${locale}/contact`, icon: Mail }
+		{ title: 'Главная', href: `/${locale}`, icon: Home },
+		{ title: 'Инструменты', href: `/${locale}/tools`, icon: FolderOpen },
+		{ title: 'Блог', href: `/${locale}/blog`, icon: BookOpen },
+		{ title: 'Контакты', href: `/${locale}/contact`, icon: Mail }
 	]
 
 	return (
@@ -83,7 +81,7 @@ export const FooterNavigation = () => {
 			{/* Support Section */}
 			<div className='flex flex-col gap-4'>
 				<p className='text-sm font-semibold text-foreground uppercase tracking-wider'>
-					{tFooter('support.title')}
+					Поддержка
 				</p>
 				<div className='flex flex-col gap-2'>
 					<a
@@ -99,7 +97,7 @@ export const FooterNavigation = () => {
 							</div>
 						</div>
 						<span className='text-xs font-medium text-muted-foreground group-hover:text-foreground transition-all duration-300 whitespace-nowrap'>
-							{tFooter('support.buyMeCoffee')}
+							Купить мне кофе
 						</span>
 					</a>
 				</div>

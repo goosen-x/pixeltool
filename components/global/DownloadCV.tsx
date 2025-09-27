@@ -3,17 +3,17 @@
 import { useRef, useState } from 'react'
 import { FiDownload } from 'react-icons/fi'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 const CYCLES_PER_LETTER = 2
 const SHUFFLE_TIME = 50
 
 export const DownloadCV = () => {
-	const t = useTranslations('Header.cv')
+	// const t = useTranslations('Header.cv')
 
-	const TARGET_TEXT = t('btnText')
-	const TARGET_HREF = t('href')
-	const TARGET_FILENAME = t('filename')
+	const TARGET_TEXT = 'Скачать резюме'
+	const TARGET_HREF = '/dmitry-borisenko-cv.pdf'
+	const TARGET_FILENAME = 'dmitry-borisenko-cv.pdf'
 	const CHARS = '!@#$%^&*():{};|,.<>/?'
 	const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 

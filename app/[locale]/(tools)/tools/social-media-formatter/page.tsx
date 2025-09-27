@@ -313,9 +313,7 @@ export default function SocialMediaFormatterPage() {
 			</Card>
 
 			{/* Templates Section */}
-			{showTemplates && (
-				<PresetTemplates onSelectTemplate={applyTemplate} />
-			)}
+			{showTemplates && <PresetTemplates onSelectTemplate={applyTemplate} />}
 
 			{/* Main Editor */}
 			<div className='grid lg:grid-cols-2 gap-8'>
@@ -380,9 +378,7 @@ export default function SocialMediaFormatterPage() {
 					<CardContent className='space-y-4'>
 						<div className='space-y-2'>
 							<div className='flex items-center justify-between'>
-								<Label htmlFor='output-text'>
-									Скопировать форматированный
-								</Label>
+								<Label htmlFor='output-text'>Скопировать форматированный</Label>
 								<div className='flex items-center gap-2'>
 									<Badge variant='outline'>
 										{`Символов: ${outputCharCount}`}
