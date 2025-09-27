@@ -41,12 +41,32 @@ import {
 	type CalculationType
 } from '@/lib/hooks/widgets'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Quick preset percentages
 const QUICK_PRESETS = [5, 10, 15, 20, 25, 50]
+
+// Helper function to get tab titles in Russian
+const getTabTitle = (type: CalculationType): string => {
+	switch (type) {
+		case 'percentOfNumber':
+			return 'Процент от числа'
+		case 'whatPercent':
+			return 'Какой процент'
+		case 'findTotal':
+			return 'Найти целое'
+		case 'percentChange':
+			return 'Изменение в процентах'
+		case 'addPercent':
+			return 'Прибавить процент'
+		case 'subtractPercent':
+			return 'Вычесть процент'
+		default:
+			return ''
+	}
+}
 
 // Card configurations for each calculator type
 const CALCULATOR_CARDS = [
@@ -95,7 +115,7 @@ const CALCULATOR_CARDS = [
 ]
 
 export default function PercentageCalculatorPage() {
-	const t = useTranslations('widgets.percentageCalculator')
+	// const t = useTranslations('widgets.percentageCalculator')
 	const [mounted, setMounted] = useState(false)
 	const [recentCalculations, setRecentCalculations] = useState<
 		Array<{
@@ -153,7 +173,7 @@ export default function PercentageCalculatorPage() {
 			updateValue('percentOfPercentage', preset.toString())
 			updateValue('findTotalPercentage', preset.toString())
 			updateValue('addSubtractPercentage', preset.toString())
-			toast.success(t('toast.presetApplied', { preset }))
+			toast.success(`${preset}% применено`)
 		},
 		[updateValue]
 	)
@@ -163,21 +183,21 @@ export default function PercentageCalculatorPage() {
 		navigator.clipboard.writeText(text)
 		setCopiedId(id)
 		setTimeout(() => setCopiedId(null), 2000)
-		toast.success(t('toast.copied'))
+		toast.success('Скопировано в буфер обмена')
 	}, [])
 
 	// Clear all calculations
 	const clearAll = useCallback(() => {
 		reset()
 		setSelectedPreset(null)
-		toast.success(t('toast.allCleared'))
+		toast.success('Все расчёты очищены')
 	}, [reset])
 
 	// Clear recent history
 	const clearRecent = useCallback(() => {
 		setRecentCalculations([])
 		localStorage.removeItem('percentage-recent')
-		toast.success(t('toast.historyCleared'))
+		toast.success('История очищена')
 	}, [])
 
 	// Keyboard shortcuts
@@ -219,7 +239,7 @@ export default function PercentageCalculatorPage() {
 					<div className='flex flex-wrap items-center gap-4'>
 						<div className='flex items-center gap-2'>
 							<Sparkles className='w-5 h-5 text-primary' />
-							<span className='font-semibold text-sm'>{t('quickPresets')}</span>
+							<span className='font-semibold text-sm'>Быстрые пресеты</span>
 						</div>
 						<div className='flex flex-wrap gap-2'>
 							{QUICK_PRESETS.map(preset => (
@@ -250,7 +270,7 @@ export default function PercentageCalculatorPage() {
 								className='text-muted-foreground hover:text-foreground'
 							>
 								<RefreshCw className='w-4 h-4 mr-2' />
-								{t('buttons.reset')}
+								Сбросить
 							</Button>
 						</div>
 					</div>
@@ -272,7 +292,6 @@ export default function PercentageCalculatorPage() {
 							saveToRecent={saveToRecent}
 							copyWithAnimation={copyWithAnimation}
 							copiedId={copiedId}
-							t={t}
 							loadExample={loadExample}
 						/>
 					))}
@@ -284,7 +303,7 @@ export default function PercentageCalculatorPage() {
 						<div className='flex items-center justify-between mb-3'>
 							<div className='flex items-center gap-2'>
 								<History className='w-5 h-5 text-muted-foreground' />
-								<h3 className='font-semibold text-sm'>{t('recent.title')}</h3>
+								<h3 className='font-semibold text-sm'>Недавние расчёты</h3>
 							</div>
 							<Button
 								size='sm'
@@ -354,7 +373,6 @@ interface CalculatorCardProps {
 	saveToRecent: (type: CalculationType, result: string) => void
 	copyWithAnimation: (id: string, text: string) => void
 	copiedId: string | null
-	t: any
 	loadExample: (type: CalculationType) => void
 }
 
@@ -370,7 +388,6 @@ function CalculatorCard({
 	saveToRecent,
 	copyWithAnimation,
 	copiedId,
-	t,
 	loadExample
 }: CalculatorCardProps) {
 	const [isFocused, setIsFocused] = useState(false)
@@ -402,46 +419,22 @@ function CalculatorCard({
 
 		switch (type) {
 			case 'percentOfNumber':
-				return t('explanations.percentOf', {
-					percentage: parseFloat(values.percentOfPercentage),
-					value: parseFloat(values.percentOfValue),
-					result: formattedResult
-				})
+				return `${parseFloat(values.percentOfPercentage)}% от ${parseFloat(values.percentOfValue)} = ${formattedResult}`
 			case 'whatPercent':
-				return t('explanations.whatPercent', {
-					value1: parseFloat(values.whatPercentValue1),
-					value2: parseFloat(values.whatPercentValue2),
-					result: formattedResult
-				})
+				return `${parseFloat(values.whatPercentValue1)} составляет ${formattedResult}% от ${parseFloat(values.whatPercentValue2)}`
 			case 'findTotal':
-				return t('explanations.findTotal', {
-					value: parseFloat(values.findTotalValue),
-					percentage: parseFloat(values.findTotalPercentage),
-					result: formattedResult
-				})
+				return `Если ${parseFloat(values.findTotalValue)} это ${parseFloat(values.findTotalPercentage)}%, то целое число = ${formattedResult}`
 			case 'percentChange':
-				const change =
-					result.result >= 0 ? t('labels.increase') : t('labels.decrease')
-				return t('explanations.percentChange', {
-					change: change,
-					result: formattedResult
-				})
+				const change = result.result >= 0 ? 'увеличение' : 'уменьшение'
+				return `Изменение: ${change} на ${Math.abs(formattedResult)}%`
 			case 'addPercent':
-				return t('explanations.addPercent', {
-					value: parseFloat(values.addSubtractValue),
-					percentage: parseFloat(values.addSubtractPercentage),
-					result: formattedResult
-				})
+				return `${parseFloat(values.addSubtractValue)} + ${parseFloat(values.addSubtractPercentage)}% = ${formattedResult}`
 			case 'subtractPercent':
-				return t('explanations.subtractPercent', {
-					value: parseFloat(values.addSubtractValue),
-					percentage: parseFloat(values.addSubtractPercentage),
-					result: formattedResult
-				})
+				return `${parseFloat(values.addSubtractValue)} - ${parseFloat(values.addSubtractPercentage)}% = ${formattedResult}`
 			default:
 				return result.explanation
 		}
-	}, [result, type, values, t])
+	}, [result, type, values])
 
 	// Save to recent when copying result
 	const handleCopyResult = useCallback(() => {
@@ -461,7 +454,7 @@ function CalculatorCard({
 					<div className='space-y-3'>
 						<div className='flex items-center gap-2'>
 							<span className='text-muted-foreground text-sm'>
-								{t('labels.whatIs')}
+								Сколько составляет
 							</span>
 							<Input
 								type='number'
@@ -475,7 +468,7 @@ function CalculatorCard({
 								className='text-lg font-semibold text-center w-20'
 							/>
 							<span className='text-muted-foreground'>
-								{t('labels.percentOf')}
+								% от
 							</span>
 							<Input
 								type='number'
@@ -504,7 +497,7 @@ function CalculatorCard({
 								className='text-lg font-semibold text-center w-20'
 							/>
 							<span className='text-muted-foreground text-sm'>
-								{t('labels.isWhatPercentOf')}
+								это какой процент от
 							</span>
 							<Input
 								type='number'
@@ -532,7 +525,7 @@ function CalculatorCard({
 								placeholder='30'
 								className='text-lg font-semibold text-center w-28'
 							/>
-							<span className='text-muted-foreground'>{t('labels.is')}</span>
+							<span className='text-muted-foreground'>составляет</span>
 							<Input
 								type='number'
 								value={values.findTotalPercentage}
@@ -545,7 +538,7 @@ function CalculatorCard({
 								className='text-lg font-semibold text-center w-28'
 							/>
 							<span className='text-muted-foreground'>
-								{t('labels.percentOfQuestion')}
+								% от чего?
 							</span>
 						</div>
 					</div>
@@ -555,7 +548,7 @@ function CalculatorCard({
 				return (
 					<div className='space-y-3'>
 						<div className='flex items-center gap-2'>
-							<span className='text-muted-foreground'>{t('labels.from')}</span>
+							<span className='text-muted-foreground'>от</span>
 							<Input
 								type='number'
 								value={values.changeOldValue}
@@ -673,10 +666,10 @@ function CalculatorCard({
 								<Icon className='w-5 h-5' />
 							</div>
 							<h3 className='font-semibold text-sm flex items-center gap-2'>
-								{t(`tabs.${type}`)}
+								{getTabTitle(type)}
 								{!isReady() && (
 									<Badge variant='secondary' className='text-xs px-2 py-0'>
-										{t('labels.empty')}
+										Пусто
 									</Badge>
 								)}
 							</h3>
@@ -695,7 +688,7 @@ function CalculatorCard({
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent>
-									<p>{t('buttons.loadExample')}</p>
+									<p>Загрузить пример</p>
 								</TooltipContent>
 							</Tooltip>
 							{/* Copy Result Button */}
@@ -716,7 +709,7 @@ function CalculatorCard({
 										</Button>
 									</TooltipTrigger>
 									<TooltipContent>
-										<p>{t('buttons.copy')}</p>
+										<p>Копировать</p>
 									</TooltipContent>
 								</Tooltip>
 							)}
@@ -747,8 +740,8 @@ function CalculatorCard({
 												variant={result.result >= 0 ? 'default' : 'destructive'}
 											>
 												{result.result >= 0
-													? t('labels.increase') || 'Increase'
-													: t('labels.decrease') || 'Decrease'}
+													? 'Увеличение'
+													: 'Уменьшение'}
 											</Badge>
 										)}
 									</div>

@@ -32,7 +32,7 @@ import {
 	Clock
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { KeyboardShortcuts } from '@/components/tools/KeyboardShortcuts'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
@@ -138,7 +138,7 @@ const COMMON_WORDS = [
 ]
 
 export default function PasswordGeneratorPage() {
-	const t = useTranslations('widgets.passwordGenerator')
+	// const t = useTranslations('widgets.passwordGenerator') // Removed
 	const [password, setPassword] = useState('')
 	const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS)
 	const [strength, setStrength] = useState(0)
@@ -216,7 +216,7 @@ export default function PasswordGeneratorPage() {
 			if (options.symbols) charset += SYMBOLS
 
 			if (!charset) {
-				toast.error(t('errors.noCharset'))
+				toast.error('Выберите хотя бы один тип символов')
 				setIsGenerating(false)
 				return
 			}
@@ -285,7 +285,7 @@ export default function PasswordGeneratorPage() {
 
 			setIsGenerating(false)
 		}, 300)
-	}, [options, history, calculateStrength, t])
+	}, [options, history, calculateStrength])
 
 	const generateMemorablePassword = useCallback(() => {
 		setIsGenerating(true)
@@ -410,19 +410,19 @@ export default function PasswordGeneratorPage() {
 		try {
 			await navigator.clipboard.writeText(password)
 			setCopied(true)
-			toast.success(t('toast.copied'))
+			toast.success('Пароль скопирован в буфер обмена')
 
 			// Reset copied state after animation
 			setTimeout(() => setCopied(false), 2000)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
 	const clearHistory = () => {
 		setHistory([])
 		localStorage.removeItem('password-history')
-		toast.success(t('toast.historyCleared'))
+		toast.success('История очищена')
 	}
 
 	const downloadPasswords = () => {
@@ -441,7 +441,7 @@ export default function PasswordGeneratorPage() {
 		a.click()
 		URL.revokeObjectURL(url)
 
-		toast.success(t('toast.downloaded'))
+		toast.success('Пароли загружены')
 	}
 
 	const getStrengthColor = (score: number) => {
@@ -452,11 +452,11 @@ export default function PasswordGeneratorPage() {
 	}
 
 	const getStrengthLabel = (score: number) => {
-		if (score >= 80) return t('strength.veryStrong')
-		if (score >= 60) return t('strength.strong')
-		if (score >= 40) return t('strength.medium')
-		if (score >= 20) return t('strength.weak')
-		return t('strength.veryWeak')
+		if (score >= 80) return 'Очень сильный'
+		if (score >= 60) return 'Сильный'
+		if (score >= 40) return 'Средний'
+		if (score >= 20) return 'Слабый'
+		return 'Очень слабый'
 	}
 
 	// Generate initial password
@@ -475,13 +475,13 @@ export default function PasswordGeneratorPage() {
 			key: 'r',
 			primary: true,
 			action: generate,
-			description: t('generate')
+			description: 'Сгенерировать'
 		},
 		{
 			key: 'h',
 			primary: true,
 			action: () => setShowPassword(!showPassword),
-			description: t('shortcuts.toggleVisibility')
+			description: 'Показать/скрыть пароль'
 		}
 	]
 
@@ -502,13 +502,13 @@ export default function PasswordGeneratorPage() {
 						<div className='flex justify-center'>
 							<div className='inline-flex p-1 bg-secondary/50 rounded-lg backdrop-blur-sm w-full max-w-md'>
 								{[
-									{ key: 'random', icon: Zap, label: t('modes.random') },
+									{ key: 'random', icon: Zap, label: 'Случайный' },
 									{
 										key: 'memorable',
 										icon: Sparkles,
-										label: t('modes.memorable')
+										label: 'Запоминающийся'
 									},
-									{ key: 'phrase', icon: Type, label: t('modes.phrase') }
+									{ key: 'phrase', icon: Type, label: 'Фраза' }
 								].map(item => (
 									<div key={item.key} className='flex-1'>
 										<Button
@@ -535,7 +535,7 @@ export default function PasswordGeneratorPage() {
 										<div className='flex items-center gap-2'>
 											<Label className='text-xs font-medium flex items-center gap-1.5 whitespace-nowrap'>
 												<Hash className='w-3.5 h-3.5 text-muted-foreground' />
-												{t('options.length')}
+												{'Длина'}
 											</Label>
 											<div className='w-32'>
 												<Slider
@@ -639,7 +639,7 @@ export default function PasswordGeneratorPage() {
 															htmlFor='similar'
 															className='text-xs cursor-pointer'
 														>
-															{t('options.excludeSimilar')} (il1Lo0O)
+															{'Исключить похожие символы'} (il1Lo0O)
 														</Label>
 														<Switch
 															id='similar'
@@ -658,7 +658,7 @@ export default function PasswordGeneratorPage() {
 															htmlFor='ambiguous'
 															className='text-xs cursor-pointer'
 														>
-															{t('options.excludeAmbiguous')} ({}[]()...)
+															{'Исключить неоднозначные символы'} ({}[]()...)
 														</Label>
 														<Switch
 															id='ambiguous'
@@ -684,7 +684,7 @@ export default function PasswordGeneratorPage() {
 									<div className='space-y-2'>
 										<Label className='text-xs font-medium flex items-center gap-1.5'>
 											<Sparkles className='w-3.5 h-3.5 text-muted-foreground' />
-											{t('memorable.pattern')}
+											{'Шаблон'}
 										</Label>
 										<div className='flex gap-2 overflow-x-auto'>
 											{MEMORABLE_PATTERNS.map((pattern, index) => {
@@ -725,7 +725,7 @@ export default function PasswordGeneratorPage() {
 									</div>
 									<div className='p-3 bg-secondary/20 rounded-lg'>
 										<p className='text-xs text-muted-foreground'>
-											{t('memorable.hint')}
+											{'Создаёт легко запоминающиеся пароли на основе слов'}
 										</p>
 									</div>
 								</div>
@@ -736,17 +736,17 @@ export default function PasswordGeneratorPage() {
 									<div className='space-y-2'>
 										<Label className='text-xs font-medium flex items-center gap-1.5'>
 											<Type className='w-3.5 h-3.5 text-muted-foreground' />
-											{t('passphrase.words')}
+											{'Слова'}
 										</Label>
 										<textarea
 											value={customWords}
 											onChange={e => setCustomWords(e.target.value)}
-											placeholder={t('passphrase.placeholder')}
+											placeholder={'Введите свои слова (по одному на строку)'}
 											className='w-full min-h-[60px] p-2 bg-background rounded-md border border-border resize-none font-mono text-xs'
 											spellCheck={false}
 										/>
 										<p className='text-[10px] text-muted-foreground'>
-											{t('passphrase.hint')}
+											{'Или выберите тему ниже'}
 										</p>
 									</div>
 									<div className='grid grid-cols-4 gap-1.5'>
@@ -770,7 +770,7 @@ export default function PasswordGeneratorPage() {
 												}}
 												className='h-7 text-[10px] px-2'
 											>
-												{t(`passphrase.themes.${theme}`)}
+												{theme === 'nature' ? 'Природа' : theme === 'tech' ? 'Технологии' : theme === 'fantasy' ? 'Фэнтези' : 'Космос'}
 											</Button>
 										))}
 									</div>
@@ -868,7 +868,7 @@ export default function PasswordGeneratorPage() {
 							) : (
 								<>
 									<Zap className='w-5 h-5 mr-2' />
-									{t('generate')}
+									{'Сгенерировать'}
 								</>
 							)}
 						</Button>
@@ -882,7 +882,7 @@ export default function PasswordGeneratorPage() {
 							<div className='flex items-center justify-between mb-4'>
 								<h3 className='font-semibold flex items-center gap-2'>
 									<Clock className='w-4 h-4' />
-									{t('history.recent')}
+									{'Недавние пароли'}
 								</h3>
 								<div className='flex gap-2'>
 									<Button
@@ -891,7 +891,7 @@ export default function PasswordGeneratorPage() {
 										onClick={() => setShowHistory(!showHistory)}
 										className='h-8'
 									>
-										{showHistory ? t('history.hide') : t('history.show')}
+										{showHistory ? 'Скрыть' : 'Показать'}
 									</Button>
 									{showHistory && (
 										<>
@@ -902,7 +902,7 @@ export default function PasswordGeneratorPage() {
 												className='h-8'
 											>
 												<Download className='w-3.5 h-3.5 mr-1' />
-												{t('history.download')}
+												{'Скачать'}
 											</Button>
 											<Button
 												size='sm'
@@ -911,7 +911,7 @@ export default function PasswordGeneratorPage() {
 												className='h-8'
 											>
 												<Trash2 className='w-3.5 h-3.5 mr-1' />
-												{t('history.clear')}
+												{'Очистить'}
 											</Button>
 										</>
 									)}
@@ -936,7 +936,7 @@ export default function PasswordGeneratorPage() {
 												className='p-3 bg-background/50 rounded-lg flex items-center justify-between gap-4 group hover:bg-background/80 transition-colors cursor-pointer'
 												onClick={async () => {
 													await navigator.clipboard.writeText(item.password)
-													toast.success(t('toast.copied'))
+													toast.success('Пароль скопирован')
 												}}
 											>
 												<div className='flex-1 min-w-0'>
