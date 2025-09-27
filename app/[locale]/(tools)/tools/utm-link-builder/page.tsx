@@ -41,7 +41,7 @@ import {
 	FaEnvelope
 } from 'react-icons/fa'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 interface UTMParams {
@@ -168,7 +168,7 @@ const DYNAMIC_PARAMS = {
 }
 
 export default function UTMBuilderPage() {
-	const t = useTranslations('widgets.utmBuilder')
+	// const t = useTranslations('widgets.utmBuilder')
 	const [params, setParams] = useState<UTMParams>({
 		url: 'example.com/landing-page',
 		source: '',
@@ -252,10 +252,10 @@ export default function UTMBuilderPage() {
 		try {
 			await navigator.clipboard.writeText(generatedUrl)
 			setCopied(true)
-			toast.success(t('toast.copied'))
+			toast.success('Ссылка скопирована в буфер обмена')
 			setTimeout(() => setCopied(false), 2000)
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -272,13 +272,13 @@ export default function UTMBuilderPage() {
 		const newHistory = [newLink, ...history].slice(0, 50)
 		setHistory(newHistory)
 		localStorage.setItem('utm-history', JSON.stringify(newHistory))
-		toast.success(t('toast.saved'))
+		toast.success('Ссылка сохранена в историю')
 	}
 
 	const clearHistory = () => {
 		setHistory([])
 		localStorage.removeItem('utm-history')
-		toast.success(t('toast.historyCleared'))
+		toast.success('История очищена')
 	}
 
 	const downloadHistory = () => {
@@ -296,7 +296,7 @@ export default function UTMBuilderPage() {
 		a.click()
 		URL.revokeObjectURL(url)
 
-		toast.success(t('toast.downloaded'))
+		toast.success('История загружена')
 	}
 
 	const isValidUrl = () => {
@@ -306,7 +306,7 @@ export default function UTMBuilderPage() {
 	const loadFromHistory = (link: SavedLink) => {
 		setParams(link.params)
 		setShowHistory(false)
-		toast.success(t('toast.loaded'))
+		toast.success('Ссылка загружена')
 	}
 
 	const handleFieldBlur = (fieldName: string) => {
@@ -325,7 +325,7 @@ export default function UTMBuilderPage() {
 					<div className='flex items-center justify-between'>
 						<CardTitle className='text-xl flex items-center gap-2'>
 							<LinkIcon className='w-5 h-5' />
-							{t('urlConstructor.title')}
+							Конструктор UTM-ссылок
 						</CardTitle>
 						<div className='flex gap-2'>
 							<Button
@@ -351,7 +351,7 @@ export default function UTMBuilderPage() {
 					{/* URL Input */}
 					<div className='space-y-2 mb-4'>
 						<Label htmlFor='url'>
-							{t('form.url')} <span className='text-red-500'>*</span>
+							Целевая страница <span className='text-red-500'>*</span>
 						</Label>
 						<div className='flex'>
 							<span className='flex items-center px-3 text-sm text-muted-foreground bg-muted rounded-l-md border border-r-0'>
@@ -379,7 +379,7 @@ export default function UTMBuilderPage() {
 							<div className='space-y-2'>
 								<div className='flex items-center justify-between'>
 									<Label className='text-sm text-muted-foreground'>
-										{t('result.preview')}
+										Готовая ссылка
 									</Label>
 									<div className='flex gap-2'>
 										<Button
@@ -393,7 +393,7 @@ export default function UTMBuilderPage() {
 											) : (
 												<Copy className='w-3 h-3 mr-2' />
 											)}
-											{t('result.copy')}
+											Копировать
 										</Button>
 										<Button
 											size='sm'
@@ -402,7 +402,7 @@ export default function UTMBuilderPage() {
 											className='h-8'
 										>
 											<Plus className='w-3 h-3 mr-2' />
-											{t('result.save')}
+											Сохранить
 										</Button>
 										<Button
 											size='sm'
@@ -429,7 +429,7 @@ export default function UTMBuilderPage() {
 			<div className='space-y-4'>
 				<h3 className='text-lg font-semibold flex items-center gap-2'>
 					<Sparkles className='w-5 h-5 text-primary' />
-					{t('sources.title')}
+					Популярные источники трафика
 				</h3>
 				<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
 					{PRESETS.map(preset => (
@@ -464,14 +464,14 @@ export default function UTMBuilderPage() {
 			{/* UTM Parameters Form */}
 			<Card>
 				<CardHeader>
-					<CardTitle className='text-lg'>{t('form.title')}</CardTitle>
+					<CardTitle className='text-lg'>UTM-параметры</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 						{/* Source */}
 						<div className='space-y-2'>
 							<Label htmlFor='source'>
-								{t('form.source')} <span className='text-red-500'>*</span>
+								Источник (utm_source) <span className='text-red-500'>*</span>
 							</Label>
 							<Input
 								id='source'
@@ -485,14 +485,14 @@ export default function UTMBuilderPage() {
 								)}
 							/>
 							<p className='text-xs text-muted-foreground'>
-								{t('form.sourceHint')}
+								Откуда пришёл трафик
 							</p>
 						</div>
 
 						{/* Medium */}
 						<div className='space-y-2'>
 							<Label htmlFor='medium'>
-								{t('form.medium')} <span className='text-red-500'>*</span>
+								Канал (utm_medium) <span className='text-red-500'>*</span>
 							</Label>
 							<Input
 								id='medium'
@@ -506,14 +506,14 @@ export default function UTMBuilderPage() {
 								)}
 							/>
 							<p className='text-xs text-muted-foreground'>
-								{t('form.mediumHint')}
+								Тип трафика
 							</p>
 						</div>
 
 						{/* Campaign */}
 						<div className='space-y-2'>
 							<Label htmlFor='campaign'>
-								{t('form.campaign')} <span className='text-red-500'>*</span>
+								Кампания (utm_campaign) <span className='text-red-500'>*</span>
 							</Label>
 							<Input
 								id='campaign'
@@ -529,7 +529,7 @@ export default function UTMBuilderPage() {
 								)}
 							/>
 							<p className='text-xs text-muted-foreground'>
-								{t('form.campaignHint')}
+								Название рекламной кампании
 							</p>
 						</div>
 					</div>
@@ -547,14 +547,14 @@ export default function UTMBuilderPage() {
 							) : (
 								<Eye className='w-4 h-4 mr-2' />
 							)}
-							{t('form.advanced')}
+							Дополнительные параметры
 						</Button>
 
 						{showAdvanced && (
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 								{/* Content */}
 								<div className='space-y-2'>
-									<Label htmlFor='content'>{t('form.content')}</Label>
+									<Label htmlFor='content'>Контент (utm_content)</Label>
 									<Input
 										id='content'
 										placeholder='banner-header'
@@ -564,13 +564,13 @@ export default function UTMBuilderPage() {
 										}
 									/>
 									<p className='text-xs text-muted-foreground'>
-										{t('form.contentHint')}
+										Для A/B тестирования
 									</p>
 								</div>
 
 								{/* Term */}
 								<div className='space-y-2'>
-									<Label htmlFor='term'>{t('form.term')}</Label>
+									<Label htmlFor='term'>Ключевое слово (utm_term)</Label>
 									<Input
 										id='term'
 										placeholder='buy iphone'
@@ -580,7 +580,7 @@ export default function UTMBuilderPage() {
 										}
 									/>
 									<p className='text-xs text-muted-foreground'>
-										{t('form.termHint')}
+										Поисковый запрос
 									</p>
 								</div>
 							</div>
@@ -597,7 +597,7 @@ export default function UTMBuilderPage() {
 								<div className='flex items-center gap-2 mb-2'>
 									<Info className='w-4 h-4' />
 									<span className='text-sm font-medium'>
-										{t('parameters.title')}
+										Динамические параметры
 									</span>
 								</div>
 								<div className='space-y-1'>
@@ -622,12 +622,12 @@ export default function UTMBuilderPage() {
 										>
 											{showAllParams ? (
 												<>
-													{t('parameters.showLess')}{' '}
+													Скрыть{' '}
 													<ChevronRight className='w-3 h-3 ml-1 rotate-90' />
 												</>
 											) : (
 												<>
-													{t('parameters.viewAll')}{' '}
+													Показать все{' '}
 													<ChevronRight className='w-3 h-3 ml-1' />
 												</>
 											)}
@@ -646,7 +646,7 @@ export default function UTMBuilderPage() {
 						<CardTitle className='text-lg flex items-center justify-between'>
 							<span className='flex items-center gap-2'>
 								<Clock className='w-5 h-5' />
-								{t('history.title')}
+								История ссылок
 							</span>
 							<div className='flex gap-2'>
 								<Button variant='ghost' size='sm' onClick={downloadHistory}>
@@ -688,7 +688,7 @@ export default function UTMBuilderPage() {
 												onClick={async e => {
 													e.stopPropagation()
 													await navigator.clipboard.writeText(item.url)
-													toast.success(t('toast.copied'))
+													toast.success('Ссылка скопирована в буфер обмена')
 												}}
 											>
 												<Copy className='w-3 h-3' />

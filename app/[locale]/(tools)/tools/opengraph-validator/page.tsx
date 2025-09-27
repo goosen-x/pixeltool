@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -73,7 +73,7 @@ const RECOMMENDED_OG_TAGS = [
 ]
 
 export default function OpenGraphValidatorPage() {
-	const t = useTranslations('widgets.openGraphValidator')
+	// const t = useTranslations('widgets.openGraphValidator')
 
 	const widget = useWidgetCreation({
 		widgetId: WIDGET_CONFIG.id,
@@ -88,13 +88,13 @@ export default function OpenGraphValidatorPage() {
 		validationRules: {
 			url: value => {
 				if (!value || value.trim().length === 0) {
-					return t('validation.urlRequired')
+					return 'URL обязателен для заполнения'
 				}
 				try {
 					new URL(value)
 					return true
 				} catch {
-					return t('validation.invalidUrl')
+					return 'Введите корректный URL'
 				}
 			}
 		}
@@ -208,25 +208,25 @@ export default function OpenGraphValidatorPage() {
 			setOgData(parsedOgData)
 			widget.setResult(result)
 
-			toast.success(t('toast.validated'))
+			toast.success('Валидация завершена')
 		} catch (error) {
 			const errorMessage =
 				error instanceof Error ? error.message : 'Validation failed'
 			widget.setError(errorMessage)
-			toast.error(t('toast.error'))
+			toast.error('Ошибка валидации')
 		} finally {
 			setIsValidating(false)
 			widget.setLoading(false)
 		}
-	}, [widget, t])
+	}, [widget])
 
 	// Copy tag to clipboard
 	const copyTag = useCallback(
 		(property: string, content: string) => {
 			const tag = `<meta property="${property}" content="${content}" />`
-			widget.copyToClipboard(tag, t('toast.tagCopied'))
+			widget.copyToClipboard(tag, 'Тег скопирован в буфер обмена')
 		},
-		[widget, t]
+		[widget]
 	)
 
 	// Generate missing tags
@@ -449,7 +449,7 @@ export default function OpenGraphValidatorPage() {
 				<div className='flex flex-col lg:flex-row gap-6'>
 					<div className='flex-1'>
 						<Label htmlFor='url' className='text-sm font-medium'>
-							{t('inputs.url')}
+							{'URL для проверки'}
 						</Label>
 						<div className='flex flex-col sm:flex-row gap-2 mt-2'>
 							<Input
@@ -457,7 +457,7 @@ export default function OpenGraphValidatorPage() {
 								type='url'
 								value={widget.inputs.url}
 								onChange={e => widget.updateInput('url', e.target.value)}
-								placeholder={t('inputs.urlPlaceholder')}
+								placeholder={'https://example.com'}
 								disabled={widget.isLoading}
 								className='flex-1 max-w-md'
 							/>
@@ -469,12 +469,12 @@ export default function OpenGraphValidatorPage() {
 								{isValidating ? (
 									<>
 										<Globe className='w-4 h-4 mr-2 animate-spin' />
-										{t('actions.validating')}
+										{'Проверка...'}
 									</>
 								) : (
 									<>
 										<Globe className='w-4 h-4 mr-2' />
-										{t('actions.validate')}
+										{'Проверить'}
 									</>
 								)}
 							</Button>
@@ -562,7 +562,7 @@ export default function OpenGraphValidatorPage() {
 			{/* Social Media Previews */}
 			{ogData && (
 				<div className='space-y-3'>
-					<h3 className='font-semibold text-sm'>{t('preview.title')}</h3>
+					<h3 className='font-semibold text-sm'>{'Превью в социальных сетях'}</h3>
 					<div className='w-full'>
 						<TelegramPreview data={ogData} />
 					</div>
@@ -579,9 +579,9 @@ export default function OpenGraphValidatorPage() {
 			{validationResult && validationResult.missingTags.length > 0 && (
 				<Card className='p-4'>
 					<div className='space-y-3'>
-						<h3 className='font-semibold text-sm'>{t('generator.title')}</h3>
+						<h3 className='font-semibold text-sm'>{'Генератор недостающих тегов'}</h3>
 						<p className='text-xs text-muted-foreground'>
-							{t('generator.missingDescription')}
+							{'Добавьте эти теги в <head> вашей страницы'}
 						</p>
 						<div className='bg-muted p-3 rounded-lg font-mono text-xs overflow-x-auto'>
 							<pre>{generateMissingTags()}</pre>
@@ -590,7 +590,7 @@ export default function OpenGraphValidatorPage() {
 							onClick={() =>
 								widget.copyToClipboard(
 									generateMissingTags(),
-									t('toast.tagsCopied')
+									'Теги скопированы в буфер обмена'
 								)
 							}
 							variant='outline'
@@ -598,7 +598,7 @@ export default function OpenGraphValidatorPage() {
 							className='w-full sm:w-auto'
 						>
 							<Copy className='w-4 h-4 mr-2' />
-							{t('actions.copyTags')}
+							{'Копировать теги'}
 						</Button>
 					</div>
 				</Card>
@@ -627,8 +627,8 @@ export default function OpenGraphValidatorPage() {
 								}
 							>
 								{validationResult.isValid
-									? t('results.valid')
-									: t('results.invalid')}
+									? 'Все Open Graph теги корректны!'
+									: 'Обнаружены проблемы с Open Graph тегами'}
 							</div>
 							{validationResult.errors.length > 0 && (
 								<div className='mt-2 text-sm'>
@@ -658,7 +658,7 @@ export default function OpenGraphValidatorPage() {
 					{Object.keys(validationResult.foundTags).length > 0 && (
 						<Card className='p-3'>
 							<h3 className='font-semibold text-sm mb-2'>
-								{t('results.foundTags')}
+								{'Найденные теги'}
 							</h3>
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-1.5'>
 								{Object.entries(validationResult.foundTags).map(
@@ -706,19 +706,19 @@ export default function OpenGraphValidatorPage() {
 					<Globe className='w-5 h-5 text-muted-foreground shrink-0 mt-0.5' />
 					<div className='space-y-2 text-sm text-muted-foreground'>
 						<div className='font-semibold text-foreground'>
-							{t('info.title')}
+							{'Что такое Open Graph?'}
 						</div>
 						<ul className='space-y-1'>
-							<li>• {t('info.point1')}</li>
-							<li>• {t('info.point2')}</li>
-							<li>• {t('info.point3')}</li>
+							<li>• {'Open Graph - это протокол для создания превью ссылок в социальных сетях'}</li>
+							<li>• {'Помогает контролировать, как ваша страница выглядит при репосте'}</li>
+							<li>• {'Используется Facebook, Twitter, LinkedIn, Telegram и другими платформами'}</li>
 						</ul>
 
 						<div className='mt-3 p-3 bg-background rounded-lg border'>
 							<div className='font-semibold text-foreground mb-1'>
-								{t('info.proTip')}
+								{'Совет'}
 							</div>
-							<p>{t('info.proTipDescription')}</p>
+							<p>{'Используйте изображения размером 1200x630 пикселей для оптимального отображения в социальных сетях. Убедитесь, что все изображения доступны по HTTPS.'}</p>
 						</div>
 					</div>
 				</div>
