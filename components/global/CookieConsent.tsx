@@ -58,7 +58,10 @@ export function CookieConsent() {
 								</div>
 
 								<div className='flex-1'>
-									<p className='text-sm text-foreground'>Мы используем файлы cookie для улучшения вашего опыта. Продолжая, вы соглашаетесь с их использованием.</p>
+									<p className='text-sm text-foreground'>
+										Мы используем файлы cookie для улучшения вашего опыта.
+										Продолжая, вы соглашаетесь с их использованием.
+									</p>
 								</div>
 
 								<Button

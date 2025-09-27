@@ -56,7 +56,8 @@ export const Footer = () => {
 							</span>
 						</h2>
 						<p className='text-xl text-muted-foreground max-w-2xl mx-auto mb-8'>
-							Экономьте время с нашими профессиональными веб-инструментами. Работают прямо в браузере.
+							Экономьте время с нашими профессиональными веб-инструментами.
+							Работают прямо в браузере.
 						</p>
 
 						{/* CTA Buttons */}
@@ -107,7 +108,8 @@ export const Footer = () => {
 								Оставайтесь в курсе событий
 							</p>
 							<p className='text-lg text-muted-foreground mb-8 max-w-2xl mx-auto'>
-								Получайте уведомления о новых инструментах и обновлениях первыми.
+								Получайте уведомления о новых инструментах и обновлениях
+								первыми.
 							</p>
 							<form className='flex flex-col sm:flex-row gap-4 max-w-md mx-auto'>
 								<input

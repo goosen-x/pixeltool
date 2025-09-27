@@ -68,7 +68,9 @@ export default async function Blog(props: Props) {
 				<section>
 					{posts.length === 0 ? (
 						<div className='text-center py-16'>
-							<p className='text-xl text-gray-600'>Пока нет опубликованных постов</p>
+							<p className='text-xl text-gray-600'>
+								Пока нет опубликованных постов
+							</p>
 						</div>
 					) : (
 						<div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-16 lg:gap-x-32 gap-y-20 md:gap-y-32 mb-32'>

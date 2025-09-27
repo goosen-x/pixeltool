@@ -158,9 +158,7 @@ export const ModalDrawer = ({ open, setOpen, project }: Props) => {
 						</ScrollArea>
 						<DrawerFooter>
 							<DrawerClose>
-								<Button variant='outline'>
-									Закрыть
-								</Button>
+								<Button variant='outline'>Закрыть</Button>
 							</DrawerClose>
 						</DrawerFooter>
 					</DrawerContent>
