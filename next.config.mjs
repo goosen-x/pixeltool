@@ -1,6 +1,8 @@
+import createNextIntlPlugin from 'next-intl/plugin'
 import { SEO_REDIRECTS } from './lib/seo/seo-redirects.mjs'
 
 /** @type {import('next').NextConfig} */
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 const nextConfig = {
 	eslint: {
@@ -36,4 +38,4 @@ const nextConfig = {
 	}
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)
