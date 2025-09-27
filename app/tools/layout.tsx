@@ -1,6 +1,6 @@
 import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
 import { ReactNode } from 'react'
-import '../../../widget-transitions.css'
+import '../widget-transitions.css'
 
 type Props = {
 	children: ReactNode
