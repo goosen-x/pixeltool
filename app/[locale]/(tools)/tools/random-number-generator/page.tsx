@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface GeneratedResult {
@@ -63,7 +63,7 @@ function generateRandomNumbers(
 }
 
 export default function RandomNumberGeneratorPage() {
-	const t = useTranslations('widgets.randomNumberGenerator')
+	// const t = useTranslations('widgets.randomNumberGenerator') // Removed
 	const [min, setMin] = useState(1)
 	const [max, setMax] = useState(10)
 	const [count, setCount] = useState(5)
@@ -75,19 +75,19 @@ export default function RandomNumberGeneratorPage() {
 
 	const validate = (): string | null => {
 		if (min < 0 || min > 999999) {
-			return t('validation.minRange')
+			return 'Минимальное значение должно быть от 0 до 999999'
 		}
 		if (max < 0 || max > 999999) {
-			return t('validation.maxRange')
+			return 'Максимальное значение должно быть от 0 до 999999'
 		}
 		if (min > max) {
-			return t('validation.minGreaterThanMax')
+			return 'Минимальное значение не может быть больше максимального'
 		}
 		if (count < 1 || count > 1000) {
-			return t('validation.countRange')
+			return 'Количество должно быть от 1 до 1000'
 		}
 		if (unique && count > max - min + 1) {
-			return t('validation.uniqueCount', { count, min, max })
+			return `Невозможно сгенерировать ${count} уникальных чисел в диапазоне от ${min} до ${max}`
 		}
 		return null
 	}
@@ -110,7 +110,7 @@ export default function RandomNumberGeneratorPage() {
 			setResults([newResult, ...results.slice(0, 9)]) // Keep last 10 results
 		} catch (err) {
 			setError(
-				err instanceof Error ? err.message : t('validation.generationFailed')
+				err instanceof Error ? err.message : 'Ошибка генерации'
 			)
 		}
 	}
@@ -119,10 +119,10 @@ export default function RandomNumberGeneratorPage() {
 		try {
 			await navigator.clipboard.writeText(numbers.join('    '))
 			setCopiedId(id)
-			toast.success(t('toast.copied'))
+			toast.success('Скопировано в буфер обмена!')
 			setTimeout(() => setCopiedId(null), 2000)
 		} catch (err) {
-			toast.error(t('toast.copyFailed'))
+			toast.error('Ошибка копирования!')
 		}
 	}
 
@@ -141,7 +141,7 @@ export default function RandomNumberGeneratorPage() {
 		a.download = `random-numbers-${new Date().toISOString().split('T')[0]}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success(t('toast.downloaded'))
+		toast.success('Файл загружен!')
 	}
 
 	useEffect(() => {
@@ -207,7 +207,7 @@ export default function RandomNumberGeneratorPage() {
 					<div className='flex flex-wrap items-center gap-2 sm:gap-3'>
 						<div className='flex items-center gap-1.5'>
 							<label className='text-xs font-medium text-muted-foreground'>
-								{t('inputs.minimum.label')}
+								Минимум
 							</label>
 							<Input
 								type='number'
@@ -222,7 +222,7 @@ export default function RandomNumberGeneratorPage() {
 
 						<div className='flex items-center gap-1.5'>
 							<label className='text-xs font-medium text-muted-foreground'>
-								{t('inputs.maximum.label')}
+								Максимум
 							</label>
 							<Input
 								type='number'
@@ -237,7 +237,7 @@ export default function RandomNumberGeneratorPage() {
 
 						<div className='flex items-center gap-1.5'>
 							<label className='text-xs font-medium text-muted-foreground'>
-								{t('inputs.count.label')}
+								Количество
 							</label>
 							<Input
 								type='number'
@@ -261,7 +261,7 @@ export default function RandomNumberGeneratorPage() {
 								htmlFor='unique'
 								className='text-xs font-medium cursor-pointer'
 							>
-								{t('inputs.unique')}
+								Уникальные
 							</label>
 						</div>
 					</div>
@@ -287,7 +287,7 @@ export default function RandomNumberGeneratorPage() {
 								))}
 							</div>
 							<p className='text-xs text-muted-foreground'>
-								{t('result.generatedAt')}{' '}
+								Сгенерировано в{' '}
 								{latestResult.timestamp.toLocaleString()}
 							</p>
 						</div>
@@ -300,7 +300,7 @@ export default function RandomNumberGeneratorPage() {
 							className='flex-1 sm:flex-none gap-2'
 						>
 							<Shuffle className='w-4 h-4' />
-							{t('actions.generate')}
+							Генерировать
 						</Button>
 						{latestResult && (
 							<>
@@ -320,7 +320,7 @@ export default function RandomNumberGeneratorPage() {
 									) : (
 										<Copy className='w-4 h-4' />
 									)}
-									{t('actions.copy')}
+									Копировать
 								</Button>
 								{results.length > 1 && (
 									<Button
@@ -352,7 +352,7 @@ export default function RandomNumberGeneratorPage() {
 					<div className='flex items-center justify-between mb-3'>
 						<h2 className='text-base font-semibold flex items-center gap-2'>
 							<History className='w-4 h-4' />
-							{t('sections.history')}
+							История
 							<span className='text-xs text-muted-foreground font-normal'>
 								({results.length - 1})
 							</span>
@@ -408,10 +408,7 @@ export default function RandomNumberGeneratorPage() {
 
 						{results.length > 6 && (
 							<p className='text-xs text-muted-foreground text-center pt-2'>
-								{t('sections.showingRecent', {
-									count: 5,
-									total: results.length - 1
-								})}
+								{`Показаны последние ${5} из ${results.length - 1} результатов`}
 							</p>
 						)}
 					</div>
@@ -420,15 +417,15 @@ export default function RandomNumberGeneratorPage() {
 
 			{/* Info Section */}
 			<Card className='p-6'>
-				<h2 className='text-lg font-semibold mb-4'>{t('sections.about')}</h2>
+				<h2 className='text-lg font-semibold mb-4'>О виджете</h2>
 				<div className='space-y-3 text-sm text-muted-foreground'>
-					<p>{t('info.description')}</p>
-					<p>{t('info.cryptoApi')}</p>
+					<p>Генератор криптографически стойких случайных чисел для различных применений.</p>
+					<p>Использует Web Crypto API для истинной случайности.</p>
 					<ul className='list-disc list-inside space-y-1 mt-3'>
-						<li>{t('info.features.range')}</li>
-						<li>{t('info.features.maxResults')}</li>
-						<li>{t('info.features.noDuplicates')}</li>
-						<li>{t('info.features.timestamps')}</li>
+						<li>Диапазон чисел от 0 до 999,999</li>
+						<li>До 1000 результатов за раз</li>
+						<li>Опция уникальных чисел без дубликатов</li>
+						<li>История с временными метками</li>
 					</ul>
 				</div>
 			</Card>

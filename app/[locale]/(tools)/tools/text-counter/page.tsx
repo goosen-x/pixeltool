@@ -35,7 +35,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl' // Removed
 
 interface TextStats {
 	characters: number
@@ -258,7 +258,7 @@ function CollapsibleSection({
 }
 
 export default function TextCounterPage() {
-	const t = useTranslations('widgets.textCounter')
+	// const t = useTranslations('widgets.textCounter') // Removed
 	const [text, setText] = useState('')
 	const [stats, setStats] = useState<TextStats>({
 		characters: 0,
@@ -367,43 +367,43 @@ export default function TextCounterPage() {
 
 	const copyStats = () => {
 		const statsText = `
-${t('statsExport.title')}
+Анализ текста
 
-${t('stats.characters')}: ${stats.characters}
-${t('stats.charactersNoSpaces')}: ${stats.charactersNoSpaces}
-${t('stats.words')}: ${stats.words}
-${t('stats.sentences')}: ${stats.sentences}
-${t('stats.paragraphs')}: ${stats.paragraphs}
+Символов: ${stats.characters}
+Символов без пробелов: ${stats.charactersNoSpaces}
+Слов: ${stats.words}
+Предложений: ${stats.sentences}
+Абзацев: ${stats.paragraphs}
 
-${t('statsExport.readingTime', { time: stats.readingTime })}
-${t('statsExport.speakingTime', { time: stats.speakingTime })}
+Время чтения: ${stats.readingTime} мин
+Время речи: ${stats.speakingTime} мин
 
-${t('statsExport.avgWordLength', { length: stats.avgWordLength.toFixed(1) })}
-${t('statsExport.avgSentenceLength', { length: stats.avgSentenceLength.toFixed(1) })}
-${t('statsExport.longestWordLabel', { word: stats.longestWord })}
+Средняя длина слова: ${stats.avgWordLength.toFixed(1)} символов
+Средняя длина предложения: ${stats.avgSentenceLength.toFixed(1)} слов
+Самое длинное слово: ${stats.longestWord}
 
-${t('statsExport.commonWordsLabel')}
+Частые слова:
 ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n')}
     `.trim()
 
 		navigator.clipboard.writeText(statsText)
-		toast.success(t('toast.statsCopied'))
+		toast.success('Статистика скопирована в буфер обмена!')
 	}
 
 	const copyText = () => {
 		navigator.clipboard.writeText(text)
-		toast.success(t('toast.textCopied'))
+		toast.success('Текст скопирован в буфер обмена!')
 	}
 
 	const clearText = () => {
 		setText('')
 		setSelectedPlatform(null)
-		toast.success(t('toast.textCleared'))
+		toast.success('Текст очищен!')
 	}
 
 	const loadExample = () => {
-		setText(t('exampleText'))
-		toast.success(t('toast.exampleLoaded'))
+		setText('Добро пожаловать в анализатор текста! Этот инструмент помогает вам анализировать ваш текст в реальном времени. Попробуйте ввести или вставить любой текст, и вы увидите мгновенную статистику.')
+		toast.success('Пример загружен!')
 	}
 
 	const getPlatformProgress = (platform: PlatformLimit): number => {
@@ -455,13 +455,13 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 			key: 'k',
 			alt: true,
 			action: clearText,
-			description: t('shortcuts.clear')
+			description: 'Очистить'
 		},
 		{
 			key: 'c',
 			primary: true,
 			action: copyStats,
-			description: t('shortcuts.copyStats')
+			description: 'Копировать статистику'
 		},
 		{
 			key: 'h',
@@ -469,9 +469,9 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 			action: () => {
 				const highlighted = highlightKeywords()
 				setText(highlighted)
-				toast.success(t('shortcuts.highlightCommon'))
+				toast.success('Выделить частые слова')
 			},
-			description: t('shortcuts.highlightCommon'),
+			description: 'Выделить частые слова',
 			enabled: stats.commonWords.length > 0
 		},
 		{
@@ -479,10 +479,10 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 			primary: true,
 			action: () => {
 				toast.info(
-					`${t('shortcuts.limits')}: ${PLATFORM_LIMITS.map(p => p.name).join(', ')}`
+					`Показать лимиты: ${PLATFORM_LIMITS.map(p => p.name).join(', ')}`
 				)
 			},
-			description: t('shortcuts.showLimits')
+			description: 'Показать лимиты'
 		}
 	]
 
@@ -506,7 +506,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								<div className='flex items-center justify-between'>
 									<div>
 										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											{t('stats.characters')}
+											Символов
 										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.characters} />
@@ -531,7 +531,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								<div className='flex items-center justify-between'>
 									<div>
 										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											{t('stats.words')}
+											Слов
 										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.words} />
@@ -556,7 +556,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								<div className='flex items-center justify-between'>
 									<div>
 										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											{t('stats.sentences')}
+											Предложений
 										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.sentences} />
@@ -581,7 +581,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								<div className='flex items-center justify-between'>
 									<div>
 										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											{t('stats.readingTime')}
+											Время чтения
 										</p>
 										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent'>
 											<AnimatedNumber value={stats.readingTime} suffix=' min' />
@@ -605,7 +605,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								id='text-input'
 								value={text}
 								onChange={e => setText(e.target.value)}
-								placeholder={t('placeholder')}
+								placeholder='Введите или вставьте текст для анализа...'
 								className='min-h-[250px] sm:min-h-[300px] resize-y pr-12 sm:pr-16 text-base border-0 focus:ring-0 bg-transparent placeholder:text-muted-foreground/60'
 							/>
 							{/* Floating Character Counter */}
@@ -682,7 +682,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									>
 										<BookOpen className='w-4 h-4 text-blue-500' />
 										<span className='font-medium'>
-											~{stats.readingTime} {t('labels.minRead')}
+											~{stats.readingTime} мин чтение
 										</span>
 									</motion.div>
 									<motion.div
@@ -691,7 +691,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									>
 										<Mic className='w-4 h-4 text-green-500' />
 										<span className='font-medium'>
-											~{stats.speakingTime} {t('labels.minSpeech')}
+											~{stats.speakingTime} мин речь
 										</span>
 									</motion.div>
 									<motion.div
@@ -700,8 +700,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									>
 										<Type className='w-4 h-4 text-purple-500' />
 										<span className='font-medium'>
-											{stats.avgWordLength.toFixed(1)}{' '}
-											{t('labels.avgCharsPerWord')}
+											{stats.avgWordLength.toFixed(1)} букв/слово
 										</span>
 									</motion.div>
 								</div>
@@ -712,7 +711,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 
 				{/* Collapsible Platform Limits Section */}
 				<CollapsibleSection
-					title={t('sections.platformLimits')}
+					title='Лимиты платформ'
 					icon={<Globe className='w-5 h-5' />}
 					defaultOpen={false}
 				>
@@ -755,8 +754,8 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 											)}
 										>
 											{remaining >= 0
-												? `${remaining} ${t('labels.left')}`
-												: `${Math.abs(remaining)} ${t('labels.over')}`}
+												? `${remaining} осталось`
+												: `${Math.abs(remaining)} превышено`}
 										</span>
 									</div>
 									<Progress
@@ -775,7 +774,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 				{/* Collapsible Advanced Analysis Section */}
 				{stats.words > 0 && (
 					<CollapsibleSection
-						title={t('sections.advancedAnalysis')}
+						title='Расширенный анализ'
 						icon={<BarChart3 className='w-5 h-5' />}
 						defaultOpen={false}
 					>
@@ -784,12 +783,12 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 							<div className='space-y-4'>
 								<div>
 									<h4 className='text-sm font-medium mb-3'>
-										{t('sections.characterAnalysis')}
+										 Анализ символов
 									</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
-												{t('stats.charactersNoSpaces')}
+												Символов без пробелов
 											</span>
 											<span className='font-mono'>
 												{stats.charactersNoSpaces}
@@ -797,7 +796,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 										</div>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
-												{t('stats.spaces')}
+												Пробелов
 											</span>
 											<span className='font-mono'>
 												{stats.characters - stats.charactersNoSpaces}
@@ -805,7 +804,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 										</div>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
-												{t('stats.paragraphs')}
+												Абзацев
 											</span>
 											<span className='font-mono'>{stats.paragraphs}</span>
 										</div>
@@ -814,12 +813,12 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 
 								<div>
 									<h4 className='text-sm font-medium mb-3'>
-										{t('sections.averages')}
+										Средние значения
 									</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
-												{t('labels.wordsPerSentence')}
+												Слов в предложении
 											</span>
 											<span className='font-mono'>
 												{stats.avgSentenceLength.toFixed(1)}
@@ -827,7 +826,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 										</div>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
-												{t('labels.charactersPerWord')}
+												Символов в слове
 											</span>
 											<span className='font-mono'>
 												{stats.avgWordLength.toFixed(1)}
@@ -842,11 +841,11 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								{stats.longestWord && (
 									<div>
 										<h4 className='text-sm font-medium mb-3'>
-											{t('sections.longestWord')}
+											Самое длинное слово
 										</h4>
 										<Badge variant='secondary' className='font-mono'>
 											{stats.longestWord} ({stats.longestWord.length}{' '}
-											{t('labels.chars')})
+											символов)
 										</Badge>
 									</div>
 								)}
@@ -854,7 +853,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 								{stats.commonWords.length > 0 && (
 									<div>
 										<h4 className='text-sm font-medium mb-3'>
-											{t('sections.commonWords')}
+											Частые слова
 										</h4>
 										<div className='space-y-2'>
 											{stats.commonWords.map(({ word, count }) => (
