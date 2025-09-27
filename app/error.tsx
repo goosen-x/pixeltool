@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Copy, Check } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 export default function Error({
@@ -13,7 +13,7 @@ export default function Error({
 	error: Error & { digest?: string }
 	reset: () => void
 }) {
-	const t = useTranslations('Error')
+	// const t = useTranslations('Error')
 	const [copied, setCopied] = useState(false)
 
 	useEffect(() => {
@@ -54,17 +54,17 @@ export default function Error({
 				</div>
 
 				<h1 className='mb-4 text-2xl font-bold tracking-tight text-foreground sm:text-4xl'>
-					{t('title')}
+					Упс! Что-то пошло не так
 				</h1>
 
-				<p className='mb-4 text-muted-foreground'>{t('description')}</p>
+				<p className='mb-4 text-muted-foreground'>К сожалению, произошла неожиданная ошибка. Мы уже работаем над её устранением.</p>
 
 				{/* Показываем детали ошибки только в development */}
 				{process.env.NODE_ENV === 'development' && (
 					<div className='mb-6 rounded-lg bg-muted p-4 text-left relative'>
 						<div className='flex items-center justify-between mb-2'>
 							<p className='text-sm font-semibold text-foreground'>
-								{t('errorDetails')}
+								Детали ошибки
 							</p>
 							<Button
 								variant='ghost'
@@ -95,7 +95,7 @@ export default function Error({
 				{process.env.NODE_ENV === 'production' && error.digest && (
 					<div className='mb-6 flex items-center gap-2 justify-center'>
 						<p className='text-sm text-muted-foreground'>
-							{t('errorId')} <code className='font-mono'>{error.digest}</code>
+							ID ошибки: <code className='font-mono'>{error.digest}</code>
 						</p>
 						<Button
 							variant='ghost'
@@ -114,10 +114,10 @@ export default function Error({
 
 				<div className='flex gap-4 justify-center'>
 					<Button onClick={handleReset} variant='default'>
-						{t('tryAgain')}
+						Попробовать снова
 					</Button>
 					<Button asChild variant='outline'>
-						<Link href='/'>{t('goHome')}</Link>
+						<Link href='/'>На главную</Link>
 					</Button>
 				</div>
 			</div>

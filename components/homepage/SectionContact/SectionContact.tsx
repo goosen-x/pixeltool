@@ -3,7 +3,8 @@
 import { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { SectionTitle } from '@/components/global/SectionTitle'
 import Link from 'next/link'
 import { ArrowRight, Mail, MessageSquare, Send } from 'lucide-react'
@@ -13,7 +14,8 @@ export const SectionContact = ({
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
 	const t = useTranslations('contact')
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 
 	return (
 		<section className={cn('mb-24', className)} {...rest}>
@@ -48,7 +50,7 @@ export const SectionContact = ({
 
 						<div className='flex flex-wrap gap-4 justify-center pt-4'>
 							<Link
-								href={`/${locale}/contact`}
+								href='/contact'
 								className='group inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:bg-accent/90 transition-all hover:scale-105'
 							>
 								<MessageSquare className='w-5 h-5' />

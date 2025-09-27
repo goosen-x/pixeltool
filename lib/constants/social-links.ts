@@ -153,18 +153,17 @@ export function getBaseUrl(): string {
 	return 'https://pixeltool.pro'
 }
 
-// Generate full URL with UTM parameters (defaults to English)
+// Generate full URL with UTM parameters
 export function generateSocialUrl(
 	shortCode: string,
-	additionalParams?: Record<string, string>,
-	locale: string = 'en'
+	additionalParams?: Record<string, string>
 ): string {
 	const social = SOCIAL_LINKS[shortCode]
 	if (!social) {
-		return `${getBaseUrl()}/en`
+		return getBaseUrl()
 	}
 
-	const url = new URL(`${getBaseUrl()}/${locale}`)
+	const url = new URL(getBaseUrl())
 	url.searchParams.set('utm_source', social.utm_source)
 	url.searchParams.set('utm_medium', social.utm_medium)
 
@@ -188,14 +187,14 @@ export function generateShortLink(shortCode: string): string {
 }
 
 // Get all short links for display
-export function getAllShortLinks(locale: string = 'en'): Array<{
+export function getAllShortLinks(): Array<{
 	shortLink: string
 	fullLink: string
 	social: SocialLink
 }> {
 	return Object.values(SOCIAL_LINKS).map(social => ({
 		shortLink: generateShortLink(social.shortCode),
-		fullLink: generateSocialUrl(social.shortCode, undefined, locale),
+		fullLink: generateSocialUrl(social.shortCode),
 		social
 	}))
 }

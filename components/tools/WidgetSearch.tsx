@@ -220,7 +220,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 									{projects.map(project => (
 										<Link
 											key={project.id}
-											href={`/${locale}/tools/${project.path}`}
+											href={`/tools/${project.path}`}
 											className='block group'
 										>
 											<Card className='h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-border/50 bg-gradient-to-br from-background to-muted/10'>
@@ -266,7 +266,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 									{projects.map(project => (
 										<Link
 											key={project.id}
-											href={`/${locale}/tools/${project.path}`}
+											href={`/tools/${project.path}`}
 											className='block group'
 										>
 											<Card className='transition-all duration-300 hover:shadow-lg border-border/50 bg-gradient-to-br from-background to-muted/10'>

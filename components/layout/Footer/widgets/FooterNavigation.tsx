@@ -10,10 +10,10 @@ export const FooterNavigation = () => {
 	const pathname = usePathname()
 
 	const links = [
-		{ title: 'Главная', href: `/${locale}`, icon: Home },
-		{ title: 'Инструменты', href: `/${locale}/tools`, icon: FolderOpen },
-		{ title: 'Блог', href: `/${locale}/blog`, icon: BookOpen },
-		{ title: 'Контакты', href: `/${locale}/contact`, icon: Mail }
+		{ title: 'Главная', href: '/', icon: Home },
+		{ title: 'Инструменты', href: '/tools', icon: FolderOpen },
+		{ title: 'Блог', href: '/blog', icon: BookOpen },
+		{ title: 'Контакты', href: '/contact', icon: Mail }
 	]
 
 	return (
@@ -28,7 +28,7 @@ export const FooterNavigation = () => {
 						const Icon = link.icon
 						const isActive =
 							pathname === link.href ||
-							(link.href !== `/${locale}` && pathname.startsWith(link.href))
+							(link.href !== '/' && pathname.startsWith(link.href))
 
 						return (
 							<Link

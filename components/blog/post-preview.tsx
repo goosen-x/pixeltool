@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { OptimizedImage } from '@/components/ui/optimized-image'
 import { Author } from '@/lib/types/author'
 import DateFormatter from './date-formatter'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { PostCover } from './post-cover'
 
 type Props = {
@@ -22,12 +22,13 @@ export function PostPreview({
 	author,
 	slug
 }: Props) {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 
 	return (
 		<article>
 			<div className='mb-5'>
-				<Link href={`/${locale}/blog/${slug}`} className='group'>
+				<Link href={`/blog/${slug}`} className='group'>
 					<PostCover title={title} slug={slug} className='aspect-[16/9]' />
 				</Link>
 			</div>

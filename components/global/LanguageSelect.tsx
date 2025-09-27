@@ -29,12 +29,12 @@ type Props = {
 export const LanguageSelect = ({ className, locale }: Props) => {
 	const pathname = usePathname()
 
-	// Удаляем текущую локаль из пути, чтобы получить относительный путь
-	const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/'
+	// Use current pathname directly since locale is no longer in the path
+	const pathWithoutLocale = pathname || '/'
 
 	const handleLanguageChange = (newLocale: string) => {
-		// Используем window.location для сохранения темы
-		window.location.href = `/${newLocale}${pathWithoutLocale}`
+		// For now, just redirect to the same path (will be handled by middleware)
+		window.location.href = pathWithoutLocale
 	}
 
 	return (

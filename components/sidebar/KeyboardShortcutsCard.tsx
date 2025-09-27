@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 // import { useTranslations, useLocale } from 'next-intl'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Keyboard, ChevronDown, ChevronUp } from 'lucide-react'
@@ -23,7 +23,8 @@ interface KeyboardShortcutsCardProps {
 export function KeyboardShortcutsCard({
 	widgetShortcuts
 }: KeyboardShortcutsCardProps) {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 	const [showAllShortcuts, setShowAllShortcuts] = useState(false)
 

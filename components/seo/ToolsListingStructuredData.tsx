@@ -11,7 +11,7 @@ export function ToolsListingStructuredData({
 	totalTools
 }: ToolsListingStructuredDataProps) {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
-	const url = `${baseUrl}/${locale}/tools`
+	const url = `${baseUrl}/tools`
 
 	// CollectionPage schema for tools listing
 	const collectionPageSchema = {
@@ -53,7 +53,7 @@ export function ToolsListingStructuredData({
 				item: {
 					'@type': 'SoftwareApplication',
 					name: widget.translationKey,
-					url: `${baseUrl}/${locale}/tools/${widget.path}`,
+					url: `${baseUrl}/tools/${widget.path}`,
 					applicationCategory: 'WebApplication',
 					operatingSystem: 'Web Browser',
 					offers: {
@@ -110,7 +110,7 @@ export function ToolsListingStructuredData({
 			'@type': 'SearchAction',
 			target: {
 				'@type': 'EntryPoint',
-				urlTemplate: `${baseUrl}/${locale}/tools?search={search_term_string}`
+				urlTemplate: `${baseUrl}/tools?search={search_term_string}`
 			},
 			'query-input': 'required name=search_term_string'
 		},

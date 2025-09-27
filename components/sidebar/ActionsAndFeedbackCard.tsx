@@ -1,7 +1,7 @@
 'use client'
 
 // import { useTranslations, useLocale } from 'next-intl'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Code2, Share2 } from 'lucide-react'
@@ -9,7 +9,8 @@ import { FeedbackModal } from '@/components/feedback'
 import { toast } from 'sonner'
 
 export function ActionsAndFeedbackCard() {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 
 	return (

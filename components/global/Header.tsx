@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import ThemeToggle from '@/components/global/ThemeToggle'
-import { LanguageSelect } from '@/components/global/LanguageSelect'
+// import { LanguageSelect } from '@/components/global/LanguageSelect'
 import { Logo } from '@/components/global/Logo'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -33,7 +33,8 @@ import {
 } from '@/components/ui/drawer-top'
 
 const Header = () => {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	const pathname = usePathname()
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 	const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -56,12 +57,12 @@ const Header = () => {
 
 	// Parse pathname to create breadcrumb items
 	const pathSegments = pathname.split('/').filter(Boolean)
-	// Remove locale from segments
-	const segments = pathSegments.slice(1)
+	// Use all segments since there's no locale to remove
+	const segments = pathSegments
 
 	// Create breadcrumb items
 	const breadcrumbs = segments.map((segment, index) => {
-		const path = `/${locale}/${segments.slice(0, index + 1).join('/')}`
+		const path = `/${segments.slice(0, index + 1).join('/')}`
 		// Capitalize first letter for display
 		const label = segment.charAt(0).toUpperCase() + segment.slice(1)
 		return { path, label, segment }
@@ -78,7 +79,7 @@ const Header = () => {
 					{/* Logo/Brand with Breadcrumbs */}
 					<div className='flex items-center'>
 						<Link
-							href={`/${locale}`}
+							href='/'
 							className='group flex items-center gap-3 text-2xl font-bold text-foreground hover:text-foreground/80 transition-all'
 						>
 							<div className='relative'>
@@ -124,10 +125,10 @@ const Header = () => {
 					<div className='flex items-center gap-2 sm:gap-4'>
 						<nav className='hidden lg:flex items-center gap-1'>
 							<Link
-								href={`/${locale}`}
+								href='/'
 								className={cn(
 									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
-									pathname === `/${locale}`
+									pathname === '/'
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 								)}
@@ -137,10 +138,10 @@ const Header = () => {
 							</Link>
 
 							<Link
-								href={`/${locale}/tools`}
+								href='/tools'
 								className={cn(
 									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
-									pathname.startsWith(`/${locale}/tools`)
+									pathname.startsWith('/tools')
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 								)}
@@ -149,10 +150,10 @@ const Header = () => {
 								<span>Инструменты</span>
 							</Link>
 							<Link
-								href={`/${locale}/blog`}
+								href='/blog'
 								className={cn(
 									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
-									pathname.startsWith(`/${locale}/blog`)
+									pathname.startsWith('/blog')
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 								)}
@@ -161,10 +162,10 @@ const Header = () => {
 								<span>Блог</span>
 							</Link>
 							<Link
-								href={`/${locale}/contact`}
+								href='/contact'
 								className={cn(
 									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
-									pathname === `/${locale}/contact`
+									pathname === '/contact'
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 								)}
@@ -187,7 +188,7 @@ const Header = () => {
 								</kbd>
 							</Button>
 							<div className='h-8 w-px bg-border/50' />
-							<LanguageSelect className='shrink-0' locale={locale} />
+							{/* <LanguageSelect className='shrink-0' locale={locale} /> */}
 							<ThemeToggle />
 						</div>
 					</div>
@@ -251,14 +252,14 @@ const Header = () => {
 
 									{/* Navigation links */}
 									<Link
-										href={`/${locale}`}
+										href='/'
 										onClick={e => {
 											e.stopPropagation()
 											setTimeout(() => setIsMobileMenuOpen(false), 50)
 										}}
 										className={cn(
 											'group flex items-center gap-3 rounded-xl px-5 py-4 font-medium transition-all duration-300 relative overflow-hidden',
-											pathname === `/${locale}`
+											pathname === '/'
 												? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 												: 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
 										)}
@@ -267,20 +268,20 @@ const Header = () => {
 											<Home className='w-5 h-5' />
 										</div>
 										<span className='relative z-10 font-semibold'>Главная</span>
-										{pathname !== `/${locale}` && (
+										{pathname !== '/' && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 										)}
 									</Link>
 
 									<Link
-										href={`/${locale}/tools`}
+										href='/tools'
 										onClick={e => {
 											e.stopPropagation()
 											setTimeout(() => setIsMobileMenuOpen(false), 50)
 										}}
 										className={cn(
 											'flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition-all duration-300',
-											pathname.startsWith(`/${locale}/tools`)
+											pathname.startsWith('/tools')
 												? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 												: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 										)}
@@ -291,20 +292,20 @@ const Header = () => {
 										<span className='relative z-10 font-semibold'>
 											Инструменты
 										</span>
-										{!pathname.startsWith(`/${locale}/tools`) && (
+										{!pathname.startsWith('/tools') && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 										)}
 									</Link>
 
 									<Link
-										href={`/${locale}/blog`}
+										href='/blog'
 										onClick={e => {
 											e.stopPropagation()
 											setTimeout(() => setIsMobileMenuOpen(false), 50)
 										}}
 										className={cn(
 											'flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition-all duration-300',
-											pathname.startsWith(`/${locale}/blog`)
+											pathname.startsWith('/blog')
 												? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 												: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 										)}
@@ -313,20 +314,20 @@ const Header = () => {
 											<BookOpen className='w-5 h-5' />
 										</div>
 										<span className='relative z-10 font-semibold'>Блог</span>
-										{!pathname.startsWith(`/${locale}/blog`) && (
+										{!pathname.startsWith('/blog') && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 										)}
 									</Link>
 
 									<Link
-										href={`/${locale}/contact`}
+										href='/contact'
 										onClick={e => {
 											e.stopPropagation()
 											setTimeout(() => setIsMobileMenuOpen(false), 50)
 										}}
 										className={cn(
 											'flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition-all duration-300',
-											pathname === `/${locale}/contact`
+											pathname === '/contact'
 												? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 												: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
 										)}
@@ -337,7 +338,7 @@ const Header = () => {
 										<span className='relative z-10 font-semibold'>
 											Контакты
 										</span>
-										{pathname !== `/${locale}/contact` && (
+										{pathname !== '/contact' && (
 											<div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 										)}
 									</Link>
@@ -353,9 +354,9 @@ const Header = () => {
 											</span>
 										</div>
 										<div className='flex items-center gap-3'>
-											<div className='flex-1'>
+											{/* <div className='flex-1'>
 												<LanguageSelect className='w-full' locale={locale} />
-											</div>
+											</div> */}
 											<ThemeToggle />
 										</div>
 									</div>

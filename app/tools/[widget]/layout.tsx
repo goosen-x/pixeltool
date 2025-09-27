@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	// Жестко задаем URL для Open Graph
 	const baseUrl = 'https://pixeltool.pro'
-	const url = `${baseUrl}/${locale}/tools/${widget.path}`
+	const url = `${baseUrl}/tools/${widget.path}`
 
 	// Import SEO metadata if available
 	const { widgetMetadata } = await import('@/lib/seo/widget-metadata')

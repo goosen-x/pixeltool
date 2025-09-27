@@ -14,7 +14,7 @@ export const BlogCard = ({ post, locale }: Props) => {
 	const formattedDate = formatDate(post.publishedAt.toISOString(), locale)
 
 	return (
-		<Link href={`/${locale}/blog/${post.slug}`}>
+		<Link href={`/blog/${post.slug}`}>
 			<Card className='h-full hover:shadow-lg transition-shadow duration-300 overflow-hidden group cursor-pointer'>
 				<div className='h-48'>
 					<PostCover title={post.title} slug={post.slug} className='h-full' />

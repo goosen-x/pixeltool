@@ -12,7 +12,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { locale } = await params
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
-	const url = `${baseUrl}/${locale}/blog`
+	const url = `${baseUrl}/blog`
 
 	const currentMetadata = {
 		title: 'Блог - Туториалы и Руководства для Разработчиков | PixelTool',

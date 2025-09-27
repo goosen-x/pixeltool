@@ -147,7 +147,7 @@ export function ToolsPageContent({
 							{popularTools.map(tool => {
 								const Icon = getIconForWidget(tool.id)
 								return (
-									<Link key={tool.id} href={`/${locale}${tool.path}`}>
+									<Link key={tool.id} href={tool.path}>
 										<Card className='group h-full p-5 bg-background/60 backdrop-blur-sm border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300'>
 											<div className='flex flex-col gap-3'>
 												<div className='flex items-start justify-between'>
@@ -233,7 +233,7 @@ export function ToolsPageContent({
 							{recentTools.map(tool => {
 								const Icon = getIconForWidget(tool.id)
 								return (
-									<Link key={tool.id} href={`/${locale}${tool.path}`}>
+									<Link key={tool.id} href={tool.path}>
 										<Card className='group h-full p-5 bg-background/60 backdrop-blur-sm border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300'>
 											<div className='flex items-center gap-4'>
 												<div
