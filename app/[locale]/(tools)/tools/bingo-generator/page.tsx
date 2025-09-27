@@ -23,7 +23,6 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import { useTranslations } from 'next-intl'
 
 interface BingoCell {
 	id: string
@@ -38,7 +37,6 @@ interface BingoTemplate {
 }
 
 export default function BingoGeneratorPage() {
-	const t = useTranslations('widgets.bingoGenerator')
 	const [gridSize, setGridSize] = useState(5)
 	const [bingoItems, setBingoItems] = useState<string[]>([''])
 	const [bingoGrid, setBingoGrid] = useState<BingoCell[]>([])
@@ -48,63 +46,63 @@ export default function BingoGeneratorPage() {
 	// Default bingo templates
 	const templates: BingoTemplate[] = [
 		{
-			name: t('templates.meeting.name'),
+			name: 'Рабочая встреча',
 			items: [
-				t('templates.meeting.items.0'),
-				t('templates.meeting.items.1'),
-				t('templates.meeting.items.2'),
-				t('templates.meeting.items.3'),
-				t('templates.meeting.items.4'),
-				t('templates.meeting.items.5'),
-				t('templates.meeting.items.6'),
-				t('templates.meeting.items.7'),
-				t('templates.meeting.items.8'),
-				t('templates.meeting.items.9'),
-				t('templates.meeting.items.10'),
-				t('templates.meeting.items.11'),
-				t('templates.meeting.items.12'),
-				t('templates.meeting.items.13'),
-				t('templates.meeting.items.14'),
-				t('templates.meeting.items.15'),
-				t('templates.meeting.items.16'),
-				t('templates.meeting.items.17'),
-				t('templates.meeting.items.18'),
-				t('templates.meeting.items.19'),
-				t('templates.meeting.items.20'),
-				t('templates.meeting.items.21'),
-				t('templates.meeting.items.22'),
-				t('templates.meeting.items.23'),
-				t('templates.meeting.items.24')
+				'Кто-то опоздал на встречу',
+				'Технические проблемы со звуком',
+				'"Видите мой экран?"',
+				'Кто-то забыл включить микрофон',
+				'Обсуждение не по теме',
+				'"Давайте возьмем это офлайн"',
+				'Эхо в динамиках',
+				'Кто-то ест во время встречи',
+				'"Можете повторить?"',
+				'Встреча затянулась',
+				'Кто-то подключился по телефону',
+				'Проблемы с демонстрацией экрана',
+				'"У меня еще одна встреча"',
+				'Обсуждение бюджета',
+				'Кто-то не подготовился',
+				'"Запишем экшн-итемы"',
+				'Неловкая пауза',
+				'Кто-то работает в многозадачном режиме',
+				'"А что думает команда?"',
+				'Упоминание дедлайна',
+				'Кто-то говорит в выключенный микрофон',
+				'"Увидимся на следующей неделе"',
+				'Проблемы с календарем',
+				'"Отправлю письмо после встречи"',
+				'Кто-то подключился поздно'
 			]
 		},
 		{
-			name: t('templates.travel.name'),
+			name: 'Путешествия',
 			items: [
-				t('templates.travel.items.0'),
-				t('templates.travel.items.1'),
-				t('templates.travel.items.2'),
-				t('templates.travel.items.3'),
-				t('templates.travel.items.4'),
-				t('templates.travel.items.5'),
-				t('templates.travel.items.6'),
-				t('templates.travel.items.7'),
-				t('templates.travel.items.8'),
-				t('templates.travel.items.9'),
-				t('templates.travel.items.10'),
-				t('templates.travel.items.11'),
-				t('templates.travel.items.12'),
-				t('templates.travel.items.13'),
-				t('templates.travel.items.14'),
-				t('templates.travel.items.15'),
-				t('templates.travel.items.16'),
-				t('templates.travel.items.17'),
-				t('templates.travel.items.18'),
-				t('templates.travel.items.19'),
-				t('templates.travel.items.20'),
-				t('templates.travel.items.21'),
-				t('templates.travel.items.22'),
-				t('templates.travel.items.23'),
-				t('templates.travel.items.24')
+				'Забыли зарядку дома',
+				'Очередь на регистрацию',
+				'Задержка рейса',
+				'Потеряли багаж',
+				'Не работает Wi-Fi',
+				'Переплата за роуминг',
+				'Заблудились в аэропорту',
+				'Плохая еда в самолете',
+				'Соседи шумят в отеле',
+				'Дождь весь отпуск',
+				'Закрылись все магазины',
+				'Языковой барьер',
+				'Переплатили за такси',
+				'Не работает карта',
+				'Забыли паспорт дома',
+				'Турбулентность в самолете',
+				'Очередь в музей',
+				'Разрядился телефон',
+				'Отменили экскурсию',
+				'Потеряли ключ от номера',
+				'Солнечный ожог',
+				'Не влезает в чемодан',
+				'Обменяли деньги невыгодно',
+				'Заблудились в городе',
+				'Проспали экскурсию'
 			]
 		}
 	]
@@ -145,14 +143,14 @@ export default function BingoGeneratorPage() {
 			const isCenter = isCenterFree && i === centerIndex
 			newGrid.push({
 				id: `cell-${i}`,
-				text: isCenter ? t('freeSpace') : shuffledItems[i] || '',
+				text: isCenter ? 'СВОБОДНАЯ КЛЕТКА' : shuffledItems[i] || '',
 				isCompleted: isCenter, // Free space starts completed
 				isFree: isCenter
 			})
 		}
 
 		setBingoGrid(newGrid)
-	}, [gridSize, bingoItems, t])
+	}, [gridSize, bingoItems])
 
 	// Initialize grid on load and when size changes
 	useEffect(() => {
@@ -181,10 +179,10 @@ export default function BingoGeneratorPage() {
 					}, 100)
 				}
 			} catch (error) {
-				toast.error(t('toast.invalidShareUrl'))
+				toast.error('Неверная ссылка для обмена!')
 			}
 		}
-	}, [t])
+	}, [])
 
 	const addBingoItem = () => {
 		setBingoItems([...bingoItems, ''])
@@ -208,7 +206,7 @@ export default function BingoGeneratorPage() {
 		if (template) {
 			setBingoItems(template.items)
 			setCurrentTemplate(templateName)
-			toast.success(t('toast.templateLoaded'))
+			toast.success('Шаблон загружен!')
 		}
 	}
 
@@ -227,12 +225,12 @@ export default function BingoGeneratorPage() {
 				isCompleted: cell.isFree || false
 			}))
 		)
-		toast.success(t('toast.gridReset'))
+		toast.success('Прогресс сброшен!')
 	}
 
 	const shuffleGrid = () => {
 		generateBingoGrid()
-		toast.success(t('toast.gridShuffled'))
+		toast.success('Карточка перемешана!')
 	}
 
 	const checkBingo = (): boolean => {
@@ -297,11 +295,11 @@ export default function BingoGeneratorPage() {
 
 		navigator.clipboard.writeText(url)
 		setShareUrl(url)
-		toast.success(t('toast.shareUrlCopied'))
+		toast.success('Ссылка скопирована в буфер обмена!')
 	}
 
 	const exportAsText = () => {
-		let textOutput = `${t('title')}\n\n`
+		let textOutput = `Карточка Бинго\n\n`
 
 		for (let row = 0; row < gridSize; row++) {
 			for (let col = 0; col < gridSize; col++) {
@@ -321,7 +319,7 @@ export default function BingoGeneratorPage() {
 		a.click()
 		URL.revokeObjectURL(url)
 
-		toast.success(t('toast.exported'))
+		toast.success('Файл экспортирован!')
 	}
 
 	const hasBingo = checkBingo()
@@ -335,8 +333,8 @@ export default function BingoGeneratorPage() {
 			<Card className='p-6'>
 				<div className='grid md:grid-cols-2 gap-6'>
 					<WidgetInput
-						label={t('inputs.gridSize.label')}
-						description={t('inputs.gridSize.description')}
+						label="Размер сетки"
+						description="Количество ячеек по вертикали и горизонтали"
 					>
 						<div className='flex items-center gap-4'>
 							<Button
@@ -366,10 +364,10 @@ export default function BingoGeneratorPage() {
 
 					<div className='space-y-3'>
 						<label className='text-sm font-medium'>
-							{t('inputs.templates.label')}
+							Шаблоны
 						</label>
 						<p className='text-xs text-muted-foreground'>
-							{t('inputs.templates.description')}
+							Выберите готовый набор элементов для игры
 						</p>
 						<div className='flex gap-2 flex-wrap'>
 							{templates.map(template => (
@@ -393,7 +391,7 @@ export default function BingoGeneratorPage() {
 			<Card className='p-6'>
 				<div className='space-y-4'>
 					<p className='text-sm text-muted-foreground'>
-						{t('sections.itemsDescription')}
+						Добавьте элементы для вашей карточки бинго. Рекомендуется не менее 25 элементов для сетки 5x5.
 					</p>
 
 					{bingoItems.map((item, index) => (
@@ -404,7 +402,7 @@ export default function BingoGeneratorPage() {
 							<Input
 								value={item}
 								onChange={e => updateBingoItem(index, e.target.value)}
-								placeholder={t('inputs.bingoItem.placeholder')}
+								placeholder="Введите элемент бинго..."
 								className='flex-1'
 							/>
 							<Button
@@ -421,12 +419,12 @@ export default function BingoGeneratorPage() {
 					<div className='flex gap-2'>
 						<Button onClick={addBingoItem} variant='outline' size='sm'>
 							<Plus className='w-4 h-4 mr-2' />
-							{t('actions.addItem')}
+							Добавить элемент
 						</Button>
 
 						<Button onClick={shuffleGrid} variant='outline' size='sm'>
 							<Shuffle className='w-4 h-4 mr-2' />
-							{t('actions.shuffle')}
+							Перемешать
 						</Button>
 					</div>
 				</div>
@@ -449,7 +447,7 @@ export default function BingoGeneratorPage() {
 										) : (
 											<Grid3X3 className='w-4 h-4' />
 										)}
-										{hasBingo ? t('status.bingo') : t('status.inProgress')}
+										{hasBingo ? 'БИНГО!' : 'В процессе'}
 									</Badge>
 									<span className='text-sm text-muted-foreground'>
 										{progress}/{bingoGrid.length} (
@@ -460,7 +458,7 @@ export default function BingoGeneratorPage() {
 								<div className='flex gap-2'>
 									<Button onClick={resetGrid} variant='outline' size='sm'>
 										<RefreshCw className='w-4 h-4 mr-2' />
-										{t('actions.reset')}
+										Сбросить
 									</Button>
 									<Button
 										onClick={generateShareUrl}
@@ -468,11 +466,11 @@ export default function BingoGeneratorPage() {
 										size='sm'
 									>
 										<Share className='w-4 h-4 mr-2' />
-										{t('actions.share')}
+										Поделиться
 									</Button>
 									<Button onClick={exportAsText} variant='outline' size='sm'>
 										<Download className='w-4 h-4 mr-2' />
-										{t('actions.export')}
+										Скачать
 									</Button>
 								</div>
 							</div>
@@ -520,12 +518,12 @@ export default function BingoGeneratorPage() {
 									<div className='flex items-center justify-center gap-2 mb-2'>
 										<Sparkles className='w-6 h-6 text-yellow-500' />
 										<span className='text-2xl font-bold text-yellow-600 dark:text-yellow-400'>
-											{t('congratulations.title')}
+											Поздравляем!
 										</span>
 										<Sparkles className='w-6 h-6 text-yellow-500' />
 									</div>
 									<p className='text-muted-foreground'>
-										{t('congratulations.message')}
+										Вы собрали линию и выиграли в бинго!
 									</p>
 								</div>
 							)}
@@ -539,23 +537,23 @@ export default function BingoGeneratorPage() {
 				<div className='grid md:grid-cols-2 gap-6 text-sm'>
 					<div className='space-y-3'>
 						<div>
-							<h4 className='font-medium mb-1'>{t('info.howToPlay')}</h4>
+							<h4 className='font-medium mb-1'>Как играть</h4>
 							<ul className='text-muted-foreground space-y-1'>
-								<li>• {t('info.features.createGrid')}</li>
-								<li>• {t('info.features.clickCells')}</li>
-								<li>• {t('info.features.getLine')}</li>
-								<li>• {t('info.features.shareProgress')}</li>
+								<li>• Создайте сетку с вашими элементами</li>
+								<li>• Нажимайте на ячейки для отметки</li>
+								<li>• Соберите линию по горизонтали, вертикали или диагонали</li>
+								<li>• Поделитесь прогрессом с друзьями</li>
 							</ul>
 						</div>
 					</div>
 					<div className='space-y-3'>
 						<div>
-							<h4 className='font-medium mb-1'>{t('info.features.title')}</h4>
+							<h4 className='font-medium mb-1'>Возможности</h4>
 							<ul className='text-muted-foreground space-y-1'>
-								<li>• {t('info.features.customTemplates')}</li>
-								<li>• {t('info.features.shareableLinks')}</li>
-								<li>• {t('info.features.exportOptions')}</li>
-								<li>• {t('info.features.progressTracking')}</li>
+								<li>• Готовые шаблоны для разных тем</li>
+								<li>• Ссылки для обмена с сохранением прогресса</li>
+								<li>• Экспорт карточки в текстовый файл</li>
+								<li>• Отслеживание прогресса игры</li>
 							</ul>
 						</div>
 					</div>
