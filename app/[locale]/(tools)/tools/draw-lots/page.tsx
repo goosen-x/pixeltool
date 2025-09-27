@@ -153,7 +153,7 @@ export default function DrawLotsPage() {
 							id='items'
 							value={inputText}
 							onChange={e => setInputText(e.target.value)}
-							placeholder="Иван\nПетр\nМария\nАнна"
+							placeholder='Иван\nПетр\nМария\nАнна'
 							className='min-h-[200px] font-mono'
 							spellCheck={false}
 						/>
@@ -244,9 +244,7 @@ export default function DrawLotsPage() {
 												<div className='w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center'>
 													<div className='text-primary-foreground'>
 														<div className='text-4xl font-bold mb-2'>?</div>
-														<div className='text-sm opacity-80'>
-															Кликните
-														</div>
+														<div className='text-sm opacity-80'>Кликните</div>
 													</div>
 												</div>
 											</div>
@@ -304,9 +302,17 @@ export default function DrawLotsPage() {
 			<Card className='p-6 bg-muted/50'>
 				<h3 className='font-semibold mb-3'>О виджете</h3>
 				<div className='space-y-2 text-sm text-muted-foreground'>
-					<p>Жребьевка для честного и случайного выбора. Используется криптографически стойкий алгоритм перемешивания.</p>
-					<p>Используйте для: определения порядка, выбора победителей, распределения задач, игр и конкурсов.</p>
-					<p className='text-xs mt-4'>Каждый выбор абсолютно случаен и непредсказуем.</p>
+					<p>
+						Жребьевка для честного и случайного выбора. Используется
+						криптографически стойкий алгоритм перемешивания.
+					</p>
+					<p>
+						Используйте для: определения порядка, выбора победителей,
+						распределения задач, игр и конкурсов.
+					</p>
+					<p className='text-xs mt-4'>
+						Каждый выбор абсолютно случаен и непредсказуем.
+					</p>
 				</div>
 			</Card>
 		</div>

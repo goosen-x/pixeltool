@@ -29,7 +29,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface JWTHeader {
 	alg: string
@@ -66,7 +66,7 @@ interface JWTExample {
 }
 
 export default function JWTDecoderPage() {
-	const t = useTranslations('widgets.jwtDecoder')
+	// const t = useTranslations('widgets.jwtDecoder')
 	const [jwt, setJwt] = useState('')
 	const [decoded, setDecoded] = useState<DecodedJWT | null>(null)
 	const [activeTab, setActiveTab] = useState('header')
@@ -74,49 +74,49 @@ export default function JWTDecoderPage() {
 
 	const JWT_EXAMPLES: JWTExample[] = [
 		{
-			name: t('examples.auth0'),
+			name: 'Auth0 токен',
 			token:
 				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzAwMDAwMDAwLCJpc3MiOiJodHRwczovL2F1dGgwLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tIn0.W-cABe4b9voSYZhGoF4sqM3PlV00mP1rHsxvQHnKfkY',
-			description: t('examples.auth0Desc'),
+			description: 'Стандартный токен от Auth0 с расширенными claims',
 			icon: Shield,
 			variant: 'default'
 		},
 		{
-			name: t('examples.firebase'),
+			name: 'Firebase токен',
 			token:
 				'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbXktcHJvamVjdCIsImF1ZCI6Im15LXByb2plY3QiLCJhdXRoX3RpbWUiOjE1MTYyMzkwMjIsInVzZXJfaWQiOiJ1c2VyMTIzIiwic3ViIjoidXNlcjEyMyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzAwMDAwMDAwLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ1c2VyQGV4YW1wbGUuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.mock_signature',
-			description: t('examples.firebaseDesc'),
+			description: 'Токен аутентификации от Firebase с метаданными',
 			icon: Key,
 			variant: 'default'
 		},
 		{
-			name: t('examples.cognito'),
+			name: 'AWS Cognito токен',
 			token:
 				'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFiY2RlZiJ9.eyJzdWIiOiJhYWFhYWFhYS1iYmJiLWNjY2MtZGRkZC1lZWVlZWVlZWVlZWUiLCJkZXZpY2Vfa2V5IjoiYWFhYWFhYWEtYmJiYi1jY2NjLWRkZGQtZWVlZWVlZWVlZWVlIiwiY29nbml0bzpncm91cHMiOlsiYWRtaW4iXSwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbS91cy1lYXN0LTFfRXhhbXBsZSIsImV4cCI6MTcwMDAwMDAwMCwiaWF0IjoxNTE2MjM5MDIyLCJqdGkiOiJhYWFhYWFhYS1iYmJiLWNjY2MtZGRkZC1lZWVlZWVlZWVlZWUiLCJjbGllbnRfaWQiOiJhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsInVzZXJuYW1lIjoiamFuZWRvZUBleGFtcGxlLmNvbSJ9.mock_signature',
-			description: t('examples.cognitoDesc'),
+			description: 'Access токен от AWS Cognito User Pool',
 			icon: Globe,
 			variant: 'default'
 		},
 		{
-			name: t('examples.simple'),
+			name: 'Простой токен',
 			token:
 				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-			description: t('examples.simpleDesc'),
+			description: 'Минимальный JWT с базовыми claims',
 			icon: FileJson,
 			variant: 'success'
 		},
 		{
-			name: t('examples.expired'),
+			name: 'Истёкший токен',
 			token:
 				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkV4cGlyZWQgVXNlciIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjM5MDIzfQ.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ',
-			description: t('examples.expiredDesc'),
+			description: 'Токен с истёкшим сроком действия',
 			icon: Clock,
 			variant: 'warning'
 		},
 		{
-			name: t('examples.invalid'),
+			name: 'Невалидный токен',
 			token: 'это.не.jwt.токен',
-			description: t('examples.invalidDesc'),
+			description: 'Некорректный формат, не является JWT',
 			icon: XCircle,
 			variant: 'destructive'
 		}
@@ -137,7 +137,7 @@ export default function JWTDecoderPage() {
 			const parts = jwt.trim().split('.')
 
 			if (parts.length !== 3) {
-				errors.push(t('errors.invalidParts'))
+				errors.push('JWT должен состоять из 3 частей, разделённых точками')
 				setDecoded({
 					header: {} as JWTHeader,
 					payload: {} as JWTPayload,
@@ -157,13 +157,13 @@ export default function JWTDecoderPage() {
 				header = JSON.parse(headerJson)
 
 				if (!header.alg) {
-					errors.push(t('errors.missingAlg'))
+					errors.push('Отсутствует алгоритм подписи (alg) в заголовке')
 				}
 				if (!header.typ || (header.typ !== 'JWT' && header.typ !== 'JWS')) {
-					errors.push(t('errors.invalidTyp'))
+					errors.push('Неверный тип токена, должен быть JWT или JWS')
 				}
 			} catch (e) {
-				errors.push(t('errors.headerDecode'))
+				errors.push('Ошибка декодирования заголовка JWT')
 				header = {} as JWTHeader
 			}
 
@@ -177,22 +177,18 @@ export default function JWTDecoderPage() {
 				if (payload.exp) {
 					const now = Math.floor(Date.now() / 1000)
 					if (payload.exp < now) {
-						errors.push(
-							`${t('errors.tokenExpired')} ${formatDate(payload.exp)}`
-						)
+						errors.push(`Токен истёк ${formatDate(payload.exp)}`)
 					}
 				}
 
 				if (payload.nbf) {
 					const now = Math.floor(Date.now() / 1000)
 					if (payload.nbf > now) {
-						errors.push(
-							`${t('errors.notActiveYet')} ${formatDate(payload.nbf)}`
-						)
+						errors.push(`Токен ещё не активен до ${formatDate(payload.nbf)}`)
 					}
 				}
 			} catch (e) {
-				errors.push(t('errors.payloadDecode'))
+				errors.push('Ошибка декодирования полезной нагрузки JWT')
 				payload = {} as JWTPayload
 			}
 
@@ -204,7 +200,7 @@ export default function JWTDecoderPage() {
 				errors
 			})
 		} catch (error) {
-			errors.push(t('errors.invalidFormat'))
+			errors.push('Неверный формат JWT токена')
 			setDecoded({
 				header: {} as JWTHeader,
 				payload: {} as JWTPayload,
@@ -245,27 +241,27 @@ export default function JWTDecoderPage() {
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text)
-		toast.success(t('toast.copied'))
+		toast.success('Скопировано в буфер обмена')
 	}
 
 	const loadExample = (example: JWTExample) => {
 		setJwt(example.token)
 		setActiveTab('header')
-		toast.success(`${t('toast.exampleLoaded')} ${example.name}`)
+		toast.success(`Загружен пример: ${example.name}`)
 	}
 
 	const reset = () => {
 		setJwt('')
 		setDecoded(null)
 		setActiveTab('header')
-		toast.success(t('toast.reset'))
+		toast.success('Поля очищены')
 	}
 
 	const getTimeLeft = (exp: number): string => {
 		const now = Math.floor(Date.now() / 1000)
 		const diff = exp - now
 
-		if (diff <= 0) return t('timeLeft.expired')
+		if (diff <= 0) return 'Истёк'
 
 		const days = Math.floor(diff / 86400)
 		const hours = Math.floor((diff % 86400) / 3600)
@@ -375,7 +371,7 @@ export default function JWTDecoderPage() {
 			{/* Examples - Full Width at Top */}
 			<WidgetSection
 				icon={<Sparkles className='h-5 w-5' />}
-				title={t('examples')}
+				title='Примеры JWT токенов'
 				className='mb-8'
 			>
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
@@ -448,7 +444,7 @@ export default function JWTDecoderPage() {
 				<div className='space-y-4'>
 					<Card className='p-6'>
 						<div className='flex items-center justify-between mb-4'>
-							<Label className='text-base'>{t('input.label')}</Label>
+							<Label className='text-base'>JWT токен</Label>
 							<div className='flex items-center gap-2'>
 								{jwt && (
 									<Button
@@ -458,7 +454,7 @@ export default function JWTDecoderPage() {
 										className='gap-1'
 									>
 										<RefreshCw className='w-3 h-3' />
-										{t('input.clear')}
+										Очистить
 									</Button>
 								)}
 								{decoded && (
@@ -468,12 +464,11 @@ export default function JWTDecoderPage() {
 									>
 										{decoded.isValid ? (
 											<>
-												<CheckCircle className='w-3 h-3' />{' '}
-												{t('validation.validFormat')}
+												<CheckCircle className='w-3 h-3' /> Валидный формат
 											</>
 										) : (
 											<>
-												<XCircle className='w-3 h-3' /> {t('validation.errors')}
+												<XCircle className='w-3 h-3' /> Ошибки валидации
 											</>
 										)}
 									</Badge>
@@ -484,7 +479,7 @@ export default function JWTDecoderPage() {
 						<Textarea
 							value={jwt}
 							onChange={e => setJwt(e.target.value)}
-							placeholder={t('input.placeholder')}
+							placeholder='Вставьте JWT токен для декодирования...'
 							className='font-mono text-sm min-h-[300px]'
 							spellCheck={false}
 						/>
@@ -511,7 +506,7 @@ export default function JWTDecoderPage() {
 						<>
 							<Card className='p-6'>
 								<div className='flex items-center justify-between mb-4'>
-									<h3 className='font-semibold'>{t('output.title')}</h3>
+									<h3 className='font-semibold'>Результат декодирования</h3>
 									<div className='flex items-center gap-2'>
 										<Button
 											onClick={() =>
@@ -522,7 +517,7 @@ export default function JWTDecoderPage() {
 											className='gap-1'
 										>
 											<Copy className='w-3 h-3' />
-											{t('output.copyJson')}
+											Скопировать JSON
 										</Button>
 										<Button
 											onClick={() =>
@@ -535,19 +530,15 @@ export default function JWTDecoderPage() {
 											className='gap-1'
 										>
 											<FileJson className='w-3 h-3' />
-											{t('output.copyPayload')}
+											Скопировать Payload
 										</Button>
 									</div>
 								</div>
 								<Tabs value={activeTab} onValueChange={setActiveTab}>
 									<TabsList className='grid w-full grid-cols-3'>
-										<TabsTrigger value='header'>{t('tabs.header')}</TabsTrigger>
-										<TabsTrigger value='payload'>
-											{t('tabs.payload')}
-										</TabsTrigger>
-										<TabsTrigger value='signature'>
-											{t('tabs.signature')}
-										</TabsTrigger>
+										<TabsTrigger value='header'>Заголовок</TabsTrigger>
+										<TabsTrigger value='payload'>Полезная нагрузка</TabsTrigger>
+										<TabsTrigger value='signature'>Подпись</TabsTrigger>
 									</TabsList>
 
 									<TabsContent value='header' className='mt-4 space-y-3'>
@@ -561,14 +552,17 @@ export default function JWTDecoderPage() {
 														<Lock className='w-4 h-4 text-muted-foreground mt-0.5' />
 														<div>
 															<div className='font-medium'>{key}</div>
-															{key === 'alg' &&
-																t(`algorithms.${value}`, {
-																	defaultValue: ''
-																}) && (
-																	<div className='text-xs text-muted-foreground'>
-																		{t(`algorithms.${value}`)}
-																	</div>
-																)}
+															{key === 'alg' && (
+																<div className='text-xs text-muted-foreground'>
+																	{value === 'HS256'
+																		? 'HMAC SHA-256'
+																		: value === 'RS256'
+																			? 'RSA SHA-256'
+																			: value === 'ES256'
+																				? 'ECDSA SHA-256'
+																				: 'Алгоритм подписи'}
+																</div>
+															)}
 														</div>
 													</div>
 													<div className='text-right'>
@@ -578,7 +572,7 @@ export default function JWTDecoderPage() {
 											))
 										) : (
 											<div className='text-center text-muted-foreground py-8'>
-												{t('output.noHeader')}
+												Заголовок не найден
 											</div>
 										)}
 									</TabsContent>
@@ -613,7 +607,7 @@ export default function JWTDecoderPage() {
 											))
 										) : (
 											<div className='text-center text-muted-foreground py-8'>
-												{t('output.noPayload')}
+												Полезная нагрузка не найдена
 											</div>
 										)}
 									</TabsContent>
@@ -622,10 +616,10 @@ export default function JWTDecoderPage() {
 										<div className='space-y-4'>
 											<div className='p-4 rounded-lg bg-muted/50'>
 												<Label className='text-sm mb-2 block'>
-													{t('output.signatureTitle')}
+													Подпись (Base64URL)
 												</Label>
 												<code className='text-xs block break-all'>
-													{decoded.signature || t('output.noSignature')}
+													{decoded.signature || 'Подпись отсутствует'}
 												</code>
 											</div>
 
@@ -634,10 +628,12 @@ export default function JWTDecoderPage() {
 													<AlertCircle className='w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5' />
 													<div className='text-sm'>
 														<p className='font-medium text-yellow-800 dark:text-yellow-200'>
-															{t('output.signatureWarning')}
+															Внимание: Проверка подписи
 														</p>
 														<p className='text-yellow-700 dark:text-yellow-300 mt-1'>
-															{t('output.signatureNote')}
+															Данный декодер только отображает содержимое
+															токена. Для проверки подлинности подписи требуется
+															секретный ключ или публичный ключ.
 														</p>
 													</div>
 												</div>
@@ -651,7 +647,7 @@ export default function JWTDecoderPage() {
 						<Card className='p-12'>
 							<div className='text-center text-muted-foreground'>
 								<Key className='w-12 h-12 mx-auto mb-4 opacity-20' />
-								<p>{t('placeholder.text')}</p>
+								<p>Вставьте JWT токен для начала декодирования</p>
 							</div>
 						</Card>
 					)}

@@ -78,33 +78,30 @@ export default function ImageSizeCheckerPage() {
 		})
 	}
 
-	const handleFiles = useCallback(
-		async (files: FileList) => {
-			const imageFiles = Array.from(files).filter(file =>
-				file.type.startsWith('image/')
-			)
+	const handleFiles = useCallback(async (files: FileList) => {
+		const imageFiles = Array.from(files).filter(file =>
+			file.type.startsWith('image/')
+		)
 
-			if (imageFiles.length === 0) {
-				toast.error('Выберите изображения')
-				return
+		if (imageFiles.length === 0) {
+			toast.error('Выберите изображения')
+			return
+		}
+
+		const newImages: ImageInfo[] = []
+
+		for (const file of imageFiles) {
+			try {
+				const imageInfo = await processImage(file)
+				newImages.push(imageInfo)
+			} catch (error) {
+				toast.error(`Ошибка обработки ${file.name}`)
 			}
+		}
 
-			const newImages: ImageInfo[] = []
-
-			for (const file of imageFiles) {
-				try {
-					const imageInfo = await processImage(file)
-					newImages.push(imageInfo)
-				} catch (error) {
-					toast.error(`Ошибка обработки ${file.name}`)
-				}
-			}
-
-			setImages(prev => [...prev, ...newImages])
-			toast.success(`${newImages.length} изображений обработано`)
-		},
-		[]
-	)
+		setImages(prev => [...prev, ...newImages])
+		toast.success(`${newImages.length} изображений обработано`)
+	}, [])
 
 	const handleDrop = useCallback(
 		(e: React.DragEvent) => {
@@ -201,7 +198,9 @@ export default function ImageSizeCheckerPage() {
 						/>
 
 						<ImageIcon className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
-						<p className='text-lg font-semibold mb-2'>Перетащите изображения сюда</p>
+						<p className='text-lg font-semibold mb-2'>
+							Перетащите изображения сюда
+						</p>
 						<p className='text-sm text-muted-foreground mb-4'>или</p>
 						<Button>
 							<Upload className='w-4 h-4 mr-2' />
@@ -217,9 +216,7 @@ export default function ImageSizeCheckerPage() {
 			{images.length > 0 && (
 				<>
 					<div className='flex justify-between items-center my-6'>
-						<h2 className='text-2xl font-bold'>
-							Результаты ({images.length})
-						</h2>
+						<h2 className='text-2xl font-bold'>Результаты ({images.length})</h2>
 						<div className='flex gap-2'>
 							<Button onClick={exportData} variant='outline'>
 								<Download className='w-4 h-4 mr-2' />
@@ -260,9 +257,7 @@ export default function ImageSizeCheckerPage() {
 									</h3>
 									<div className='space-y-1 text-sm'>
 										<div className='flex justify-between'>
-											<span className='text-muted-foreground'>
-												Размеры:
-											</span>
+											<span className='text-muted-foreground'>Размеры:</span>
 											<span className='font-mono'>
 												{image.width} × {image.height}px
 											</span>
@@ -282,9 +277,7 @@ export default function ImageSizeCheckerPage() {
 											</span>
 										</div>
 										<div className='flex justify-between'>
-											<span className='text-muted-foreground'>
-												Формат:
-											</span>
+											<span className='text-muted-foreground'>Формат:</span>
 											<span className='font-mono'>
 												{image.format.split('/')[1]?.toUpperCase() || 'Unknown'}
 											</span>
@@ -315,9 +308,7 @@ export default function ImageSizeCheckerPage() {
 								</div>
 								<div className='flex justify-between'>
 									<span>4:3</span>
-									<span className='text-muted-foreground'>
-										Традиционный
-									</span>
+									<span className='text-muted-foreground'>Традиционный</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>3:2</span>
@@ -327,9 +318,7 @@ export default function ImageSizeCheckerPage() {
 								</div>
 								<div className='flex justify-between'>
 									<span>16:9</span>
-									<span className='text-muted-foreground'>
-										Широкоэкранный
-									</span>
+									<span className='text-muted-foreground'>Широкоэкранный</span>
 								</div>
 							</div>
 						</div>
@@ -338,9 +327,7 @@ export default function ImageSizeCheckerPage() {
 							<div className='space-y-1 text-sm'>
 								<div className='flex justify-between'>
 									<span>1:1</span>
-									<span className='text-muted-foreground'>
-										Instagram пост
-									</span>
+									<span className='text-muted-foreground'>Instagram пост</span>
 								</div>
 								<div className='flex justify-between'>
 									<span>9:16</span>
@@ -356,9 +343,7 @@ export default function ImageSizeCheckerPage() {
 								</div>
 								<div className='flex justify-between'>
 									<span>2:1</span>
-									<span className='text-muted-foreground'>
-										Twitter шапка
-									</span>
+									<span className='text-muted-foreground'>Twitter шапка</span>
 								</div>
 							</div>
 						</div>

@@ -261,13 +261,10 @@ export default function EmailValidatorPage() {
 		}
 	}, [bulkEmails, trackEvent, validateEmail])
 
-	const copyToClipboard = useCallback(
-		(text: string) => {
-			navigator.clipboard.writeText(text)
-			toast.success('Скопировано в буфер обмена')
-		},
-		[]
-	)
+	const copyToClipboard = useCallback((text: string) => {
+		navigator.clipboard.writeText(text)
+		toast.success('Скопировано в буфер обмена')
+	}, [])
 
 	const exportResults = useCallback(() => {
 		const csv = [
@@ -329,7 +326,9 @@ export default function EmailValidatorPage() {
 						<Mail className='h-8 w-8' />
 						<h1 className='text-3xl font-bold'>{'Валидатор Email'}</h1>
 					</div>
-					<p className='text-muted-foreground'>{'Проверьте валидность email адресов'}</p>
+					<p className='text-muted-foreground'>
+						{'Проверьте валидность email адресов'}
+					</p>
 				</div>
 
 				<Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -371,16 +370,22 @@ export default function EmailValidatorPage() {
 					<TabsContent value='bulk' className='space-y-4'>
 						<WidgetInput
 							label={'Email адреса'}
-							description={'Введите несколько email адресов (по одному на строку)'}
+							description={
+								'Введите несколько email адресов (по одному на строку)'
+							}
 						>
 							<div className='space-y-2'>
 								<textarea
 									value={bulkEmails}
 									onChange={e => setBulkEmails(e.target.value)}
-									placeholder={'example1@domain.com\nexample2@domain.com\nexample3@domain.com'}
+									placeholder={
+										'example1@domain.com\nexample2@domain.com\nexample3@domain.com'
+									}
 									className='w-full min-h-[150px] p-3 rounded-md border bg-background resize-y'
 									disabled={isValidating}
-									aria-label={'example1@domain.com\nexample2@domain.com\nexample3@domain.com'}
+									aria-label={
+										'example1@domain.com\nexample2@domain.com\nexample3@domain.com'
+									}
 								/>
 								<div className='flex justify-between items-center'>
 									<span className='text-sm text-muted-foreground'>
@@ -409,7 +414,9 @@ export default function EmailValidatorPage() {
 					<WidgetOutput>
 						<div className='space-y-4'>
 							<div className='flex justify-between items-center'>
-								<h3 className='text-lg font-semibold'>{'Результаты проверки'}</h3>
+								<h3 className='text-lg font-semibold'>
+									{'Результаты проверки'}
+								</h3>
 								{results.length > 1 && (
 									<Button onClick={exportResults} variant='outline' size='sm'>
 										{'Экспортировать CSV'}
@@ -492,9 +499,7 @@ export default function EmailValidatorPage() {
 
 										<div className='flex flex-wrap gap-2 text-xs'>
 											{result.disposable && (
-												<Badge variant='destructive'>
-													{'Временный'}
-												</Badge>
+												<Badge variant='destructive'>{'Временный'}</Badge>
 											)}
 											{result.role && (
 												<Badge variant='secondary'>{'Ролевой'}</Badge>

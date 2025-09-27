@@ -489,14 +489,13 @@ div.container > p::first-line
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<p className='text-sm text-muted-foreground'>
-						Специфичность определяет, какие CSS правила применяются к элементу. Более специфичные селекторы имеют приоритет.
+						Специфичность определяет, какие CSS правила применяются к элементу.
+						Более специфичные селекторы имеют приоритет.
 					</p>
 
 					<div className='grid gap-4 md:grid-cols-2'>
 						<div className='space-y-2'>
-							<h4 className='font-medium text-sm'>
-								Расчет специфичности
-							</h4>
+							<h4 className='font-medium text-sm'>Расчет специфичности</h4>
 							<div className='space-y-1 text-sm'>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>1-0-0-0</Badge>
@@ -508,19 +507,22 @@ div.container > p::first-line
 								</div>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>0-0-1-0</Badge>
-									<span>Каждый класс (.example), атрибут ([type="text"]), псевдокласс (:hover)</span>
+									<span>
+										Каждый класс (.example), атрибут ([type="text"]),
+										псевдокласс (:hover)
+									</span>
 								</div>
 								<div className='flex items-center gap-2'>
 									<Badge className='font-mono'>0-0-0-1</Badge>
-									<span>Каждый элемент (div, p, a) и псевдоэлемент (::before)</span>
+									<span>
+										Каждый элемент (div, p, a) и псевдоэлемент (::before)
+									</span>
 								</div>
 							</div>
 						</div>
 
 						<div className='space-y-2'>
-							<h4 className='font-medium text-sm'>
-								Примеры
-							</h4>
+							<h4 className='font-medium text-sm'>Примеры</h4>
 							<div className='space-y-1 text-sm font-mono'>
 								<div className='flex items-center justify-between'>
 									<span>body</span>

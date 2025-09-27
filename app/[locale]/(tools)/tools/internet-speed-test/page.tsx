@@ -18,7 +18,7 @@ import {
 	RotateCcw
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface SpeedTestResult {
 	download: number
@@ -36,7 +36,7 @@ interface TestState {
 }
 
 export default function SpeedTestPage() {
-	const t = useTranslations('widgets.speedTest')
+	// const t = useTranslations('widgets.speedTest')
 	const [testState, setTestState] = useState<TestState>({
 		isRunning: false,
 		phase: 'idle',
@@ -299,17 +299,17 @@ export default function SpeedTestPage() {
 			localStorage.setItem('speedtest-history', JSON.stringify(newHistory))
 
 			setTestState({ isRunning: false, phase: 'complete', progress: 100 })
-			toast.success(t('toast.testComplete'))
+			toast.success('Тест скорости завершен')
 		} catch (error) {
 			setTestState({ isRunning: false, phase: 'idle', progress: 0 })
-			toast.error(t('toast.testError'))
+			toast.error('Ошибка теста скорости')
 		}
 	}
 
 	const clearHistory = () => {
 		setHistory([])
 		localStorage.removeItem('speedtest-history')
-		toast.success(t('toast.historyCleared'))
+		toast.success('История очищена')
 	}
 
 	const formatSpeed = (speed: number) => {
@@ -348,9 +348,9 @@ export default function SpeedTestPage() {
 	return (
 		<Tabs value={activeTab} onValueChange={setActiveTab}>
 			<TabsList className='grid w-full grid-cols-3'>
-				<TabsTrigger value='test'>{t('tabs.test')}</TabsTrigger>
-				<TabsTrigger value='status'>{t('tabs.status')}</TabsTrigger>
-				<TabsTrigger value='history'>{t('tabs.history')}</TabsTrigger>
+				<TabsTrigger value='test'>Тест</TabsTrigger>
+				<TabsTrigger value='status'>Статус</TabsTrigger>
+				<TabsTrigger value='history'>История</TabsTrigger>
 			</TabsList>
 
 			<TabsContent value='test' className='space-y-6'>
@@ -454,9 +454,7 @@ export default function SpeedTestPage() {
 											>
 												<Download className='w-4 h-4' />
 											</div>
-											<span className='text-sm font-medium'>
-												{t('download')}
-											</span>
+											<span className='text-sm font-medium'>Загрузка</span>
 										</div>
 									</div>
 									<div
@@ -486,7 +484,7 @@ export default function SpeedTestPage() {
 											>
 												<Upload className='w-4 h-4' />
 											</div>
-											<span className='text-sm font-medium'>{t('upload')}</span>
+											<span className='text-sm font-medium'>Выгрузка</span>
 										</div>
 									</div>
 									<div
@@ -516,7 +514,7 @@ export default function SpeedTestPage() {
 											>
 												<Activity className='w-4 h-4' />
 											</div>
-											<span className='text-sm font-medium'>{t('ping')}</span>
+											<span className='text-sm font-medium'>Пинг</span>
 										</div>
 									</div>
 									<div className='text-2xl font-bold'>
@@ -544,7 +542,15 @@ export default function SpeedTestPage() {
 								<div className='mt-6 space-y-3'>
 									<div className='flex items-center justify-between text-sm'>
 										<span className='font-medium'>
-											{t(`phase.${testState.phase}`)}
+											{testState.phase === 'ping'
+												? 'Проверка пинга'
+												: testState.phase === 'download'
+													? 'Тест загрузки'
+													: testState.phase === 'upload'
+														? 'Тест выгрузки'
+														: testState.phase === 'complete'
+															? 'Завершено'
+															: 'Ожидание'}
 										</span>
 										<span className='text-muted-foreground'>
 											{Math.round(testState.progress)}%
@@ -586,12 +592,12 @@ export default function SpeedTestPage() {
 									{testState.isRunning ? (
 										<>
 											<Pause className='w-5 h-5 mr-2' />
-											{t('cancel')}
+											Отмена
 										</>
 									) : (
 										<>
 											<Wifi className='w-5 h-5 mr-2 group-hover:animate-pulse' />
-											{t('start')}
+											Начать тест
 										</>
 									)}
 								</Button>
@@ -603,13 +609,13 @@ export default function SpeedTestPage() {
 				{/* Info Card */}
 				<Card>
 					<CardHeader>
-						<CardTitle className='text-lg'>{t('info.title')}</CardTitle>
+						<CardTitle className='text-lg'>О тесте скорости</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4 text-sm text-muted-foreground'>
-						<p>{t('info.description')}</p>
+						<p>Измерьте скорость вашего интернет-соединения</p>
 						<div>
 							<h4 className='font-medium text-foreground mb-2'>
-								{t('info.recommendations')}
+								Рекомендации по скорости
 							</h4>
 							<ul className='space-y-1'>
 								<li>
@@ -629,56 +635,52 @@ export default function SpeedTestPage() {
 			<TabsContent value='status' className='space-y-6'>
 				<Card>
 					<CardHeader>
-						<CardTitle>{t('status.title')}</CardTitle>
+						<CardTitle>Статус соединения</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						{currentResult.download > 0 && (
 							<>
 								<div className='p-4 bg-muted rounded-lg'>
 									<div className='flex items-center justify-between mb-2'>
-										<span className='text-sm font-medium'>
-											{t('status.connectionType')}
-										</span>
+										<span className='text-sm font-medium'>Тип соединения</span>
 										<span className='text-sm'>
 											{getConnectionType(currentResult.download)}
 										</span>
 									</div>
 									<div className='flex items-center justify-between'>
-										<span className='text-sm font-medium'>
-											{t('status.quality')}
-										</span>
+										<span className='text-sm font-medium'>Качество</span>
 										<span
 											className={`text-sm font-medium ${getSpeedColor(currentResult.download)}`}
 										>
 											{currentResult.download >= 50
-												? t('status.excellent')
+												? 'Отличное'
 												: currentResult.download >= 25
-													? t('status.good')
+													? 'Хорошее'
 													: currentResult.download >= 10
-														? t('status.fair')
-														: t('status.poor')}
+														? 'Удовлетворительное'
+														: 'Плохое'}
 										</span>
 									</div>
 								</div>
 
 								<div>
-									<h4 className='font-medium mb-2'>{t('status.capable')}</h4>
+									<h4 className='font-medium mb-2'>Подходит для</h4>
 									<div className='space-y-2'>
 										{[
-											{ speed: 1, activity: t('status.activities.browsing') },
+											{ speed: 1, activity: 'Веб-серфинг' },
 											{
 												speed: 5,
-												activity: t('status.activities.streaming720p')
+												activity: 'Видео 720p'
 											},
 											{
 												speed: 8,
-												activity: t('status.activities.streaming1080p')
+												activity: 'Видео 1080p'
 											},
 											{
 												speed: 25,
-												activity: t('status.activities.streaming4k')
+												activity: 'Видео 4K'
 											},
-											{ speed: 50, activity: t('status.activities.gaming') }
+											{ speed: 50, activity: 'Онлайн-игры' }
 										].map((item, i) => (
 											<div key={i} className='flex items-center gap-2'>
 												<div
@@ -705,7 +707,7 @@ export default function SpeedTestPage() {
 						)}
 						{currentResult.download === 0 && (
 							<p className='text-center text-muted-foreground py-8'>
-								{t('status.noData')}
+								Запустите тест для получения данных
 							</p>
 						)}
 					</CardContent>
@@ -718,7 +720,7 @@ export default function SpeedTestPage() {
 						<CardTitle className='flex items-center justify-between'>
 							<div className='flex items-center gap-2'>
 								<History className='w-5 h-5' />
-								<span>{t('history.title')}</span>
+								<span>История тестов</span>
 							</div>
 							{history.length > 0 && (
 								<Button
@@ -728,7 +730,7 @@ export default function SpeedTestPage() {
 									className='hover:text-destructive'
 								>
 									<RotateCcw className='w-4 h-4 mr-1' />
-									{t('history.clear')}
+									Очистить
 								</Button>
 							)}
 						</CardTitle>
@@ -890,7 +892,7 @@ export default function SpeedTestPage() {
 						) : (
 							<div className='text-center py-12'>
 								<Wifi className='w-12 h-12 text-muted-foreground/30 mx-auto mb-4' />
-								<p className='text-muted-foreground'>{t('history.empty')}</p>
+								<p className='text-muted-foreground'>История пуста</p>
 								<p className='text-sm text-muted-foreground mt-1'>
 									Run a speed test to see results here
 								</p>

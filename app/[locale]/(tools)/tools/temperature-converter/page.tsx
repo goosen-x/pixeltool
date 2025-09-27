@@ -32,7 +32,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 type TemperatureUnit =
 	| 'celsius'
@@ -111,7 +111,7 @@ const UNIT_CONFIGS: Record<
 }
 
 export default function TemperatureConverterPage() {
-	const t = useTranslations('widgets.temperatureConverter')
+	// const t = useTranslations('widgets.temperatureConverter')
 	const [mounted, setMounted] = useState(false)
 	const [activeUnit, setActiveUnit] = useState<TemperatureUnit>('celsius')
 	const [values, setValues] = useState<ConversionResult>({
@@ -210,9 +210,9 @@ export default function TemperatureConverterPage() {
 			setValues(newValues)
 			setActiveUnit('celsius')
 
-			toast.success(t('toast.presetLoaded'))
+			toast.success('Шаблон загружен')
 		},
-		[convertTemperature, t]
+		[convertTemperature]
 	)
 
 	// Copy value
@@ -222,9 +222,9 @@ export default function TemperatureConverterPage() {
 			const symbol = UNIT_CONFIGS[unit].symbol
 			const text = `${formatNumber(value)}${symbol}`
 			navigator.clipboard.writeText(text)
-			toast.success(t('toast.copied'))
+			toast.success('Скопировано в буфер обмена')
 		},
-		[values, t]
+		[values]
 	)
 
 	// Format number
@@ -261,7 +261,7 @@ export default function TemperatureConverterPage() {
 		const newValues = convertTemperature(20, 'celsius')
 		setValues(newValues)
 		setActiveUnit('celsius')
-		toast.success(t('toast.reset'))
+		toast.success('Значения сброшены')
 	}
 
 	if (!mounted) return null
@@ -296,31 +296,38 @@ export default function TemperatureConverterPage() {
 										{UNIT_CONFIGS[activeUnit].symbol}
 									</h2>
 									<p className='text-sm text-muted-foreground'>
-										{t(`units.${activeUnit}`)}
+										{activeUnit === 'celsius'
+											? 'Цельсий'
+											: activeUnit === 'fahrenheit'
+												? 'Фаренгейт'
+												: activeUnit === 'kelvin'
+													? 'Кельвин'
+													: activeUnit === 'rankine'
+														? 'Ранкин'
+														: 'Реомюр'}
 									</p>
 									<div className='mt-2 space-y-1'>
 										{values.celsius < 0 && (
 											<Badge variant='outline' className='gap-1'>
 												<Snowflake className='w-3 h-3' />
-												{t('descriptions.belowFreezing')}
+												Ниже точки замерзания
 											</Badge>
 										)}
 										{values.celsius >= 0 && values.celsius < 100 && (
 											<Badge variant='outline' className='gap-1'>
 												<Droplets className='w-3 h-3' />
-												{t('descriptions.liquidWater')}
+												Жидкая вода
 											</Badge>
 										)}
 										{values.celsius >= 100 && (
 											<Badge variant='outline' className='gap-1'>
 												<Flame className='w-3 h-3' />
-												{t('descriptions.aboveBoiling')}
+												Выше точки кипения
 											</Badge>
 										)}
 										<p className='text-xs text-muted-foreground'>
-											{t('context.fromAbsoluteZero', {
-												value: formatNumber(values.celsius + 273.15)
-											})}
+											На {formatNumber(values.celsius + 273.15)} К выше
+											абсолютного нуля
 										</p>
 									</div>
 								</div>
@@ -370,7 +377,15 @@ export default function TemperatureConverterPage() {
 									<CardContent className='relative p-4'>
 										<div className='flex items-center justify-between mb-2'>
 											<span className='text-sm font-medium'>
-												{t(`units.${unit}`)}
+												{unit === 'celsius'
+													? 'Цельсий'
+													: unit === 'fahrenheit'
+														? 'Фаренгейт'
+														: unit === 'kelvin'
+															? 'Кельвин'
+															: unit === 'rankine'
+																? 'Ранкин'
+																: 'Реомюр'}
 											</span>
 											<Tooltip>
 												<TooltipTrigger asChild>
@@ -387,7 +402,7 @@ export default function TemperatureConverterPage() {
 													</Button>
 												</TooltipTrigger>
 												<TooltipContent>
-													<p>{t('actions.copy')}</p>
+													<p>Копировать</p>
 												</TooltipContent>
 											</Tooltip>
 										</div>
@@ -414,7 +429,7 @@ export default function TemperatureConverterPage() {
 					<CardContent className='p-6'>
 						<div className='flex items-center gap-2 mb-4'>
 							<Sparkles className='w-5 h-5 text-primary' />
-							<h3 className='font-semibold'>{t('sections.presets')}</h3>
+							<h3 className='font-semibold'>Быстрые шаблоны</h3>
 						</div>
 						<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
 							{TEMPERATURE_PRESETS.map(preset => {
@@ -440,7 +455,17 @@ export default function TemperatureConverterPage() {
 										<div className='relative flex flex-col items-center gap-2'>
 											<Icon className='w-6 h-6' />
 											<span className='text-xs font-medium'>
-												{t(`presets.${preset.id}`)}
+												{preset.id === 'absoluteZero'
+													? 'Абсолютный ноль'
+													: preset.id === 'waterFreeze'
+														? 'Замерзание воды'
+														: preset.id === 'roomTemp'
+															? 'Комнатная температура'
+															: preset.id === 'bodyTemp'
+																? 'Температура тела'
+																: preset.id === 'waterBoil'
+																	? 'Кипение воды'
+																	: 'Духовка'}
 											</span>
 											<span className='text-xs text-muted-foreground'>
 												{preset.celsius}°C
@@ -463,9 +488,7 @@ export default function TemperatureConverterPage() {
 						>
 							<Card>
 								<CardContent className='p-4'>
-									<h3 className='font-semibold mb-3'>
-										{t('sections.history')}
-									</h3>
+									<h3 className='font-semibold mb-3'>История</h3>
 									<div className='space-y-2'>
 										{history.map((item, index) => (
 											<motion.div
@@ -488,7 +511,15 @@ export default function TemperatureConverterPage() {
 														{formatNumber(item.celsius)}°C
 													</Badge>
 													<span className='text-sm text-muted-foreground'>
-														{t(`units.${item.fromUnit}`)}
+														{item.fromUnit === 'celsius'
+															? 'Цельсий'
+															: item.fromUnit === 'fahrenheit'
+																? 'Фаренгейт'
+																: item.fromUnit === 'kelvin'
+																	? 'Кельвин'
+																	: item.fromUnit === 'rankine'
+																		? 'Ранкин'
+																		: 'Реомюр'}
 													</span>
 												</div>
 												<span className='text-xs text-muted-foreground'>
@@ -508,7 +539,7 @@ export default function TemperatureConverterPage() {
 					<CardContent className='p-6'>
 						<div className='flex items-center gap-2 mb-4'>
 							<Info className='w-5 h-5 text-primary' />
-							<h3 className='font-semibold'>{t('info.formulas')}</h3>
+							<h3 className='font-semibold'>Формулы конвертации</h3>
 						</div>
 						<div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
 							<div className='space-y-1'>

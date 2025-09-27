@@ -191,9 +191,7 @@ export default function CSSGradientGeneratorPage() {
 					<div className='space-y-6'>
 						{/* Gradient Type */}
 						<div className='space-y-3'>
-							<Label className='text-sm font-medium'>
-								Тип градиента
-							</Label>
+							<Label className='text-sm font-medium'>Тип градиента</Label>
 							<div className='grid grid-cols-3 gap-2'>
 								{(['linear', 'radial', 'conic'] as const).map(type => (
 									<Button
@@ -268,9 +266,7 @@ export default function CSSGradientGeneratorPage() {
 									</div>
 								</WidgetInput>
 
-								<WidgetInput
-									label={`Угол: ${settings.linearAngle}°`}
-								>
+								<WidgetInput label={`Угол: ${settings.linearAngle}°`}>
 									<Slider
 										value={[settings.linearAngle]}
 										onValueChange={([value]) => updateLinearAngle(value)}
@@ -358,9 +354,7 @@ export default function CSSGradientGeneratorPage() {
 
 						{settings.type === 'conic' && (
 							<div className='space-y-4'>
-								<WidgetInput
-									label={`Угол: ${settings.conicAngle}°`}
-								>
+								<WidgetInput label={`Угол: ${settings.conicAngle}°`}>
 									<Slider
 										value={[settings.conicAngle]}
 										onValueChange={([value]) => updateConicAngle(value)}
@@ -474,9 +468,7 @@ export default function CSSGradientGeneratorPage() {
 									</div>
 								</WidgetInput>
 
-								<WidgetInput
-									label={`Позиция: ${selectedStop.position}%`}
-								>
+								<WidgetInput label={`Позиция: ${selectedStop.position}%`}>
 									<Slider
 										value={[selectedStop.position]}
 										onValueChange={([value]) =>
@@ -488,9 +480,7 @@ export default function CSSGradientGeneratorPage() {
 									/>
 								</WidgetInput>
 
-								<WidgetInput
-									label={`Прозрачность: ${selectedStop.opacity}%`}
-								>
+								<WidgetInput label={`Прозрачность: ${selectedStop.opacity}%`}>
 									<Slider
 										value={[selectedStop.opacity]}
 										onValueChange={([value]) =>
@@ -508,11 +498,7 @@ export default function CSSGradientGeneratorPage() {
 			</div>
 
 			{/* Presets Section */}
-			<WidgetSection
-				icon={Sparkles}
-				title='Готовые градиенты'
-				className='mt-6'
-			>
+			<WidgetSection icon={Sparkles} title='Готовые градиенты' className='mt-6'>
 				<div className='space-y-4'>
 					{/* Search and Categories */}
 					<div className='flex flex-col sm:flex-row gap-4'>
@@ -530,9 +516,7 @@ export default function CSSGradientGeneratorPage() {
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value='all'>
-									Все категории
-								</SelectItem>
+								<SelectItem value='all'>Все категории</SelectItem>
 								{categories.map(category => (
 									<SelectItem
 										key={category}

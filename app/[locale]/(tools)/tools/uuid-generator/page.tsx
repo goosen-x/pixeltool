@@ -30,7 +30,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 type UUIDVersion = 'v4' | 'v1' | 'v7' | 'nil'
 type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces'
@@ -43,7 +43,7 @@ interface GeneratedUUID {
 }
 
 export default function UUIDGeneratorPage() {
-	const t = useTranslations('widgets.uuidGenerator')
+	// const t = useTranslations('widgets.uuidGenerator')
 	const [version, setVersion] = useState<UUIDVersion>('v4')
 	const [format, setFormat] = useState<UUIDFormat>('standard')
 	const [quantity, setQuantity] = useState('1')
@@ -162,7 +162,7 @@ export default function UUIDGeneratorPage() {
 		if (count === 1) {
 			copyToClipboard(newUUIDs[0].value, newUUIDs[0].id)
 		} else {
-			toast.success(t('toast.generated', { count }))
+			toast.success(`Сгенерировано ${count} UUID`)
 		}
 
 		// Auto-select text for easy copying
@@ -181,9 +181,9 @@ export default function UUIDGeneratorPage() {
 				setCopiedId(id)
 				setTimeout(() => setCopiedId(null), 2000)
 			}
-			toast.success(t('toast.copied'))
+			toast.success('Скопировано в буфер обмена')
 		} catch (err) {
-			toast.error(t('toast.copyError'))
+			toast.error('Ошибка копирования')
 		}
 	}
 
@@ -203,7 +203,7 @@ export default function UUIDGeneratorPage() {
 		a.download = `uuids-${version}-${Date.now()}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success(t('toast.downloaded'))
+		toast.success('Файл загружен')
 	}
 
 	// Validate UUID
@@ -218,7 +218,7 @@ export default function UUIDGeneratorPage() {
 		if (!uuidRegex.test(cleaned)) {
 			setValidationResult({
 				valid: false,
-				info: t('validator.invalid')
+				info: 'Некорректный UUID'
 			})
 			return
 		}
@@ -244,9 +244,9 @@ export default function UUIDGeneratorPage() {
 			version:
 				versionDigit >= 1 && versionDigit <= 7
 					? `v${versionDigit}`
-					: t('validator.unknown'),
+					: 'Неизвестная версия',
 			variant,
-			info: t('validator.valid')
+			info: 'Корректный UUID'
 		})
 	}
 
@@ -266,25 +266,25 @@ export default function UUIDGeneratorPage() {
 		{
 			value: 'v4' as UUIDVersion,
 			label: 'Version 4',
-			description: t('versions.v4'),
+			description: 'Случайный (рекомендуется)',
 			icon: <Shuffle className='w-4 h-4' />
 		},
 		{
 			value: 'v7' as UUIDVersion,
 			label: 'Version 7',
-			description: t('versions.v7'),
+			description: 'Временная метка + случайный',
 			icon: <Clock className='w-4 h-4' />
 		},
 		{
 			value: 'v1' as UUIDVersion,
 			label: 'Version 1',
-			description: t('versions.v1'),
+			description: 'Временная метка + MAC',
 			icon: <Clock className='w-4 h-4' />
 		},
 		{
 			value: 'nil' as UUIDVersion,
 			label: 'NIL UUID',
-			description: t('versions.nil'),
+			description: 'Нулевой UUID',
 			icon: <Hash className='w-4 h-4' />
 		}
 	]
@@ -292,22 +292,22 @@ export default function UUIDGeneratorPage() {
 	const formatOptions = [
 		{
 			value: 'standard',
-			label: t('formats.standard'),
+			label: 'Стандартный',
 			example: '550e8400-e29b-41d4-a716-446655440000'
 		},
 		{
 			value: 'uppercase',
-			label: t('formats.uppercase'),
+			label: 'Верхний регистр',
 			example: '550E8400-E29B-41D4-A716-446655440000'
 		},
 		{
 			value: 'no-hyphens',
-			label: t('formats.noHyphens'),
+			label: 'Без дефисов',
 			example: '550e8400e29b41d4a716446655440000'
 		},
 		{
 			value: 'braces',
-			label: t('formats.braces'),
+			label: 'В фигурных скобках',
 			example: '{550e8400-e29b-41d4-a716-446655440000}'
 		}
 	]
@@ -317,14 +317,14 @@ export default function UUIDGeneratorPage() {
 			{/* Main Generator Card */}
 			<Card>
 				<CardHeader>
-					<CardTitle>{t('title')}</CardTitle>
+					<CardTitle>Генератор UUID</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-6'>
 					{/* Quick Settings */}
 					<div className='flex flex-wrap gap-4'>
 						<div className='flex-1 min-w-[200px]'>
 							<Label className='text-xs text-muted-foreground mb-2 block'>
-								{t('version')}
+								{'Версия'}
 							</Label>
 							<div className='grid grid-cols-2 gap-2'>
 								{versionOptions.map(opt => (
@@ -353,7 +353,7 @@ export default function UUIDGeneratorPage() {
 						<div className='space-y-4'>
 							<div>
 								<Label className='text-xs text-muted-foreground mb-2 block'>
-									{t('format')}
+									{'Формат'}
 								</Label>
 								<Select
 									value={format}
@@ -379,7 +379,7 @@ export default function UUIDGeneratorPage() {
 
 							<div>
 								<Label className='text-xs text-muted-foreground mb-2 block'>
-									{t('quantity')}
+									{'Количество'}
 								</Label>
 								<div className='flex gap-2'>
 									<Input
@@ -392,7 +392,7 @@ export default function UUIDGeneratorPage() {
 									/>
 									<Button onClick={generateUUIDs} className='gap-2'>
 										<RefreshCw className='w-4 h-4' />
-										{t('generate')}
+										{'Генерировать'}
 									</Button>
 								</div>
 							</div>
@@ -402,7 +402,7 @@ export default function UUIDGeneratorPage() {
 					{/* Generated UUIDs */}
 					<div className='space-y-3'>
 						<div className='flex items-center justify-between'>
-							<Label className='text-sm'>{t('result')}</Label>
+							<Label className='text-sm'>{'Результат'}</Label>
 							{uuids.length > 0 && (
 								<div className='flex gap-2'>
 									{uuids.length > 1 && (
@@ -414,7 +414,7 @@ export default function UUIDGeneratorPage() {
 												className='gap-2'
 											>
 												<Copy className='w-4 h-4' />
-												{t('copyAll')}
+												{'Скопировать все'}
 											</Button>
 											<Button
 												size='sm'
@@ -423,7 +423,7 @@ export default function UUIDGeneratorPage() {
 												className='gap-2'
 											>
 												<Download className='w-4 h-4' />
-												{t('download')}
+												{'Скачать'}
 											</Button>
 										</>
 									)}
@@ -434,7 +434,7 @@ export default function UUIDGeneratorPage() {
 										className='gap-2'
 									>
 										<Trash2 className='w-4 h-4' />
-										{t('clear')}
+										{'Очистить'}
 									</Button>
 								</div>
 							)}
@@ -471,7 +471,7 @@ export default function UUIDGeneratorPage() {
 							/>
 						) : (
 							<div className='h-14 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm'>
-								{t('placeholder')}
+								{'Нажмите "Генерировать" для создания UUID'}
 							</div>
 						)}
 					</div>
@@ -485,16 +485,16 @@ export default function UUIDGeneratorPage() {
 					<CardHeader>
 						<CardTitle className='flex items-center gap-2'>
 							<Shield className='w-5 h-5' />
-							{t('validator.title')}
+							{'Валидатор UUID'}
 						</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-4'>
 						<div className='space-y-2'>
-							<Label>{t('validator.input')}</Label>
+							<Label>{'UUID для проверки'}</Label>
 							<Input
 								value={validationInput}
 								onChange={e => setValidationInput(e.target.value)}
-								placeholder={t('validator.placeholder')}
+								placeholder={'Введите UUID для валидации'}
 								className='font-mono'
 								onKeyDown={e =>
 									e.key === 'Enter' && validateUUID(validationInput)
@@ -507,7 +507,7 @@ export default function UUIDGeneratorPage() {
 							disabled={!validationInput}
 							className='w-full'
 						>
-							{t('validator.validate')}
+							{'Проверить'}
 						</Button>
 
 						{validationResult && (
@@ -531,12 +531,12 @@ export default function UUIDGeneratorPage() {
 									<div className='space-y-1 text-sm'>
 										{validationResult.version && (
 											<div>
-												{t('validator.version')}: {validationResult.version}
+												{'Версия'}: {validationResult.version}
 											</div>
 										)}
 										{validationResult.variant && (
 											<div>
-												{t('validator.variant')}: {validationResult.variant}
+												{'Вариант'}: {validationResult.variant}
 											</div>
 										)}
 									</div>
@@ -551,31 +551,35 @@ export default function UUIDGeneratorPage() {
 					<CardHeader>
 						<CardTitle className='flex items-center gap-2'>
 							<Info className='w-5 h-5' />
-							{t('info.title')}
+							{'Информация'}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className='space-y-4 text-sm'>
 							<div>
-								<h4 className='font-medium mb-1'>{t('info.whatIs')}</h4>
-								<p className='text-muted-foreground'>{t('info.description')}</p>
+								<h4 className='font-medium mb-1'>{'Что такое UUID?'}</h4>
+								<p className='text-muted-foreground'>
+									{
+										'UUID (Universally Unique Identifier) — это 128-битный идентификатор, используемый для уникальной идентификации объектов в компьютерных системах.'
+									}
+								</p>
 							</div>
 							<div>
-								<h4 className='font-medium mb-1'>{t('info.structure')}</h4>
+								<h4 className='font-medium mb-1'>{'Структура'}</h4>
 								<code className='text-xs bg-muted px-2 py-1 rounded'>
 									xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
 								</code>
 								<p className='text-muted-foreground text-xs mt-1'>
-									M = {t('info.versionDigit')}, N = {t('info.variantDigit')}
+									M = {'цифра версии'}, N = {'цифра варианта'}
 								</p>
 							</div>
 							<div className='space-y-2'>
-								<h4 className='font-medium'>{t('info.commonUse')}</h4>
+								<h4 className='font-medium'>{'Применение'}</h4>
 								<ul className='text-muted-foreground space-y-1'>
-									<li>• {t('info.use1')}</li>
-									<li>• {t('info.use2')}</li>
-									<li>• {t('info.use3')}</li>
-									<li>• {t('info.use4')}</li>
+									<li>• {'Идентификаторы записей в базах данных'}</li>
+									<li>• {'Имена файлов и объектов'}</li>
+									<li>• {'API ключи и токены'}</li>
+									<li>• {'Уникальные идентификаторы пользователей'}</li>
 								</ul>
 							</div>
 						</div>

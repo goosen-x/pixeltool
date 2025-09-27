@@ -126,13 +126,11 @@ And that's how this story begins! 📖✨`,
 
 interface PresetTemplatesProps {
 	onSelectTemplate: (template: Template) => void
-	t: (key: string) => string
 	className?: string
 }
 
 export function PresetTemplates({
 	onSelectTemplate,
-	t,
 	className
 }: PresetTemplatesProps) {
 	const getCategoryColor = (category: Template['category']) => {
@@ -153,7 +151,7 @@ export function PresetTemplates({
 			<div className='text-center space-y-2'>
 				<div className='flex items-center justify-center gap-2'>
 					<Sparkles className='w-5 h-5 text-primary' />
-					<h2 className='text-xl font-bold'>{t('presets.title')}</h2>
+					<h2 className='text-xl font-bold'>Готовые шаблоны</h2>
 					<Sparkles className='w-5 h-5 text-primary' />
 				</div>
 				<p className='text-muted-foreground text-sm'>
@@ -176,7 +174,7 @@ export function PresetTemplates({
 									</div>
 									<div>
 										<CardTitle className='text-base group-hover:text-primary transition-colors'>
-											{t(`templates.${template.id}.name`)}
+											{template.name}
 										</CardTitle>
 									</div>
 								</div>
@@ -188,7 +186,7 @@ export function PresetTemplates({
 								</Badge>
 							</div>
 							<p className='text-sm text-muted-foreground'>
-								{t(`templates.${template.id}.description`)}
+								{template.description}
 							</p>
 						</CardHeader>
 

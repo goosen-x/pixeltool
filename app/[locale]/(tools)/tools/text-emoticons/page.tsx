@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface EmoticonCategory {
 	id: string
@@ -257,7 +257,7 @@ const emoticonCategories: EmoticonCategory[] = [
 ]
 
 export default function TextEmoticonsPage() {
-	const t = useTranslations('widgets.textEmoticons')
+	// const t = useTranslations('widgets.textEmoticons')
 	const [selectedCategory, setSelectedCategory] = useState<string>('all')
 	const [recentEmoticons, setRecentEmoticons] = useState<string[]>([])
 	const [copiedEmoticon, setCopiedEmoticon] = useState<string | null>(null)
@@ -283,7 +283,7 @@ export default function TextEmoticonsPage() {
 		try {
 			await navigator.clipboard.writeText(emoticon)
 			setCopiedEmoticon(emoticon)
-			toast.success(t('copied', { emoticon }))
+			toast.success(`Скопировано: ${emoticon}`)
 
 			// Add to recent emoticons
 			setRecentEmoticons(prev => {
@@ -294,7 +294,7 @@ export default function TextEmoticonsPage() {
 			// Reset copied state after 2 seconds
 			setTimeout(() => setCopiedEmoticon(null), 2000)
 		} catch (err) {
-			toast.error(t('copyError'))
+			toast.error('Ошибка при копировании')
 		}
 	}
 
@@ -346,7 +346,7 @@ export default function TextEmoticonsPage() {
 			{/* Category Filter */}
 			<div className='space-y-4'>
 				<div className='flex justify-between items-center'>
-					<h2 className='text-lg font-semibold'>{t('categories.title')}</h2>
+					<h2 className='text-lg font-semibold'>Категории</h2>
 					{recentEmoticons.length > 0 && selectedCategory === 'recent' && (
 						<Button
 							variant='outline'
@@ -355,7 +355,7 @@ export default function TextEmoticonsPage() {
 							className='whitespace-nowrap'
 						>
 							<X className='w-4 h-4 mr-2' />
-							{t('clearRecent')}
+							Очистить
 						</Button>
 					)}
 				</div>
@@ -372,7 +372,7 @@ export default function TextEmoticonsPage() {
 						)}
 					>
 						<Sparkles className='w-4 h-4 mr-2' />
-						{t('allCategories')}
+						Все категории
 					</Button>
 
 					{recentEmoticons.length > 0 && (
@@ -386,7 +386,7 @@ export default function TextEmoticonsPage() {
 							)}
 						>
 							<Clock className='w-4 h-4 mr-2' />
-							{t('recentlyUsed')}
+							Недавние
 						</Button>
 					)}
 
@@ -402,7 +402,23 @@ export default function TextEmoticonsPage() {
 							)}
 						>
 							<span className='mr-2'>{category.icon}</span>
-							{t(`categories.${category.id}`)}
+							{category.id === 'popular'
+								? 'Популярные'
+								: category.id === 'happy'
+									? 'Радость'
+									: category.id === 'sad'
+										? 'Грусть'
+										: category.id === 'angry'
+											? 'Злость'
+											: category.id === 'love'
+												? 'Любовь'
+												: category.id === 'animals'
+													? 'Животные'
+													: category.id === 'special'
+														? 'Особые'
+														: category.id === 'japanese'
+															? 'Японские'
+															: category.id}
 						</Button>
 					))}
 				</div>
@@ -413,14 +429,28 @@ export default function TextEmoticonsPage() {
 				<div className='flex items-center justify-between mb-4'>
 					<h2 className='text-lg font-semibold'>
 						{selectedCategory === 'all'
-							? t('allCategories')
+							? 'Все категории'
 							: selectedCategory === 'recent'
-								? t('recentlyUsed')
-								: t(`categories.${selectedCategory}`)}
+								? 'Недавние'
+								: selectedCategory === 'popular'
+									? 'Популярные'
+									: selectedCategory === 'happy'
+										? 'Радость'
+										: selectedCategory === 'sad'
+											? 'Грусть'
+											: selectedCategory === 'angry'
+												? 'Злость'
+												: selectedCategory === 'love'
+													? 'Любовь'
+													: selectedCategory === 'animals'
+														? 'Животные'
+														: selectedCategory === 'special'
+															? 'Особые'
+															: selectedCategory === 'japanese'
+																? 'Японские'
+																: selectedCategory}
 					</h2>
-					<Badge variant='secondary'>
-						{t('totalEmoticons', { count: filteredEmoticons.length })}
-					</Badge>
+					<Badge variant='secondary'>{filteredEmoticons.length} смайлов</Badge>
 				</div>
 
 				{filteredEmoticons.length > 0 ? (
@@ -437,14 +467,87 @@ export default function TextEmoticonsPage() {
 										'ring-2 ring-green-500 bg-green-50 dark:bg-green-950/20'
 								)}
 								onClick={() => handleCopyEmoticon(emoticon.text)}
-								title={t('clickToCopy')}
+								title='Нажмите для копирования'
 							>
 								<span className='text-lg font-mono relative z-10 group-hover:text-foreground transition-colors'>
 									{emoticon.text}
 								</span>
 								{emoticon.name && (
 									<span className='text-xs text-muted-foreground relative z-10 group-hover:text-foreground/80 transition-colors'>
-										{t(`emoticonName.${emoticon.name}`)}
+										{emoticon.name === 'lennyFace'
+											? 'Ленни фейс'
+											: emoticon.name === 'shrug'
+												? 'Пожимание плечами'
+												: emoticon.name === 'tableFlip'
+													? 'Переворот стола'
+													: emoticon.name === 'disapproval'
+														? 'Неодобрение'
+														: emoticon.name === 'bear'
+															? 'Медведь'
+															: emoticon.name === 'confused'
+																? 'Смущение'
+																: emoticon.name === 'happy'
+																	? 'Счастье'
+																	: emoticon.name === 'crying'
+																		? 'Плач'
+																		: emoticon.name === 'cool'
+																			? 'Крутой'
+																			: emoticon.name === 'love'
+																				? 'Любовь'
+																				: emoticon.name === 'excited'
+																					? 'Возбуждение'
+																					: emoticon.name === 'sad'
+																						? 'Грусть'
+																						: emoticon.name === 'angry'
+																							? 'Злость'
+																							: emoticon.name === 'kiss'
+																								? 'Поцелуй'
+																								: emoticon.name === 'hug'
+																									? 'Обнимашки'
+																									: emoticon.name === 'cat'
+																										? 'Кот'
+																										: emoticon.name === 'dog'
+																											? 'Собака'
+																											: emoticon.name ===
+																												  'surprised'
+																												? 'Удивление'
+																												: emoticon.name ===
+																													  'fish'
+																													? 'Рыба'
+																													: emoticon.name ===
+																														  'give'
+																														? 'Дать'
+																														: emoticon.name ===
+																															  'pointing'
+																															? 'Указание'
+																															: emoticon.name ===
+																																  'fighting'
+																																? 'Борьба'
+																																: emoticon.name ===
+																																	  'dancing'
+																																	? 'Танцы'
+																																	: emoticon.name ===
+																																		  'shocked'
+																																		? 'Шок'
+																																		: emoticon.name ===
+																																			  'singing'
+																																			? 'Пение'
+																																			: emoticon.name ===
+																																				  'goodbye'
+																																				? 'Прощание'
+																																				: emoticon.name ===
+																																					  'curious'
+																																					? 'Любопытство'
+																																					: emoticon.name ===
+																																						  'content'
+																																						? 'Довольство'
+																																						: emoticon.name ===
+																																							  'friends'
+																																							? 'Друзья'
+																																							: emoticon.name ===
+																																								  'embarrassed'
+																																								? 'Смущение'
+																																								: emoticon.name}
 									</span>
 								)}
 
@@ -460,36 +563,38 @@ export default function TextEmoticonsPage() {
 					</div>
 				) : (
 					<div className='text-center py-12 text-muted-foreground'>
-						<p>{t('noResults')}</p>
+						<p>Нет результатов</p>
 					</div>
 				)}
 			</Card>
 
 			{/* Info Card */}
 			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>{t('aboutTitle')}</h3>
+				<h3 className='font-semibold mb-3'>О текстовых смайликах</h3>
 				<p className='text-sm text-muted-foreground mb-4'>
-					{t('aboutDescription')}
+					Текстовые смайлики (эмотиконы) - это способ выражения эмоций с помощью
+					текстовых символов. Кликните на любой смайлик, чтобы скопировать его в
+					буфер обмена.
 				</p>
 
 				<div className='grid md:grid-cols-2 gap-4 mt-4'>
 					<div>
-						<h4 className='font-medium mb-2'>{t('features.title')}</h4>
+						<h4 className='font-medium mb-2'>Возможности</h4>
 						<ul className='space-y-1 text-sm text-muted-foreground'>
-							<li>• {t('features.list.collection')}</li>
-							<li>• {t('features.list.categories')}</li>
-							<li>• {t('features.list.copy')}</li>
-							<li>• {t('features.list.recent')}</li>
-							<li>• {t('features.list.search')}</li>
+							<li>• Большая коллекция текстовых смайликов</li>
+							<li>• Категории по эмоциям и темам</li>
+							<li>• Копирование одним кликом</li>
+							<li>• История недавно используемых</li>
+							<li>• Удобная навигация</li>
 						</ul>
 					</div>
 					<div>
-						<h4 className='font-medium mb-2'>{t('tips.title')}</h4>
+						<h4 className='font-medium mb-2'>Советы по использованию</h4>
 						<ul className='space-y-1 text-sm text-muted-foreground'>
-							<li>• {t('tips.list.social')}</li>
-							<li>• {t('tips.list.messages')}</li>
-							<li>• {t('tips.list.forums')}</li>
-							<li>• {t('tips.list.email')}</li>
+							<li>• Используйте в социальных сетях</li>
+							<li>• Добавляйте в сообщения</li>
+							<li>• Оживляйте форумы и чаты</li>
+							<li>• Украшайте электронную почту</li>
 						</ul>
 					</div>
 				</div>

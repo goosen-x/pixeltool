@@ -402,7 +402,9 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 	}
 
 	const loadExample = () => {
-		setText('Добро пожаловать в анализатор текста! Этот инструмент помогает вам анализировать ваш текст в реальном времени. Попробуйте ввести или вставить любой текст, и вы увидите мгновенную статистику.')
+		setText(
+			'Добро пожаловать в анализатор текста! Этот инструмент помогает вам анализировать ваш текст в реальном времени. Попробуйте ввести или вставить любой текст, и вы увидите мгновенную статистику.'
+		)
 		toast.success('Пример загружен!')
 	}
 
@@ -782,9 +784,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 							{/* Detailed Stats */}
 							<div className='space-y-4'>
 								<div>
-									<h4 className='text-sm font-medium mb-3'>
-										 Анализ символов
-									</h4>
+									<h4 className='text-sm font-medium mb-3'>Анализ символов</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
@@ -795,26 +795,20 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>
-												Пробелов
-											</span>
+											<span className='text-muted-foreground'>Пробелов</span>
 											<span className='font-mono'>
 												{stats.characters - stats.charactersNoSpaces}
 											</span>
 										</div>
 										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>
-												Абзацев
-											</span>
+											<span className='text-muted-foreground'>Абзацев</span>
 											<span className='font-mono'>{stats.paragraphs}</span>
 										</div>
 									</div>
 								</div>
 
 								<div>
-									<h4 className='text-sm font-medium mb-3'>
-										Средние значения
-									</h4>
+									<h4 className='text-sm font-medium mb-3'>Средние значения</h4>
 									<div className='space-y-2'>
 										<div className='flex justify-between text-sm'>
 											<span className='text-muted-foreground'>
@@ -844,17 +838,14 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 											Самое длинное слово
 										</h4>
 										<Badge variant='secondary' className='font-mono'>
-											{stats.longestWord} ({stats.longestWord.length}{' '}
-											символов)
+											{stats.longestWord} ({stats.longestWord.length} символов)
 										</Badge>
 									</div>
 								)}
 
 								{stats.commonWords.length > 0 && (
 									<div>
-										<h4 className='text-sm font-medium mb-3'>
-											Частые слова
-										</h4>
+										<h4 className='text-sm font-medium mb-3'>Частые слова</h4>
 										<div className='space-y-2'>
 											{stats.commonWords.map(({ word, count }) => (
 												<div

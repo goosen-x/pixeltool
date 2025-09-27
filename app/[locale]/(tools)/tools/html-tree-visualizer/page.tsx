@@ -73,7 +73,9 @@ export default function HTMLTreePage() {
 					if (className.includes('--')) {
 						const baseName = className.split('--')[0]
 						if (!classes.includes(baseName)) {
-							warnings.push(`Класс '${className}' не содержит базовый класс '${baseName}'`)
+							warnings.push(
+								`Класс '${className}' не содержит базовый класс '${baseName}'`
+							)
 						}
 					}
 				})

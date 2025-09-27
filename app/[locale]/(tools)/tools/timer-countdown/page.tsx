@@ -36,7 +36,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { SlidingTimer } from '@/components/widgets/timer/SlidingTimer'
 import { SlidingCountdown } from '@/components/widgets/timer/SlidingCountdown'
 import { AnimatedProgressBar } from '@/components/widgets/timer/AnimatedProgressBar'
@@ -75,7 +75,7 @@ const TIMER_PRESETS: TimerPreset[] = [
 ]
 
 export default function TimerCountdownPage() {
-	const t = useTranslations('widgets.timerCountdown')
+	// const t = useTranslations('widgets.timerCountdown')
 	const [mode, setMode] = useState<TimerMode>('countdown')
 	const [isRunning, setIsRunning] = useState(false)
 	const [isPaused, setIsPaused] = useState(false)
@@ -166,7 +166,7 @@ export default function TimerCountdownPage() {
 					seconds: 0,
 					milliseconds: 0
 				})
-				toast.success(t('longBreakTime'))
+				toast.success('Время длинного перерыва!')
 			} else {
 				setPomodoroPhase('shortBreak')
 				setTime({
@@ -175,7 +175,7 @@ export default function TimerCountdownPage() {
 					seconds: 0,
 					milliseconds: 0
 				})
-				toast.success(t('shortBreakTime'))
+				toast.success('Время короткого перерыва!')
 			}
 		} else {
 			setPomodoroPhase('work')
@@ -186,9 +186,9 @@ export default function TimerCountdownPage() {
 				seconds: 0,
 				milliseconds: 0
 			})
-			toast.success(t('workTime'))
+			toast.success('Время работы!')
 		}
-	}, [pomodoroPhase, pomodoroSession, pomodoroSettings, t])
+	}, [pomodoroPhase, pomodoroSession, pomodoroSettings])
 
 	const handleTimerComplete = useCallback(() => {
 		setIsRunning(false)
@@ -201,9 +201,9 @@ export default function TimerCountdownPage() {
 		if (mode === 'pomodoro') {
 			handlePomodoroPhaseComplete()
 		} else {
-			toast.success(t('timerComplete'))
+			toast.success('Таймер завершен!')
 		}
-	}, [mode, t, handlePomodoroPhaseComplete, playNotificationSound])
+	}, [mode, handlePomodoroPhaseComplete, playNotificationSound])
 
 	const updateTimer = useCallback(() => {
 		setTime(prevTime => {
@@ -374,7 +374,7 @@ export default function TimerCountdownPage() {
 
 		setInitialTime({ hours, minutes, seconds, milliseconds: 0 })
 		setTime({ hours, minutes, seconds, milliseconds: 0 })
-		toast.success(`${t('presetLoaded')}: ${preset.name}`)
+		toast.success(`Пресет загружен: ${preset.name}`)
 	}
 
 	const adjustTime = (
@@ -425,21 +425,21 @@ export default function TimerCountdownPage() {
 		switch (pomodoroPhase) {
 			case 'work':
 				return {
-					label: t('work'),
+					label: 'Работа',
 					color: 'text-red-600 dark:text-red-400',
 					bgColor: 'bg-red-50 dark:bg-red-950/30',
 					borderColor: 'border-red-200 dark:border-red-800'
 				}
 			case 'shortBreak':
 				return {
-					label: t('shortBreak'),
+					label: 'Короткий перерыв',
 					color: 'text-green-600 dark:text-green-400',
 					bgColor: 'bg-green-50 dark:bg-green-950/30',
 					borderColor: 'border-green-200 dark:border-green-800'
 				}
 			case 'longBreak':
 				return {
-					label: t('longBreak'),
+					label: 'Длинный перерыв',
 					color: 'text-blue-600 dark:text-blue-400',
 					bgColor: 'bg-blue-50 dark:bg-blue-950/30',
 					borderColor: 'border-blue-200 dark:border-blue-800'
@@ -458,7 +458,7 @@ export default function TimerCountdownPage() {
 				<TabsList className='grid w-full grid-cols-3'>
 					<TabsTrigger value='countdown' className='gap-2'>
 						<Clock className='w-4 h-4' />
-						{t('timer.title')}
+						Таймер
 					</TabsTrigger>
 					<TabsTrigger value='stopwatch' className='gap-2'>
 						<Timer className='w-4 h-4' />
@@ -485,7 +485,7 @@ export default function TimerCountdownPage() {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end' className='w-56'>
-								<DropdownMenuLabel>{t('settings')}</DropdownMenuLabel>
+								<DropdownMenuLabel>Настройки</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className='flex items-center justify-between'
@@ -496,7 +496,7 @@ export default function TimerCountdownPage() {
 										className='flex items-center gap-2 cursor-pointer'
 									>
 										<Volume2 className='w-4 h-4' />
-										{t('soundNotification')}
+										Звуковое уведомление
 									</Label>
 									<Switch
 										id='dropdown-sound'
@@ -514,7 +514,7 @@ export default function TimerCountdownPage() {
 											className='flex items-center gap-2 cursor-pointer'
 										>
 											<Zap className='w-4 h-4' />
-											{t('showMilliseconds')}
+											Показывать миллисекунды
 										</Label>
 										<Switch
 											id='dropdown-milliseconds'
@@ -533,7 +533,7 @@ export default function TimerCountdownPage() {
 											<div className='px-2 py-1.5 w-full'>
 												<div className='space-y-2'>
 													<h4 className='text-sm font-medium'>
-														{t('pomodoroSettings')}
+														Настройки Помодоро
 													</h4>
 													<div className='grid grid-cols-2 gap-2 text-xs'>
 														<div>
@@ -541,7 +541,7 @@ export default function TimerCountdownPage() {
 																htmlFor='dropdown-work'
 																className='text-xs'
 															>
-																{t('workDuration')}
+																Продолжительность работы
 															</Label>
 															<Input
 																id='dropdown-work'
@@ -563,7 +563,7 @@ export default function TimerCountdownPage() {
 																htmlFor='dropdown-short'
 																className='text-xs'
 															>
-																{t('shortBreakDuration')}
+																Короткий перерыв
 															</Label>
 															<Input
 																id='dropdown-short'
@@ -586,7 +586,7 @@ export default function TimerCountdownPage() {
 																htmlFor='dropdown-long'
 																className='text-xs'
 															>
-																{t('longBreakDuration')}
+																Длинный перерыв
 															</Label>
 															<Input
 																id='dropdown-long'
@@ -609,7 +609,7 @@ export default function TimerCountdownPage() {
 																htmlFor='dropdown-sessions'
 																className='text-xs'
 															>
-																{t('sessionsUntilLongBreak')}
+																Сессии до длинного перерыва
 															</Label>
 															<Input
 																id='dropdown-sessions'
@@ -650,8 +650,7 @@ export default function TimerCountdownPage() {
 										getPomodoroPhaseInfo().color
 									)}
 								>
-									{getPomodoroPhaseInfo().label} • {t('session')}{' '}
-									{pomodoroSession}
+									{getPomodoroPhaseInfo().label} • Сессия {pomodoroSession}
 								</div>
 							</div>
 						)}
@@ -695,12 +694,12 @@ export default function TimerCountdownPage() {
 							{!isRunning ? (
 								<Button onClick={startTimer} size='lg' className='gap-2'>
 									<Play className='w-5 h-5' />
-									{t('start')}
+									Старт
 								</Button>
 							) : isPaused ? (
 								<Button onClick={resumeTimer} size='lg' className='gap-2'>
 									<Play className='w-5 h-5' />
-									{t('resume')}
+									Продолжить
 								</Button>
 							) : (
 								<Button
@@ -710,7 +709,7 @@ export default function TimerCountdownPage() {
 									className='gap-2'
 								>
 									<Pause className='w-5 h-5' />
-									{t('pause')}
+									Пауза
 								</Button>
 							)}
 
@@ -721,7 +720,7 @@ export default function TimerCountdownPage() {
 								className='gap-2'
 							>
 								<RotateCcw className='w-5 h-5' />
-								{t('reset')}
+								Сброс
 							</Button>
 						</div>
 					</Card>

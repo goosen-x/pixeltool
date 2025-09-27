@@ -76,14 +76,12 @@ interface PlatformSelectorProps {
 	selectedPlatform: Platform
 	onSelectPlatform: (platform: Platform) => void
 	text?: string
-	t: (key: string) => string
 }
 
 export function PlatformSelector({
 	selectedPlatform,
 	onSelectPlatform,
-	text = '',
-	t
+	text = ''
 }: PlatformSelectorProps) {
 	const getCharacterStatus = (platform: PlatformConfig, textLength: number) => {
 		if (!platform.characterLimit) return null
@@ -138,9 +136,7 @@ export function PlatformSelector({
 										isSelected ? 'text-primary' : 'text-foreground'
 									)}
 								>
-									{t(
-										`platforms.${platform.id === 'all' ? 'allPlatforms' : platform.id}`
-									)}
+									{platform.id === 'all' ? 'Все платформы' : platform.name}
 								</div>
 
 								{/* Character limit indicator */}
@@ -184,10 +180,7 @@ export function PlatformSelector({
 						<span className='text-2xl'>
 							{platforms.find(p => p.id === selectedPlatform)?.icon}
 						</span>
-						{t('preview.platformPreview').replace(
-							'{platform}',
-							t(`platforms.${selectedPlatform}`)
-						)}
+						Предварительный просмотр для {platforms.find(p => p.id === selectedPlatform)?.name || selectedPlatform}
 					</h3>
 
 					<div className='flex justify-center'>
@@ -204,7 +197,7 @@ export function PlatformSelector({
 			{selectedPlatform === 'all' && text && (
 				<div className='space-y-4'>
 					<h3 className='text-lg font-semibold'>
-						{t('preview.title')} - {t('platforms.allPlatforms')}
+						Предварительный просмотр - Все платформы
 					</h3>
 
 					<div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
@@ -212,7 +205,7 @@ export function PlatformSelector({
 							<div key={platform.id} className='space-y-2'>
 								<h4 className='font-medium text-center flex items-center justify-center gap-2'>
 									<span>{platform.icon}</span>
-									{t(`platforms.${platform.id}`)}
+									{platform.name}
 								</h4>
 								<PlatformMockup
 									platform={platform.id as Exclude<Platform, 'all'>}
