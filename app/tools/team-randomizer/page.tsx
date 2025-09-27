@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -72,7 +72,7 @@ function distributeIntoTeams(
 }
 
 export default function TeamRandomizerPage() {
-	const locale = useLocale()
+	const locale = 'ru' // useLocale()
 	const defaultParticipants =
 		'Alice Johnson\nBob Smith\nCarol Williams\nDavid Brown\nEve Davis\nFrank Miller\nGrace Wilson'
 	const [participantsInput, setParticipantsInput] = useState('')
