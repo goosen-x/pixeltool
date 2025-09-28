@@ -1,14 +1,16 @@
 # Multi-stage build for production optimization
 FROM node:18-alpine AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
-# Copy package files
+# Copy package files and other necessary config
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY .npmrc* ./
 
-# Install dependencies
+# Install dependencies with increased network timeout
+ENV YARN_NETWORK_TIMEOUT 600000
 RUN \
-  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  if [ -f yarn.lock ]; then yarn install --frozen-lockfile --network-timeout 600000; \
   elif [ -f package-lock.json ]; then npm ci; \
   elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
