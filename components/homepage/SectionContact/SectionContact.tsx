@@ -3,7 +3,7 @@
 import { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 // import { useLocale } from 'next-intl'
 import { SectionTitle } from '@/components/global/SectionTitle'
 import Link from 'next/link'
@@ -13,13 +13,13 @@ export const SectionContact = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	const t = useTranslations('contact')
+	// const t = useTranslations('contact')
 	// const locale = useLocale()
 	const locale = 'ru'
 
 	return (
 		<section className={cn('mb-24', className)} {...rest}>
-			<SectionTitle className='mb-12 text-center' title={t('title')} />
+			<SectionTitle className='mb-12 text-center' title='Свяжитесь со мной' />
 
 			<div className='max-w-4xl mx-auto'>
 				<motion.div
@@ -41,11 +41,12 @@ export const SectionContact = ({
 						</div>
 
 						<h3 className='text-2xl md:text-3xl font-heading font-bold'>
-							{t('subtitle')}
+							Готов обсудить ваш проект
 						</h3>
 
 						<p className='text-muted-foreground max-w-2xl mx-auto'>
-							{t('form.description')}
+							Есть идея или проект? Давайте создадим что-то удивительное вместе.
+							Я всегда открыт для новых возможностей и сотрудничества.
 						</p>
 
 						<div className='flex flex-wrap gap-4 justify-center pt-4'>
@@ -54,16 +55,16 @@ export const SectionContact = ({
 								className='group inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:bg-accent/90 transition-all hover:scale-105'
 							>
 								<MessageSquare className='w-5 h-5' />
-								<span className='font-medium'>{t('form.submit')}</span>
+								<span className='font-medium'>Начать разговор</span>
 								<ArrowRight className='w-4 h-4 group-hover:translate-x-1 transition-transform' />
 							</Link>
 
 							<a
-								href={`mailto:dmitryborisenko.msk@gmail.com?subject=${encodeURIComponent(t('email.subject'))}`}
+								href={`mailto:dmitryborisenko.msk@gmail.com?subject=${encodeURIComponent('Привет! Хочу обсудить проект')}`}
 								className='group inline-flex items-center gap-2 px-6 py-3 border border-border hover:border-accent/50 rounded-xl transition-all hover:scale-105'
 							>
 								<Send className='w-5 h-5' />
-								<span className='font-medium'>{t('info.email')}</span>
+								<span className='font-medium'>Написать email</span>
 							</a>
 						</div>
 					</div>

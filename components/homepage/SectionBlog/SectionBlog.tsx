@@ -29,7 +29,8 @@ export const SectionBlog = async ({ locale }: Props) => {
 						'Последнее из блога'
 					</h2>
 					<p className='mt-4 max-w-2xl text-gray-600 dark:text-gray-400 md:text-lg'>
-						'Инсайты о веб-разработке, паттернах проектирования и технологических трендах'
+						'Инсайты о веб-разработке, паттернах проектирования и
+						технологических трендах'
 					</p>
 				</div>
 				<div className='mt-12'>

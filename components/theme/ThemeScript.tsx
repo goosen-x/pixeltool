@@ -1,6 +1,7 @@
 export function ThemeScript() {
 	return (
 		<script
+			async
 			dangerouslySetInnerHTML={{
 				__html: `
 					(function() {

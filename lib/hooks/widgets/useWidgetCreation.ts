@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
@@ -67,7 +67,7 @@ interface WidgetUtilities {
 }
 
 export function useWidgetCreation(config: WidgetCreationConfig) {
-	const t = useTranslations()
+	// const t = useTranslations()
 	const { trackEvent } = useAnalytics(config.widgetId)
 	const { isFavorite, toggleFavorite } = useFavorites()
 	const { addToHistory } = useSearchHistory()
@@ -162,15 +162,15 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 			customState: config.defaultState?.custom || {}
 		})
 
-		toast.success(t('common.reset'))
-	}, [config.defaultState, t])
+		toast.success('Сброшено')
+	}, [config.defaultState])
 
 	// Common utility actions
 	const copyToClipboard = useCallback(
 		async (text: string, message?: string) => {
 			try {
 				await navigator.clipboard.writeText(text)
-				toast.success(message || t('common.copiedToClipboard'))
+				toast.success(message || 'Скопировано в буфер обмена')
 
 				if (config.enableAnalytics) {
 					trackEvent('action', {
@@ -179,10 +179,10 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 					})
 				}
 			} catch (error) {
-				toast.error(t('common.copyFailed'))
+				toast.error('Ошибка копирования')
 			}
 		},
-		[config.widgetId, config.enableAnalytics, trackEvent, t]
+		[config.widgetId, config.enableAnalytics, trackEvent]
 	)
 
 	const downloadAsFile = useCallback(
@@ -198,7 +198,7 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 				document.body.removeChild(link)
 				URL.revokeObjectURL(url)
 
-				toast.success(t('common.downloadSuccess'))
+				toast.success('Загрузка завершена')
 
 				if (config.enableAnalytics) {
 					trackEvent('export', {
@@ -207,10 +207,10 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 					})
 				}
 			} catch (error) {
-				toast.error(t('common.downloadFailed'))
+				toast.error('Ошибка загрузки')
 			}
 		},
-		[config.widgetId, config.enableAnalytics, trackEvent, t]
+		[config.widgetId, config.enableAnalytics, trackEvent]
 	)
 
 	const shareResult = useCallback(
@@ -227,15 +227,15 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 				} else {
 					// Fallback to copying URL
 					const shareUrl = data.url || window.location.href
-					await copyToClipboard(shareUrl, t('common.linkCopied'))
+					await copyToClipboard(shareUrl, 'Ссылка скопирована')
 				}
 			} catch (error) {
 				if ((error as Error).name !== 'AbortError') {
-					toast.error(t('common.shareFailed'))
+					toast.error('Ошибка при попытке поделиться')
 				}
 			}
 		},
-		[config.widgetId, config.enableAnalytics, trackEvent, copyToClipboard, t]
+		[config.widgetId, config.enableAnalytics, trackEvent, copyToClipboard]
 	)
 
 	// Validation
@@ -256,15 +256,13 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 		for (const [key, validator] of Object.entries(config.validationRules)) {
 			const result = validator(state.inputs[key])
 			if (result !== true) {
-				setError(
-					typeof result === 'string' ? result : t('common.validationError')
-				)
+				setError(typeof result === 'string' ? result : 'Ошибка валидации')
 				return false
 			}
 		}
 
 		return true
-	}, [config.validationRules, state.inputs, setError, t])
+	}, [config.validationRules, state.inputs, setError])
 
 	// Utility functions
 	const utilities: WidgetUtilities = {

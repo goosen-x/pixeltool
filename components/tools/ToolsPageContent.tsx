@@ -41,7 +41,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CategoryCard } from './CategoryCard'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { widgets } from '@/lib/constants/widgets'
 
 // Map widget IDs to their icons - get icons from the original widgets array
@@ -56,6 +56,8 @@ interface Tool {
 	gradient: string
 	path: string
 	category: string
+	title?: string
+	description?: string
 }
 
 interface Category {
@@ -81,7 +83,7 @@ export function ToolsPageContent({
 	const [activeTab, setActiveTab] = useState<
 		'popular' | 'categories' | 'recent' | 'all'
 	>('popular')
-	const t = useTranslations('widgets')
+	// const t = useTranslations('widgets')
 
 	return (
 		<div className='space-y-8'>
@@ -166,10 +168,10 @@ export function ToolsPageContent({
 												</div>
 												<div>
 													<h3 className='font-semibold group-hover:text-primary transition-colors line-clamp-1'>
-														{t(`${tool.translationKey}.title`)}
+														{tool.title || tool.translationKey}
 													</h3>
 													<p className='text-sm text-muted-foreground mt-1 line-clamp-2'>
-														{t(`${tool.translationKey}.description`)}
+														{tool.description || ''}
 													</p>
 												</div>
 											</div>
@@ -247,7 +249,7 @@ export function ToolsPageContent({
 												</div>
 												<div className='flex-1 min-w-0'>
 													<h3 className='font-semibold group-hover:text-primary transition-colors truncate'>
-														{t(`${tool.translationKey}.title`)}
+														{tool.title || tool.translationKey}
 													</h3>
 													<p className='text-sm text-muted-foreground mt-1'>
 														{locale === 'ru'
