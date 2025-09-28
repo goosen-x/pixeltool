@@ -31,12 +31,13 @@ import {
 	Sunrise
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { useWorldTime } from '@/lib/hooks/widgets'
 import { AnalogClock } from '@/components/ui/analog-clock'
 
 export default function WorldTimePage() {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 
 	const {
 		mounted,

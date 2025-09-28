@@ -3,6 +3,7 @@ import { SEO_REDIRECTS } from './lib/seo/seo-redirects.mjs'
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+	output: 'standalone',
 	eslint: {
 		ignoreDuringBuilds: true,
 	},

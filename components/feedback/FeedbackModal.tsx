@@ -96,13 +96,25 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 	const renderForm = (type: FeedbackType) => (
 		<div className='space-y-4'>
 			<Input
-				placeholder={type === 'bug' ? 'Краткое описание ошибки' : type === 'feature' ? 'Название функции' : 'Заголовок сообщения'}
+				placeholder={
+					type === 'bug'
+						? 'Краткое описание ошибки'
+						: type === 'feature'
+							? 'Название функции'
+							: 'Заголовок сообщения'
+				}
 				value={formData.title}
 				onChange={e => updateFormData('title', e.target.value)}
 			/>
 
 			<Textarea
-				placeholder={type === 'bug' ? 'Шаги для воспроизведения ошибки, ожидаемое и фактическое поведение, информация о браузере...' : type === 'feature' ? 'Опишите вашу идею функции, случаи использования и как это принесет пользу пользователям...' : 'Опишите ваш отзыв или вопрос подробно...'}
+				placeholder={
+					type === 'bug'
+						? 'Шаги для воспроизведения ошибки, ожидаемое и фактическое поведение, информация о браузере...'
+						: type === 'feature'
+							? 'Опишите вашу идею функции, случаи использования и как это принесет пользу пользователям...'
+							: 'Опишите ваш отзыв или вопрос подробно...'
+				}
 				value={formData.description}
 				onChange={e => updateFormData('description', e.target.value)}
 				rows={4}
@@ -149,7 +161,10 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 				<DialogContent className='sm:max-w-[500px]'>
 					<DialogHeader>
 						<DialogTitle>Обратная связь</DialogTitle>
-						<DialogDescription>Помогите нам улучшиться, сообщив об ошибках, предложив функции или поделившись своими мыслями.</DialogDescription>
+						<DialogDescription>
+							Помогите нам улучшиться, сообщив об ошибках, предложив функции или
+							поделившись своими мыслями.
+						</DialogDescription>
 					</DialogHeader>
 
 					<Tabs defaultValue='bug' className='w-full'>
@@ -170,14 +185,16 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 
 						<TabsContent value='bug' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								'Нашли ошибку? Помогите нам исправить её, предоставив подробности о проблеме.'
+								'Нашли ошибку? Помогите нам исправить её, предоставив
+								подробности о проблеме.'
 							</div>
 							{renderForm('bug')}
 						</TabsContent>
 
 						<TabsContent value='feature' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								'Есть идея для улучшения? Мы хотели бы услышать ваши предложения!'
+								'Есть идея для улучшения? Мы хотели бы услышать ваши
+								предложения!'
 							</div>
 							{renderForm('feature')}
 						</TabsContent>

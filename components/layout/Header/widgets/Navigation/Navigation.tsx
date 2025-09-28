@@ -3,7 +3,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { LogoLink } from '../LogoLink/LogoLink'
 import Link from 'next/link'
-import { useTranslations, useLocale } from 'next-intl'
+// import { useTranslations, useLocale } from 'next-intl'
 
 type NavigationProps = {
 	burger?: boolean
@@ -11,14 +11,15 @@ type NavigationProps = {
 }
 
 export const Navigation = ({ burger = false, setOpen }: NavigationProps) => {
-	const t = useTranslations('Header.nav')
-	const locale = useLocale()
+	// const t = useTranslations('Header.nav')
+	// const locale = useLocale()
+	const locale = 'ru'
 
 	// Только страницы, якори убраны в ScrollSpy
 	const menuItems = [
-		{ title: t('tools'), href: '/tools' },
-		{ title: t('blog'), href: '/blog' },
-		{ title: t('contact'), href: '/contact' }
+		{ title: 'Инструменты', href: '/tools' },
+		{ title: 'Блог', href: '/blog' },
+		{ title: 'Контакты', href: '/contact' }
 	]
 
 	return (

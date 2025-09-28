@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { Home, FolderOpen, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
 
 export const FooterNavigation = () => {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	const pathname = usePathname()
 
 	const links = [

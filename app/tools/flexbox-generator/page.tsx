@@ -15,7 +15,7 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Copy, RotateCcw, HelpCircle, Check } from 'lucide-react'
 import { toast } from 'sonner'
-import { useLocale } from 'next-intl'
+// import { useLocale } from 'next-intl'
 import {
 	Tooltip,
 	TooltipContent,
@@ -43,7 +43,8 @@ const defaultProps: FlexboxProps = {
 }
 
 export default function FlexboxGeneratorPage() {
-	const locale = useLocale()
+	// const locale = useLocale()
+	const locale = 'ru'
 	const [props, setProps] = useState<FlexboxProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(3)
 	const [showItemNumbers, setShowItemNumbers] = useState(true)
