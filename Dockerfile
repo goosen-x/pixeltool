@@ -30,6 +30,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # These will be replaced with real values at runtime
 ENV NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder_key
+ENV DATABASE_URL=postgresql://user:pass@localhost/db
 
 # Build the application
 RUN yarn build

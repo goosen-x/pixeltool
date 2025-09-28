@@ -72,6 +72,9 @@ const RECOMMENDED_OG_TAGS = [
 	'twitter:image'
 ]
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default function OpenGraphValidatorPage() {
 	// const t = useTranslations('widgets.openGraphValidator')
 
