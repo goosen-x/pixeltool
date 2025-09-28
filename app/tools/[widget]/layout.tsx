@@ -4,7 +4,7 @@ import { getWidgetByPath } from '@/lib/constants/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { WidgetAnalyticsWrapper } from '@/components/tools/WidgetAnalyticsWrapper'
 import { Metadata } from 'next'
-import { getMessages } from 'next-intl/server'
+// import { getMessages } from 'next-intl/server'
 
 type Props = {
 	children: ReactNode
@@ -19,10 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		return {}
 	}
 
-	const messages = await getMessages({ locale })
-	const widgets = messages.widgets as any
-	const title = widgets[widget.translationKey]?.title || widget.translationKey
-	const description = widgets[widget.translationKey]?.description || ''
+	// Since we removed next-intl, use widget properties directly
+	const title = widget.title || widget.translationKey
+	const description = widget.description || ''
 
 	// Жестко задаем URL для Open Graph
 	const baseUrl = 'https://pixeltool.pro'
