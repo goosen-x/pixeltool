@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Clock, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 interface SymbolSearchProps {
 	selectedCategory: string | 'all' | 'recent'
@@ -23,13 +23,13 @@ export function SymbolSearch({
 	symbolCategories,
 	getCategoryIcon
 }: SymbolSearchProps) {
-	const t = useTranslations('widgets.specialSymbolsPicker')
+	// const t = useTranslations('widgets.specialSymbolsPicker')
 
 	return (
 		<div className='border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
 			<div className='p-4 space-y-4'>
 				<div className='flex justify-between items-center min-h-[36px]'>
-					<h2 className='text-lg font-semibold'>{t('categories')}</h2>
+					<h2 className='text-lg font-semibold'>Категории</h2>
 					<Button
 						variant='outline'
 						size='sm'
@@ -42,7 +42,7 @@ export function SymbolSearch({
 						)}
 					>
 						<X className='w-4 h-4 mr-2' />
-						{t('clearRecent')}
+						Очистить недавние
 					</Button>
 				</div>
 
@@ -57,9 +57,7 @@ export function SymbolSearch({
 						)}
 					>
 						<span className='text-xl'>⭐</span>
-						<span className='text-[11px] font-medium'>
-							{t('allCategories')}
-						</span>
+						<span className='text-[11px] font-medium'>Все категории</span>
 					</Button>
 
 					{hasRecentSymbols && (
@@ -72,9 +70,7 @@ export function SymbolSearch({
 							)}
 						>
 							<Clock className='w-5 h-5' />
-							<span className='text-[11px] font-medium'>
-								{t('recentlyUsed')}
-							</span>
+							<span className='text-[11px] font-medium'>Недавние</span>
 						</Button>
 					)}
 

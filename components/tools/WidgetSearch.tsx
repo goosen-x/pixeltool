@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,8 +31,8 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 	const [selectedCategory, setSelectedCategory] = useState<string>('')
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
-	const t = useTranslations('widgets')
-	const searchT = useTranslations('widgets.search')
+	// const t = useTranslations('widgets')
+	// const searchT = useTranslations('widgets.search')
 
 	// Convert widgets to project cards with translations
 	const allProjectCards: ProjectCard[] = useMemo(() => {
@@ -40,8 +40,8 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 			const Icon = widget.icon
 			return {
 				id: widget.id,
-				title: t(`${widget.translationKey}.title`),
-				description: t(`${widget.translationKey}.description`),
+				title: widget.title || widget.translationKey,
+				description: widget.description || widget.translationKey,
 				icon: <Icon className='w-8 h-8' />,
 				gradient: widget.gradient,
 				path: widget.path,
@@ -50,7 +50,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 				widget
 			}
 		})
-	}, [t])
+	}, [])
 
 	// Filter widgets based on search query and category
 	const filteredWidgets = useMemo(() => {
@@ -102,7 +102,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 				<div className='relative max-w-2xl mx-auto'>
 					<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
 					<Input
-						placeholder={searchT('placeholder')}
+						placeholder='Поиск инструментов...'
 						value={searchQuery}
 						onChange={e => setSearchQuery(e.target.value)}
 						className='pl-12 pr-12 h-12 text-base rounded-xl border-border/50 bg-background/50 backdrop-blur-sm focus:bg-background transition-colors'
@@ -127,7 +127,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 						onClick={() => setSelectedCategory('')}
 						className='rounded-full px-3 py-1.5 text-xs font-medium transition-all'
 					>
-						{searchT('allCategories')}
+						Все категории
 					</Button>
 
 					{Object.entries(widgetCategories).map(([key, title]) => (
@@ -147,7 +147,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center gap-2'>
 						<span className='text-sm font-medium text-muted-foreground'>
-							{searchT('results', { count: filteredWidgets.length })}
+							Найдено: {filteredWidgets.length}
 						</span>
 						{hasActiveFilters && (
 							<Button
@@ -157,7 +157,7 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 								className='h-7 px-2'
 							>
 								<X className='w-3 h-3 mr-1' />
-								{searchT('clearFilters')}
+								Очистить
 							</Button>
 						)}
 					</div>
@@ -190,15 +190,15 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 						<Search className='w-10 h-10 text-muted-foreground' />
 					</div>
 					<h3 className='text-xl font-heading font-semibold mb-2'>
-						{searchT('noResults')}
+						Ничего не найдено
 					</h3>
 					<p className='text-muted-foreground mb-6 max-w-md mx-auto'>
-						{searchT('noResultsDescription')}
+						Попробуйте изменить поисковый запрос или выбрать другую категорию
 					</p>
 					{hasActiveFilters && (
 						<Button onClick={clearSearch} size='lg' className='rounded-full'>
 							<X className='w-4 h-4 mr-2' />
-							{searchT('clearFilters')}
+							Очистить фильтры
 						</Button>
 					)}
 				</div>
@@ -208,7 +208,9 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 						<section key={category}>
 							<div className='flex items-center gap-3 mb-6'>
 								<h2 className='text-2xl font-heading font-bold'>
-									{t(`categories.${category}`)}
+									{widgetCategories[
+										category as keyof typeof widgetCategories
+									] || category}
 								</h2>
 								<Badge variant='outline' className='font-medium'>
 									{projects.length}
