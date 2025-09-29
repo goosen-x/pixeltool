@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 // import { getTranslations } from 'next-intl/server'
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default async function NotFound() {
 	// const t = await getTranslations('NotFound')
 
