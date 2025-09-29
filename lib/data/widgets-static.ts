@@ -41,7 +41,9 @@ export function getStaticWidgetBySlug(slug: string): LocalizedWidget | null {
 	return STATIC_WIDGETS_DATA.find(w => w.slug === slug) || null
 }
 
-export function getStaticWidgetsByCategory(category: string): LocalizedWidget[] {
+export function getStaticWidgetsByCategory(
+	category: string
+): LocalizedWidget[] {
 	return STATIC_WIDGETS_DATA.filter(w => w.category === category)
 }
 
@@ -57,7 +59,9 @@ export function getStaticWidgetsByTag(tag: string): LocalizedWidget[] {
 	return STATIC_WIDGETS_DATA.filter(w => w.tags.includes(tag))
 }
 
-export function getStaticWidgetFAQs(widgetId: string): { question: string; answer: string }[] {
+export function getStaticWidgetFAQs(
+	widgetId: string
+): { question: string; answer: string }[] {
 	const widget = getStaticWidgetById(widgetId)
 	return widget?.faqs || []
 }

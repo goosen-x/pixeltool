@@ -9,16 +9,9 @@ import {
 	Sun,
 	Moon,
 	Monitor,
-	Sparkles,
-	Move,
-	Circle,
-	Square,
-	Ban,
 	Check
 } from 'lucide-react'
-import useThemeWithTransition, {
-	TransitionType
-} from '@/lib/hooks/useThemeWithTransition'
+import useThemeWithTransition from '@/lib/hooks/useThemeWithTransition'
 import { cn } from '@/lib/utils'
 import {
 	Card,
@@ -51,43 +44,6 @@ const themes = [
 	}
 ]
 
-const transitions: {
-	value: TransitionType
-	label: string
-	icon: React.ComponentType<{ className?: string }>
-	description: string
-}[] = [
-	{
-		value: 'fade',
-		label: 'Fade',
-		icon: Sparkles,
-		description: 'Smooth fade transition'
-	},
-	{
-		value: 'scale',
-		label: 'Scale',
-		icon: Square,
-		description: 'Scale in/out effect'
-	},
-	{
-		value: 'slide',
-		label: 'Slide',
-		icon: Move,
-		description: 'Slide from side'
-	},
-	{
-		value: 'circle',
-		label: 'Circle',
-		icon: Circle,
-		description: 'Expanding circle from click'
-	},
-	{
-		value: 'none',
-		label: 'None',
-		icon: Ban,
-		description: 'Instant switch'
-	}
-]
 
 // Language settings removed - only Russian is supported now
 
@@ -96,16 +52,11 @@ export default function SettingsPage() {
 	// const router = useRouter()
 	// const pathname = usePathname()
 	// const locale = useLocale()
-	const { theme, setTheme, transitionType, setTransitionType } =
-		useThemeWithTransition()
-	const [supportsViewTransitions, setSupportsViewTransitions] = useState(true)
+	const { theme, setTheme } = useThemeWithTransition()
 	const [mounted, setMounted] = useState(false)
 
 	useEffect(() => {
 		setMounted(true)
-		setSupportsViewTransitions(
-			typeof document !== 'undefined' && 'startViewTransition' in document
-		)
 	}, [])
 
 	// const handleLanguageChange = (newLocale: string) => {
@@ -114,31 +65,6 @@ export default function SettingsPage() {
 	//	router.push(newPathname)
 	// }
 
-	const handleTransitionTypeChange = (newType: TransitionType) => {
-		setTransitionType(newType)
-
-		// Trigger a preview by temporarily switching theme
-		if (mounted && supportsViewTransitions && newType !== 'none') {
-			const fakeEvent = {
-				currentTarget: {
-					getBoundingClientRect: () => ({
-						left: window.innerWidth / 2 - 50,
-						top: window.innerHeight / 2 - 50,
-						width: 100,
-						height: 100
-					})
-				}
-			} as React.MouseEvent
-
-			const currentTheme = theme
-			const previewTheme = currentTheme === 'dark' ? 'light' : 'dark'
-
-			setTheme(previewTheme, fakeEvent)
-			setTimeout(() => {
-				setTheme(currentTheme!, fakeEvent)
-			}, 600)
-		}
-	}
 
 	if (!mounted) {
 		return (
@@ -228,62 +154,6 @@ export default function SettingsPage() {
 						</CardContent>
 					</Card>
 
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center gap-2'>
-								<Sparkles className='w-5 h-5' />
-								Переходы
-							</CardTitle>
-							<CardDescription>
-								Выберите тип анимации при смене темы.
-							</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							<div className='grid grid-cols-2 md:grid-cols-5 gap-3'>
-								{transitions.map(transition => {
-									const Icon = transition.icon
-									const isActive = transitionType === transition.value
-
-									return (
-										<button
-											key={transition.value}
-											className={cn(
-												'p-3 rounded-lg border-2 transition-all hover:shadow-sm',
-												'flex flex-col items-center text-center space-y-2',
-												isActive
-													? 'border-accent bg-accent/5'
-													: 'border-border hover:border-accent/50'
-											)}
-											onClick={() =>
-												handleTransitionTypeChange(transition.value)
-											}
-										>
-											<Icon
-												className={cn('w-5 h-5', isActive && 'text-accent')}
-											/>
-											<div className='text-xs font-medium'>
-												{transition.value === 'fade'
-													? 'Затухание'
-													: transition.value === 'scale'
-														? 'Масштаб'
-														: transition.value === 'slide'
-															? 'Скольжение'
-															: transition.value === 'circle'
-																? 'Круг'
-																: 'Без анимации'}
-											</div>
-										</button>
-									)
-								})}
-							</div>
-							{!supportsViewTransitions && (
-								<div className='text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg'>
-									Ваш браузер не поддерживает плавные переходы. Анимации могут
-									работать не так, как ожидается.
-								</div>
-							)}
-						</CardContent>
-					</Card>
 				</div>
 			</div>
 

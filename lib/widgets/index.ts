@@ -77,7 +77,9 @@ export async function getWidgets(): Promise<LocalizedWidget[]> {
 }
 
 // Get widget by ID
-export async function getWidgetById(id: string): Promise<LocalizedWidget | null> {
+export async function getWidgetById(
+	id: string
+): Promise<LocalizedWidget | null> {
 	const staticData = staticWidgets.getStaticWidgetById(id)
 	if (!staticData) return null
 
@@ -86,18 +88,16 @@ export async function getWidgetById(id: string): Promise<LocalizedWidget | null>
 		const dbFunction = () =>
 			supabaseWidgets.getWidgetById(id, 'ru').then(data => data || staticData)
 
-		return tryEnhanceFromDatabase(
-			`widget-${id}-ru`,
-			dbFunction,
-			staticData
-		)
+		return tryEnhanceFromDatabase(`widget-${id}-ru`, dbFunction, staticData)
 	}
 
 	return staticData
 }
 
 // Get widget by slug
-export async function getWidgetBySlug(slug: string): Promise<LocalizedWidget | null> {
+export async function getWidgetBySlug(
+	slug: string
+): Promise<LocalizedWidget | null> {
 	const staticData = staticWidgets.getStaticWidgetBySlug(slug)
 	if (!staticData) return null
 
@@ -119,7 +119,9 @@ export async function getWidgetBySlug(slug: string): Promise<LocalizedWidget | n
 }
 
 // Get widgets by category
-export async function getWidgetsByCategory(category: string): Promise<LocalizedWidget[]> {
+export async function getWidgetsByCategory(
+	category: string
+): Promise<LocalizedWidget[]> {
 	const staticData = staticWidgets.getStaticWidgetsByCategory(category)
 
 	const isDbReady = await checkWidgetsDbReady()
@@ -138,7 +140,9 @@ export async function getWidgetsByCategory(category: string): Promise<LocalizedW
 }
 
 // Get widget FAQs
-export async function getWidgetFAQs(widgetId: string): Promise<{ question: string; answer: string }[]> {
+export async function getWidgetFAQs(
+	widgetId: string
+): Promise<{ question: string; answer: string }[]> {
 	const staticData = staticWidgets.getStaticWidgetFAQs(widgetId)
 
 	const isDbReady = await checkWidgetsDbReady()
@@ -156,7 +160,9 @@ export async function getWidgetFAQs(widgetId: string): Promise<{ question: strin
 }
 
 // Get popular widgets
-export async function getPopularWidgets(limit: number = 6): Promise<LocalizedWidget[]> {
+export async function getPopularWidgets(
+	limit: number = 6
+): Promise<LocalizedWidget[]> {
 	const staticData = staticWidgets.getStaticPopularWidgets(limit)
 
 	const isDbReady = await checkWidgetsDbReady()
@@ -174,7 +180,9 @@ export async function getPopularWidgets(limit: number = 6): Promise<LocalizedWid
 }
 
 // Get new widgets
-export async function getNewWidgets(limit: number = 6): Promise<LocalizedWidget[]> {
+export async function getNewWidgets(
+	limit: number = 6
+): Promise<LocalizedWidget[]> {
 	const staticData = staticWidgets.getStaticNewWidgets(limit)
 
 	const isDbReady = await checkWidgetsDbReady()

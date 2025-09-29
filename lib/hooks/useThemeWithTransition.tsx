@@ -8,14 +8,8 @@ export type TransitionType = 'fade' | 'scale' | 'slide' | 'circle' | 'none'
 export default function useThemeWithTransition() {
 	const { theme, setTheme: originalSetTheme, ...rest } = useTheme()
 	const [transitionType, setTransitionType] = useState<TransitionType>(() => {
-		// Initialize with saved value if available
-		if (typeof window !== 'undefined') {
-			const saved = localStorage.getItem(
-				'theme-transition-type'
-			) as TransitionType
-			return saved || 'circle'
-		}
-		return 'circle'
+		// Always use fade transition
+		return 'fade'
 	})
 	const transitionTypeRef = useRef<TransitionType>(transitionType)
 
@@ -24,56 +18,10 @@ export default function useThemeWithTransition() {
 		transitionTypeRef.current = transitionType
 	}, [transitionType])
 
-	useEffect(() => {
-		// Re-read from localStorage in case it was updated by another instance
-		const handleStorageChange = () => {
-			const saved = localStorage.getItem(
-				'theme-transition-type'
-			) as TransitionType
-			if (saved && saved !== transitionType) {
-				setTransitionType(saved)
-				transitionTypeRef.current = saved
-			}
-		}
-
-		// Handle custom event for same-window updates
-		const handleCustomEvent = (e: Event) => {
-			const customEvent = e as CustomEvent<{ type: TransitionType }>
-			const newType = customEvent.detail.type
-			if (newType !== transitionType) {
-				setTransitionType(newType)
-				transitionTypeRef.current = newType
-			}
-		}
-
-		// Check on mount
-		handleStorageChange()
-
-		// Listen for storage changes (cross-tab)
-		window.addEventListener('storage', handleStorageChange)
-		// Listen for custom event (same-tab)
-		window.addEventListener('theme-transition-type-change', handleCustomEvent)
-
-		return () => {
-			window.removeEventListener('storage', handleStorageChange)
-			window.removeEventListener(
-				'theme-transition-type-change',
-				handleCustomEvent
-			)
-		}
-	}, [])
+	// Remove localStorage sync since we always use fade
 
 	const updateTransitionType = useCallback((type: TransitionType) => {
-		setTransitionType(type)
-		transitionTypeRef.current = type
-		localStorage.setItem('theme-transition-type', type)
-
-		// Dispatch custom event to notify other instances
-		window.dispatchEvent(
-			new CustomEvent('theme-transition-type-change', {
-				detail: { type }
-			})
-		)
+		// Do nothing since we always use fade
 	}, [])
 
 	const setTheme = useCallback(

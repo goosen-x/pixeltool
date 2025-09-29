@@ -368,10 +368,7 @@ const Header = () => {
 			</div>
 
 			{/* Global Widget Search */}
-			<GlobalWidgetSearch
-				open={isSearchOpen}
-				onOpenChange={setIsSearchOpen}
-			/>
+			<GlobalWidgetSearch open={isSearchOpen} onOpenChange={setIsSearchOpen} />
 		</header>
 	)
 }

@@ -13,7 +13,6 @@ export function WidgetSkeleton() {
 		return <WidgetSkeletonSpeedTest />
 	}
 
-
 	return (
 		<div className='max-w-6xl mx-auto space-y-8 skeleton-fade-in'>
 			{/* Header Skeleton */}
@@ -248,7 +247,6 @@ export function WidgetSkeletonSpeedTest() {
 		</div>
 	)
 }
-
 
 export function WidgetSkeletonSimple() {
 	return (

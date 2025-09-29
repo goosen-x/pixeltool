@@ -10,28 +10,7 @@ npx eslint --fix "**/*.{ts,tsx,js,jsx}" --quiet || echo "⚠️  Some ESLint iss
 echo "💅 Auto-formatting code with Prettier..."
 npx prettier --write "**/*.{ts,tsx,js,jsx,json,css,md}" --log-level=error
 
-# Generate translation types automatically
-echo "🌐 Generating translation types..."
-npm run generate:types
-
-# Run translation validation (блокирует коммит если есть недостающие переводы)
-echo "🌐 Validating translations..."
-npm run validate:translations
-
-# Check if validation failed
-if [ $? -ne 0 ]; then
-  echo "❌ Translation validation failed. Please fix missing translations before committing."
-  echo "💡 Tip: For new widgets, ensure both EN and RU translations are complete"
-  echo "📋 Required translation keys:"
-  echo "   - widgets.widgetName.title"
-  echo "   - widgets.widgetName.description"
-  echo "   - widgets.widgetName.useCase"
-  echo "   - widgets.widgetName.seo.title"
-  echo "   - widgets.widgetName.seo.description"
-  exit 1
-fi
-
-echo "✅ Translation validation passed!"
+# Translation checks removed - project no longer uses i18n
 
 # TypeScript type checking (блокирует коммит при ошибках типов)
 echo "🔧 Running TypeScript type check..."
