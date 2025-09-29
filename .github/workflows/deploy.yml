@@ -49,9 +49,9 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           envs: NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,DATABASE_URL,NEXT_PUBLIC_YANDEX_METRIKA_ID,REGISTRY,IMAGE_NAME
           script: |
-            # Create app directory if it doesn't exist
-            mkdir -p /opt/pixeltool
-            cd /opt/pixeltool
+            # Create app directory if it doesn't exist (use home directory)
+            mkdir -p ~/pixeltool
+            cd ~/pixeltool
             
             # Create .env.production if it doesn't exist
             if [ ! -f .env.production ]; then
@@ -79,7 +79,7 @@ jobs:
             docker run -d \
               --name pixeltool \
               --restart unless-stopped \
-              --env-file /opt/pixeltool/.env.production \
+              --env-file ~/pixeltool/.env.production \
               -p 3000:3000 \
               ${REGISTRY}/${IMAGE_NAME}:latest
               
