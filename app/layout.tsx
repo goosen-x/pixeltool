@@ -20,6 +20,10 @@ import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
 
+// Force dynamic rendering for all pages to avoid useSearchParams build errors
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 interface Props {
 	children: ReactNode
 }
