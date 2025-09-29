@@ -1,3 +1,5 @@
+'use client'
+
 // import { getTranslations } from 'next-intl/server' // Removed translations
 import { Button } from '@/components/ui/button'
 import { Sparkles, Github, Search, Zap, Filter, Star } from 'lucide-react'
@@ -6,6 +8,8 @@ import Link from 'next/link'
 import { widgets } from '@/lib/constants/widgets'
 import { Metadata } from 'next'
 
+// Metadata can't be used in client components
+/*
 export async function generateMetadata({
 	params
 }: {
@@ -131,13 +135,17 @@ export async function generateMetadata({
 		}
 	}
 }
+*/
 
-export default async function ToolsPage({
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
+export default function ToolsPage({
 	params
 }: {
-	params: Promise<{ locale: string }>
+	params: { locale: string }
 }) {
-	const { locale } = await params
+	// const { locale } = params // Not used since we're Russian-only
 	// const t = await getTranslations('widgets') // Removed translations
 
 	return (
@@ -211,9 +219,9 @@ export default async function ToolsPage({
 }
 
 // Client Component Wrapper for EnhancedWidgetSearch
-async function EnhancedWidgetSearchWrapper({ locale }: { locale: string }) {
-	const { EnhancedWidgetSearch } = await import(
-		'@/components/tools/EnhancedWidgetSearch'
-	)
+function EnhancedWidgetSearchWrapper({ locale }: { locale: string }) {
+	const {
+		EnhancedWidgetSearch
+	} = require('@/components/tools/EnhancedWidgetSearch')
 	return <EnhancedWidgetSearch locale='ru' />
 }
