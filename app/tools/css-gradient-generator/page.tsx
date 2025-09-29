@@ -43,6 +43,9 @@ import {
 	generatorShortcuts
 } from '@/lib/hooks/useWidgetKeyboard'
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default function CSSGradientGeneratorPage() {
 	// const t = useTranslations('widgets.cssGradientGenerator') // Removed
 

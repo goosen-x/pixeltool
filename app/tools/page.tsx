@@ -140,7 +140,11 @@ export async function generateMetadata({
 // Force dynamic rendering to avoid build-time errors
 export const dynamic = 'force-dynamic'
 
-export default function ToolsPage({ params }: { params: Promise<{ locale: string }> }) {
+export default function ToolsPage({
+	params
+}: {
+	params: Promise<{ locale: string }>
+}) {
 	// const { locale } = await params // Can't use await in non-async function, but we don't need locale anyway
 	// const t = await getTranslations('widgets') // Removed translations
 

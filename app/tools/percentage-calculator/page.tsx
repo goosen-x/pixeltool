@@ -114,6 +114,9 @@ const CALCULATOR_CARDS = [
 	}
 ]
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default function PercentageCalculatorPage() {
 	// const t = useTranslations('widgets.percentageCalculator')
 	const [mounted, setMounted] = useState(false)
