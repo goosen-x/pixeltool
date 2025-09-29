@@ -1,7 +1,6 @@
 import { Navigation } from './widgets/Navigation/Navigation'
 import { Burger } from './widgets/Burger/Burger'
 import { DownloadCV } from '@/components/global/DownloadCV'
-import { LanguageSelect } from '@/components/global/LanguageSelect'
 import ThemeToggle from '@/components/global/ThemeToggle'
 
 export const Header = () => {
@@ -11,7 +10,6 @@ export const Header = () => {
 			<Burger />
 			<div className='flex items-center gap-4 md:gap-2 lg:gap-4'>
 				<DownloadCV />
-				<LanguageSelect className='hidden lg:block' />
 				<ThemeToggle className='hidden lg:flex shrink-0' />
 			</div>
 		</header>

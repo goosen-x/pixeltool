@@ -66,7 +66,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	}
 
 	return (
-		<aside className='w-64 lg:w-56 xl:w-64 h-screen lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
+		<aside className='w-64 lg:w-56 xl:w-64 h-[calc(100vh-5rem)] lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
 			<div className='flex h-full flex-col'>
 				<div className='border-b bg-background/50 px-4 lg:px-6 py-4 pt-8 lg:pt-4'>
 					<h2 className='text-base lg:text-lg font-heading font-semibold'>
@@ -174,34 +174,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 															>
 																<Icon className='w-4 h-4' />
 																<span className='flex-1 text-left truncate'>
-																	{widget.translationKey === 'qrGenerator'
-																		? 'QR-Код Генератор'
-																		: widget.translationKey === 'tipCalculator'
-																			? 'Калькулятор чаевых'
-																			: widget.translationKey === 'worldTime'
-																				? 'Мировое время'
-																				: widget.translationKey ===
-																					  'passwordGenerator'
-																					? 'Генератор паролей'
-																					: widget.translationKey ===
-																						  'textCaseConverter'
-																						? 'Конвертер регистра'
-																						: widget.translationKey ===
-																							  'colorPalette'
-																							? 'Цветовая палитра'
-																							: widget.translationKey ===
-																								  'randomTeam'
-																								? 'Случайная команда'
-																								: widget.translationKey ===
-																									  'dice'
-																									? 'Кости'
-																									: widget.translationKey ===
-																										  'grid'
-																										? 'Генератор сетки'
-																										: widget.translationKey ===
-																											  'loremIpsum'
-																											? 'Lorem Ipsum'
-																											: widget.title}
+																	{widget.title}
 																</span>
 																{isActive && (
 																	<ChevronRight className='w-4 h-4' />

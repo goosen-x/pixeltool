@@ -369,7 +369,6 @@ const Header = () => {
 
 			{/* Global Widget Search */}
 			<GlobalWidgetSearch
-				locale={locale}
 				open={isSearchOpen}
 				onOpenChange={setIsSearchOpen}
 			/>

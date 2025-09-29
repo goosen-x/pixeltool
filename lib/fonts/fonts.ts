@@ -1,14 +1,14 @@
-import localFont from 'next/font/local'
+import { Inter, Open_Sans } from 'next/font/google'
 
-// Using local variable fonts
-export const interFont = localFont({
-	src: '../../public/fonts/Inter-VariableFont_opsz,wght.ttf',
+// Using Google Fonts with next/font
+export const interFont = Inter({
+	subsets: ['latin', 'cyrillic'],
 	variable: '--font-inter',
 	display: 'swap'
 })
 
-export const openSansFont = localFont({
-	src: '../../public/fonts/OpenSans-VariableFont_wdth,wght.ttf',
+export const openSansFont = Open_Sans({
+	subsets: ['latin', 'cyrillic'],
 	variable: '--font-open-sans',
 	display: 'swap'
 })

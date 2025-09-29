@@ -4,11 +4,7 @@ import { Button } from '@/components/ui/button'
 import { TrendingUp, Layers, Clock, Search } from 'lucide-react'
 import { useCallback } from 'react'
 
-interface ToolsNavigationProps {
-	locale: string
-}
-
-export function ToolsNavigation({ locale }: ToolsNavigationProps) {
+export function ToolsNavigation() {
 	const scrollToSection = useCallback((sectionId: string) => {
 		const section = document.getElementById(sectionId)
 		section?.scrollIntoView({ behavior: 'smooth' })
@@ -23,7 +19,7 @@ export function ToolsNavigation({ locale }: ToolsNavigationProps) {
 				onClick={() => scrollToSection('popular-tools')}
 			>
 				<TrendingUp className='w-4 h-4' />
-				{locale === 'ru' ? 'Популярные' : 'Popular'}
+				Популярные
 			</Button>
 			<Button
 				variant='outline'
@@ -32,7 +28,7 @@ export function ToolsNavigation({ locale }: ToolsNavigationProps) {
 				onClick={() => scrollToSection('categories')}
 			>
 				<Layers className='w-4 h-4' />
-				{locale === 'ru' ? 'Категории' : 'Categories'}
+				Категории
 			</Button>
 			<Button
 				variant='outline'
@@ -41,7 +37,7 @@ export function ToolsNavigation({ locale }: ToolsNavigationProps) {
 				onClick={() => scrollToSection('recent-tools')}
 			>
 				<Clock className='w-4 h-4' />
-				{locale === 'ru' ? 'Новые' : 'Recent'}
+				Новые
 			</Button>
 			<Button
 				variant='outline'
@@ -50,7 +46,7 @@ export function ToolsNavigation({ locale }: ToolsNavigationProps) {
 				onClick={() => scrollToSection('all-tools')}
 			>
 				<Search className='w-4 h-4' />
-				{locale === 'ru' ? 'Все инструменты' : 'All Tools'}
+				Все инструменты
 			</Button>
 		</div>
 	)

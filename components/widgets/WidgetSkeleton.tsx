@@ -13,10 +13,6 @@ export function WidgetSkeleton() {
 		return <WidgetSkeletonSpeedTest />
 	}
 
-	// Use specialized skeleton for world time
-	if (widgetPath === 'world-time') {
-		return <WidgetSkeletonWorldTime />
-	}
 
 	return (
 		<div className='max-w-6xl mx-auto space-y-8 skeleton-fade-in'>
@@ -253,99 +249,6 @@ export function WidgetSkeletonSpeedTest() {
 	)
 }
 
-export function WidgetSkeletonWorldTime() {
-	return (
-		<div className='max-w-6xl mx-auto space-y-8 skeleton-fade-in'>
-			{/* Hero Section with Local Time */}
-			<Card className='relative overflow-hidden'>
-				<div className='p-8'>
-					<div className='flex items-center justify-between'>
-						<div>
-							<div className='flex items-center gap-2 mb-3'>
-								<Skeleton className='w-5 h-5' />
-								<Skeleton className='h-6 w-32' />
-							</div>
-							<div className='flex items-center gap-6'>
-								<Skeleton className='h-12 w-32' />
-								<Skeleton className='w-32 h-32 rounded-full' />
-							</div>
-							<div className='flex items-center gap-4 mt-4'>
-								<Skeleton className='h-6 w-40' />
-								<Skeleton className='h-4 w-64' />
-							</div>
-						</div>
-						<Skeleton className='w-24 h-24 rounded-lg hidden lg:block' />
-					</div>
-				</div>
-			</Card>
-
-			{/* Tabs */}
-			<div className='space-y-6'>
-				<div className='flex space-x-1'>
-					<Skeleton className='h-10 w-40 rounded-lg' />
-					<Skeleton className='h-10 w-40 rounded-lg' />
-				</div>
-
-				<div className='flex items-center justify-between'>
-					<div className='flex items-center gap-2'>
-						<Skeleton className='w-6 h-6' />
-						<Skeleton className='h-8 w-40' />
-					</div>
-					<Skeleton className='h-10 w-60' />
-				</div>
-
-				{/* World Clock Cards */}
-				<div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-					{[1, 2, 3].map(i => (
-						<Card key={i} className='relative overflow-hidden'>
-							<div className='p-6'>
-								<div className='flex items-start justify-between mb-4'>
-									<div>
-										<Skeleton className='h-6 w-24 mb-1' />
-										<Skeleton className='h-4 w-32' />
-									</div>
-									<Skeleton className='w-10 h-10 rounded-full' />
-								</div>
-								<div className='flex items-center justify-between'>
-									<div>
-										<Skeleton className='h-8 w-20 mb-2' />
-										<div className='flex gap-2'>
-											<Skeleton className='h-5 w-16' />
-											<Skeleton className='h-5 w-12' />
-										</div>
-									</div>
-									<Skeleton className='w-20 h-20 rounded-full' />
-								</div>
-							</div>
-						</Card>
-					))}
-				</div>
-			</div>
-
-			{/* Info Section */}
-			<Card className='overflow-hidden'>
-				<div className='p-6 bg-muted/50'>
-					<Skeleton className='h-6 w-40 mb-4' />
-					<div className='grid md:grid-cols-2 gap-6'>
-						{[1, 2].map(col => (
-							<div key={col} className='space-y-4'>
-								{[1, 2].map(i => (
-									<div key={i} className='flex items-start gap-3'>
-										<Skeleton className='w-5 h-5 mt-0.5' />
-										<div className='flex-1'>
-											<Skeleton className='h-5 w-32 mb-1' />
-											<Skeleton className='h-4 w-full' />
-										</div>
-									</div>
-								))}
-							</div>
-						))}
-					</div>
-				</div>
-			</Card>
-		</div>
-	)
-}
 
 export function WidgetSkeletonSimple() {
 	return (

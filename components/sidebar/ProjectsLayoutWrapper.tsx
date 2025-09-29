@@ -30,12 +30,12 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 	useAnalytics(widgetId || '')
 
 	return (
-		<div className='flex h-full relative'>
+		<div className='flex h-[calc(100vh-5rem)] relative'>
 			{/* Mobile menu button */}
 			<Button
 				variant='outline'
 				size='icon'
-				className='fixed top-4 left-4 z-40 lg:hidden bg-background shadow-md hover:shadow-lg border-border'
+				className='fixed top-24 left-4 z-40 lg:hidden bg-background shadow-md hover:shadow-lg border-border'
 				onClick={() => setIsSidebarOpen(!isSidebarOpen)}
 			>
 				{isSidebarOpen ? (
@@ -48,7 +48,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 			{/* Mobile overlay */}
 			{isSidebarOpen && (
 				<div
-					className='fixed inset-0 bg-black/50 z-30 lg:hidden'
+					className='fixed inset-0 top-20 bg-black/50 z-30 lg:hidden'
 					onClick={() => setIsSidebarOpen(false)}
 				/>
 			)}
@@ -56,7 +56,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 			{/* Sidebar - hidden on mobile, shown on desktop */}
 			<div
 				className={cn(
-					'fixed lg:relative inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:transform-none',
+					'fixed lg:relative top-20 lg:top-0 left-0 z-40 h-[calc(100vh-5rem)] lg:h-full transform transition-transform duration-300 ease-in-out lg:transform-none',
 					isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
 				)}
 			>

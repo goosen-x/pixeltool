@@ -27,17 +27,14 @@ import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
-import { safeTranslate } from '@/lib/utils/safe-translations'
 import { YandexGoals } from '@/lib/analytics/yandex-goals'
 
 interface GlobalWidgetSearchProps {
-	locale: string
 	open?: boolean
 	onOpenChange?: (open: boolean) => void
 }
 
 export function GlobalWidgetSearch({
-	locale,
 	open: controlledOpen,
 	onOpenChange
 }: GlobalWidgetSearchProps) {
@@ -66,7 +63,6 @@ export function GlobalWidgetSearch({
 				textCounter: 'Счетчик символов',
 				urlShortener: 'Сокращение ссылок',
 				tipCalculator: 'Калькулятор чаевых',
-				worldTime: 'Мировое время',
 				bmiCalculator: 'Калькулятор ИМТ',
 				unitConverter: 'Конвертер единиц',
 				hashGenerator: 'Генератор хэшей',
@@ -130,7 +126,6 @@ export function GlobalWidgetSearch({
 				textCounter: 'Подсчитывайте символы, слова и строки в тексте',
 				urlShortener: 'Сокращайте длинные URL для удобства',
 				tipCalculator: 'Рассчитывайте чаевые и разделите счет',
-				worldTime: 'Просматривайте время в разных часовых поясах',
 				bmiCalculator: 'Рассчитайте индекс массы тела',
 				unitConverter: 'Конвертируйте между различными единицами измерения',
 				hashGenerator: 'Генерируйте хэши MD5, SHA1, SHA256',
@@ -221,7 +216,7 @@ export function GlobalWidgetSearch({
 				path: `/tools/${widget.path}`
 			}
 		})
-	}, [favorites, locale])
+	}, [favorites])
 
 	// Filter widgets based on search
 	const filteredWidgets = useMemo(() => {

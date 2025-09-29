@@ -1072,33 +1072,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'world-time': {
-		en: {
-			title: 'World Time - Time Zone Converter & Clock | Free Tool',
-			description:
-				'Check current time in any timezone. Convert time between cities. Meeting planner for multiple timezones. DST aware with timezone map.',
-			keywords: [
-				'world time',
-				'time zone converter',
-				'world clock',
-				'timezone converter',
-				'time difference',
-				'meeting planner'
-			]
-		},
-		ru: {
-			title: 'Мировое Время - Конвертер Часовых Поясов | Бесплатно',
-			description:
-				'Узнайте текущее время в любом часовом поясе. Конвертируйте время между городами. Планировщик встреч.',
-			keywords: [
-				'мировое время',
-				'часовые пояса',
-				'конвертер времени',
-				'мировые часы',
-				'разница времени'
-			]
-		}
-	},
 	'base64-encoder': {
 		en: {
 			title: 'Base64 Encoder/Decoder - Encode & Decode Online | Free Tool',

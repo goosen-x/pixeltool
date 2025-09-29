@@ -1,4 +1,5 @@
 // Unified widget functions - Static data as primary, database as enhancement
+// Now works with Russian language only (no locales)
 import * as staticWidgets from '@/lib/data/widgets-static'
 import * as supabaseWidgets from '@/lib/db/widgets-supabase'
 import { checkWidgetsDbReady } from '@/lib/db/check-widgets-db'
@@ -60,38 +61,33 @@ async function tryEnhanceFromDatabase<T>(
 }
 
 // Get all widgets
-export async function getWidgets(
-	locale: 'en' | 'ru' = 'en'
-): Promise<LocalizedWidget[]> {
-	const staticData = staticWidgets.getStaticWidgets(locale)
+export async function getWidgets(): Promise<LocalizedWidget[]> {
+	const staticData = staticWidgets.getStaticWidgets()
 
 	// Try to get fresh data from database (non-blocking)
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
-		// Use Supabase
-		const dbFunction = () => supabaseWidgets.getWidgets(locale)
+		// Use Supabase with Russian locale
+		const dbFunction = () => supabaseWidgets.getWidgets('ru')
 
-		return tryEnhanceFromDatabase(`widgets-${locale}`, dbFunction, staticData)
+		return tryEnhanceFromDatabase(`widgets-ru`, dbFunction, staticData)
 	}
 
 	return staticData
 }
 
 // Get widget by ID
-export async function getWidgetById(
-	id: string,
-	locale: 'en' | 'ru' = 'en'
-): Promise<LocalizedWidget | null> {
-	const staticData = staticWidgets.getStaticWidgetById(id, locale)
+export async function getWidgetById(id: string): Promise<LocalizedWidget | null> {
+	const staticData = staticWidgets.getStaticWidgetById(id)
 	if (!staticData) return null
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
 		const dbFunction = () =>
-			supabaseWidgets.getWidgetById(id, locale).then(data => data || staticData)
+			supabaseWidgets.getWidgetById(id, 'ru').then(data => data || staticData)
 
 		return tryEnhanceFromDatabase(
-			`widget-${id}-${locale}`,
+			`widget-${id}-ru`,
 			dbFunction,
 			staticData
 		)
@@ -101,22 +97,19 @@ export async function getWidgetById(
 }
 
 // Get widget by slug
-export async function getWidgetBySlug(
-	slug: string,
-	locale: 'en' | 'ru' = 'en'
-): Promise<LocalizedWidget | null> {
-	const staticData = staticWidgets.getStaticWidgetBySlug(slug, locale)
+export async function getWidgetBySlug(slug: string): Promise<LocalizedWidget | null> {
+	const staticData = staticWidgets.getStaticWidgetBySlug(slug)
 	if (!staticData) return null
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
 		const dbFunction = () =>
 			supabaseWidgets
-				.getWidgetBySlug(slug, locale)
+				.getWidgetBySlug(slug, 'ru')
 				.then(data => data || staticData)
 
 		return tryEnhanceFromDatabase(
-			`widget-slug-${slug}-${locale}`,
+			`widget-slug-${slug}-ru`,
 			dbFunction,
 			staticData
 		)
@@ -126,19 +119,16 @@ export async function getWidgetBySlug(
 }
 
 // Get widgets by category
-export async function getWidgetsByCategory(
-	category: string,
-	locale: 'en' | 'ru' = 'en'
-): Promise<LocalizedWidget[]> {
-	const staticData = staticWidgets.getStaticWidgetsByCategory(category, locale)
+export async function getWidgetsByCategory(category: string): Promise<LocalizedWidget[]> {
+	const staticData = staticWidgets.getStaticWidgetsByCategory(category)
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
 		const dbFunction = () =>
-			supabaseWidgets.getWidgetsByCategory(category, locale)
+			supabaseWidgets.getWidgetsByCategory(category, 'ru')
 
 		return tryEnhanceFromDatabase(
-			`widgets-category-${category}-${locale}`,
+			`widgets-category-${category}-ru`,
 			dbFunction,
 			staticData
 		)
@@ -148,18 +138,15 @@ export async function getWidgetsByCategory(
 }
 
 // Get widget FAQs
-export async function getWidgetFAQs(
-	widgetId: string,
-	locale: 'en' | 'ru' = 'en'
-): Promise<{ question: string; answer: string }[]> {
-	const staticData = staticWidgets.getStaticWidgetFAQs(widgetId, locale)
+export async function getWidgetFAQs(widgetId: string): Promise<{ question: string; answer: string }[]> {
+	const staticData = staticWidgets.getStaticWidgetFAQs(widgetId)
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
-		const dbFunction = () => supabaseWidgets.getWidgetFAQs(widgetId, locale)
+		const dbFunction = () => supabaseWidgets.getWidgetFAQs(widgetId, 'ru')
 
 		return tryEnhanceFromDatabase(
-			`widget-faqs-${widgetId}-${locale}`,
+			`widget-faqs-${widgetId}-ru`,
 			dbFunction,
 			staticData
 		)
@@ -169,18 +156,15 @@ export async function getWidgetFAQs(
 }
 
 // Get popular widgets
-export async function getPopularWidgets(
-	locale: 'en' | 'ru' = 'en',
-	limit: number = 6
-): Promise<LocalizedWidget[]> {
-	const staticData = staticWidgets.getStaticPopularWidgets(locale, limit)
+export async function getPopularWidgets(limit: number = 6): Promise<LocalizedWidget[]> {
+	const staticData = staticWidgets.getStaticPopularWidgets(limit)
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
-		const dbFunction = () => supabaseWidgets.getPopularWidgets(locale, limit)
+		const dbFunction = () => supabaseWidgets.getPopularWidgets('ru', limit)
 
 		return tryEnhanceFromDatabase(
-			`popular-widgets-${locale}-${limit}`,
+			`popular-widgets-ru-${limit}`,
 			dbFunction,
 			staticData
 		)
@@ -190,18 +174,15 @@ export async function getPopularWidgets(
 }
 
 // Get new widgets
-export async function getNewWidgets(
-	locale: 'en' | 'ru' = 'en',
-	limit: number = 6
-): Promise<LocalizedWidget[]> {
-	const staticData = staticWidgets.getStaticNewWidgets(locale, limit)
+export async function getNewWidgets(limit: number = 6): Promise<LocalizedWidget[]> {
+	const staticData = staticWidgets.getStaticNewWidgets(limit)
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
-		const dbFunction = () => supabaseWidgets.getNewWidgets(locale, limit)
+		const dbFunction = () => supabaseWidgets.getNewWidgets('ru', limit)
 
 		return tryEnhanceFromDatabase(
-			`new-widgets-${locale}-${limit}`,
+			`new-widgets-ru-${limit}`,
 			dbFunction,
 			staticData
 		)
@@ -211,18 +192,15 @@ export async function getNewWidgets(
 }
 
 // Get widgets by tag
-export async function getWidgetsByTag(
-	tag: string,
-	locale: 'en' | 'ru' = 'en'
-): Promise<LocalizedWidget[]> {
-	const staticData = staticWidgets.getStaticWidgetsByTag(tag, locale)
+export async function getWidgetsByTag(tag: string): Promise<LocalizedWidget[]> {
+	const staticData = staticWidgets.getStaticWidgetsByTag(tag)
 
 	const isDbReady = await checkWidgetsDbReady()
 	if (isDbReady) {
 		return tryEnhanceFromDatabase(
-			`widgets-tag-${tag}-${locale}`,
+			`widgets-tag-${tag}-ru`,
 			async () => {
-				const allWidgets = await supabaseWidgets.getWidgets(locale)
+				const allWidgets = await supabaseWidgets.getWidgets('ru')
 				return allWidgets.filter(w => w.tags.includes(tag))
 			},
 			staticData

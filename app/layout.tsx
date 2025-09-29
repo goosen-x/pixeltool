@@ -243,18 +243,22 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					interFont.className
 				)}
 			>
-				{/* Yandex.RTB */}
-				<Script
-					id='yandex-rtb-init'
-					strategy='afterInteractive'
-					dangerouslySetInnerHTML={{
-						__html: `window.yaContextCb=window.yaContextCb||[]`
-					}}
-				/>
-				<Script
-					src='https://yandex.ru/ads/system/context.js'
-					strategy='afterInteractive'
-				/>
+				{/* Yandex.RTB - only in production */}
+				{!dev && (
+					<>
+						<Script
+							id='yandex-rtb-init'
+							strategy='afterInteractive'
+							dangerouslySetInnerHTML={{
+								__html: `window.yaContextCb=window.yaContextCb||[]`
+							}}
+						/>
+						<Script
+							src='https://yandex.ru/ads/system/context.js'
+							strategy='afterInteractive'
+						/>
+					</>
+				)}
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<NavigationProgress />
 					<YandexMetrika />
@@ -263,7 +267,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<WebVitals />
 					<Header />
 					{children}
-					<Footer />
+					{/*<Footer />*/}
 					<ScrollToTop />
 					<Toaster />
 					<CookieConsent />

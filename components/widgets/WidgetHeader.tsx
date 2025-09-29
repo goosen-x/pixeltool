@@ -145,10 +145,6 @@ const WIDGET_TRANSLATIONS = {
 		description:
 			'Виртуальное подбрасывание монеты с анимацией для принятия решений'
 	},
-	'world-time': {
-		title: 'Мировое время',
-		description: 'Проверьте время в любой часовой зоне мира мгновенно'
-	},
 	'dice-roller': {
 		title: 'Бросок костей',
 		description:

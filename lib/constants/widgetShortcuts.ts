@@ -384,15 +384,6 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			],
 			description: '💻 View system and browser information'
 		},
-		'world-time': {
-			shortcuts: [
-				'⌘+⇧+Y Add City',
-				'⌘+⇧+X Refresh',
-				'⌘+F Search',
-				'⌘+T Toggle Format'
-			],
-			description: '🌍 Track time across multiple time zones'
-		},
 		'internet-speed-test': {
 			shortcuts: [
 				'Space Start Test',

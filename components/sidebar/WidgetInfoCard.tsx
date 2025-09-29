@@ -60,13 +60,11 @@ export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
 									? 'Контент'
 									: widget.category === 'security'
 										? 'Безопасность'
-										: widget.category === 'business'
-											? 'Бизнес и финансы'
-											: widget.category === 'analytics'
-												? 'Аналитика'
-												: widget.category === 'lifestyle'
-													? 'Стиль жизни'
-													: widget.category}
+										: widget.category === 'analytics'
+											? 'Аналитика'
+											: widget.category === 'lifestyle'
+												? 'Стиль жизни'
+												: widget.category}
 					</Badge>
 				</div>
 

@@ -2206,90 +2206,6 @@ export const widgets: Widget[] = [
 		}
 	},
 	{
-		id: 'world-time',
-		icon: Globe,
-		category: 'analytics',
-		translationKey: 'worldTime',
-		path: 'world-time',
-		gradient: 'from-blue-500 to-cyan-600',
-		title: 'Мировое время',
-		description: 'Проверьте время в любой часовой зоне мира мгновенно',
-		recommendedTools: ['timer-countdown', 'unit-converter', 'speed-test'],
-		difficulty: 'beginner',
-		tags: ['time', 'timezone', 'world', 'clock', 'converter', 'dst'],
-		useCase:
-			'Отслеживание времени в разных часовых поясах для удалённой работы',
-		metaDescription:
-			'World time converter with live clocks for multiple cities. Convert times between any timezone.',
-		faqs: {
-			en: [
-				{
-					question: 'How accurate are the timezone calculations?',
-					answer:
-						"The tool uses the IANA timezone database through the browser's Intl API, providing accurate times that automatically account for daylight saving time changes."
-				},
-				{
-					question: 'Can I add custom cities?',
-					answer:
-						'Yes! You can add any city from the dropdown menu. The tool includes major cities worldwide and supports all standard timezones.'
-				},
-				{
-					question: 'What does the DST badge mean?',
-					answer:
-						'DST stands for Daylight Saving Time. The badge appears when a location is currently observing daylight saving time.'
-				},
-				{
-					question: 'Are my selected cities saved?',
-					answer:
-						"Yes, your selected cities are saved in your browser's local storage and will persist between visits."
-				}
-			],
-			ru: [
-				{
-					question: 'Насколько точны расчёты часовых поясов?',
-					answer:
-						'Инструмент использует базу данных часовых поясов IANA через API браузера Intl, обеспечивая точное время с автоматическим учётом перехода на летнее время.'
-				},
-				{
-					question: 'Могу ли я добавить свои города?',
-					answer:
-						'Да! Вы можете добавить любой город из выпадающего меню. Инструмент включает крупные города по всему миру и поддерживает все стандартные часовые пояса.'
-				},
-				{
-					question: 'Что означает значок DST?',
-					answer:
-						'DST означает летнее время. Значок появляется, когда в данном месте действует летнее время.'
-				},
-				{
-					question: 'Сохраняются ли выбранные города?',
-					answer:
-						'Да, выбранные города сохраняются в локальном хранилище браузера и сохраняются между посещениями.'
-				}
-			],
-			he: [
-				{
-					question: 'עד כמה חישובי אזורי הזמן מדויקים?',
-					answer:
-						'הכלי משתמש במסד הנתונים של אזורי זמן IANA דרך ה-API של הדפדפן Intl, מספק זמנים מדויקים שמתחשבים אוטומטית בשינויי שעון קיץ.'
-				},
-				{
-					question: 'האם אני יכול להוסיף ערים מותאמות אישית?',
-					answer:
-						'כן! ניתן להוסיף כל עיר מהתפריט הנפתח. הכלי כולל ערים מרכזיות ברחבי העולם ותומך בכל אזורי הזמן הסטנדרטיים.'
-				},
-				{
-					question: 'מה משמעות התג DST?',
-					answer: 'DST מייצג שעון קיץ. התג מופיע כאשר מיקום נמצא כעת בשעון קיץ.'
-				},
-				{
-					question: 'האם הערים שבחרתי נשמרות?',
-					answer:
-						'כן, הערים שנבחרו נשמרות באחסון המקומי של הדפדפן שלך וישארו בין ביקורים.'
-				}
-			]
-		}
-	},
-	{
 		id: 'dice-roller',
 		icon: Dices,
 		category: 'lifestyle',
@@ -3422,7 +3338,7 @@ export const widgets: Widget[] = [
 		gradient: 'from-orange-500 to-red-600',
 		title: 'Таймер и секундомер',
 		description: 'Таймер, обратный отсчёт и секундомер с уведомлениями',
-		recommendedTools: ['world-time', 'age-calculator', 'bmi-calculator'],
+		recommendedTools: ['age-calculator', 'bmi-calculator', 'unit-converter'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase: 'Управление временем для работы, спорта или готовки',

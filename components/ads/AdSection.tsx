@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { Megaphone } from 'lucide-react'
+import { dev } from '@/lib/config/env'
 
 declare global {
 	interface Window {
@@ -18,6 +19,11 @@ declare global {
 
 export function AdSection() {
 	useEffect(() => {
+		// Skip ads in development to avoid domain errors
+		if (dev) {
+			return
+		}
+		
 		// Убедимся, что Яндекс.Контекст загружен
 		if (window.yaContextCb) {
 			window.yaContextCb.push(() => {
@@ -38,7 +44,9 @@ export function AdSection() {
 		>
 			<div className='text-center p-4'>
 				<Megaphone className='h-8 w-8 mx-auto mb-2 text-muted-foreground/40' />
-				<p className='text-sm text-muted-foreground/60'>Загрузка рекламы...</p>
+				<p className='text-sm text-muted-foreground/60'>
+					{dev ? 'Реклама отключена в режиме разработки' : 'Загрузка рекламы...'}
+				</p>
 			</div>
 		</div>
 	)

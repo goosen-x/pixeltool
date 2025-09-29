@@ -11,9 +11,8 @@ import { Menu } from 'lucide-react'
 import { Navigation } from '../Navigation/Navigation'
 import { useState } from 'react'
 import ThemeToggle from '@/components/global/ThemeToggle'
-import { LanguageSelect } from '@/components/global/LanguageSelect'
 
-export const Burger = ({ locale }: { locale: string }) => {
+export const Burger = () => {
 	const [open, setOpen] = useState(false)
 
 	return (
@@ -27,7 +26,6 @@ export const Burger = ({ locale }: { locale: string }) => {
 			<SheetContent side='left' className='flex flex-col gap-4 justify-between'>
 				<Navigation burger setOpen={setOpen} />
 				<div className='flex items-center gap-4 mt-auto'>
-					<LanguageSelect locale={locale} />
 					<ThemeToggle />
 				</div>
 			</SheetContent>

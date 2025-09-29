@@ -1,121 +1,144 @@
-# Dmitry Borisenko's Portfolio
+# PixelTool.pro
 
-Welcome to my personal portfolio website! This project showcases my skills,
-experience, and projects as a fullstack developer.
+Коллекция полезных онлайн-инструментов и виджетов для разработчиков и дизайнеров.
 
 ![screen-gif](/public/images/readme.gif)
 
-## 🌟 Features
+## 🌟 Особенности
 
-- Responsive design for optimal viewing on all devices
-- Internationalization support for English and Russian
-- Interactive sections for About Me, Experience, Skills, and Projects
-- Dark mode support
-- 3D animations and interactive elements
-- Optimized performance with Next.js
+- Более 40 полезных инструментов и калькуляторов
+- Адаптивный дизайн для всех устройств
+- Темная и светлая темы
+- Быстрая производительность с Next.js 15
+- Горячие клавиши для быстрого доступа
+- Избранные инструменты
+- 3D анимации и интерактивные элементы
 
-## 🛠 Technologies Used
+## 🛠 Технологический стек
 
-- Next.js
-- React
+- Next.js 15
+- React 18
 - TypeScript
 - Tailwind CSS
 - Three.js / React Three Fiber
-- next-intl for internationalization
-- Vercel for deployment
+- Docker для развертывания
+- PostgreSQL (Supabase)
 
-## 🚀 Getting Started
+## 🚀 Быстрый старт
 
-### Prerequisites
+### Требования
 
-- Node.js (v14 or later)
-- npm or yarn
+- Node.js (v20 или выше)
+- Yarn
 
-### Installation
+### Установка
 
-1. Clone the repository:
-
-   ```
-   git clone https://github.com/goosen-x/next-portfolio
-   cd portfolio
-   ```
-
-2. Install dependencies:
+1. Клонировать репозиторий:
 
    ```
-   npm install
-   # or
+   git clone https://github.com/goosen-x/pixeltool
+   cd pixeltool
+   ```
+
+2. Установить зависимости:
+
+   ```
    yarn install
    ```
 
-3. Create a `.env.local` file in the root directory and add any necessary
-   environment variables.
+3. Создать файл `.env.local` из примера:
 
-### Running the Development Server
+   ```
+   cp .env.example .env.local
+   ```
+
+   И заполнить необходимые переменные окружения.
+
+### Запуск в режиме разработки
 
 ```
-npm run dev
-# or
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the
-result.
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
 
-## 🌐 Internationalization
+## 📁 Структура проекта
 
-This project supports multiple languages:
+- `app/`: Next.js App Router страницы
+  - `(main)/`: Главная страница
+  - `(tools)/`: Страницы инструментов
+  - `(other)/`: Блог, контакты и др.
+- `components/`: React компоненты
+  - `widgets/`: Базовые компоненты виджетов
+  - `ui/`: UI компоненты (shadcn/ui)
+  - `global/`: Глобальные компоненты
+- `lib/`: Утилиты и хуки
+  - `db/`: Работа с базой данных
+  - `hooks/`: Пользовательские React хуки
+  - `utils/`: Вспомогательные функции
+- `public/`: Статические файлы
 
-- English (default)
-- Russian
+## 🚢 Развертывание
 
-Language files are located in the `messages` directory. To add a new language,
-create a new JSON file in this directory and update the language switcher
-component.
+### Docker (рекомендуется)
 
-## 📁 Project Structure
+```bash
+# Сборка образа
+docker build -t pixeltool .
 
-- `app/`: Next.js pages and API routes
-- `components/`: Reusable React components
-- `lib/`: Utility functions and custom hooks
-- `i18n/`: Internationalization configuration
-- `messages/`: Internationalization JSON files
-- `public/`: Static assets (images, fonts, etc.)
-
-## 🚢 Deployment
-
-This project is set up for easy deployment on Vercel. Simply connect your GitHub
-repository to Vercel, and it will automatically deploy your main branch.
-
-For other hosting platforms, build the project using:
-
+# Запуск контейнера
+docker run -p 3000:3000 --env-file .env.production pixeltool
 ```
-npm run build
-# or
+
+### GitHub Actions CI/CD
+
+Проект настроен на автоматическое развертывание через GitHub Actions.
+См. `.github/workflows/deploy.yml` для деталей.
+
+### Production сборка
+
+```bash
 yarn build
-```
-
-Then start the production server:
-
-```
-npm start
-# or
 yarn start
 ```
 
-## 🤝 Contributing
+## 📚 Документация
 
-While this is a personal portfolio project, I'm open to suggestions and
-improvements. Feel free to open an issue or submit a pull request.
+Полная документация проекта организована в папке `/docs`:
+- [Обзор документации](docs/README.md) - Структурированный каталог всей документации
+- [CLAUDE.md](CLAUDE.md) - Основные инструкции для работы с Claude Code
+- [Создание виджетов](docs/guides/WIDGET_CREATION_GUIDE.md) - Руководство по созданию новых инструментов
 
-## 📞 Contact
+## 🎯 Основные команды
 
-Dmitry Borisenko -
+```bash
+# Разработка
+yarn dev                 # Запуск сервера разработки
+yarn build               # Production сборка
+yarn lint                # Проверка ESLint
+yarn typecheck           # Проверка TypeScript
+yarn clean               # Очистка кеша
+
+# Проверка качества
+yarn check:all           # Все проверки
+yarn format              # Форматирование кода
+
+# База данных
+yarn tsx lib/scripts/migrate-posts.ts     # Миграция постов
+yarn tsx lib/scripts/check-supabase.ts    # Проверка подключения
+```
+
+## 🤝 Участие в разработке
+
+Открыт для предложений и улучшений. Не стесняйтесь создавать issues или pull requests.
+
+## 📞 Контакты
+
+Дмитрий Борисенко -
 [dmitryborisenko.msk@gmail.com](mailto:dmitryborisenko.msk@gmail.com)
 
-Project Link: [https://www.pixeltool.pro](https://www.pixeltool.pro)
+Проект: [https://www.pixeltool.pro](https://www.pixeltool.pro)
 
 ---
 
-Thank you for checking out my portfolio project! I hope you find it interesting
-and informative.
+Спасибо за интерес к проекту!
