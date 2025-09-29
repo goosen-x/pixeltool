@@ -6,7 +6,8 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
 	title: '404 - Страница не найдена | PixelTool',
-	description: 'К сожалению, запрашиваемая страница не существует. Вернитесь на главную страницу PixelTool.',
+	description:
+		'К сожалению, запрашиваемая страница не существует. Вернитесь на главную страницу PixelTool.'
 }
 
 // Force dynamic rendering to avoid build-time errors

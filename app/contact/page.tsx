@@ -5,11 +5,13 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
 	title: 'Контакты - Свяжитесь с нами | PixelTool',
-	description: 'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы. Email, социальные сети и форма обратной связи.',
+	description:
+		'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы. Email, социальные сети и форма обратной связи.',
 	keywords: 'контакты, связаться, поддержка, помощь, обратная связь, email',
 	openGraph: {
 		title: 'Контакты - Свяжитесь с нами | PixelTool',
-		description: 'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы.',
+		description:
+			'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы.',
 		url: 'https://pixeltool.ru/contact',
 		siteName: 'PixelTool',
 		type: 'website'

@@ -2,11 +2,13 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
 	title: 'Настройки | PixelTool',
-	description: 'Настройте внешний вид и поведение приложения PixelTool под ваши предпочтения. Выбор темы оформления.',
+	description:
+		'Настройте внешний вид и поведение приложения PixelTool под ваши предпочтения. Выбор темы оформления.',
 	keywords: 'настройки, тема, оформление, персонализация, предпочтения',
 	openGraph: {
 		title: 'Настройки | PixelTool',
-		description: 'Настройте внешний вид и поведение приложения PixelTool под ваши предпочтения.',
+		description:
+			'Настройте внешний вид и поведение приложения PixelTool под ваши предпочтения.',
 		url: 'https://pixeltool.ru/settings',
 		siteName: 'PixelTool',
 		type: 'website'
