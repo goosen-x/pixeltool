@@ -36,7 +36,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl'
+
 import { SlidingTimer } from '@/components/widgets/timer/SlidingTimer'
 import { SlidingCountdown } from '@/components/widgets/timer/SlidingCountdown'
 import { AnimatedProgressBar } from '@/components/widgets/timer/AnimatedProgressBar'
@@ -75,7 +75,7 @@ const TIMER_PRESETS: TimerPreset[] = [
 ]
 
 export default function TimerCountdownPage() {
-	// const t = useTranslations('widgets.timerCountdown')
+
 	const [mode, setMode] = useState<TimerMode>('countdown')
 	const [isRunning, setIsRunning] = useState(false)
 	const [isPaused, setIsPaused] = useState(false)

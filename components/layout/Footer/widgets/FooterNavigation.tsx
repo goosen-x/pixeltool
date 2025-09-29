@@ -1,12 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-// import { useLocale } from 'next-intl'
+
 import { usePathname } from 'next/navigation'
 import { Home, FolderOpen, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
 
 export const FooterNavigation = () => {
-	// const locale = useLocale()
+
 	const locale = 'ru'
 	const pathname = usePathname()
 
@@ -41,15 +41,15 @@ export const FooterNavigation = () => {
 								<div className='relative'>
 									<div
 										className={`
-										absolute inset-0 rounded-lg opacity-0 scale-110 
-										bg-gradient-to-br from-accent/20 to-accent/5 
-										group-hover:opacity-100 group-hover:scale-100 
+										absolute inset-0 rounded-lg opacity-0 scale-110
+										bg-gradient-to-br from-accent/20 to-accent/5
+										group-hover:opacity-100 group-hover:scale-100
 										transition-all duration-300 blur-sm
 									`}
 									/>
 									<div
 										className={`
-										relative p-1.5 rounded-lg border 
+										relative p-1.5 rounded-lg border
 										${
 											isActive
 												? 'border-accent bg-accent/10 text-accent'

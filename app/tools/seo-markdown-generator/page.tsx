@@ -21,10 +21,8 @@ import {
 } from '@/components/ui/select'
 import { Copy, Download, FileText, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl'
 
 export default function SEOMarkdownGeneratorPage() {
-	// const t = useTranslations('widgets.seoMarkdownGenerator')
 
 	const [formData, setFormData] = useState({
 		title: '',

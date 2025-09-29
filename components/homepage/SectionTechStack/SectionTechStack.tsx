@@ -11,13 +11,12 @@ import {
 
 import { TechStackData } from './constants'
 import { SectionTitle } from '@/components/global/SectionTitle'
-// import { useTranslations } from 'next-intl'
 
 export const SectionTechStack = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	// const t = useTranslations('SectionTechStack')
+
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
 	return (

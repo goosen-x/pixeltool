@@ -41,7 +41,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CategoryCard } from './CategoryCard'
-// import { useTranslations } from 'next-intl'
+
 import { widgets } from '@/lib/constants/widgets'
 
 // Map widget IDs to their icons - get icons from the original widgets array
@@ -83,7 +83,6 @@ export function ToolsPageContent({
 	const [activeTab, setActiveTab] = useState<
 		'popular' | 'categories' | 'recent' | 'all'
 	>('popular')
-	// const t = useTranslations('widgets')
 
 	return (
 		<div className='space-y-8'>

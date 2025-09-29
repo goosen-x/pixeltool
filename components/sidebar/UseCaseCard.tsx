@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Lightbulb } from 'lucide-react'
 import type { Widget } from '@/lib/constants/widgets'
@@ -10,7 +9,7 @@ interface UseCaseCardProps {
 }
 
 export function UseCaseCard({ widget }: UseCaseCardProps) {
-	// const t = useTranslations('widgets')
+
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 
 	if (!widget.useCase) return null

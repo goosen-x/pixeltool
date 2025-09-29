@@ -1,6 +1,6 @@
 import { getAllPosts } from '@/lib/api-db'
 import { PostPreview } from '@/components/blog/post-preview'
-// import { getTranslations } from 'next-intl/server'
+
 import { Metadata } from 'next'
 
 type Props = {
@@ -58,7 +58,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Blog(props: Props) {
 	const params = await props.params
-	// const t = await getTranslations('blog')
 
 	const posts = await getAllPosts(params.locale)
 

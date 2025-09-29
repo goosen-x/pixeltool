@@ -33,7 +33,7 @@ import {
 	generateGradientCSS,
 	DEFAULT_GRADIENT_SETTINGS
 } from '@/lib/data/css-gradient-data'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
@@ -47,7 +47,6 @@ import {
 export const dynamic = 'force-dynamic'
 
 export default function CSSGradientGeneratorPage() {
-	// const t = useTranslations('widgets.cssGradientGenerator') // Removed
 
 	const {
 		settings,

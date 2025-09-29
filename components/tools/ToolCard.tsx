@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTranslations } from 'next-intl' // Removed translations
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -24,7 +23,7 @@ export function ToolCard({
 	showFavoriteButton = true,
 	className
 }: ToolCardProps) {
-	// const t = useTranslations('widgets') // Removed translations
+
 	const Icon = widget.icon
 
 	const title = widget.title || widget.translationKey

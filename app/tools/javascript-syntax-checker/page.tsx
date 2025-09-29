@@ -77,7 +77,7 @@ greet('World');`,
     this.name = name;
     this.age = age;
   }
-  
+
   greet() {
     return \`Hi, I'm \${this.name}\`;
   }

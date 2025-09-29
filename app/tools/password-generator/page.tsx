@@ -32,7 +32,7 @@ import {
 	Clock
 } from 'lucide-react'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { KeyboardShortcuts } from '@/components/tools/KeyboardShortcuts'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
@@ -138,7 +138,7 @@ const COMMON_WORDS = [
 ]
 
 export default function PasswordGeneratorPage() {
-	// const t = useTranslations('widgets.passwordGenerator') // Removed
+
 	const [password, setPassword] = useState('')
 	const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS)
 	const [strength, setStrength] = useState(0)

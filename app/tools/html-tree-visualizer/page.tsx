@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge'
 import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl' // Removed
 
 const EXAMPLE_HTML = `<div class="container">
   <header class="header">
@@ -35,7 +34,7 @@ interface TreeNode {
 }
 
 export default function HTMLTreePage() {
-	// const t = useTranslations('widgets.htmlTree') // Removed
+
 	const [htmlInput, setHtmlInput] = useState('')
 	const [treeData, setTreeData] = useState<TreeNode | null>(null)
 	const [maxDepth, setMaxDepth] = useState(10)

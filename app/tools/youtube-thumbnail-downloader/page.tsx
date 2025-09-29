@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Copy, Check, Download, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl'
 
 interface ThumbnailType {
 	name: string
@@ -52,7 +51,7 @@ const thumbnailTypes = [
 ]
 
 export default function YouTubeThumbnailPage() {
-	// const t = useTranslations('widgets.youtubeThumbnail')
+
 	const [url, setUrl] = useState('')
 	const [videoId, setVideoId] = useState('')
 	const [copiedUrl, setCopiedUrl] = useState<string | null>(null)

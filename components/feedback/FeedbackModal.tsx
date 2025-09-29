@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-// import { useTranslations } from 'next-intl'
+
 import { MessageSquare, Bug, Lightbulb, Send } from 'lucide-react'
 import { toast } from 'sonner'
 import {
@@ -32,7 +32,7 @@ interface FeedbackData {
 }
 
 export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
-	// const t = useTranslations('Feedback')
+
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 

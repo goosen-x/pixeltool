@@ -23,7 +23,7 @@ import {
 	ChartTooltipContent,
 	type ChartConfig
 } from '@/components/ui/chart'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface DiceResult {
@@ -47,7 +47,7 @@ interface Statistics {
 // Dice symbols removed - using DiceFace component instead
 
 export default function DiceRollerPage() {
-	// const t = useTranslations('widgets.diceRoller') // Removed
+
 	const [mounted, setMounted] = useState(false)
 	const [diceCount, setDiceCount] = useState(2)
 	const [isRolling, setIsRolling] = useState(false)

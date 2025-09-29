@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-// import { useTranslations } from 'next-intl'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Mail, Send } from 'lucide-react'
 
 export default function ContactForm() {
-	// const t = useTranslations('contact.form')
+
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isSubmitted, setIsSubmitted] = useState(false)
 

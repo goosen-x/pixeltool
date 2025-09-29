@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Info, BarChart3, Copy, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { cn } from '@/lib/utils'
 
 interface SpecificityResult {
@@ -27,7 +27,7 @@ interface SpecificityResult {
 }
 
 export default function CSSSpecificityPage() {
-	// const t = useTranslations('widgets.cssSpecificity') // Removed
+
 	const [input, setInput] = useState('')
 	const [results, setResults] = useState<SpecificityResult[]>([])
 	const [sortBy, setSortBy] = useState<'order' | 'weight'>('order')

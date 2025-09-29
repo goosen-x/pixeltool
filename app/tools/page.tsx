@@ -1,6 +1,5 @@
 'use client'
 
-// import { getTranslations } from 'next-intl/server' // Removed translations
 import { Button } from '@/components/ui/button'
 import { Sparkles, Github, Search } from 'lucide-react'
 import Link from 'next/link'
@@ -146,7 +145,6 @@ export default function ToolsPage({
 	params: Promise<{ locale: string }>
 }) {
 	// const { locale } = await params // Can't use await in non-async function, but we don't need locale anyway
-	// const t = await getTranslations('widgets') // Removed translations
 
 	return (
 		<>

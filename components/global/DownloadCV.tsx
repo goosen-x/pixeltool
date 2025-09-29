@@ -3,13 +3,11 @@
 import { useRef, useState } from 'react'
 import { FiDownload } from 'react-icons/fi'
 import { motion } from 'framer-motion'
-// import { useTranslations } from 'next-intl'
 
 const CYCLES_PER_LETTER = 2
 const SHUFFLE_TIME = 50
 
 export const DownloadCV = () => {
-	// const t = useTranslations('Header.cv')
 
 	const TARGET_TEXT = 'Скачать резюме'
 	const TARGET_HREF = '/dmitry-borisenko-cv.pdf'

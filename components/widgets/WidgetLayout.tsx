@@ -4,7 +4,6 @@ import { ReactNode } from 'react'
 import { WidgetShareSection } from './WidgetShareSection'
 import { usePathname } from 'next/navigation'
 import { widgets } from '@/lib/constants/widgets'
-// import { useTranslations } from 'next-intl'
 
 interface WidgetLayoutProps {
 	children: ReactNode
@@ -50,7 +49,6 @@ export function WidgetLayout({
 	customShareData
 }: WidgetLayoutProps) {
 	const pathname = usePathname()
-	// const t = useTranslations('widgets')
 
 	// Extract widget path from URL
 	const widgetPath = pathname.split('/').pop()

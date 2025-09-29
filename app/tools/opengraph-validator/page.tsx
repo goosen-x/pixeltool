@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTranslations } from 'next-intl'
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -76,7 +75,6 @@ const RECOMMENDED_OG_TAGS = [
 export const dynamic = 'force-dynamic'
 
 export default function OpenGraphValidatorPage() {
-	// const t = useTranslations('widgets.openGraphValidator')
 
 	const widget = useWidgetCreation({
 		widgetId: WIDGET_CONFIG.id,

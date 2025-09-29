@@ -3,12 +3,11 @@
 import { useState, useEffect } from 'react'
 import { Cookie, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-// import { useTranslations } from 'next-intl'
+
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function CookieConsent() {
 	const [isVisible, setIsVisible] = useState(false)
-	// const t = useTranslations('cookieConsent')
 
 	useEffect(() => {
 		// Check if user has already accepted cookies

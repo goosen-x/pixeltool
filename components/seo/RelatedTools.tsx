@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-// import { useLocale } from 'next-intl'
+
 import {
 	widgets,
 	getWidgetById,
@@ -18,7 +18,7 @@ export function RelatedTools({
 	currentTool,
 	category = 'css'
 }: RelatedToolsProps) {
-	// const locale = useLocale()
+
 	const locale = 'ru'
 
 	// First try to get recommended tools from widget data

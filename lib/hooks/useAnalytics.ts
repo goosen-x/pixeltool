@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
-// import { useLocale } from 'next-intl'
+
 import { useCookieConsent } from './useCookieConsent'
 
 // Generate or retrieve session ID (30 minute sessions)
@@ -53,7 +53,7 @@ interface AnalyticsEvent {
 }
 
 export function useAnalytics(widgetId: string) {
-	// const locale = useLocale()
+
 	const locale = 'ru'
 	const { hasConsent } = useCookieConsent()
 	const sessionStartTime = useRef<number>(Date.now())

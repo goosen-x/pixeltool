@@ -1,4 +1,4 @@
-// import { getTranslations } from 'next-intl/server' // Removed translations
+
 import Link from 'next/link'
 import {
 	ArrowRight,
@@ -85,7 +85,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HomePage({ params }: Props) {
 	const { locale } = await params
-	// const t = await getTranslations('HomePage') // Removed translations
 
 	return (
 		<>

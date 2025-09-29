@@ -10,7 +10,6 @@ import { ProjectDataType } from '../types'
 import { TbWorld } from 'react-icons/tb'
 import { useState } from 'react'
 import { ModalDrawer } from '@/components/global/ModalDrawer'
-// import { useTranslations } from 'next-intl'
 
 type Props = {
 	project: ProjectDataType
@@ -18,8 +17,6 @@ type Props = {
 
 export const ProjectBlock = ({ project }: Props) => {
 	const [open, setOpen] = useState(false)
-
-	// const t = useTranslations('SectionProjects')
 
 	// Static project data in Russian
 	const projectData = {

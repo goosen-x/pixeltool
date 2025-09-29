@@ -64,8 +64,8 @@ export const asciiPatterns: AsciiPattern[] = [
 		id: 'cat',
 		name: 'Cat',
 		pattern: `
-      /\\_/\\  
-     ( o.o ) 
+      /\\_/\\
+     ( o.o )
       > ^ <`,
 		category: 'animals',
 		width: 13,
@@ -79,7 +79,7 @@ export const asciiPatterns: AsciiPattern[] = [
     (_\\.-.
      \\d  |
       ]  /
-     /  \\ 
+     /  \\
     L    L`,
 		category: 'animals',
 		width: 10,

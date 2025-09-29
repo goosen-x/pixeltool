@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-// import { useTranslations } from 'next-intl'
+
 import { toast } from 'sonner'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
@@ -67,7 +67,7 @@ interface WidgetUtilities {
 }
 
 export function useWidgetCreation(config: WidgetCreationConfig) {
-	// const t = useTranslations()
+
 	const { trackEvent } = useAnalytics(config.widgetId)
 	const { isFavorite, toggleFavorite } = useFavorites()
 	const { addToHistory } = useSearchHistory()

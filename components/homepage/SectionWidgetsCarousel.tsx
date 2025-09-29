@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-// import { useLocale } from 'next-intl' // Removed useTranslations
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react'
@@ -10,9 +10,9 @@ import { widgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
 
 export function SectionWidgetsCarousel() {
-	// const t = useTranslations('HomePage') // Removed translations
+
 	// const tWidgets = useTranslations('widgets') // Removed translations
-	// const locale = useLocale()
+
 	const locale = 'ru'
 	const [activeIndex, setActiveIndex] = useState(0)
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true)

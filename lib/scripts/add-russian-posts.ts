@@ -159,7 +159,7 @@ Container Queries позволяют применять стили на осно
   .product-content {
     font-size: 0.875rem;
   }
-  
+
   .product-image {
     height: 150px;
   }
@@ -231,7 +231,7 @@ Flexbox — это мощная система компоновки, котор�
   flex-grow: 1; /* Фактор роста */
   flex-shrink: 1; /* Фактор сжатия */
   flex-basis: 200px; /* Базовый размер */
-  
+
   /* Сокращённая запись */
   flex: 1 1 200px;
 }
@@ -339,7 +339,7 @@ Flexbox — это мощная система компоновки, котор�
   .holy-grail-body {
     flex-direction: column;
   }
-  
+
   .sidebar {
     flex-basis: auto;
   }
@@ -376,13 +376,13 @@ CSS Grid — это двумерная система компоновки, ко
 .grid {
   /* fr - фракционная единица */
   grid-template-columns: 1fr 2fr 1fr;
-  
+
   /* Фиксированные и гибкие размеры */
   grid-template-columns: 200px 1fr 200px;
-  
+
   /* Функция repeat() */
   grid-template-columns: repeat(3, 1fr);
-  
+
   /* minmax() для адаптивности */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
@@ -465,7 +465,7 @@ CSS Grid — это двумерная система компоновки, ко
   .magazine-layout {
     grid-template-columns: 1fr;
   }
-  
+
   .featured-article {
     grid-column: span 1;
     grid-row: span 1;
@@ -480,11 +480,11 @@ CSS Grid — это двумерная система компоновки, ко
 \`\`\`css
 .grid-container {
   display: grid;
-  
+
   /* Выравнивание всех элементов */
   justify-items: center; /* По горизонтали */
   align-items: center; /* По вертикали */
-  
+
   /* Выравнивание самого grid */
   justify-content: center;
   align-content: center;
@@ -748,7 +748,7 @@ CSS переменные (custom properties) привносят динамичн
 .element {
   /* Резервное значение, если переменная не определена */
   color: var(--text-color, #333);
-  
+
   /* Множественные резервы */
   background: var(--bg-color, var(--fallback-bg, white));
 }
@@ -762,7 +762,7 @@ CSS переменные (custom properties) привносят динамичн
 .card {
   --card-padding: 2rem;
   --card-bg: #f5f5f5;
-  
+
   padding: var(--card-padding);
   background: var(--card-bg);
 }
@@ -824,7 +824,7 @@ body {
 :root {
   --base-font: 16px;
   --scale-ratio: 1.25;
-  
+
   --text-xs: calc(var(--base-font) / var(--scale-ratio));
   --text-sm: var(--base-font);
   --text-md: calc(var(--base-font) * var(--scale-ratio));
@@ -892,7 +892,7 @@ function toggleTheme() {
   --btn-bg: var(--primary-color);
   --btn-color: white;
   --btn-border-radius: var(--border-radius);
-  
+
   padding: var(--btn-padding-y) var(--btn-padding-x);
   background: var(--btn-bg);
   color: var(--btn-color);

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { OptimizedImage } from '@/components/ui/optimized-image'
 import { Author } from '@/lib/types/author'
 import DateFormatter from './date-formatter'
-// import { useLocale } from 'next-intl'
+
 import { PostCover } from './post-cover'
 
 type Props = {
@@ -22,7 +22,7 @@ export function PostPreview({
 	author,
 	slug
 }: Props) {
-	// const locale = useLocale()
+
 	const locale = 'ru'
 
 	return (

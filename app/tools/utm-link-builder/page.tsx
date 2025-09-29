@@ -41,7 +41,7 @@ import {
 	FaEnvelope
 } from 'react-icons/fa'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl'
+
 import { cn } from '@/lib/utils'
 
 interface UTMParams {
@@ -168,7 +168,7 @@ const DYNAMIC_PARAMS = {
 }
 
 export default function UTMBuilderPage() {
-	// const t = useTranslations('widgets.utmBuilder')
+
 	const [params, setParams] = useState<UTMParams>({
 		url: 'example.com/landing-page',
 		source: '',

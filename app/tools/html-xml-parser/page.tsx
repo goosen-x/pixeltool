@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-// import { useTranslations } from 'next-intl' // Removed
+
 import {
 	Copy,
 	Download,
@@ -41,7 +41,7 @@ interface ParseResult {
 }
 
 export default function HtmlXmlParserPage() {
-	// const t = useTranslations('widgets.htmlXmlParser') // Removed
+
 	const [input, setInput] = useState('')
 	const [result, setResult] = useState<ParseResult | null>(null)
 	const [mode, setMode] = useState<ParseMode>('format')

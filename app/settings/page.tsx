@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-// import { useRouter, usePathname } from 'next/navigation'
-// import { useLocale, useTranslations } from 'next-intl'
+
 import { Settings, SunMoon, Sun, Moon, Monitor, Check } from 'lucide-react'
 import useThemeWithTransition from '@/lib/hooks/useThemeWithTransition'
 import { cn } from '@/lib/utils'
@@ -37,13 +36,8 @@ const themes = [
 	}
 ]
 
-// Language settings removed - only Russian is supported now
-
 export default function SettingsPage() {
-	// const t = useTranslations('Settings')
-	// const router = useRouter()
-	// const pathname = usePathname()
-	// const locale = useLocale()
+
 	const { theme, setTheme } = useThemeWithTransition()
 	const [mounted, setMounted] = useState(false)
 

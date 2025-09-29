@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { toast } from 'sonner'
 import {
 	Mail,
@@ -90,7 +90,7 @@ const FREE_PROVIDERS = [
 ]
 
 export default function EmailValidatorPage() {
-	// const t = useTranslations('widgets.emailValidator') // Removed
+
 	const { trackEvent } = useAnalytics('email-validator')
 
 	const [email, setEmail] = useState('')

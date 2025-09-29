@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-// import { useTranslations } from 'next-intl'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -112,7 +112,6 @@ const formatOptions: { id: string; transform: (text: string) => string }[] = [
 ]
 
 export default function SocialMediaFormatterPage() {
-	// const t = useTranslations('widgets.socialMediaFormatter')
 
 	// State
 	const [mounted, setMounted] = useState(false)

@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTranslations } from 'next-intl'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { cn } from '@/lib/utils'
 
@@ -296,7 +295,7 @@ const WIDGET_TRANSLATIONS = {
 } as const
 
 export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
-	// const t = useTranslations('widgets')
+
 	const widget = getWidgetById(widgetId)
 
 	if (!widget) return null

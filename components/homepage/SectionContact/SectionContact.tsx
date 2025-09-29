@@ -3,8 +3,7 @@
 import { ComponentPropsWithoutRef } from 'react'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
-// import { useTranslations } from 'next-intl'
-// import { useLocale } from 'next-intl'
+
 import { SectionTitle } from '@/components/global/SectionTitle'
 import Link from 'next/link'
 import { ArrowRight, Mail, MessageSquare, Send } from 'lucide-react'
@@ -13,8 +12,7 @@ export const SectionContact = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	// const t = useTranslations('contact')
-	// const locale = useLocale()
+
 	const locale = 'ru'
 
 	return (

@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -12,7 +11,7 @@ interface WidgetInfoCardProps {
 }
 
 export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
-	// const t = useTranslations('widgets')
+
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 
 	const difficultyColors = {

@@ -85,23 +85,23 @@ ORDER BY u.name ASC p.created_at DESC
 LIMIT 10`,
 
 	complex: `WITH user_stats AS (
-  SELECT 
+  SELECT
     user_id,
     COUNT(*) as post_count,
     AVG(views) as avg_views,
     MAX(created_at) as last_post
-  FROM posts 
+  FROM posts
   WHERE status = 'published'
   GROUP BY user_id
   HAVING COUNT(*) >= 5
 ),
 top_users AS (
-  SELECT 
+  SELECT
     u.id,
     u.name,
     us.post_count,
     us.avg_views,
-    CASE 
+    CASE
       WHEN us.avg_views > 1000 THEN 'Popular'
       WHEN us.avg_views > 500 THEN 'Good'
       ELSE 'Average'

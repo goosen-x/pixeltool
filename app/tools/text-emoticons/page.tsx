@@ -19,7 +19,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl'
 
 interface EmoticonCategory {
 	id: string
@@ -257,7 +256,7 @@ const emoticonCategories: EmoticonCategory[] = [
 ]
 
 export default function TextEmoticonsPage() {
-	// const t = useTranslations('widgets.textEmoticons')
+
 	const [selectedCategory, setSelectedCategory] = useState<string>('all')
 	const [recentEmoticons, setRecentEmoticons] = useState<string[]>([])
 	const [copiedEmoticon, setCopiedEmoticon] = useState<string | null>(null)

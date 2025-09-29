@@ -10,8 +10,8 @@ async function listAllPosts() {
 
 	try {
 		const posts = await sql`
-			SELECT slug, title, locale, published 
-			FROM blog_posts 
+			SELECT slug, title, locale, published
+			FROM blog_posts
 			ORDER BY locale, created_at DESC
 		`
 

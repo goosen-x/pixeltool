@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-// import { useTranslations } from 'next-intl'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BarChart, Users } from 'lucide-react'
 import type { Widget } from '@/lib/constants/widgets'

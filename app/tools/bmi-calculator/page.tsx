@@ -54,12 +54,11 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl' // Removed
 
 // Activity levels will be handled by translations
 
 export default function BMICalculatorPage() {
-	// const t = useTranslations('widgets.bmiCalculator') // Removed
+
 	const [showAdvanced, setShowAdvanced] = useState(false)
 	const [activeTab, setActiveTab] = useState('basic')
 

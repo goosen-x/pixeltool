@@ -1,4 +1,4 @@
-// import { getTranslations } from 'next-intl/server'
+
 import ContactForm from '@/components/contact/ContactForm'
 import ContactInfo from '@/components/contact/ContactInfo'
 import { Metadata } from 'next'
@@ -29,7 +29,6 @@ type Props = {
 
 export default async function ContactPage(props: Props) {
 	const params = await props.params
-	// const t = await getTranslations('contact')
 
 	return (
 		<main className='min-h-screen bg-background'>

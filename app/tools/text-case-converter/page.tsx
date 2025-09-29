@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,7 +33,7 @@ import {
 import { cn } from '@/lib/utils'
 
 export default function TextCaseConverterPage() {
-	// const t = useTranslations('widgets.textCaseConverter') // Removed
+
 	const [input, setInput] = useState('')
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 	const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())

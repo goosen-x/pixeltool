@@ -23,7 +23,7 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '../ui/dialog'
-// import { useTranslations } from 'next-intl'
+
 import { OptimizedImage } from '@/components/ui/optimized-image'
 import Link from 'next/link'
 import { FaGithub } from 'react-icons/fa6'
@@ -51,7 +51,7 @@ type Props = {
 }
 
 export const ModalDrawer = ({ open, setOpen, project }: Props) => {
-	// const t = useTranslations('SectionMain')
+
 	const isDesktop = useMediaQuery('(min-width: 768px)')
 
 	const { title, description, company, image, github, link, techs, about } =

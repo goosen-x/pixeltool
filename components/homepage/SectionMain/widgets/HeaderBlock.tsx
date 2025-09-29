@@ -1,5 +1,5 @@
 import { Block } from '@/components/ui/block'
-// import { useTranslations } from 'next-intl'
+
 import { OptimizedImage } from '@/components/ui/optimized-image'
 import Link from 'next/link'
 import React from 'react'
@@ -21,7 +21,6 @@ import { Badge } from '@/components/ui/badge'
 import avatarImg from '@/public/images/avatar.jpeg'
 
 export const HeaderBlock = () => {
-	// const t = useTranslations('SectionMain')
 
 	const email = 'dmitryborisenko.msk@gmail.com'
 	const subject = 'Возможность работы: Позиция фронтенд разработчика'

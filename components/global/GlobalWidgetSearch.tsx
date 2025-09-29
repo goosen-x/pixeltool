@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-// import { useTranslations } from 'next-intl'
+
 import {
 	Dialog,
 	DialogContent,
@@ -47,7 +47,6 @@ export function GlobalWidgetSearch({
 	const open = controlledOpen !== undefined ? controlledOpen : internalOpen
 	const setOpen = onOpenChange || setInternalOpen
 
-	// const t = useTranslations('widgets')
 	// const searchT = useTranslations('widgets.search')
 	const { history, addToHistory } = useSearchHistory()
 	const { favorites } = useFavorites()

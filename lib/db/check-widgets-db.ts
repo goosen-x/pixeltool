@@ -48,8 +48,8 @@ export async function checkWidgetsDbReady(): Promise<boolean> {
 
 		// Check if widgets table exists and has data
 		const queryPromise = sql`
-      SELECT COUNT(*) as count 
-      FROM widgets 
+      SELECT COUNT(*) as count
+      FROM widgets
       WHERE EXISTS (
         SELECT 1 FROM widget_translations WHERE widget_id = widgets.id
       )

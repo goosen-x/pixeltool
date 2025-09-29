@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl'
+
 import {
 	Home,
 	Layers,
@@ -18,7 +18,7 @@ interface ScrollSpyProps {
 }
 
 export const ScrollSpy = ({ className }: ScrollSpyProps) => {
-	// const t = useTranslations('Header.nav')
+
 	const [activeSection, setActiveSection] = useState('main')
 	const [isVisible, setIsVisible] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)

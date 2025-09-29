@@ -2,7 +2,6 @@ import { NotFoundImage } from '@/components/svg/NotFoundImage'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { Metadata } from 'next'
-// import { getTranslations } from 'next-intl/server'
 
 export const metadata: Metadata = {
 	title: '404 - Страница не найдена | PixelTool',
@@ -14,7 +13,6 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function NotFound() {
-	// const t = await getTranslations('NotFound')
 
 	return (
 		<div className='grid h-screen place-content-center bg-background px-4'>

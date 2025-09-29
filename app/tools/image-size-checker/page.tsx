@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { Upload, Download, X, ImageIcon, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
@@ -23,7 +23,7 @@ interface ImageInfo {
 }
 
 export default function ImageSizeCheckerPage() {
-	// const t = useTranslations('widgets.imageSizeChecker') // Removed
+
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
 

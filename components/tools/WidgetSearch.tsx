@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-// import { useTranslations } from 'next-intl'
+
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,7 +31,6 @@ export function WidgetSearch({ locale }: WidgetSearchProps) {
 	const [selectedCategory, setSelectedCategory] = useState<string>('')
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
-	// const t = useTranslations('widgets')
 	// const searchT = useTranslations('widgets.search')
 
 	// Convert widgets to project cards with translations

@@ -1,10 +1,8 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
-// import { useTranslations } from 'next-intl'
 
 export function SymbolInfo() {
-	// const t = useTranslations('widgets.specialSymbolsPicker')
 
 	return (
 		<Card className='p-6 bg-muted/50'>

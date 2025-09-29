@@ -1,13 +1,11 @@
 import { Block } from '@/components/ui/block'
-// import { useTranslations } from 'next-intl'
-// import { useLocale } from 'next-intl'
+
 import Link from 'next/link'
 import React from 'react'
 import { FiArrowRight, FiCode } from 'react-icons/fi'
 
 export const ProjectsBlock = () => {
-	// const t = useTranslations('Header.nav')
-	// const locale = useLocale()
+
 	const locale = 'ru'
 
 	return (

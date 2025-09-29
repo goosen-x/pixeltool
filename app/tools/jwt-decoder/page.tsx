@@ -29,7 +29,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl'
 
 interface JWTHeader {
 	alg: string
@@ -66,7 +65,7 @@ interface JWTExample {
 }
 
 export default function JWTDecoderPage() {
-	// const t = useTranslations('widgets.jwtDecoder')
+
 	const [jwt, setJwt] = useState('')
 	const [decoded, setDecoded] = useState<DecodedJWT | null>(null)
 	const [activeTab, setActiveTab] = useState('header')

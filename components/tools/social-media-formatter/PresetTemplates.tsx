@@ -58,10 +58,10 @@ Beautiful   formatting
 		name: 'Quote',
 		description: 'Centered quotes and citations',
 		icon: <Quote className='w-5 h-5' />,
-		example: `     "Success is not final,     
-     failure is not fatal:     
-     it is the courage to continue     
-     that counts."     
+		example: `     "Success is not final,
+     failure is not fatal:
+     it is the courage to continue
+     that counts."
 
           — Winston Churchill`,
 		category: 'content',
@@ -74,8 +74,8 @@ Beautiful   formatting
 		icon: <Megaphone className='w-5 h-5' />,
 		example: `🎯 IMPORTANT ANNOUNCEMENT
 
-      We're excited to share      
-      some amazing news!      
+      We're excited to share
+      some amazing news!
 
 📅 Date: Coming Soon
 💬 Details in comments
@@ -112,12 +112,12 @@ And that's how this story begins! 📖✨`,
 
 ✅ Pros:
     • Easy to use
-    • Great features  
+    • Great features
     • Excellent support
 
 ❌ Cons:
     • Could use dark mode
-    
+
 💭 Final thoughts:   Highly recommended!`,
 		category: 'social',
 		tags: ['reviews', 'feedback', 'rating']

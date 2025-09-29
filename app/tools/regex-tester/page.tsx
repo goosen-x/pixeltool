@@ -32,7 +32,6 @@ import {
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-// import { useTranslations } from 'next-intl' // Removed
 
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
@@ -235,7 +234,7 @@ const REGEX_FLAGS = {
 }
 
 export default function RegexTesterPage() {
-	// const t = useTranslations('widgets.regexTester') // Removed
+
 	const [pattern, setPattern] = useState('')
 	const [testText, setTestText] = useState('')
 	const [flavor, setFlavor] = useState<RegexFlavor>('javascript')

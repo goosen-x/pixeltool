@@ -25,12 +25,9 @@ import {
 	Fingerprint
 } from 'lucide-react'
 import { useSystemInfo } from '@/lib/hooks/widgets'
-// import { useTranslations, useLocale } from 'next-intl'
-// import { useLocale } from 'next-intl'
 
 export default function SystemInfoPage() {
-	// const t = useTranslations('widgets.systemInfo')
-	// const locale = useLocale()
+
 	const locale = 'ru'
 
 	const {

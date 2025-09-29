@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface GeneratedResult {
@@ -63,7 +63,7 @@ function generateRandomNumbers(
 }
 
 export default function RandomNumberGeneratorPage() {
-	// const t = useTranslations('widgets.randomNumberGenerator') // Removed
+
 	const [min, setMin] = useState(1)
 	const [max, setMax] = useState(10)
 	const [count, setCount] = useState(5)

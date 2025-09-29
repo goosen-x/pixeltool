@@ -18,7 +18,6 @@ import {
 	RotateCcw
 } from 'lucide-react'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl'
 
 interface SpeedTestResult {
 	download: number
@@ -36,7 +35,7 @@ interface TestState {
 }
 
 export default function SpeedTestPage() {
-	// const t = useTranslations('widgets.speedTest')
+
 	const [testState, setTestState] = useState<TestState>({
 		isRunning: false,
 		phase: 'idle',

@@ -1,7 +1,7 @@
 'use client'
 
 import { Widget } from '@/lib/constants/widgets'
-// import { useTranslations } from 'next-intl'
+
 import { WidgetStructuredData } from './WidgetStructuredData'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -299,7 +299,7 @@ const WIDGET_TRANSLATIONS = {
 } as const
 
 export function WidgetSEOWrapper({ widget, children }: WidgetSEOWrapperProps) {
-	// const t = useTranslations('widgets')
+
 	const pathname = usePathname()
 	const locale = pathname.split('/')[1]
 

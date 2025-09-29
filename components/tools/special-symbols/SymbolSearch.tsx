@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Clock, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl'
 
 interface SymbolSearchProps {
 	selectedCategory: string | 'all' | 'recent'
@@ -23,7 +22,6 @@ export function SymbolSearch({
 	symbolCategories,
 	getCategoryIcon
 }: SymbolSearchProps) {
-	// const t = useTranslations('widgets.specialSymbolsPicker')
 
 	return (
 		<div className='border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>

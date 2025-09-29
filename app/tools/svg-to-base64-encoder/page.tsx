@@ -8,11 +8,11 @@ import { Label } from '@/components/ui/label'
 import { Copy, Check, Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
-// import { useTranslations } from 'next-intl'
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function SVGEncoderPage() {
-	// const t = useTranslations('widgets.svgEncoder')
+
 	const [svgInput, setSvgInput] = useState('')
 	const [encodedResult, setEncodedResult] = useState('')
 	const [cssResult, setCssResult] = useState('')

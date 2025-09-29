@@ -24,7 +24,7 @@ export async function getAllPublishedPosts(
 		})
 
 		const queryPromise = sql`
-			SELECT 
+			SELECT
 				bp.*,
 				json_agg(
 					json_build_object(
@@ -37,7 +37,7 @@ export async function getAllPublishedPosts(
 			FROM blog_posts bp
 			LEFT JOIN blog_post_authors bpa ON bp.id = bpa.blog_post_id
 			LEFT JOIN authors a ON bpa.author_id = a.id
-			WHERE bp.published = true 
+			WHERE bp.published = true
 				AND bp.locale = ${locale}
 			GROUP BY bp.id
 			ORDER BY bp.published_at DESC, bp.created_at DESC
@@ -81,7 +81,7 @@ export async function getLatestPublishedPosts(
 		})
 
 		const queryPromise = sql`
-			SELECT 
+			SELECT
 				bp.*,
 				json_agg(
 					json_build_object(
@@ -94,7 +94,7 @@ export async function getLatestPublishedPosts(
 			FROM blog_posts bp
 			LEFT JOIN blog_post_authors bpa ON bp.id = bpa.blog_post_id
 			LEFT JOIN authors a ON bpa.author_id = a.id
-			WHERE bp.published = true 
+			WHERE bp.published = true
 				AND bp.locale = ${locale}
 			GROUP BY bp.id
 			ORDER BY bp.published_at DESC, bp.created_at DESC
@@ -139,7 +139,7 @@ export async function getPostBySlug(
 		})
 
 		const queryPromise = sql`
-			SELECT 
+			SELECT
 				bp.*,
 				json_agg(
 					json_build_object(
@@ -152,7 +152,7 @@ export async function getPostBySlug(
 			FROM blog_posts bp
 			LEFT JOIN blog_post_authors bpa ON bp.id = bpa.blog_post_id
 			LEFT JOIN authors a ON bpa.author_id = a.id
-			WHERE bp.slug = ${slug} 
+			WHERE bp.slug = ${slug}
 				AND bp.locale = ${locale}
 				AND bp.published = true
 			GROUP BY bp.id
@@ -257,7 +257,7 @@ export async function updateBlogPost(
 		}
 
 		const result = await sql`
-			UPDATE blog_posts 
+			UPDATE blog_posts
 			SET ${sql.unsafe(setClause.join(', '))}
 			WHERE id = ${id}
 			RETURNING *

@@ -55,11 +55,11 @@ const PHP_EXAMPLES = {
 	valid: `<?php
 class HelloWorld {
     private $message;
-    
+
     public function __construct($message = "Hello, World!") {
         $this->message = $message;
     }
-    
+
     public function say(): string {
         return $this->message;
     }
@@ -72,11 +72,11 @@ echo $hello->say();
 	invalid: `<?php
 class HelloWorld {
     private $message
-    
+
     public function __construct($message = "Hello, World!") {
         $this->message = $message;
     }
-    
+
     public function say() string {
         return $this->message;
     }
@@ -93,7 +93,7 @@ class User {
         public int $age,
         public string $email
     ) {}
-    
+
     public function getInfo(): array {
         return match($this->age) {
             0...17 => ['status' => 'minor'],

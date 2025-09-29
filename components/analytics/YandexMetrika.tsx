@@ -32,11 +32,11 @@ const YandexMetrika = () => {
 						})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=${metrikaId}', 'ym');
 
 						ym(${metrikaId}, 'init', {
-							ssr:true, 
-							webvisor:true, 
-							clickmap:true, 
-							ecommerce:"dataLayer", 
-							accurateTrackBounce:true, 
+							ssr:true,
+							webvisor:true,
+							clickmap:true,
+							ecommerce:"dataLayer",
+							accurateTrackBounce:true,
 							trackLinks:true
 						});
 					`

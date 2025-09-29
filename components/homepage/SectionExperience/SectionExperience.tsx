@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils'
 import { SectionTitle } from '@/components/global/SectionTitle'
 import { Timeline } from '@/components/ui/timeline'
 import { ExperienceItem } from './widgets/experienceItem'
-// import { useTranslations } from 'next-intl'
 
 export type ExperienceData = {
 	title: string
@@ -20,7 +19,6 @@ export const SectionExperience = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	// const t = useTranslations('SectionExperience')
 
 	const companies = [
 		{

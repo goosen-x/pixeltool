@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTranslations } from 'next-intl'
 import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -34,7 +33,6 @@ const WIDGET_CONFIG = {
 
 export default function TemplateWidgetPage() {
 	// TODO: Update translation key
-	// const t = useTranslations('widgets.templateWidget')
 
 	// Initialize widget with creation hook
 	const widget = useWidgetCreation({

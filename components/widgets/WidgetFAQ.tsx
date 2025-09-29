@@ -1,6 +1,5 @@
 'use client'
 
-// import { useLocale } from 'next-intl'
 import { getWidgetFAQs } from '@/lib/constants/widgets'
 import { FAQ } from '@/components/seo/FAQ'
 
@@ -9,7 +8,7 @@ interface WidgetFAQProps {
 }
 
 export function WidgetFAQ({ widgetId }: WidgetFAQProps) {
-	// const locale = useLocale() as 'en' | 'ru'
+
 	const locale = 'ru' as 'en' | 'ru'
 	const faqs = getWidgetFAQs(widgetId, locale)
 

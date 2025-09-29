@@ -4,11 +4,10 @@ import { Block } from '@/components/ui/block'
 import { Globus } from '@/components/global/Globus'
 
 import { FaLocationDot } from 'react-icons/fa6'
-// import { useTranslations } from 'next-intl'
+
 import { useMediaQuery } from '@/lib/hooks/useMediaQuery'
 
 export const LocationBlock = () => {
-	// const t = useTranslations('SectionMain')
 
 	const isDesktop = useMediaQuery('(min-width: 768px)')
 

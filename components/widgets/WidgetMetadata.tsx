@@ -2,7 +2,6 @@
 
 import { Badge } from '@/components/ui/badge'
 import { getWidgetById } from '@/lib/constants/widgets'
-// import { useTranslations } from 'next-intl'
 
 interface WidgetMetadataProps {
 	widgetId: string
@@ -17,7 +16,7 @@ export function WidgetMetadata({
 	showDifficulty = true,
 	showUseCase = true
 }: WidgetMetadataProps) {
-	// const t = useTranslations('widgets.metadata')
+
 	const widget = getWidgetById(widgetId)
 
 	if (!widget) return null

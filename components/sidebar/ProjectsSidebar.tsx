@@ -2,8 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-// import { useLocale } from 'next-intl'
-// import { useTranslations } from 'next-intl'
+
 import { cn } from '@/lib/utils'
 import { Home, ChevronRight, Settings, ChevronDown } from 'lucide-react'
 import {
@@ -19,9 +18,9 @@ interface ProjectsSidebarProps {
 
 export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 	const pathname = usePathname()
-	// const locale = useLocale()
+
 	const locale = 'ru'
-	// const t = useTranslations('projectsPage')
+
 	// const widgetT = useTranslations('widgets')
 	// const categoriesT = useTranslations('widgets.categories')
 

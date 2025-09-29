@@ -37,8 +37,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// import { useTranslations, useLocale } from 'next-intl'
-// import { useLocale } from 'next-intl'
 
 interface Voice {
 	voice: SpeechSynthesisVoice
@@ -58,8 +56,7 @@ interface HistoryItem {
 }
 
 export default function TextToSpeechPage() {
-	// const t = useTranslations('widgets.textToSpeech')
-	// const locale = useLocale()
+
 	const locale = 'ru'
 	const [mounted, setMounted] = useState(false)
 	const [text, setText] = useState('')

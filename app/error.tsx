@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Copy, Check } from 'lucide-react'
-// import { useTranslations } from 'next-intl'
+
 import Link from 'next/link'
 
 export default function Error({
@@ -13,7 +13,7 @@ export default function Error({
 	error: Error & { digest?: string }
 	reset: () => void
 }) {
-	// const t = useTranslations('Error')
+
 	const [copied, setCopied] = useState(false)
 
 	useEffect(() => {

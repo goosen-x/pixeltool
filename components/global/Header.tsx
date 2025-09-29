@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-// import { useLocale } from 'next-intl'
+
 import { usePathname } from 'next/navigation'
 import ThemeToggle from '@/components/global/ThemeToggle'
 // import { LanguageSelect } from '@/components/global/LanguageSelect'
@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/drawer-top'
 
 const Header = () => {
-	// const locale = useLocale()
+
 	const locale = 'ru'
 	const pathname = usePathname()
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

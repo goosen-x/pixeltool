@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-// import { useTranslations } from 'next-intl' // Removed translations
+
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -19,7 +19,7 @@ interface FavoriteWidgetsProps {
 export function FavoriteWidgets({ locale, className }: FavoriteWidgetsProps) {
 	const { favorites, removeFavorite, clearFavorites, isLoading } =
 		useFavorites()
-	// const t = useTranslations('widgets') // Removed translations
+
 	// const favT = useTranslations('widgets.favorites') // Removed translations
 
 	const favoriteWidgets = useMemo(() => {

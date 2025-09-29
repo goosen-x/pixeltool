@@ -4,13 +4,11 @@ import { cn } from '@/lib/utils'
 import { SectionTitle } from '@/components/global/SectionTitle'
 import { ProjectBlock } from './widgets/ProjectBlock'
 import { ProjectsData } from './constants'
-// import { useTranslations } from 'next-intl'
 
 export const SectionProjects = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-	// const t = useTranslations('SectionProjects')
 
 	return (
 		<section

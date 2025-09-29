@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-// import { useTranslations } from 'next-intl' // Removed translations
+
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -47,7 +47,6 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 	const inputRef = useRef<HTMLInputElement>(null)
 
-	// const t = useTranslations('widgets') // Removed translations
 	// const searchT = useTranslations('widgets.search') // Removed translations
 	const { history, addToHistory, removeFromHistory, clearHistory } =
 		useSearchHistory()

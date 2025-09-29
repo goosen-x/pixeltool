@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Copy, RotateCcw, Plus, Minus, HelpCircle, Check } from 'lucide-react'
 import { toast } from 'sonner'
-// import { useLocale } from 'next-intl'
+
 import {
 	Tooltip,
 	TooltipContent,
@@ -52,7 +52,7 @@ const defaultProps: GridProps = {
 }
 
 export default function GridGeneratorPage() {
-	// const locale = useLocale()
+
 	const locale = 'ru'
 	const [props, setProps] = useState<GridProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(6)

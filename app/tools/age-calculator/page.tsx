@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils'
 import { KeyboardShortcutInfo } from '@/components/widgets'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-// import { useTranslations, useLocale } from 'next-intl' // Removed
+
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface AgeData {
@@ -148,8 +148,7 @@ const FAMOUS_PEOPLE = [
 ]
 
 export default function AgeCalculatorPage() {
-	// const t = useTranslations('widgets.ageCalculator') // Removed
-	// const locale = useLocale() // Removed
+
 	const [birthDate, setBirthDate] = useState<Date | undefined>()
 	const [ageData, setAgeData] = useState<AgeData | null>(null)
 	const [isCalculating, setIsCalculating] = useState(false)

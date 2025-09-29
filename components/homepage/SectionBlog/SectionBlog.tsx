@@ -1,4 +1,4 @@
-// import { getTranslations } from 'next-intl/server'
+
 import { BlogCarousel } from './widgets/BlogCarousel'
 import { getLatestPosts } from '@/lib/actions/posts'
 
@@ -7,7 +7,6 @@ type Props = {
 }
 
 export const SectionBlog = async ({ locale }: Props) => {
-	// const t = await getTranslations('SectionBlog')
 
 	let posts: any[] = []
 	try {

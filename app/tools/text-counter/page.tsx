@@ -35,7 +35,6 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-// import { useTranslations } from 'next-intl' // Removed
 
 interface TextStats {
 	characters: number
@@ -258,7 +257,7 @@ function CollapsibleSection({
 }
 
 export default function TextCounterPage() {
-	// const t = useTranslations('widgets.textCounter') // Removed
+
 	const [text, setText] = useState('')
 	const [stats, setStats] = useState<TextStats>({
 		characters: 0,

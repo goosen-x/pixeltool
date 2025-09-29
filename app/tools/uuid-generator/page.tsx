@@ -30,7 +30,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-// import { useTranslations } from 'next-intl'
 
 type UUIDVersion = 'v4' | 'v1' | 'v7' | 'nil'
 type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces'
@@ -43,7 +42,7 @@ interface GeneratedUUID {
 }
 
 export default function UUIDGeneratorPage() {
-	// const t = useTranslations('widgets.uuidGenerator')
+
 	const [version, setVersion] = useState<UUIDVersion>('v4')
 	const [format, setFormat] = useState<UUIDFormat>('standard')
 	const [quantity, setQuantity] = useState('1')

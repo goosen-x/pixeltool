@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-// import { useTranslations } from 'next-intl' // Removed
+
 import { Badge } from '@/components/ui/badge'
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
@@ -31,7 +31,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function DrawLotsPage() {
-	// const t = useTranslations('widgets.drawLots') // Removed
+
 	const [mounted, setMounted] = useState(false)
 	const defaultValues =
 		'Albert Einstein\nMarie Curie\nLeonardo da Vinci\nNikola Tesla'

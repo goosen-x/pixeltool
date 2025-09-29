@@ -15,13 +15,13 @@ import { join } from 'path'
 const TOOLS_DIR = join(process.cwd(), 'app/[locale]/(tools)/tools')
 
 // Import statements to add
-const NEW_IMPORTS = `import { 
-  WidgetLayout, 
-  WidgetHero, 
-  WidgetCard, 
+const NEW_IMPORTS = `import {
+  WidgetLayout,
+  WidgetHero,
+  WidgetCard,
   WidgetSection,
   WidgetGrid,
-  WidgetGridCard 
+  WidgetGridCard
 } from '@/components/tools/WidgetLayout'
 import {
   WidgetPrimaryButton,

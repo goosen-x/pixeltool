@@ -4,7 +4,6 @@ import { getWidgetByPath } from '@/lib/constants/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { WidgetAnalyticsWrapper } from '@/components/tools/WidgetAnalyticsWrapper'
 import { Metadata } from 'next'
-// import { getMessages } from 'next-intl/server'
 
 type Props = {
 	children: ReactNode
