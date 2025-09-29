@@ -76,6 +76,9 @@ const SCREEN_SIZES = {
 	desktop: { width: 1440, label: 'Desktop', icon: Monitor }
 }
 
+// Force dynamic rendering to avoid build-time errors
+export const dynamic = 'force-dynamic'
+
 export default function PxRemConverterPage() {
 	const [inputValue, setInputValue] = useState<string>('16')
 	const [inputUnit, setInputUnit] = useState<'px' | 'rem' | 'em'>('px')
