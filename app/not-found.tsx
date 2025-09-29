@@ -1,7 +1,13 @@
 import { NotFoundImage } from '@/components/svg/NotFoundImage'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Metadata } from 'next'
 // import { getTranslations } from 'next-intl/server'
+
+export const metadata: Metadata = {
+	title: '404 - Страница не найдена | PixelTool',
+	description: 'К сожалению, запрашиваемая страница не существует. Вернитесь на главную страницу PixelTool.',
+}
 
 // Force dynamic rendering to avoid build-time errors
 export const dynamic = 'force-dynamic'

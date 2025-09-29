@@ -155,10 +155,7 @@ export default function ToolsPage({
 				<div className='container relative z-10 mx-auto px-4'>
 					<div className='text-center mb-16 space-y-6'>
 						{/* Title */}
-						<h2
-							className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'
-							id='all-tools'
-						>
+						<h2 className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'>
 							Все инструменты
 						</h2>
 

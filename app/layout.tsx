@@ -267,7 +267,6 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<WebVitals />
 					<Header />
 					{children}
-					{/*<Footer />*/}
 					<ScrollToTop />
 					<Toaster />
 					<CookieConsent />

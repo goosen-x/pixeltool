@@ -1,6 +1,20 @@
 // import { getTranslations } from 'next-intl/server'
 import ContactForm from '@/components/contact/ContactForm'
 import ContactInfo from '@/components/contact/ContactInfo'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Контакты - Свяжитесь с нами | PixelTool',
+	description: 'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы. Email, социальные сети и форма обратной связи.',
+	keywords: 'контакты, связаться, поддержка, помощь, обратная связь, email',
+	openGraph: {
+		title: 'Контакты - Свяжитесь с нами | PixelTool',
+		description: 'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы.',
+		url: 'https://pixeltool.ru/contact',
+		siteName: 'PixelTool',
+		type: 'website'
+	}
+}
 
 // Force dynamic rendering to avoid build-time errors
 export const dynamic = 'force-dynamic'
