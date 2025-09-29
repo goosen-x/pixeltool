@@ -2659,7 +2659,8 @@ export const widgets: Widget[] = [
 		path: 'system-info',
 		gradient: 'from-indigo-500 to-purple-600',
 		title: 'Информация о системе',
-		description: 'Получите детальную информацию о вашем браузере, устройстве и операционной системе',
+		description:
+			'Получите детальную информацию о вашем браузере, устройстве и операционной системе',
 		recommendedTools: [
 			'color-converter',
 			'qr-code-generator',
@@ -3863,7 +3864,8 @@ export const widgets: Widget[] = [
 		path: 'px-rem-converter',
 		gradient: 'from-pink-500 to-rose-600',
 		title: 'Конвертер px в rem/em',
-		description: 'Конвертируйте пиксели в rem и em единицы с настраиваемым базовым размером',
+		description:
+			'Конвертируйте пиксели в rem и em единицы с настраиваемым базовым размером',
 		recommendedTools: ['css-gradient', 'css-box-shadow', 'color-converter'],
 		difficulty: 'beginner',
 		tags: ['px', 'rem', 'em', 'converter', 'css', 'units'],
@@ -4009,7 +4011,8 @@ export const widgets: Widget[] = [
 		path: 'css-gradient-generator',
 		gradient: 'from-purple-500 via-pink-500 to-red-500',
 		title: 'Генератор CSS градиентов',
-		description: 'Создавайте линейные, радиальные и конические градиенты с визуальным редактором',
+		description:
+			'Создавайте линейные, радиальные и конические градиенты с визуальным редактором',
 		recommendedTools: ['css-box-shadow', 'color-converter', 'px-rem-converter'],
 		difficulty: 'intermediate',
 		tags: ['css', 'gradient', 'linear', 'radial', 'conic', 'generator'],
@@ -4085,7 +4088,8 @@ export const widgets: Widget[] = [
 		path: 'color-contrast-checker',
 		gradient: 'from-black to-white',
 		title: 'Проверка контраста цветов',
-		description: 'Проверяйте соотношение контраста цветов для соответствия WCAG',
+		description:
+			'Проверяйте соотношение контраста цветов для соответствия WCAG',
 		recommendedTools: ['color-converter', 'css-gradient', 'css-box-shadow'],
 		difficulty: 'intermediate',
 		tags: ['color', 'contrast', 'wcag', 'accessibility', 'a11y'],

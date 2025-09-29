@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react'
 // import { useRouter, usePathname } from 'next/navigation'
 // import { useLocale, useTranslations } from 'next-intl'
-import {
-	Settings,
-	SunMoon,
-	Sun,
-	Moon,
-	Monitor,
-	Check
-} from 'lucide-react'
+import { Settings, SunMoon, Sun, Moon, Monitor, Check } from 'lucide-react'
 import useThemeWithTransition from '@/lib/hooks/useThemeWithTransition'
 import { cn } from '@/lib/utils'
 import {
@@ -44,7 +37,6 @@ const themes = [
 	}
 ]
 
-
 // Language settings removed - only Russian is supported now
 
 export default function SettingsPage() {
@@ -64,7 +56,6 @@ export default function SettingsPage() {
 	//	const newPathname = pathname
 	//	router.push(newPathname)
 	// }
-
 
 	if (!mounted) {
 		return (
@@ -116,7 +107,7 @@ export default function SettingsPage() {
 												'cursor-pointer rounded-lg border-2 p-6 transition-all hover:shadow-md',
 												isActive ? 'border-accent bg-accent/5' : 'border-border'
 											)}
-											onClick={e => setTheme(themeOption.value, e)}
+											onClick={() => setTheme(themeOption.value)}
 										>
 											<div className='flex flex-col items-center text-center space-y-3'>
 												<div
@@ -153,7 +144,6 @@ export default function SettingsPage() {
 							</div>
 						</CardContent>
 					</Card>
-
 				</div>
 			</div>
 

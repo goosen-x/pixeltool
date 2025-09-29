@@ -2,7 +2,7 @@
 
 // import { getTranslations } from 'next-intl/server' // Removed translations
 import { Button } from '@/components/ui/button'
-import { Sparkles, Github, Search, Zap, Filter, Star } from 'lucide-react'
+import { Sparkles, Github, Search } from 'lucide-react'
 import Link from 'next/link'
 // import { ToolsListingStructuredData } from '@/components/seo/ToolsListingStructuredData' // Removed due to script rendering issue
 import { widgets } from '@/lib/constants/widgets'
@@ -154,22 +154,12 @@ export default function ToolsPage({
 			<section className='relative py-24 overflow-hidden' id='tools-search'>
 				<div className='container relative z-10 mx-auto px-4'>
 					<div className='text-center mb-16 space-y-6'>
-						{/* Badge */}
-						<div className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20'>
-							<Search className='w-4 h-4 text-primary' />
-							<span className='text-sm font-medium text-primary'>
-								{widgets.length} инструментов
-							</span>
-						</div>
-
 						{/* Title */}
 						<h2
 							className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'
 							id='all-tools'
 						>
-							<span className='bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent animate-gradient bg-300%'>
-								Все инструменты
-							</span>
+							Все инструменты
 						</h2>
 
 						{/* Description */}

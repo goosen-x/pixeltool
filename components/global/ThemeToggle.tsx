@@ -29,7 +29,7 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 
 	return (
 		<button
-			onClick={e => setTheme(theme === 'dark' ? 'light' : 'dark', e)}
+			onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
 			className={cn(
 				'h-10 w-10 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 flex items-center justify-center group',
 				className
