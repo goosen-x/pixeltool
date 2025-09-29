@@ -38,10 +38,16 @@ jobs:
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_YANDEX_METRIKA_ID: ${{ secrets.NEXT_PUBLIC_YANDEX_METRIKA_ID }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,DATABASE_URL,NEXT_PUBLIC_YANDEX_METRIKA_ID,REGISTRY,IMAGE_NAME
           script: |
             # Create app directory if it doesn't exist
             mkdir -p /opt/pixeltool
@@ -52,10 +58,10 @@ jobs:
               echo "Creating .env.production file..."
               cat > .env.production << 'ENVEOF'
             # Production environment variables
-            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-            NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            NEXT_PUBLIC_YANDEX_METRIKA_ID=${{ secrets.NEXT_PUBLIC_YANDEX_METRIKA_ID }}
+            NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+            DATABASE_URL=${DATABASE_URL}
+            NEXT_PUBLIC_YANDEX_METRIKA_ID=${NEXT_PUBLIC_YANDEX_METRIKA_ID}
             NEXT_PUBLIC_SITE_URL=https://pixeltool.pro
             NODE_ENV=production
             ENVEOF
@@ -63,7 +69,7 @@ jobs:
             fi
             
             # Pull latest image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker pull ${REGISTRY}/${IMAGE_NAME}:latest
 
             # Stop existing container
             docker stop pixeltool || true
@@ -75,7 +81,7 @@ jobs:
               --restart unless-stopped \
               --env-file /opt/pixeltool/.env.production \
               -p 3000:3000 \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+              ${REGISTRY}/${IMAGE_NAME}:latest
               
             # Check if container is running
             if docker ps | grep -q pixeltool; then
