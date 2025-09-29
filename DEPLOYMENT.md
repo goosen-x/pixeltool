@@ -65,6 +65,7 @@ sudo certbot --nginx -d pixeltool.pro -d www.pixeltool.pro
 ### 4. Update Nginx for HTTPS
 
 After SSL setup, edit `/etc/nginx/sites-available/pixeltool`:
+
 - Uncomment the HTTPS server block
 - Update the HTTP server block to redirect to HTTPS
 
@@ -106,6 +107,7 @@ sudo tail -f /var/log/nginx/access.log
 ## Troubleshooting
 
 ### Container not running
+
 ```bash
 cd ~/pixeltool
 docker logs pixeltool
@@ -113,12 +115,14 @@ docker run -d --name pixeltool --restart unless-stopped --env-file .env.producti
 ```
 
 ### Nginx errors
+
 ```bash
 sudo nginx -t
 sudo journalctl -xe
 ```
 
 ### Permission issues
+
 ```bash
 sudo chown -R $USER:$USER ~/pixeltool
 ```

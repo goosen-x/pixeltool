@@ -19,6 +19,7 @@ import { CookieConsent } from '@/components/global/CookieConsent'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
+import Header from '@/components/global/Header'
 
 // Force dynamic rendering for all pages to avoid useSearchParams build errors
 export const dynamic = 'force-dynamic'
@@ -261,7 +262,9 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<GlobalGoalsTracker />
 					<ServiceWorkerRegistration />
 					<WebVitals />
+					<Header />
 					{children}
+					<Footer />
 					<ScrollToTop />
 					<Toaster />
 					<CookieConsent />
