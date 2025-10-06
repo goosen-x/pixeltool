@@ -16,7 +16,6 @@ export function WidgetMetadata({
 	showDifficulty = true,
 	showUseCase = true
 }: WidgetMetadataProps) {
-
 	const widget = getWidgetById(widgetId)
 
 	if (!widget) return null

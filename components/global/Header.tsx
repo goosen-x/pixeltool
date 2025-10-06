@@ -33,7 +33,6 @@ import {
 } from '@/components/ui/drawer-top'
 
 const Header = () => {
-
 	const locale = 'ru'
 	const pathname = usePathname()
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

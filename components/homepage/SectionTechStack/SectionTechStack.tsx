@@ -16,7 +16,6 @@ export const SectionTechStack = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
 	return (

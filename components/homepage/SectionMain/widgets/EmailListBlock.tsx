@@ -6,7 +6,6 @@ import React from 'react'
 import { FiMail } from 'react-icons/fi'
 
 export const EmailListBlock = () => {
-
 	return (
 		<Block className='col-span-12 md:col-span-4'>
 			<p className='mb-3 text-lg'>Подписаться на рассылку</p>

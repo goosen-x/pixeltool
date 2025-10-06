@@ -12,7 +12,6 @@ export const SectionContact = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-
 	const locale = 'ru'
 
 	return (

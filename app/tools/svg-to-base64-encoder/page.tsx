@@ -12,7 +12,6 @@ import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function SVGEncoderPage() {
-
 	const [svgInput, setSvgInput] = useState('')
 	const [encodedResult, setEncodedResult] = useState('')
 	const [cssResult, setCssResult] = useState('')

@@ -8,7 +8,6 @@ import { FaLocationDot } from 'react-icons/fa6'
 import { useMediaQuery } from '@/lib/hooks/useMediaQuery'
 
 export const LocationBlock = () => {
-
 	const isDesktop = useMediaQuery('(min-width: 768px)')
 
 	return (

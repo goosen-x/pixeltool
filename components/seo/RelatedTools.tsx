@@ -18,7 +18,6 @@ export function RelatedTools({
 	currentTool,
 	category = 'css'
 }: RelatedToolsProps) {
-
 	const locale = 'ru'
 
 	// First try to get recommended tools from widget data

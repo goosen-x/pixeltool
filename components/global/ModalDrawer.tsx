@@ -51,7 +51,6 @@ type Props = {
 }
 
 export const ModalDrawer = ({ open, setOpen, project }: Props) => {
-
 	const isDesktop = useMediaQuery('(min-width: 768px)')
 
 	const { title, description, company, image, github, link, techs, about } =

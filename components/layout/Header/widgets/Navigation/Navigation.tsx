@@ -10,7 +10,6 @@ type NavigationProps = {
 }
 
 export const Navigation = ({ burger = false, setOpen }: NavigationProps) => {
-
 	const locale = 'ru'
 
 	// Только страницы, якори убраны в ScrollSpy

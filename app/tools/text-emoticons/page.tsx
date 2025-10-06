@@ -256,7 +256,6 @@ const emoticonCategories: EmoticonCategory[] = [
 ]
 
 export default function TextEmoticonsPage() {
-
 	const [selectedCategory, setSelectedCategory] = useState<string>('all')
 	const [recentEmoticons, setRecentEmoticons] = useState<string[]>([])
 	const [copiedEmoticon, setCopiedEmoticon] = useState<string | null>(null)

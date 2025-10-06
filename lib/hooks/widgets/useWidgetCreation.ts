@@ -67,7 +67,6 @@ interface WidgetUtilities {
 }
 
 export function useWidgetCreation(config: WidgetCreationConfig) {
-
 	const { trackEvent } = useAnalytics(config.widgetId)
 	const { isFavorite, toggleFavorite } = useFavorites()
 	const { addToHistory } = useSearchHistory()

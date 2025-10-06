@@ -11,7 +11,6 @@ interface WidgetInfoCardProps {
 }
 
 export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
-
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 
 	const difficultyColors = {

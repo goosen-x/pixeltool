@@ -27,7 +27,6 @@ import {
 import { useSystemInfo } from '@/lib/hooks/widgets'
 
 export default function SystemInfoPage() {
-
 	const locale = 'ru'
 
 	const {

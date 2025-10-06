@@ -42,7 +42,6 @@ interface GeneratedUUID {
 }
 
 export default function UUIDGeneratorPage() {
-
 	const [version, setVersion] = useState<UUIDVersion>('v4')
 	const [format, setFormat] = useState<UUIDFormat>('standard')
 	const [quantity, setQuantity] = useState('1')

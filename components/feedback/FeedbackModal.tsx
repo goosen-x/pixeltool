@@ -32,7 +32,6 @@ interface FeedbackData {
 }
 
 export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
-
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 

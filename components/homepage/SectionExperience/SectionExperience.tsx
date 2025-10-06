@@ -19,7 +19,6 @@ export const SectionExperience = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-
 	const companies = [
 		{
 			name: 'mba',

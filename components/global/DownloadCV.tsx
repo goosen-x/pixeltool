@@ -8,7 +8,6 @@ const CYCLES_PER_LETTER = 2
 const SHUFFLE_TIME = 50
 
 export const DownloadCV = () => {
-
 	const TARGET_TEXT = 'Скачать резюме'
 	const TARGET_HREF = '/dmitry-borisenko-cv.pdf'
 	const TARGET_FILENAME = 'dmitry-borisenko-cv.pdf'

@@ -9,7 +9,6 @@ export const SectionProjects = ({
 	className,
 	...rest
 }: ComponentPropsWithoutRef<'section'>) => {
-
 	return (
 		<section
 			className={cn('grid grid-cols-12 gap-x-6 gap-y-10 mb-24', className)}

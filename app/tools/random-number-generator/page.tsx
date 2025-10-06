@@ -63,7 +63,6 @@ function generateRandomNumbers(
 }
 
 export default function RandomNumberGeneratorPage() {
-
 	const [min, setMin] = useState(1)
 	const [max, setMax] = useState(10)
 	const [count, setCount] = useState(5)

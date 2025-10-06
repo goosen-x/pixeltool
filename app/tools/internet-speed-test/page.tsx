@@ -35,7 +35,6 @@ interface TestState {
 }
 
 export default function SpeedTestPage() {
-
 	const [testState, setTestState] = useState<TestState>({
 		isRunning: false,
 		phase: 'idle',

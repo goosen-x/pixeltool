@@ -299,7 +299,6 @@ const WIDGET_TRANSLATIONS = {
 } as const
 
 export function WidgetSEOWrapper({ widget, children }: WidgetSEOWrapperProps) {
-
 	const pathname = usePathname()
 	const locale = pathname.split('/')[1]
 

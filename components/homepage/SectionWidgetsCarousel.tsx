@@ -10,7 +10,6 @@ import { widgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
 
 export function SectionWidgetsCarousel() {
-
 	// const tWidgets = useTranslations('widgets') // Removed translations
 
 	const locale = 'ru'

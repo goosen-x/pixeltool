@@ -51,7 +51,6 @@ const thumbnailTypes = [
 ]
 
 export default function YouTubeThumbnailPage() {
-
 	const [url, setUrl] = useState('')
 	const [videoId, setVideoId] = useState('')
 	const [copiedUrl, setCopiedUrl] = useState<string | null>(null)

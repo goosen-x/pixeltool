@@ -37,7 +37,6 @@ const themes = [
 ]
 
 export default function SettingsPage() {
-
 	const { theme, setTheme } = useThemeWithTransition()
 	const [mounted, setMounted] = useState(false)
 

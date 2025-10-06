@@ -5,7 +5,6 @@ import React from 'react'
 import { FiArrowRight, FiCode } from 'react-icons/fi'
 
 export const ProjectsBlock = () => {
-
 	const locale = 'ru'
 
 	return (

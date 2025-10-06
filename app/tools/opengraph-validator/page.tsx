@@ -75,7 +75,6 @@ const RECOMMENDED_OG_TAGS = [
 export const dynamic = 'force-dynamic'
 
 export default function OpenGraphValidatorPage() {
-
 	const widget = useWidgetCreation({
 		widgetId: WIDGET_CONFIG.id,
 		enableKeyboard: true,

@@ -75,7 +75,6 @@ const TIMER_PRESETS: TimerPreset[] = [
 ]
 
 export default function TimerCountdownPage() {
-
 	const [mode, setMode] = useState<TimerMode>('countdown')
 	const [isRunning, setIsRunning] = useState(false)
 	const [isPaused, setIsPaused] = useState(false)

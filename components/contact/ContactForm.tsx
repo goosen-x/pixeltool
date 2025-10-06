@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label'
 import { Mail, Send } from 'lucide-react'
 
 export default function ContactForm() {
-
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isSubmitted, setIsSubmitted] = useState(false)
 

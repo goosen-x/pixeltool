@@ -234,7 +234,6 @@ const REGEX_FLAGS = {
 }
 
 export default function RegexTesterPage() {
-
 	const [pattern, setPattern] = useState('')
 	const [testText, setTestText] = useState('')
 	const [flavor, setFlavor] = useState<RegexFlavor>('javascript')

@@ -13,7 +13,6 @@ export default function Error({
 	error: Error & { digest?: string }
 	reset: () => void
 }) {
-
 	const [copied, setCopied] = useState(false)
 
 	useEffect(() => {

@@ -23,7 +23,6 @@ interface ImageInfo {
 }
 
 export default function ImageSizeCheckerPage() {
-
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
 

@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default async function NotFound() {
-
 	return (
 		<div className='grid h-screen place-content-center bg-background px-4'>
 			<div className='text-center'>

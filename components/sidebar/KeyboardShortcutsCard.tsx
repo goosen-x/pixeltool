@@ -22,7 +22,6 @@ interface KeyboardShortcutsCardProps {
 export function KeyboardShortcutsCard({
 	widgetShortcuts
 }: KeyboardShortcutsCardProps) {
-
 	const locale = 'ru'
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 	const [showAllShortcuts, setShowAllShortcuts] = useState(false)

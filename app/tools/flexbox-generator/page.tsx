@@ -43,7 +43,6 @@ const defaultProps: FlexboxProps = {
 }
 
 export default function FlexboxGeneratorPage() {
-
 	const locale = 'ru'
 	const [props, setProps] = useState<FlexboxProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(3)

@@ -56,7 +56,6 @@ interface HistoryItem {
 }
 
 export default function TextToSpeechPage() {
-
 	const locale = 'ru'
 	const [mounted, setMounted] = useState(false)
 	const [text, setText] = useState('')

@@ -52,7 +52,6 @@ const defaultProps: GridProps = {
 }
 
 export default function GridGeneratorPage() {
-
 	const locale = 'ru'
 	const [props, setProps] = useState<GridProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(6)

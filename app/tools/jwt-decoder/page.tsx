@@ -65,7 +65,6 @@ interface JWTExample {
 }
 
 export default function JWTDecoderPage() {
-
 	const [jwt, setJwt] = useState('')
 	const [decoded, setDecoded] = useState<DecodedJWT | null>(null)
 	const [activeTab, setActiveTab] = useState('header')

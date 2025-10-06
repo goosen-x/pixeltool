@@ -3,7 +3,6 @@
 import { Card } from '@/components/ui/card'
 
 export function SymbolInfo() {
-
 	return (
 		<Card className='p-6 bg-muted/50'>
 			<h3 className='font-semibold mb-3'>О специальных символах</h3>

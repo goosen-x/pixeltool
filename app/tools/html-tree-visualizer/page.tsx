@@ -34,7 +34,6 @@ interface TreeNode {
 }
 
 export default function HTMLTreePage() {
-
 	const [htmlInput, setHtmlInput] = useState('')
 	const [treeData, setTreeData] = useState<TreeNode | null>(null)
 	const [maxDepth, setMaxDepth] = useState(10)

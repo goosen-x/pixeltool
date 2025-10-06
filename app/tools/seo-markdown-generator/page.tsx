@@ -23,7 +23,6 @@ import { Copy, Download, FileText, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function SEOMarkdownGeneratorPage() {
-
 	const [formData, setFormData] = useState({
 		title: '',
 		excerpt: '',

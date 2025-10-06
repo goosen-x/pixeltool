@@ -295,7 +295,6 @@ const WIDGET_TRANSLATIONS = {
 } as const
 
 export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
-
 	const widget = getWidgetById(widgetId)
 
 	if (!widget) return null

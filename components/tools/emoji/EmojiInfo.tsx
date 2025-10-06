@@ -1,7 +1,6 @@
 import { Card } from '@/components/ui/card'
 
 export function EmojiInfo() {
-
 	return (
 		<Card className='p-6 bg-muted/50'>
 			<h3 className='font-semibold mb-3'>О списке эмодзи</h3>

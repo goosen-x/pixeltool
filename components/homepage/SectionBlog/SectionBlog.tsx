@@ -1,4 +1,3 @@
-
 import { BlogCarousel } from './widgets/BlogCarousel'
 import { getLatestPosts } from '@/lib/actions/posts'
 
@@ -7,7 +6,6 @@ type Props = {
 }
 
 export const SectionBlog = async ({ locale }: Props) => {
-
 	let posts: any[] = []
 	try {
 		posts = await getLatestPosts({ limit: 6, locale })

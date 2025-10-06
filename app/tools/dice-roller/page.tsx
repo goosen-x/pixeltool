@@ -47,7 +47,6 @@ interface Statistics {
 // Dice symbols removed - using DiceFace component instead
 
 export default function DiceRollerPage() {
-
 	const [mounted, setMounted] = useState(false)
 	const [diceCount, setDiceCount] = useState(2)
 	const [isRolling, setIsRolling] = useState(false)

@@ -22,7 +22,6 @@ export function SymbolSearch({
 	symbolCategories,
 	getCategoryIcon
 }: SymbolSearchProps) {
-
 	return (
 		<div className='border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
 			<div className='p-4 space-y-4'>

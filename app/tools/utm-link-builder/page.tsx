@@ -168,7 +168,6 @@ const DYNAMIC_PARAMS = {
 }
 
 export default function UTMBuilderPage() {
-
 	const [params, setParams] = useState<UTMParams>({
 		url: 'example.com/landing-page',
 		source: '',

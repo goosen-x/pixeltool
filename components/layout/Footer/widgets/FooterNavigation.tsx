@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import { Home, FolderOpen, BookOpen, Mail, Heart, Coffee } from 'lucide-react'
 
 export const FooterNavigation = () => {
-
 	const locale = 'ru'
 	const pathname = usePathname()
 

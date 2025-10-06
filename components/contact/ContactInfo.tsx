@@ -9,7 +9,6 @@ type Props = {
 }
 
 export default function ContactInfo({ locale }: Props) {
-
 	const contactItems = [
 		{
 			icon: Mail,

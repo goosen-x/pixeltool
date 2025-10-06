@@ -21,7 +21,6 @@ import { Badge } from '@/components/ui/badge'
 import avatarImg from '@/public/images/avatar.jpeg'
 
 export const HeaderBlock = () => {
-
 	const email = 'dmitryborisenko.msk@gmail.com'
 	const subject = 'Возможность работы: Позиция фронтенд разработчика'
 	const body =

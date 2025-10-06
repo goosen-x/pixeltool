@@ -18,7 +18,6 @@ interface ScrollSpyProps {
 }
 
 export const ScrollSpy = ({ className }: ScrollSpyProps) => {
-
 	const [activeSection, setActiveSection] = useState('main')
 	const [isVisible, setIsVisible] = useState(false)
 	const [isExpanded, setIsExpanded] = useState(false)

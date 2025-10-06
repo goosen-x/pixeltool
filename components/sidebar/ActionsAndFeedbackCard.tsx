@@ -7,7 +7,6 @@ import { FeedbackModal } from '@/components/feedback'
 import { toast } from 'sonner'
 
 export function ActionsAndFeedbackCard() {
-
 	const locale = 'ru'
 	// const tSidebar = useTranslations('widgets.rightSidebar')
 

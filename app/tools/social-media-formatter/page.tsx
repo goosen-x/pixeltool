@@ -112,7 +112,6 @@ const formatOptions: { id: string; transform: (text: string) => string }[] = [
 ]
 
 export default function SocialMediaFormatterPage() {
-
 	// State
 	const [mounted, setMounted] = useState(false)
 	const [inputText, setInputText] = useState('')

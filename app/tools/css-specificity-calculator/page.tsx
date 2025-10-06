@@ -27,7 +27,6 @@ interface SpecificityResult {
 }
 
 export default function CSSSpecificityPage() {
-
 	const [input, setInput] = useState('')
 	const [results, setResults] = useState<SpecificityResult[]>([])
 	const [sortBy, setSortBy] = useState<'order' | 'weight'>('order')

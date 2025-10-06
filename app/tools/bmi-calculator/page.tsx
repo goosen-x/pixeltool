@@ -58,7 +58,6 @@ import { cn } from '@/lib/utils'
 // Activity levels will be handled by translations
 
 export default function BMICalculatorPage() {
-
 	const [showAdvanced, setShowAdvanced] = useState(false)
 	const [activeTab, setActiveTab] = useState('basic')
 

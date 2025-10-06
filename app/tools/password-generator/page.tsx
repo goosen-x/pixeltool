@@ -138,7 +138,6 @@ const COMMON_WORDS = [
 ]
 
 export default function PasswordGeneratorPage() {
-
 	const [password, setPassword] = useState('')
 	const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS)
 	const [strength, setStrength] = useState(0)

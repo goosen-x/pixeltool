@@ -41,7 +41,6 @@ interface ParseResult {
 }
 
 export default function HtmlXmlParserPage() {
-
 	const [input, setInput] = useState('')
 	const [result, setResult] = useState<ParseResult | null>(null)
 	const [mode, setMode] = useState<ParseMode>('format')

@@ -257,7 +257,6 @@ function CollapsibleSection({
 }
 
 export default function TextCounterPage() {
-
 	const [text, setText] = useState('')
 	const [stats, setStats] = useState<TextStats>({
 		characters: 0,

@@ -8,7 +8,6 @@ interface WidgetFAQProps {
 }
 
 export function WidgetFAQ({ widgetId }: WidgetFAQProps) {
-
 	const locale = 'ru' as 'en' | 'ru'
 	const faqs = getWidgetFAQs(widgetId, locale)
 

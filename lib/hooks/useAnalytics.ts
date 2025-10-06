@@ -53,7 +53,6 @@ interface AnalyticsEvent {
 }
 
 export function useAnalytics(widgetId: string) {
-
 	const locale = 'ru'
 	const { hasConsent } = useCookieConsent()
 	const sessionStartTime = useRef<number>(Date.now())

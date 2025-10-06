@@ -33,7 +33,6 @@ import {
 import { cn } from '@/lib/utils'
 
 export default function TextCaseConverterPage() {
-
 	const [input, setInput] = useState('')
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 	const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())

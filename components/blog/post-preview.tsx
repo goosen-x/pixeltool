@@ -22,7 +22,6 @@ export function PostPreview({
 	author,
 	slug
 }: Props) {
-
 	const locale = 'ru'
 
 	return (

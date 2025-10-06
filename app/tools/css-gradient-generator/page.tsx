@@ -47,7 +47,6 @@ import {
 export const dynamic = 'force-dynamic'
 
 export default function CSSGradientGeneratorPage() {
-
 	const {
 		settings,
 		selectedStopId,

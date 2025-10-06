@@ -148,7 +148,6 @@ const FAMOUS_PEOPLE = [
 ]
 
 export default function AgeCalculatorPage() {
-
 	const [birthDate, setBirthDate] = useState<Date | undefined>()
 	const [ageData, setAgeData] = useState<AgeData | null>(null)
 	const [isCalculating, setIsCalculating] = useState(false)

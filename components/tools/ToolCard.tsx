@@ -23,7 +23,6 @@ export function ToolCard({
 	showFavoriteButton = true,
 	className
 }: ToolCardProps) {
-
 	const Icon = widget.icon
 
 	const title = widget.title || widget.translationKey

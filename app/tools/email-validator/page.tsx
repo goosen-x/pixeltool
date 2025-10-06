@@ -90,7 +90,6 @@ const FREE_PROVIDERS = [
 ]
 
 export default function EmailValidatorPage() {
-
 	const { trackEvent } = useAnalytics('email-validator')
 
 	const [email, setEmail] = useState('')

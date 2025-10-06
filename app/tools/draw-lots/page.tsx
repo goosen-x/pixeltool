@@ -31,7 +31,6 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function DrawLotsPage() {
-
 	const [mounted, setMounted] = useState(false)
 	const defaultValues =
 		'Albert Einstein\nMarie Curie\nLeonardo da Vinci\nNikola Tesla'

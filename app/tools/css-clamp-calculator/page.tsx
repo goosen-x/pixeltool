@@ -18,7 +18,6 @@ import {
 import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 export default function ClampCalculatorPage() {
-
 	const [unit, setUnit] = useState<'px' | 'rem'>('rem')
 	const [property, setProperty] = useState<'font-size' | 'margin' | 'padding'>(
 		'font-size'
