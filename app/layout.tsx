@@ -34,11 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
 	// Only Russian metadata
 	const currentMetadata = {
 		title: {
-			default: 'PixelTool - Инструменты Разработчика',
+			default: 'PixelTool - 52+ Бесплатных Инструмента для Веб-Разработчиков',
 			template: '%s | PixelTool'
 		},
 		description:
-			'Профессиональные инструменты для веб-разработчиков: CSS генераторы, форматировщики. Бесплатно.'
+			'Бесплатная коллекция 52+ профессиональных онлайн-инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Работает офлайн. Без регистрации.'
 	}
 	// Жестко задаем URL для Open Graph, так как env переменные могут не работать корректно
 	const siteUrl = 'https://pixeltool.pro'
