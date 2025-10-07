@@ -116,17 +116,7 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 												className='w-full flex items-center justify-between mb-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground hover:bg-primary/5 transition-all duration-200 rounded-md group relative z-10'
 											>
 												<span className='group-hover:translate-x-1 transition-transform duration-200'>
-													{categoryKey === 'text'
-														? 'Текст'
-														: categoryKey === 'generators'
-															? 'Генераторы'
-															: categoryKey === 'converters'
-																? 'Конвертеры'
-																: categoryKey === 'calculators'
-																	? 'Калькуляторы'
-																	: categoryKey === 'utilities'
-																		? 'Утилиты'
-																		: categoryKey}
+													{categoryName}
 												</span>
 												<ChevronDown
 													className={cn(
