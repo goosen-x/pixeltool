@@ -2288,10 +2288,10 @@ export const widgets: Widget[] = [
 ]
 
 export const widgetCategories = {
-	webdev: 'Web Development',
-	content: 'Content Creation',
-	security: 'Security & Privacy',
-	lifestyle: 'Health & Lifestyle'
+	webdev: 'Веб-разработка',
+	content: 'Контент',
+	security: 'Безопасность',
+	lifestyle: 'Утилиты'
 } as const
 
 export function getWidgetsByCategory(category: Widget['category']): Widget[] {
