@@ -147,7 +147,7 @@ export default function ToolsPage({
 	return (
 		<>
 			{/* Full Search Section */}
-			<section className='relative py-24 overflow-hidden' id='tools-search'>
+			<section className='relative overflow-hidden' id='tools-search'>
 				<EnhancedWidgetSearch />
 			</section>
 

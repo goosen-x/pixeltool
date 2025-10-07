@@ -138,20 +138,20 @@ export function EnhancedWidgetSearch() {
 			{/* Search Controls */}
 			<div className='relative'>
 				<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl' />
-				<div className='relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50 shadow-xl'>
-					<div className='text-center mb-16 space-y-6'>
+				<div className='relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50'>
+					<div className='mb-16 space-y-6'>
 						{/* Title */}
 						<h2 className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'>
 							Все инструменты
 						</h2>
 
 						{/* Description */}
-						<p className='text-xl sm:text-2xl text-muted-foreground max-w-6xl mx-auto leading-relaxed'>
+						<p className='text-xl sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
 							Найдите идеальный инструмент для вашей задачи
 						</p>
 					</div>
 					{/* Search Input */}
-					<div className='relative max-w-2xl mx-auto'>
+					<div className='relative max-w-2xl'>
 						<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
 						<Input
 							ref={inputRef}
@@ -186,7 +186,7 @@ export function EnhancedWidgetSearch() {
 					</div>
 
 					{/* Filters */}
-					<div className='flex flex-wrap gap-2 items-center justify-center'>
+					<div className='flex flex-wrap gap-2 items-center justify-start'>
 						<Button
 							variant={selectedCategory === '' ? 'default' : 'outline'}
 							size='sm'
