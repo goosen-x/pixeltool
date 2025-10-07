@@ -3,13 +3,11 @@
 import Script from 'next/script'
 
 const YandexMetrika = () => {
-	const metrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID
+	const metrikaId = '104375383'
 	const isDevelopment = process.env.NODE_ENV === 'development'
 
-	// Don't load Yandex Metrika if:
-	// - No metrika ID
-	// - In development mode
-	if (!metrikaId || isDevelopment) {
+	// Don't load Yandex Metrika in development mode
+	if (isDevelopment) {
 		return null
 	}
 
