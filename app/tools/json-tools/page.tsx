@@ -347,7 +347,7 @@ export default function JSONToolsPage() {
 		<WidgetLayout>
 			<div className='grid gap-6 lg:grid-cols-2'>
 				{/* Input Section */}
-				<WidgetSection icon={Code2} title='Ввод JSON'>
+				<WidgetSection icon={<Code2 className='w-5 h-5' />} title='Ввод JSON'>
 					<div className='space-y-4'>
 						<WidgetInput label='JSON Input' className='h-full'>
 							<Textarea
@@ -448,7 +448,10 @@ export default function JSONToolsPage() {
 				</WidgetSection>
 
 				{/* Output Section */}
-				<WidgetSection icon={Braces} title='Обработка JSON'>
+				<WidgetSection
+					icon={<Braces className='w-5 h-5' />}
+					title='Обработка JSON'
+				>
 					{analysis && analysis.isValid ? (
 						<Tabs
 							value={activeTab}
@@ -665,7 +668,11 @@ export default function JSONToolsPage() {
 			</div>
 
 			{/* Settings Section */}
-			<WidgetSection icon={Settings2} title='Настройки' className='mt-6'>
+			<WidgetSection
+				icon={<Settings2 className='w-5 h-5' />}
+				title='Настройки'
+				className='mt-6'
+			>
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 					<WidgetInput label='Indent Size'>
 						<Select value={indentSize} onValueChange={setIndentSize}>
