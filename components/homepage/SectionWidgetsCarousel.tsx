@@ -68,8 +68,8 @@ export function SectionWidgetsCarousel() {
 								</CarouselItem>
 							))}
 						</CarouselContent>
-						<CarouselPrevious className='hidden sm:flex -left-4 lg:-left-6' />
-						<CarouselNext className='hidden sm:flex -right-4 lg:-right-6' />
+						<CarouselPrevious className='hidden sm:flex -left-8 lg:-left-12' />
+						<CarouselNext className='hidden sm:flex -right-8 lg:-right-12' />
 					</Carousel>
 
 					{/* Touch hint - shown only on mobile */}
