@@ -59,12 +59,9 @@ export async function GET(request: NextRequest) {
 		return response
 	} catch (error) {
 		console.error('Analytics online error:', error)
-
-		// Return realistic fallback data if there's an error
-		return NextResponse.json({
-			onlineUsers: Math.floor(Math.random() * 20) + 5, // 5-25 users
-			todayUniqueSessions: Math.floor(Math.random() * 100) + 50, // 50-150 sessions
-			timestamp: new Date().toISOString()
-		})
+		return NextResponse.json(
+			{ error: 'Failed to fetch online users' },
+			{ status: 500 }
+		)
 	}
 }

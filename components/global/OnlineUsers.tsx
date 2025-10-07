@@ -28,11 +28,14 @@ export const OnlineUsers = () => {
 					// Добавляем эффект мигания при обновлении
 					setIsBlinking(true)
 					setTimeout(() => setIsBlinking(false), 2000)
+				} else {
+					// Hide component on API error
+					setOnlineCount(0)
 				}
 			} catch (error) {
 				console.error('Failed to fetch online users:', error)
-				// Fallback to a reasonable number if API fails (minimum 1)
-				setOnlineCount(Math.max(1, Math.floor(Math.random() * 20) + 5))
+				// Hide component on error
+				setOnlineCount(0)
 			} finally {
 				setIsLoading(false)
 			}
@@ -46,6 +49,11 @@ export const OnlineUsers = () => {
 
 		return () => clearInterval(interval)
 	}, [])
+
+	// Don't render if API failed or no users
+	if (!isLoading && onlineCount === 0) {
+		return null
+	}
 
 	return (
 		<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-green-500/15 to-emerald-500/15 border border-green-500/30 backdrop-blur-sm shadow-lg hover:shadow-green-500/20 transition-all duration-300'>
