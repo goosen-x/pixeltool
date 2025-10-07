@@ -89,9 +89,7 @@ export default async function HomePage({ params }: Props) {
 		<>
 			<HomePageTracker />
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
-				{/* Hero Section */}
 				<section className='relative px-4 pt-8 pb-16 sm:pt-20 sm:pb-24 sm:px-6 lg:px-8 overflow-hidden'>
-					{/* Enhanced Background decoration - mobile optimized */}
 					<div className='absolute inset-0 -z-10'>
 						<div className='absolute top-10 -left-20 sm:top-20 sm:left-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-br from-primary/20 to-accent/10 rounded-full blur-2xl sm:blur-3xl animate-pulse' />
 						<div className='absolute bottom-10 -right-20 sm:bottom-20 sm:right-1/4 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-br from-accent/20 to-primary/10 rounded-full blur-2xl sm:blur-3xl' />

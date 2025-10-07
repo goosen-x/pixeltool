@@ -68,9 +68,6 @@ export function ProjectsSidebar({ onLinkClick }: ProjectsSidebarProps = {}) {
 		<aside className='w-64 lg:w-56 xl:w-64 h-[calc(100vh-5rem)] lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
 			<div className='flex h-full flex-col'>
 				<div className='border-b bg-background/50 px-4 lg:px-6 py-4 pt-8 lg:pt-4'>
-					<h2 className='text-base lg:text-lg font-heading font-semibold'>
-						Инструменты
-					</h2>
 					<p className='text-xs lg:text-sm text-muted-foreground mt-1 break-words'>
 						Полезные сервисы для работы с текстом, данными и мультимедиа
 					</p>

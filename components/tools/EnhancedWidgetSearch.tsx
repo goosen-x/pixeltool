@@ -141,9 +141,9 @@ export function EnhancedWidgetSearch() {
 				<div className='relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50'>
 					<div className='mb-16 space-y-6'>
 						{/* Title */}
-						<h2 className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'>
+						<h1 className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'>
 							Все инструменты
-						</h2>
+						</h1>
 
 						{/* Description */}
 						<p className='text-xl sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
