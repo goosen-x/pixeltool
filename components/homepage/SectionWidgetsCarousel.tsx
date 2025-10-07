@@ -125,7 +125,7 @@ export function SectionWidgetsCarousel() {
 							Популярные инструменты
 						</span>
 					</div>
-					<h2 className='text-3xl sm:text-4xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
+					<h2 className='text-3xl sm:text-4xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6'>
 						Исследуйте наши самые используемые инструменты
 					</h2>
 					<p className='text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0'>
