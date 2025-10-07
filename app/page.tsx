@@ -428,17 +428,17 @@ export default async function HomePage({ params }: Props) {
 										<Layers className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										Мультимедиа и доступность
+										QR коды и диагностика
 									</h3>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										Озвучка текста и другие полезные функции
+										Создание QR кодов и проверка системы
 									</p>
 									<div className='space-y-2'>
 										{[
-											'Текст в речь (TTS)',
-											'Озвучка на разных языках',
-											'Настройка голоса и скорости',
-											'Сохранение аудио файлов'
+											'Генератор QR кодов',
+											'Тест скорости интернета',
+											'Информация о системе',
+											'Диагностика устройства'
 										].map((item: string, idx: number) => (
 											<div
 												key={idx}
