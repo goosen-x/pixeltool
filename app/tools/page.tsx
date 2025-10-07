@@ -4,6 +4,31 @@ import { Button } from '@/components/ui/button'
 import { Sparkles, Github } from 'lucide-react'
 import Link from 'next/link'
 import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
+import { Metadata } from 'next'
+import { widgets } from '@/lib/constants/widgets'
+
+export const metadata: Metadata = {
+	title: `Бесплатные инструменты для веб разработки и дизайна онлайн | PixelTool`,
+	description: `${widgets.length}+ бесплатных онлайн инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики, валидаторы. Без установки, работает офлайн.`,
+	keywords:
+		'онлайн инструменты, инструменты разработчика, веб инструменты, css генератор, конвертер, калькулятор, бесплатные инструменты, форматировщик кода, генератор паролей, qr код, палитра цветов, рассчитать онлайн, посчитать онлайн',
+	openGraph: {
+		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
+		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Без установки, работает офлайн.`,
+		url: 'https://pixeltool.ru/tools',
+		siteName: 'PixelTool',
+		type: 'website',
+		locale: 'ru_RU'
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
+		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы. Работает офлайн.`
+	},
+	alternates: {
+		canonical: 'https://pixeltool.ru/tools'
+	}
+}
 
 // Metadata can't be used in client components
 /*
@@ -145,14 +170,14 @@ export default function ToolsPage({
 	// const { locale } = await params // Can't use await in non-async function, but we don't need locale anyway
 
 	return (
-		<>
+		<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl'>
 			{/* Full Search Section */}
-			<section className='relative overflow-hidden' id='tools-search'>
+			<section className='relative overflow-hidden mb-12' id='tools-search'>
 				<EnhancedWidgetSearch />
 			</section>
 
 			{/* CTA Section */}
-			<section className='py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5'>
+			<section className='py-12 lg:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 bg-gradient-to-br from-primary/5 via-background to-accent/5'>
 				<div className='container mx-auto px-4 text-center'>
 					<div className='max-w-6xl mx-auto space-y-6'>
 						<h2 className='text-3xl sm:text-4xl font-bold'>
@@ -182,6 +207,6 @@ export default function ToolsPage({
 					</div>
 				</div>
 			</section>
-		</>
+		</div>
 	)
 }
