@@ -90,7 +90,7 @@ export default async function HomePage({ params }: Props) {
 			<HomePageTracker />
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
 				{/* Hero Section */}
-				<section className='relative px-4 pt-12 pb-24 sm:pt-32 sm:pb-40 sm:px-6 lg:px-8 overflow-hidden'>
+				<section className='relative px-4 pt-8 pb-16 sm:pt-20 sm:pb-24 sm:px-6 lg:px-8 overflow-hidden'>
 					{/* Enhanced Background decoration - mobile optimized */}
 					<div className='absolute inset-0 -z-10'>
 						<div className='absolute top-10 -left-20 sm:top-20 sm:left-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-br from-primary/20 to-accent/10 rounded-full blur-2xl sm:blur-3xl animate-pulse' />
@@ -204,7 +204,7 @@ export default async function HomePage({ params }: Props) {
 				</section>
 
 				{/* Why Choose PixelTool Section */}
-				<section className='relative px-4 py-24 sm:py-32 md:py-40 sm:px-6 lg:px-8 overflow-hidden'>
+				<section className='relative px-4 py-12 sm:py-16 md:py-20 sm:px-6 lg:px-8 overflow-hidden'>
 					{/* Background Effects - mobile optimized */}
 					<div className='absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent' />
 					<div className='absolute left-0 top-1/2 -translate-y-1/2 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-r from-primary/10 to-transparent rounded-full blur-2xl sm:blur-3xl' />
@@ -328,7 +328,7 @@ export default async function HomePage({ params }: Props) {
 				</section>
 
 				{/* What Can You Calculate Section */}
-				<section className='relative px-4 py-16 sm:py-24 md:py-32 sm:px-6 lg:px-8 bg-gradient-to-b from-muted/10 to-background'>
+				<section className='relative px-4 py-12 sm:py-16 md:py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-muted/10 to-background'>
 					{/* Background decoration */}
 					<div className='absolute inset-0 -z-10'>
 						<div className='absolute top-10 left-10 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl opacity-60' />

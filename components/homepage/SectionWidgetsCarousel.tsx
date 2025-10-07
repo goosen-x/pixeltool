@@ -18,7 +18,7 @@ export function SectionWidgetsCarousel() {
 	const popularWidgets = widgets.slice(0, 15)
 
 	return (
-		<section className='relative py-16 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden'>
+		<section className='relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden'>
 			{/* Background decoration */}
 			<div className='absolute inset-0 -z-10'>
 				<div className='absolute top-0 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] lg:w-[800px] h-[400px] sm:h-[600px] lg:h-[800px] bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-full blur-3xl' />
