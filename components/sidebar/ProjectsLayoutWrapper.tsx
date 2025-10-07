@@ -67,11 +67,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
 						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
-							{/* Add padding on mobile to account for menu button */}
-							<div
-								className='pl-0 lg:pl-0'
-								style={{ paddingLeft: 'calc(env(safe-area-inset-left) + 0px)' }}
-							>
+							<div>
 								{widgetId && <WidgetHeader widgetId={widgetId} />}
 								<WidgetWrapper>
 									{children}

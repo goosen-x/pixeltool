@@ -22,7 +22,7 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 					className
 				)}
 			>
-				<div className='w-5 h-5' />
+				<span className='w-5 h-5 block' />
 			</button>
 		)
 	}

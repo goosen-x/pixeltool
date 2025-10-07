@@ -163,21 +163,21 @@ export default function ToolsPage({
 							нужно!
 						</p>
 						<div className='flex gap-4 justify-center flex-wrap'>
-							<Link href='/contact'>
-								<Button size='lg' className='gap-2'>
+							<Button size='lg' className='gap-2' asChild>
+								<Link href='/contact'>
 									<Sparkles className='w-5 h-5' />
 									Предложить инструмент
-								</Button>
-							</Link>
-							<Link
-								href='https://github.com/goosen-x/pixeltool'
-								target='_blank'
-							>
-								<Button size='lg' variant='outline' className='gap-2'>
+								</Link>
+							</Button>
+							<Button size='lg' variant='outline' className='gap-2' asChild>
+								<Link
+									href='https://github.com/goosen-x/pixeltool'
+									target='_blank'
+								>
 									<Github className='w-5 h-5' />
 									GitHub
-								</Button>
-							</Link>
+								</Link>
+							</Button>
 						</div>
 					</div>
 				</div>
