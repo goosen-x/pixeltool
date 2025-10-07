@@ -1,11 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Sparkles, Github, Search } from 'lucide-react'
+import { Sparkles, Github } from 'lucide-react'
 import Link from 'next/link'
-// import { ToolsListingStructuredData } from '@/components/seo/ToolsListingStructuredData' // Removed due to script rendering issue
-import { widgets } from '@/lib/constants/widgets'
-import { Metadata } from 'next'
+import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
 
 // Metadata can't be used in client components
 /*
@@ -150,22 +148,7 @@ export default function ToolsPage({
 		<>
 			{/* Full Search Section */}
 			<section className='relative py-24 overflow-hidden' id='tools-search'>
-				<div className='container relative z-10 mx-auto px-4'>
-					<div className='text-center mb-16 space-y-6'>
-						{/* Title */}
-						<h2 className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'>
-							Все инструменты
-						</h2>
-
-						{/* Description */}
-						<p className='text-xl sm:text-2xl text-muted-foreground max-w-6xl mx-auto leading-relaxed'>
-							Найдите идеальный инструмент для вашей задачи
-						</p>
-					</div>
-					<div className='max-w-7xl mx-auto'>
-						<EnhancedWidgetSearchWrapper locale='ru' />
-					</div>
-				</div>
+				<EnhancedWidgetSearch />
 			</section>
 
 			{/* CTA Section */}
@@ -201,12 +184,4 @@ export default function ToolsPage({
 			</section>
 		</>
 	)
-}
-
-// Client Component Wrapper for EnhancedWidgetSearch
-function EnhancedWidgetSearchWrapper({ locale }: { locale: string }) {
-	const {
-		EnhancedWidgetSearch
-	} = require('@/components/tools/EnhancedWidgetSearch')
-	return <EnhancedWidgetSearch locale='ru' />
 }

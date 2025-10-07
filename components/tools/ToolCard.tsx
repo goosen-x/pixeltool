@@ -9,14 +9,12 @@ import type { Widget } from '@/lib/constants/widgets'
 
 interface ToolCardProps {
 	widget: Widget
-	locale: string
 	searchQuery?: string
 	className?: string
 }
 
 export function ToolCard({
 	widget,
-	locale,
 	searchQuery = '',
 	className
 }: ToolCardProps) {

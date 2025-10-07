@@ -215,12 +215,7 @@ export function SectionWidgetsCarousel() {
 												: 'w-[calc(33.333%-16px)]'
 									)}
 								>
-									<ToolCard
-										widget={widget}
-										locale={locale}
-										showFavoriteButton={false}
-										className='h-full'
-									/>
+									<ToolCard widget={widget} className='h-full' />
 								</div>
 							))}
 						</div>

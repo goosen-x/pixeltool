@@ -54,13 +54,7 @@ export function RelatedTools({
 			<CardContent>
 				<div className='grid gap-6 md:grid-cols-3'>
 					{relatedTools.map(widget => (
-						<ToolCard
-							key={widget.id}
-							widget={widget}
-							locale={locale}
-							showFavoriteButton={false}
-							className='h-full'
-						/>
+						<ToolCard key={widget.id} widget={widget} className='h-full' />
 					))}
 				</div>
 			</CardContent>
