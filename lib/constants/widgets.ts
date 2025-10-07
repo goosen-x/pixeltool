@@ -465,7 +465,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'svg-encoder',
 		icon: SVGIcon,
-		category: 'multimedia',
+		category: 'webdev',
 		translationKey: 'svgEncoder',
 		path: 'svg-to-base64-encoder',
 		gradient: 'from-teal-500 to-cyan-500',
@@ -535,7 +535,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'youtube-thumbnail',
 		icon: Youtube,
-		category: 'multimedia',
+		category: 'content',
 		translationKey: 'youtubeThumbnail',
 		path: 'youtube-thumbnail-downloader',
 		gradient: 'from-red-500 to-pink-500',
@@ -606,7 +606,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'qr-generator',
 		icon: QrCode,
-		category: 'multimedia',
+		category: 'lifestyle',
 		translationKey: 'qrGenerator',
 		path: 'qr-generator',
 		gradient: 'from-violet-500 to-purple-500',
@@ -1646,7 +1646,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'image-size-checker',
 		icon: ImageIcon,
-		category: 'multimedia',
+		category: 'content',
 		translationKey: 'imageSizeChecker',
 		path: 'image-size-checker',
 		gradient: 'from-cyan-500 to-blue-600',
@@ -2346,7 +2346,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'text-to-speech',
 		icon: Volume2,
-		category: 'multimedia',
+		category: 'lifestyle',
 		translationKey: 'textToSpeech',
 		path: 'text-to-speech',
 		gradient: 'from-green-500 to-teal-600',

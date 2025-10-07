@@ -235,7 +235,6 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 			)}
 			suppressHydrationWarning
 		>
-			{/* <NextIntlClientProvider messages={messages}> */}
 			<body
 				className={cn(
 					'min-h-screen bg-background font-sans antialiased',
