@@ -200,31 +200,6 @@ export default async function HomePage({ params }: Props) {
 								<ArrowRight className='h-4 w-4 sm:h-5 sm:w-5' />
 							</Link>
 						</div>
-
-						{/* Stats section - mobile optimized */}
-						<div className='grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6 mt-12 sm:mt-16 md:mt-20 max-w-4xl mx-auto px-4'>
-							{[
-								{
-									number: `${widgets.length}+`,
-									label: 'Доступных Инструментов'
-								},
-								{ number: '2.5K+', label: 'Довольных Пользователей' },
-								{ number: '99.9%', label: 'Время Работы' },
-								{ number: '0$', label: 'Всегда Бесплатно' }
-							].map((stat, idx) => (
-								<div
-									key={idx}
-									className='text-center p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-background/40 backdrop-blur-sm border border-border/30'
-								>
-									<div className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2'>
-										{stat.number}
-									</div>
-									<div className='text-xs sm:text-sm text-muted-foreground font-medium'>
-										{stat.label}
-									</div>
-								</div>
-							))}
-						</div>
 					</div>
 				</section>
 
@@ -259,7 +234,7 @@ export default async function HomePage({ params }: Props) {
 							{/* Feature 1 */}
 							<div className='group relative'>
 								<div className='absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
-								<div className='relative h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300'>
+								<div className='relative min-h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300'>
 									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center mb-4 sm:mb-6'>
 										<Zap className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
@@ -290,7 +265,7 @@ export default async function HomePage({ params }: Props) {
 							{/* Feature 2 */}
 							<div className='group relative'>
 								<div className='absolute inset-0 bg-gradient-to-r from-accent/20 via-accent/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
-								<div className='relative h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300'>
+								<div className='relative min-h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-accent/30 transition-all duration-300'>
 									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center mb-4 sm:mb-6'>
 										<Globe className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
@@ -321,7 +296,7 @@ export default async function HomePage({ params }: Props) {
 							{/* Feature 3 */}
 							<div className='group relative'>
 								<div className='absolute inset-0 bg-gradient-to-r from-green-500/20 via-green-500/10 to-transparent rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
-								<div className='relative h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-green-500/30 transition-all duration-300'>
+								<div className='relative min-h-full p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-background/60 backdrop-blur-sm border border-border/50 hover:border-green-500/30 transition-all duration-300'>
 									<div className='w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-r from-green-500 to-green-500/80 flex items-center justify-center mb-4 sm:mb-6'>
 										<Terminal className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
