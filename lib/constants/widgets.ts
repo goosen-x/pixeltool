@@ -78,7 +78,6 @@ export interface Widget {
 		| 'content'
 		| 'security'
 		| 'multimedia'
-		| 'analytics'
 		| 'lifestyle'
 	translationKey: string
 	path: string
@@ -4823,7 +4822,6 @@ export const widgetCategories = {
 	content: 'Content Creation',
 	security: 'Security & Privacy',
 	multimedia: 'Multimedia',
-	analytics: 'Analytics & Data',
 	lifestyle: 'Health & Lifestyle'
 } as const
 
