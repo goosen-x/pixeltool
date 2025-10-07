@@ -21,8 +21,6 @@ import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
-import { FavoriteButton } from './FavoriteButton'
-import { FavoriteWidgets } from './FavoriteWidgets'
 import { ToolCard } from './ToolCard'
 
 interface WidgetSearchProps {
@@ -141,9 +139,6 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 
 	return (
 		<div className='space-y-8'>
-			{/* Favorite Widgets */}
-			<FavoriteWidgets locale={locale} />
-
 			{/* Search Controls */}
 			<div className='relative'>
 				<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl' />
@@ -332,7 +327,6 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 											widget={project.widget}
 											locale={locale}
 											searchQuery={searchQuery}
-											showFavoriteButton={true}
 										/>
 									))}
 								</div>
@@ -395,11 +389,6 @@ export function EnhancedWidgetSearch({ locale }: WidgetSearchProps) {
 													</CardContent>
 												</Card>
 											</Link>
-											<FavoriteButton
-												widgetId={project.id}
-												size='sm'
-												className='absolute top-5 right-5 z-10'
-											/>
 										</div>
 									))}
 								</div>

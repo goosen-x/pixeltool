@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { FavoriteButton } from './FavoriteButton'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
 import type { Widget } from '@/lib/constants/widgets'
@@ -12,7 +11,6 @@ interface ToolCardProps {
 	widget: Widget
 	locale: string
 	searchQuery?: string
-	showFavoriteButton?: boolean
 	className?: string
 }
 
@@ -20,7 +18,6 @@ export function ToolCard({
 	widget,
 	locale,
 	searchQuery = '',
-	showFavoriteButton = true,
 	className
 }: ToolCardProps) {
 	const Icon = widget.icon
@@ -58,13 +55,6 @@ export function ToolCard({
 				}}
 			>
 				<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500' />
-
-				{showFavoriteButton && (
-					<FavoriteButton
-						widgetId={widget.id}
-						className='absolute top-2 right-2 z-10'
-					/>
-				)}
 
 				<CardHeader className='relative z-10 p-4 sm:p-6'>
 					<div
