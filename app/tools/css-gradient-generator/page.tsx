@@ -130,7 +130,7 @@ export default function CSSGradientGeneratorPage() {
 		<WidgetLayout>
 			{/* Preview Section */}
 			<WidgetSection
-				icon={Palette}
+				icon={<Palette className='w-5 h-5' />}
 				title='Предварительный просмотр'
 				className='w-full'
 			>
@@ -188,7 +188,7 @@ export default function CSSGradientGeneratorPage() {
 
 			<div className='grid gap-6 lg:grid-cols-2 mt-6'>
 				{/* Controls Section */}
-				<WidgetSection icon={Sliders} title='Настройки'>
+				<WidgetSection icon={<Sliders className='w-5 h-5' />} title='Настройки'>
 					<div className='space-y-6'>
 						{/* Gradient Type */}
 						<div className='space-y-3'>
@@ -395,7 +395,10 @@ export default function CSSGradientGeneratorPage() {
 				</WidgetSection>
 
 				{/* Color Stops Section */}
-				<WidgetSection icon={Layers} title='Цветовые точки'>
+				<WidgetSection
+					icon={<Layers className='w-5 h-5' />}
+					title='Цветовые точки'
+				>
 					<div className='space-y-4'>
 						{/* Color Stop List */}
 						<div className='space-y-2'>
@@ -499,7 +502,11 @@ export default function CSSGradientGeneratorPage() {
 			</div>
 
 			{/* Presets Section */}
-			<WidgetSection icon={Sparkles} title='Готовые градиенты' className='mt-6'>
+			<WidgetSection
+				icon={<Sparkles className='w-5 h-5' />}
+				title='Готовые градиенты'
+				className='mt-6'
+			>
 				<div className='space-y-4'>
 					{/* Search and Categories */}
 					<div className='flex flex-col sm:flex-row gap-4'>
