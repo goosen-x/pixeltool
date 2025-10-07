@@ -606,33 +606,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'email-validator': {
-		en: {
-			title: 'Email Validator - Verify Email Address Format | Free Tool',
-			description:
-				'Validate email addresses with advanced verification. Check syntax, domain validity, and disposable email detection. Perfect for form validation and data cleaning.',
-			keywords: [
-				'email validator',
-				'email verification',
-				'email checker',
-				'validate email',
-				'email format',
-				'email syntax'
-			]
-		},
-		ru: {
-			title: 'Валидатор Email - Проверка Email Адресов | Бесплатно',
-			description:
-				'Проверяйте email адреса с расширенной валидацией. Проверка синтаксиса, домена и временных email. Идеально для валидации форм.',
-			keywords: [
-				'валидатор email',
-				'проверка email',
-				'валидация почты',
-				'проверить email',
-				'формат email'
-			]
-		}
-	},
 	'json-tools': {
 		en: {
 			title: 'JSON Tools - Format, Validate, Minify & Convert | Free Online',
