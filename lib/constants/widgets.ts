@@ -826,7 +826,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'speed-test',
 		icon: Gauge,
-		category: 'analytics',
+		category: 'lifestyle',
 		translationKey: 'speedTest',
 		path: 'internet-speed-test',
 		gradient: 'from-slate-500 to-gray-600',
@@ -2587,7 +2587,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'system-info',
 		icon: Monitor,
-		category: 'analytics',
+		category: 'lifestyle',
 		translationKey: 'systemInfo',
 		path: 'system-info',
 		gradient: 'from-indigo-500 to-purple-600',
