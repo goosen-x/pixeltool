@@ -33,7 +33,7 @@ export function SectionWidgetsCarousel() {
 							Популярные инструменты
 						</span>
 					</div>
-					<h2 className='text-3xl sm:text-4xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6'>
+					<h2 className='text-3xl sm:text-4xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 text-balance'>
 						Исследуйте наши самые используемые инструменты
 					</h2>
 					<p className='text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0'>
@@ -58,13 +58,13 @@ export function SectionWidgetsCarousel() {
 						]}
 						className='w-full'
 					>
-						<CarouselContent className='-ml-2 md:-ml-4 py-4'>
+						<CarouselContent className='-ml-2 md:-ml-4 py-4 items-stretch'>
 							{popularWidgets.map(widget => (
 								<CarouselItem
 									key={widget.id}
-									className='pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3'
+									className='pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 flex'
 								>
-									<ToolCard widget={widget} className='h-full' />
+									<ToolCard widget={widget} className='h-full w-full' />
 								</CarouselItem>
 							))}
 						</CarouselContent>
