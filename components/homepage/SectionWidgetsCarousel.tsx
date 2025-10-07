@@ -58,7 +58,7 @@ export function SectionWidgetsCarousel() {
 						]}
 						className='w-full'
 					>
-						<CarouselContent className='-ml-2 md:-ml-4'>
+						<CarouselContent className='-ml-2 md:-ml-4 py-4'>
 							{popularWidgets.map(widget => (
 								<CarouselItem
 									key={widget.id}
