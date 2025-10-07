@@ -219,7 +219,7 @@ export default async function HomePage({ params }: Props) {
 									Доверяют разработчики
 								</span>
 							</div>
-							<h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent leading-tight pb-1'>
+							<h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6'>
 								Почему выбирают PixelTool?
 							</h2>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4'>
@@ -344,7 +344,7 @@ export default async function HomePage({ params }: Props) {
 									Калькуляторы и счетчики
 								</span>
 							</div>
-							<h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
+							<h2 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6'>
 								Что можно рассчитать и посчитать?
 							</h2>
 							<p className='text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto px-4'>
