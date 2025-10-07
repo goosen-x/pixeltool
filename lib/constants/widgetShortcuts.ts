@@ -50,10 +50,7 @@ export const widgetShortcuts: Partial<Record<WidgetId, WidgetShortcutConfig>> =
 			shortcuts: ['Space Flip Coin', '⌘+T Change Coin Type', '⌘+⇧+X Reset'],
 			description: '🪙 3D coin flip with multiple currency types'
 		},
-		'age-calculator': {
-			shortcuts: ['⌘+Enter Calculate', '⌘+⇧+X Reset', '⌘+1 Copy Result'],
-			description: '📅 Detailed age calculation with zodiac and life stages'
-		},
+
 		'timer-countdown': {
 			shortcuts: ['Space Start/Pause', '⌘+⇧+X Reset', '⌘+M Change Mode'],
 			description: '⏱️ Multi-mode timer: countdown, stopwatch, Pomodoro'

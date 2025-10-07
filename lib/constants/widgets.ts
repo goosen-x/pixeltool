@@ -3023,84 +3023,6 @@ export const widgets: Widget[] = [
 		}
 	},
 	{
-		id: 'age-calculator',
-		icon: Calculator,
-		category: 'lifestyle',
-		translationKey: 'ageCalculator',
-		path: 'age-calculator',
-		gradient: 'from-purple-500 to-pink-600',
-		title: 'Калькулятор возраста',
-		description: 'Рассчитайте точный возраст в годах, месяцах, днях и часах',
-		recommendedTools: [
-			'temperature-converter',
-			'bmi-calculator',
-			'timer-countdown'
-		],
-		difficulty: 'beginner',
-		tags: ['age', 'calculator', 'birthday', 'date', 'time'],
-		useCase: 'Подсчёт точного возраста для документов или празднования',
-		metaDescription:
-			'Age calculator with precise calculations. Get your exact age in years, months, days, hours.',
-		faqs: {
-			en: [
-				{
-					question: 'How accurate is the age calculator?',
-					answer:
-						'The calculator is extremely accurate, providing precise calculations down to the hour and minute. It accounts for leap years and varying month lengths automatically.'
-				},
-				{
-					question: 'Can I calculate age for future dates?',
-					answer:
-						"Yes, you can calculate age until a future date. Simply enter the target date instead of today's date to see how old you'll be on that date."
-				},
-				{
-					question: 'Does the calculator work with different date formats?',
-					answer:
-						'Yes, the calculator supports various date input formats and automatically adjusts for your local timezone and date preferences.'
-				},
-				{
-					question: 'What is the maximum age range supported?',
-					answer:
-						'The calculator can handle birth dates from 1900 to the current year, supporting ages up to 150+ years with full accuracy.'
-				},
-				{
-					question: 'Can I save or share my age calculation results?',
-					answer:
-						'You can copy the detailed results to share. The calculation includes breakdown by years, months, days, hours, and total days lived.'
-				}
-			],
-			ru: [
-				{
-					question: 'Насколько точен калькулятор возраста?',
-					answer:
-						'Калькулятор чрезвычайно точен, обеспечивая точные вычисления вплоть до часа и минуты. Он автоматически учитывает високосные годы и различную продолжительность месяцев.'
-				},
-				{
-					question: 'Могу ли я рассчитать возраст на будущую дату?',
-					answer:
-						'Да, вы можете рассчитать возраст до будущей даты. Просто введите целевую дату вместо сегодняшней, чтобы узнать, сколько вам будет лет в эту дату.'
-				},
-				{
-					question: 'Работает ли калькулятор с разными форматами дат?',
-					answer:
-						'Да, калькулятор поддерживает различные форматы ввода дат и автоматически подстраивается под ваш местный часовой пояс и предпочтения дат.'
-				},
-				{
-					question: 'Какой максимальный диапазон возраста поддерживается?',
-					answer:
-						'Калькулятор может обрабатывать даты рождения с 1900 года по текущий год, поддерживая возраст до 150+ лет с полной точностью.'
-				},
-				{
-					question:
-						'Могу ли я сохранить или поделиться результатами расчёта возраста?',
-					answer:
-						'Вы можете скопировать подробные результаты для обмена. Расчёт включает разбивку по годам, месяцам, дням, часам и общему количеству прожитых дней.'
-				}
-			],
-			he: []
-		}
-	},
-	{
 		id: 'temperature-converter',
 		icon: Thermometer,
 		category: 'business',
@@ -3110,9 +3032,9 @@ export const widgets: Widget[] = [
 		title: 'Конвертер температур',
 		description: 'Конвертируйте между Цельсием, Фаренгейтом и Кельвином',
 		recommendedTools: [
-			'age-calculator',
 			'bmi-calculator',
-			'currency-converter'
+			'currency-converter',
+			'unit-converter'
 		],
 		difficulty: 'beginner',
 		tags: ['temperature', 'converter', 'celsius', 'fahrenheit', 'kelvin'],
@@ -3188,9 +3110,9 @@ export const widgets: Widget[] = [
 		title: 'Калькулятор ИМТ',
 		description: 'Рассчитайте индекс массы тела с интерпретацией результатов',
 		recommendedTools: [
-			'age-calculator',
 			'temperature-converter',
-			'percentage-calculator'
+			'percentage-calculator',
+			'unit-converter'
 		],
 		difficulty: 'beginner',
 		tags: ['bmi', 'health', 'weight', 'calculator', 'fitness'],
@@ -3341,7 +3263,11 @@ export const widgets: Widget[] = [
 		gradient: 'from-orange-500 to-red-600',
 		title: 'Таймер и секундомер',
 		description: 'Таймер, обратный отсчёт и секундомер с уведомлениями',
-		recommendedTools: ['age-calculator', 'bmi-calculator', 'unit-converter'],
+		recommendedTools: [
+			'bmi-calculator',
+			'unit-converter',
+			'temperature-converter'
+		],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase: 'Управление временем для работы, спорта или готовки',
