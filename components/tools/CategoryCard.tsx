@@ -26,11 +26,11 @@ const categoryTranslations: Record<string, Record<string, string>> = {
 	webdev: { ru: 'Веб-разработка', en: 'Web Development' },
 	design: { ru: 'Дизайн', en: 'Design' },
 	business: { ru: 'Бизнес и финансы', en: 'Business & Finance' },
-	content: { ru: 'Создание контента', en: 'Content Creation' },
+	content: { ru: 'Контент', en: 'Content Creation' },
 	security: { ru: 'Безопасность', en: 'Security & Privacy' },
 	multimedia: { ru: 'Мультимедиа', en: 'Multimedia' },
 	analytics: { ru: 'Аналитика и данные', en: 'Analytics & Data' },
-	lifestyle: { ru: 'Здоровье и образ жизни', en: 'Health & Lifestyle' }
+	lifestyle: { ru: 'Утилиты', en: 'Health & Lifestyle' }
 }
 
 const iconMap: Record<string, any> = {
