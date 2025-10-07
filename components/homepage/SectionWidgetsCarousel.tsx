@@ -1,113 +1,21 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
-
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { ArrowRight, Sparkles } from 'lucide-react'
 import { widgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious
+} from '@/components/ui/carousel'
+import Autoplay from 'embla-carousel-autoplay'
 
 export function SectionWidgetsCarousel() {
-	// const tWidgets = useTranslations('widgets') // Removed translations
-
-	const locale = 'ru'
-	const [activeIndex, setActiveIndex] = useState(0)
-	const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-	const [itemsPerView, setItemsPerView] = useState(3)
-	const [isDragging, setIsDragging] = useState(false)
-	const [startX, setStartX] = useState(0)
-	const [scrollLeft, setScrollLeft] = useState(0)
-	const containerRef = useRef<HTMLDivElement>(null)
-	const intervalRef = useRef<NodeJS.Timeout | null>(null)
-	const sliderRef = useRef<HTMLDivElement>(null)
-
-	// Get popular widgets (you can customize this selection)
-	const popularWidgets = widgets.slice(0, 15) // Show first 15 widgets
-	const maxIndex = Math.max(0, popularWidgets.length - itemsPerView)
-
-	// Responsive items per view
-	useEffect(() => {
-		const updateItemsPerView = () => {
-			if (window.innerWidth < 640) {
-				setItemsPerView(1)
-			} else if (window.innerWidth < 1024) {
-				setItemsPerView(2)
-			} else {
-				setItemsPerView(3)
-			}
-		}
-
-		updateItemsPerView()
-		window.addEventListener('resize', updateItemsPerView)
-		return () => window.removeEventListener('resize', updateItemsPerView)
-	}, [])
-
-	useEffect(() => {
-		if (isAutoPlaying) {
-			intervalRef.current = setInterval(() => {
-				setActiveIndex(prev => (prev + 1 > maxIndex ? 0 : prev + 1))
-			}, 4000)
-		}
-
-		return () => {
-			if (intervalRef.current) {
-				clearInterval(intervalRef.current)
-			}
-		}
-	}, [isAutoPlaying, maxIndex])
-
-	const handlePrevious = () => {
-		setIsAutoPlaying(false)
-		setActiveIndex(prev => (prev - 1 < 0 ? maxIndex : prev - 1))
-	}
-
-	const handleNext = () => {
-		setIsAutoPlaying(false)
-		setActiveIndex(prev => (prev + 1 > maxIndex ? 0 : prev + 1))
-	}
-
-	const handleDotClick = (index: number) => {
-		setIsAutoPlaying(false)
-		setActiveIndex(index)
-	}
-
-	// Touch/Mouse handlers for swipe support
-	const handleTouchStart = useCallback(
-		(e: React.TouchEvent | React.MouseEvent) => {
-			setIsAutoPlaying(false)
-			setIsDragging(true)
-			const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX
-			setStartX(pageX)
-			setScrollLeft(activeIndex)
-		},
-		[activeIndex]
-	)
-
-	const handleTouchMove = useCallback(
-		(e: React.TouchEvent | React.MouseEvent) => {
-			if (!isDragging) return
-			e.preventDefault()
-			const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX
-			const walk = (pageX - startX) * -1
-			const containerWidth = containerRef.current?.offsetWidth || 1
-			const swipeRatio = walk / containerWidth
-			const newIndex = scrollLeft + swipeRatio * itemsPerView
-
-			// Constrain the index
-			const constrainedIndex = Math.max(0, Math.min(maxIndex, newIndex))
-			setActiveIndex(constrainedIndex)
-		},
-		[isDragging, startX, scrollLeft, maxIndex, itemsPerView]
-	)
-
-	const handleTouchEnd = useCallback(() => {
-		setIsDragging(false)
-		// Snap to nearest index
-		const roundedIndex = Math.round(activeIndex)
-		setActiveIndex(Math.max(0, Math.min(maxIndex, roundedIndex)))
-	}, [activeIndex, maxIndex])
+	// Get popular widgets (first 15)
+	const popularWidgets = widgets.slice(0, 15)
 
 	return (
 		<section className='relative py-16 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden'>
@@ -135,108 +43,34 @@ export function SectionWidgetsCarousel() {
 					</p>
 				</div>
 
-				{/* Carousel Container */}
-				<div className='relative sm:px-8'>
-					{/* Navigation Buttons - Hidden on mobile, visible on larger screens */}
-					<Button
-						variant='outline'
-						size='icon'
-						onClick={handlePrevious}
-						className='hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 -translate-x-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-background/90 backdrop-blur-sm border-border/50 hover:bg-background hover:border-primary/50 shadow-lg transition-all'
+				{/* Carousel */}
+				<div className='relative px-4 sm:px-12 lg:px-16'>
+					<Carousel
+						opts={{
+							align: 'start',
+							loop: true
+						}}
+						plugins={[
+							Autoplay({
+								delay: 4000,
+								stopOnInteraction: true
+							})
+						]}
+						className='w-full'
 					>
-						<ChevronLeft className='h-4 w-4 sm:h-5 sm:w-5' />
-					</Button>
-					<Button
-						variant='outline'
-						size='icon'
-						onClick={handleNext}
-						className='hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 translate-x-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-background/90 backdrop-blur-sm border-border/50 hover:bg-background hover:border-primary/50 shadow-lg transition-all'
-					>
-						<ChevronRight className='h-4 w-4 sm:h-5 sm:w-5' />
-					</Button>
-
-					{/* Mobile Navigation - Visible only on mobile */}
-					<div className='flex sm:hidden justify-between items-center mb-4'>
-						<Button
-							variant='ghost'
-							size='sm'
-							onClick={handlePrevious}
-							disabled={activeIndex === 0}
-							className='p-2'
-						>
-							<ChevronLeft className='h-5 w-5' />
-						</Button>
-						<span className='text-sm text-muted-foreground'>
-							{Math.round(activeIndex) + 1} / {maxIndex + 1}
-						</span>
-						<Button
-							variant='ghost'
-							size='sm'
-							onClick={handleNext}
-							disabled={activeIndex === maxIndex}
-							className='p-2'
-						>
-							<ChevronRight className='h-5 w-5' />
-						</Button>
-					</div>
-
-					{/* Carousel Items */}
-					<div ref={containerRef} className='overflow-hidden py-4'>
-						<div
-							ref={sliderRef}
-							className={cn(
-								'flex transition-transform ease-out',
-								isDragging ? 'duration-0' : 'duration-500',
-								itemsPerView === 1 ? 'gap-4' : 'gap-4 sm:gap-6'
-							)}
-							style={{
-								transform:
-									itemsPerView === 1
-										? `translateX(calc(-${activeIndex * 100}% - ${activeIndex * 16}px))`
-										: `translateX(-${activeIndex * (100 / itemsPerView)}%)`
-							}}
-							onTouchStart={handleTouchStart}
-							onTouchMove={handleTouchMove}
-							onTouchEnd={handleTouchEnd}
-							onMouseDown={handleTouchStart}
-							onMouseMove={handleTouchMove}
-							onMouseUp={handleTouchEnd}
-							onMouseLeave={handleTouchEnd}
-						>
+						<CarouselContent className='-ml-2 md:-ml-4'>
 							{popularWidgets.map(widget => (
-								<div
+								<CarouselItem
 									key={widget.id}
-									className={cn(
-										'flex-shrink-0 transition-all duration-300 select-none',
-										itemsPerView === 1
-											? 'w-[calc(100%-32px)] mx-4 first:ml-4 last:mr-4'
-											: itemsPerView === 2
-												? 'w-[calc(50%-8px)]'
-												: 'w-[calc(33.333%-16px)]'
-									)}
+									className='pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3'
 								>
 									<ToolCard widget={widget} className='h-full' />
-								</div>
+								</CarouselItem>
 							))}
-						</div>
-					</div>
-
-					{/* Dots Indicator */}
-					<div className='flex justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6'>
-						{Array.from({ length: maxIndex + 1 }).map((_, index) => (
-							<button
-								key={index}
-								onClick={() => handleDotClick(index)}
-								className={cn(
-									'h-2 rounded-full transition-all duration-300',
-									index === activeIndex
-										? 'w-6 sm:w-8 bg-gradient-to-r from-primary to-accent'
-										: 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-								)}
-								aria-label={`Go to slide ${index + 1}`}
-							/>
-						))}
-					</div>
+						</CarouselContent>
+						<CarouselPrevious className='hidden sm:flex -left-4 lg:-left-6' />
+						<CarouselNext className='hidden sm:flex -right-4 lg:-right-6' />
+					</Carousel>
 
 					{/* Touch hint - shown only on mobile */}
 					<p className='sm:hidden text-xs text-muted-foreground text-center mt-4'>
