@@ -5,9 +5,10 @@ const widgetsPath = path.join(__dirname, '../lib/constants/widgets.ts')
 let content = fs.readFileSync(widgetsPath, 'utf8')
 
 // Regex to match faqs blocks with en/ru/he structure and replace with only ru
-const faqsRegex = /faqs:\s*\{[^}]*en:\s*\[[^\]]*\],[^}]*ru:\s*(\[[^\]]*\])(?:,\s*he:\s*\[[^\]]*\])?\s*\}/gs
+const faqsRegex =
+	/faqs:\s*\{[^}]*en:\s*\[[^\]]*\],[^}]*ru:\s*(\[[^\]]*\])(?:,\s*he:\s*\[[^\]]*\])?\s*\}/gs
 
-content = content.replace(faqsRegex, (match) => {
+content = content.replace(faqsRegex, match => {
 	// Extract only the Russian FAQ array
 	const ruMatch = match.match(/ru:\s*(\[[^\]]*\])/s)
 	if (ruMatch) {

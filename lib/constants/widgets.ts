@@ -1447,53 +1447,6 @@ export const widgets: Widget[] = [
 	},
 
 	{
-		id: 'bmi-calculator',
-		icon: Weight,
-		category: 'lifestyle',
-		translationKey: 'bmiCalculator',
-		path: 'bmi-calculator',
-		gradient: 'from-green-500 to-emerald-600',
-		title: 'Калькулятор ИМТ',
-		description: 'Рассчитайте индекс массы тела с интерпретацией результатов',
-		recommendedTools: [
-			'temperature-converter',
-			'percentage-calculator',
-			'unit-converter'
-		],
-		difficulty: 'beginner',
-		tags: ['bmi', 'health', 'weight', 'calculator', 'fitness'],
-		useCase: 'Оценка состояния здоровья по индексу массы тела',
-		metaDescription:
-			'BMI calculator with health interpretation. Calculate your Body Mass Index and health status.',
-		faqs: [
-			{
-				question: 'Что такое ИМТ и почему это важно?',
-				answer:
-					'ИМТ (Индекс Массы Тела) — это показатель, который использует ваш рост и вес для определения здорового веса. Это полезный инструмент скрининга для выявления потенциальных проблем со здоровьем, связанных с весом.'
-			},
-			{
-				question: 'Насколько точен расчёт ИМТ?',
-				answer:
-					'Расчёт ИМТ следует стандартной формуле: вес (кг) / рост (м)². Наш калькулятор предоставляет точные результаты и включает интерпретацию состояния здоровья на основе рекомендаций ВОЗ.'
-			},
-			{
-				question: 'Какие диапазоны ИМТ считаются здоровыми?',
-				answer:
-					'Нормальный вес: 18.5-24.9, Недостаточный вес: ниже 18.5, Избыточный вес: 25-29.9, Ожирение: 30 и выше. Однако ИМТ не учитывает мышечную массу, плотность костей или состав тела.'
-			},
-			{
-				question: 'Можно ли использовать метрические и имперские единицы?',
-				answer:
-					'Да, калькулятор поддерживает как метрические (кг, см), так и имперские (фунты, футы/дюймы) единицы. Вы можете легко переключаться между единицами и получать точные результаты в предпочитаемой системе измерений.'
-			},
-			{
-				question: 'Есть ли ограничения в использовании ИМТ?',
-				answer:
-					'ИМТ не различает мышечную и жировую массу, поэтому спортсмены с высокой мышечной массой могут иметь высокий ИМТ при низком содержании жира. Лучше всего использовать как общий инструмент скрининга наряду с другими оценками здоровья.'
-			}
-		]
-	},
-	{
 		id: 'text-counter',
 		icon: FileSearch,
 		category: 'content',
@@ -1545,11 +1498,7 @@ export const widgets: Widget[] = [
 		gradient: 'from-orange-500 to-red-600',
 		title: 'Таймер и секундомер',
 		description: 'Таймер, обратный отсчёт и секундомер с уведомлениями',
-		recommendedTools: [
-			'bmi-calculator',
-			'unit-converter',
-			'temperature-converter'
-		],
+		recommendedTools: ['unit-converter', 'temperature-converter'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase: 'Управление временем для работы, спорта или готовки',
