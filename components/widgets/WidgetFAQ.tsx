@@ -8,15 +8,13 @@ interface WidgetFAQProps {
 }
 
 export function WidgetFAQ({ widgetId }: WidgetFAQProps) {
-	const locale = 'ru' as 'en' | 'ru'
-	const faqs = getWidgetFAQs(widgetId, locale)
+	const faqs = getWidgetFAQs(widgetId)
 
 	if (faqs.length === 0) {
 		return null
 	}
 
-	const title =
-		locale === 'ru' ? 'Часто задаваемые вопросы' : 'Frequently Asked Questions'
+	const title = 'Часто задаваемые вопросы'
 
 	return <FAQ items={faqs} title={title} />
 }

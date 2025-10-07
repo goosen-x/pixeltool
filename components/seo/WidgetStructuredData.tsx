@@ -2,9 +2,9 @@ import { Widget } from '@/lib/constants/widgets'
 import Script from 'next/script'
 import {
 	getToolSpecificSchema,
-	getWidgetReviewSchema,
-	getWidgetFAQs
+	getWidgetReviewSchema
 } from '@/lib/seo/widget-schemas'
+import { getWidgetFAQs } from '@/lib/constants/widgets'
 
 interface WidgetStructuredDataProps {
 	widget: Widget
@@ -113,16 +113,15 @@ export function WidgetStructuredData({
 			: null
 
 	// FAQPage schema if widget has FAQs
-	const widgetFAQs = getWidgetFAQs(widget.translationKey, locale)
+	const widgetFAQs = getWidgetFAQs(widget.translationKey)
 	const faqSchema =
-		widgetFAQs.length > 0 ||
-		(widget.faqs && widget.faqs[locale as 'en' | 'ru']?.length > 0)
+		widgetFAQs.length > 0 || (widget.faqs && widget.faqs.length > 0)
 			? {
 					'@context': 'https://schema.org',
 					'@type': 'FAQPage',
 					mainEntity: [
 						...widgetFAQs,
-						...(widget.faqs?.[locale as 'en' | 'ru']?.map(faq => ({
+						...(widget.faqs?.map(faq => ({
 							'@type': 'Question',
 							name: faq.question,
 							acceptedAnswer: {
