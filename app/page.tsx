@@ -324,47 +324,6 @@ export default async function HomePage({ params }: Props) {
 								</div>
 							</div>
 						</div>
-
-						{/* Trust Indicators - mobile optimized */}
-						<div className='relative'>
-							<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-2xl sm:rounded-3xl' />
-							<div className='relative p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl backdrop-blur-sm'>
-								<div className='grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8'>
-									<div className='text-center'>
-										<div className='text-3xl sm:text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-1 sm:mb-2'>
-											2.5K+
-										</div>
-										<div className='text-xs sm:text-sm text-muted-foreground'>
-											Довольных разработчиков
-										</div>
-									</div>
-									<div className='text-center'>
-										<div className='text-3xl sm:text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-accent to-green-500 bg-clip-text text-transparent mb-1 sm:mb-2'>
-											50K+
-										</div>
-										<div className='text-xs sm:text-sm text-muted-foreground'>
-											Задач выполнено
-										</div>
-									</div>
-									<div className='text-center'>
-										<div className='text-3xl sm:text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent mb-1 sm:mb-2'>
-											15+
-										</div>
-										<div className='text-xs sm:text-sm text-muted-foreground'>
-											Стран охвачено
-										</div>
-									</div>
-									<div className='text-center'>
-										<div className='text-3xl sm:text-4xl md:text-5xl font-heading font-bold bg-gradient-to-r from-blue-500 to-primary bg-clip-text text-transparent mb-1 sm:mb-2'>
-											24/7
-										</div>
-										<div className='text-xs sm:text-sm text-muted-foreground'>
-											Доступность сервиса
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</section>
 
@@ -405,17 +364,17 @@ export default async function HomePage({ params }: Props) {
 										<DollarSign className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										Финансовые расчёты
+										Генераторы и рандомайзеры
 									</h3>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										Рассчитайте проценты, скидки, курсы валют и многое другое
+										Случайные числа, выбор команд и принятие решений
 									</p>
 									<div className='space-y-2'>
 										{[
-											'Посчитать проценты от суммы',
-											'Рассчитать скидки и наценки',
-											'Конвертация валют',
-											'Калькулятор НДС и налогов'
+											'Генератор случайных чисел',
+											'Подбрасывание монеты',
+											'Бросок костей',
+											'Жеребьёвка и выбор команд'
 										].map((item: string, idx: number) => (
 											<div
 												key={idx}
@@ -437,17 +396,17 @@ export default async function HomePage({ params }: Props) {
 										<Terminal className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										Математические вычисления
+										Утилиты и инструменты
 									</h3>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										От простых вычислений до сложных математических операций
+										Полезные инструменты для повседневных задач
 									</p>
 									<div className='space-y-2'>
 										{[
-											'Посчитать количество дней между датами',
-											'Рассчитать площадь и объём',
-											'Генератор случайных чисел',
-											'Математические формулы и константы'
+											'Генератор QR кодов',
+											'Таймер и секундомер',
+											'Тест скорости интернета',
+											'Информация о системе'
 										].map((item: string, idx: number) => (
 											<div
 												key={idx}
@@ -469,17 +428,17 @@ export default async function HomePage({ params }: Props) {
 										<Layers className='w-6 h-6 sm:w-7 sm:h-7 text-white' />
 									</div>
 									<h3 className='text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4'>
-										Конвертация единиц
+										Мультимедиа и доступность
 									</h3>
 									<p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
-										Лёгкое преобразование единиц измерения в любой системе
+										Озвучка текста и другие полезные функции
 									</p>
 									<div className='space-y-2'>
 										{[
-											'Перевод веса, длины, объёма',
-											'Конвертация температуры',
-											'Преобразование цветов',
-											'Конвертер систем счисления'
+											'Текст в речь (TTS)',
+											'Озвучка на разных языках',
+											'Настройка голоса и скорости',
+											'Сохранение аудио файлов'
 										].map((item: string, idx: number) => (
 											<div
 												key={idx}
