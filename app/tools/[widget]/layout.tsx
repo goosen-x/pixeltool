@@ -5,6 +5,7 @@ import { getWidgetByPath } from '@/lib/constants/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { WidgetAnalyticsWrapper } from '@/components/tools/WidgetAnalyticsWrapper'
 import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
+import '../../widget-transitions.css'
 
 type Props = {
 	children: ReactNode
