@@ -687,39 +687,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'age-calculator': {
-		en: {
-			title: 'Calculate Age - Exact Age Calculator Online | Free 2025',
-			description:
-				'Calculate your exact age in years, months, days, hours online free. Find age difference between dates. Birthday countdown and zodiac sign calculator 2025.',
-			keywords: [
-				'calculate age',
-				'age calculator online',
-				'calculate birthday',
-				'calculate age in days',
-				'age difference calculator',
-				'date calculator free',
-				'online',
-				'free',
-				'2025'
-			]
-		},
-		ru: {
-			title: 'Рассчитать Возраст - Калькулятор Лет Онлайн | Бесплатно 2025',
-			description:
-				'Рассчитайте точный возраст в годах, месяцах, днях онлайн бесплатно. Найдите разницу между датами. Обратный отсчёт до дня рождения 2025.',
-			keywords: [
-				'рассчитать возраст',
-				'посчитать сколько лет',
-				'калькулятор возраста онлайн',
-				'расчет возраста в днях',
-				'разница дат',
-				'онлайн',
-				'бесплатно',
-				'2025'
-			]
-		}
-	},
 	'text-counter': {
 		en: {
 			title: 'Count Words & Characters - Text Counter Tool | Free Online 2025',

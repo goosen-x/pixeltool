@@ -46,7 +46,6 @@ export const widgetIconEmojis: Record<string, string> = {
 	'percentage-calculator': '%',
 	'tip-calculator': '💵',
 	'loan-calculator': '💰',
-	'age-calculator': '📅',
 	'bmi-calculator': '⚖️',
 	'currency-converter': '💱',
 
