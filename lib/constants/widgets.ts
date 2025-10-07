@@ -72,7 +72,7 @@ export interface WidgetFAQ {
 export interface Widget {
 	id: string
 	icon: React.ComponentType<{ className?: string }>
-	category: 'webdev' | 'content' | 'security' | 'multimedia' | 'lifestyle'
+	category: 'webdev' | 'content' | 'security' | 'lifestyle'
 	translationKey: string
 	path: string
 	gradient: string
@@ -4277,7 +4277,6 @@ export const widgetCategories = {
 	webdev: 'Web Development',
 	content: 'Content Creation',
 	security: 'Security & Privacy',
-	multimedia: 'Multimedia',
 	lifestyle: 'Health & Lifestyle'
 } as const
 

@@ -52,15 +52,13 @@ export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
 					<Badge variant='outline' className='text-xs'>
 						{widget.category === 'webdev'
 							? 'Веб-разработка'
-							: widget.category === 'multimedia'
-								? 'Мультимедиа'
-								: widget.category === 'content'
-									? 'Контент'
-									: widget.category === 'security'
-										? 'Безопасность'
-										: widget.category === 'lifestyle'
-											? 'Стиль жизни'
-											: widget.category}
+							: widget.category === 'content'
+								? 'Контент'
+								: widget.category === 'security'
+									? 'Безопасность'
+									: widget.category === 'lifestyle'
+										? 'Стиль жизни'
+										: widget.category}
 					</Badge>
 				</div>
 
