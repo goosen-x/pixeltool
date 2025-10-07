@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 import { getWidgetByPath } from '@/lib/constants/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { WidgetAnalyticsWrapper } from '@/components/tools/WidgetAnalyticsWrapper'
-import { Metadata } from 'next'
+import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
 
 type Props = {
 	children: ReactNode
@@ -107,10 +108,12 @@ export default async function WidgetLayout({ children, params }: Props) {
 	}
 
 	return (
-		<WidgetSEOWrapper widget={widget}>
-			<WidgetAnalyticsWrapper widgetId={widget.id}>
-				{children}
-			</WidgetAnalyticsWrapper>
-		</WidgetSEOWrapper>
+		<ProjectsLayoutWrapper>
+			<WidgetSEOWrapper widget={widget}>
+				<WidgetAnalyticsWrapper widgetId={widget.id}>
+					{children}
+				</WidgetAnalyticsWrapper>
+			</WidgetSEOWrapper>
+		</ProjectsLayoutWrapper>
 	)
 }

@@ -1,6 +1,5 @@
-import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
-import { ReactNode } from 'react'
 import { Metadata } from 'next'
+import { ReactNode } from 'react'
 import { widgets } from '@/lib/constants/widgets'
 import '../widget-transitions.css'
 
@@ -36,5 +35,6 @@ type Props = {
 }
 
 export default function ProjectsLayout({ children }: Props) {
-	return <ProjectsLayoutWrapper>{children}</ProjectsLayoutWrapper>
+	// Don't wrap /tools page in ProjectsLayoutWrapper - it has its own layout
+	return <>{children}</>
 }
