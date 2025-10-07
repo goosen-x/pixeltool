@@ -204,29 +204,7 @@ export function EnhancedWidgetSearch() {
 								onClick={() => setSelectedCategory(key)}
 								className='rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
 							>
-								{key === 'css'
-									? 'CSS'
-									: key === 'colors'
-										? 'Цвета'
-										: key === 'text'
-											? 'Текст'
-											: key === 'converters'
-												? 'Конвертеры'
-												: key === 'generators'
-													? 'Генераторы'
-													: key === 'security'
-														? 'Безопасность'
-														: key === 'parsers'
-															? 'Парсеры'
-															: key === 'images'
-																? 'Изображения'
-																: key === 'time'
-																	? 'Время и дата'
-																	: key === 'calculations'
-																		? 'Калькуляторы'
-																		: key === 'utilities'
-																			? 'Утилиты'
-																			: title}
+								{title}
 							</Button>
 						))}
 					</div>
@@ -297,29 +275,9 @@ export function EnhancedWidgetSearch() {
 						<section key={category}>
 							<div className='flex items-center gap-3 mb-6'>
 								<h2 className='text-2xl font-heading font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-									{category === 'css'
-										? 'CSS'
-										: category === 'colors'
-											? 'Цвета'
-											: category === 'text'
-												? 'Текст'
-												: category === 'converters'
-													? 'Конвертеры'
-													: category === 'generators'
-														? 'Генераторы'
-														: category === 'security'
-															? 'Безопасность'
-															: category === 'parsers'
-																? 'Парсеры'
-																: category === 'images'
-																	? 'Изображения'
-																	: category === 'time'
-																		? 'Время и дата'
-																		: category === 'calculations'
-																			? 'Калькуляторы'
-																			: category === 'utilities'
-																				? 'Утилиты'
-																				: category}
+									{widgetCategories[
+										category as keyof typeof widgetCategories
+									] || category}
 								</h2>
 								<Badge variant='secondary' className='font-medium px-3 py-1'>
 									{projects.length}
