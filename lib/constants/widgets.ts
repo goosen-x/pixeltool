@@ -1569,11 +1569,7 @@ export const widgets: Widget[] = [
 		description:
 			'Конвертируйте текст в различные форматы регистра одним кликом',
 		useCase: 'Изменение регистра текста для заголовков, кода или стилизации',
-		recommendedTools: [
-			'text-counter',
-			'social-media-formatter',
-			'fancy-text-generator'
-		],
+		recommendedTools: ['text-counter', 'fancy-text-generator'],
 		difficulty: 'beginner',
 		tags: [
 			'text',
@@ -2071,102 +2067,6 @@ export const widgets: Widget[] = [
 		}
 	},
 	{
-		id: 'social-media-formatter',
-		icon: MessageSquare,
-		category: 'content',
-		translationKey: 'socialMediaFormatter',
-		path: 'social-media-formatter',
-		gradient: 'from-blue-500 to-purple-600',
-		title: 'Форматтер для соцсетей',
-		description: 'Оптимизируйте тексты для Twitter, Instagram, LinkedIn',
-		useCase: 'Подготовка идеальных постов для социальных сетей',
-		recommendedTools: [
-			'fancy-text-generator',
-			'special-symbols-picker',
-			'emoji-list'
-		],
-		difficulty: 'beginner',
-		tags: [
-			'social',
-			'media',
-			'facebook',
-			'instagram',
-			'format',
-			'spaces',
-			'text'
-		],
-		metaDescription:
-			'Social media text formatter. Add multiple spaces and line breaks for Facebook, Instagram posts.',
-		faqs: {
-			en: [
-				{
-					question: 'How does this formatter work?',
-					answer:
-						'The tool inserts invisible Unicode characters (zero-width spaces) between regular spaces and line breaks, preventing social media platforms from removing them.'
-				},
-				{
-					question: 'Which platforms does this work on?',
-					answer:
-						'It works on Facebook posts and comments, Instagram captions and bio, Twitter/X, LinkedIn, WordPress, and most other social platforms that support Unicode.'
-				},
-				{
-					question: 'Will the formatting be visible to everyone?',
-					answer:
-						'Yes, the formatting will be preserved and visible to anyone viewing your post, regardless of their device or app version.'
-				},
-				{
-					question: 'Are there any limitations?',
-					answer:
-						'Some platforms may have character limits that include invisible characters. The formatting works best with Latin text and may vary with different fonts.'
-				}
-			],
-			ru: [
-				{
-					question: 'Как работает этот форматировщик?',
-					answer:
-						'Инструмент вставляет невидимые символы Unicode (пробелы нулевой ширины) между обычными пробелами и переводами строк, не позволяя соцсетям их удалять.'
-				},
-				{
-					question: 'На каких платформах это работает?',
-					answer:
-						'Работает в постах и комментариях Facebook, подписях и био Instagram, Twitter/X, LinkedIn, WordPress и большинстве других соцсетей с поддержкой Unicode.'
-				},
-				{
-					question: 'Будет ли форматирование видно всем?',
-					answer:
-						'Да, форматирование сохранится и будет видно всем, кто просматривает ваш пост, независимо от устройства или версии приложения.'
-				},
-				{
-					question: 'Есть ли ограничения?',
-					answer:
-						'Некоторые платформы имеют лимиты символов, включающие невидимые символы. Форматирование лучше работает с латинским текстом и может отличаться при разных шрифтах.'
-				}
-			],
-			he: [
-				{
-					question: 'איך הפורמטר הזה עובד?',
-					answer:
-						'הכלי מוסיף תווי יוניקוד בלתי נראים (רווחים ברוחב אפס) בין רווחים רגילים ומעברי שורה, מונע מרשתות חברתיות להסיר אותם.'
-				},
-				{
-					question: 'באילו פלטפורמות זה עובד?',
-					answer:
-						'עובד בפוסטים ותגובות בפייסבוק, כיתובים וביו באינסטגרם, טוויטר/X, לינקדאין, וורדפרס ורוב הרשתות החברתיות האחרות עם תמיכת יוניקוד.'
-				},
-				{
-					question: 'האם העיצוב יהיה גלוי לכולם?',
-					answer:
-						'כן, העיצוב יישמר ויהיה גלוי לכל מי שצופה בפוסט שלך, ללא קשר למכשיר או גרסת האפליקציה.'
-				},
-				{
-					question: 'האם יש מגבלות?',
-					answer:
-						'חלק מהפלטפורמות יש להן מגבלות תווים הכוללות תווים בלתי נראים. העיצוב עובד הכי טוב עם טקסט לטיני ועשוי להשתנות עם גופנים שונים.'
-				}
-			]
-		}
-	},
-	{
 		id: 'emoji-list',
 		icon: Smile,
 		category: 'content',
@@ -2175,11 +2075,7 @@ export const widgets: Widget[] = [
 		gradient: 'from-yellow-400 to-orange-500',
 		title: 'Список эмодзи',
 		description: 'Просмотрите и скопируйте 1800+ эмодзи по категориям',
-		recommendedTools: [
-			'special-symbols-picker',
-			'fancy-text-generator',
-			'social-media-formatter'
-		],
+		recommendedTools: ['special-symbols-picker', 'fancy-text-generator'],
 		difficulty: 'beginner',
 		tags: ['emoji', 'emoticons', 'unicode', 'copy', 'paste', 'symbols'],
 		useCase: 'Быстрый поиск и копирование эмодзи для соцсетей и чатов',
@@ -2264,11 +2160,7 @@ export const widgets: Widget[] = [
 		gradient: 'from-purple-500 to-pink-600',
 		title: 'Текстовые эмотиконы',
 		description: 'ASCII смайлики и японские каомодзи для чатов',
-		recommendedTools: [
-			'emoji-list',
-			'special-symbols-picker',
-			'social-media-formatter'
-		],
+		recommendedTools: ['emoji-list', 'special-symbols-picker'],
 		difficulty: 'beginner',
 		tags: ['emoticons', 'ascii', 'kaomoji', 'text', 'expressions', 'japanese'],
 		useCase: 'Коллекция текстовых смайликов для выражения эмоций',
@@ -2352,11 +2244,7 @@ export const widgets: Widget[] = [
 		gradient: 'from-green-500 to-teal-600',
 		title: 'Текст в речь',
 		description: 'Превращайте текст в речь с разными голосами',
-		recommendedTools: [
-			'special-symbols-picker',
-			'social-media-formatter',
-			'fancy-text-generator'
-		],
+		recommendedTools: ['special-symbols-picker', 'fancy-text-generator'],
 		difficulty: 'beginner',
 		tags: ['tts', 'speech', 'voice', 'audio', 'accessibility', 'synthesis'],
 		useCase: 'Озвучивание текстов для аудиокниг или доступности',
@@ -2890,11 +2778,7 @@ export const widgets: Widget[] = [
 		title: 'Счётчик текста',
 		description: 'Подсчитайте слова, символы, абзацы и время чтения мгновенно',
 		useCase: 'Анализ длины текста для соцсетей, статей или эссе',
-		recommendedTools: [
-			'social-media-formatter',
-			'text-to-speech',
-			'fancy-text-generator'
-		],
+		recommendedTools: ['text-to-speech', 'fancy-text-generator'],
 		difficulty: 'beginner',
 		tags: ['text', 'counter', 'seo', 'words', 'characters', 'social-media'],
 		metaDescription:
