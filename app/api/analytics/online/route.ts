@@ -1,34 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase/client'
+import { getOnlineCount } from '@/lib/redisOnline'
 
 export async function GET(request: NextRequest) {
 	try {
-		// Get online users (sessions active in the last 5 minutes across all widgets)
-		const fiveMinutesAgo = new Date()
-		fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5)
+		// Get online users from Redis
+		const onlineUsers = await getOnlineCount()
 
-		console.log('🔍 Checking online users since:', fiveMinutesAgo.toISOString())
+		console.log('👥 Online users from Redis:', onlineUsers)
 
-		const { data: onlineData, error: onlineError } = await supabase
-			.from('usage_events')
-			.select('session_id, timestamp, widget_id')
-			.gte('timestamp', fiveMinutesAgo.toISOString())
-			.order('timestamp', { ascending: false })
-
-		if (onlineError) {
-			console.error('Online users error:', onlineError)
-			throw onlineError
-		}
-
-		// Count unique sessions
-		const uniqueSessions = new Set(onlineData?.map(e => e.session_id) || [])
-		const onlineUsers = uniqueSessions.size
-
-		console.log('📊 Recent events:', onlineData?.length || 0)
-		console.log('👥 Unique sessions:', Array.from(uniqueSessions))
-		console.log('👥 Total online users:', onlineUsers)
-
-		// Get some additional stats for the response
+		// Get today's unique sessions from Supabase (optional stats)
 		const today = new Date()
 		today.setHours(0, 0, 0, 0)
 

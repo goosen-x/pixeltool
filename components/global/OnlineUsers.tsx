@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Activity } from 'lucide-react'
+import { Activity } from 'lucide-react'
+import { sendHeartbeat } from '@/lib/session'
 
 export const OnlineUsers = () => {
 	const [onlineCount, setOnlineCount] = useState(1)
@@ -9,6 +10,14 @@ export const OnlineUsers = () => {
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
+		// Send initial heartbeat
+		sendHeartbeat()
+
+		// Send heartbeat every 30 seconds
+		const heartbeatInterval = setInterval(() => {
+			sendHeartbeat()
+		}, 30000)
+
 		// Функция для получения реальных данных
 		const fetchOnlineUsers = async () => {
 			try {
@@ -19,11 +28,12 @@ export const OnlineUsers = () => {
 						Pragma: 'no-cache'
 					}
 				})
+
 				if (response.ok) {
 					const data = await response.json()
-					// Ensure minimum of 1 user (current user)
-					setOnlineCount(Math.max(1, data.onlineUsers))
-					console.log('🔄 Online users updated:', Math.max(1, data.onlineUsers))
+					// Use Redis count directly without Math.max(1, ...)
+					setOnlineCount(data.onlineUsers)
+					console.log('🔄 Online users updated:', data.onlineUsers)
 
 					// Добавляем эффект мигания при обновлении
 					setIsBlinking(true)
@@ -45,9 +55,12 @@ export const OnlineUsers = () => {
 		fetchOnlineUsers()
 
 		// Обновляем каждые 10 секунд для более актуальных данных
-		const interval = setInterval(fetchOnlineUsers, 10000)
+		const fetchInterval = setInterval(fetchOnlineUsers, 10000)
 
-		return () => clearInterval(interval)
+		return () => {
+			clearInterval(heartbeatInterval)
+			clearInterval(fetchInterval)
+		}
 	}, [])
 
 	// Don't render if API failed or no users
