@@ -4,31 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Sparkles, Github } from 'lucide-react'
 import Link from 'next/link'
 import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
-import { Metadata } from 'next'
-import { widgets } from '@/lib/constants/widgets'
-
-export const metadata: Metadata = {
-	title: `Бесплатные инструменты для веб разработки и дизайна онлайн | PixelTool`,
-	description: `${widgets.length}+ бесплатных онлайн инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики, валидаторы. Без установки, работает офлайн.`,
-	keywords:
-		'онлайн инструменты, инструменты разработчика, веб инструменты, css генератор, конвертер, калькулятор, бесплатные инструменты, форматировщик кода, генератор паролей, qr код, палитра цветов, рассчитать онлайн, посчитать онлайн',
-	openGraph: {
-		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
-		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Без установки, работает офлайн.`,
-		url: 'https://pixeltool.ru/tools',
-		siteName: 'PixelTool',
-		type: 'website',
-		locale: 'ru_RU'
-	},
-	twitter: {
-		card: 'summary_large_image',
-		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
-		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы. Работает офлайн.`
-	},
-	alternates: {
-		canonical: 'https://pixeltool.ru/tools'
-	}
-}
 
 // Metadata can't be used in client components
 /*

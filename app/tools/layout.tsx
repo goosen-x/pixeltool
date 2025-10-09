@@ -1,9 +1,31 @@
-'use client'
-
 import { ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
-import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
+import { Metadata } from 'next'
+import { widgets } from '@/lib/constants/widgets'
+import { ToolsLayoutClient } from './ToolsLayoutClient'
 import '../widget-transitions.css'
+
+export const metadata: Metadata = {
+	title: `Бесплатные инструменты для веб разработки и дизайна онлайн | PixelTool`,
+	description: `${widgets.length}+ бесплатных онлайн инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики, валидаторы. Без установки, работает офлайн.`,
+	keywords:
+		'онлайн инструменты, инструменты разработчика, веб инструменты, css генератор, конвертер, калькулятор, бесплатные инструменты, форматировщик кода, генератор паролей, qr код, палитра цветов, рассчитать онлайн, посчитать онлайн',
+	openGraph: {
+		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
+		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Без установки, работает офлайн.`,
+		url: 'https://pixeltool.ru/tools',
+		siteName: 'PixelTool',
+		type: 'website',
+		locale: 'ru_RU'
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
+		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы. Работает офлайн.`
+	},
+	alternates: {
+		canonical: 'https://pixeltool.ru/tools'
+	}
+}
 
 // Force dynamic rendering for all tools pages
 export const dynamic = 'force-dynamic'
@@ -14,16 +36,5 @@ type Props = {
 }
 
 export default function ToolsLayout({ children }: Props) {
-	const pathname = usePathname()
-
-	// Check if we're on the /tools page (listing) or on a widget page
-	const isToolsListing = pathname === '/tools' || pathname === '/tools/'
-
-	// For /tools listing - no sidebar, just children
-	if (isToolsListing) {
-		return <>{children}</>
-	}
-
-	// For widget pages - wrap with sidebar
-	return <ProjectsLayoutWrapper>{children}</ProjectsLayoutWrapper>
+	return <ToolsLayoutClient>{children}</ToolsLayoutClient>
 }
