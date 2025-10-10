@@ -1,134 +1,69 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { BarChart, Users } from 'lucide-react'
-import type { Widget } from '@/lib/constants/widgets'
+import { Users } from 'lucide-react'
 
-interface AnalyticsStats {
-	viewsToday: number
-	totalViews: number
-	uniqueSessionsToday: number
-	totalSessions: number
-	averageSessionDuration: string
-	averageSessionSeconds: number
-	onlineUsers?: number
-}
+export function WidgetStatsCard() {
+	const [onlineUsers, setOnlineUsers] = useState<number | null>(null)
+	const [isLoading, setIsLoading] = useState(true)
 
-interface WidgetStatsCardProps {
-	widget: Widget
-}
-
-export function WidgetStatsCard({ widget }: WidgetStatsCardProps) {
-	// const tSidebar = useTranslations('widgets.rightSidebar')
-	const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(
-		null
-	)
-	const [isLoadingStats, setIsLoadingStats] = useState(true)
-
-	// Fetch analytics stats
 	useEffect(() => {
-		if (!widget) return
-
-		const fetchStats = async () => {
+		const fetchOnlineUsers = async () => {
 			try {
-				setIsLoadingStats(true)
-				const response = await fetch(
-					`/api/analytics/stats/${widget.id}?timeframe=7d`
-				)
+				const response = await fetch('/api/analytics/online', {
+					cache: 'no-store'
+				})
 				if (response.ok) {
-					const stats = await response.json()
-					setAnalyticsStats(stats)
+					const data = await response.json()
+					setOnlineUsers(data.onlineUsers ?? 0)
 				}
 			} catch (error) {
-				console.error('Failed to fetch analytics stats:', error)
+				console.error('Failed to fetch online users:', error)
+				setOnlineUsers(0)
 			} finally {
-				setIsLoadingStats(false)
+				setIsLoading(false)
 			}
 		}
 
-		fetchStats()
-	}, [widget])
+		fetchOnlineUsers()
+
+		// Refresh every 10 seconds
+		const interval = setInterval(fetchOnlineUsers, 10000)
+		return () => clearInterval(interval)
+	}, [])
+
+	// Don't show card if no users online
+	if (!isLoading && (onlineUsers === null || onlineUsers === 0)) {
+		return null
+	}
 
 	return (
 		<Card>
 			<CardHeader className='pb-3'>
 				<CardTitle className='text-sm flex items-center gap-2'>
-					<BarChart className='w-4 h-4' />
-					Статистика использования
+					<Users className='w-4 h-4' />
+					Статистика
 				</CardTitle>
 			</CardHeader>
-			<CardContent className='space-y-2'>
-				{isLoadingStats ? (
-					<>
-						<div className='flex items-center justify-between'>
-							<span className='text-sm text-muted-foreground flex items-center gap-1'>
-								<Users className='w-3 h-3' />
-								Сейчас онлайн
-							</span>
-							<div className='w-6 h-4 bg-muted animate-pulse rounded'></div>
-						</div>
-						<div className='flex items-center justify-between'>
-							<span className='text-sm text-muted-foreground'>
-								Просмотров сегодня
-							</span>
-							<div className='w-8 h-4 bg-muted animate-pulse rounded'></div>
-						</div>
-						<div className='flex items-center justify-between'>
-							<span className='text-sm text-muted-foreground'>
-								Всего использований
-							</span>
-							<div className='w-12 h-4 bg-muted animate-pulse rounded'></div>
-						</div>
-						<div className='flex items-center justify-between'>
-							<span className='text-sm text-muted-foreground'>
-								Средняя сессия
-							</span>
-							<div className='w-10 h-4 bg-muted animate-pulse rounded'></div>
-						</div>
-					</>
-				) : analyticsStats ? (
-					<>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs lg:text-sm text-muted-foreground flex items-center gap-1'>
-								<Users className='w-3 h-3 flex-shrink-0' />
-								<span className='truncate'>Сейчас онлайн</span>
-							</span>
-							<span className='text-xs lg:text-sm font-medium text-green-600 dark:text-green-400 whitespace-nowrap'>
-								{analyticsStats.onlineUsers || 0}
-							</span>
-						</div>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs lg:text-sm text-muted-foreground truncate'>
-								Просмотров сегодня
-							</span>
-							<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
-								{analyticsStats.viewsToday.toLocaleString()}
-							</span>
-						</div>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs lg:text-sm text-muted-foreground truncate'>
-								Всего использований
-							</span>
-							<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
-								{analyticsStats.totalViews >= 1000
-									? `${(analyticsStats.totalViews / 1000).toFixed(1)}k`
-									: analyticsStats.totalViews.toLocaleString()}
-							</span>
-						</div>
-						<div className='flex items-center justify-between gap-2'>
-							<span className='text-xs lg:text-sm text-muted-foreground truncate'>
-								Средняя сессия
-							</span>
-							<span className='text-xs lg:text-sm font-medium whitespace-nowrap'>
-								{analyticsStats.averageSessionDuration || '0s'}
-							</span>
-						</div>
-					</>
+			<CardContent>
+				{isLoading ? (
+					<div className='flex items-center justify-between'>
+						<span className='text-sm text-muted-foreground flex items-center gap-1'>
+							<Users className='w-3 h-3' />
+							Сейчас онлайн
+						</span>
+						<div className='w-6 h-4 bg-muted animate-pulse rounded'></div>
+					</div>
 				) : (
-					<div className='text-center py-2'>
-						<span className='text-sm text-muted-foreground'>Нет данных</span>
+					<div className='flex items-center justify-between gap-2'>
+						<span className='text-xs lg:text-sm text-muted-foreground flex items-center gap-1'>
+							<Users className='w-3 h-3 flex-shrink-0' />
+							<span className='truncate'>Сейчас онлайн</span>
+						</span>
+						<span className='text-xs lg:text-sm font-medium text-green-600 dark:text-green-400 whitespace-nowrap'>
+							{onlineUsers}
+						</span>
 					</div>
 				)}
 			</CardContent>

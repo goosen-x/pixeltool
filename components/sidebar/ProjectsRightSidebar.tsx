@@ -43,7 +43,7 @@ export function ProjectsRightSidebar() {
 			<AdSection />
 			<KeyboardShortcutsCard widgetShortcuts={widgetShortcuts} />
 			<UseCaseCard widget={widget} />
-			<WidgetStatsCard widget={widget} />
+			<WidgetStatsCard />
 			<ActionsAndFeedbackCard />
 		</aside>
 	)

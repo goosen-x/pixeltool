@@ -58,18 +58,21 @@
    И заполнить необходимые переменные окружения.
 
 4. **Запустить Redis** (для счётчика онлайн пользователей):
-   
+
    **Вариант 1: Docker Compose (рекомендуется)**
+
    ```bash
    docker compose up -d
    ```
-   
+
    **Вариант 2: Локальный Redis**
+
    ```bash
    redis-server
    ```
-   
-   **Примечание:** Приложение работает и без Redis, но счётчик онлайн пользователей не будет отображаться.
+
+   **Примечание:** Приложение работает и без Redis, но счётчик онлайн
+   пользователей не будет отображаться.
 
 ### Запуск в режиме разработки
 
@@ -82,6 +85,7 @@ yarn dev
 ### Мониторинг Redis
 
 **Проверить количество онлайн пользователей:**
+
 ```bash
 # Через Docker
 docker exec -it redis_gooselabs redis-cli KEYS "online:pixeltool:*" | wc -l
@@ -91,6 +95,7 @@ redis-cli KEYS "online:pixeltool:*" | wc -l
 ```
 
 **Проверить TTL конкретного ключа:**
+
 ```bash
 docker exec -it redis_gooselabs redis-cli TTL "online:pixeltool:<session_id>"
 ```

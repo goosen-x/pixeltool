@@ -4,14 +4,10 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379'
 
 const redis = new Redis(REDIS_URL, {
 	lazyConnect: true,
-	maxRetriesPerRequest: 1,
+	maxRetriesPerRequest: 0,
 	enableOfflineQueue: false,
-	retryStrategy: () => null // Don't retry on connection failure
-})
-
-// Suppress error events to prevent unhandled error crashes
-redis.on('error', err => {
-	console.warn('Redis connection error (will use fallback):', err.message)
+	retryStrategy: () => null, // Don't retry on connection failure
+	showFriendlyErrorStack: false
 })
 
 const PROJECT = 'pixeltool'
@@ -19,12 +15,21 @@ const TTL_SEC = 120
 const CACHE_TTL_MS = 2000 // Cache for 2 seconds
 
 let isRedisAvailable = false
+let connectionAttempted = false
 let cachedCount = 0
 let cacheTimestamp = 0
+
+// Suppress error events to prevent unhandled error crashes
+redis.on('error', () => {
+	// Silently ignore errors - we handle them in ensureConnection
+})
 
 // Try to connect on first use
 async function ensureConnection(): Promise<boolean> {
 	if (isRedisAvailable) return true
+	if (connectionAttempted) return false // Don't spam connection attempts
+
+	connectionAttempted = true
 
 	try {
 		await redis.connect()
@@ -32,7 +37,7 @@ async function ensureConnection(): Promise<boolean> {
 		console.log('✅ Redis connected successfully')
 		return true
 	} catch (e) {
-		console.warn('⚠️ Redis unavailable, using fallback mode')
+		console.warn('⚠️ Redis unavailable, online counter disabled')
 		return false
 	}
 }
@@ -47,7 +52,7 @@ export async function heartbeat(sessionId: string, widgetId?: string) {
 		const key = `online:${PROJECT}:${sessionId}`
 		await redis.setex(key, TTL_SEC, '1')
 	} catch (e) {
-		console.warn('Heartbeat failed:', e)
+		// Silently fail
 		isRedisAvailable = false
 	}
 }
@@ -83,7 +88,7 @@ export async function getOnlineCount(): Promise<number> {
 
 		return count
 	} catch (e) {
-		console.warn('getOnlineCount failed:', e)
+		// Silently fail
 		isRedisAvailable = false
 		return 0
 	}

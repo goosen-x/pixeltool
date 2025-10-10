@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase/client'
 import { getOnlineCount } from '@/lib/redisOnline'
 
 export async function GET(request: NextRequest) {
@@ -9,26 +8,8 @@ export async function GET(request: NextRequest) {
 
 		console.log('👥 Online users from Redis:', onlineUsers)
 
-		// Get today's unique sessions from Supabase (optional stats)
-		const today = new Date()
-		today.setHours(0, 0, 0, 0)
-
-		const { data: todayData, error: todayError } = await supabase
-			.from('usage_events')
-			.select('session_id')
-			.eq('event_type', 'view')
-			.gte('timestamp', today.toISOString())
-
-		if (todayError) {
-			console.error('Today stats error:', todayError)
-		}
-
-		const todayUniqueSessions = new Set(todayData?.map(e => e.session_id) || [])
-			.size
-
 		const response = NextResponse.json({
 			onlineUsers,
-			todayUniqueSessions,
 			timestamp: new Date().toISOString()
 		})
 
@@ -41,8 +22,8 @@ export async function GET(request: NextRequest) {
 	} catch (error) {
 		console.error('Analytics online error:', error)
 		return NextResponse.json(
-			{ error: 'Failed to fetch online users' },
-			{ status: 500 }
+			{ onlineUsers: 0, timestamp: new Date().toISOString() },
+			{ status: 200 }
 		)
 	}
 }
