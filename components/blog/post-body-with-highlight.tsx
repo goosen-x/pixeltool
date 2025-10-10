@@ -11,6 +11,7 @@ import {
 import { useTheme } from 'next-themes'
 import markdownStyles from './markdown-styles.module.css'
 import { LiveCodeExample } from './live-code-example'
+import { ToolLink } from './tool-link'
 
 type Props = {
 	content: string
@@ -32,14 +33,20 @@ export function PostBodyWithHighlight({ content }: Props) {
 		// Regular expression to match live code examples
 		const liveExampleRegex = /<div data-live-example='([^']+)'><\/div>/g
 
+		// Regular expression to match tool links
+		const toolLinkRegex = /<div data-tool-link='([^']+)'><\/div>/g
+
 		let lastIndex = 0
 		const parts: React.ReactNode[] = []
 		let codeMatch
 		let liveMatch
+		let toolMatch
 
 		// Combine all matches and sort by index
-		const allMatches: Array<{ type: 'code' | 'live'; match: RegExpExecArray }> =
-			[]
+		const allMatches: Array<{
+			type: 'code' | 'live' | 'tool'
+			match: RegExpExecArray
+		}> = []
 
 		while ((codeMatch = codeBlockRegex.exec(content)) !== null) {
 			allMatches.push({ type: 'code', match: codeMatch })
@@ -47,6 +54,10 @@ export function PostBodyWithHighlight({ content }: Props) {
 
 		while ((liveMatch = liveExampleRegex.exec(content)) !== null) {
 			allMatches.push({ type: 'live', match: liveMatch })
+		}
+
+		while ((toolMatch = toolLinkRegex.exec(content)) !== null) {
+			allMatches.push({ type: 'tool', match: toolMatch })
 		}
 
 		// Sort matches by their position in content
@@ -82,6 +93,22 @@ export function PostBodyWithHighlight({ content }: Props) {
 					)
 				} catch (error) {
 					console.error('Failed to parse live example data:', error)
+				}
+			} else if (type === 'tool') {
+				// Handle tool link
+				const dataStr = match[1].replace(/&#39;/g, "'")
+				try {
+					const data = JSON.parse(dataStr)
+					parts.push(
+						<ToolLink
+							key={`tool-${match.index}`}
+							href={data.href}
+							title={data.title}
+							description={data.description}
+						/>
+					)
+				} catch (error) {
+					console.error('Failed to parse tool link data:', error)
 				}
 			} else {
 				// Handle regular code block

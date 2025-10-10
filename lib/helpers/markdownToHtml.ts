@@ -1,11 +1,13 @@
 import { remark } from 'remark'
 import html from 'remark-html'
 import remarkLiveCode from '@/lib/remark-plugins/remark-live-code'
+import remarkToolLink from '@/lib/remark-plugins/remark-tool-link'
 
 export default async function markdownToHtml(
 	markdown: string
 ): Promise<string> {
 	const result = await remark()
+		.use(remarkToolLink)
 		.use(remarkLiveCode)
 		.use(html, { sanitize: false })
 		.process(markdown)
