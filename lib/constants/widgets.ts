@@ -72,6 +72,7 @@ export interface WidgetFAQ {
 export interface Widget {
 	id: string
 	icon: React.ComponentType<{ className?: string }>
+	iconName?: string // Lucide icon name for serialization
 	category: 'webdev' | 'content' | 'security' | 'lifestyle'
 	translationKey: string
 	path: string
@@ -91,6 +92,7 @@ export const widgets: Widget[] = [
 	{
 		id: 'css-clamp-calculator',
 		icon: Ruler,
+		iconName: 'Ruler',
 		category: 'webdev',
 		translationKey: 'clampCalculator',
 		path: 'css-clamp-calculator',

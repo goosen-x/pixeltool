@@ -1,29 +1,43 @@
 'use client'
 
 import Link from 'next/link'
-import { ExternalLink, Wrench } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
 
 interface ToolLinkProps {
 	href: string
 	title: string
 	description?: string
+	iconName?: string
+	gradient?: string
 }
 
-export function ToolLink({ href, title, description }: ToolLinkProps) {
+export function ToolLink({
+	href,
+	title,
+	description,
+	iconName = 'Wrench',
+	gradient = 'from-blue-500 to-cyan-500'
+}: ToolLinkProps) {
 	const isExternal = href.startsWith('http')
 	const buttonText = 'Попробовать →'
+
+	// Get icon component dynamically
+	const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.Wrench
 
 	return (
 		<Link
 			href={href}
 			target={isExternal ? '_blank' : undefined}
 			rel={isExternal ? 'noopener noreferrer' : undefined}
-			className='group relative block my-6 p-4 rounded-lg border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10 hover:border-primary/40 hover:from-primary/10 hover:to-primary/15 transition-all duration-300'
+			className='group relative block my-6 p-4 rounded-xl border-2 border-border/50 bg-card hover:border-primary/40 hover:shadow-lg transition-all duration-300'
 		>
-			<div className='flex items-start gap-3'>
+			<div className='flex items-start gap-4'>
 				<div className='flex-shrink-0 mt-0.5'>
-					<div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
-						<Wrench className='w-5 h-5 text-primary' />
+					<div
+						className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow`}
+					>
+						<IconComponent className='w-6 h-6 text-white' />
 					</div>
 				</div>
 
@@ -43,8 +57,8 @@ export function ToolLink({ href, title, description }: ToolLinkProps) {
 					)}
 				</div>
 
-				<div className='flex-shrink-0'>
-					<div className='px-3 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium group-hover:bg-primary/20 transition-colors'>
+				<div className='flex-shrink-0 flex items-center'>
+					<div className='px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium group-hover:bg-primary/90 transition-colors shadow-sm'>
 						{buttonText}
 					</div>
 				</div>
