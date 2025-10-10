@@ -316,101 +316,134 @@ div.container > p::first-line
 	}
 
 	return (
-		<>
-			<div className='grid gap-6 lg:grid-cols-2'>
-				{/* Input */}
-				<Card>
-					<CardHeader>
-						<CardTitle className='flex items-center justify-between'>
-							Ввод CSS
-							<Button variant='outline' size='sm' onClick={loadExample}>
-								Загрузить пример
-							</Button>
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<Textarea
-							placeholder='Введите CSS селекторы или целые CSS правила...'
-							value={input}
-							onChange={e => setInput(e.target.value)}
-							rows={12}
-							className='font-mono'
-						/>
-						<div className='flex gap-2 mt-4'>
-							<Button onClick={analyzeSelectors} className='flex-1'>
-								<BarChart3 className='w-4 h-4 mr-2' />
-								Анализировать
-							</Button>
-							<Button
-								variant='outline'
-								onClick={() => {
-									setInput('')
-									setResults([])
-								}}
-							>
-								<Trash2 className='w-4 h-4' />
-							</Button>
-						</div>
-					</CardContent>
-				</Card>
+		<div className='space-y-6'>
+			{/* Input Section */}
+			<Card>
+				<CardHeader className='pb-4'>
+					<div className='flex items-center justify-between'>
+						<CardTitle>Ввод CSS селекторов</CardTitle>
+						<Button variant='outline' size='sm' onClick={loadExample}>
+							Загрузить пример
+						</Button>
+					</div>
+				</CardHeader>
+				<CardContent className='space-y-4'>
+					<Textarea
+						placeholder={`Введите CSS селекторы или правила:\n\nbody\n.header#main-content\nnav ul li a\n.btn.btn-primary\ninput[type="text"]\na:hover\n.card:nth-child(3)\n#sidebar .widget h3`}
+						value={input}
+						onChange={e => setInput(e.target.value)}
+						rows={8}
+						className='font-mono text-sm resize-none'
+					/>
+					<div className='flex gap-3'>
+						<Button onClick={analyzeSelectors} className='flex-1' size='lg'>
+							<BarChart3 className='w-4 h-4 mr-2' />
+							Анализировать специфичность
+						</Button>
+						<Button
+							variant='outline'
+							size='lg'
+							onClick={() => {
+								setInput('')
+								setResults([])
+								toast.success('Очищено')
+							}}
+						>
+							<Trash2 className='w-4 h-4' />
+						</Button>
+					</div>
+				</CardContent>
+			</Card>
 
-				{/* Results */}
+			{/* Results Section */}
+			{results.length > 0 && (
 				<Card>
-					<CardHeader>
-						<CardTitle className='flex items-center justify-between'>
-							Результаты
-							{results.length > 0 && (
-								<div className='flex gap-2'>
-									<Button
-										variant='outline'
-										size='sm'
-										onClick={() =>
-											setSortBy(sortBy === 'order' ? 'weight' : 'order')
+					<CardHeader className='pb-4'>
+						<div className='flex items-center justify-between'>
+							<div>
+								<CardTitle>Результаты анализа</CardTitle>
+								<p className='text-sm text-muted-foreground mt-1'>
+									Найдено селекторов: {results.length}
+								</p>
+							</div>
+							<div className='flex gap-2'>
+								<Button
+									variant={sortBy === 'weight' ? 'default' : 'outline'}
+									size='sm'
+									onClick={() => {
+										const newSort = sortBy === 'order' ? 'weight' : 'order'
+										setSortBy(newSort)
+										const sorted = [...results]
+										if (newSort === 'weight') {
+											sorted.sort((a, b) => b.weight - a.weight)
 										}
-									>
-										{sortBy === 'order' ? 'По весу' : 'По порядку'}
-									</Button>
-									<Button
-										variant='outline'
-										size='sm'
-										onClick={copyResults}
-										className='hover:bg-accent hover:text-white'
-									>
-										<Copy className='w-4 h-4' />
-									</Button>
-								</div>
-							)}
-						</CardTitle>
+										setResults(sorted)
+										toast.success(
+											newSort === 'weight'
+												? 'Сортировка по весу'
+												: 'Сортировка по порядку'
+										)
+									}}
+								>
+									{sortBy === 'order' ? 'Сортировать по весу' : 'По порядку'}
+								</Button>
+								<Button variant='outline' size='sm' onClick={copyResults}>
+									<Copy className='w-4 h-4 mr-2' />
+									Копировать
+								</Button>
+							</div>
+						</div>
 					</CardHeader>
 					<CardContent>
-						{results.length > 0 ? (
-							<div className='space-y-3 max-h-[500px] overflow-y-auto'>
-								{results.map((result, index) => (
-									<div key={index} className='p-3 border rounded-lg space-y-2'>
-										<div className='flex items-start justify-between gap-2'>
-											<code className='text-sm font-mono break-all'>
-												{result.selector}
-											</code>
+						<div className='space-y-3 max-h-[600px] overflow-y-auto pr-2'>
+							{results.map((result, index) => (
+								<div
+									key={index}
+									className='p-4 border rounded-lg hover:border-primary/50 transition-colors space-y-3 bg-card'
+								>
+									{/* Selector and Specificity */}
+									<div className='flex items-start justify-between gap-4'>
+										<code className='text-sm font-mono break-all flex-1 pt-1'>
+											{result.selector}
+										</code>
+										<div className='flex flex-col items-end gap-2 shrink-0'>
 											<Badge
+												variant='outline'
 												className={cn(
-													'font-mono shrink-0',
+													'font-mono text-base px-3 py-1',
 													getSpecificityColor(result.weight)
 												)}
 											>
 												{result.specificityString}
 											</Badge>
+											<span className='text-xs text-muted-foreground'>
+												Вес: {result.weight}
+											</span>
 										</div>
+									</div>
 
-										{/* Breakdown */}
-										<div className='flex flex-wrap gap-2 text-xs'>
+									{/* Breakdown of selector parts */}
+									{(result.parts.inline > 0 ||
+										result.parts.ids.length > 0 ||
+										result.parts.classes.length > 0 ||
+										result.parts.attributes.length > 0 ||
+										result.parts.pseudoClasses.length > 0 ||
+										result.parts.elements.length > 0 ||
+										result.parts.pseudoElements.length > 0) && (
+										<div className='flex flex-wrap gap-1.5'>
 											{result.parts.inline > 0 && (
-												<Badge variant='secondary'>inline style</Badge>
+												<Badge
+													variant='secondary'
+													className='bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+												>
+													inline style
+												</Badge>
 											)}
 											{result.parts.ids.map((id, i) => (
 												<Badge
 													key={`id-${i}`}
 													variant='secondary'
-													className='font-mono'
+													className='font-mono bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
 												>
 													{id}
 												</Badge>
@@ -419,7 +452,7 @@ div.container > p::first-line
 												<Badge
 													key={`class-${i}`}
 													variant='secondary'
-													className='font-mono'
+													className='font-mono bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
 												>
 													{cls}
 												</Badge>
@@ -428,7 +461,7 @@ div.container > p::first-line
 												<Badge
 													key={`attr-${i}`}
 													variant='secondary'
-													className='font-mono'
+													className='font-mono bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300'
 												>
 													{attr}
 												</Badge>
@@ -437,7 +470,7 @@ div.container > p::first-line
 												<Badge
 													key={`pc-${i}`}
 													variant='secondary'
-													className='font-mono'
+													className='font-mono bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
 												>
 													{pc}
 												</Badge>
@@ -446,7 +479,7 @@ div.container > p::first-line
 												<Badge
 													key={`el-${i}`}
 													variant='secondary'
-													className='font-mono'
+													className='font-mono bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
 												>
 													{el}
 												</Badge>
@@ -455,95 +488,98 @@ div.container > p::first-line
 												<Badge
 													key={`pe-${i}`}
 													variant='secondary'
-													className='font-mono'
+													className='font-mono bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
 												>
 													{pe}
 												</Badge>
 											))}
 										</div>
-
-										<div className='text-xs text-muted-foreground'>
-											Вес: {result.weight}
-										</div>
-									</div>
-								))}
-							</div>
-						) : (
-							<div className='text-center py-12 text-muted-foreground'>
-								<BarChart3 className='w-12 h-12 mx-auto mb-4 opacity-50' />
-								<p>Введите CSS селекторы для анализа</p>
-							</div>
-						)}
+									)}
+								</div>
+							))}
+						</div>
 					</CardContent>
 				</Card>
-			</div>
+			)}
 
-			{/* Info */}
+			{/* Info Card */}
 			<Card>
-				<CardHeader>
+				<CardHeader className='pb-4'>
 					<CardTitle className='flex items-center gap-2'>
 						<Info className='w-5 h-5' />
 						Как работает специфичность CSS
 					</CardTitle>
 				</CardHeader>
-				<CardContent className='space-y-4'>
-					<p className='text-sm text-muted-foreground'>
-						Специфичность определяет, какие CSS правила применяются к элементу.
-						Более специфичные селекторы имеют приоритет.
+				<CardContent className='space-y-6'>
+					<p className='text-sm text-muted-foreground leading-relaxed'>
+						Специфичность определяет, какие CSS правила применяются к элементу,
+						когда несколько правил конфликтуют. Более специфичные селекторы
+						имеют приоритет.
 					</p>
 
-					<div className='grid gap-4 md:grid-cols-2'>
-						<div className='space-y-2'>
-							<h4 className='font-medium text-sm'>Расчет специфичности</h4>
-							<div className='space-y-1 text-sm'>
-								<div className='flex items-center gap-2'>
-									<Badge className='font-mono'>1-0-0-0</Badge>
-									<span>Инлайн стили</span>
+					<div className='grid gap-6 md:grid-cols-2'>
+						<div className='space-y-3'>
+							<h4 className='font-semibold text-sm'>Уровни специфичности</h4>
+							<div className='space-y-2 text-sm'>
+								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
+									<Badge className='font-mono shrink-0 bg-red-600'>
+										1-0-0-0
+									</Badge>
+									<span>Инлайн стили (style="")</span>
 								</div>
-								<div className='flex items-center gap-2'>
-									<Badge className='font-mono'>0-1-0-0</Badge>
-									<span>Каждый ID (#example)</span>
+								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
+									<Badge className='font-mono shrink-0 bg-purple-600'>
+										0-1-0-0
+									</Badge>
+									<span>ID селекторы (#example)</span>
 								</div>
-								<div className='flex items-center gap-2'>
-									<Badge className='font-mono'>0-0-1-0</Badge>
-									<span>
-										Каждый класс (.example), атрибут ([type="text"]),
-										псевдокласс (:hover)
-									</span>
+								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
+									<Badge className='font-mono shrink-0 bg-blue-600'>
+										0-0-1-0
+									</Badge>
+									<span>Классы, атрибуты, псевдоклассы</span>
 								</div>
-								<div className='flex items-center gap-2'>
-									<Badge className='font-mono'>0-0-0-1</Badge>
-									<span>
-										Каждый элемент (div, p, a) и псевдоэлемент (::before)
-									</span>
+								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
+									<Badge className='font-mono shrink-0 bg-gray-600'>
+										0-0-0-1
+									</Badge>
+									<span>Элементы и псевдоэлементы</span>
 								</div>
 							</div>
 						</div>
 
-						<div className='space-y-2'>
-							<h4 className='font-medium text-sm'>Примеры</h4>
-							<div className='space-y-1 text-sm font-mono'>
-								<div className='flex items-center justify-between'>
+						<div className='space-y-3'>
+							<h4 className='font-semibold text-sm'>Примеры</h4>
+							<div className='space-y-2 text-sm font-mono'>
+								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
 									<span>body</span>
-									<Badge variant='secondary'>0-0-0-1</Badge>
+									<Badge variant='outline' className='font-mono'>
+										0-0-0-1
+									</Badge>
 								</div>
-								<div className='flex items-center justify-between'>
+								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
 									<span>.header</span>
-									<Badge variant='secondary'>0-0-1-0</Badge>
+									<Badge variant='outline' className='font-mono'>
+										0-0-1-0
+									</Badge>
 								</div>
-								<div className='flex items-center justify-between'>
+								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
 									<span>#main</span>
-									<Badge variant='secondary'>0-1-0-0</Badge>
+									<Badge variant='outline' className='font-mono'>
+										0-1-0-0
+									</Badge>
 								</div>
-								<div className='flex items-center justify-between'>
+								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
 									<span>#nav .active</span>
-									<Badge variant='secondary'>0-1-1-0</Badge>
+									<Badge variant='outline' className='font-mono'>
+										0-1-1-0
+									</Badge>
 								</div>
 							</div>
 						</div>
 					</div>
 				</CardContent>
 			</Card>
-		</>
+		</div>
 	)
 }
