@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { ExternalLink, Wrench } from 'lucide-react'
 
 interface ToolLinkProps {
@@ -11,10 +10,8 @@ interface ToolLinkProps {
 }
 
 export function ToolLink({ href, title, description }: ToolLinkProps) {
-	const params = useParams()
-	const locale = (params?.locale as string) || 'en'
 	const isExternal = href.startsWith('http')
-	const buttonText = locale === 'ru' ? 'Попробовать →' : 'Try it →'
+	const buttonText = 'Попробовать →'
 
 	return (
 		<Link

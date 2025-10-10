@@ -14,6 +14,46 @@ const TOOL_METADATA: Record<string, { title: string; description: string }> = {
 		title: 'CSS Clamp() Калькулятор',
 		description:
 			'Генератор выражений clamp() для адаптивной типографики и размеров'
+	},
+	'/tools/age-calculator': {
+		title: 'Калькулятор возраста',
+		description: 'Точный расчёт возраста с учётом дней, месяцев и лет'
+	},
+	'/tools/bmi-calculator': {
+		title: 'Калькулятор ИМТ',
+		description: 'Расчёт индекса массы тела и рекомендации'
+	},
+	'/tools/password-generator': {
+		title: 'Генератор паролей',
+		description: 'Создание надёжных паролей с настройками сложности'
+	},
+	'/tools/qr-generator': {
+		title: 'Генератор QR-кодов',
+		description: 'Создание QR-кодов для ссылок, текста и контактов'
+	},
+	'/tools/uuid-generator': {
+		title: 'Генератор UUID',
+		description: 'Генерация уникальных идентификаторов UUID v4'
+	},
+	'/tools/regex-tester': {
+		title: 'Тестер регулярных выражений',
+		description: 'Проверка и отладка регулярных выражений в реальном времени'
+	},
+	'/tools/jwt-decoder': {
+		title: 'JWT декодер',
+		description: 'Декодирование и просмотр содержимого JWT токенов'
+	},
+	'/tools/base64-encoder': {
+		title: 'Base64 кодировщик',
+		description: 'Кодирование и декодирование данных в Base64'
+	},
+	'/tools/text-counter': {
+		title: 'Счётчик текста',
+		description: 'Подсчёт символов, слов, строк и времени чтения'
+	},
+	'/tools/color-converter': {
+		title: 'Конвертер цветов',
+		description: 'Преобразование между HEX, RGB, HSL и другими форматами'
 	}
 }
 
