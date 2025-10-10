@@ -1,7 +1,0 @@
-export { AboutBlock } from './AboutBlock'
-export { CodeBlock } from './CodeBlock'
-export { CVBlock } from './CVBlock'
-export { EmailListBlock } from './EmailListBlock'
-export { HeaderBlock } from './HeaderBlock'
-export { LocationBlock } from './LocationBlock'
-export { SocialsBlock } from './SocialsBlock'

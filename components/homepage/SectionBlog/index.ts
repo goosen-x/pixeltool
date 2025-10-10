@@ -1,1 +1,0 @@
-export { SectionBlog } from './SectionBlog'

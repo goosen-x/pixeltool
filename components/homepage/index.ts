@@ -1,7 +1,1 @@
-export * from './ContactSection/ContactSection'
-export * from './SectionExperience/SectionExperience'
-export * from './SectionMain/SectionMain'
-export * from './SectionProjects/SectionProjects'
-export * from './SectionTechStack/SectionTechStack'
-export * from './SectionBlog/SectionBlog'
-export * from './SectionContact/SectionContact'
+export { SectionWidgetsCarousel } from './SectionWidgetsCarousel'

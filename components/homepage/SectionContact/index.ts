@@ -1,1 +1,0 @@
-export { SectionContact } from './SectionContact'
