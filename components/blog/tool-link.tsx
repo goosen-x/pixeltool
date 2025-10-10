@@ -7,6 +7,7 @@ import * as LucideIcons from 'lucide-react'
 interface ToolLinkProps {
 	href: string
 	title: string
+	subtitle?: string
 	description?: string
 	iconName?: string
 	gradient?: string
@@ -15,6 +16,7 @@ interface ToolLinkProps {
 export function ToolLink({
 	href,
 	title,
+	subtitle,
 	description,
 	iconName = 'Wrench',
 	gradient = 'from-blue-500 to-cyan-500'
@@ -50,6 +52,11 @@ export function ToolLink({
 							<ExternalLink className='w-4 h-4 text-muted-foreground flex-shrink-0' />
 						)}
 					</div>
+					{subtitle && (
+						<p className='text-sm font-medium text-primary/80 mb-1'>
+							{subtitle}
+						</p>
+					)}
 					{description && (
 						<p className='text-sm text-muted-foreground line-clamp-2'>
 							{description}

@@ -104,7 +104,10 @@ export function PostBodyWithHighlight({ content }: Props) {
 							key={`tool-${match.index}`}
 							href={data.href}
 							title={data.title}
+							subtitle={data.subtitle}
 							description={data.description}
+							iconName={data.iconName}
+							gradient={data.gradient}
 						/>
 					)
 				} catch (error) {

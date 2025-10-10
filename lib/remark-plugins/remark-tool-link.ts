@@ -6,6 +6,7 @@ import { widgets } from '@/lib/constants/widgets'
 interface ToolLinkData {
 	href: string
 	title: string
+	subtitle?: string
 	description?: string
 	iconName?: string
 	gradient?: string
@@ -56,9 +57,30 @@ const remarkToolLink: Plugin<[], Root> = () => {
 							gradient: 'from-blue-500 to-cyan-500'
 						}
 
+						// Check if next node is a blockquote (subtitle)
+						let subtitle: string | undefined
+						const nextNode = parent.children[index + 1]
+						if (nextNode && nextNode.type === 'blockquote') {
+							// Extract text from blockquote
+							const blockquoteContent = nextNode as any
+							if (
+								blockquoteContent.children &&
+								blockquoteContent.children[0]?.type === 'paragraph'
+							) {
+								const paragraphNode = blockquoteContent.children[0]
+								if (
+									paragraphNode.children &&
+									paragraphNode.children[0]?.type === 'text'
+								) {
+									subtitle = paragraphNode.children[0].value
+								}
+							}
+						}
+
 						const toolLinkData: ToolLinkData = {
 							href,
 							title: metadata.title,
+							subtitle: subtitle,
 							description: metadata.description,
 							iconName: metadata.iconName,
 							gradient: metadata.gradient
@@ -71,6 +93,11 @@ const remarkToolLink: Plugin<[], Root> = () => {
 						} as any
 
 						parent.children[index] = toolLinkNode
+
+						// Remove blockquote if it was used as subtitle
+						if (subtitle && nextNode) {
+							parent.children.splice(index + 1, 1)
+						}
 					}
 				}
 

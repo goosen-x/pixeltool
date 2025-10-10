@@ -17,8 +17,11 @@ ogImage:
 `font-size`, `padding` и `margin`.
 
 /tools/css-clamp-calculator
+> Генератор выражений для адаптивной типографики
 
-Что такое clamp() Формат: clamp(min, preferred, max)
+## Что такое clamp()
+
+Формат: clamp(min, preferred, max)
 
 - min — минимальное значение, ниже которого результат не опускается.
 - preferred — желаемое (обычно флюидное, с `vw`, `vh`, calc()).
