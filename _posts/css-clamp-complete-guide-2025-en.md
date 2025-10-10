@@ -10,7 +10,7 @@ coverImage: '/assets/blog/css-clamp-guide/cover.jpg'
 date: '2025-01-09T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
-  picture: '/assets/blog/authors/dmitry.jpeg'
+  picture: '/images/avatar.jpeg'
 ogImage:
   url: '/assets/blog/css-clamp-guide/cover.jpg'
 categories: ['CSS', 'Web Development', 'Tutorial']
