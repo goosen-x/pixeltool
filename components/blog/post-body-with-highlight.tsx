@@ -4,8 +4,10 @@
 
 import React from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {
+	atomDark,
+	oneLight
+} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useTheme } from 'next-themes'
 import markdownStyles from './markdown-styles.module.css'
 import { LiveCodeExample } from './live-code-example'
