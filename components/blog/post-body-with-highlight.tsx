@@ -1,8 +1,12 @@
 'use client'
 
+'use client'
+
 import React from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useTheme } from 'next-themes'
 import markdownStyles from './markdown-styles.module.css'
 import { LiveCodeExample } from './live-code-example'
 
@@ -11,6 +15,9 @@ type Props = {
 }
 
 export function PostBodyWithHighlight({ content }: Props) {
+	const { theme } = useTheme()
+	const isDark = theme === 'dark'
+
 	// Parse HTML and replace code blocks with syntax highlighted versions
 	const renderContent = () => {
 		console.log(
@@ -90,32 +97,47 @@ export function PostBodyWithHighlight({ content }: Props) {
 						key={`code-${match.index}`}
 						className='my-6 rounded-lg overflow-hidden'
 					>
-						<div className='flex items-center justify-between bg-slate-900 px-4 py-2 border-b border-slate-800'>
+						<div
+							className={`flex items-center justify-between px-4 py-2 border-b ${
+								isDark
+									? 'bg-slate-900 border-slate-800'
+									: 'bg-slate-100 border-slate-300'
+							}`}
+						>
 							<div className='flex items-center gap-2'>
 								<div className='flex items-center gap-1.5'>
 									<div className='w-3 h-3 rounded-full bg-red-500/20' />
 									<div className='w-3 h-3 rounded-full bg-yellow-500/20' />
 									<div className='w-3 h-3 rounded-full bg-green-500/20' />
 								</div>
-								<span className='text-xs text-slate-400 ml-2'>{language}</span>
+								<span
+									className={`text-xs ml-2 ${
+										isDark ? 'text-slate-400' : 'text-slate-600'
+									}`}
+								>
+									{language}
+								</span>
 							</div>
 							<button
 								onClick={() => {
 									navigator.clipboard.writeText(code.trim())
-									// You could add a toast notification here
 								}}
-								className='text-xs text-slate-400 hover:text-slate-200 transition-colors px-3 py-1 rounded hover:bg-slate-800'
+								className={`text-xs transition-colors px-3 py-1 rounded ${
+									isDark
+										? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+										: 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+								}`}
 							>
 								Copy
 							</button>
 						</div>
 						<SyntaxHighlighter
 							language={language}
-							style={atomDark}
+							style={isDark ? atomDark : oneLight}
 							customStyle={{
 								margin: 0,
 								padding: '1.5rem',
-								background: 'rgb(15 23 42)',
+								background: isDark ? 'rgb(15 23 42)' : 'rgb(250 250 250)',
 								fontSize: '0.875rem',
 								lineHeight: '1.7'
 							}}
@@ -123,7 +145,7 @@ export function PostBodyWithHighlight({ content }: Props) {
 							lineNumberStyle={{
 								minWidth: '3em',
 								paddingRight: '1em',
-								color: 'rgb(100 116 139)',
+								color: isDark ? 'rgb(100 116 139)' : 'rgb(148 163 184)',
 								userSelect: 'none'
 							}}
 						>
