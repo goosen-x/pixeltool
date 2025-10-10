@@ -1,5 +1,3 @@
-'use client'
-
 import { Mail, MapPin, Clock, Phone } from 'lucide-react'
 import { FaTelegram, FaGithub, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'

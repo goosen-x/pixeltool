@@ -10,6 +10,58 @@
 	margin: 1.5rem 0;
 }
 
+/* Tables */
+.markdown table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 2rem 0;
+	font-size: 0.9rem;
+	overflow: hidden;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.markdown thead {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+}
+
+.markdown th {
+	padding: 1rem;
+	text-align: left;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+}
+
+.markdown td {
+	padding: 0.875rem 1rem;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .markdown td {
+	border-bottom-color: #374151;
+}
+
+.markdown tbody tr {
+	transition: background-color 0.2s;
+}
+
+.markdown tbody tr:hover {
+	background-color: rgba(102, 126, 234, 0.05);
+}
+
+.dark .markdown tbody tr:hover {
+	background-color: rgba(102, 126, 234, 0.1);
+}
+
+.markdown tbody tr:nth-child(even) {
+	background-color: #f9fafb;
+}
+
+.dark .markdown tbody tr:nth-child(even) {
+	background-color: #1f2937;
+}
+
 .markdown h2 {
 	font-size: 1.875rem;
 	margin-top: 3rem;

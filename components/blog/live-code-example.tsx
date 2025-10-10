@@ -11,6 +11,12 @@ import {
 	Minimize2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import {
+	atomDark,
+	oneLight
+} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useTheme } from 'next-themes'
 
 interface LiveCodeExampleProps {
 	html?: string
@@ -27,6 +33,19 @@ export function LiveCodeExample({
 	title,
 	className
 }: LiveCodeExampleProps) {
+	const { resolvedTheme } = useTheme()
+	const [mounted, setMounted] = useState(false)
+	const isDark = resolvedTheme === 'dark'
+
+	// Debug logging
+	useEffect(() => {
+		console.log(
+			'LiveCodeExample - resolvedTheme:',
+			resolvedTheme,
+			'isDark:',
+			isDark
+		)
+	}, [resolvedTheme, isDark])
 	const [activeTab, setActiveTab] = useState<'html' | 'css' | 'js' | 'result'>(
 		'result'
 	)
@@ -34,6 +53,10 @@ export function LiveCodeExample({
 	const [isFullscreen, setIsFullscreen] = useState(false)
 	const iframeRef = useRef<HTMLIFrameElement>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		setMounted(true)
+	}, [])
 
 	const hasHtml = html.trim() !== ''
 	const hasCss = css.trim() !== ''
@@ -229,9 +252,42 @@ export function LiveCodeExample({
 						/>
 					</div>
 				) : (
-					<pre className='h-[400px] overflow-auto bg-neutral-900 p-4'>
-						<code className='text-sm text-neutral-100'>{getActiveCode()}</code>
-					</pre>
+					<div className='h-[400px] overflow-auto'>
+						{mounted && resolvedTheme ? (
+							<div
+								className='h-full'
+								style={{
+									background: isDark ? 'rgb(15 23 42)' : 'rgb(250 250 250)'
+								}}
+							>
+								<SyntaxHighlighter
+									key={`${activeTab}-${resolvedTheme}`}
+									language={activeTab}
+									style={isDark ? atomDark : oneLight}
+									customStyle={{
+										margin: 0,
+										height: '100%',
+										background: 'transparent',
+										fontSize: '0.875rem',
+										lineHeight: '1.7'
+									}}
+									showLineNumbers
+									lineNumberStyle={{
+										minWidth: '3em',
+										paddingRight: '1em',
+										color: isDark ? 'rgb(100 116 139)' : 'rgb(148 163 184)',
+										userSelect: 'none'
+									}}
+								>
+									{getActiveCode()}
+								</SyntaxHighlighter>
+							</div>
+						) : (
+							<div className='h-full bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center'>
+								<div className='text-neutral-400'>Loading...</div>
+							</div>
+						)}
+					</div>
 				)}
 			</div>
 		</div>

@@ -9,8 +9,6 @@ interface UseCaseCardProps {
 }
 
 export function UseCaseCard({ widget }: UseCaseCardProps) {
-	// const tSidebar = useTranslations('widgets.rightSidebar')
-
 	if (!widget.useCase) return null
 
 	return (

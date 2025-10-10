@@ -2,7 +2,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import {
 	atomDark,
@@ -18,8 +18,13 @@ type Props = {
 }
 
 export function PostBodyWithHighlight({ content }: Props) {
-	const { theme } = useTheme()
-	const isDark = theme === 'dark'
+	const { resolvedTheme } = useTheme()
+	const [mounted, setMounted] = useState(false)
+	const isDark = resolvedTheme === 'dark'
+
+	useEffect(() => {
+		setMounted(true)
+	}, [])
 
 	// Parse HTML and replace code blocks with syntax highlighted versions
 	const renderContent = () => {
@@ -124,67 +129,88 @@ export function PostBodyWithHighlight({ content }: Props) {
 					.replace(/&#39;/g, "'")
 
 				// Add syntax highlighted code block
-				parts.push(
-					<div
-						key={`code-${match.index}`}
-						className='my-6 rounded-lg overflow-hidden'
-					>
+				if (mounted && resolvedTheme) {
+					parts.push(
 						<div
-							className={`flex items-center justify-between px-4 py-2 border-b ${
-								isDark
-									? 'bg-slate-900 border-slate-800'
-									: 'bg-slate-100 border-slate-300'
-							}`}
+							key={`code-${match.index}-${resolvedTheme}`}
+							className='my-6 rounded-lg overflow-hidden'
 						>
-							<div className='flex items-center gap-2'>
-								<div className='flex items-center gap-1.5'>
-									<div className='w-3 h-3 rounded-full bg-red-500/20' />
-									<div className='w-3 h-3 rounded-full bg-yellow-500/20' />
-									<div className='w-3 h-3 rounded-full bg-green-500/20' />
-								</div>
-								<span
-									className={`text-xs ml-2 ${
-										isDark ? 'text-slate-400' : 'text-slate-600'
-									}`}
-								>
-									{language}
-								</span>
-							</div>
-							<button
-								onClick={() => {
-									navigator.clipboard.writeText(code.trim())
-								}}
-								className={`text-xs transition-colors px-3 py-1 rounded ${
+							<div
+								className={`flex items-center justify-between px-4 py-2 border-b ${
 									isDark
-										? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-										: 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+										? 'bg-slate-900 border-slate-800'
+										: 'bg-slate-100 border-slate-300'
 								}`}
 							>
-								Copy
-							</button>
+								<div className='flex items-center gap-2'>
+									<div className='flex items-center gap-1.5'>
+										<div className='w-3 h-3 rounded-full bg-red-500/20' />
+										<div className='w-3 h-3 rounded-full bg-yellow-500/20' />
+										<div className='w-3 h-3 rounded-full bg-green-500/20' />
+									</div>
+									<span
+										className={`text-xs ml-2 ${
+											isDark ? 'text-slate-400' : 'text-slate-600'
+										}`}
+									>
+										{language}
+									</span>
+								</div>
+								<button
+									onClick={() => {
+										navigator.clipboard.writeText(code.trim())
+									}}
+									className={`text-xs transition-colors px-3 py-1 rounded ${
+										isDark
+											? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+											: 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+									}`}
+								>
+									Copy
+								</button>
+							</div>
+							<div
+								style={{
+									background: isDark ? 'rgb(15 23 42)' : 'rgb(250 250 250)'
+								}}
+							>
+								<SyntaxHighlighter
+									key={`syntax-${resolvedTheme}`}
+									language={language}
+									style={isDark ? atomDark : oneLight}
+									customStyle={{
+										margin: 0,
+										padding: '1.5rem',
+										background: 'transparent',
+										fontSize: '0.875rem',
+										lineHeight: '1.7'
+									}}
+									showLineNumbers
+									lineNumberStyle={{
+										minWidth: '3em',
+										paddingRight: '1em',
+										color: isDark ? 'rgb(100 116 139)' : 'rgb(148 163 184)',
+										userSelect: 'none'
+									}}
+								>
+									{code.trim()}
+								</SyntaxHighlighter>
+							</div>
 						</div>
-						<SyntaxHighlighter
-							language={language}
-							style={isDark ? atomDark : oneLight}
-							customStyle={{
-								margin: 0,
-								padding: '1.5rem',
-								background: isDark ? 'rgb(15 23 42)' : 'rgb(250 250 250)',
-								fontSize: '0.875rem',
-								lineHeight: '1.7'
-							}}
-							showLineNumbers
-							lineNumberStyle={{
-								minWidth: '3em',
-								paddingRight: '1em',
-								color: isDark ? 'rgb(100 116 139)' : 'rgb(148 163 184)',
-								userSelect: 'none'
-							}}
+					)
+				} else {
+					// Fallback для SSR/первого рендера
+					parts.push(
+						<div
+							key={`code-${match.index}`}
+							className='my-6 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-900'
 						>
-							{code.trim()}
-						</SyntaxHighlighter>
-					</div>
-				)
+							<pre className='p-6'>
+								<code className='text-sm'>{code.trim()}</code>
+							</pre>
+						</div>
+					)
+				}
 			}
 
 			lastIndex = match.index + match[0].length

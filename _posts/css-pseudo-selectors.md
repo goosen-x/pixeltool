@@ -1,318 +1,455 @@
 ---
-title: 'CSS Pseudo-classes and Pseudo-elements: Master Advanced Selectors'
-excerpt:
-  'Deep dive into CSS pseudo-classes and pseudo-elements. Learn how to create
-  sophisticated interactions and visual effects without JavaScript.'
+title: 'CSS Псевдоклассы и Псевдоэлементы: Полное руководство 2025'
+excerpt: 'Освойте CSS псевдоклассы и псевдоэлементы для создания продвинутых интерактивных элементов и визуальных эффектов без JavaScript. Интерактивные примеры и лучшие практики.'
 coverImage: '/images/avatar.jpeg'
-date: '2024-11-30T10:00:00.000Z'
+date: '2025-01-10T10:00:00.000Z'
 author:
-  name: Dmitry Borisenko
+  name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 ogImage:
   url: '/images/avatar.jpeg'
+categories: ['CSS', 'Web Development', 'Tutorial']
+keywords:
+  [
+    'CSS псевдоклассы',
+    'CSS псевдоэлементы',
+    'CSS selectors',
+    'hover',
+    'before after',
+    'nth-child',
+    'CSS has',
+    'CSS is'
+  ]
+liveCodeExample: true
 ---
 
-CSS pseudo-classes and pseudo-elements are powerful selectors that allow you to
-style elements based on their state or create virtual elements. Understanding
-these selectors unlocks advanced styling capabilities without additional HTML or
-JavaScript.
+CSS псевдоклассы и псевдоэлементы — это мощные селекторы, позволяющие стилизовать элементы в зависимости от их состояния или создавать виртуальные элементы. Понимание этих селекторов открывает возможности для продвинутой стилизации без дополнительного HTML или JavaScript.
 
-## Understanding the Difference
+## Разница между псевдоклассами и псевдоэлементами
 
-### Pseudo-classes (:)
+### Псевдоклассы (:)
 
-Target elements based on state or position:
+Нацеливаются на элементы в зависимости от их состояния или позиции:
 
 ```css
-button:hover {
-} /* State */
-li:first-child {
-} /* Position */
-input:valid {
-} /* Validation */
+button:hover {} /* Состояние при наведении */
+li:first-child {} /* Позиция в DOM */
+input:valid {} /* Валидация формы */
 ```
 
-### Pseudo-elements (::)
+### Псевдоэлементы (::)
 
-Create or target virtual elements:
+Создают или нацеливаются на виртуальные элементы:
 
 ```css
-p::first-line {
-} /* Target part of element */
-div::before {
-} /* Create new element */
-::selection {
-} /* Style user selection */
+p::first-line {} /* Часть элемента */
+div::before {} /* Создание нового элемента */
+::selection {} /* Стилизация выделения */
 ```
 
-## Essential Pseudo-classes
+**Важно:** Псевдоклассы используют одно двоеточие `:`, псевдоэлементы — два `::`
 
-### 1. Interactive States
+## Основные псевдоклассы
 
-```css
-/* Hover state */
-.button:hover {
+### 1. Интерактивные состояния
+
+```html:live
+// title: Интерактивные состояния кнопки
+<button class="demo-button">Наведи на меня</button>
+<input class="demo-input" placeholder="Кликни для фокуса">
+```
+
+```css:live
+/* Наведение курсора */
+.demo-button {
+	background-color: #3498db;
+	color: white;
+	padding: 12px 24px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 16px;
+	margin-bottom: 10px;
+	display: block;
+}
+
+.demo-button:hover {
 	background-color: #2980b9;
 	transform: translateY(-2px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
 }
 
-/* Focus state - important for accessibility */
-.input:focus {
-	outline: 2px solid #3498db;
-	outline-offset: 2px;
-	border-color: #3498db;
-}
-
-/* Active state - when clicked */
-.button:active {
+/* Нажатие */
+.demo-button:active {
 	transform: translateY(0);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
 }
 
-/* Visited links */
-a:visited {
-	color: #8e44ad;
+/* Фокус для доступности */
+.demo-input {
+	padding: 10px;
+	border: 2px solid #ddd;
+	border-radius: 4px;
+	width: 100%;
+	transition: all 0.3s;
+	font-size: 14px;
 }
 
-/* Focus visible - only shows focus ring for keyboard navigation */
-.button:focus-visible {
+.demo-input:focus {
+	outline: none;
+	border-color: #3498db;
+	box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Фокус только с клавиатуры */
+.demo-button:focus-visible {
 	outline: 3px solid #f39c12;
 	outline-offset: 2px;
 }
-
-/* Remove focus for mouse users */
-.button:focus:not(:focus-visible) {
-	outline: none;
-}
 ```
 
-### 2. Structural Pseudo-classes
+### 2. Структурные псевдоклассы
 
-```css
-/* First and last child */
-.list-item:first-child {
+```html:live
+// title: Структурные селекторы nth-child
+<ul class="demo-list">
+	<li>Первый элемент (стилизован)</li>
+	<li>Второй элемент (чётный)</li>
+	<li>Третий элемент (кратен 3)</li>
+	<li>Четвёртый элемент (чётный)</li>
+	<li>Пятый элемент</li>
+	<li>Шестой элемент (чётный, кратен 3)</li>
+	<li>Последний элемент (стилизован)</li>
+</ul>
+```
+
+```css:live
+.demo-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.demo-list li {
+	padding: 12px 16px;
+	border: 1px solid #ddd;
+	margin-bottom: -1px;
+	transition: background-color 0.2s;
+}
+
+/* Первый элемент */
+.demo-list li:first-child {
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
-}
-
-.list-item:last-child {
-	border-bottom-left-radius: 8px;
-	border-bottom-right-radius: 8px;
-}
-
-/* Nth-child patterns */
-.table-row:nth-child(even) {
-	background-color: #f8f9fa;
-}
-
-.table-row:nth-child(odd) {
-	background-color: white;
-}
-
-/* Every 3rd item */
-.grid-item:nth-child(3n) {
-	margin-right: 0;
-}
-
-/* First 3 items */
-.card:nth-child(-n + 3) {
 	background-color: #e3f2fd;
 }
 
-/* All but first 3 */
-.card:nth-child(n + 4) {
-	opacity: 0.8;
+/* Последний элемент */
+.demo-list li:last-child {
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	background-color: #e8f5e9;
 }
 
-/* Only child */
-.alert:only-child {
-	margin: 2rem auto;
-	max-width: 600px;
+/* Чётные элементы */
+.demo-list li:nth-child(even) {
+	background-color: #f8f9fa;
 }
 
-/* Type selectors */
-p:first-of-type {
-	font-size: 1.25rem;
-	font-weight: 500;
+/* Каждый третий элемент */
+.demo-list li:nth-child(3n) {
+	border-left: 3px solid #3498db;
 }
 
-h2:last-of-type {
-	margin-bottom: 2rem;
+.demo-list li:hover {
+	background-color: #fff3e0;
 }
 ```
 
-### 3. Form Pseudo-classes
+**Полезные паттерны nth-child:**
 
 ```css
-/* Input states */
-input:valid {
+/* Каждый третий элемент */
+:nth-child(3n) { }
+
+/* Первые 3 элемента */
+:nth-child(-n + 3) { }
+
+/* Все, кроме первых 3 */
+:nth-child(n + 4) { }
+
+/* Нечётные */
+:nth-child(odd) { }
+
+/* Чётные */
+:nth-child(even) { }
+```
+
+### 3. Псевдоклассы форм
+
+```html:live
+// title: Валидация и состояния форм
+<form class="demo-form">
+	<div class="form-field">
+		<input type="email" required placeholder="Email (обязательно)">
+	</div>
+	<div class="form-field">
+		<input type="text" placeholder="Имя (опционально)">
+	</div>
+	<div class="form-field">
+		<input type="text" disabled value="Неактивное поле">
+	</div>
+	<div class="form-field">
+		<input type="checkbox" id="agree">
+		<label for="agree">Согласен с условиями</label>
+	</div>
+</form>
+```
+
+```css:live
+.demo-form {
+	max-width: 400px;
+}
+
+.form-field {
+	margin-bottom: 16px;
+}
+
+.demo-form input[type="email"],
+.demo-form input[type="text"] {
+	width: 100%;
+	padding: 10px;
+	border: 2px solid #ddd;
+	border-radius: 4px;
+	transition: all 0.3s;
+	font-size: 14px;
+}
+
+/* Валидное поле */
+.demo-form input:valid {
 	border-color: #27ae60;
 	background-color: #f0fdf4;
 }
 
-input:invalid {
+/* Невалидное поле */
+.demo-form input:invalid {
 	border-color: #e74c3c;
 	background-color: #fef2f2;
 }
 
-input:required {
-	border-left: 3px solid #f39c12;
+/* Обязательное поле */
+.demo-form input:required {
+	border-left: 4px solid #f39c12;
 }
 
-input:optional {
-	border-left: 3px solid #95a5a6;
-}
-
-input:disabled {
+/* Неактивное поле */
+.demo-form input:disabled {
 	background-color: #ecf0f1;
 	cursor: not-allowed;
 	opacity: 0.6;
 }
 
-input:enabled {
-	background-color: white;
-}
-
-input:read-only {
-	background-color: #f5f5f5;
-	cursor: default;
-}
-
-input:read-write {
-	background-color: white;
-}
-
-/* Checkbox and radio states */
-input[type='checkbox']:checked + label {
+/* Чекбокс */
+.demo-form input[type='checkbox']:checked + label {
 	color: #27ae60;
-	font-weight: bold;
+	font-weight: 600;
 }
 
-input[type='radio']:checked + label::before {
-	content: '✓ ';
-	color: #27ae60;
+/* Placeholder */
+.demo-form input::placeholder {
+	color: #95a5a6;
+	font-style: italic;
 }
 
-/* Number input states */
-input[type='number']:in-range {
-	border-color: #27ae60;
-}
-
-input[type='number']:out-of-range {
-	border-color: #e74c3c;
-	background-color: #fee;
-}
-
-/* Placeholder shown */
-input:placeholder-shown {
-	border-style: dashed;
-}
-
-/* Form validation example */
-.form-group:has(input:invalid) {
-	background-color: #fef2f2;
-	padding: 1rem;
-	border-radius: 4px;
-}
-
-.form-group:has(input:valid) {
-	background-color: #f0fdf4;
-	padding: 1rem;
-	border-radius: 4px;
+.demo-form input:focus::placeholder {
+	color: transparent;
 }
 ```
 
-### 4. Advanced Selectors
+### 4. Продвинутые селекторы
 
-```css
-/* :is() - matches any selector in the list */
-:is(h1, h2, h3):hover {
-	color: #3498db;
-	cursor: pointer;
+#### :has() — Родительский селектор
+
+```html:live
+// title: Селектор :has() для родителей
+<div class="demo-card">
+	<input type="checkbox" id="card1">
+	<label for="card1">Отметьте, чтобы активировать карточку</label>
+	<p>Карточка изменит стиль при выборе</p>
+</div>
+
+<div class="demo-card card-with-image">
+	<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%233498db' width='100' height='100'/%3E%3C/svg%3E" alt="Demo">
+	<div>
+		<h4 style="margin-top: 0;">Карточка с изображением</h4>
+		<p style="margin-bottom: 0;">Автоматически использует grid layout</p>
+	</div>
+</div>
+```
+
+```css:live
+.demo-card {
+	border: 2px solid #ddd;
+	padding: 16px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+	transition: all 0.3s;
 }
 
-/* :where() - same as :is() but with 0 specificity */
-:where(h1, h2, h3) {
-	line-height: 1.2;
-}
-
-/* :has() - parent selector */
-article:has(img) {
+/* Карточка с изображением */
+.demo-card:has(img) {
 	display: grid;
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: 100px 1fr;
+	gap: 16px;
+	background-color: #f8f9fa;
 }
 
-/* Container that has a checked checkbox */
-.option-card:has(input:checked) {
+/* Карточка с checked чекбоксом */
+.demo-card:has(input:checked) {
 	border-color: #3498db;
-	background-color: #ebf5ff;
+	background-color: #e3f2fd;
+	box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
 }
 
-/* :not() - negation */
-.button:not(:disabled):hover {
-	transform: translateY(-2px);
-}
-
-/* Multiple :not() */
-input:not([type='submit']):not([type='button']):not([type='reset']) {
+.demo-card img {
 	width: 100%;
-	padding: 0.5rem;
-}
-
-/* :empty - elements with no children */
-.message:empty {
-	display: none;
-}
-
-.message:not(:empty) {
-	padding: 1rem;
-	border: 1px solid #ddd;
 	border-radius: 4px;
-}
-
-/* :target - matches element targeted by URL hash */
-section:target {
-	background-color: #fffacd;
-	padding: 2rem;
-	border-left: 4px solid #f39c12;
 }
 ```
 
-## Powerful Pseudo-elements
+#### :target — Элемент по якорю
 
-### 1. ::before and ::after
+```html:live
+// title: Навигация с :target
+<nav class="demo-nav">
+	<a href="#section1">Секция 1</a>
+	<a href="#section2">Секция 2</a>
+	<a href="#section3">Секция 3</a>
+</nav>
 
-```css
-/* Decorative elements */
-.quote::before {
-	content: '' ';
-  font-size: 3rem;
-  color: #bdc3c7;
-  position: absolute;
-  top: -10px;
-  left: -30px;
+<div id="section1" class="demo-section">
+	<h4>Секция 1</h4>
+	<p>Кликните на ссылку выше, чтобы подсветить эту секцию</p>
+</div>
+
+<div id="section2" class="demo-section">
+	<h4>Секция 2</h4>
+	<p>Активная секция будет подсвечена жёлтым</p>
+</div>
+
+<div id="section3" class="demo-section">
+	<h4>Секция 3</h4>
+	<p>Используйте :target для создания табов без JavaScript</p>
+</div>
+```
+
+```css:live
+.demo-section {
+	padding: 20px;
+	margin: 10px 0;
+	border: 2px solid #ddd;
+	border-radius: 8px;
+	transition: all 0.3s;
 }
 
-.quote::after {
-  content: ' '';
-	font-size: 3rem;
-	color: #bdc3c7;
+.demo-section:target {
+	background-color: #fff9c4;
+	border-color: #f39c12;
+	box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.1);
+}
+
+.demo-nav {
+	margin-bottom: 20px;
+}
+
+.demo-nav a {
+	display: inline-block;
+	margin: 5px;
+	padding: 8px 16px;
+	background: #3498db;
+	color: white;
+	text-decoration: none;
+	border-radius: 4px;
+}
+
+.demo-nav a:hover {
+	background: #2980b9;
+}
+```
+
+## Мощные псевдоэлементы
+
+### 1. ::before и ::after
+
+```html:live
+// title: Псевдоэлементы ::before и ::after
+<blockquote class="demo-quote">
+	CSS — это не просто язык стилей, это искусство создания красивого интернета.
+</blockquote>
+
+<p style="margin-top: 20px;">
+	<a href="https://developer.mozilla.org" class="external-link">MDN Documentation</a>
+</p>
+
+<p style="margin-top: 20px;">
+	Наведите на 
+	<span class="tooltip" data-tooltip="Это всплывающая подсказка!">этот текст</span>
+	чтобы увидеть тултип.
+</p>
+```
+
+```css:live
+.demo-quote {
+	position: relative;
+	padding: 30px 40px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	font-size: 18px;
+	font-style: italic;
+	color: #2c3e50;
+}
+
+.demo-quote::before {
+	content: '"';
 	position: absolute;
-	bottom: -30px;
-	right: -30px;
+	top: 10px;
+	left: 10px;
+	font-size: 60px;
+	color: #bdc3c7;
+	font-family: Georgia, serif;
+	line-height: 1;
 }
 
-/* Icons without fonts */
+.demo-quote::after {
+	content: '"';
+	position: absolute;
+	bottom: 10px;
+	right: 20px;
+	font-size: 60px;
+	color: #bdc3c7;
+	font-family: Georgia, serif;
+	line-height: 1;
+}
+
+/* Внешние ссылки с иконкой */
+.external-link {
+	color: #3498db;
+	text-decoration: none;
+}
+
 .external-link::after {
 	content: ' ↗';
 	font-size: 0.8em;
 	vertical-align: super;
 }
 
-/* Tooltips */
+/* Тултип */
 .tooltip {
 	position: relative;
+	display: inline-block;
+	border-bottom: 1px dashed #3498db;
+	cursor: help;
 }
 
 .tooltip::after {
@@ -323,148 +460,201 @@ section:target {
 	transform: translateX(-50%);
 	background: #333;
 	color: white;
-	padding: 0.5rem 1rem;
+	padding: 8px 12px;
 	border-radius: 4px;
 	white-space: nowrap;
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.3s;
+	margin-bottom: 5px;
+	font-size: 14px;
+	font-style: normal;
 }
 
 .tooltip:hover::after {
 	opacity: 1;
 }
+```
 
-/* Custom counters */
+### 2. Кастомные счётчики
+
+```html:live
+// title: CSS счётчики с ::before
+<ul class="timeline">
+	<li class="timeline-item">
+		<h4>Изучите основы</h4>
+		<p>Начните с псевдоклассов и псевдоэлементов</p>
+	</li>
+	<li class="timeline-item">
+		<h4>Практикуйтесь</h4>
+		<p>Создавайте интерактивные компоненты</p>
+	</li>
+	<li class="timeline-item">
+		<h4>Оптимизируйте</h4>
+		<p>Улучшайте производительность CSS</p>
+	</li>
+	<li class="timeline-item">
+		<h4>Делитесь знаниями</h4>
+		<p>Помогайте другим разработчикам</p>
+	</li>
+</ul>
+```
+
+```css:live
+.timeline {
+	counter-reset: timeline;
+	padding-left: 0;
+	list-style: none;
+}
+
 .timeline-item {
 	counter-increment: timeline;
 	position: relative;
-	padding-left: 3rem;
+	padding-left: 60px;
+	margin-bottom: 30px;
+	padding-bottom: 20px;
+	border-left: 2px solid #e0e0e0;
+}
+
+.timeline-item:last-child {
+	border-left: none;
 }
 
 .timeline-item::before {
 	content: counter(timeline);
 	position: absolute;
-	left: 0;
+	left: -20px;
 	top: 0;
-	width: 2rem;
-	height: 2rem;
-	background: #3498db;
+	width: 40px;
+	height: 40px;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	color: white;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	font-weight: bold;
+	font-size: 18px;
+	box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.timeline-item h4 {
+	margin-top: 0;
+	color: #2c3e50;
+}
+
+.timeline-item p {
+	color: #7f8c8d;
+	margin: 0;
 }
 ```
 
-### 2. ::first-line and ::first-letter
+### 3. ::first-letter и ::first-line
 
-```css
-/* Drop cap */
-p::first-letter {
-	font-size: 3rem;
-	font-weight: bold;
-	float: left;
-	line-height: 1;
-	margin-right: 0.5rem;
-	color: #e74c3c;
+```html:live
+// title: Типографика с ::first-letter
+<p class="article-text">
+	Псевдоэлементы позволяют создавать эффектные типографские решения без дополнительной разметки. Буквица (drop cap) — классический приём книжного дизайна, который легко реализуется с помощью ::first-letter. Первая строка абзаца также может быть визуально выделена для лучшей читаемости и привлечения внимания читателя.
+</p>
+```
+
+```css:live
+.article-text {
+	text-align: justify;
+	color: #555;
+	line-height: 1.6;
+	font-size: 16px;
 }
 
-/* Styled first line */
-article p::first-line {
-	font-weight: 500;
+.article-text::first-letter {
+	font-size: 4rem;
+	font-weight: bold;
+	float: left;
+	line-height: 0.8;
+	margin: 0.1em 0.2em 0 0;
+	color: #e74c3c;
+	font-family: Georgia, serif;
+}
+
+.article-text::first-line {
+	font-weight: 600;
 	font-size: 1.1em;
 	color: #2c3e50;
 }
 ```
 
-### 3. ::selection
+### 4. ::selection — Стилизация выделения
 
-```css
-/* Custom text selection */
-::selection {
+```html:live
+// title: Кастомное выделение текста
+<div class="selectable-text">
+	<p>Выделите этот текст, чтобы увидеть <span class="important-text">кастомный цвет выделения</span>. Разные элементы могут иметь разные стили выделения!</p>
+</div>
+```
+
+```css:live
+.selectable-text {
+	padding: 20px;
+	background: #f8f9fa;
+	border-radius: 8px;
+}
+
+.selectable-text::selection {
 	background-color: #3498db;
 	color: white;
 }
 
-/* Different selection for specific elements */
-.important::selection {
+.important-text {
+	color: #e74c3c;
+	font-weight: bold;
+}
+
+.important-text::selection {
 	background-color: #e74c3c;
 	color: white;
 }
-
-/* Firefox prefix */
-::-moz-selection {
-	background-color: #3498db;
-	color: white;
-}
 ```
 
-### 4. Form Control Pseudo-elements
+## Практические примеры
 
-```css
-/* Placeholder styling */
-::placeholder {
-	color: #95a5a6;
-	font-style: italic;
-}
+### Кастомный чекбокс
 
-input:focus::placeholder {
-	color: transparent;
-}
+```html:live
+// title: Кастомный чекбокс без JavaScript
+<label class="custom-checkbox-wrapper">
+	<input type="checkbox" class="custom-checkbox">
+	<span class="checkbox-label">Вариант 1</span>
+</label>
 
-/* File input button */
-::file-selector-button {
-	background: #3498db;
-	color: white;
-	padding: 0.5rem 1rem;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	margin-right: 1rem;
-}
+<label class="custom-checkbox-wrapper">
+	<input type="checkbox" class="custom-checkbox" checked>
+	<span class="checkbox-label">Вариант 2 (выбран)</span>
+</label>
 
-::file-selector-button:hover {
-	background: #2980b9;
-}
-
-/* Webkit scrollbar */
-::-webkit-scrollbar {
-	width: 12px;
-}
-
-::-webkit-scrollbar-track {
-	background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-	background: #888;
-	border-radius: 6px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: #555;
-}
+<label class="custom-checkbox-wrapper">
+	<input type="checkbox" class="custom-checkbox" disabled>
+	<span class="checkbox-label">Вариант 3 (неактивен)</span>
+</label>
 ```
 
-## Complex Examples
+```css:live
+.custom-checkbox-wrapper {
+	display: block;
+	margin: 10px 0;
+}
 
-### 1. Custom Checkbox
-
-```css
-/* Hide default checkbox */
-input[type='checkbox'] {
+.custom-checkbox {
 	position: absolute;
 	opacity: 0;
+	cursor: pointer;
 }
 
-/* Custom checkbox */
 .checkbox-label {
 	position: relative;
-	padding-left: 30px;
+	padding-left: 35px;
 	cursor: pointer;
+	user-select: none;
+	font-size: 16px;
 }
 
 .checkbox-label::before {
@@ -473,93 +663,71 @@ input[type='checkbox'] {
 	left: 0;
 	top: 50%;
 	transform: translateY(-50%);
-	width: 20px;
-	height: 20px;
+	width: 24px;
+	height: 24px;
 	border: 2px solid #3498db;
 	border-radius: 4px;
 	background: white;
-	transition: all 0.3s;
+	transition: all 0.3s ease;
 }
 
 .checkbox-label::after {
 	content: '✓';
 	position: absolute;
-	left: 5px;
+	left: 6px;
 	top: 50%;
-	transform: translateY(-50%);
+	transform: translateY(-50%) scale(0);
 	color: white;
-	font-size: 14px;
-	opacity: 0;
-	transition: opacity 0.3s;
+	font-size: 16px;
+	font-weight: bold;
+	transition: transform 0.2s ease;
 }
 
-input[type='checkbox']:checked + .checkbox-label::before {
+.custom-checkbox:checked + .checkbox-label::before {
 	background: #3498db;
+	border-color: #3498db;
 }
 
-input[type='checkbox']:checked + .checkbox-label::after {
-	opacity: 1;
+.custom-checkbox:checked + .checkbox-label::after {
+	transform: translateY(-50%) scale(1);
 }
 
-input[type='checkbox']:focus + .checkbox-label::before {
+.custom-checkbox:focus + .checkbox-label::before {
 	box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
 }
-```
 
-### 2. Advanced Navigation
-
-```css
-/* Multi-level navigation with indicators */
-.nav-item {
-	position: relative;
-}
-
-.nav-item:hover > .nav-link {
-	color: #3498db;
-}
-
-/* Dropdown indicator */
-.nav-item:has(.dropdown)::after {
-	content: '▼';
-	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	font-size: 0.8em;
-	transition: transform 0.3s;
-}
-
-.nav-item:hover::after {
-	transform: translateY(-50%) rotate(180deg);
-}
-
-/* Active page indicator */
-.nav-link:is(.active, [aria-current='page'])::before {
-	content: '';
-	position: absolute;
-	bottom: -2px;
-	left: 0;
-	right: 0;
-	height: 3px;
-	background: #3498db;
-	transform: scaleX(0);
-	transition: transform 0.3s;
-}
-
-.nav-link:is(.active, [aria-current='page'])::before,
-.nav-link:hover::before {
-	transform: scaleX(1);
+.custom-checkbox:disabled + .checkbox-label {
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 ```
 
-### 3. Loading States
+### Состояние загрузки (Skeleton)
 
-```css
-/* Skeleton loading effect */
+```html:live
+// title: Skeleton loader эффект
+<div class="skeleton-card">
+	<div class="skeleton skeleton-title"></div>
+	<div class="skeleton skeleton-text"></div>
+	<div class="skeleton skeleton-text"></div>
+	<div class="skeleton skeleton-text-short"></div>
+</div>
+```
+
+```css:live
+.skeleton-card {
+	padding: 20px;
+	background: white;
+	border-radius: 8px;
+	border: 1px solid #e0e0e0;
+}
+
 .skeleton {
 	position: relative;
 	overflow: hidden;
-	background: #eee;
+	background: #e0e0e0;
+	border-radius: 4px;
+	margin-bottom: 10px;
 }
 
 .skeleton::after {
@@ -572,7 +740,7 @@ input[type='checkbox']:focus + .checkbox-label::before {
 	background: linear-gradient(
 		90deg,
 		transparent 0%,
-		rgba(255, 255, 255, 0.5) 50%,
+		rgba(255, 255, 255, 0.6) 50%,
 		transparent 100%
 	);
 	animation: skeleton-loading 1.5s infinite;
@@ -587,47 +755,135 @@ input[type='checkbox']:focus + .checkbox-label::before {
 	}
 }
 
-/* Loading dots */
-.loading::after {
-	content: '';
-	animation: dots 1.5s steps(4, end) infinite;
+.skeleton-title {
+	height: 24px;
+	width: 60%;
 }
 
-@keyframes dots {
-	0% {
-		content: '';
-	}
-	25% {
-		content: '.';
-	}
-	50% {
-		content: '..';
-	}
-	75% {
-		content: '...';
-	}
-	100% {
-		content: '';
-	}
+.skeleton-text {
+	height: 16px;
+	width: 100%;
+}
+
+.skeleton-text-short {
+	height: 16px;
+	width: 80%;
 }
 ```
 
-## Performance Tips
+## Инструменты для работы с CSS
 
-1. **Pseudo-elements create real elements**: They impact render tree
-2. **Complex selectors can be slow**: Keep specificity reasonable
-3. **Avoid expensive properties**: Shadows, filters in pseudo-elements
-4. **Use CSS containment**: Limit style recalculation scope
+При работе с псевдоклассами и сложными селекторами полезно понимать специфичность CSS:
 
-## Browser Compatibility
+/tools/css-specificity-calculator
 
-Most pseudo-classes and pseudo-elements have excellent support, but newer ones
-require checking:
+Для создания визуальных эффектов с градиентами в псевдоэлементах:
 
-- `:has()` - Modern browsers only
-- `:is()` / `:where()` - Good support
-- `::marker` - Good support
-- `:focus-visible` - Modern browsers
+/tools/css-gradient-generator
 
-Master pseudo-classes and pseudo-elements to write cleaner HTML while achieving
-sophisticated designs and interactions purely with CSS!
+## Советы по производительности
+
+1. **Псевдоэлементы создают реальные элементы** — они влияют на render tree
+2. **Сложные селекторы замедляют рендеринг** — держите специфичность разумной
+3. **Избегайте дорогих свойств** — тени, фильтры в ::before/::after
+4. **Используйте CSS containment** — ограничьте область пересчёта стилей
+
+```css
+/* Оптимизация для анимаций в псевдоэлементах */
+.element::before {
+	content: '';
+	will-change: transform;
+	/* Будет рендериться на отдельном слое */
+}
+```
+
+## Поддержка браузерами
+
+Большинство псевдоклассов и псевдоэлементов имеют отличную поддержку:
+
+| Селектор | Поддержка |
+|----------|-----------|
+| `:hover`, `:focus`, `:active` | ✅ Все браузеры |
+| `:nth-child()`, `:first-child` | ✅ Все браузеры |
+| `::before`, `::after` | ✅ Все браузеры |
+| `:is()`, `:where()` | ✅ Современные браузеры |
+| `:has()` | ⚠️ Только современные (2023+) |
+| `:focus-visible` | ✅ Современные браузеры |
+
+## Распространённые ошибки
+
+### 1. Забывание content для ::before/::after
+
+```css
+/* ❌ Не будет работать */
+.element::before {
+	display: block;
+	width: 100px;
+}
+
+/* ✅ Правильно */
+.element::before {
+	content: '';
+	display: block;
+	width: 100px;
+}
+```
+
+### 2. Двойное двоеточие для псевдоклассов
+
+```css
+/* ❌ Неправильно */
+button::hover {
+	background: red;
+}
+
+/* ✅ Правильно */
+button:hover {
+	background: red;
+}
+```
+
+### 3. Попытка стилизовать ::before у элементов замены
+
+```css
+/* ❌ Не работает для img, input, br */
+img::before {
+	content: 'Иконка';
+}
+
+/* ✅ Оберните в контейнер */
+.image-wrapper::before {
+	content: 'Иконка';
+}
+```
+
+## Заключение
+
+Псевдоклассы и псевдоэлементы — это фундаментальные инструменты современного CSS. Они позволяют:
+
+- ✅ Создавать интерактивные элементы без JavaScript
+- ✅ Добавлять декоративные элементы без HTML
+- ✅ Стилизовать состояния форм и валидацию
+- ✅ Реализовывать сложные UI паттерны
+- ✅ Улучшать доступность с `:focus-visible`
+
+### Основные выводы:
+
+1. Используйте `:focus-visible` для доступности
+2. `:has()` открывает новые возможности для родительских селекторов
+3. `::before` и `::after` отлично подходят для декоративных элементов
+4. Комбинируйте псевдоклассы для точной стилизации
+5. Помните о производительности при сложных селекторах
+
+Практикуйтесь с интерактивными примерами выше и создавайте красивые интерфейсы!
+
+## Полезные ресурсы
+
+- [Калькулятор специфичности CSS](/tools/css-specificity-calculator)
+- [Генератор CSS градиентов](/tools/css-gradient-generator)
+- [MDN: Псевдоклассы](https://developer.mozilla.org/ru/docs/Web/CSS/Pseudo-classes)
+- [MDN: Псевдоэлементы](https://developer.mozilla.org/ru/docs/Web/CSS/Pseudo-elements)
+
+---
+
+**Совет:** Попробуйте изменить код в интерактивных примерах выше, чтобы увидеть, как работают разные псевдоклассы и псевдоэлементы в реальном времени!

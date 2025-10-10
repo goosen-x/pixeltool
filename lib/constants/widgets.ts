@@ -445,7 +445,7 @@ export const widgets: Widget[] = [
 		title: 'HTML древо визуализатор',
 		description: 'Визуализируйте HTML структуру в виде дерева с валидацией БЭМ',
 		useCase: 'Визуализация HTML структуры и валидация БЭМ соглашений',
-		recommendedTools: ['css-specificity', 'speed-test', 'flexbox-generator'],
+		recommendedTools: ['css-specificity', 'html-tree', 'flexbox-generator'],
 		difficulty: 'intermediate',
 		tags: ['html', 'tree', 'bem', 'structure', 'visualization'],
 		metaDescription:
@@ -468,39 +468,7 @@ export const widgets: Widget[] = [
 			}
 		]
 	},
-	{
-		id: 'speed-test',
-		icon: Gauge,
-		category: 'lifestyle',
-		translationKey: 'speedTest',
-		path: 'internet-speed-test',
-		gradient: 'from-slate-500 to-gray-600',
-		title: 'Тест скорости интернета',
-		description: 'Проверьте скорость вашего интернет-соединения',
-		useCase: 'Тестирование скорости интернет-соединения и задержки',
-		recommendedTools: ['html-tree', 'css-specificity', 'svg-encoder'],
-		difficulty: 'beginner',
-		tags: ['speed', 'performance', 'internet', 'bandwidth', 'latency'],
-		metaDescription:
-			'Internet speed test tool. Measure download, upload speeds and latency.',
-		faqs: [
-			{
-				question: 'Как работает тест скорости?',
-				answer:
-					'Тест загружает и выгружает порции данных для измерения пропускной способности, затем вычисляет задержку, измеряя время ответа сервера. Результаты показывают реальную производительность.'
-			},
-			{
-				question: 'Что влияет на скорость интернета?',
-				answer:
-					'На скорость влияет тарифный план, загруженность сети, сила WiFi-сигнала, возможности устройства и расстояние до серверов. Проводное соединение обычно быстрее WiFi.'
-			},
-			{
-				question: 'Какая скорость мне нужна?',
-				answer:
-					'Для базового сёрфинга нужно 5-10 Мбит/с, HD-стриминг требует 25 Мбит/с, 4K-стриминг нужно 50+ Мбит/с, а для онлайн-игр важнее низкая задержка, чем высокая скорость.'
-			}
-		]
-	},
+
 	{
 		id: 'mock-data-generator',
 		icon: Database,
@@ -513,7 +481,7 @@ export const widgets: Widget[] = [
 			'Бесплатный онлайн генератор тестовых данных. Получайте примеры данных из бесплатных API для тестирования',
 		useCase:
 			'Бесплатный генератор реалистичных тестовых данных для разработки и прототипирования',
-		recommendedTools: ['html-tree', 'speed-test', 'qr-generator'],
+		recommendedTools: ['html-tree', 'css-specificity', 'qr-generator'],
 		difficulty: 'beginner',
 		tags: ['api', 'mock', 'data', 'json', 'testing', 'development'],
 		metaDescription:

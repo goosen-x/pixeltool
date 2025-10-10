@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import { widgets } from '@/lib/constants/widgets'
 import { ToolsLayoutClient } from './ToolsLayoutClient'
 import '../widget-transitions.css'
