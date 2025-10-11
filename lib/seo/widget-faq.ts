@@ -136,5 +136,71 @@ export const widgetFAQ: Record<string, WidgetFAQ> = {
 					'Для центрирования элементов по горизонтали и вертикали используйте: display: flex; justify-content: center; align-items: center; на родительском контейнере.'
 			}
 		]
+	},
+	'grid-generator': {
+		en: [
+			{
+				question: 'What is CSS Grid?',
+				answer:
+					'CSS Grid is a powerful two-dimensional layout system that allows you to create complex layouts with rows and columns. It provides precise control over both axes simultaneously.'
+			},
+			{
+				question: 'What does fr unit mean in Grid?',
+				answer:
+					'The "fr" (fractional) unit represents a fraction of the available space in the grid container. For example, "1fr 2fr" creates two columns where the second is twice as wide as the first.'
+			},
+			{
+				question: 'How do I make a responsive grid?',
+				answer:
+					'Use auto-fit or auto-fill with minmax() function. For example: grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); creates a responsive grid that automatically adjusts the number of columns.'
+			},
+			{
+				question: 'What is the difference between gap and grid-gap?',
+				answer:
+					'They are the same! grid-gap is the old syntax, while gap is the newer standard. Modern browsers support both, but gap is recommended as it also works with Flexbox.'
+			},
+			{
+				question: 'Can I overlap grid items?',
+				answer:
+					'Yes! Use grid-row and grid-column properties to explicitly place items. Items can occupy the same cells, and you can control their stacking with z-index.'
+			},
+			{
+				question: 'What is grid-auto-flow dense?',
+				answer:
+					'The "dense" keyword tells Grid to fill in holes in the layout by moving smaller items up. This creates a more compact layout but may change the visual order of items.'
+			}
+		],
+		ru: [
+			{
+				question: 'Что такое CSS Grid?',
+				answer:
+					'CSS Grid - это мощная двумерная система разметки, которая позволяет создавать сложные макеты со строками и столбцами. Она обеспечивает точный контроль над обеими осями одновременно.'
+			},
+			{
+				question: 'Что означает единица fr в Grid?',
+				answer:
+					'Единица "fr" (fractional) представляет долю доступного пространства в контейнере. Например, "1fr 2fr" создает два столбца, где второй в два раза шире первого.'
+			},
+			{
+				question: 'Как сделать адаптивную сетку?',
+				answer:
+					'Используйте auto-fit или auto-fill с функцией minmax(). Например: grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); создает адаптивную сетку, которая автоматически подстраивает количество столбцов.'
+			},
+			{
+				question: 'В чем разница между gap и grid-gap?',
+				answer:
+					'Это одно и то же! grid-gap - старый синтаксис, а gap - новый стандарт. Современные браузеры поддерживают оба варианта, но gap рекомендуется, так как работает и с Flexbox.'
+			},
+			{
+				question: 'Можно ли накладывать элементы Grid друг на друга?',
+				answer:
+					'Да! Используйте свойства grid-row и grid-column для явного размещения элементов. Элементы могут занимать одни и те же ячейки, а их порядок наложения контролируется через z-index.'
+			},
+			{
+				question: 'Что такое grid-auto-flow dense?',
+				answer:
+					'Ключевое слово "dense" указывает Grid заполнять пробелы в макете, перемещая меньшие элементы вверх. Это создает более компактный макет, но может изменить визуальный порядок элементов.'
+			}
+		]
 	}
 }
