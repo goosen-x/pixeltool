@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import { widgets } from '@/lib/constants/widgets'
-import { ToolsLayoutClient } from './ToolsLayoutClient'
-import '../widget-transitions.css'
 
 export const metadata: Metadata = {
 	title: `Бесплатные инструменты для веб разработки и дизайна онлайн | PixelTool`,
@@ -35,6 +33,7 @@ type Props = {
 	children: ReactNode
 }
 
-export default function ToolsLayout({ children }: Props) {
-	return <ToolsLayoutClient>{children}</ToolsLayoutClient>
+export default function ToolsListingLayout({ children }: Props) {
+	// Simple layout without sidebar for /tools listing page
+	return <>{children}</>
 }
