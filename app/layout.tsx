@@ -11,10 +11,10 @@ import YandexMetrika from '@/components/analytics/YandexMetrika'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { ServiceWorkerRegistration } from '@/components/global/ServiceWorkerRegistration'
 import { WebVitals } from '@/components/analytics/WebVitals'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
+import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregister'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
@@ -261,7 +261,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<NavigationProgress />
 					<YandexMetrika />
 					<GlobalGoalsTracker />
-					<ServiceWorkerRegistration />
+					<ServiceWorkerUnregister />
 					<WebVitals />
 					<Header />
 					{children}
