@@ -106,18 +106,21 @@ export function useConverter(): UseConverterReturn {
 	/**
 	 * Set field value (bidirectional editing)
 	 */
-	const setFieldValue = useCallback((field: 'px' | 'rem' | 'em', value: string) => {
-		const numValue = parseFloat(value)
-		if (isNaN(numValue) || !isFinite(numValue)) {
-			setInputValueState('')
-			setResults(null)
-			return
-		}
+	const setFieldValue = useCallback(
+		(field: 'px' | 'rem' | 'em', value: string) => {
+			const numValue = parseFloat(value)
+			if (isNaN(numValue) || !isFinite(numValue)) {
+				setInputValueState('')
+				setResults(null)
+				return
+			}
 
-		setInputValueState(numValue.toString())
-		setInputUnit(field)
-		setLastEditedField(field)
-	}, [])
+			setInputValueState(numValue.toString())
+			setInputUnit(field)
+			setLastEditedField(field)
+		},
+		[]
+	)
 
 	/**
 	 * Set base font size

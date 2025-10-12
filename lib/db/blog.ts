@@ -13,12 +13,14 @@ export async function getAllPublishedPosts(
 	try {
 		const { data, error } = await supabaseServer
 			.from('blog_posts')
-			.select(`
+			.select(
+				`
 				*,
 				blog_post_authors (
 					author:authors (*)
 				)
-			`)
+			`
+			)
 			.eq('published', true)
 			.eq('locale', locale)
 			.order('published_at', { ascending: false })
@@ -29,7 +31,9 @@ export async function getAllPublishedPosts(
 		// Transform data to match expected format
 		return (data || []).map((post: any) => ({
 			...post,
-			authors: post.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) || []
+			authors:
+				post.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) ||
+				[]
 		})) as BlogPost[]
 	} catch (error) {
 		console.error('Error fetching published posts:', error)
@@ -45,12 +49,14 @@ export async function getLatestPublishedPosts(
 	try {
 		const { data, error } = await supabaseServer
 			.from('blog_posts')
-			.select(`
+			.select(
+				`
 				*,
 				blog_post_authors (
 					author:authors (*)
 				)
-			`)
+			`
+			)
 			.eq('published', true)
 			.eq('locale', locale)
 			.order('published_at', { ascending: false })
@@ -61,7 +67,9 @@ export async function getLatestPublishedPosts(
 
 		return (data || []).map((post: any) => ({
 			...post,
-			authors: post.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) || []
+			authors:
+				post.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) ||
+				[]
 		})) as BlogPost[]
 	} catch (error) {
 		console.error('Error fetching latest posts:', error)
@@ -77,12 +85,14 @@ export async function getPostBySlug(
 	try {
 		const { data, error } = await supabaseServer
 			.from('blog_posts')
-			.select(`
+			.select(
+				`
 				*,
 				blog_post_authors (
 					author:authors (*)
 				)
-			`)
+			`
+			)
 			.eq('slug', slug)
 			.eq('locale', locale)
 			.eq('published', true)
@@ -93,7 +103,9 @@ export async function getPostBySlug(
 
 		return {
 			...data,
-			authors: data.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) || []
+			authors:
+				data.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) ||
+				[]
 		} as BlogPost
 	} catch (error) {
 		console.error('Error fetching post by slug:', error)
@@ -198,9 +210,7 @@ export async function updateBlogPost(
 				author_id: authorId
 			}))
 
-			await supabaseServer
-				.from('blog_post_authors')
-				.insert(authorRelations)
+			await supabaseServer.from('blog_post_authors').insert(authorRelations)
 		}
 
 		return await getPostBySlug(updatedPost.slug, updatedPost.locale)

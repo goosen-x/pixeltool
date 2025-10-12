@@ -120,7 +120,8 @@ export default function JSMinifierPage() {
 
 	// Options
 	const [preserveLineBreaks, setPreserveLineBreaks] = useState(false)
-	const [enableAggressiveOptimization, setEnableAggressiveOptimization] = useState(true)
+	const [enableAggressiveOptimization, setEnableAggressiveOptimization] =
+		useState(true)
 	const [removeConsole, setRemoveConsole] = useState(false)
 	const [removeDebugger, setRemoveDebugger] = useState(true)
 
@@ -157,7 +158,13 @@ export default function JSMinifierPage() {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [input, preserveLineBreaks, enableAggressiveOptimization, removeConsole, removeDebugger])
+	}, [
+		input,
+		preserveLineBreaks,
+		enableAggressiveOptimization,
+		removeConsole,
+		removeDebugger
+	])
 
 	const minifyJavaScript = (code: string): MinificationResult => {
 		let minified = code
@@ -176,7 +183,10 @@ export default function JSMinifierPage() {
 
 			// Remove console.log if option enabled
 			if (removeConsole) {
-				minified = minified.replace(/console\.(log|warn|error|info|debug)\([^)]*\);?/g, '')
+				minified = minified.replace(
+					/console\.(log|warn|error|info|debug)\([^)]*\);?/g,
+					''
+				)
 				optimizations.push('Удалены console-выражения')
 			}
 
@@ -195,7 +205,10 @@ export default function JSMinifierPage() {
 				minified = minified.replace(/\s*([{}();,:\[\]])\s*/g, '$1')
 
 				// Remove space after keywords when not needed
-				minified = minified.replace(/\b(return|throw|new|typeof|void|delete)\s+/g, '$1 ')
+				minified = minified.replace(
+					/\b(return|throw|new|typeof|void|delete)\s+/g,
+					'$1 '
+				)
 
 				optimizations.push('Удалены лишние пробелы')
 			}
@@ -212,8 +225,8 @@ export default function JSMinifierPage() {
 					'document.getElementById': 'docById',
 					'document.querySelector': 'docQS',
 					'document.createElement': 'docCE',
-					'addEventListener': 'addEvt',
-					'removeEventListener': 'rmEvt'
+					addEventListener: 'addEvt',
+					removeEventListener: 'rmEvt'
 				}
 
 				Object.entries(patterns).forEach(([long, short]) => {
@@ -224,7 +237,9 @@ export default function JSMinifierPage() {
 					const beforeLength = minified.length
 					minified = minified.replace(regex, short)
 					if (minified.length < beforeLength) {
-						warnings.push(`Сокращено '${long}' до '${short}' (может потребоваться обёртка)`)
+						warnings.push(
+							`Сокращено '${long}' до '${short}' (может потребоваться обёртка)`
+						)
 					}
 				})
 
@@ -242,9 +257,8 @@ export default function JSMinifierPage() {
 		const originalSize = new TextEncoder().encode(code).length
 		const minifiedSize = new TextEncoder().encode(minified).length
 		const savingsBytes = originalSize - minifiedSize
-		const savings = originalSize > 0
-			? Math.round((savingsBytes / originalSize) * 100)
-			: 0
+		const savings =
+			originalSize > 0 ? Math.round((savingsBytes / originalSize) * 100) : 0
 
 		return {
 			originalSize,
@@ -276,7 +290,9 @@ export default function JSMinifierPage() {
 				if (minificationResult.errors && minificationResult.errors.length > 0) {
 					toast.error(`Обнаружены ошибки: ${minificationResult.errors.length}`)
 				} else {
-					toast.success(`Код минифицирован! Сжатие ${minificationResult.savings}%`)
+					toast.success(
+						`Код минифицирован! Сжатие ${minificationResult.savings}%`
+					)
 				}
 			} catch (error) {
 				toast.error('Ошибка минификации кода')
@@ -313,7 +329,7 @@ export default function JSMinifierPage() {
 		toast.success('Файл minified.js скачан!')
 	}
 
-	const loadExample = (example: typeof JS_EXAMPLES[0]) => {
+	const loadExample = (example: (typeof JS_EXAMPLES)[0]) => {
 		setInput(example.code)
 		toast.success(`Пример загружен: ${example.name}`)
 	}
@@ -353,7 +369,9 @@ export default function JSMinifierPage() {
 						<div className='flex flex-wrap items-center justify-between gap-3'>
 							<div className='flex items-center gap-2'>
 								<FileCode className='w-5 h-5 text-blue-500' />
-								<h3 className='font-semibold text-sm sm:text-base'>Исходный код</h3>
+								<h3 className='font-semibold text-sm sm:text-base'>
+									Исходный код
+								</h3>
 							</div>
 							<div className='flex flex-wrap items-center gap-2'>
 								{input && (
@@ -413,7 +431,9 @@ export default function JSMinifierPage() {
 									onClick={() => setShowOptions(!showOptions)}
 								>
 									<Settings className='h-3 w-3 sm:h-4 sm:w-4' />
-									<span className='hidden xs:inline'>Настройки минификации</span>
+									<span className='hidden xs:inline'>
+										Настройки минификации
+									</span>
 									<span className='xs:hidden'>Настройки</span>
 									{showOptions ? (
 										<ChevronUp className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -464,7 +484,10 @@ export default function JSMinifierPage() {
 											checked={preserveLineBreaks}
 											onCheckedChange={setPreserveLineBreaks}
 										/>
-										<Label htmlFor='preserve-lines' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='preserve-lines'
+											className='text-sm cursor-pointer'
+										>
 											Сохранить переносы строк
 										</Label>
 									</div>
@@ -475,7 +498,10 @@ export default function JSMinifierPage() {
 											checked={enableAggressiveOptimization}
 											onCheckedChange={setEnableAggressiveOptimization}
 										/>
-										<Label htmlFor='aggressive' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='aggressive'
+											className='text-sm cursor-pointer'
+										>
 											Агрессивная оптимизация
 										</Label>
 									</div>
@@ -486,7 +512,10 @@ export default function JSMinifierPage() {
 											checked={removeConsole}
 											onCheckedChange={setRemoveConsole}
 										/>
-										<Label htmlFor='remove-console' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='remove-console'
+											className='text-sm cursor-pointer'
+										>
 											Удалить console.log
 										</Label>
 									</div>
@@ -497,7 +526,10 @@ export default function JSMinifierPage() {
 											checked={removeDebugger}
 											onCheckedChange={setRemoveDebugger}
 										/>
-										<Label htmlFor='remove-debugger' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='remove-debugger'
+											className='text-sm cursor-pointer'
+										>
 											Удалить debugger
 										</Label>
 									</div>
@@ -515,7 +547,9 @@ export default function JSMinifierPage() {
 							<div className='flex flex-wrap items-center justify-between gap-2'>
 								<div className='flex items-center gap-2'>
 									<TrendingDown className='w-5 h-5 text-green-500' />
-									<h3 className='font-semibold text-sm sm:text-base'>Минифицированный код</h3>
+									<h3 className='font-semibold text-sm sm:text-base'>
+										Минифицированный код
+									</h3>
 								</div>
 								{output && (
 									<div className='flex flex-wrap gap-2'>
@@ -554,9 +588,13 @@ export default function JSMinifierPage() {
 										<span className='whitespace-nowrap'>сжатие</span>
 									</div>
 									<div className='flex items-center gap-1'>
-										<span className='font-mono text-xs'>{formatBytes(result.originalSize)}</span>
+										<span className='font-mono text-xs'>
+											{formatBytes(result.originalSize)}
+										</span>
 										<span>→</span>
-										<span className='font-mono font-medium text-xs'>{formatBytes(result.minifiedSize)}</span>
+										<span className='font-mono font-medium text-xs'>
+											{formatBytes(result.minifiedSize)}
+										</span>
 									</div>
 									<div className='text-green-600 dark:text-green-400 font-medium whitespace-nowrap'>
 										Сохранено: {formatBytes(result.savingsBytes)}

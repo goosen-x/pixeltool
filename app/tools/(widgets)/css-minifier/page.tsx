@@ -158,7 +158,13 @@ export default function CSSMinifierPage() {
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [input, preserveLineBreaks, optimizeColors, optimizeUnits, optimizeShorthand])
+	}, [
+		input,
+		preserveLineBreaks,
+		optimizeColors,
+		optimizeUnits,
+		optimizeShorthand
+	])
 
 	const minifyCSS = (code: string): MinificationResult => {
 		let minified = code
@@ -221,11 +227,17 @@ export default function CSSMinifierPage() {
 			if (optimizeShorthand) {
 				// Optimize margin shorthand
 				minified = minified.replace(/margin:\s*0\s+0\s+0\s+0/g, 'margin:0')
-				minified = minified.replace(/margin:\s*(\d+[a-z]*)\s+\1\s+\1\s+\1/g, 'margin:$1')
+				minified = minified.replace(
+					/margin:\s*(\d+[a-z]*)\s+\1\s+\1\s+\1/g,
+					'margin:$1'
+				)
 
 				// Optimize padding shorthand
 				minified = minified.replace(/padding:\s*0\s+0\s+0\s+0/g, 'padding:0')
-				minified = minified.replace(/padding:\s*(\d+[a-z]*)\s+\1\s+\1\s+\1/g, 'padding:$1')
+				minified = minified.replace(
+					/padding:\s*(\d+[a-z]*)\s+\1\s+\1\s+\1/g,
+					'padding:$1'
+				)
 
 				// Optimize border shorthand
 				minified = minified.replace(/border:\s*0px\s+solid/g, 'border:0')
@@ -256,9 +268,8 @@ export default function CSSMinifierPage() {
 		const originalSize = new TextEncoder().encode(code).length
 		const minifiedSize = new TextEncoder().encode(minified).length
 		const savingsBytes = originalSize - minifiedSize
-		const savings = originalSize > 0
-			? Math.round((savingsBytes / originalSize) * 100)
-			: 0
+		const savings =
+			originalSize > 0 ? Math.round((savingsBytes / originalSize) * 100) : 0
 
 		return {
 			originalSize,
@@ -290,7 +301,9 @@ export default function CSSMinifierPage() {
 				if (minificationResult.errors && minificationResult.errors.length > 0) {
 					toast.error(`Обнаружены ошибки: ${minificationResult.errors.length}`)
 				} else {
-					toast.success(`CSS минифицирован! Сжатие ${minificationResult.savings}%`)
+					toast.success(
+						`CSS минифицирован! Сжатие ${minificationResult.savings}%`
+					)
 				}
 			} catch (error) {
 				toast.error('Ошибка минификации CSS')
@@ -327,7 +340,7 @@ export default function CSSMinifierPage() {
 		toast.success('Файл minified.css скачан!')
 	}
 
-	const loadExample = (example: typeof CSS_EXAMPLES[0]) => {
+	const loadExample = (example: (typeof CSS_EXAMPLES)[0]) => {
 		setInput(example.code)
 		toast.success(`Пример загружен: ${example.name}`)
 	}
@@ -367,7 +380,9 @@ export default function CSSMinifierPage() {
 						<div className='flex flex-wrap items-center justify-between gap-3'>
 							<div className='flex items-center gap-2'>
 								<FileText className='w-5 h-5 text-pink-500' />
-								<h3 className='font-semibold text-sm sm:text-base'>Исходный код</h3>
+								<h3 className='font-semibold text-sm sm:text-base'>
+									Исходный код
+								</h3>
 							</div>
 							<div className='flex flex-wrap items-center gap-2'>
 								{input && (
@@ -427,7 +442,9 @@ export default function CSSMinifierPage() {
 									onClick={() => setShowOptions(!showOptions)}
 								>
 									<Settings className='h-3 w-3 sm:h-4 sm:w-4' />
-									<span className='hidden xs:inline'>Настройки минификации</span>
+									<span className='hidden xs:inline'>
+										Настройки минификации
+									</span>
 									<span className='xs:hidden'>Настройки</span>
 									{showOptions ? (
 										<ChevronUp className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -478,7 +495,10 @@ export default function CSSMinifierPage() {
 											checked={preserveLineBreaks}
 											onCheckedChange={setPreserveLineBreaks}
 										/>
-										<Label htmlFor='preserve-lines' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='preserve-lines'
+											className='text-sm cursor-pointer'
+										>
 											Сохранить переносы строк
 										</Label>
 									</div>
@@ -489,7 +509,10 @@ export default function CSSMinifierPage() {
 											checked={optimizeColors}
 											onCheckedChange={setOptimizeColors}
 										/>
-										<Label htmlFor='optimize-colors' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='optimize-colors'
+											className='text-sm cursor-pointer'
+										>
 											Оптимизировать цвета
 										</Label>
 									</div>
@@ -500,7 +523,10 @@ export default function CSSMinifierPage() {
 											checked={optimizeUnits}
 											onCheckedChange={setOptimizeUnits}
 										/>
-										<Label htmlFor='optimize-units' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='optimize-units'
+											className='text-sm cursor-pointer'
+										>
 											Оптимизировать единицы
 										</Label>
 									</div>
@@ -511,7 +537,10 @@ export default function CSSMinifierPage() {
 											checked={optimizeShorthand}
 											onCheckedChange={setOptimizeShorthand}
 										/>
-										<Label htmlFor='optimize-shorthand' className='text-sm cursor-pointer'>
+										<Label
+											htmlFor='optimize-shorthand'
+											className='text-sm cursor-pointer'
+										>
 											Сокращённые свойства
 										</Label>
 									</div>
@@ -529,7 +558,9 @@ export default function CSSMinifierPage() {
 							<div className='flex flex-wrap items-center justify-between gap-2'>
 								<div className='flex items-center gap-2'>
 									<TrendingDown className='w-5 h-5 text-green-500' />
-									<h3 className='font-semibold text-sm sm:text-base'>Минифицированный код</h3>
+									<h3 className='font-semibold text-sm sm:text-base'>
+										Минифицированный код
+									</h3>
 								</div>
 								{output && (
 									<div className='flex flex-wrap gap-2'>
@@ -568,9 +599,13 @@ export default function CSSMinifierPage() {
 										<span className='whitespace-nowrap'>сжатие</span>
 									</div>
 									<div className='flex items-center gap-1'>
-										<span className='font-mono text-xs'>{formatBytes(result.originalSize)}</span>
+										<span className='font-mono text-xs'>
+											{formatBytes(result.originalSize)}
+										</span>
 										<span>→</span>
-										<span className='font-mono font-medium text-xs'>{formatBytes(result.minifiedSize)}</span>
+										<span className='font-mono font-medium text-xs'>
+											{formatBytes(result.minifiedSize)}
+										</span>
 									</div>
 									<div className='text-green-600 dark:text-green-400 font-medium whitespace-nowrap'>
 										Сохранено: {formatBytes(result.savingsBytes)}

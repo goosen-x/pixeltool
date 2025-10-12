@@ -7,7 +7,14 @@ export interface Widget {
 	id: string
 	icon: React.ComponentType<{ className?: string }>
 	iconName?: string
-	category: 'css' | 'html' | 'javascript' | 'text' | 'generators' | 'security' | 'tools'
+	category:
+		| 'css'
+		| 'html'
+		| 'javascript'
+		| 'text'
+		| 'generators'
+		| 'security'
+		| 'tools'
 	translationKey: string
 	path: string
 	gradient: string

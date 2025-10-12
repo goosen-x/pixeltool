@@ -57,9 +57,7 @@ for (const widget of widgets) {
 console.log('📊 Analysis Results:\n')
 console.log(`Total widgets: ${widgets.length}`)
 console.log(`Widgets with issues: ${issuesFound.length}`)
-console.log(
-	`Complete widgets: ${widgets.length - issuesFound.length} ✅\n`
-)
+console.log(`Complete widgets: ${widgets.length - issuesFound.length} ✅\n`)
 
 if (issuesFound.length > 0) {
 	console.log('⚠️  Widgets that need attention:\n')
@@ -75,14 +73,18 @@ if (issuesFound.length > 0) {
 			w.faqCount < MIN_FAQ_COUNT
 	)
 	const needRecommended = issuesFound.filter(
-		w => w.recommendedCount < MIN_RECOMMENDED_TOOLS && w.faqCount >= MIN_FAQ_COUNT
+		w =>
+			w.recommendedCount < MIN_RECOMMENDED_TOOLS && w.faqCount >= MIN_FAQ_COUNT
 	)
 	const needFaq = issuesFound.filter(
-		w => w.recommendedCount >= MIN_RECOMMENDED_TOOLS && w.faqCount < MIN_FAQ_COUNT
+		w =>
+			w.recommendedCount >= MIN_RECOMMENDED_TOOLS && w.faqCount < MIN_FAQ_COUNT
 	)
 
 	if (criticalIssues.length > 0) {
-		console.log(`🔴 CRITICAL - No FAQ + Need recommended (${criticalIssues.length}):`)
+		console.log(
+			`🔴 CRITICAL - No FAQ + Need recommended (${criticalIssues.length}):`
+		)
 		criticalIssues.forEach((widget, index) => {
 			console.log(
 				`   ${index + 1}. ${widget.title} (${widget.id}) - ${widget.recommendedCount}/3 tools, ${widget.faqCount}/5 FAQ`
@@ -125,11 +127,15 @@ if (issuesFound.length > 0) {
 	const totalNeedRecommended = issuesFound.filter(
 		w => w.recommendedCount < MIN_RECOMMENDED_TOOLS
 	).length
-	const totalNeedFaq = issuesFound.filter(w => w.faqCount < MIN_FAQ_COUNT).length
+	const totalNeedFaq = issuesFound.filter(
+		w => w.faqCount < MIN_FAQ_COUNT
+	).length
 
 	console.log(`- Need recommended tools: ${totalNeedRecommended} widgets`)
 	console.log(`- Need FAQ entries: ${totalNeedFaq} widgets`)
-	console.log(`- Total FAQ questions to write: ${issuesFound.reduce((acc, w) => acc + (MIN_FAQ_COUNT - w.faqCount), 0)}`)
+	console.log(
+		`- Total FAQ questions to write: ${issuesFound.reduce((acc, w) => acc + (MIN_FAQ_COUNT - w.faqCount), 0)}`
+	)
 } else {
 	console.log('✅ All widgets are complete!')
 }

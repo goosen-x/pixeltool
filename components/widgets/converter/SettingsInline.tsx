@@ -42,12 +42,17 @@ export function SettingsInline({
 					<Button variant='ghost' size='sm' className='gap-2'>
 						<Settings className='h-4 w-4' />
 						<span className='text-sm'>
-							Base: <span className='font-mono font-semibold'>{config.baseFontSize}px</span>
+							Base:{' '}
+							<span className='font-mono font-semibold'>
+								{config.baseFontSize}px
+							</span>
 						</span>
 						{config.parentFontSize !== config.baseFontSize && (
 							<span className='text-sm text-muted-foreground'>
 								| Parent:{' '}
-								<span className='font-mono font-semibold'>{config.parentFontSize}px</span>
+								<span className='font-mono font-semibold'>
+									{config.parentFontSize}px
+								</span>
 							</span>
 						)}
 					</Button>
@@ -65,7 +70,9 @@ export function SettingsInline({
 						{/* Base Font Size */}
 						<div className='space-y-3'>
 							<div className='flex items-center justify-between'>
-								<Label htmlFor='base-font'>Базовый размер шрифта (для REM)</Label>
+								<Label htmlFor='base-font'>
+									Базовый размер шрифта (для REM)
+								</Label>
 								<span className='text-sm font-mono font-semibold'>
 									{config.baseFontSize}px
 								</span>
@@ -87,7 +94,9 @@ export function SettingsInline({
 						{/* Parent Font Size */}
 						<div className='space-y-3'>
 							<div className='flex items-center justify-between'>
-								<Label htmlFor='parent-font'>Родительский размер (для EM)</Label>
+								<Label htmlFor='parent-font'>
+									Родительский размер (для EM)
+								</Label>
 								<span className='text-sm font-mono font-semibold'>
 									{config.parentFontSize}px
 								</span>
@@ -189,7 +198,11 @@ export function SettingsInline({
 						</div>
 
 						{/* Reset Button */}
-						<Button variant='outline' onClick={onReset} className='w-full gap-2'>
+						<Button
+							variant='outline'
+							onClick={onReset}
+							className='w-full gap-2'
+						>
 							<RefreshCw className='h-4 w-4' />
 							Сбросить все настройки
 						</Button>

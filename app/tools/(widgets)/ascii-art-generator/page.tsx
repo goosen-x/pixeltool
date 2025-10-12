@@ -500,7 +500,6 @@ export default function AsciiArtGeneratorPage() {
 				widgetDescription='Convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.'
 				hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
 			/>
-
 		</div>
 	)
 }

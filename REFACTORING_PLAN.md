@@ -1,14 +1,14 @@
 # 📋 ПЛАН РЕФАКТОРИНГА: Структура виджетов
 
-**Дата:** 12 октября 2025
-**Статус:** ✅ Одобрен
-**Вариант:** #3 - Split by Category
+**Дата:** 12 октября 2025 **Статус:** ✅ Одобрен **Вариант:** #3 - Split by
+Category
 
 ---
 
 ## 🎯 ЦЕЛЬ
 
-Разделить огромный `widgets.ts` (2577 строк) на маленькие файлы по категориям и устранить тройное дублирование title/description.
+Разделить огромный `widgets.ts` (2577 строк) на маленькие файлы по категориям и
+устранить тройное дублирование title/description.
 
 ---
 
@@ -31,6 +31,7 @@ lib/constants/widgets/
 ## 🔄 ИЗМЕНЯЕМЫЕ ФАЙЛЫ
 
 ### Создаваемые файлы (8):
+
 1. `/lib/constants/widgets/index.ts`
 2. `/lib/constants/widgets/css.ts`
 3. `/lib/constants/widgets/html.ts`
@@ -41,10 +42,12 @@ lib/constants/widgets/
 8. `/lib/constants/widgets/tools.ts`
 
 ### Изменяемые файлы (2):
+
 1. `/components/widgets/WidgetHeader.tsx` - удалить WIDGET_TRANSLATIONS
 2. `/components/seo/WidgetSEOWrapper.tsx` - удалить WIDGET_TRANSLATIONS
 
 ### Удаляемые файлы (1):
+
 1. `/lib/constants/widgets.ts` - после успешной миграции
 
 ---
@@ -68,34 +71,41 @@ touch index.ts css.ts html.ts javascript.ts text.ts generators.ts security.ts to
 ```typescript
 // Импорты иконок (скопировать из widgets.ts)
 import {
-  BarChart3,
-  Binary,
-  Box,
-  // ... все иконки
+	BarChart3,
+	Binary,
+	Box
+	// ... все иконки
 } from 'lucide-react'
 
 // Интерфейсы
 export interface WidgetFAQ {
-  question: string
-  answer: string
+	question: string
+	answer: string
 }
 
 export interface Widget {
-  id: string
-  icon: React.ComponentType<{ className?: string }>
-  iconName?: string
-  category: 'css' | 'html' | 'javascript' | 'text' | 'generators' | 'security' | 'tools'
-  translationKey: string
-  path: string
-  gradient: string
-  title?: string
-  description?: string
-  useCase?: string
-  recommendedTools?: string[]
-  faqs?: WidgetFAQ[]
-  tags?: string[]
-  difficulty?: 'beginner' | 'intermediate' | 'advanced'
-  metaDescription?: string
+	id: string
+	icon: React.ComponentType<{ className?: string }>
+	iconName?: string
+	category:
+		| 'css'
+		| 'html'
+		| 'javascript'
+		| 'text'
+		| 'generators'
+		| 'security'
+		| 'tools'
+	translationKey: string
+	path: string
+	gradient: string
+	title?: string
+	description?: string
+	useCase?: string
+	recommendedTools?: string[]
+	faqs?: WidgetFAQ[]
+	tags?: string[]
+	difficulty?: 'beginner' | 'intermediate' | 'advanced'
+	metaDescription?: string
 }
 
 // Импорты категорий
@@ -109,39 +119,39 @@ import { toolWidgets } from './tools'
 
 // Главный массив
 export const widgets: Widget[] = [
-  ...cssWidgets,
-  ...htmlWidgets,
-  ...javascriptWidgets,
-  ...textWidgets,
-  ...generatorWidgets,
-  ...securityWidgets,
-  ...toolWidgets
+	...cssWidgets,
+	...htmlWidgets,
+	...javascriptWidgets,
+	...textWidgets,
+	...generatorWidgets,
+	...securityWidgets,
+	...toolWidgets
 ]
 
 // Утилитные функции
 export const getWidgetById = (id: string): Widget | undefined => {
-  return widgets.find(w => w.id === id)
+	return widgets.find(w => w.id === id)
 }
 
 export const getWidgetsByCategory = (
-  category: Widget['category']
+	category: Widget['category']
 ): Widget[] => {
-  return widgets.filter(w => w.category === category)
+	return widgets.filter(w => w.category === category)
 }
 
 export const widgetCategories = {
-  html: 'HTML',
-  css: 'CSS',
-  javascript: 'JavaScript',
-  text: 'Текст',
-  generators: 'Генераторы',
-  security: 'Безопасность',
-  tools: 'Утилиты'
+	html: 'HTML',
+	css: 'CSS',
+	javascript: 'JavaScript',
+	text: 'Текст',
+	generators: 'Генераторы',
+	security: 'Безопасность',
+	tools: 'Утилиты'
 } as const
 
 export const getWidgetFAQs = (translationKey: string): any[] => {
-  // Оставить реализацию как в оригинале
-  return []
+	// Оставить реализацию как в оригинале
+	return []
 }
 ```
 
@@ -153,42 +163,53 @@ export const getWidgetFAQs = (translationKey: string): any[] => {
 
 ```typescript
 import { Widget } from './index'
-import { Ruler, Grid3X3, Layers, Palette, Spline, Box, Sparkles } from 'lucide-react'
+import {
+	Ruler,
+	Grid3X3,
+	Layers,
+	Palette,
+	Spline,
+	Box,
+	Sparkles
+} from 'lucide-react'
 
 export const cssWidgets: Widget[] = [
-  {
-    id: 'css-clamp-calculator',
-    icon: Ruler,
-    iconName: 'Ruler',
-    category: 'css',
-    translationKey: 'clampCalculator',
-    path: 'css-clamp-calculator',
-    gradient: 'from-amber-500 to-orange-500',
-    title: 'CSS Clamp калькулятор',
-    description: 'Создавайте адаптивную типографику и отступы, которые плавно масштабируются между размерами экрана',
-    tags: ['css', 'clamp', 'calculator', 'typography'],
-    // ... остальные поля
-  },
-  {
-    id: 'flexbox-generator',
-    icon: Grid3X3,
-    iconName: 'Grid3X3',
-    category: 'css',
-    translationKey: 'flexboxGenerator',
-    path: 'flexbox-generator',
-    gradient: 'from-blue-500 to-cyan-500',
-    title: 'CSS Flexbox генератор',
-    description: 'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом',
-    tags: ['css', 'flexbox', 'generator', 'layout'],
-    // ... остальные поля
-  },
-  // ... остальные CSS виджеты
+	{
+		id: 'css-clamp-calculator',
+		icon: Ruler,
+		iconName: 'Ruler',
+		category: 'css',
+		translationKey: 'clampCalculator',
+		path: 'css-clamp-calculator',
+		gradient: 'from-amber-500 to-orange-500',
+		title: 'CSS Clamp калькулятор',
+		description:
+			'Создавайте адаптивную типографику и отступы, которые плавно масштабируются между размерами экрана',
+		tags: ['css', 'clamp', 'calculator', 'typography']
+		// ... остальные поля
+	},
+	{
+		id: 'flexbox-generator',
+		icon: Grid3X3,
+		iconName: 'Grid3X3',
+		category: 'css',
+		translationKey: 'flexboxGenerator',
+		path: 'flexbox-generator',
+		gradient: 'from-blue-500 to-cyan-500',
+		title: 'CSS Flexbox генератор',
+		description:
+			'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом',
+		tags: ['css', 'flexbox', 'generator', 'layout']
+		// ... остальные поля
+	}
+	// ... остальные CSS виджеты
 ]
 ```
 
 #### Распределение по категориям:
 
 **css.ts** (category === 'css'):
+
 - css-clamp-calculator
 - flexbox-generator
 - grid-generator
@@ -202,12 +223,14 @@ export const cssWidgets: Widget[] = [
 - css-minifier
 
 **html.ts** (category === 'html'):
+
 - html-tree
 - html-xml-parser
 - opengraph-validator
 - svg-encoder
 
 **javascript.ts** (category === 'javascript'):
+
 - json-tools
 - js-minifier
 - js-validator
@@ -218,6 +241,7 @@ export const cssWidgets: Widget[] = [
 - base64-encoder (может быть в security)
 
 **text.ts** (category === 'text'):
+
 - text-counter
 - text-case-converter
 - text-diff
@@ -229,6 +253,7 @@ export const cssWidgets: Widget[] = [
 - ascii-art-generator
 
 **generators.ts** (category === 'generators'):
+
 - qr-generator
 - password-generator
 - random-number-generator
@@ -242,11 +267,13 @@ export const cssWidgets: Widget[] = [
 - team-randomizer
 
 **security.ts** (category === 'security'):
+
 - base64-encoder
 - jwt-decoder
 - (другие security виджеты)
 
 **tools.ts** (остальные):
+
 - youtube-thumbnail
 - color-converter
 - image-size-checker
@@ -260,37 +287,41 @@ export const cssWidgets: Widget[] = [
 
 ### ✅ ШАГ 4: Обновить title/description (встроено в Шаг 3)
 
-**Источник актуальных данных:** `/components/widgets/WidgetHeader.tsx` (WIDGET_TRANSLATIONS)
+**Источник актуальных данных:** `/components/widgets/WidgetHeader.tsx`
+(WIDGET_TRANSLATIONS)
 
 **Примеры обновлений:**
 
-| Widget ID | Старое (widgets.ts) | Новое (из WidgetHeader.tsx) |
-|-----------|-------------------|----------------------------|
-| flexbox-generator | "Генератор CSS Flexbox онлайн" | "CSS Flexbox генератор" |
-| grid-generator | "Генератор CSS Grid онлайн" | "CSS Grid генератор" |
-| html-tree | "HTML древо визуализатор" | "Визуализатор HTML дерева" |
-| bezier-curve | "Генератор кривых Безье" | "CSS Cubic-bezier генератор" |
-| qr-generator | "Генератор QR кодов онлайн - создать QR код бесплатно" | "Генератор QR-кодов" |
+| Widget ID         | Старое (widgets.ts)                                    | Новое (из WidgetHeader.tsx)  |
+| ----------------- | ------------------------------------------------------ | ---------------------------- |
+| flexbox-generator | "Генератор CSS Flexbox онлайн"                         | "CSS Flexbox генератор"      |
+| grid-generator    | "Генератор CSS Grid онлайн"                            | "CSS Grid генератор"         |
+| html-tree         | "HTML древо визуализатор"                              | "Визуализатор HTML дерева"   |
+| bezier-curve      | "Генератор кривых Безье"                               | "CSS Cubic-bezier генератор" |
+| qr-generator      | "Генератор QR кодов онлайн - создать QR код бесплатно" | "Генератор QR-кодов"         |
 
 ---
 
 ### ✅ ШАГ 5: Удалить WIDGET_TRANSLATIONS из WidgetHeader.tsx (15 мин)
 
 **Было:**
+
 ```typescript
 const WIDGET_TRANSLATIONS = {
-  'qr-generator': {
-    title: 'Генератор QR-кодов',
-    description: '...'
-  },
-  // ... 300+ строк
+	'qr-generator': {
+		title: 'Генератор QR-кодов',
+		description: '...'
+	}
+	// ... 300+ строк
 } as const
 
-const widgetData = WIDGET_TRANSLATIONS[widget.id as keyof typeof WIDGET_TRANSLATIONS]
+const widgetData =
+	WIDGET_TRANSLATIONS[widget.id as keyof typeof WIDGET_TRANSLATIONS]
 const title = widgetData?.title || widget.id
 ```
 
 **Стало:**
+
 ```typescript
 import { getWidgetById } from '@/lib/constants/widgets'
 
@@ -324,6 +355,7 @@ grep -r "from '@/lib/constants/widgets'" app/ components/ lib/
 ```
 
 **Хорошая новость:** Путь импорта НЕ изменится!
+
 ```typescript
 // По-прежнему работает:
 import { widgets, getWidgetById } from '@/lib/constants/widgets'
@@ -361,29 +393,29 @@ yarn build
 
 ## ⏱️ ВРЕМЯ ВЫПОЛНЕНИЯ
 
-| Шаг | Время |
-|-----|-------|
-| 1. Создать структуру | 5 мин |
-| 2. Создать index.ts | 15 мин |
-| 3. Разделить виджеты | 1 час |
-| 4. Обновить title/description | (встроено) |
-| 5. Обновить WidgetHeader | 15 мин |
-| 6. Обновить WidgetSEOWrapper | 15 мин |
-| 7. Обновить импорты | 15 мин |
-| 8. Удалить старый файл | 5 мин |
-| 9. Тестирование | 30 мин |
-| **ИТОГО** | **2-3 часа** |
+| Шаг                           | Время        |
+| ----------------------------- | ------------ |
+| 1. Создать структуру          | 5 мин        |
+| 2. Создать index.ts           | 15 мин       |
+| 3. Разделить виджеты          | 1 час        |
+| 4. Обновить title/description | (встроено)   |
+| 5. Обновить WidgetHeader      | 15 мин       |
+| 6. Обновить WidgetSEOWrapper  | 15 мин       |
+| 7. Обновить импорты           | 15 мин       |
+| 8. Удалить старый файл        | 5 мин        |
+| 9. Тестирование               | 30 мин       |
+| **ИТОГО**                     | **2-3 часа** |
 
 ---
 
 ## ⚠️ РИСКИ И МИТИГАЦИЯ
 
-| Риск | Вероятность | Митигация |
-|------|-------------|-----------|
-| TypeScript ошибки | Средняя | Проверять typecheck на каждом шаге |
-| Потеря виджетов | Низкая | Подсчёт до/после: 52 виджета |
-| Забыть обновить title | Средняя | Построчная сверка с WidgetHeader.tsx |
-| Сломать импорты | Низкая | Путь не меняется |
+| Риск                  | Вероятность | Митигация                            |
+| --------------------- | ----------- | ------------------------------------ |
+| TypeScript ошибки     | Средняя     | Проверять typecheck на каждом шаге   |
+| Потеря виджетов       | Низкая      | Подсчёт до/после: 52 виджета         |
+| Забыть обновить title | Средняя     | Построчная сверка с WidgetHeader.tsx |
+| Сломать импорты       | Низкая      | Путь не меняется                     |
 
 ---
 
@@ -403,6 +435,7 @@ yarn build
 ## 📊 ДО и ПОСЛЕ
 
 ### ДО:
+
 ```
 lib/constants/widgets.ts               2577 строк
 components/widgets/WidgetHeader.tsx     +300 строк (WIDGET_TRANSLATIONS)
@@ -412,6 +445,7 @@ components/seo/WidgetSEOWrapper.tsx     +300 строк (WIDGET_TRANSLATIONS)
 ```
 
 ### ПОСЛЕ:
+
 ```
 lib/constants/widgets/
   ├── index.ts           50 строк
@@ -436,6 +470,7 @@ components/seo/WidgetSEOWrapper.tsx     -300 строк
 ## 🚀 НАЧАТЬ С
 
 **Первый шаг:**
+
 ```bash
 cd /Users/dmitryborisenko/Documents/frontend/goose-labs/pixeltool
 mkdir -p lib/constants/widgets
@@ -443,5 +478,4 @@ mkdir -p lib/constants/widgets
 
 ---
 
-**Статус:** Готов к выполнению
-**Следующее действие:** Создать структуру папки
+**Статус:** Готов к выполнению **Следующее действие:** Создать структуру папки

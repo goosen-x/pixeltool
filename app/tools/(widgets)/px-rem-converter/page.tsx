@@ -47,7 +47,8 @@ export default function PxRemConverterPage() {
 							placeholder='24px, 1.5rem, 2em...'
 						/>
 						<p className='text-xs text-muted-foreground'>
-							Поддерживаются px, rem, em, %, pt, vw, vh — просто начните печатать
+							Поддерживаются px, rem, em, %, pt, vw, vh — просто начните
+							печатать
 						</p>
 					</div>
 
@@ -213,36 +214,35 @@ export default function PxRemConverterPage() {
 									</tr>
 								</thead>
 								<tbody>
-									{[8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64].map(
-										px => {
-											const rem = px / converter.config.baseFontSize
-											const em = px / converter.config.parentFontSize
-											const percent =
-												(px / converter.config.parentFontSize) * 100
+									{[
+										8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64
+									].map(px => {
+										const rem = px / converter.config.baseFontSize
+										const em = px / converter.config.parentFontSize
+										const percent = (px / converter.config.parentFontSize) * 100
 
-											return (
-												<tr
-													key={px}
-													className='border-b hover:bg-muted/30 transition-colors cursor-pointer'
-													onClick={() => {
-														converter.loadPreset(px)
-														toast.success(`Загружен: ${px}px`)
-													}}
-												>
-													<td className='p-2 font-mono'>{px}px</td>
-													<td className='p-2 font-mono'>
-														{converter.formatValue(rem)}rem
-													</td>
-													<td className='p-2 font-mono'>
-														{converter.formatValue(em)}em
-													</td>
-													<td className='p-2 font-mono'>
-														{converter.formatValue(percent)}%
-													</td>
-												</tr>
-											)
-										}
-									)}
+										return (
+											<tr
+												key={px}
+												className='border-b hover:bg-muted/30 transition-colors cursor-pointer'
+												onClick={() => {
+													converter.loadPreset(px)
+													toast.success(`Загружен: ${px}px`)
+												}}
+											>
+												<td className='p-2 font-mono'>{px}px</td>
+												<td className='p-2 font-mono'>
+													{converter.formatValue(rem)}rem
+												</td>
+												<td className='p-2 font-mono'>
+													{converter.formatValue(em)}em
+												</td>
+												<td className='p-2 font-mono'>
+													{converter.formatValue(percent)}%
+												</td>
+											</tr>
+										)
+									})}
 								</tbody>
 							</table>
 						</div>
@@ -266,8 +266,8 @@ export default function PxRemConverterPage() {
 									фиксированный размер
 								</li>
 								<li>
-									• <strong className='font-semibold'>pt</strong> - пункты (1pt =
-									1/72 дюйма)
+									• <strong className='font-semibold'>pt</strong> - пункты (1pt
+									= 1/72 дюйма)
 								</li>
 							</ul>
 						</div>
@@ -275,19 +275,20 @@ export default function PxRemConverterPage() {
 							<h4 className='font-medium mb-2'>Относительные единицы</h4>
 							<ul className='text-muted-foreground space-y-1'>
 								<li>
-									• <strong className='font-semibold'>rem</strong> - относительно
-									корневого элемента
+									• <strong className='font-semibold'>rem</strong> -
+									относительно корневого элемента
 								</li>
 								<li>
 									• <strong className='font-semibold'>em</strong> - относительно
 									родительского элемента
 								</li>
 								<li>
-									• <strong className='font-semibold'>%</strong> - процент от родителя
+									• <strong className='font-semibold'>%</strong> - процент от
+									родителя
 								</li>
 								<li>
-									• <strong className='font-semibold'>vw/vh</strong> - процент от
-									viewport
+									• <strong className='font-semibold'>vw/vh</strong> - процент
+									от viewport
 								</li>
 							</ul>
 						</div>

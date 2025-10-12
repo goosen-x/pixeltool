@@ -2,35 +2,41 @@
 
 ## 🎯 Overview
 
-Полная переработка конвертера единиц CSS с фокусом на **минимум действий пользователя** и **интуитивный UX**.
+Полная переработка конвертера единиц CSS с фокусом на **минимум действий
+пользователя** и **интуитивный UX**.
 
 ---
 
 ## ✨ Key Features
 
 ### 1. **Zero-Click Conversion**
+
 - ❌ Убрана кнопка "Конвертировать"
 - ✅ Автоматический расчет при вводе (300ms debounce)
 - ✅ Поддержка всех форматов: `24px`, `1.5rem`, `2em`, `100%`
 
 ### 2. **Bidirectional Editing**
+
 - ✅ Редактируйте любое поле (PX, REM, EM)
 - ✅ Остальные значения обновляются автоматически
 - ✅ Визуальный индикатор активного поля
 
 ### 3. **One-Click Copy**
+
 - ✅ Кнопка копирования у каждого результата
 - ✅ Визуальная обратная связь (зеленая галочка 2 сек)
 - ✅ Toast уведомления
 - ✅ Копирование с единицами: `1.5rem`
 
 ### 4. **Progressive Disclosure**
+
 - ✅ Основные единицы (PX, REM, EM) видны всегда
 - ✅ Дополнительные (%, PT, VW, VH) скрыты под кнопкой
 - ✅ Таблица сравнения сворачивается
 - ✅ Настройки в компактном Dialog
 
 ### 5. **Mobile-First Design**
+
 - ✅ Responsive grid (3 колонки → 1 колонка)
 - ✅ Touch-friendly кнопки (min 44x44px)
 - ✅ Адаптивные breakpoints
@@ -58,6 +64,7 @@ Created Files:
 ## 🎨 Design Principles
 
 ### Color Coding
+
 - **PX** - Blue (`blue-50`, `blue-100`)
 - **REM** - Green (`green-50`, `green-100`)
 - **EM** - Orange (`orange-50`, `orange-100`)
@@ -66,6 +73,7 @@ Created Files:
 - **VW/VH** - Cyan (`cyan-50`, `cyan-100`)
 
 ### Visual Hierarchy
+
 ```
 [SIZE: XXL] Input Field (h-14, text-lg)       ← Primary
 [SIZE: XL]  Result Values (text-xl, font-bold) ← Results
@@ -74,6 +82,7 @@ Created Files:
 ```
 
 ### Spacing System
+
 - Card padding: `p-6`
 - Grid gaps: `gap-4` (primary), `gap-3` (secondary)
 - Stack spacing: `space-y-6` (major sections)
@@ -88,10 +97,10 @@ Created Files:
 const converter = useConverter()
 
 // Available state
-converter.inputValue      // Current input
-converter.inputUnit       // Detected unit (px/rem/em)
-converter.results         // Conversion results
-converter.config          // Base/parent/viewport settings
+converter.inputValue // Current input
+converter.inputUnit // Detected unit (px/rem/em)
+converter.results // Conversion results
+converter.config // Base/parent/viewport settings
 converter.lastEditedField // Track active field
 
 // Available actions
@@ -105,11 +114,11 @@ converter.reset()
 
 ```typescript
 useEffect(() => {
-  const timer = setTimeout(() => {
-    calculateAllUnits()
-  }, 300) // 300ms debounce
+	const timer = setTimeout(() => {
+		calculateAllUnits()
+	}, 300) // 300ms debounce
 
-  return () => clearTimeout(timer)
+	return () => clearTimeout(timer)
 }, [inputValue, config])
 ```
 
@@ -119,11 +128,11 @@ useEffect(() => {
 const [copiedUnit, setCopiedUnit] = useState<string | null>(null)
 
 const handleCopy = (value: number, unit: string) => {
-  const formatted = `${value}${unit}`
-  navigator.clipboard.writeText(formatted)
-  setCopiedUnit(unit)
-  setTimeout(() => setCopiedUnit(null), 2000)
-  toast.success(`Скопировано: ${formatted}`)
+	const formatted = `${value}${unit}`
+	navigator.clipboard.writeText(formatted)
+	setCopiedUnit(unit)
+	setTimeout(() => setCopiedUnit(null), 2000)
+	toast.success(`Скопировано: ${formatted}`)
 }
 ```
 
@@ -166,6 +175,7 @@ md:grid-cols-3          /* ≥768px: 3 columns for info */
 ## 🚀 User Flow
 
 ### Before (Old Design)
+
 ```
 1. Enter value
 2. Click "Convert" button
@@ -173,32 +183,36 @@ md:grid-cols-3          /* ≥768px: 3 columns for info */
 4. Click copy button
 5. Repeat for different values
 ```
+
 **Time: ~10-15 seconds**
 
 ### After (New Design)
+
 ```
 1. Enter value → instant results
 2. Click copy button
 ```
+
 **Time: ~3 seconds** ✅
 
 ---
 
 ## 🎯 Success Metrics
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| Time to Conversion | < 3 sec | ✅ Achieved |
-| Clicks to Result | 0 | ✅ Zero-click |
-| Mobile Usability | 100% | ✅ Touch-friendly |
-| Accessibility | WCAG AA | ✅ Compliant |
-| TypeScript Errors | 0 | ✅ Clean build |
+| Metric             | Target  | Status            |
+| ------------------ | ------- | ----------------- |
+| Time to Conversion | < 3 sec | ✅ Achieved       |
+| Clicks to Result   | 0       | ✅ Zero-click     |
+| Mobile Usability   | 100%    | ✅ Touch-friendly |
+| Accessibility      | WCAG AA | ✅ Compliant      |
+| TypeScript Errors  | 0       | ✅ Clean build    |
 
 ---
 
 ## 🧪 Testing Checklist
 
 ### Functional Tests
+
 - [x] Auto-conversion on typing
 - [x] Bidirectional editing (px → rem → em)
 - [x] Copy to clipboard with feedback
@@ -208,6 +222,7 @@ md:grid-cols-3          /* ≥768px: 3 columns for info */
 - [x] Reset functionality
 
 ### UI/UX Tests
+
 - [x] Responsive grid (desktop/tablet/mobile)
 - [x] Color coding consistency
 - [x] Hover states on cards
@@ -217,12 +232,14 @@ md:grid-cols-3          /* ≥768px: 3 columns for info */
 - [x] Progressive disclosure (collapsible sections)
 
 ### Performance Tests
+
 - [x] Debounce prevents excessive calculations
 - [x] No layout shifts
 - [x] Smooth animations (60fps)
 - [x] Fast initial render
 
 ### Accessibility Tests
+
 - [x] Keyboard navigation works
 - [x] Screen reader announces changes
 - [x] Focus management correct
@@ -294,11 +311,10 @@ export function MyConverter() {
 **Before**: Сложный, перегруженный интерфейс с множеством кнопок и настроек
 **After**: Минималистичный, интуитивный конвертер с автоматическими расчетами
 
-**Key Achievement**: Сокращено время конвертации с 15 секунд до 3 секунд (5x improvement!)
+**Key Achievement**: Сокращено время конвертации с 15 секунд до 3 секунд (5x
+improvement!)
 
 ---
 
-**Date**: October 12, 2025
-**Status**: ✅ Complete
-**TypeScript**: ✅ 0 errors
+**Date**: October 12, 2025 **Status**: ✅ Complete **TypeScript**: ✅ 0 errors
 **Lint**: ✅ 0 warnings

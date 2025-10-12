@@ -20,13 +20,15 @@ interface ResultCardProps {
 
 const COLOR_SCHEMES = {
 	blue: {
-		gradient: 'from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20',
+		gradient:
+			'from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20',
 		border: 'border-blue-200 dark:border-blue-800',
 		text: 'text-blue-700 dark:text-blue-300',
 		hover: 'hover:border-blue-400 dark:hover:border-blue-600'
 	},
 	green: {
-		gradient: 'from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20',
+		gradient:
+			'from-green-50 to-green-100 dark:from-green-950/20 dark:to-green-900/20',
 		border: 'border-green-200 dark:border-green-800',
 		text: 'text-green-700 dark:text-green-300',
 		hover: 'hover:border-green-400 dark:hover:border-green-600'
@@ -46,13 +48,15 @@ const COLOR_SCHEMES = {
 		hover: 'hover:border-purple-400 dark:hover:border-purple-600'
 	},
 	pink: {
-		gradient: 'from-pink-50 to-pink-100 dark:from-pink-950/20 dark:to-pink-900/20',
+		gradient:
+			'from-pink-50 to-pink-100 dark:from-pink-950/20 dark:to-pink-900/20',
 		border: 'border-pink-200 dark:border-pink-800',
 		text: 'text-pink-700 dark:text-pink-300',
 		hover: 'hover:border-pink-400 dark:hover:border-pink-600'
 	},
 	cyan: {
-		gradient: 'from-cyan-50 to-cyan-100 dark:from-cyan-950/20 dark:to-cyan-900/20',
+		gradient:
+			'from-cyan-50 to-cyan-100 dark:from-cyan-950/20 dark:to-cyan-900/20',
 		border: 'border-cyan-200 dark:border-cyan-800',
 		text: 'text-cyan-700 dark:text-cyan-300',
 		hover: 'hover:border-cyan-400 dark:hover:border-cyan-600'
@@ -149,7 +153,9 @@ export function ResultCard({
 					) : (
 						<code className='block font-mono text-xl font-bold break-all'>
 							{value.toFixed(3).replace(/\.?0+$/, '')}
-							<span className='text-sm font-medium ml-0.5 opacity-80'>{unit}</span>
+							<span className='text-sm font-medium ml-0.5 opacity-80'>
+								{unit}
+							</span>
 						</code>
 					)}
 				</div>
@@ -168,7 +174,11 @@ export function ResultCard({
 					)}
 					title={`Copy ${label}`}
 				>
-					{isCopied ? <Check className='h-4 w-4' /> : <Copy className='h-4 w-4' />}
+					{isCopied ? (
+						<Check className='h-4 w-4' />
+					) : (
+						<Copy className='h-4 w-4' />
+					)}
 				</Button>
 			</div>
 

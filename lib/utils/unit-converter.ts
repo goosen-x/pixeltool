@@ -133,14 +133,19 @@ export function convertToAllUnits(
  * Format number with specified decimal places, removing trailing zeros
  */
 export function formatNumber(value: number, decimals: number = 3): string {
-	const rounded = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
+	const rounded =
+		Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
 	return parseFloat(rounded.toFixed(decimals)).toString()
 }
 
 /**
  * Format value with unit
  */
-export function formatWithUnit(value: number, unit: Unit, decimals: number = 3): string {
+export function formatWithUnit(
+	value: number,
+	unit: Unit,
+	decimals: number = 3
+): string {
 	return `${formatNumber(value, decimals)}${unit}`
 }
 

@@ -303,4 +303,5 @@ yarn new-widget      # Create new widget template
 This configuration ensures your development workflow meets senior-level
 standards with automated quality checks, comprehensive validation, and best
 practices enforcement.
+
 - укажи что сайт должен быть на русском языке
