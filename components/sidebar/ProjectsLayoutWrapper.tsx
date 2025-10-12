@@ -71,9 +71,13 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 								{widgetId && <WidgetHeader widgetId={widgetId} />}
 								<WidgetWrapper>
 									{children}
-									{widgetId && <RelatedTools currentTool={widgetId} />}
+									{widgetId && (
+										<>
+											<RelatedTools currentTool={widgetId} />
+											<WidgetFAQ widgetId={widgetId} />
+										</>
+									)}
 								</WidgetWrapper>
-								{widgetId && <WidgetFAQ widgetId={widgetId} />}
 							</div>
 						</div>
 					</div>

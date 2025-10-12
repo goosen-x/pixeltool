@@ -28,7 +28,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useWidgetKeyboard } from '@/lib/hooks/widgets'
 
 interface Shadow {
 	id: string
@@ -410,36 +409,6 @@ export default function CSSBoxShadowGeneratorPage() {
 	}
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'css-box-shadow-generator',
-		shortcuts: [
-			{
-				key: 'g',
-				primary: true,
-				description: 'Generate random shadow',
-				action: generateRandomShadow
-			},
-			{
-				key: 'r',
-				primary: true,
-				description: 'Reset',
-				action: reset
-			},
-			{
-				key: 'c',
-				alt: true,
-				description: 'Copy CSS',
-				action: copyCSSCode
-			},
-			{
-				key: 'l',
-				primary: true,
-				description: 'Add layer',
-				action: addShadow
-			}
-		]
-	})
-
 	return (
 		<WidgetLayout>
 			<div className='grid lg:grid-cols-2 gap-6'>

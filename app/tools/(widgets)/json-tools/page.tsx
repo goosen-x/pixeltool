@@ -34,11 +34,6 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import {
-	useWidgetKeyboard,
-	editorShortcuts
-} from '@/lib/hooks/useWidgetKeyboard'
-
 interface JSONError {
 	message: string
 	line?: number
@@ -94,70 +89,6 @@ export default function JSONToolsPage() {
 	const [activeTab, setActiveTab] = useState('formatted')
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'json-tools',
-		shortcuts: [
-			{
-				key: 'f',
-				alt: true,
-				description: 'Format JSON',
-				action: () => {
-					if (input.trim()) {
-						analyzeJSON(input)
-						setActiveTab('formatted')
-					}
-				}
-			},
-			{
-				key: 'm',
-				primary: true,
-				description: 'Minify JSON',
-				action: () => {
-					if (input.trim()) {
-						analyzeJSON(input)
-						setActiveTab('minified')
-					}
-				}
-			},
-			{
-				key: 'c',
-				alt: true,
-				description: 'Copy result',
-				action: () => {
-					if (analysis && analysis.isValid) {
-						const text =
-							activeTab === 'formatted'
-								? analysis.formatted!
-								: analysis.minified!
-						handleCopy(
-							text,
-							`${activeTab === 'formatted' ? 'Formatted' : 'Minified'} JSON`
-						)
-					}
-				}
-			},
-			{
-				key: 'd',
-				primary: true,
-				description: 'Download result',
-				action: () => {
-					if (analysis && analysis.isValid) {
-						const text =
-							activeTab === 'formatted'
-								? analysis.formatted!
-								: analysis.minified!
-						handleDownload(text, `${activeTab}.json`)
-					}
-				}
-			},
-			{
-				key: 'k',
-				alt: true,
-				description: 'Clear input',
-				action: () => setInput('')
-			}
-		]
-	})
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {

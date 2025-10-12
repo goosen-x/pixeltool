@@ -24,8 +24,6 @@ import {
 	type ChartConfig
 } from '@/components/ui/chart'
 
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface DiceResult {
 	id: string
 	values: number[]
@@ -195,25 +193,6 @@ export default function DiceRollerPage() {
 	}
 
 	// Keyboard shortcuts
-	const shortcuts = [
-		{
-			key: ' ',
-			description: 'Roll Dice',
-			action: rollDice,
-			enabled: !isRolling
-		},
-		...Array.from({ length: 6 }, (_, i) => ({
-			key: (i + 1).toString(),
-			description: `Set ${i + 1} Dice`,
-			action: () => setDiceCount(i + 1)
-		}))
-	]
-
-	useWidgetKeyboard({
-		widgetId: 'dice-roller',
-		shortcuts
-	})
-
 	const copyResults = () => {
 		if (currentRoll.length === 0) {
 			toast.error('Нет брошенных костей для копирования')

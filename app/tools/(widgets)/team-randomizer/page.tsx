@@ -25,8 +25,6 @@ import {
 	Download
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface Team {
 	id: number
 	name: string
@@ -202,33 +200,6 @@ export default function TeamRandomizerPage() {
 	}
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'team-randomizer',
-		shortcuts: [
-			{
-				key: 'Enter',
-				primary: true,
-				description: 'Generate Teams',
-				action: generateTeams,
-				enabled: participants.length >= 2
-			},
-			{
-				key: 'r',
-				primary: true,
-				shift: true,
-				description: 'Reset',
-				action: resetAll
-			},
-			{
-				key: 'c',
-				alt: true,
-				description: 'Copy Result',
-				action: copyTeamsToClipboard,
-				enabled: teams.length > 0
-			}
-		]
-	})
-
 	return (
 		<div className='w-full space-y-4'>
 			{/* Main Card */}

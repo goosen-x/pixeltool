@@ -38,11 +38,6 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import {
-	useWidgetKeyboard,
-	generatorShortcuts
-} from '@/lib/hooks/useWidgetKeyboard'
-
 // Force dynamic rendering to avoid build-time errors
 export const dynamic = 'force-dynamic'
 
@@ -90,42 +85,6 @@ export default function CSSGradientGeneratorPage() {
 	})
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'css-gradient-generator',
-		shortcuts: [
-			{
-				key: 'g',
-				primary: true,
-				description: 'Generate random gradient',
-				action: generateRandom
-			},
-			{
-				key: 'r',
-				primary: true,
-				description: 'Reset gradient',
-				action: resetGradient
-			},
-			{
-				key: 'c',
-				alt: true,
-				description: 'Copy CSS',
-				action: copyCSS
-			},
-			{
-				key: 'e',
-				primary: true,
-				description: 'Export gradient',
-				action: () => exportGradient('css')
-			},
-			{
-				key: 'a',
-				primary: true,
-				description: 'Add color stop',
-				action: addColorStop
-			}
-		]
-	})
-
 	return (
 		<WidgetLayout>
 			{/* Preview Section */}

@@ -1,575 +1,307 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
+import { useState } from 'react'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Slider } from '@/components/ui/slider'
-import {
-	ArrowRightLeft,
-	Copy,
-	RefreshCw,
-	Ruler,
-	Type,
-	Info,
-	Settings,
-	Monitor,
-	Smartphone,
-	Tablet
-} from 'lucide-react'
+import { ChevronDown, ChevronUp, Info, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
-
-interface ConversionResult {
-	px: number
-	rem: number
-	em: number
-	percent: number
-	pt: number
-	vw: number
-	vh: number
-}
-
-interface PresetSize {
-	name: string
-	px: number
-	category: string
-}
-
-const PRESET_SIZES: PresetSize[] = [
-	// Typography
-	{ name: 'Caption', px: 12, category: 'typography' },
-	{ name: 'Body Small', px: 14, category: 'typography' },
-	{ name: 'Body', px: 16, category: 'typography' },
-	{ name: 'H6', px: 18, category: 'typography' },
-	{ name: 'H5', px: 20, category: 'typography' },
-	{ name: 'H4', px: 24, category: 'typography' },
-	{ name: 'H3', px: 28, category: 'typography' },
-	{ name: 'H2', px: 32, category: 'typography' },
-	{ name: 'H1', px: 36, category: 'typography' },
-	{ name: 'Display', px: 48, category: 'typography' },
-
-	// Spacing
-	{ name: 'XXS', px: 4, category: 'spacing' },
-	{ name: 'XS', px: 8, category: 'spacing' },
-	{ name: 'S', px: 12, category: 'spacing' },
-	{ name: 'M', px: 16, category: 'spacing' },
-	{ name: 'L', px: 24, category: 'spacing' },
-	{ name: 'XL', px: 32, category: 'spacing' },
-	{ name: 'XXL', px: 48, category: 'spacing' },
-	{ name: 'XXXL', px: 64, category: 'spacing' },
-
-	// Common sizes
-	{ name: 'Icon Small', px: 16, category: 'common' },
-	{ name: 'Icon', px: 24, category: 'common' },
-	{ name: 'Icon Large', px: 32, category: 'common' },
-	{ name: 'Button Height', px: 40, category: 'common' },
-	{ name: 'Input Height', px: 48, category: 'common' },
-	{ name: 'Header Height', px: 64, category: 'common' }
-]
-
-const SCREEN_SIZES = {
-	mobile: { width: 375, label: 'Mobile', icon: Smartphone },
-	tablet: { width: 768, label: 'Tablet', icon: Tablet },
-	desktop: { width: 1440, label: 'Desktop', icon: Monitor }
-}
-
-// Force dynamic rendering to avoid build-time errors
-export const dynamic = 'force-dynamic'
+import { useConverter } from '@/lib/hooks/widgets/useConverter'
+import {
+	ConversionInput,
+	ResultCard,
+	SettingsInline,
+	QuickPresets
+} from '@/components/widgets/converter'
 
 export default function PxRemConverterPage() {
-	const [inputValue, setInputValue] = useState<string>('16')
-	const [inputUnit, setInputUnit] = useState<'px' | 'rem' | 'em'>('px')
-	const [baseFontSize, setBaseFontSize] = useState<number>(16)
-	const [parentFontSize, setParentFontSize] = useState<number>(16)
-	const [viewportWidth, setViewportWidth] = useState<number>(1440)
-	const [result, setResult] = useState<ConversionResult | null>(null)
+	const converter = useConverter()
 	const [showAdvanced, setShowAdvanced] = useState(false)
+	const [showTable, setShowTable] = useState(false)
 
-	// Auto-calculate when inputs change
-	useEffect(() => {
-		if (inputValue) {
-			calculateConversion()
-		}
-	}, [inputValue, inputUnit, baseFontSize, parentFontSize, viewportWidth])
-
-	const calculateConversion = () => {
-		const value = parseFloat(inputValue)
-		if (isNaN(value)) {
-			setResult(null)
-			return
-		}
-
-		let pxValue: number
-
-		// Convert to px first
-		switch (inputUnit) {
-			case 'px':
-				pxValue = value
-				break
-			case 'rem':
-				pxValue = value * baseFontSize
-				break
-			case 'em':
-				pxValue = value * parentFontSize
-				break
-			default:
-				pxValue = value
-		}
-
-		// Calculate all conversions
-		const conversion: ConversionResult = {
-			px: pxValue,
-			rem: pxValue / baseFontSize,
-			em: pxValue / parentFontSize,
-			percent: (pxValue / parentFontSize) * 100,
-			pt: pxValue * 0.75, // 1px = 0.75pt
-			vw: (pxValue / viewportWidth) * 100,
-			vh: (pxValue / (viewportWidth * 0.5625)) * 100 // Assuming 16:9 aspect ratio
-		}
-
-		setResult(conversion)
+	const handleCopy = (value: number, unit: string) => {
+		const formatted = converter.formatValueWithUnit(value, unit as any)
+		navigator.clipboard.writeText(formatted)
+		toast.success(`Скопировано: ${formatted}`)
 	}
 
-	const copyValue = (value: number, unit: string) => {
-		const formattedValue = formatValue(value) + unit
-		navigator.clipboard.writeText(formattedValue)
-		toast.success(`Скопировано: ${formattedValue}`)
-	}
-
-	const copyAllValues = () => {
-		if (!result) return
-
-		const text = `
-Конвертация единиц измерения CSS:
-Исходное значение: ${inputValue}${inputUnit}
-
-Результаты:
-• ${formatValue(result.px)}px
-• ${formatValue(result.rem)}rem
-• ${formatValue(result.em)}em
-• ${formatValue(result.percent)}%
-• ${formatValue(result.pt)}pt
-• ${formatValue(result.vw)}vw
-• ${formatValue(result.vh)}vh
-
-Параметры:
-• Базовый размер шрифта: ${baseFontSize}px
-• Родительский размер шрифта: ${parentFontSize}px
-• Ширина viewport: ${viewportWidth}px
-    `.trim()
-
-		navigator.clipboard.writeText(text)
-		toast.success('Все значения скопированы!')
-	}
-
-	const formatValue = (value: number): string => {
-		// Round to 3 decimal places and remove trailing zeros
-		const rounded = Math.round(value * 1000) / 1000
-		return parseFloat(rounded.toFixed(3)).toString()
-	}
-
-	const loadPreset = (preset: PresetSize) => {
-		setInputValue(preset.px.toString())
-		setInputUnit('px')
-		toast.success(`Загружен размер: ${preset.name}`)
-	}
-
-	const reset = () => {
-		setInputValue('16')
-		setInputUnit('px')
-		setBaseFontSize(16)
-		setParentFontSize(16)
-		setViewportWidth(1440)
-		setResult(null)
-		setShowAdvanced(false)
-		toast.success('Параметры сброшены')
-	}
-
-	const setScreenSize = (size: keyof typeof SCREEN_SIZES) => {
-		setViewportWidth(SCREEN_SIZES[size].width)
-		toast.success(`Размер экрана: ${SCREEN_SIZES[size].label}`)
-	}
-
-	const generateCSSVariables = () => {
-		if (!result) return ''
-
-		return `
-/* CSS Variables */
-:root {
-  --size-value: ${formatValue(result.rem)}rem;
-  --size-px: ${formatValue(result.px)}px;
-  --size-em: ${formatValue(result.em)}em;
-  --size-percent: ${formatValue(result.percent)}%;
-  --size-vw: ${formatValue(result.vw)}vw;
-  --size-vh: ${formatValue(result.vh)}vh;
-}
-
-/* Usage */
-.element {
-  font-size: var(--size-value);
-  padding: calc(var(--size-value) * 0.5);
-  margin: var(--size-value);
-}
-    `.trim()
-	}
-
-	const copyCSSVariables = () => {
-		const css = generateCSSVariables()
-		navigator.clipboard.writeText(css)
-		toast.success('CSS переменные скопированы!')
+	const handleReset = () => {
+		converter.reset()
+		toast.success('Настройки сброшены')
 	}
 
 	return (
-		<div className='max-w-6xl mx-auto space-y-6'>
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Input Section */}
-				<Card className='p-6'>
-					<div className='space-y-4'>
-						<div>
-							<Label htmlFor='value'>Значение</Label>
-							<div className='flex gap-2 mt-1'>
-								<Input
-									id='value'
-									type='number'
-									value={inputValue}
-									onChange={e => setInputValue(e.target.value)}
-									placeholder='16'
-									step='0.1'
-									className='flex-1'
+		<div className='max-w-5xl mx-auto space-y-6'>
+			{/* Main Conversion Section */}
+			<Card>
+				<CardContent className='p-6 space-y-6'>
+					{/* Input */}
+					<div className='space-y-2'>
+						<label className='text-sm font-medium text-muted-foreground'>
+							Введите любое значение
+						</label>
+						<ConversionInput
+							value={converter.inputValue}
+							onChange={converter.setInputValue}
+							onClear={() => converter.setInputValue('')}
+							placeholder='24px, 1.5rem, 2em...'
+						/>
+						<p className='text-xs text-muted-foreground'>
+							Поддерживаются px, rem, em, %, pt, vw, vh — просто начните печатать
+						</p>
+					</div>
+
+					{/* Primary Results - Always Visible */}
+					{converter.results && (
+						<>
+							<div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+								<ResultCard
+									label='PX'
+									value={converter.results.px}
+									unit='px'
+									isEditable={true}
+									onCopy={() => handleCopy(converter.results!.px, 'px')}
+									onEdit={value => converter.setFieldValue('px', value)}
+									isActive={converter.lastEditedField === 'px'}
+									colorScheme='blue'
 								/>
-								<select
-									value={inputUnit}
-									onChange={e =>
-										setInputUnit(e.target.value as 'px' | 'rem' | 'em')
-									}
-									aria-label='Выберите единицу измерения'
-									className='px-3 py-2 rounded-md border bg-background'
+								<ResultCard
+									label='REM'
+									value={converter.results.rem}
+									unit='rem'
+									isEditable={true}
+									onCopy={() => handleCopy(converter.results!.rem, 'rem')}
+									onEdit={value => converter.setFieldValue('rem', value)}
+									isActive={converter.lastEditedField === 'rem'}
+									colorScheme='green'
+								/>
+								<ResultCard
+									label='EM'
+									value={converter.results.em}
+									unit='em'
+									isEditable={true}
+									onCopy={() => handleCopy(converter.results!.em, 'em')}
+									onEdit={value => converter.setFieldValue('em', value)}
+									isActive={converter.lastEditedField === 'em'}
+									colorScheme='orange'
+								/>
+							</div>
+
+							{/* Toggle Advanced Units */}
+							<div className='flex items-center justify-center'>
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={() => setShowAdvanced(!showAdvanced)}
+									className='gap-2'
 								>
-									<option value='px'>px</option>
-									<option value='rem'>rem</option>
-									<option value='em'>em</option>
-								</select>
+									{showAdvanced ? (
+										<>
+											<ChevronUp className='h-4 w-4' />
+											Скрыть дополнительные единицы
+										</>
+									) : (
+										<>
+											<ChevronDown className='h-4 w-4' />
+											Показать дополнительные единицы
+										</>
+									)}
+								</Button>
 							</div>
-						</div>
 
-						<div>
-							<div className='flex items-center justify-between mb-2'>
-								<Label htmlFor='base-font'>Базовый размер шрифта (HTML)</Label>
-								<span className='text-sm text-muted-foreground'>
-									{baseFontSize}px
-								</span>
-							</div>
-							<Slider
-								id='base-font'
-								value={[baseFontSize]}
-								onValueChange={value => setBaseFontSize(value[0])}
-								min={10}
-								max={24}
-								step={1}
-							/>
-						</div>
-
-						<Button
-							onClick={() => setShowAdvanced(!showAdvanced)}
-							variant='outline'
-							className='w-full'
-						>
-							<Settings className='w-4 h-4 mr-2' />
-							{showAdvanced ? 'Скрыть' : 'Показать'} дополнительные настройки
-						</Button>
-
-						{showAdvanced && (
-							<>
-								<div>
-									<div className='flex items-center justify-between mb-2'>
-										<Label htmlFor='parent-font'>
-											Родительский размер шрифта (для em)
-										</Label>
-										<span className='text-sm text-muted-foreground'>
-											{parentFontSize}px
-										</span>
-									</div>
-									<Slider
-										id='parent-font'
-										value={[parentFontSize]}
-										onValueChange={value => setParentFontSize(value[0])}
-										min={10}
-										max={32}
-										step={1}
+							{/* Advanced Results - Collapsible */}
+							{showAdvanced && (
+								<div className='grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t'>
+									<ResultCard
+										label='PERCENT'
+										value={converter.results.percent}
+										unit='%'
+										onCopy={() => handleCopy(converter.results!.percent, '%')}
+										colorScheme='purple'
+									/>
+									<ResultCard
+										label='PT'
+										value={converter.results.pt}
+										unit='pt'
+										onCopy={() => handleCopy(converter.results!.pt, 'pt')}
+										colorScheme='pink'
+									/>
+									<ResultCard
+										label='VW'
+										value={converter.results.vw}
+										unit='vw'
+										onCopy={() => handleCopy(converter.results!.vw, 'vw')}
+										colorScheme='cyan'
+									/>
+									<ResultCard
+										label='VH'
+										value={converter.results.vh}
+										unit='vh'
+										onCopy={() => handleCopy(converter.results!.vh, 'vh')}
+										colorScheme='cyan'
 									/>
 								</div>
-
-								<div>
-									<Label htmlFor='viewport'>Ширина viewport (для vw)</Label>
-									<div className='flex gap-2 mt-1'>
-										<Input
-											id='viewport'
-											type='number'
-											value={viewportWidth}
-											onChange={e =>
-												setViewportWidth(parseInt(e.target.value) || 1440)
-											}
-											className='flex-1'
-										/>
-										<div className='flex gap-1'>
-											{Object.entries(SCREEN_SIZES).map(([key, size]) => (
-												<Button
-													key={key}
-													onClick={() =>
-														setScreenSize(key as keyof typeof SCREEN_SIZES)
-													}
-													variant='outline'
-													size='icon'
-													title={size.label}
-												>
-													<size.icon className='w-4 h-4' />
-												</Button>
-											))}
-										</div>
-									</div>
-								</div>
-							</>
-						)}
-
-						<div className='flex gap-2'>
-							<Button
-								onClick={copyAllValues}
-								variant='outline'
-								disabled={!result}
-							>
-								<Copy className='w-4 h-4 mr-2' />
-								Копировать все
-							</Button>
-							<Button onClick={reset} variant='outline'>
-								<RefreshCw className='w-4 h-4 mr-2' />
-								Сбросить
-							</Button>
-						</div>
-					</div>
-				</Card>
-
-				{/* Results */}
-				{result && (
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4 flex items-center gap-2'>
-							<ArrowRightLeft className='w-5 h-5' />
-							Результаты конвертации
-						</h3>
-
-						<div className='space-y-3'>
-							{Object.entries(result).map(([unit, value]) => (
-								<div
-									key={unit}
-									className={cn(
-										'flex items-center justify-between p-3 rounded-lg border',
-										inputUnit === unit && 'bg-primary/10 border-primary/20'
-									)}
-								>
-									<div className='flex items-center gap-3'>
-										<Badge variant='outline'>{unit.toUpperCase()}</Badge>
-										<span className='font-mono text-lg'>
-											{formatValue(value)}
-											{unit}
-										</span>
-									</div>
-									<Button
-										onClick={() => copyValue(value, unit)}
-										variant='ghost'
-										size='icon'
-									>
-										<Copy className='w-4 h-4' />
-									</Button>
-								</div>
-							))}
-						</div>
-
-						{showAdvanced && (
-							<div className='mt-4 pt-4 border-t'>
-								<Button
-									onClick={copyCSSVariables}
-									variant='outline'
-									className='w-full'
-								>
-									<Copy className='w-4 h-4 mr-2' />
-									Копировать как CSS переменные
-								</Button>
-							</div>
-						)}
-					</Card>
-				)}
-			</div>
-
-			{/* Preset Sizes */}
-			<Card className='p-6'>
-				<h3 className='font-semibold mb-4 flex items-center gap-2'>
-					<Type className='w-5 h-5' />
-					Часто используемые размеры
-				</h3>
-
-				<div className='space-y-4'>
-					{/* Typography Presets */}
-					<div>
-						<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-							Типографика
-						</h4>
-						<div className='flex flex-wrap gap-2'>
-							{PRESET_SIZES.filter(p => p.category === 'typography').map(
-								preset => (
-									<Button
-										key={preset.name}
-										onClick={() => loadPreset(preset)}
-										variant='outline'
-										size='sm'
-									>
-										{preset.name} ({preset.px}px)
-									</Button>
-								)
 							)}
-						</div>
-					</div>
+						</>
+					)}
 
-					{/* Spacing Presets */}
-					<div>
-						<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-							Отступы
-						</h4>
-						<div className='flex flex-wrap gap-2'>
-							{PRESET_SIZES.filter(p => p.category === 'spacing').map(
-								preset => (
-									<Button
-										key={preset.name}
-										onClick={() => loadPreset(preset)}
-										variant='outline'
-										size='sm'
-									>
-										{preset.name} ({preset.px}px)
-									</Button>
-								)
-							)}
+					{/* Empty State */}
+					{!converter.results && (
+						<div className='text-center py-12 text-muted-foreground'>
+							<div className='text-4xl mb-3'>🔢</div>
+							<p className='text-sm'>Введите значение для начала конвертации</p>
 						</div>
-					</div>
-
-					{/* Common Sizes */}
-					<div>
-						<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-							Общие размеры
-						</h4>
-						<div className='flex flex-wrap gap-2'>
-							{PRESET_SIZES.filter(p => p.category === 'common').map(preset => (
-								<Button
-									key={preset.name}
-									onClick={() => loadPreset(preset)}
-									variant='outline'
-									size='sm'
-								>
-									{preset.name} ({preset.px}px)
-								</Button>
-							))}
-						</div>
-					</div>
-				</div>
+					)}
+				</CardContent>
 			</Card>
 
-			{/* Conversion Table */}
-			<Card className='p-6'>
-				<h3 className='font-semibold mb-4'>Таблица популярных значений</h3>
+			{/* Settings */}
+			<SettingsInline
+				config={converter.config}
+				onBaseChange={converter.setBaseFont}
+				onParentChange={converter.setParentFont}
+				onViewportWidthChange={converter.setViewportWidth}
+				onViewportHeightChange={converter.setViewportHeight}
+				onReset={handleReset}
+			/>
 
-				<div className='overflow-x-auto'>
-					<table className='w-full text-sm'>
-						<thead>
-							<tr className='border-b'>
-								<th className='text-left p-2'>PX</th>
-								<th className='text-left p-2'>REM</th>
-								<th className='text-left p-2'>EM</th>
-								<th className='text-left p-2'>%</th>
-								<th className='text-left p-2'>PT</th>
-							</tr>
-						</thead>
-						<tbody>
-							{[8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 64].map(
-								px => (
-									<tr key={px} className='border-b hover:bg-muted/30'>
-										<td className='p-2 font-mono'>{px}px</td>
-										<td className='p-2 font-mono'>
-											{formatValue(px / baseFontSize)}rem
-										</td>
-										<td className='p-2 font-mono'>
-											{formatValue(px / parentFontSize)}em
-										</td>
-										<td className='p-2 font-mono'>
-											{formatValue((px / parentFontSize) * 100)}%
-										</td>
-										<td className='p-2 font-mono'>
-											{formatValue(px * 0.75)}pt
-										</td>
-									</tr>
-								)
-							)}
-						</tbody>
-					</table>
-				</div>
-			</Card>
-
-			{/* CSS Variables Example */}
-			{result && showAdvanced && (
-				<Card className='p-6 bg-muted/50'>
-					<h3 className='font-semibold mb-4'>Пример CSS переменных</h3>
-					<pre className='bg-background p-4 rounded-lg overflow-x-auto'>
-						<code className='text-sm'>{generateCSSVariables()}</code>
-					</pre>
+			{/* Quick Presets */}
+			{converter.results && (
+				<Card>
+					<CardContent className='p-6'>
+						<QuickPresets
+							onSelect={px => {
+								converter.loadPreset(px)
+								toast.success(`Загружен размер: ${px}px`)
+							}}
+							activeValue={
+								converter.inputUnit === 'px'
+									? parseFloat(converter.inputValue)
+									: undefined
+							}
+						/>
+					</CardContent>
 				</Card>
 			)}
 
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4 flex items-center gap-2'>
-					<Info className='w-4 h-4' />О единицах измерения CSS
-				</h3>
-				<div className='grid md:grid-cols-3 gap-6 text-sm'>
-					<div>
-						<h4 className='font-medium mb-2'>Абсолютные единицы</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>
-								• <strong>px</strong> - пиксели, фиксированный размер
-							</li>
-							<li>
-								• <strong>pt</strong> - пункты (1pt = 1/72 дюйма)
-							</li>
-							<li>
-								• <strong>cm, mm, in</strong> - физические единицы
-							</li>
-						</ul>
+			{/* Conversion Table - Collapsible */}
+			<Card>
+				<CardContent className='p-6'>
+					<div className='flex items-center justify-between mb-4'>
+						<h3 className='font-semibold flex items-center gap-2'>
+							<Info className='w-4 h-4' />
+							Таблица популярных значений
+						</h3>
+						<Button
+							variant='ghost'
+							size='sm'
+							onClick={() => setShowTable(!showTable)}
+						>
+							{showTable ? 'Скрыть' : 'Показать'}
+						</Button>
 					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Относительные единицы</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>
-								• <strong>rem</strong> - относительно корневого элемента
-							</li>
-							<li>
-								• <strong>em</strong> - относительно родительского элемента
-							</li>
-							<li>
-								• <strong>%</strong> - процент от родителя
-							</li>
-							<li>
-								• <strong>vw/vh</strong> - процент от viewport
-							</li>
-						</ul>
+
+					{showTable && (
+						<div className='overflow-x-auto'>
+							<table className='w-full text-sm'>
+								<thead>
+									<tr className='border-b'>
+										<th className='text-left p-2 font-semibold'>PX</th>
+										<th className='text-left p-2 font-semibold'>REM</th>
+										<th className='text-left p-2 font-semibold'>EM</th>
+										<th className='text-left p-2 font-semibold'>%</th>
+									</tr>
+								</thead>
+								<tbody>
+									{[8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64].map(
+										px => {
+											const rem = px / converter.config.baseFontSize
+											const em = px / converter.config.parentFontSize
+											const percent =
+												(px / converter.config.parentFontSize) * 100
+
+											return (
+												<tr
+													key={px}
+													className='border-b hover:bg-muted/30 transition-colors cursor-pointer'
+													onClick={() => {
+														converter.loadPreset(px)
+														toast.success(`Загружен: ${px}px`)
+													}}
+												>
+													<td className='p-2 font-mono'>{px}px</td>
+													<td className='p-2 font-mono'>
+														{converter.formatValue(rem)}rem
+													</td>
+													<td className='p-2 font-mono'>
+														{converter.formatValue(em)}em
+													</td>
+													<td className='p-2 font-mono'>
+														{converter.formatValue(percent)}%
+													</td>
+												</tr>
+											)
+										}
+									)}
+								</tbody>
+							</table>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Info Card */}
+			<Card className='bg-muted/50'>
+				<CardContent className='p-6'>
+					<h3 className='font-semibold mb-4 flex items-center gap-2'>
+						<Info className='w-4 h-4' />О единицах измерения CSS
+					</h3>
+
+					<div className='grid md:grid-cols-3 gap-6 text-sm'>
+						<div>
+							<h4 className='font-medium mb-2'>Абсолютные единицы</h4>
+							<ul className='text-muted-foreground space-y-1'>
+								<li>
+									• <strong className='font-semibold'>px</strong> - пиксели,
+									фиксированный размер
+								</li>
+								<li>
+									• <strong className='font-semibold'>pt</strong> - пункты (1pt =
+									1/72 дюйма)
+								</li>
+							</ul>
+						</div>
+						<div>
+							<h4 className='font-medium mb-2'>Относительные единицы</h4>
+							<ul className='text-muted-foreground space-y-1'>
+								<li>
+									• <strong className='font-semibold'>rem</strong> - относительно
+									корневого элемента
+								</li>
+								<li>
+									• <strong className='font-semibold'>em</strong> - относительно
+									родительского элемента
+								</li>
+								<li>
+									• <strong className='font-semibold'>%</strong> - процент от родителя
+								</li>
+								<li>
+									• <strong className='font-semibold'>vw/vh</strong> - процент от
+									viewport
+								</li>
+							</ul>
+						</div>
+						<div>
+							<h4 className='font-medium mb-2'>Рекомендации</h4>
+							<ul className='text-muted-foreground space-y-1'>
+								<li>• Используйте rem для типографики</li>
+								<li>• Применяйте em для отступов компонентов</li>
+								<li>• Избегайте px для адаптивного дизайна</li>
+								<li>• Комбинируйте единицы для гибкости</li>
+							</ul>
+						</div>
 					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Рекомендации</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Используйте rem для типографики</li>
-							<li>• Применяйте em для отступов компонентов</li>
-							<li>• Избегайте px для адаптивного дизайна</li>
-							<li>• Комбинируйте единицы для гибкости</li>
-						</ul>
-					</div>
-				</div>
+				</CardContent>
 			</Card>
 		</div>
 	)

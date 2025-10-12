@@ -19,10 +19,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import {
-	useWidgetKeyboard,
-	createConverterShortcuts
-} from '@/lib/hooks/widgets'
-import {
 	CaseCard,
 	caseConfigs,
 	categories,
@@ -169,23 +165,6 @@ export default function TextCaseConverterPage() {
 	}, [input])
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'text-case-converter',
-		shortcuts: [
-			...createConverterShortcuts({
-				convert: () => {}, // Not needed in instant conversion
-				copy: copyAllResults,
-				reset: handleClear
-			}),
-			{
-				key: 'j',
-				primary: true,
-				action: exportAsJSON,
-				description: 'Export as JSON'
-			}
-		]
-	})
-
 	if (!mounted) {
 		return (
 			<WidgetWrapper>

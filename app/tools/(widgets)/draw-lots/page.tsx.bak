@@ -1,0 +1,319 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { Shuffle, RotateCcw } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'framer-motion'
+
+import { Badge } from '@/components/ui/badge'
+import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
+
+interface Lot {
+	id: string
+	value: string
+	isRevealed: boolean
+	order: number
+}
+
+// Fisher-Yates shuffle algorithm
+function shuffleArray<T>(array: T[]): T[] {
+	const newArray = [...array]
+	for (let i = newArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
+	}
+	return newArray
+}
+
+export default function DrawLotsPage() {
+	const [mounted, setMounted] = useState(false)
+	const defaultValues =
+		'Albert Einstein\nMarie Curie\nLeonardo da Vinci\nNikola Tesla'
+	const [inputText, setInputText] = useState(defaultValues)
+	const [lots, setLots] = useState<Lot[]>([])
+	const [isDrawing, setIsDrawing] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+
+	const startDrawing = useCallback(() => {
+		const lines = inputText
+			.trim()
+			.split('\n')
+			.filter(line => line.trim() !== '')
+
+		if (lines.length === 0) {
+			setError('Нет элементов для жребьевки')
+			return
+		}
+
+		if (lines.length > 100) {
+			setError('Слишком много элементов (макс. 100)')
+			return
+		}
+
+		setError(null)
+
+		// Create lot objects with random order
+		const lotObjects: Lot[] = lines.map((value, index) => ({
+			id: crypto.randomUUID(),
+			value: value.trim(),
+			isRevealed: false,
+			order: index
+		}))
+
+		// Shuffle the lots
+		const shuffledLots = shuffleArray(lotObjects)
+		setLots(shuffledLots)
+		setIsDrawing(true)
+	}, [inputText])
+
+	const revealLot = useCallback((lotId: string) => {
+		setLots(prev =>
+			prev.map(lot => (lot.id === lotId ? { ...lot, isRevealed: true } : lot))
+		)
+	}, [])
+
+	const reset = useCallback(() => {
+		setLots([])
+		setIsDrawing(false)
+		setError(null)
+	}, [])
+
+	// Keyboard shortcuts
+	useWidgetKeyboard({
+		widgetId: 'draw-lots',
+		shortcuts: [
+			{
+				key: ' ',
+				description: 'Draw Card',
+				action: startDrawing,
+				enabled: !isDrawing
+			},
+			{
+				key: 'Enter',
+				description: 'Reveal Card',
+				action: () => {
+					const availableLots = lots.filter(lot => !lot.isRevealed)
+					if (availableLots.length > 0) {
+						const randomLot =
+							availableLots[Math.floor(Math.random() * availableLots.length)]
+						revealLot(randomLot.id)
+					}
+				},
+				enabled: isDrawing && lots.length > 0
+			},
+			{
+				key: 'r',
+				primary: true,
+				description: 'Reset',
+				action: reset
+			}
+		]
+	})
+
+	if (!mounted) {
+		return null
+	}
+
+	return (
+		<div className='space-y-6'>
+			{!isDrawing ? (
+				<div className='grid gap-6 lg:grid-cols-[1fr_400px]'>
+					{/* Input Section */}
+					<Card className='p-6'>
+						<div className='flex items-center justify-between mb-2 h-9'>
+							<Label htmlFor='items' className='text-base font-semibold'>
+								Участники жребьевки
+							</Label>
+							<Button
+								variant='ghost'
+								size='sm'
+								onClick={() => setInputText(defaultValues)}
+								className={cn(
+									'text-xs transition-opacity',
+									inputText === defaultValues
+										? 'opacity-0 pointer-events-none'
+										: 'opacity-100'
+								)}
+							>
+								<RotateCcw className='w-3 h-3 mr-1' />
+								Вернуть пример
+							</Button>
+						</div>
+						<Textarea
+							id='items'
+							value={inputText}
+							onChange={e => setInputText(e.target.value)}
+							placeholder='Иван\nПетр\nМария\nАнна'
+							className='min-h-[200px] font-mono'
+							spellCheck={false}
+						/>
+						<p className='text-sm text-muted-foreground mt-2'>
+							Один участник на строку
+						</p>
+
+						{error && (
+							<Alert variant='destructive' className='mt-4'>
+								<AlertDescription>{error}</AlertDescription>
+							</Alert>
+						)}
+
+						<Button onClick={startDrawing} className='w-full mt-4' size='lg'>
+							<Shuffle className='w-4 h-4 mr-2' />
+							Начать жребьевку
+						</Button>
+					</Card>
+
+					{/* Instructions */}
+					<Card className='p-6 bg-muted/50 h-fit'>
+						<h3 className='font-semibold mb-3'>Как использовать</h3>
+						<ol className='space-y-2 text-sm text-muted-foreground'>
+							<li>1. Введите имена участников или варианты</li>
+							<li>2. Нажмите Начать жребьевку</li>
+							<li>3. Кликните на карточку для открытия</li>
+							<li>4. Повторите для следующего участника</li>
+						</ol>
+					</Card>
+				</div>
+			) : (
+				<>
+					{/* Drawing Area */}
+					<Card className='p-6'>
+						<div className='flex items-center justify-between mb-4'>
+							<h3 className='text-lg font-semibold'>Кликните для открытия</h3>
+							<Button onClick={reset} variant='outline' size='sm'>
+								<RotateCcw className='w-4 h-4 mr-2' />
+								Сброс
+							</Button>
+						</div>
+
+						<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
+							<AnimatePresence>
+								{lots.map((lot, index) => (
+									<motion.div
+										key={lot.id}
+										initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
+										animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+										exit={{ opacity: 0, scale: 0.8 }}
+										transition={{
+											delay: index * 0.05,
+											duration: 0.3,
+											type: 'spring',
+											stiffness: 300
+										}}
+									>
+										<button
+											onClick={() => revealLot(lot.id)}
+											disabled={lot.isRevealed}
+											className={cn(
+												'relative w-full aspect-[3/4] rounded-lg transition-all duration-300 transform-gpu',
+												'hover:scale-105 hover:shadow-lg',
+												'focus:outline-none focus:ring-2 focus:ring-primary',
+												lot.isRevealed
+													? 'cursor-default'
+													: 'cursor-pointer hover:shadow-xl'
+											)}
+											style={{
+												transformStyle: 'preserve-3d',
+												perspective: '1000px'
+											}}
+										>
+											<div
+												className={cn(
+													'absolute inset-0 rounded-lg transition-transform duration-500',
+													'backface-hidden',
+													lot.isRevealed && 'rotate-y-180'
+												)}
+												style={{
+													transform: lot.isRevealed
+														? 'rotateY(180deg)'
+														: 'rotateY(0deg)',
+													backfaceVisibility: 'hidden'
+												}}
+											>
+												{/* Card Back */}
+												<div className='w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center'>
+													<div className='text-primary-foreground'>
+														<div className='text-4xl font-bold mb-2'>?</div>
+														<div className='text-sm opacity-80'>Кликните</div>
+													</div>
+												</div>
+											</div>
+
+											<div
+												className={cn(
+													'absolute inset-0 rounded-lg transition-transform duration-500',
+													'backface-hidden',
+													!lot.isRevealed && 'rotate-y-180'
+												)}
+												style={{
+													transform: lot.isRevealed
+														? 'rotateY(0deg)'
+														: 'rotateY(-180deg)',
+													backfaceVisibility: 'hidden'
+												}}
+											>
+												{/* Card Front */}
+												<div className='w-full h-full bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center p-4'>
+													<div className='text-center'>
+														<p className='text-white font-bold text-lg break-words'>
+															{lot.value}
+														</p>
+														<div className='mt-2 text-white/80 text-sm'>
+															Выбрано
+														</div>
+													</div>
+												</div>
+											</div>
+										</button>
+									</motion.div>
+								))}
+							</AnimatePresence>
+						</div>
+
+						{lots.filter(lot => lot.isRevealed).length > 0 && (
+							<div className='mt-6 p-4 bg-muted rounded-lg'>
+								<h4 className='font-medium mb-2'>Открытые</h4>
+								<div className='flex flex-wrap gap-2'>
+									{lots
+										.filter(lot => lot.isRevealed)
+										.map(lot => (
+											<Badge key={lot.id} variant='secondary'>
+												{lot.value}
+											</Badge>
+										))}
+								</div>
+							</div>
+						)}
+					</Card>
+				</>
+			)}
+
+			{/* About Section */}
+			<Card className='p-6 bg-muted/50'>
+				<h3 className='font-semibold mb-3'>О виджете</h3>
+				<div className='space-y-2 text-sm text-muted-foreground'>
+					<p>
+						Жребьевка для честного и случайного выбора. Используется
+						криптографически стойкий алгоритм перемешивания.
+					</p>
+					<p>
+						Используйте для: определения порядка, выбора победителей,
+						распределения задач, игр и конкурсов.
+					</p>
+					<p className='text-xs mt-4'>
+						Каждый выбор абсолютно случаен и непредсказуем.
+					</p>
+				</div>
+			</Card>
+		</div>
+	)
+}

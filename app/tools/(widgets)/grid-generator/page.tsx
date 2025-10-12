@@ -23,8 +23,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface GridProps {
 	columns: string
 	rows: string
@@ -294,45 +292,6 @@ export default function GridGeneratorPage() {
 	}
 
 	// Keyboard shortcuts - matching widgetShortcuts.ts configuration
-	useWidgetKeyboard({
-		widgetId: 'grid-generator',
-		shortcuts: [
-			{
-				key: '1',
-				primary: true,
-				description: 'Copy CSS',
-				action: copyToClipboard
-			},
-			{
-				key: '2',
-				primary: true,
-				description: 'Copy Tailwind',
-				action: copyTailwindToClipboard
-			},
-			{
-				key: 'r',
-				primary: true,
-				shift: true,
-				description: 'Reset',
-				action: resetProps
-			},
-			{
-				key: 'a',
-				primary: true,
-				shift: true,
-				description: 'Add Column',
-				action: addColumn
-			},
-			{
-				key: 'd',
-				primary: true,
-				shift: true,
-				description: 'Remove Column',
-				action: removeColumn
-			}
-		]
-	})
-
 	return (
 		<div className='grid gap-6 lg:grid-cols-3'>
 			{/* Controls */}

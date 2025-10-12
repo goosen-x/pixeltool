@@ -19,14 +19,8 @@ import {
 	WidgetShareSection,
 	WidgetTips,
 	WidgetTutorial,
-	WidgetKeyboardShortcuts,
 	type InputField
 } from '@/components/widgets'
-import {
-	useWidgetKeyboard,
-	commonWidgetShortcuts,
-	type KeyboardShortcut
-} from '@/lib/hooks/useWidgetKeyboard'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -270,92 +264,6 @@ export default function AsciiArtGeneratorPage() {
 		}
 	]
 
-	// Keyboard shortcuts
-	const shortcuts: KeyboardShortcut[] = [
-		{
-			...commonWidgetShortcuts.submit,
-			action: () => {
-				if (activeTab === 'text') {
-					const textInput = document.querySelector(
-						'input[name="text"]'
-					) as HTMLInputElement
-					if (textInput?.value) {
-						handleTextToAscii({ text: textInput.value, font: 'standard' })
-					}
-				}
-			}
-		},
-		{
-			key: 'c',
-			alt: true,
-			description: 'Copy ASCII art',
-			action: handleCopyAscii,
-			enabled: !!asciiOutput
-		},
-		{
-			key: 'd',
-			primary: true,
-			shift: true,
-			description: 'Download as text',
-			action: handleDownloadText,
-			enabled: !!asciiOutput
-		},
-		{
-			key: 'i',
-			primary: true,
-			shift: true,
-			description: 'Download as image',
-			action: handleDownloadImage,
-			enabled: !!asciiOutput
-		},
-		{
-			key: '1',
-			primary: true,
-			description: 'Text to ASCII tab',
-			action: () => setActiveTab('text')
-		},
-		{
-			key: '2',
-			primary: true,
-			description: 'Image to ASCII tab',
-			action: () => setActiveTab('image')
-		},
-		{
-			key: '3',
-			primary: true,
-			description: 'Patterns tab',
-			action: () => setActiveTab('patterns')
-		},
-		{
-			key: 'r',
-			primary: true,
-			shift: true,
-			description: 'Reset all',
-			action: () => {
-				setAsciiOutput('')
-				setImagePreview(null)
-				setSelectedPattern('')
-				toast.success('Reset complete')
-			}
-		},
-		{
-			key: '/',
-			description: 'Focus text input',
-			action: () => {
-				const input = document.querySelector(
-					'input[name="text"]'
-				) as HTMLInputElement
-				input?.focus()
-			}
-		}
-	]
-
-	const { focusElement } = useWidgetKeyboard({
-		shortcuts,
-		widgetId: 'ascii-art-generator',
-		enabled: true
-	})
-
 	// Widget tips
 	const asciiTips = [
 		{
@@ -593,12 +501,6 @@ export default function AsciiArtGeneratorPage() {
 				hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
 			/>
 
-			{/* Keyboard shortcuts */}
-			<WidgetKeyboardShortcuts
-				shortcuts={shortcuts}
-				variant='floating'
-				position='bottom-right'
-			/>
 		</div>
 	)
 }

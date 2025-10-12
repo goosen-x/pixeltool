@@ -16,13 +16,9 @@ yarn typecheck           # TypeScript validation
 yarn clean               # Clear Next.js cache
 
 # Quality Checks
-yarn translations:check  # Validate all translations
 yarn check:all           # Run security, imports, bundle checks
 yarn format              # Auto-fix formatting
 yarn test                # Run test suite
-
-# Translation Development
-yarn watch:translations  # Watch translation files for changes
 
 # Database
 yarn tsx lib/scripts/migrate-posts.ts     # Migrate posts to DB
@@ -35,7 +31,7 @@ yarn tsx lib/scripts/check-supabase.ts    # Verify DB connection
 
 ```
 portfolio/
-├── app/[locale]/         # Next.js App Router with i18n
+├── app/                 # Next.js App Router
 │   ├── (main)/          # Homepage routes
 │   ├── (tools)/         # Widget/tool routes
 │   └── (other)/         # Blog, contact, etc.
@@ -47,7 +43,6 @@ portfolio/
 │   ├── hooks/           # Custom React hooks
 │   ├── utils/           # Helper functions
 │   └── db/              # Database layer
-└── messages/            # i18n translations
 ```
 
 ### Critical Architectural Decisions
@@ -72,19 +67,7 @@ portfolio/
    const data: WidgetData = fetch()
    ```
 
-3. **Internationalization Pattern**
-
-   ```typescript
-   // Always use translations
-   import { useTranslations } from 'next-intl'
-   const t = useTranslations('widgets.myWidget')
-
-   // Never hardcode text
-   // ❌ <h1>My Widget</h1>
-   // ✅ <h1>{t('title')}</h1>
-   ```
-
-4. **Component Patterns**
+3. **Component Patterns**
 
    ```typescript
    // Use composition and base components
@@ -104,9 +87,8 @@ portfolio/
 
 ### Pre-commit Checks (BLOCKING)
 
-1. **Translation Validation** - All translations must be complete
-2. **TypeScript Check** - No type errors allowed
-3. **Build Verification** - Project must build successfully
+1. **TypeScript Check** - No type errors allowed
+2. **Build Verification** - Project must build successfully
 
 ### Code Style Rules
 
@@ -132,7 +114,6 @@ portfolio/
    - State management (inputs, results, loading, errors)
    - Built-in validation system
    - Analytics tracking
-   - Keyboard shortcuts
    - Copy/download/share functionality
    - Consistent error handling
 
@@ -144,62 +125,21 @@ portfolio/
 4. **Step-by-step process**:
    - Add widget definition to `/lib/constants/widgets.ts`
    - Copy template to new widget folder
-   - Add translations (EN/RU) to `/messages/`
    - Update widget configuration (ID, icon, gradient)
    - Implement widget-specific logic
-   - Test thoroughly (both languages, dark mode, mobile)
+   - Test thoroughly (dark mode, mobile)
 
 5. **Widget Template Structure**:
 
    ```typescript
    const widget = useWidgetCreation({
      widgetId: 'my-widget',
-     enableKeyboard: true,
      enableAnalytics: true,
      enableFavorites: true,
      defaultState: { inputs: {...}, custom: {...} },
      validationRules: { field: (value) => validation }
    })
    ```
-
-6. **Required Translations Structure**:
-   ```json
-   {
-     "myWidget": {
-       "title": "Widget Title",
-       "description": "Description",
-       "inputs": {...},
-       "actions": {...},
-       "results": {...},
-       "validation": {...},
-       "toast": {...},
-       "info": {...}
-     }
-   }
-   ```
-
-### Working with Translations
-
-```bash
-# After adding translations:
-yarn generate:types        # Generate TypeScript types
-yarn validate:translations # Check completeness
-```
-
-Common translation structure:
-
-```json
-{
-	"widgets": {
-		"myWidget": {
-			"title": "Widget Title",
-			"description": "Widget description",
-			"useCase": "Use case description"
-			// Widget-specific fields...
-		}
-	}
-}
-```
 
 ### Database Operations
 
@@ -289,14 +229,6 @@ yarn install
 yarn build
 ```
 
-### Translation Errors
-
-```bash
-# Regenerate types and validate
-yarn generate:types
-yarn validate:translations
-```
-
 ### Database Issues
 
 ```bash
@@ -307,9 +239,7 @@ yarn tsx lib/scripts/verify-supabase-setup.ts
 ## 📚 Additional Resources
 
 - **Widget Creation Guide**: `/docs/WIDGET_CREATION_GUIDE.md`
-- **Translation System**: `/docs/TRANSLATIONS.md`
 - **Database Setup**: `/docs/SUPABASE_SETUP.md`
-- **Pre-commit Checks**: `/docs/PRE_COMMIT_CHECKS.md`
 
 ## 🎯 Development Philosophy
 
@@ -344,8 +274,6 @@ Your project is now configured with enterprise-level development tools:
 
 When creating new widgets, ensure:
 
-- ✅ **Bilingual translations** (EN/RU) with complete key coverage
-- ✅ **Keyboard shortcuts** using useWidgetKeyboard hook
 - ✅ **Mobile responsive design** with touch-friendly interactions
 - ✅ **SEO optimization** with proper metadata and structured data
 - ✅ **Analytics tracking** for user interactions
@@ -370,9 +298,9 @@ yarn typecheck       # TypeScript validation
 
 # Widget Development
 yarn new-widget      # Create new widget template
-yarn translations:check  # Validate all translations
 ```
 
 This configuration ensures your development workflow meets senior-level
 standards with automated quality checks, comprehensive validation, and best
 practices enforcement.
+- укажи что сайт должен быть на русском языке

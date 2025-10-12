@@ -6,11 +6,6 @@ export { WidgetHeader } from './WidgetHeader'
 export { WidgetLayout } from './WidgetLayout'
 export { WidgetTips, commonWidgetTips } from './WidgetTips'
 export { WidgetTutorial } from './WidgetTutorial'
-export {
-	WidgetKeyboardShortcuts,
-	ShortcutHint
-} from './WidgetKeyboardShortcuts'
-export { KeyboardShortcutInfo } from './KeyboardShortcutInfo'
 export { WidgetSection } from './WidgetSection'
 export { WidgetOutput } from './WidgetOutput'
 export {

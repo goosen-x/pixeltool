@@ -191,26 +191,7 @@ export function GlobalWidgetSearch({
 				title,
 				description,
 				category: widget.category,
-				categoryName:
-					{
-						webdev: 'Веб-разработка',
-						business: 'Бизнес и финансы',
-						content: 'Создание контента',
-						lifestyle: 'Стиль жизни',
-						multimedia: 'Мультимедиа',
-						analytics: 'Аналитика',
-						security: 'Безопасность',
-						generators: 'Генераторы',
-						converters: 'Конвертеры',
-						formatters: 'Форматтеры',
-						utilities: 'Утилиты',
-						developers: 'Разработчикам',
-						design: 'Дизайн',
-						calculators: 'Калькуляторы',
-						random: 'Случайное',
-						web: 'Веб',
-						system: 'Система'
-					}[widget.category] || widget.category,
+				categoryName: widgetCategories[widget.category] || widget.category,
 				isFavorite: favorites.includes(widget.id),
 				path: `/tools/${widget.path}`
 			}

@@ -101,16 +101,13 @@ export function WidgetStructuredData({
 	}
 
 	// HowTo schema for instructional tools
-	const howToSchema =
-		widget.category !== 'lifestyle'
-			? {
-					'@context': 'https://schema.org',
-					'@type': 'HowTo',
-					name: `How to use ${title}`,
-					description: `Step-by-step guide on using the ${title} tool`,
-					step: getHowToSteps(widget.translationKey)
-				}
-			: null
+	const howToSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'HowTo',
+		name: `How to use ${title}`,
+		description: `Step-by-step guide on using the ${title} tool`,
+		step: getHowToSteps(widget.translationKey)
+	}
 
 	// FAQPage schema if widget has FAQs
 	const widgetFAQs = getWidgetFAQs(widget.translationKey)
@@ -201,13 +198,13 @@ export function WidgetStructuredData({
 
 function getCategoryName(category: string): string {
 	const categories: Record<string, string> = {
-		webdev: 'Web Development Tools',
-		business: 'Business & Finance Tools',
-		content: 'Content Creation Tools',
-		security: 'Security & Privacy Tools',
-		multimedia: 'Multimedia Tools',
-		analytics: 'Analytics & Data Tools',
-		lifestyle: 'Health & Lifestyle Tools'
+		css: 'CSS Development Tools',
+		html: 'HTML Development Tools',
+		javascript: 'JavaScript Development Tools',
+		text: 'Text Processing Tools',
+		generators: 'Generator & Randomizer Tools',
+		security: 'Security & Encoding Tools',
+		tools: 'Utility Tools'
 	}
 	return categories[category] || 'Utility Tools'
 }

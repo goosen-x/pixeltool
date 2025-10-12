@@ -34,8 +34,6 @@ import {
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface TextStats {
 	characters: number
 	charactersNoSpaces: number
@@ -450,47 +448,6 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 	}
 
 	// Keyboard shortcuts
-	const shortcuts = [
-		{
-			key: 'k',
-			alt: true,
-			action: clearText,
-			description: 'Очистить'
-		},
-		{
-			key: 'c',
-			primary: true,
-			action: copyStats,
-			description: 'Копировать статистику'
-		},
-		{
-			key: 'h',
-			primary: true,
-			action: () => {
-				const highlighted = highlightKeywords()
-				setText(highlighted)
-				toast.success('Выделить частые слова')
-			},
-			description: 'Выделить частые слова',
-			enabled: stats.commonWords.length > 0
-		},
-		{
-			key: 'l',
-			primary: true,
-			action: () => {
-				toast.info(
-					`Показать лимиты: ${PLATFORM_LIMITS.map(p => p.name).join(', ')}`
-				)
-			},
-			description: 'Показать лимиты'
-		}
-	]
-
-	useWidgetKeyboard({
-		shortcuts,
-		widgetId: 'text-counter'
-	})
-
 	return (
 		<WidgetLayout showShare={false}>
 			<div className='w-full space-y-6'>

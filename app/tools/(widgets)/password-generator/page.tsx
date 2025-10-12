@@ -33,9 +33,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { KeyboardShortcuts } from '@/components/tools/KeyboardShortcuts'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 import { TextRoll } from '@/components/core/text-roll'
 
 interface PasswordOptions {
@@ -468,31 +466,8 @@ export default function PasswordGeneratorPage() {
 		setStrength(calculateStrength(password))
 	}, [password, calculateStrength])
 
-	// Keyboard shortcuts
-	const shortcuts = [
-		{
-			key: 'r',
-			primary: true,
-			action: generate,
-			description: 'Сгенерировать'
-		},
-		{
-			key: 'h',
-			primary: true,
-			action: () => setShowPassword(!showPassword),
-			description: 'Показать/скрыть пароль'
-		}
-	]
-
-	useWidgetKeyboard({
-		shortcuts,
-		widgetId: 'password-generator'
-	})
-
 	return (
 		<WidgetLayout showShare={false}>
-			<KeyboardShortcuts shortcuts={shortcuts} />
-
 			<div className='w-full space-y-6'>
 				{/* Main Card with Settings and Password */}
 				<Card className='relative overflow-hidden bg-gradient-to-br from-background/95 to-background/50 backdrop-blur border-border/50'>

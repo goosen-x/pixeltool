@@ -11,8 +11,6 @@ import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 
 import { Badge } from '@/components/ui/badge'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface Lot {
 	id: string
 	value: string
@@ -88,37 +86,6 @@ export default function DrawLotsPage() {
 	}, [])
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'draw-lots',
-		shortcuts: [
-			{
-				key: ' ',
-				description: 'Draw Card',
-				action: startDrawing,
-				enabled: !isDrawing
-			},
-			{
-				key: 'Enter',
-				description: 'Reveal Card',
-				action: () => {
-					const availableLots = lots.filter(lot => !lot.isRevealed)
-					if (availableLots.length > 0) {
-						const randomLot =
-							availableLots[Math.floor(Math.random() * availableLots.length)]
-						revealLot(randomLot.id)
-					}
-				},
-				enabled: isDrawing && lots.length > 0
-			},
-			{
-				key: 'r',
-				primary: true,
-				description: 'Reset',
-				action: reset
-			}
-		]
-	})
-
 	if (!mounted) {
 		return null
 	}

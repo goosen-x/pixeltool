@@ -29,8 +29,6 @@ import {
 	Settings
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 type QRType = 'url' | 'appstore' | 'wifi'
 
 interface WifiConfig {
@@ -179,31 +177,6 @@ export default function QRGeneratorPage() {
 	])
 
 	// Keyboard shortcuts
-	const shortcuts = [
-		{
-			key: 'd',
-			primary: true,
-			action: downloadQR,
-			description: 'Скачать'
-		},
-		{
-			key: 'c',
-			primary: true,
-			action: copyQRAsImage,
-			description: 'Копировать'
-		},
-		{
-			key: 'Enter',
-			action: generateQR,
-			description: 'Генерировать'
-		}
-	]
-
-	useWidgetKeyboard({
-		shortcuts,
-		widgetId: 'qr-generator'
-	})
-
 	return (
 		<div className='grid lg:grid-cols-3 gap-6'>
 			{/* Settings */}

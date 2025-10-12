@@ -37,7 +37,6 @@ export default function TemplateWidgetPage() {
 	// Initialize widget with creation hook
 	const widget = useWidgetCreation({
 		widgetId: WIDGET_CONFIG.id,
-		enableKeyboard: true,
 		enableAnalytics: true,
 		enableFavorites: true,
 		defaultState: {

@@ -4,13 +4,11 @@ import { useState, useCallback, useEffect } from 'react'
 
 import { toast } from 'sonner'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
 
 interface WidgetCreationConfig {
 	widgetId: string
-	enableKeyboard?: boolean
 	enableAnalytics?: boolean
 	enableFavorites?: boolean
 	enableHistory?: boolean
@@ -78,13 +76,6 @@ export function useWidgetCreation(config: WidgetCreationConfig) {
 		result: null,
 		inputs: config.defaultState?.inputs || {},
 		customState: config.defaultState?.custom || {}
-	})
-
-	// Enable keyboard shortcuts if configured
-	useWidgetKeyboard({
-		shortcuts: [],
-		widgetId: config.widgetId,
-		enabled: config.enableKeyboard || false
 	})
 
 	// Track widget usage

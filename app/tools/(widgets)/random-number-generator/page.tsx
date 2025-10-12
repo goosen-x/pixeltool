@@ -10,8 +10,6 @@ import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface GeneratedResult {
 	numbers: number[]
 	timestamp: Date
@@ -148,47 +146,6 @@ export default function RandomNumberGeneratorPage() {
 	}, [])
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'random-number-generator',
-		shortcuts: [
-			{
-				key: 'g',
-				primary: true,
-				description: 'Generate',
-				action: handleGenerate
-			},
-			{
-				key: 'r',
-				primary: true,
-				description: 'Regenerate',
-				action: handleGenerate
-			},
-			{
-				key: 'c',
-				alt: true,
-				description: 'Copy Result',
-				action: () => {
-					if (results[0]) {
-						copyToClipboard(results[0].numbers, results[0].id)
-					}
-				},
-				enabled: results.length > 0
-			},
-			{
-				key: 'd',
-				primary: true,
-				description: 'Download',
-				action: downloadResults,
-				enabled: results.length > 0
-			},
-			{
-				key: 'u',
-				description: 'Toggle Unique',
-				action: () => setUnique(!unique)
-			}
-		]
-	})
-
 	if (!mounted) {
 		return null
 	}

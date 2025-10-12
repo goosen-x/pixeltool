@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import Image from 'next/image'
 const locale = 'ru'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
 
 interface FlipResult {
 	id: string
@@ -179,36 +178,6 @@ export default function CoinFlipPage() {
 		localStorage.removeItem('coinFlipHistory')
 		toast.success(locale === 'ru' ? 'История очищена' : 'History cleared')
 	}, [locale])
-
-	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'coin-flip',
-		shortcuts: [
-			{
-				key: ' ',
-				description: 'Flip Coin',
-				action: flipCoin
-			},
-			{
-				key: 't',
-				primary: true,
-				description: 'Change Coin Type',
-				action: () => {
-					const currentIndex = coinTypes.findIndex(
-						c => c.id === selectedCoin.id
-					)
-					const nextIndex = (currentIndex + 1) % coinTypes.length
-					setSelectedCoin(coinTypes[nextIndex])
-				}
-			},
-			{
-				key: 'r',
-				primary: true,
-				description: 'Reset',
-				action: clearHistory
-			}
-		]
-	})
 
 	const getAnimationDuration = () => {
 		switch (animationSpeed) {

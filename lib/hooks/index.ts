@@ -10,7 +10,6 @@ export { useCookieConsent } from './useCookieConsent'
 export { useEmoji } from './useEmoji'
 export { useWidgetShare } from './useWidgetShare'
 export { useWidgetTips } from './useWidgetTips'
-export { useWidgetKeyboard } from './useWidgetKeyboard'
 
 // Widget hooks
 export * from './widgets'

@@ -1,5 +1,4 @@
-import { sql } from './connection'
-import { safeQuery } from './safe-query'
+import { supabaseServer } from '../supabase/server'
 import type {
 	BlogPost,
 	Author,
@@ -12,53 +11,28 @@ export async function getAllPublishedPosts(
 	locale: string = 'en'
 ): Promise<BlogPost[]> {
 	try {
-		// Check if database is configured
-		if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
-			console.warn('Database URL not configured, returning empty posts')
-			return []
-		}
+		const { data, error } = await supabaseServer
+			.from('blog_posts')
+			.select(`
+				*,
+				blog_post_authors (
+					author:authors (*)
+				)
+			`)
+			.eq('published', true)
+			.eq('locale', locale)
+			.order('published_at', { ascending: false })
+			.order('created_at', { ascending: false })
 
-		// Add timeout wrapper
-		const timeoutPromise = new Promise<never>((_, reject) => {
-			setTimeout(() => reject(new Error('Query timeout')), 2000)
-		})
+		if (error) throw error
 
-		const queryPromise = sql`
-			SELECT
-				bp.*,
-				json_agg(
-					json_build_object(
-						'id', a.id,
-						'name', a.name,
-						'picture', a.picture,
-						'bio', a.bio
-					)
-				) as authors
-			FROM blog_posts bp
-			LEFT JOIN blog_post_authors bpa ON bp.id = bpa.blog_post_id
-			LEFT JOIN authors a ON bpa.author_id = a.id
-			WHERE bp.published = true
-				AND bp.locale = ${locale}
-			GROUP BY bp.id
-			ORDER BY bp.published_at DESC, bp.created_at DESC
-		`
-
-		const posts = await Promise.race([queryPromise, timeoutPromise])
-
-		return posts.map((post: any) => ({
+		// Transform data to match expected format
+		return (data || []).map((post: any) => ({
 			...post,
-			authors: post.authors?.filter(Boolean) || []
+			authors: post.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) || []
 		})) as BlogPost[]
-	} catch (error: any) {
-		if (
-			error?.message?.includes('timeout') ||
-			error?.message?.includes('TimeoutError') ||
-			error?.message?.includes('Query timeout')
-		) {
-			console.warn('Database connection timeout - returning empty posts')
-		} else {
-			console.error('Error fetching published posts:', error)
-		}
+	} catch (error) {
+		console.error('Error fetching published posts:', error)
 		return []
 	}
 }
@@ -69,54 +43,28 @@ export async function getLatestPublishedPosts(
 	limit: number = 6
 ): Promise<BlogPost[]> {
 	try {
-		// Check if database is configured
-		if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
-			console.warn('Database URL not configured, returning empty posts')
-			return []
-		}
+		const { data, error } = await supabaseServer
+			.from('blog_posts')
+			.select(`
+				*,
+				blog_post_authors (
+					author:authors (*)
+				)
+			`)
+			.eq('published', true)
+			.eq('locale', locale)
+			.order('published_at', { ascending: false })
+			.order('created_at', { ascending: false })
+			.limit(limit)
 
-		// Add timeout wrapper
-		const timeoutPromise = new Promise<never>((_, reject) => {
-			setTimeout(() => reject(new Error('Query timeout')), 2000)
-		})
+		if (error) throw error
 
-		const queryPromise = sql`
-			SELECT
-				bp.*,
-				json_agg(
-					json_build_object(
-						'id', a.id,
-						'name', a.name,
-						'picture', a.picture,
-						'bio', a.bio
-					)
-				) as authors
-			FROM blog_posts bp
-			LEFT JOIN blog_post_authors bpa ON bp.id = bpa.blog_post_id
-			LEFT JOIN authors a ON bpa.author_id = a.id
-			WHERE bp.published = true
-				AND bp.locale = ${locale}
-			GROUP BY bp.id
-			ORDER BY bp.published_at DESC, bp.created_at DESC
-			LIMIT ${limit}
-		`
-
-		const posts = await Promise.race([queryPromise, timeoutPromise])
-
-		return posts.map((post: any) => ({
+		return (data || []).map((post: any) => ({
 			...post,
-			authors: post.authors?.filter(Boolean) || []
+			authors: post.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) || []
 		})) as BlogPost[]
-	} catch (error: any) {
-		if (
-			error?.message?.includes('timeout') ||
-			error?.message?.includes('TimeoutError') ||
-			error?.message?.includes('Query timeout')
-		) {
-			console.warn('Database connection timeout - returning empty posts')
-		} else {
-			console.error('Error fetching latest posts:', error)
-		}
+	} catch (error) {
+		console.error('Error fetching latest posts:', error)
 		return []
 	}
 }
@@ -127,59 +75,28 @@ export async function getPostBySlug(
 	locale: string = 'en'
 ): Promise<BlogPost | null> {
 	try {
-		// Check if database is configured
-		if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
-			console.warn('Database URL not configured, returning null for post')
-			return null
-		}
+		const { data, error } = await supabaseServer
+			.from('blog_posts')
+			.select(`
+				*,
+				blog_post_authors (
+					author:authors (*)
+				)
+			`)
+			.eq('slug', slug)
+			.eq('locale', locale)
+			.eq('published', true)
+			.single()
 
-		// Add timeout wrapper
-		const timeoutPromise = new Promise<never>((_, reject) => {
-			setTimeout(() => reject(new Error('Query timeout')), 2000)
-		})
+		if (error) throw error
+		if (!data) return null
 
-		const queryPromise = sql`
-			SELECT
-				bp.*,
-				json_agg(
-					json_build_object(
-						'id', a.id,
-						'name', a.name,
-						'picture', a.picture,
-						'bio', a.bio
-					)
-				) as authors
-			FROM blog_posts bp
-			LEFT JOIN blog_post_authors bpa ON bp.id = bpa.blog_post_id
-			LEFT JOIN authors a ON bpa.author_id = a.id
-			WHERE bp.slug = ${slug}
-				AND bp.locale = ${locale}
-				AND bp.published = true
-			GROUP BY bp.id
-			LIMIT 1
-		`
-
-		const result = await Promise.race([queryPromise, timeoutPromise])
-
-		if (result.length === 0) {
-			return null
-		}
-
-		const post = result[0]
 		return {
-			...post,
-			authors: post.authors?.filter(Boolean) || []
+			...data,
+			authors: data.blog_post_authors?.map((bpa: any) => bpa.author).filter(Boolean) || []
 		} as BlogPost
-	} catch (error: any) {
-		if (
-			error?.message?.includes('timeout') ||
-			error?.message?.includes('TimeoutError') ||
-			error?.message?.includes('Query timeout')
-		) {
-			console.warn('Database connection timeout when fetching post by slug')
-		} else {
-			console.error('Error fetching post by slug:', error)
-		}
+	} catch (error) {
+		console.error('Error fetching post by slug:', error)
 		return null
 	}
 }
@@ -203,22 +120,37 @@ export async function createBlogPost(
 		const published_at = published ? new Date().toISOString() : null
 
 		// Insert blog post
-		const result = await sql`
-			INSERT INTO blog_posts (slug, title, excerpt, content, cover_image, published, locale, published_at)
-			VALUES (${slug}, ${title}, ${excerpt || null}, ${content}, ${cover_image || null}, ${published}, ${locale}, ${published_at})
-			RETURNING *
-		`
+		const { data: newPost, error: postError } = await supabaseServer
+			.from('blog_posts')
+			.insert({
+				slug,
+				title,
+				excerpt: excerpt || null,
+				content,
+				cover_image: cover_image || null,
+				published,
+				locale,
+				published_at
+			})
+			.select()
+			.single()
 
-		const newPost = result[0] as BlogPost
+		if (postError) throw postError
+		if (!newPost) return null
 
 		// Add authors
 		if (author_ids.length > 0) {
-			for (const authorId of author_ids) {
-				await sql`
-					INSERT INTO blog_post_authors (blog_post_id, author_id)
-					VALUES (${newPost.id}, ${authorId})
-					ON CONFLICT DO NOTHING
-				`
+			const authorRelations = author_ids.map(authorId => ({
+				blog_post_id: newPost.id,
+				author_id: authorId
+			}))
+
+			const { error: authorsError } = await supabaseServer
+				.from('blog_post_authors')
+				.insert(authorRelations)
+
+			if (authorsError) {
+				console.error('Error adding authors:', authorsError)
 			}
 		}
 
@@ -234,40 +166,43 @@ export async function updateBlogPost(
 	data: UpdateBlogPostData
 ): Promise<BlogPost | null> {
 	try {
-		const { id, ...updateData } = data
-		const setClause = []
-		const values = []
+		const { id, author_ids, ...updateData } = data
 
-		// Build dynamic SET clause
-		Object.entries(updateData).forEach(([key, value]) => {
-			if (value !== undefined && key !== 'author_ids' && key !== 'tag_names') {
-				setClause.push(`${key} = $${values.length + 1}`)
-				values.push(value)
-			}
-		})
-
-		if (setClause.length === 0) {
-			return null
-		}
-
-		// Update published_at if publishing
+		// Prepare update object with published_at if publishing
+		const updateObject: any = { ...updateData }
 		if (updateData.published === true) {
-			setClause.push(`published_at = $${values.length + 1}`)
-			values.push(new Date().toISOString())
+			updateObject.published_at = new Date().toISOString()
 		}
 
-		const result = await sql`
-			UPDATE blog_posts
-			SET ${sql.unsafe(setClause.join(', '))}
-			WHERE id = ${id}
-			RETURNING *
-		`
+		const { data: updatedPost, error } = await supabaseServer
+			.from('blog_posts')
+			.update(updateObject)
+			.eq('id', id)
+			.select()
+			.single()
 
-		if (result.length === 0) {
-			return null
+		if (error) throw error
+		if (!updatedPost) return null
+
+		// Update authors if provided
+		if (author_ids && author_ids.length > 0) {
+			// Delete existing author relations
+			await supabaseServer
+				.from('blog_post_authors')
+				.delete()
+				.eq('blog_post_id', id)
+
+			// Add new author relations
+			const authorRelations = author_ids.map(authorId => ({
+				blog_post_id: id,
+				author_id: authorId
+			}))
+
+			await supabaseServer
+				.from('blog_post_authors')
+				.insert(authorRelations)
 		}
 
-		const updatedPost = result[0] as BlogPost
 		return await getPostBySlug(updatedPost.slug, updatedPost.locale)
 	} catch (error) {
 		console.error('Error updating blog post:', error)
@@ -278,7 +213,12 @@ export async function updateBlogPost(
 // Delete blog post
 export async function deleteBlogPost(id: number): Promise<boolean> {
 	try {
-		await sql`DELETE FROM blog_posts WHERE id = ${id}`
+		const { error } = await supabaseServer
+			.from('blog_posts')
+			.delete()
+			.eq('id', id)
+
+		if (error) throw error
 		return true
 	} catch (error) {
 		console.error('Error deleting blog post:', error)
@@ -289,11 +229,13 @@ export async function deleteBlogPost(id: number): Promise<boolean> {
 // Get all authors
 export async function getAllAuthors(): Promise<Author[]> {
 	try {
-		const authors = await sql`
-			SELECT * FROM authors
-			ORDER BY name ASC
-		`
-		return authors as Author[]
+		const { data, error } = await supabaseServer
+			.from('authors')
+			.select('*')
+			.order('name', { ascending: true })
+
+		if (error) throw error
+		return (data || []) as Author[]
 	} catch (error) {
 		console.error('Error fetching authors:', error)
 		return []
@@ -303,9 +245,7 @@ export async function getAllAuthors(): Promise<Author[]> {
 // Initialize database with schema
 export async function initializeDatabase(): Promise<boolean> {
 	try {
-		// This would run the schema.sql file
-		// For now, we'll create tables manually in Neon Console
-		console.log('Database initialization should be done via Neon Console')
+		console.log('Database initialization should be done via Supabase Console')
 		return true
 	} catch (error) {
 		console.error('Error initializing database:', error)

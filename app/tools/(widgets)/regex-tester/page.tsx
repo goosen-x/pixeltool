@@ -31,8 +31,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
 interface RegexMatch {
@@ -422,50 +420,6 @@ export default function RegexTesterPage() {
 				return Zap
 		}
 	}
-
-	// Keyboard shortcuts
-	const shortcuts = [
-		{
-			key: 'Enter',
-			primary: true,
-			action: testRegex,
-			description: 'Тестировать'
-		},
-		{
-			key: 'r',
-			primary: true,
-			action: () => setShowReplace(!showReplace),
-			description: 'Переключить замену'
-		},
-		{
-			key: 'k',
-			alt: true,
-			action: () => {
-				setPattern('')
-				setTestText('')
-				setReplacePattern('')
-			},
-			description: 'Очистить'
-		},
-		{
-			key: 'g',
-			primary: true,
-			action: () => {
-				const flag =
-					flavor === 'javascript' ? 'g' : flavor === 'php' ? 'g' : 're.G'
-				const newFlags = flags.includes(flag)
-					? flags.filter(f => f !== flag)
-					: [...flags, flag]
-				setFlags(newFlags)
-			},
-			description: 'Переключить глобальный поиск'
-		}
-	]
-
-	useWidgetKeyboard({
-		shortcuts,
-		widgetId: 'regex-tester'
-	})
 
 	return (
 		<WidgetLayout>

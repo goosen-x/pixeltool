@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { Info, Tag } from 'lucide-react'
 import type { Widget } from '@/lib/constants/widgets'
+import { widgetCategories } from '@/lib/constants/widgets'
 
 interface WidgetInfoCardProps {
 	widget: Widget
@@ -48,15 +49,7 @@ export function WidgetInfoCard({ widget }: WidgetInfoCardProps) {
 						Категория
 					</span>
 					<Badge variant='outline' className='text-xs'>
-						{widget.category === 'webdev'
-							? 'Веб-разработка'
-							: widget.category === 'content'
-								? 'Контент'
-								: widget.category === 'security'
-									? 'Безопасность'
-									: widget.category === 'lifestyle'
-										? 'Стиль жизни'
-										: widget.category}
+						{widgetCategories[widget.category]}
 					</Badge>
 				</div>
 

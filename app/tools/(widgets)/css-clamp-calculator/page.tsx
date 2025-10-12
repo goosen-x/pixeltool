@@ -15,8 +15,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 export default function ClampCalculatorPage() {
 	const [unit, setUnit] = useState<'px' | 'rem'>('rem')
 	const [property, setProperty] = useState<'font-size' | 'margin' | 'padding'>(
@@ -202,44 +200,6 @@ export default function ClampCalculatorPage() {
 	}, [])
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'css-clamp-calculator',
-		shortcuts: [
-			{
-				key: '1',
-				primary: true,
-				description: 'Copy CSS',
-				action: copyToClipboard
-			},
-			{
-				key: '2',
-				primary: true,
-				description: 'Copy Tailwind',
-				action: copyTailwindToClipboard
-			},
-			{
-				key: '0',
-				primary: true,
-				description: 'Reset',
-				action: resetForm
-			},
-			{
-				key: 'u',
-				primary: true,
-				shift: true,
-				description: 'Switch Units',
-				action: switchUnit
-			},
-			{
-				key: 'p',
-				primary: true,
-				shift: true,
-				description: 'Switch Property',
-				action: switchProperty
-			}
-		]
-	})
-
 	return (
 		<>
 			<div className='grid gap-6 md:grid-cols-2'>

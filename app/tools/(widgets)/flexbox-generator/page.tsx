@@ -22,8 +22,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
-import { useWidgetKeyboard } from '@/lib/hooks/useWidgetKeyboard'
-
 interface FlexboxProps {
 	flexDirection: string
 	justifyContent: string
@@ -228,45 +226,6 @@ export default function FlexboxGeneratorPage() {
 	}
 
 	// Keyboard shortcuts
-	useWidgetKeyboard({
-		widgetId: 'flexbox-generator',
-		shortcuts: [
-			{
-				key: '1',
-				primary: true,
-				description: 'Copy CSS',
-				action: copyToClipboard
-			},
-			{
-				key: '2',
-				primary: true,
-				description: 'Copy Tailwind',
-				action: copyTailwindToClipboard
-			},
-			{
-				key: 'r',
-				primary: true,
-				shift: true,
-				description: 'Reset',
-				action: resetProps
-			},
-			{
-				key: 'a',
-				primary: true,
-				shift: true,
-				description: 'Add Item',
-				action: addItem
-			},
-			{
-				key: 'd',
-				primary: true,
-				shift: true,
-				description: 'Remove Item',
-				action: removeItem
-			}
-		]
-	})
-
 	return (
 		<div className='grid gap-6 lg:grid-cols-3'>
 			{/* Controls */}
