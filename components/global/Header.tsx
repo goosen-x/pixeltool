@@ -15,7 +15,6 @@ import {
 	BookOpen,
 	Mail,
 	Sparkles,
-	ArrowRight,
 	Menu as MenuIcon,
 	X,
 	Search
@@ -127,51 +126,61 @@ const Header = () => {
 							<Link
 								href='/'
 								className={cn(
-									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
+									'relative rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 overflow-hidden group',
 									pathname === '/'
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
-										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
+										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
-								<Home className='w-4 h-4' />
-								<span>Главная</span>
+								{pathname !== '/' && (
+									<span className='absolute inset-0 bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl' />
+								)}
+								<span className='relative z-10'>Главная</span>
 							</Link>
 
 							<Link
 								href='/tools'
 								className={cn(
-									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
+									'relative rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 overflow-hidden group',
 									pathname.startsWith('/tools')
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
-										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
+										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
-								<Wrench className='w-4 h-4' />
-								<span>Инструменты</span>
+								{!pathname.startsWith('/tools') && (
+									<span className='absolute inset-0 bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl' />
+								)}
+								<span className='relative z-10'>Инструменты</span>
 							</Link>
+
 							<Link
 								href='/blog'
 								className={cn(
-									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
+									'relative rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 overflow-hidden group',
 									pathname.startsWith('/blog')
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
-										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
+										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
-								<BookOpen className='w-4 h-4' />
-								<span>Блог</span>
+								{!pathname.startsWith('/blog') && (
+									<span className='absolute inset-0 bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl' />
+								)}
+								<span className='relative z-10'>Блог</span>
 							</Link>
+
 							<Link
 								href='/contact'
 								className={cn(
-									'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300',
+									'relative rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-300 overflow-hidden group',
 									pathname === '/contact'
 										? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
-										: 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
+										: 'text-muted-foreground hover:text-foreground'
 								)}
 							>
-								<Mail className='w-4 h-4' />
-								<span>Контакты</span>
+								{pathname !== '/contact' && (
+									<span className='absolute inset-0 bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl' />
+								)}
+								<span className='relative z-10'>Контакты</span>
 							</Link>
 						</nav>
 						<div className='hidden md:flex items-center gap-2'>
