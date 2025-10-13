@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 import { AdSection } from '@/components/ads'
 import { WidgetInfoCard } from './WidgetInfoCard'
 import { UseCaseCard } from './UseCaseCard'
-import { WidgetStatsCard } from './WidgetStatsCard'
 import { FeedbackCard } from './FeedbackCard'
 import { QuickActionsCard } from './QuickActionsCard'
 
@@ -23,7 +22,6 @@ export function ProjectsRightSidebar() {
 			<WidgetInfoCard widget={widget} />
 			<AdSection />
 			<UseCaseCard widget={widget} />
-			<WidgetStatsCard />
 			<QuickActionsCard />
 			<FeedbackCard />
 		</aside>

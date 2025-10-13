@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import ThemeToggle from '@/components/global/ThemeToggle'
 // import { LanguageSelect } from '@/components/global/LanguageSelect'
 import { Logo } from '@/components/global/Logo'
+import { OnlineUsers } from '@/components/global/OnlineUsers'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import {
@@ -174,6 +175,9 @@ const Header = () => {
 							</Link>
 						</nav>
 						<div className='hidden md:flex items-center gap-2'>
+							{/* Online Users Counter */}
+							<OnlineUsers />
+							<div className='h-8 w-px bg-border/50' />
 							<Button
 								variant='ghost'
 								onClick={() => setIsSearchOpen(true)}
