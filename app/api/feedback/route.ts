@@ -33,28 +33,15 @@ export async function POST(request: NextRequest) {
 			url: request.headers.get('referer')
 		}
 
-		// Here you can integrate with your preferred service:
+		// Send to Telegram
+		try {
+			await sendToTelegram(feedbackData)
+		} catch (telegramError) {
+			console.error('Failed to send to Telegram:', telegramError)
+			// Don't fail the request if Telegram fails
+		}
 
-		// 1. Send to email service (like Resend, SendGrid, etc.)
-		// await sendEmail({
-		//   to: 'feedback@yoursite.com',
-		//   subject: `[${body.type.toUpperCase()}] ${body.title}`,
-		//   html: generateFeedbackEmail(feedbackData)
-		// })
-
-		// 2. Create GitHub issue
-		// await createGitHubIssue(feedbackData)
-
-		// 3. Send to Discord/Slack webhook
-		// await sendToDiscord(feedbackData)
-
-		// 4. Save to database
-		// await saveFeedbackToDatabase(feedbackData)
-
-		// 5. Send to analytics/logging service
-		// await sendToAnalytics(feedbackData)
-
-		// For now, just log it
+		// Log for debugging
 		console.log('Feedback received:', feedbackData)
 
 		return NextResponse.json(
@@ -128,41 +115,67 @@ ${data.description}
 	// return response.json()
 }
 
-async function sendToDiscord(data: any) {
-	// Example Discord webhook integration
-	const webhook = {
-		embeds: [
-			{
-				title: `New ${data.type} feedback`,
-				description: data.title,
-				fields: [
-					{
-						name: 'Description',
-						value: data.description.slice(0, 1024),
-						inline: false
-					},
-					{ name: 'Email', value: data.email || 'Not provided', inline: true },
-					{
-						name: 'Widget',
-						value: data.widget || 'Not specified',
-						inline: true
-					}
-				],
-				color:
-					data.type === 'bug'
-						? 0xff0000
-						: data.type === 'feature'
-							? 0x00ff00
-							: 0x0099ff,
-				timestamp: data.timestamp
-			}
-		]
+async function sendToTelegram(data: any) {
+	const botToken = process.env.TELEGRAM_BOT_TOKEN
+	const chatId = process.env.TELEGRAM_CHAT_ID
+
+	if (!botToken || !chatId) {
+		console.warn('Telegram credentials not configured')
+		return
 	}
 
-	// Uncomment to enable Discord integration
-	// const response = await fetch(process.env.DISCORD_WEBHOOK_URL!, {
-	//   method: 'POST',
-	//   headers: { 'Content-Type': 'application/json' },
-	//   body: JSON.stringify(webhook)
-	// })
+	// Emoji по типу обратной связи
+	const typeEmoji = {
+		bug: '🐛',
+		feature: '💡',
+		general: '💬'
+	}
+
+	const emoji = typeEmoji[data.type as keyof typeof typeEmoji] || '📝'
+
+	// Форматируем сообщение с Telegram Markdown
+	const message = `
+${emoji} *Новая обратная связь: ${data.type.toUpperCase()}*
+
+📌 *Заголовок:*
+${data.title}
+
+📝 *Описание:*
+${data.description}
+
+${data.email ? `📧 *Email:* ${data.email}` : ''}
+${data.widget ? `🔧 *Виджет:* ${data.widget}` : ''}
+${data.url ? `🔗 *URL:* ${data.url}` : ''}
+
+🕐 *Время:* ${new Date(data.timestamp).toLocaleString('ru-RU')}
+${data.userAgent ? `💻 *User Agent:* ${data.userAgent.slice(0, 100)}...` : ''}
+	`.trim()
+
+	try {
+		const response = await fetch(
+			`https://api.telegram.org/bot${botToken}/sendMessage`,
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					chat_id: chatId,
+					text: message,
+					parse_mode: 'Markdown',
+					disable_web_page_preview: true
+				})
+			}
+		)
+
+		if (!response.ok) {
+			const errorData = await response.json()
+			throw new Error(
+				`Telegram API error: ${errorData.description || 'Unknown error'}`
+			)
+		}
+
+		console.log('Feedback sent to Telegram successfully')
+	} catch (error) {
+		console.error('Error sending to Telegram:', error)
+		throw error
+	}
 }
