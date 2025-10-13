@@ -114,7 +114,7 @@ export const generatorWidgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['random', 'number', 'generator', 'crypto', 'secure'],
-		title: 'Генератор случайных чисел онлайн',
+		title: 'Генератор случайных чисел',
 		description:
 			'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей',
 		useCase:

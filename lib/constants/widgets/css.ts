@@ -66,7 +66,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'flexboxGenerator',
 		path: 'flexbox-generator',
 		gradient: 'from-blue-500 to-indigo-500',
-		title: 'Генератор CSS Flexbox онлайн',
+		title: 'CSS Flexbox генератор',
 		description:
 			'Бесплатный онлайн генератор CSS Flexbox. Визуальный инструмент для создания и изучения CSS Flexbox макетов с кодом',
 		useCase:
@@ -115,7 +115,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'gridGenerator',
 		path: 'grid-generator',
 		gradient: 'from-green-500 to-emerald-500',
-		title: 'Генератор CSS Grid онлайн',
+		title: 'CSS Grid генератор',
 		description:
 			'Бесплатный онлайн генератор CSS Grid. Визуальный инструмент для создания и изучения CSS Grid макетов с кодом',
 		useCase:
@@ -209,7 +209,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'bezierCurve',
 		path: 'css-bezier-curve-generator',
 		gradient: 'from-purple-500 to-indigo-500',
-		title: 'Генератор кривых Безье',
+		title: 'CSS Cubic-bezier генератор',
 		description:
 			'Создавайте пользовательские функции плавности cubic-bezier для CSS анимаций',
 		useCase: 'Создание пользовательских функций плавности для CSS анимаций',
@@ -354,7 +354,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'pxRemConverter',
 		path: 'px-rem-converter',
 		gradient: 'from-pink-500 to-rose-600',
-		title: 'Конвертер px в rem/em',
+		title: 'Конвертер единиц CSS',
 		description:
 			'Конвертируйте пиксели в rem и em единицы с настраиваемым базовым размером',
 		recommendedTools: ['css-gradient', 'css-box-shadow', 'color-converter'],
@@ -400,7 +400,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'cssBoxShadow',
 		path: 'css-box-shadow-generator',
 		gradient: 'from-gray-600 to-gray-800',
-		title: 'Генератор CSS теней',
+		title: 'CSS Box-shadow генератор теней',
 		description: 'Создавайте CSS тени с визуальным предпросмотром',
 		recommendedTools: ['css-gradient', 'px-rem-converter', 'color-converter'],
 		difficulty: 'intermediate',
@@ -443,7 +443,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'cssGradient',
 		path: 'css-gradient-generator',
 		gradient: 'from-purple-500 via-pink-500 to-red-500',
-		title: 'Генератор CSS градиентов',
+		title: 'CSS Gradient генератор',
 		description:
 			'Создавайте линейные, радиальные и конические градиенты с визуальным редактором',
 		recommendedTools: ['css-box-shadow', 'color-converter', 'px-rem-converter'],
@@ -533,7 +533,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'cssKeyframes',
 		path: 'css-keyframes-generator',
 		gradient: 'from-blue-500 to-purple-600',
-		title: 'Генератор CSS анимаций',
+		title: 'CSS Keyframes анимации',
 		description: 'Создавайте CSS @keyframes анимации с визуальным редактором',
 		recommendedTools: ['css-gradient', 'css-box-shadow', 'px-rem-converter'],
 		difficulty: 'advanced',

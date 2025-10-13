@@ -10,7 +10,7 @@ export const htmlWidgets: Widget[] = [
 		translationKey: 'htmlTree',
 		path: 'html-tree-visualizer',
 		gradient: 'from-purple-500 to-indigo-500',
-		title: 'HTML древо визуализатор',
+		title: 'Визуализатор HTML дерева',
 		description: 'Визуализируйте HTML структуру в виде дерева с валидацией БЭМ',
 		useCase: 'Визуализация HTML структуры и валидация БЭМ соглашений',
 		recommendedTools: ['css-specificity', 'html-tree', 'flexbox-generator'],

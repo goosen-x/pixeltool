@@ -17,7 +17,7 @@ export const textWidgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['symbols', 'unicode', 'characters', 'copy', 'paste'],
-		title: 'Выбор специальных символов',
+		title: 'Специальные символы',
 		description:
 			'Кликните для копирования специальных символов и Unicode символов для любого текста',
 		useCase:
@@ -66,7 +66,7 @@ export const textWidgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['text', 'unicode', 'fonts', 'style', 'generator'],
-		title: 'Генератор текста онлайн - создать стилизованный текст бесплатно',
+		title: 'Генератор стилизованного текста',
 		description:
 			'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов',
 		useCase:
@@ -211,7 +211,7 @@ export const textWidgets: Widget[] = [
 		translationKey: 'textEmoticons',
 		path: 'text-emoticons',
 		gradient: 'from-purple-500 to-pink-600',
-		title: 'Текстовые эмотиконы',
+		title: 'ASCII текстовые эмотиконы',
 		description: 'ASCII смайлики и японские каомодзи для чатов',
 		recommendedTools: [
 			'emoji-list',

@@ -108,7 +108,7 @@ export const toolWidgets: Widget[] = [
 		translationKey: 'mockDataGenerator',
 		path: 'mock-data-generator',
 		gradient: 'from-emerald-500 to-teal-600',
-		title: 'Генератор тестовых данных онлайн API',
+		title: 'Генератор тестовых данных API',
 		description:
 			'Бесплатный онлайн генератор тестовых данных. Получайте примеры данных из бесплатных API для тестирования',
 		useCase:
@@ -453,7 +453,7 @@ export const toolWidgets: Widget[] = [
 		translationKey: 'asciiArtGenerator',
 		path: 'ascii-art-generator',
 		gradient: 'from-green-500 to-emerald-600',
-		title: 'Генератор ASCII арта',
+		title: 'ASCII-арт генератор',
 		description: 'Превращайте текст в ASCII искусство',
 		recommendedTools: [
 			'text-case-converter',

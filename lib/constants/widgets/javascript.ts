@@ -161,7 +161,7 @@ export const javascriptWidgets: Widget[] = [
 		translationKey: 'regexTester',
 		path: 'regex-tester',
 		gradient: 'from-green-500 to-teal-600',
-		title: 'Тестер регулярных выражений',
+		title: 'Regex тестер регулярных выражений',
 		description: 'Тестируйте регулярные выражения для JavaScript, PHP и Python',
 		recommendedTools: [
 			'javascript-syntax-checker',

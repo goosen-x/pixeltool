@@ -10,7 +10,7 @@ export const securityWidgets: Widget[] = [
 		translationKey: 'qrGenerator',
 		path: 'qr-generator',
 		gradient: 'from-violet-500 to-purple-500',
-		title: 'Генератор QR кодов онлайн - создать QR код бесплатно',
+		title: 'Генератор QR-кодов',
 		description:
 			'Бесплатный генератор QR кодов онлайн. Создайте QR код для URL, WiFi, App Store за секунды. Генератор qr работает без регистрации',
 		useCase:
@@ -55,7 +55,7 @@ export const securityWidgets: Widget[] = [
 		translationKey: 'passwordGenerator',
 		path: 'password-generator',
 		gradient: 'from-emerald-500 to-teal-600',
-		title: 'Генератор паролей онлайн',
+		title: 'Генератор паролей',
 		description:
 			'Бесплатный генератор паролей онлайн. Создать пароль любой сложности. Генератор надежных паролей с анализом стойкости',
 		useCase:
