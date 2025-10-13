@@ -38,10 +38,13 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 // Force dynamic rendering to avoid build-time errors
 export const dynamic = 'force-dynamic'
 
 export default function CSSGradientGeneratorPage() {
+	const widget = getWidgetById('css-gradient')!
 	const {
 		settings,
 		selectedStopId,
@@ -86,7 +89,8 @@ export default function CSSGradientGeneratorPage() {
 
 	// Keyboard shortcuts
 	return (
-		<WidgetLayout>
+		<WidgetSEOWrapper widget={widget}>
+			<WidgetLayout>
 			{/* Preview Section */}
 			<WidgetSection
 				icon={<Palette className='w-5 h-5' />}
@@ -523,5 +527,6 @@ export default function CSSGradientGeneratorPage() {
 				</div>
 			</WidgetSection>
 		</WidgetLayout>
+		</WidgetSEOWrapper>
 	)
 }

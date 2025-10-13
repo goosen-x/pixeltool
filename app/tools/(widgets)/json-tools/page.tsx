@@ -34,6 +34,8 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 interface JSONError {
 	message: string
 	line?: number
@@ -83,6 +85,7 @@ const JSON_EXAMPLES = [
 ]
 
 export default function JSONToolsPage() {
+	const widget = getWidgetById('json-tools')!
 	const [input, setInput] = useState('')
 	const [analysis, setAnalysis] = useState<JSONAnalysis | null>(null)
 	const [indentSize, setIndentSize] = useState('2')
@@ -275,8 +278,9 @@ export default function JSONToolsPage() {
 	}
 
 	return (
-		<WidgetLayout>
-			<div className='grid gap-6 lg:grid-cols-2'>
+		<WidgetSEOWrapper widget={widget}>
+			<WidgetLayout>
+				<div className='grid gap-6 lg:grid-cols-2'>
 				{/* Input Section */}
 				<WidgetSection icon={<Code2 className='w-5 h-5' />} title='Ввод JSON'>
 					<div className='space-y-4'>
@@ -620,5 +624,6 @@ export default function JSONToolsPage() {
 				</div>
 			</WidgetSection>
 		</WidgetLayout>
+		</WidgetSEOWrapper>
 	)
 }

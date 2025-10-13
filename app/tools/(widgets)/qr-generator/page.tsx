@@ -29,6 +29,8 @@ import {
 	Settings
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 type QRType = 'url' | 'appstore' | 'wifi'
 
 interface WifiConfig {
@@ -45,6 +47,7 @@ interface AppStoreConfig {
 }
 
 export default function QRGeneratorPage() {
+	const widget = getWidgetById('qr-generator')!
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const [mounted, setMounted] = useState(false)
 	const [hasGeneratedOnce, setHasGeneratedOnce] = useState(false)
@@ -178,7 +181,8 @@ export default function QRGeneratorPage() {
 
 	// Keyboard shortcuts
 	return (
-		<div className='grid lg:grid-cols-3 gap-6'>
+		<WidgetSEOWrapper widget={widget}>
+			<div className='grid lg:grid-cols-3 gap-6'>
 			{/* Settings */}
 			<div className='lg:col-span-2'>
 				<WidgetSection
@@ -531,5 +535,6 @@ export default function QRGeneratorPage() {
 				</div>
 			</div>
 		</div>
+		</WidgetSEOWrapper>
 	)
 }

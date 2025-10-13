@@ -35,6 +35,8 @@ import { toast } from 'sonner'
 
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { TextRoll } from '@/components/core/text-roll'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 
 interface PasswordOptions {
 	length: number
@@ -136,6 +138,7 @@ const COMMON_WORDS = [
 ]
 
 export default function PasswordGeneratorPage() {
+	const widget = getWidgetById('password-generator')!
 	const [password, setPassword] = useState('')
 	const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS)
 	const [strength, setStrength] = useState(0)
@@ -467,8 +470,9 @@ export default function PasswordGeneratorPage() {
 	}, [password, calculateStrength])
 
 	return (
-		<WidgetLayout showShare={false}>
-			<div className='w-full space-y-6'>
+		<WidgetSEOWrapper widget={widget}>
+			<WidgetLayout showShare={false}>
+				<div className='w-full space-y-6'>
 				{/* Main Card with Settings and Password */}
 				<Card className='relative overflow-hidden bg-gradient-to-br from-background/95 to-background/50 backdrop-blur border-border/50'>
 					<CardContent className='p-6 sm:p-8 lg:p-10 space-y-6'>
@@ -958,5 +962,6 @@ export default function PasswordGeneratorPage() {
 				)}
 			</div>
 		</WidgetLayout>
+		</WidgetSEOWrapper>
 	)
 }

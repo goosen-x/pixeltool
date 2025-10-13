@@ -22,6 +22,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 interface FlexboxProps {
 	flexDirection: string
 	justifyContent: string
@@ -41,6 +43,7 @@ const defaultProps: FlexboxProps = {
 }
 
 export default function FlexboxGeneratorPage() {
+	const widget = getWidgetById('flexbox-generator')!
 	const locale = 'ru'
 	const [props, setProps] = useState<FlexboxProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(3)
@@ -227,7 +230,8 @@ export default function FlexboxGeneratorPage() {
 
 	// Keyboard shortcuts
 	return (
-		<div className='grid gap-6 lg:grid-cols-3'>
+		<WidgetSEOWrapper widget={widget}>
+			<div className='grid gap-6 lg:grid-cols-3'>
 			{/* Controls */}
 			<Card className='lg:col-span-1'>
 				<CardHeader>
@@ -476,5 +480,6 @@ export default function FlexboxGeneratorPage() {
 				</CardContent>
 			</Card>
 		</div>
+		</WidgetSEOWrapper>
 	)
 }
