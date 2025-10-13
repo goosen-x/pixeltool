@@ -115,62 +115,6 @@ export function getToolSpecificSchema(
 	return schemas
 }
 
-export function getWidgetReviewSchema(
-	widget: any,
-	locale: string,
-	title: string,
-	url: string
-) {
-	// Add some realistic reviews for better SEO
-	const reviews = [
-		{
-			'@type': 'Review',
-			reviewRating: {
-				'@type': 'Rating',
-				ratingValue: '5',
-				bestRating: '5'
-			},
-			author: {
-				'@type': 'Person',
-				name: locale === 'ru' ? 'Алексей М.' : 'Alex M.'
-			},
-			reviewBody:
-				locale === 'ru'
-					? `Отличный инструмент! ${title} работает быстро и надежно.`
-					: `Excellent tool! ${title} works fast and reliably.`
-		},
-		{
-			'@type': 'Review',
-			reviewRating: {
-				'@type': 'Rating',
-				ratingValue: '5',
-				bestRating: '5'
-			},
-			author: {
-				'@type': 'Person',
-				name: locale === 'ru' ? 'Мария К.' : 'Maria K.'
-			},
-			reviewBody:
-				locale === 'ru'
-					? `Использую ${title} каждый день. Очень удобно!`
-					: `I use ${title} every day. Very convenient!`
-		}
-	]
-
-	return {
-		'@context': 'https://schema.org',
-		'@type': 'Product',
-		'@id': `${url}#product`,
-		name: title,
-		review: reviews,
-		aggregateRating: {
-			'@type': 'AggregateRating',
-			ratingValue: '4.9',
-			reviewCount: Math.floor(Math.random() * 1000 + 200),
-			bestRating: '5'
-		}
-	}
-}
 
 function getCategoryName(category: string): string {
 	const categories: Record<string, string> = {

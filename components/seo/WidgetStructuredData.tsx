@@ -1,9 +1,6 @@
 import { Widget } from '@/lib/constants/widgets'
 import Script from 'next/script'
-import {
-	getToolSpecificSchema,
-	getWidgetReviewSchema
-} from '@/lib/seo/widget-schemas'
+import { getToolSpecificSchema } from '@/lib/seo/widget-schemas'
 import { getWidgetFAQs } from '@/lib/constants/widgets'
 
 interface WidgetStructuredDataProps {
@@ -49,14 +46,7 @@ export function WidgetStructuredData({
 		inLanguage: locale,
 		isAccessibleForFree: true,
 		featureList: widget.tags || [],
-		softwareVersion: '1.0',
-		aggregateRating: {
-			'@type': 'AggregateRating',
-			ratingValue: '4.9',
-			ratingCount: Math.floor(Math.random() * 2000 + 500),
-			bestRating: '5',
-			worstRating: '1'
-		}
+		softwareVersion: '1.0'
 	}
 
 	// WebPage schema for SEO
@@ -139,7 +129,6 @@ export function WidgetStructuredData({
 		url,
 		baseUrl
 	)
-	const reviewSchema = getWidgetReviewSchema(widget, locale, title, url)
 
 	return (
 		<>
@@ -175,13 +164,6 @@ export function WidgetStructuredData({
 					}}
 				/>
 			)}
-			<Script
-				id={`structured-data-review-${widget.id}`}
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(reviewSchema)
-				}}
-			/>
 			{additionalSchemas.map((schema, index) => (
 				<Script
 					key={`additional-schema-${index}`}
