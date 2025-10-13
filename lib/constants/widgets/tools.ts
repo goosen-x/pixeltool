@@ -276,7 +276,7 @@ export const toolWidgets: Widget[] = [
 			'device'
 		],
 		useCase:
-			'Instantly detect system architecture (32/64-bit), screen resolution, and device specifications',
+			'Мгновенное определение архитектуры системы (32/64-бит), разрешения экрана и характеристик устройства',
 		metaDescription:
 			'System information detector. Check if your computer is 32-bit or 64-bit, get screen resolution and device specs.',
 		faqs: [

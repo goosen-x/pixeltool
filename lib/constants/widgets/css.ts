@@ -361,7 +361,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['px', 'rem', 'em', 'converter', 'css', 'units'],
 		useCase:
-			'Convert between px, rem, and em CSS units with custom base font size',
+			'Конвертация между px, rem и em единицами CSS с настраиваемым базовым размером',
 		metaDescription:
 			'PX to REM/EM converter for CSS. Convert between pixel, rem, and em units.',
 		faqs: [
@@ -405,7 +405,8 @@ export const cssWidgets: Widget[] = [
 		recommendedTools: ['css-gradient', 'px-rem-converter', 'color-converter'],
 		difficulty: 'intermediate',
 		tags: ['css', 'box-shadow', 'shadow', 'generator', 'design'],
-		useCase: 'Generate CSS box-shadow with visual preview and multiple shadows',
+		useCase:
+			'Генерация CSS box-shadow с визуальным предпросмотром и множественными тенями',
 		metaDescription:
 			'CSS box-shadow generator with preview. Create custom shadows for your designs.',
 		faqs: [
@@ -450,7 +451,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['css', 'gradient', 'linear', 'radial', 'conic', 'generator'],
 		useCase:
-			'Create linear, radial, and conic CSS gradients with visual editor',
+			'Создание линейных, радиальных и конических CSS градиентов с визуальным редактором',
 		metaDescription:
 			'CSS gradient generator for linear, radial, conic gradients. Visual gradient editor.',
 		faqs: [
@@ -495,7 +496,7 @@ export const cssWidgets: Widget[] = [
 		recommendedTools: ['color-converter', 'css-gradient', 'css-box-shadow'],
 		difficulty: 'intermediate',
 		tags: ['color', 'contrast', 'wcag', 'accessibility', 'a11y'],
-		useCase: 'Check color contrast ratios for WCAG accessibility compliance',
+		useCase: 'Проверка коэффициента контрастности цветов для соответствия WCAG',
 		metaDescription:
 			'Color contrast checker for WCAG. Test color combinations for accessibility.',
 		faqs: [
@@ -538,7 +539,7 @@ export const cssWidgets: Widget[] = [
 		recommendedTools: ['css-gradient', 'css-box-shadow', 'px-rem-converter'],
 		difficulty: 'advanced',
 		tags: ['css', 'animation', 'keyframes', 'generator', 'motion'],
-		useCase: 'Generate CSS @keyframes animations with visual editor',
+		useCase: 'Генерация CSS @keyframes анимаций с визуальным редактором',
 		metaDescription:
 			'CSS keyframes animation generator. Create custom animations visually.',
 		faqs: [
