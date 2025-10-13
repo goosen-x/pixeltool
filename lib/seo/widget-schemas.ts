@@ -115,7 +115,6 @@ export function getToolSpecificSchema(
 	return schemas
 }
 
-
 function getCategoryName(category: string): string {
 	const categories: Record<string, string> = {
 		webdev: 'Web Development Tools',
