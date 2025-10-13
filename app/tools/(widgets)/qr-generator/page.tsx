@@ -183,197 +183,50 @@ export default function QRGeneratorPage() {
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<div className='grid lg:grid-cols-3 gap-6'>
-			{/* Settings */}
-			<div className='lg:col-span-2'>
-				<WidgetSection
-					icon={<Settings className='w-5 h-5' />}
-					title='Настройки'
-				>
-					<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
-						<TabsList className='grid w-full grid-cols-3'>
-							<TabsTrigger value='url'>
-								<Link className='w-4 h-4 mr-2' />
-								URL
-							</TabsTrigger>
-							<TabsTrigger value='appstore'>
-								<Smartphone className='w-4 h-4 mr-2' />
-								App Store
-							</TabsTrigger>
-							<TabsTrigger value='wifi'>
-								<Wifi className='w-4 h-4 mr-2' />
-								Wi-Fi
-							</TabsTrigger>
-						</TabsList>
+				{/* Settings */}
+				<div className='lg:col-span-2'>
+					<WidgetSection
+						icon={<Settings className='w-5 h-5' />}
+						title='Настройки'
+					>
+						<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
+							<TabsList className='grid w-full grid-cols-3'>
+								<TabsTrigger value='url'>
+									<Link className='w-4 h-4 mr-2' />
+									URL
+								</TabsTrigger>
+								<TabsTrigger value='appstore'>
+									<Smartphone className='w-4 h-4 mr-2' />
+									App Store
+								</TabsTrigger>
+								<TabsTrigger value='wifi'>
+									<Wifi className='w-4 h-4 mr-2' />
+									Wi-Fi
+								</TabsTrigger>
+							</TabsList>
 
-						<TabsContent value='url' className='space-y-4'>
-							<div>
-								<Label htmlFor='url'>URL-адрес</Label>
-								<Input
-									id='url'
-									type='url'
-									placeholder='https://example.com'
-									value={url}
-									onChange={e => setUrl(e.target.value)}
-								/>
-							</div>
-						</TabsContent>
-
-						<TabsContent value='appstore' className='space-y-4'>
-							<div>
-								<Label>Платформа</Label>
-								<Select
-									value={appStoreConfig.platform}
-									onValueChange={v =>
-										setAppStoreConfig({
-											...appStoreConfig,
-											platform: v as 'ios' | 'android' | 'universal'
-										})
-									}
-								>
-									<SelectTrigger>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='universal'>
-											<div className='flex items-center gap-2'>
-												<Smartphone className='w-4 h-4' />
-												Универсальная
-											</div>
-										</SelectItem>
-										<SelectItem value='ios'>
-											<div className='flex items-center gap-2'>
-												<Smartphone className='w-4 h-4' />
-												App Store (iOS)
-											</div>
-										</SelectItem>
-										<SelectItem value='android'>
-											<div className='flex items-center gap-2'>
-												<Smartphone className='w-4 h-4' />
-												Google Play
-											</div>
-										</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-
-							{appStoreConfig.platform === 'universal' ? (
-								<>
-									<div className='grid grid-cols-2 gap-4'>
-										<div>
-											<Label htmlFor='iosId'>iOS App ID</Label>
-											<Input
-												id='iosId'
-												placeholder='363590051'
-												value={appStoreConfig.appId}
-												onChange={e =>
-													setAppStoreConfig({
-														...appStoreConfig,
-														appId: e.target.value
-													})
-												}
-											/>
-											<p className='text-xs text-muted-foreground mt-1'>
-												Найдите в URL App Store после /id/
-											</p>
-										</div>
-										<div>
-											<Label htmlFor='androidId'>Android Package ID</Label>
-											<Input
-												id='androidId'
-												placeholder='com.netflix.mediaclient'
-												value={appStoreConfig.androidId || ''}
-												onChange={e =>
-													setAppStoreConfig({
-														...appStoreConfig,
-														androidId: e.target.value
-													})
-												}
-											/>
-											<p className='text-xs text-muted-foreground mt-1'>
-												Например: com.example.app
-											</p>
-										</div>
-									</div>
-									<div className='p-3 bg-muted rounded-lg'>
-										<p className='text-xs text-muted-foreground'>
-											Создаст универсальную ссылку, которая откроет правильное
-											приложение
-										</p>
-									</div>
-								</>
-							) : (
+							<TabsContent value='url' className='space-y-4'>
 								<div>
-									<Label htmlFor='appId'>App ID</Label>
+									<Label htmlFor='url'>URL-адрес</Label>
 									<Input
-										id='appId'
-										placeholder={
-											appStoreConfig.platform === 'ios'
-												? '363590051'
-												: 'com.example.app'
-										}
-										value={
-											appStoreConfig.platform === 'ios'
-												? appStoreConfig.appId
-												: appStoreConfig.androidId || appStoreConfig.appId
-										}
-										onChange={e => {
-											if (appStoreConfig.platform === 'ios') {
-												setAppStoreConfig({
-													...appStoreConfig,
-													appId: e.target.value
-												})
-											} else {
-												setAppStoreConfig({
-													...appStoreConfig,
-													androidId: e.target.value
-												})
-											}
-										}}
-									/>
-									<p className='text-xs text-muted-foreground mt-1'>
-										{appStoreConfig.platform === 'ios'
-											? 'Найдите в URL App Store после /id/'
-											: 'Например: com.example.app'}
-									</p>
-								</div>
-							)}
-						</TabsContent>
-
-						<TabsContent value='wifi' className='space-y-4'>
-							<div className='grid grid-cols-2 gap-4'>
-								<div>
-									<Label htmlFor='ssid'>Название сети</Label>
-									<Input
-										id='ssid'
-										placeholder='Название Wi-Fi сети'
-										value={wifiConfig.ssid}
-										onChange={e =>
-											setWifiConfig({ ...wifiConfig, ssid: e.target.value })
-										}
+										id='url'
+										type='url'
+										placeholder='https://example.com'
+										value={url}
+										onChange={e => setUrl(e.target.value)}
 									/>
 								</div>
+							</TabsContent>
+
+							<TabsContent value='appstore' className='space-y-4'>
 								<div>
-									<Label htmlFor='password'>Пароль</Label>
-									<Input
-										id='password'
-										type='password'
-										placeholder='Пароль от Wi-Fi'
-										value={wifiConfig.password}
-										onChange={e =>
-											setWifiConfig({ ...wifiConfig, password: e.target.value })
-										}
-									/>
-								</div>
-							</div>
-							<div className='grid grid-cols-2 gap-4'>
-								<div>
-									<Label>Тип безопасности</Label>
+									<Label>Платформа</Label>
 									<Select
-										value={wifiConfig.security}
+										value={appStoreConfig.platform}
 										onValueChange={v =>
-											setWifiConfig({
-												...wifiConfig,
-												security: v as 'WPA' | 'WEP' | 'nopass'
+											setAppStoreConfig({
+												...appStoreConfig,
+												platform: v as 'ios' | 'android' | 'universal'
 											})
 										}
 									>
@@ -381,160 +234,310 @@ export default function QRGeneratorPage() {
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value='WPA'>WPA/WPA2</SelectItem>
-											<SelectItem value='WEP'>WEP</SelectItem>
-											<SelectItem value='nopass'>Без пароля</SelectItem>
+											<SelectItem value='universal'>
+												<div className='flex items-center gap-2'>
+													<Smartphone className='w-4 h-4' />
+													Универсальная
+												</div>
+											</SelectItem>
+											<SelectItem value='ios'>
+												<div className='flex items-center gap-2'>
+													<Smartphone className='w-4 h-4' />
+													App Store (iOS)
+												</div>
+											</SelectItem>
+											<SelectItem value='android'>
+												<div className='flex items-center gap-2'>
+													<Smartphone className='w-4 h-4' />
+													Google Play
+												</div>
+											</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>
-								<div>
-									<Label htmlFor='hidden' className='block mb-2'>
-										Скрытая сеть
-									</Label>
-									<div className='flex items-center h-10'>
-										<Switch
-											id='hidden'
-											checked={wifiConfig.hidden}
-											onCheckedChange={checked =>
-												setWifiConfig({ ...wifiConfig, hidden: checked })
+
+								{appStoreConfig.platform === 'universal' ? (
+									<>
+										<div className='grid grid-cols-2 gap-4'>
+											<div>
+												<Label htmlFor='iosId'>iOS App ID</Label>
+												<Input
+													id='iosId'
+													placeholder='363590051'
+													value={appStoreConfig.appId}
+													onChange={e =>
+														setAppStoreConfig({
+															...appStoreConfig,
+															appId: e.target.value
+														})
+													}
+												/>
+												<p className='text-xs text-muted-foreground mt-1'>
+													Найдите в URL App Store после /id/
+												</p>
+											</div>
+											<div>
+												<Label htmlFor='androidId'>Android Package ID</Label>
+												<Input
+													id='androidId'
+													placeholder='com.netflix.mediaclient'
+													value={appStoreConfig.androidId || ''}
+													onChange={e =>
+														setAppStoreConfig({
+															...appStoreConfig,
+															androidId: e.target.value
+														})
+													}
+												/>
+												<p className='text-xs text-muted-foreground mt-1'>
+													Например: com.example.app
+												</p>
+											</div>
+										</div>
+										<div className='p-3 bg-muted rounded-lg'>
+											<p className='text-xs text-muted-foreground'>
+												Создаст универсальную ссылку, которая откроет правильное
+												приложение
+											</p>
+										</div>
+									</>
+								) : (
+									<div>
+										<Label htmlFor='appId'>App ID</Label>
+										<Input
+											id='appId'
+											placeholder={
+												appStoreConfig.platform === 'ios'
+													? '363590051'
+													: 'com.example.app'
+											}
+											value={
+												appStoreConfig.platform === 'ios'
+													? appStoreConfig.appId
+													: appStoreConfig.androidId || appStoreConfig.appId
+											}
+											onChange={e => {
+												if (appStoreConfig.platform === 'ios') {
+													setAppStoreConfig({
+														...appStoreConfig,
+														appId: e.target.value
+													})
+												} else {
+													setAppStoreConfig({
+														...appStoreConfig,
+														androidId: e.target.value
+													})
+												}
+											}}
+										/>
+										<p className='text-xs text-muted-foreground mt-1'>
+											{appStoreConfig.platform === 'ios'
+												? 'Найдите в URL App Store после /id/'
+												: 'Например: com.example.app'}
+										</p>
+									</div>
+								)}
+							</TabsContent>
+
+							<TabsContent value='wifi' className='space-y-4'>
+								<div className='grid grid-cols-2 gap-4'>
+									<div>
+										<Label htmlFor='ssid'>Название сети</Label>
+										<Input
+											id='ssid'
+											placeholder='Название Wi-Fi сети'
+											value={wifiConfig.ssid}
+											onChange={e =>
+												setWifiConfig({ ...wifiConfig, ssid: e.target.value })
+											}
+										/>
+									</div>
+									<div>
+										<Label htmlFor='password'>Пароль</Label>
+										<Input
+											id='password'
+											type='password'
+											placeholder='Пароль от Wi-Fi'
+											value={wifiConfig.password}
+											onChange={e =>
+												setWifiConfig({
+													...wifiConfig,
+													password: e.target.value
+												})
 											}
 										/>
 									</div>
 								</div>
-							</div>
-						</TabsContent>
-					</Tabs>
-
-					<div className='mt-6 space-y-4'>
-						<h3 className='text-lg font-semibold'>Настройки QR-кода</h3>
-
-						<div className='grid grid-cols-3 gap-4'>
-							<div>
-								<Label htmlFor='darkColor'>Темный цвет</Label>
-								<div className='flex gap-2'>
-									<Input
-										id='darkColor'
-										type='color'
-										value={darkColor}
-										onChange={e => setDarkColor(e.target.value)}
-										className='w-16 h-10 p-1'
-									/>
-									<Input
-										value={darkColor}
-										onChange={e => setDarkColor(e.target.value)}
-										placeholder='#000000'
-									/>
+								<div className='grid grid-cols-2 gap-4'>
+									<div>
+										<Label>Тип безопасности</Label>
+										<Select
+											value={wifiConfig.security}
+											onValueChange={v =>
+												setWifiConfig({
+													...wifiConfig,
+													security: v as 'WPA' | 'WEP' | 'nopass'
+												})
+											}
+										>
+											<SelectTrigger>
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value='WPA'>WPA/WPA2</SelectItem>
+												<SelectItem value='WEP'>WEP</SelectItem>
+												<SelectItem value='nopass'>Без пароля</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
+									<div>
+										<Label htmlFor='hidden' className='block mb-2'>
+											Скрытая сеть
+										</Label>
+										<div className='flex items-center h-10'>
+											<Switch
+												id='hidden'
+												checked={wifiConfig.hidden}
+												onCheckedChange={checked =>
+													setWifiConfig({ ...wifiConfig, hidden: checked })
+												}
+											/>
+										</div>
+									</div>
 								</div>
-							</div>
-							<div>
-								<Label htmlFor='lightColor'>Светлый цвет</Label>
-								<div className='flex gap-2'>
-									<Input
-										id='lightColor'
-										type='color'
-										value={lightColor}
-										onChange={e => setLightColor(e.target.value)}
-										className='w-16 h-10 p-1'
-									/>
-									<Input
-										value={lightColor}
-										onChange={e => setLightColor(e.target.value)}
-										placeholder='#FFFFFF'
-									/>
+							</TabsContent>
+						</Tabs>
+
+						<div className='mt-6 space-y-4'>
+							<h3 className='text-lg font-semibold'>Настройки QR-кода</h3>
+
+							<div className='grid grid-cols-3 gap-4'>
+								<div>
+									<Label htmlFor='darkColor'>Темный цвет</Label>
+									<div className='flex gap-2'>
+										<Input
+											id='darkColor'
+											type='color'
+											value={darkColor}
+											onChange={e => setDarkColor(e.target.value)}
+											className='w-16 h-10 p-1'
+										/>
+										<Input
+											value={darkColor}
+											onChange={e => setDarkColor(e.target.value)}
+											placeholder='#000000'
+										/>
+									</div>
 								</div>
-							</div>
-							<div>
-								<Label>Коррекция ошибок</Label>
-								<Select
-									value={errorCorrection}
-									onValueChange={v =>
-										setErrorCorrection(v as 'L' | 'M' | 'Q' | 'H')
-									}
-								>
-									<SelectTrigger>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='L'>Низкий (7%)</SelectItem>
-										<SelectItem value='M'>Средний (15%)</SelectItem>
-										<SelectItem value='Q'>Высокий (25%)</SelectItem>
-										<SelectItem value='H'>Очень высокий (30%)</SelectItem>
-									</SelectContent>
-								</Select>
+								<div>
+									<Label htmlFor='lightColor'>Светлый цвет</Label>
+									<div className='flex gap-2'>
+										<Input
+											id='lightColor'
+											type='color'
+											value={lightColor}
+											onChange={e => setLightColor(e.target.value)}
+											className='w-16 h-10 p-1'
+										/>
+										<Input
+											value={lightColor}
+											onChange={e => setLightColor(e.target.value)}
+											placeholder='#FFFFFF'
+										/>
+									</div>
+								</div>
+								<div>
+									<Label>Коррекция ошибок</Label>
+									<Select
+										value={errorCorrection}
+										onValueChange={v =>
+											setErrorCorrection(v as 'L' | 'M' | 'Q' | 'H')
+										}
+									>
+										<SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value='L'>Низкий (7%)</SelectItem>
+											<SelectItem value='M'>Средний (15%)</SelectItem>
+											<SelectItem value='Q'>Высокий (25%)</SelectItem>
+											<SelectItem value='H'>Очень высокий (30%)</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
 							</div>
 						</div>
+					</WidgetSection>
+				</div>
+
+				{/* Preview */}
+				<div className='relative'>
+					<div className='absolute top-0 right-2 flex gap-2 z-10'>
+						<Button variant='outline' size='icon' onClick={downloadQR}>
+							<Download className='w-4 h-4' />
+						</Button>
+						<Button variant='outline' size='icon' onClick={copyQRAsImage}>
+							<Copy className='w-4 h-4' />
+						</Button>
 					</div>
-				</WidgetSection>
-			</div>
+					<div className='flex items-center justify-center p-6 pt-16 bg-white dark:bg-white rounded-lg'>
+						{!hasGeneratedOnce && (
+							<div
+								className='absolute grid grid-cols-8 gap-[2px] p-2 bg-white rounded'
+								style={{
+									width: `${qrSize}px`,
+									height: `${qrSize}px`
+								}}
+							>
+								{[...Array(64)].map((_, index) => {
+									// Deterministic pattern based on index
+									const row = Math.floor(index / 8)
+									const col = index % 8
+									const isCornerPattern =
+										// Top-left corner
+										(row < 3 && col < 3) ||
+										// Top-right corner
+										(row < 3 && col >= 5) ||
+										// Bottom-left corner
+										(row >= 5 && col < 3)
 
-			{/* Preview */}
-			<div className='relative'>
-				<div className='absolute top-0 right-2 flex gap-2 z-10'>
-					<Button variant='outline' size='icon' onClick={downloadQR}>
-						<Download className='w-4 h-4' />
-					</Button>
-					<Button variant='outline' size='icon' onClick={copyQRAsImage}>
-						<Copy className='w-4 h-4' />
-					</Button>
-				</div>
-				<div className='flex items-center justify-center p-6 pt-16 bg-white dark:bg-white rounded-lg'>
-					{!hasGeneratedOnce && (
-						<div
-							className='absolute grid grid-cols-8 gap-[2px] p-2 bg-white rounded'
+									// Create a checkered pattern for the middle
+									const isCheckerPattern = (row + col) % 2 === 0
+
+									const shouldBeDark =
+										isCornerPattern ||
+										(row >= 3 &&
+											row < 5 &&
+											col >= 3 &&
+											col < 5 &&
+											isCheckerPattern)
+
+									return (
+										<Skeleton
+											key={index}
+											className={`rounded-sm ${
+												shouldBeDark ? 'opacity-100' : 'opacity-30'
+											}`}
+										/>
+									)
+								})}
+							</div>
+						)}
+						<canvas
+							ref={canvasRef}
+							width={qrSize}
+							height={qrSize}
+							className='block'
 							style={{
+								imageRendering: 'pixelated',
 								width: `${qrSize}px`,
-								height: `${qrSize}px`
+								height: `${qrSize}px`,
+								visibility: hasGeneratedOnce ? 'visible' : 'hidden'
 							}}
-						>
-							{[...Array(64)].map((_, index) => {
-								// Deterministic pattern based on index
-								const row = Math.floor(index / 8)
-								const col = index % 8
-								const isCornerPattern =
-									// Top-left corner
-									(row < 3 && col < 3) ||
-									// Top-right corner
-									(row < 3 && col >= 5) ||
-									// Bottom-left corner
-									(row >= 5 && col < 3)
-
-								// Create a checkered pattern for the middle
-								const isCheckerPattern = (row + col) % 2 === 0
-
-								const shouldBeDark =
-									isCornerPattern ||
-									(row >= 3 &&
-										row < 5 &&
-										col >= 3 &&
-										col < 5 &&
-										isCheckerPattern)
-
-								return (
-									<Skeleton
-										key={index}
-										className={`rounded-sm ${
-											shouldBeDark ? 'opacity-100' : 'opacity-30'
-										}`}
-									/>
-								)
-							})}
-						</div>
-					)}
-					<canvas
-						ref={canvasRef}
-						width={qrSize}
-						height={qrSize}
-						className='block'
-						style={{
-							imageRendering: 'pixelated',
-							width: `${qrSize}px`,
-							height: `${qrSize}px`,
-							visibility: hasGeneratedOnce ? 'visible' : 'hidden'
-						}}
-					/>
+						/>
+					</div>
 				</div>
 			</div>
-		</div>
 		</WidgetSEOWrapper>
 	)
 }

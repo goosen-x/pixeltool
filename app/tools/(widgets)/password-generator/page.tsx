@@ -473,495 +473,503 @@ export default function PasswordGeneratorPage() {
 		<WidgetSEOWrapper widget={widget}>
 			<WidgetLayout showShare={false}>
 				<div className='w-full space-y-6'>
-				{/* Main Card with Settings and Password */}
-				<Card className='relative overflow-hidden bg-gradient-to-br from-background/95 to-background/50 backdrop-blur border-border/50'>
-					<CardContent className='p-6 sm:p-8 lg:p-10 space-y-6'>
-						{/* Mode Switcher */}
-						<div className='flex justify-center'>
-							<div className='inline-flex p-1 bg-secondary/50 rounded-lg backdrop-blur-sm w-full max-w-md'>
-								{[
-									{ key: 'random', icon: Zap, label: 'Случайный' },
-									{
-										key: 'memorable',
-										icon: Sparkles,
-										label: 'Запоминающийся'
-									},
-									{ key: 'phrase', icon: Type, label: 'Фраза' }
-								].map(item => (
-									<div key={item.key} className='flex-1'>
-										<Button
-											variant={mode === item.key ? 'default' : 'ghost'}
-											size='sm'
-											onClick={() => setMode(item.key as GeneratorMode)}
-											className='h-8 px-3 w-full text-xs'
-										>
-											<item.icon className='w-3.5 h-3.5 mr-1.5' />
-											{item.label}
-										</Button>
-									</div>
-								))}
+					{/* Main Card with Settings and Password */}
+					<Card className='relative overflow-hidden bg-gradient-to-br from-background/95 to-background/50 backdrop-blur border-border/50'>
+						<CardContent className='p-6 sm:p-8 lg:p-10 space-y-6'>
+							{/* Mode Switcher */}
+							<div className='flex justify-center'>
+								<div className='inline-flex p-1 bg-secondary/50 rounded-lg backdrop-blur-sm w-full max-w-md'>
+									{[
+										{ key: 'random', icon: Zap, label: 'Случайный' },
+										{
+											key: 'memorable',
+											icon: Sparkles,
+											label: 'Запоминающийся'
+										},
+										{ key: 'phrase', icon: Type, label: 'Фраза' }
+									].map(item => (
+										<div key={item.key} className='flex-1'>
+											<Button
+												variant={mode === item.key ? 'default' : 'ghost'}
+												size='sm'
+												onClick={() => setMode(item.key as GeneratorMode)}
+												className='h-8 px-3 w-full text-xs'
+											>
+												<item.icon className='w-3.5 h-3.5 mr-1.5' />
+												{item.label}
+											</Button>
+										</div>
+									))}
+								</div>
 							</div>
-						</div>
 
-						{/* Quick Options */}
-						<div className='p-4 bg-background/50 rounded-lg'>
-							{mode === 'random' && (
-								<div className='space-y-4'>
-									{/* Length, Characters and Advanced in one row */}
-									<div className='flex items-center gap-3'>
-										{/* Length Slider */}
-										<div className='flex items-center gap-2'>
-											<Label className='text-xs font-medium flex items-center gap-1.5 whitespace-nowrap'>
-												<Hash className='w-3.5 h-3.5 text-muted-foreground' />
-												{'Длина'}
-											</Label>
-											<div className='w-32'>
-												<Slider
-													value={[options.length]}
-													onValueChange={([value]) =>
-														setOptions({ ...options, length: value })
-													}
-													min={8}
-													max={32}
-													step={1}
-													className='w-full h-1'
-												/>
+							{/* Quick Options */}
+							<div className='p-4 bg-background/50 rounded-lg'>
+								{mode === 'random' && (
+									<div className='space-y-4'>
+										{/* Length, Characters and Advanced in one row */}
+										<div className='flex items-center gap-3'>
+											{/* Length Slider */}
+											<div className='flex items-center gap-2'>
+												<Label className='text-xs font-medium flex items-center gap-1.5 whitespace-nowrap'>
+													<Hash className='w-3.5 h-3.5 text-muted-foreground' />
+													{'Длина'}
+												</Label>
+												<div className='w-32'>
+													<Slider
+														value={[options.length]}
+														onValueChange={([value]) =>
+															setOptions({ ...options, length: value })
+														}
+														min={8}
+														max={32}
+														step={1}
+														className='w-full h-1'
+													/>
+												</div>
+												<Badge
+													variant='secondary'
+													className='font-mono text-xs h-5 px-1.5'
+												>
+													{options.length}
+												</Badge>
 											</div>
-											<Badge
-												variant='secondary'
-												className='font-mono text-xs h-5 px-1.5'
-											>
-												{options.length}
-											</Badge>
-										</div>
 
-										{/* Character Options */}
-										<div className='flex gap-1.5'>
-											<Button
-												size='sm'
-												variant={options.uppercase ? 'default' : 'outline'}
-												onClick={() =>
-													setOptions({
-														...options,
-														uppercase: !options.uppercase
-													})
-												}
-												className='h-7 px-2.5 text-xs transition-none'
-											>
-												A-Z
-											</Button>
-											<Button
-												size='sm'
-												variant={options.lowercase ? 'default' : 'outline'}
-												onClick={() =>
-													setOptions({
-														...options,
-														lowercase: !options.lowercase
-													})
-												}
-												className='h-7 px-2.5 text-xs transition-none'
-											>
-												a-z
-											</Button>
-											<Button
-												size='sm'
-												variant={options.numbers ? 'default' : 'outline'}
-												onClick={() =>
-													setOptions({ ...options, numbers: !options.numbers })
-												}
-												className='h-7 px-2.5 text-xs transition-none'
-											>
-												0-9
-											</Button>
-											<Button
-												size='sm'
-												variant={options.symbols ? 'default' : 'outline'}
-												onClick={() =>
-													setOptions({ ...options, symbols: !options.symbols })
-												}
-												className='h-7 px-2.5 text-xs transition-none'
-											>
-												!@#
-											</Button>
-										</div>
-
-										{/* Advanced Toggle */}
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => setShowAdvanced(!showAdvanced)}
-											className='h-8 px-3 gap-1 text-xs ml-auto'
-										>
-											<Settings2 className='w-3.5 h-3.5' />
-											{showAdvanced ? (
-												<ChevronUp className='w-3 h-3' />
-											) : (
-												<ChevronDown className='w-3 h-3' />
-											)}
-										</Button>
-									</div>
-
-									{/* Advanced Options */}
-									<AnimatePresence>
-										{showAdvanced && (
-											<motion.div
-												initial={{ height: 0, opacity: 0 }}
-												animate={{ height: 'auto', opacity: 1 }}
-												exit={{ height: 0, opacity: 0 }}
-												transition={{ duration: 0.3 }}
-												className='overflow-hidden'
-											>
-												<div className='pt-3 border-t space-y-2'>
-													<div className='flex items-center justify-between'>
-														<Label
-															htmlFor='similar'
-															className='text-xs cursor-pointer'
-														>
-															{'Исключить похожие символы'} (il1Lo0O)
-														</Label>
-														<Switch
-															id='similar'
-															checked={options.excludeSimilar}
-															onCheckedChange={checked =>
-																setOptions({
-																	...options,
-																	excludeSimilar: checked
-																})
-															}
-															className='scale-75'
-														/>
-													</div>
-													<div className='flex items-center justify-between'>
-														<Label
-															htmlFor='ambiguous'
-															className='text-xs cursor-pointer'
-														>
-															{'Исключить неоднозначные символы'} ({}[]()...)
-														</Label>
-														<Switch
-															id='ambiguous'
-															checked={options.excludeAmbiguous}
-															onCheckedChange={checked =>
-																setOptions({
-																	...options,
-																	excludeAmbiguous: checked
-																})
-															}
-															className='scale-75'
-														/>
-													</div>
-												</div>
-											</motion.div>
-										)}
-									</AnimatePresence>
-								</div>
-							)}
-
-							{mode === 'memorable' && (
-								<div className='space-y-3'>
-									<div className='space-y-2'>
-										<Label className='text-xs font-medium flex items-center gap-1.5'>
-											<Sparkles className='w-3.5 h-3.5 text-muted-foreground' />
-											{'Шаблон'}
-										</Label>
-										<div className='flex gap-2 overflow-x-auto'>
-											{MEMORABLE_PATTERNS.map((pattern, index) => {
-												const isSelected = selectedPattern === index
-												return (
-													<Button
-														key={index}
-														variant={isSelected ? 'default' : 'outline'}
-														onClick={() => setSelectedPattern(index)}
-														className='h-auto py-2 px-3 justify-start text-left flex-shrink-0 group'
-													>
-														<div>
-															<div
-																className={cn(
-																	'font-medium text-xs whitespace-nowrap',
-																	isSelected && 'text-primary-foreground',
-																	!isSelected &&
-																		'group-hover:text-primary-foreground'
-																)}
-															>
-																{pattern.pattern}
-															</div>
-															<div
-																className={cn(
-																	'text-[10px] mt-0.5 whitespace-nowrap transition-colors',
-																	isSelected && 'text-primary-foreground/70',
-																	!isSelected &&
-																		'text-muted-foreground group-hover:text-primary-foreground/70'
-																)}
-															>
-																{pattern.example}
-															</div>
-														</div>
-													</Button>
-												)
-											})}
-										</div>
-									</div>
-									<div className='p-3 bg-secondary/20 rounded-lg'>
-										<p className='text-xs text-muted-foreground'>
-											{'Создаёт легко запоминающиеся пароли на основе слов'}
-										</p>
-									</div>
-								</div>
-							)}
-
-							{mode === 'phrase' && (
-								<div className='space-y-3'>
-									<div className='space-y-2'>
-										<Label className='text-xs font-medium flex items-center gap-1.5'>
-											<Type className='w-3.5 h-3.5 text-muted-foreground' />
-											{'Слова'}
-										</Label>
-										<textarea
-											value={customWords}
-											onChange={e => setCustomWords(e.target.value)}
-											placeholder={'Введите свои слова (по одному на строку)'}
-											className='w-full min-h-[60px] p-2 bg-background rounded-md border border-border resize-none font-mono text-xs'
-											spellCheck={false}
-										/>
-										<p className='text-[10px] text-muted-foreground'>
-											{'Или выберите тему ниже'}
-										</p>
-									</div>
-									<div className='grid grid-cols-4 gap-1.5'>
-										{['nature', 'tech', 'fantasy', 'space'].map(theme => (
-											<Button
-												key={theme}
-												variant='outline'
-												size='sm'
-												onClick={() => {
-													const themeWords = {
-														nature:
-															'ocean mountain forest river sunset thunder',
-														tech: 'quantum neural cyber digital matrix protocol',
-														fantasy:
-															'dragon phoenix crystal magic sword shield',
-														space: 'galaxy nebula asteroid comet stellar nova'
+											{/* Character Options */}
+											<div className='flex gap-1.5'>
+												<Button
+													size='sm'
+													variant={options.uppercase ? 'default' : 'outline'}
+													onClick={() =>
+														setOptions({
+															...options,
+															uppercase: !options.uppercase
+														})
 													}
-													setCustomWords(
-														themeWords[theme as keyof typeof themeWords]
-													)
-												}}
-												className='h-7 text-[10px] px-2'
+													className='h-7 px-2.5 text-xs transition-none'
+												>
+													A-Z
+												</Button>
+												<Button
+													size='sm'
+													variant={options.lowercase ? 'default' : 'outline'}
+													onClick={() =>
+														setOptions({
+															...options,
+															lowercase: !options.lowercase
+														})
+													}
+													className='h-7 px-2.5 text-xs transition-none'
+												>
+													a-z
+												</Button>
+												<Button
+													size='sm'
+													variant={options.numbers ? 'default' : 'outline'}
+													onClick={() =>
+														setOptions({
+															...options,
+															numbers: !options.numbers
+														})
+													}
+													className='h-7 px-2.5 text-xs transition-none'
+												>
+													0-9
+												</Button>
+												<Button
+													size='sm'
+													variant={options.symbols ? 'default' : 'outline'}
+													onClick={() =>
+														setOptions({
+															...options,
+															symbols: !options.symbols
+														})
+													}
+													className='h-7 px-2.5 text-xs transition-none'
+												>
+													!@#
+												</Button>
+											</div>
+
+											{/* Advanced Toggle */}
+											<Button
+												variant='outline'
+												size='sm'
+												onClick={() => setShowAdvanced(!showAdvanced)}
+												className='h-8 px-3 gap-1 text-xs ml-auto'
 											>
-												{theme === 'nature'
-													? 'Природа'
-													: theme === 'tech'
-														? 'Технологии'
-														: theme === 'fantasy'
-															? 'Фэнтези'
-															: 'Космос'}
+												<Settings2 className='w-3.5 h-3.5' />
+												{showAdvanced ? (
+													<ChevronUp className='w-3 h-3' />
+												) : (
+													<ChevronDown className='w-3 h-3' />
+												)}
 											</Button>
-										))}
+										</div>
+
+										{/* Advanced Options */}
+										<AnimatePresence>
+											{showAdvanced && (
+												<motion.div
+													initial={{ height: 0, opacity: 0 }}
+													animate={{ height: 'auto', opacity: 1 }}
+													exit={{ height: 0, opacity: 0 }}
+													transition={{ duration: 0.3 }}
+													className='overflow-hidden'
+												>
+													<div className='pt-3 border-t space-y-2'>
+														<div className='flex items-center justify-between'>
+															<Label
+																htmlFor='similar'
+																className='text-xs cursor-pointer'
+															>
+																{'Исключить похожие символы'} (il1Lo0O)
+															</Label>
+															<Switch
+																id='similar'
+																checked={options.excludeSimilar}
+																onCheckedChange={checked =>
+																	setOptions({
+																		...options,
+																		excludeSimilar: checked
+																	})
+																}
+																className='scale-75'
+															/>
+														</div>
+														<div className='flex items-center justify-between'>
+															<Label
+																htmlFor='ambiguous'
+																className='text-xs cursor-pointer'
+															>
+																{'Исключить неоднозначные символы'} ({}[]()...)
+															</Label>
+															<Switch
+																id='ambiguous'
+																checked={options.excludeAmbiguous}
+																onCheckedChange={checked =>
+																	setOptions({
+																		...options,
+																		excludeAmbiguous: checked
+																	})
+																}
+																className='scale-75'
+															/>
+														</div>
+													</div>
+												</motion.div>
+											)}
+										</AnimatePresence>
+									</div>
+								)}
+
+								{mode === 'memorable' && (
+									<div className='space-y-3'>
+										<div className='space-y-2'>
+											<Label className='text-xs font-medium flex items-center gap-1.5'>
+												<Sparkles className='w-3.5 h-3.5 text-muted-foreground' />
+												{'Шаблон'}
+											</Label>
+											<div className='flex gap-2 overflow-x-auto'>
+												{MEMORABLE_PATTERNS.map((pattern, index) => {
+													const isSelected = selectedPattern === index
+													return (
+														<Button
+															key={index}
+															variant={isSelected ? 'default' : 'outline'}
+															onClick={() => setSelectedPattern(index)}
+															className='h-auto py-2 px-3 justify-start text-left flex-shrink-0 group'
+														>
+															<div>
+																<div
+																	className={cn(
+																		'font-medium text-xs whitespace-nowrap',
+																		isSelected && 'text-primary-foreground',
+																		!isSelected &&
+																			'group-hover:text-primary-foreground'
+																	)}
+																>
+																	{pattern.pattern}
+																</div>
+																<div
+																	className={cn(
+																		'text-[10px] mt-0.5 whitespace-nowrap transition-colors',
+																		isSelected && 'text-primary-foreground/70',
+																		!isSelected &&
+																			'text-muted-foreground group-hover:text-primary-foreground/70'
+																	)}
+																>
+																	{pattern.example}
+																</div>
+															</div>
+														</Button>
+													)
+												})}
+											</div>
+										</div>
+										<div className='p-3 bg-secondary/20 rounded-lg'>
+											<p className='text-xs text-muted-foreground'>
+												{'Создаёт легко запоминающиеся пароли на основе слов'}
+											</p>
+										</div>
+									</div>
+								)}
+
+								{mode === 'phrase' && (
+									<div className='space-y-3'>
+										<div className='space-y-2'>
+											<Label className='text-xs font-medium flex items-center gap-1.5'>
+												<Type className='w-3.5 h-3.5 text-muted-foreground' />
+												{'Слова'}
+											</Label>
+											<textarea
+												value={customWords}
+												onChange={e => setCustomWords(e.target.value)}
+												placeholder={'Введите свои слова (по одному на строку)'}
+												className='w-full min-h-[60px] p-2 bg-background rounded-md border border-border resize-none font-mono text-xs'
+												spellCheck={false}
+											/>
+											<p className='text-[10px] text-muted-foreground'>
+												{'Или выберите тему ниже'}
+											</p>
+										</div>
+										<div className='grid grid-cols-4 gap-1.5'>
+											{['nature', 'tech', 'fantasy', 'space'].map(theme => (
+												<Button
+													key={theme}
+													variant='outline'
+													size='sm'
+													onClick={() => {
+														const themeWords = {
+															nature:
+																'ocean mountain forest river sunset thunder',
+															tech: 'quantum neural cyber digital matrix protocol',
+															fantasy:
+																'dragon phoenix crystal magic sword shield',
+															space: 'galaxy nebula asteroid comet stellar nova'
+														}
+														setCustomWords(
+															themeWords[theme as keyof typeof themeWords]
+														)
+													}}
+													className='h-7 text-[10px] px-2'
+												>
+													{theme === 'nature'
+														? 'Природа'
+														: theme === 'tech'
+															? 'Технологии'
+															: theme === 'fantasy'
+																? 'Фэнтези'
+																: 'Космос'}
+												</Button>
+											))}
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* Password Display */}
+							<div className='relative p-6 sm:p-8 bg-background/80 rounded-2xl border border-border/50 shadow-xl'>
+								{/* Strength Indicator - top left corner */}
+								<div className='absolute left-4 top-4 space-y-1'>
+									<div className='text-xs font-medium'>
+										{getStrengthLabel(strength)}
+									</div>
+									<div className='w-24 h-1.5 bg-secondary rounded-full overflow-hidden'>
+										<motion.div
+											className={cn(
+												'h-full bg-gradient-to-r',
+												getStrengthColor(strength)
+											)}
+											initial={{ width: 0 }}
+											animate={{ width: `${strength}%` }}
+											transition={{ duration: 0.5, ease: 'easeOut' }}
+										/>
 									</div>
 								</div>
-							)}
-						</div>
 
-						{/* Password Display */}
-						<div className='relative p-6 sm:p-8 bg-background/80 rounded-2xl border border-border/50 shadow-xl'>
-							{/* Strength Indicator - top left corner */}
-							<div className='absolute left-4 top-4 space-y-1'>
-								<div className='text-xs font-medium'>
-									{getStrengthLabel(strength)}
-								</div>
-								<div className='w-24 h-1.5 bg-secondary rounded-full overflow-hidden'>
-									<motion.div
-										className={cn(
-											'h-full bg-gradient-to-r',
-											getStrengthColor(strength)
+								{/* Copy and Visibility buttons - top right corner */}
+								<div className='absolute right-4 top-4 flex gap-2'>
+									<button
+										onClick={() => setShowPassword(!showPassword)}
+										className='h-8 w-8 rounded-md border border-border/50 bg-background/70 hover:bg-background hover:border-border flex items-center justify-center transition-colors'
+										aria-label={
+											showPassword ? 'Hide password' : 'Show password'
+										}
+									>
+										{showPassword ? (
+											<EyeOff className='w-3.5 h-3.5 text-foreground' />
+										) : (
+											<Eye className='w-3.5 h-3.5 text-foreground' />
 										)}
-										initial={{ width: 0 }}
-										animate={{ width: `${strength}%` }}
-										transition={{ duration: 0.5, ease: 'easeOut' }}
-									/>
+									</button>
+									<button
+										onClick={copyToClipboard}
+										disabled={!password}
+										className='h-8 w-8 rounded-md border border-border/50 bg-background/70 hover:bg-background hover:border-border flex items-center justify-center transition-colors disabled:opacity-50'
+										aria-label='Copy password'
+									>
+										{copied ? (
+											<Check className='w-3.5 h-3.5 text-green-600' />
+										) : (
+											<Copy className='w-3.5 h-3.5 text-foreground' />
+										)}
+									</button>
 								</div>
-							</div>
 
-							{/* Copy and Visibility buttons - top right corner */}
-							<div className='absolute right-4 top-4 flex gap-2'>
-								<button
-									onClick={() => setShowPassword(!showPassword)}
-									className='h-8 w-8 rounded-md border border-border/50 bg-background/70 hover:bg-background hover:border-border flex items-center justify-center transition-colors'
-									aria-label={showPassword ? 'Hide password' : 'Show password'}
-								>
+								{/* Password text */}
+								<div className='font-mono text-2xl sm:text-3xl lg:text-4xl text-center break-all select-all px-4 pt-8 overflow-hidden'>
 									{showPassword ? (
-										<EyeOff className='w-3.5 h-3.5 text-foreground' />
+										<TextRoll
+											key={password}
+											className='inline-block'
+											duration={0.4}
+											getEnterDelay={i => i * 0.015}
+											getExitDelay={i => i * 0.015}
+											transition={{
+												ease: [0.25, 0.1, 0.25, 1]
+											}}
+											variants={{
+												enter: {
+													initial: { y: 0, opacity: 1 },
+													animate: { y: -50, opacity: 0.1 }
+												},
+												exit: {
+													initial: { y: 50, opacity: 0 },
+													animate: { y: 0, opacity: 1 }
+												}
+											}}
+										>
+											{password}
+										</TextRoll>
 									) : (
-										<Eye className='w-3.5 h-3.5 text-foreground' />
-									)}
-								</button>
-								<button
-									onClick={copyToClipboard}
-									disabled={!password}
-									className='h-8 w-8 rounded-md border border-border/50 bg-background/70 hover:bg-background hover:border-border flex items-center justify-center transition-colors disabled:opacity-50'
-									aria-label='Copy password'
-								>
-									{copied ? (
-										<Check className='w-3.5 h-3.5 text-green-600' />
-									) : (
-										<Copy className='w-3.5 h-3.5 text-foreground' />
-									)}
-								</button>
-							</div>
-
-							{/* Password text */}
-							<div className='font-mono text-2xl sm:text-3xl lg:text-4xl text-center break-all select-all px-4 pt-8 overflow-hidden'>
-								{showPassword ? (
-									<TextRoll
-										key={password}
-										className='inline-block'
-										duration={0.4}
-										getEnterDelay={i => i * 0.015}
-										getExitDelay={i => i * 0.015}
-										transition={{
-											ease: [0.25, 0.1, 0.25, 1]
-										}}
-										variants={{
-											enter: {
-												initial: { y: 0, opacity: 1 },
-												animate: { y: -50, opacity: 0.1 }
-											},
-											exit: {
-												initial: { y: 50, opacity: 0 },
-												animate: { y: 0, opacity: 1 }
-											}
-										}}
-									>
-										{password}
-									</TextRoll>
-								) : (
-									'•'.repeat(password.length)
-								)}
-							</div>
-						</div>
-
-						{/* Generate Button */}
-						<Button
-							onClick={generate}
-							size='lg'
-							disabled={isGenerating}
-							className='w-full h-14 text-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl'
-						>
-							{isGenerating ? (
-								<RefreshCw className='w-5 h-5 mr-2 animate-spin' />
-							) : (
-								<>
-									<Zap className='w-5 h-5 mr-2' />
-									{'Сгенерировать'}
-								</>
-							)}
-						</Button>
-					</CardContent>
-				</Card>
-
-				{/* History Section */}
-				{history.length > 0 && (
-					<Card className='bg-background/50 border-border/50'>
-						<CardContent className='p-6'>
-							<div className='flex items-center justify-between mb-4'>
-								<h3 className='font-semibold flex items-center gap-2'>
-									<Clock className='w-4 h-4' />
-									{'Недавние пароли'}
-								</h3>
-								<div className='flex gap-2'>
-									<Button
-										size='sm'
-										variant='outline'
-										onClick={() => setShowHistory(!showHistory)}
-										className='h-8'
-									>
-										{showHistory ? 'Скрыть' : 'Показать'}
-									</Button>
-									{showHistory && (
-										<>
-											<Button
-												size='sm'
-												variant='outline'
-												onClick={downloadPasswords}
-												className='h-8'
-											>
-												<Download className='w-3.5 h-3.5 mr-1' />
-												{'Скачать'}
-											</Button>
-											<Button
-												size='sm'
-												variant='outline'
-												onClick={clearHistory}
-												className='h-8'
-											>
-												<Trash2 className='w-3.5 h-3.5 mr-1' />
-												{'Очистить'}
-											</Button>
-										</>
+										'•'.repeat(password.length)
 									)}
 								</div>
 							</div>
 
-							<AnimatePresence>
-								{showHistory && (
-									<motion.div
-										initial={{ height: 0, opacity: 0 }}
-										animate={{ height: 'auto', opacity: 1 }}
-										exit={{ height: 0, opacity: 0 }}
-										transition={{ duration: 0.3 }}
-										className='space-y-2 overflow-hidden'
-									>
-										{history.slice(0, 5).map((item, index) => (
-											<motion.div
-												key={index}
-												initial={{ opacity: 0, x: -20 }}
-												animate={{ opacity: 1, x: 0 }}
-												transition={{ delay: index * 0.05 }}
-												className='p-3 bg-background/50 rounded-lg flex items-center justify-between gap-4 group hover:bg-background/80 transition-colors cursor-pointer'
-												onClick={async () => {
-													await navigator.clipboard.writeText(item.password)
-													toast.success('Пароль скопирован')
-												}}
-											>
-												<div className='flex-1 min-w-0'>
-													<code className='font-mono text-sm'>
-														{showPassword ? item.password : '••••••••••••'}
-													</code>
-												</div>
-												<div className='flex items-center gap-3'>
-													<Badge
-														variant='outline'
-														className={cn(
-															'text-xs',
-															item.strength >= 80 &&
-																'border-green-500/50 text-green-600',
-															item.strength >= 60 &&
-																item.strength < 80 &&
-																'border-yellow-500/50 text-yellow-600',
-															item.strength >= 40 &&
-																item.strength < 60 &&
-																'border-orange-500/50 text-orange-600',
-															item.strength < 40 &&
-																'border-red-500/50 text-red-600'
-														)}
-													>
-														{item.strength}%
-													</Badge>
-													<span className='text-xs text-muted-foreground'>
-														{new Date(item.timestamp).toLocaleTimeString()}
-													</span>
-													<Copy className='w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity' />
-												</div>
-											</motion.div>
-										))}
-									</motion.div>
+							{/* Generate Button */}
+							<Button
+								onClick={generate}
+								size='lg'
+								disabled={isGenerating}
+								className='w-full h-14 text-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl'
+							>
+								{isGenerating ? (
+									<RefreshCw className='w-5 h-5 mr-2 animate-spin' />
+								) : (
+									<>
+										<Zap className='w-5 h-5 mr-2' />
+										{'Сгенерировать'}
+									</>
 								)}
-							</AnimatePresence>
+							</Button>
 						</CardContent>
 					</Card>
-				)}
-			</div>
-		</WidgetLayout>
+
+					{/* History Section */}
+					{history.length > 0 && (
+						<Card className='bg-background/50 border-border/50'>
+							<CardContent className='p-6'>
+								<div className='flex items-center justify-between mb-4'>
+									<h3 className='font-semibold flex items-center gap-2'>
+										<Clock className='w-4 h-4' />
+										{'Недавние пароли'}
+									</h3>
+									<div className='flex gap-2'>
+										<Button
+											size='sm'
+											variant='outline'
+											onClick={() => setShowHistory(!showHistory)}
+											className='h-8'
+										>
+											{showHistory ? 'Скрыть' : 'Показать'}
+										</Button>
+										{showHistory && (
+											<>
+												<Button
+													size='sm'
+													variant='outline'
+													onClick={downloadPasswords}
+													className='h-8'
+												>
+													<Download className='w-3.5 h-3.5 mr-1' />
+													{'Скачать'}
+												</Button>
+												<Button
+													size='sm'
+													variant='outline'
+													onClick={clearHistory}
+													className='h-8'
+												>
+													<Trash2 className='w-3.5 h-3.5 mr-1' />
+													{'Очистить'}
+												</Button>
+											</>
+										)}
+									</div>
+								</div>
+
+								<AnimatePresence>
+									{showHistory && (
+										<motion.div
+											initial={{ height: 0, opacity: 0 }}
+											animate={{ height: 'auto', opacity: 1 }}
+											exit={{ height: 0, opacity: 0 }}
+											transition={{ duration: 0.3 }}
+											className='space-y-2 overflow-hidden'
+										>
+											{history.slice(0, 5).map((item, index) => (
+												<motion.div
+													key={index}
+													initial={{ opacity: 0, x: -20 }}
+													animate={{ opacity: 1, x: 0 }}
+													transition={{ delay: index * 0.05 }}
+													className='p-3 bg-background/50 rounded-lg flex items-center justify-between gap-4 group hover:bg-background/80 transition-colors cursor-pointer'
+													onClick={async () => {
+														await navigator.clipboard.writeText(item.password)
+														toast.success('Пароль скопирован')
+													}}
+												>
+													<div className='flex-1 min-w-0'>
+														<code className='font-mono text-sm'>
+															{showPassword ? item.password : '••••••••••••'}
+														</code>
+													</div>
+													<div className='flex items-center gap-3'>
+														<Badge
+															variant='outline'
+															className={cn(
+																'text-xs',
+																item.strength >= 80 &&
+																	'border-green-500/50 text-green-600',
+																item.strength >= 60 &&
+																	item.strength < 80 &&
+																	'border-yellow-500/50 text-yellow-600',
+																item.strength >= 40 &&
+																	item.strength < 60 &&
+																	'border-orange-500/50 text-orange-600',
+																item.strength < 40 &&
+																	'border-red-500/50 text-red-600'
+															)}
+														>
+															{item.strength}%
+														</Badge>
+														<span className='text-xs text-muted-foreground'>
+															{new Date(item.timestamp).toLocaleTimeString()}
+														</span>
+														<Copy className='w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity' />
+													</div>
+												</motion.div>
+											))}
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</CardContent>
+						</Card>
+					)}
+				</div>
+			</WidgetLayout>
 		</WidgetSEOWrapper>
 	)
 }
