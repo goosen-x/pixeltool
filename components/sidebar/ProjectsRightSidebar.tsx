@@ -6,7 +6,8 @@ import { AdSection } from '@/components/ads'
 import { WidgetInfoCard } from './WidgetInfoCard'
 import { UseCaseCard } from './UseCaseCard'
 import { WidgetStatsCard } from './WidgetStatsCard'
-import { ActionsAndFeedbackCard } from './ActionsAndFeedbackCard'
+import { FeedbackCard } from './FeedbackCard'
+import { QuickActionsCard } from './QuickActionsCard'
 
 export function ProjectsRightSidebar() {
 	const pathname = usePathname()
@@ -23,7 +24,8 @@ export function ProjectsRightSidebar() {
 			<AdSection />
 			<UseCaseCard widget={widget} />
 			<WidgetStatsCard />
-			<ActionsAndFeedbackCard />
+			<QuickActionsCard />
+			<FeedbackCard />
 		</aside>
 	)
 }
