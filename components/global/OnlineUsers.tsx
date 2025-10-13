@@ -5,8 +5,8 @@ import { Activity } from 'lucide-react'
 import { sendHeartbeat } from '@/lib/session'
 
 export const OnlineUsers = () => {
-	const [onlineCount, setOnlineCount] = useState(1)
-	const [isBlinking, setIsBlinking] = useState(true)
+	const [onlineCount, setOnlineCount] = useState(0)
+	const [isBlinking, setIsBlinking] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
@@ -31,22 +31,23 @@ export const OnlineUsers = () => {
 
 				if (response.ok) {
 					const data = await response.json()
-					// Show at least 1 user (current user) even if Redis returns 0
-					const count = Math.max(1, data.onlineUsers || 0)
-					setOnlineCount(count)
-					console.log('🔄 Online users updated:', count, '(Redis:', data.onlineUsers, ')')
+					// Only show if Redis has actual users (> 0)
+					setOnlineCount(data.onlineUsers || 0)
+					console.log('🔄 Online users updated:', data.onlineUsers)
 
-					// Добавляем эффект мигания при обновлении
-					setIsBlinking(true)
-					setTimeout(() => setIsBlinking(false), 2000)
+					if (data.onlineUsers > 0) {
+						// Добавляем эффект мигания при обновлении
+						setIsBlinking(true)
+						setTimeout(() => setIsBlinking(false), 2000)
+					}
 				} else {
-					// Show current user even on API error
-					setOnlineCount(1)
+					// Hide component on API error
+					setOnlineCount(0)
 				}
 			} catch (error) {
 				console.error('Failed to fetch online users:', error)
-				// Show current user even on error
-				setOnlineCount(1)
+				// Hide component on error
+				setOnlineCount(0)
 			} finally {
 				setIsLoading(false)
 			}
@@ -64,8 +65,10 @@ export const OnlineUsers = () => {
 		}
 	}, [])
 
-	// Always show at least current user (minimum 1)
-	// Component is now always visible when not loading
+	// Don't render if no users online or Redis unavailable
+	if (!isLoading && onlineCount === 0) {
+		return null
+	}
 
 	return (
 		<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-green-500/15 to-emerald-500/15 border border-green-500/30 backdrop-blur-sm shadow-lg hover:shadow-green-500/20 transition-all duration-300'>
