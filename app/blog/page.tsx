@@ -75,8 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Blog(props: Props) {
-	const params = await props.params
-	const posts = await getAllPosts(params.locale)
+	const posts = await getAllPosts()
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
 	// JSON-LD structured data for blog listing

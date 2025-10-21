@@ -2,9 +2,9 @@ import type { Post } from './types/post'
 import { getAllPostsFromFiles, getPostBySlugFromFile } from './api-file'
 
 // Get all published posts from file system
-export async function getAllPosts(locale: string = 'en'): Promise<Post[]> {
+export async function getAllPosts(): Promise<Post[]> {
 	try {
-		return getAllPostsFromFiles(locale)
+		return getAllPostsFromFiles()
 	} catch (error) {
 		console.error('Error fetching posts from files:', error)
 		return []
@@ -12,12 +12,9 @@ export async function getAllPosts(locale: string = 'en'): Promise<Post[]> {
 }
 
 // Get post by slug from file system
-export async function getPostBySlug(
-	slug: string,
-	locale: string = 'en'
-): Promise<Post | null> {
+export async function getPostBySlug(slug: string): Promise<Post | null> {
 	try {
-		return getPostBySlugFromFile(slug, locale)
+		return getPostBySlugFromFile(slug)
 	} catch (error) {
 		console.error('Error fetching post from file:', error)
 		return null

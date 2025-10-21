@@ -10,7 +10,7 @@ import Script from 'next/script'
 
 export default async function Post(props: Params) {
 	const params = await props.params
-	const post = await getPostBySlug(params.slug, params.locale)
+	const post = await getPostBySlug(params.slug)
 
 	if (!post) {
 		return notFound()
@@ -122,7 +122,7 @@ type Params = {
 
 export async function generateMetadata(props: Params): Promise<Metadata> {
 	const params = await props.params
-	const post = await getPostBySlug(params.slug, params.locale)
+	const post = await getPostBySlug(params.slug)
 
 	if (!post) {
 		return {
@@ -195,8 +195,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 
 export async function generateStaticParams() {
 	try {
-		// Only Russian locale
-		const posts = await getAllPosts('ru')
+		const posts = await getAllPosts()
 
 		const params = posts.map(post => ({
 			locale: 'ru',

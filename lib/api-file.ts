@@ -13,14 +13,11 @@ export function getPostSlugs() {
 	}
 }
 
-export function getPostBySlugFromFile(
-	slug: string,
-	locale: string = 'en'
-): Post {
+export function getPostBySlugFromFile(slug: string): Post {
 	const realSlug = slug.replace(/\.md$/, '')
 
 	// Try locale-specific file first
-	let fullPath = join(postsDirectory, `${realSlug}-${locale}.md`)
+	let fullPath = join(postsDirectory, `${realSlug}.md`)
 	let fileContents: string
 
 	try {
@@ -51,7 +48,7 @@ export function getPostBySlugFromFile(
 	}
 }
 
-export function getAllPostsFromFiles(locale: string = 'en'): Post[] {
+export function getAllPostsFromFiles(): Post[] {
 	const slugs = getPostSlugs()
 	const uniqueSlugs = new Set<string>()
 
@@ -59,16 +56,14 @@ export function getAllPostsFromFiles(locale: string = 'en'): Post[] {
 	slugs.forEach(fileName => {
 		if (fileName.endsWith('.md')) {
 			const baseName = fileName.replace('.md', '')
-			// Remove locale suffix if present (-en, -ru)
-			const baseSlug = baseName.replace(/-(?:en|ru)$/, '')
-			uniqueSlugs.add(baseSlug)
+			uniqueSlugs.add(baseName)
 		}
 	})
 
 	const posts = Array.from(uniqueSlugs)
 		.map(slug => {
 			try {
-				return getPostBySlugFromFile(slug, locale)
+				return getPostBySlugFromFile(slug)
 			} catch {
 				return null
 			}
