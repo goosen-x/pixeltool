@@ -136,12 +136,12 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 				{loading ? (
 					<div className='flex items-center gap-2'>
 						<div className='w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin' />
-						'Отправка...'
+						Отправка...
 					</div>
 				) : (
 					<div className='flex items-center gap-2'>
 						<Send className='w-4 h-4' />
-						'Отправить'
+						Отправить
 					</div>
 				)}
 			</Button>
@@ -154,7 +154,7 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 				<DialogTrigger asChild>
 					<Button variant='outline' size='sm' className='w-full justify-start'>
 						<MessageSquare className='w-4 h-4 mr-2' />
-						'Обратная связь'
+						Обратная связь
 					</Button>
 				</DialogTrigger>
 				<DialogContent className='sm:max-w-[500px]'>
@@ -184,23 +184,22 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 
 						<TabsContent value='bug' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								'Нашли ошибку? Помогите нам исправить её, предоставив
-								подробности о проблеме.'
+								Нашли ошибку? Помогите нам исправить её, предоставив подробности
+								о проблеме.
 							</div>
 							{renderForm('bug')}
 						</TabsContent>
 
 						<TabsContent value='feature' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								'Есть идея для улучшения? Мы хотели бы услышать ваши
-								предложения!'
+								Есть идея для улучшения? Мы хотели бы услышать ваши предложения!
 							</div>
 							{renderForm('feature')}
 						</TabsContent>
 
 						<TabsContent value='general' className='space-y-4'>
 							<div className='text-sm text-muted-foreground'>
-								'Любые другие отзывы или вопросы? Дайте нам знать!'
+								Любые другие отзывы или вопросы? Дайте нам знать!
 							</div>
 							{renderForm('general')}
 						</TabsContent>
