@@ -36,8 +36,7 @@ export async function generateMetadata({
 	}
 
 	const title = widget.title || widget.id
-	const description =
-		widget.description || `Online tool for ${widget.id} tasks`
+	const description = widget.description || `Online tool for ${widget.id} tasks`
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools/${widget.path}`
 

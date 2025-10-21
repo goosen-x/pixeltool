@@ -4,11 +4,8 @@ import { getWidgetEmoji } from '@/lib/utils/widget-icons'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
-export function generateWidgetMetadata(
-	widgetKey: string,
-	locale: 'en' | 'ru'
-): Metadata {
-	const metadata = widgetMetadata[widgetKey]?.[locale]
+export function generateWidgetMetadata(widgetKey: string): Metadata {
+	const metadata = widgetMetadata[widgetKey]?.ru
 
 	if (!metadata) {
 		return {}
@@ -27,8 +24,7 @@ export function generateWidgetMetadata(
 			title: metadata.title,
 			description: metadata.description.slice(0, 160), // Limit description length
 			widget: widgetKey,
-			icon: icon,
-			locale: locale
+			icon: icon
 		}).toString()
 
 	return {
@@ -36,18 +32,13 @@ export function generateWidgetMetadata(
 		description: metadata.description,
 		keywords: metadata.keywords.join(', '),
 		alternates: {
-			canonical: canonicalUrl,
-			languages: {
-				en: `${BASE_URL}/en/tools/${widgetKey}`,
-				ru: `${BASE_URL}/ru/tools/${widgetKey}`
-			}
+			canonical: canonicalUrl
 		},
 		openGraph: {
 			title: metadata.title,
 			description: metadata.description,
 			url: url,
 			siteName: 'PixelTool',
-			locale: locale === 'ru' ? 'ru_RU' : 'en_US',
 			type: 'website',
 			images: [
 				{

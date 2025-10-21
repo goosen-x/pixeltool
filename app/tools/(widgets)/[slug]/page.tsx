@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
 import { getWidgetByPath } from '@/lib/constants/widgets'
-import { loadWidgetComponent, hasWidgetLoader } from '@/lib/widgets/widget-loaders'
+import {
+	loadWidgetComponent,
+	hasWidgetLoader
+} from '@/lib/widgets/widget-loaders'
 
 /**
  * Динамическая страница виджета

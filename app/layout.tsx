@@ -18,7 +18,7 @@ import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregi
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
-import Header from '@/components/global/Header'
+import Header from '@/components/layout/Header/Header'
 
 // Force dynamic rendering for all pages to avoid useSearchParams build errors
 export const dynamic = 'force-dynamic'
@@ -270,7 +270,6 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<CookieConsent />
 				</ThemeProvider>
 			</body>
-			{/* </NextIntlClientProvider> */}
 		</html>
 	)
 }

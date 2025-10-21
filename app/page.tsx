@@ -104,17 +104,6 @@ export default async function HomePage({ params }: Props) {
 					</div>
 
 					<div className='mx-auto max-w-7xl text-center'>
-						{/* Status Badge with Online Users */}
-						<div className='flex flex-row gap-3 justify-center items-center mb-6 sm:mb-8'>
-							<OnlineUsers />
-							<div className='inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-full bg-gradient-to-r from-primary/15 to-accent/15 border border-primary/30 backdrop-blur-sm shadow-lg'>
-								<span className='text-xs sm:text-sm font-medium text-primary'>
-									Бесплатно
-								</span>
-								<DollarSign className='w-3 h-3 sm:w-4 sm:h-4 text-primary' />
-							</div>
-						</div>
-
 						{/* Main Title with ripple animation */}
 						<div className='mb-8 sm:mb-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8'>
 							<RippleLoader className='opacity-80 flex-shrink-0 scale-75 sm:scale-100' />

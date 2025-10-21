@@ -19,7 +19,10 @@ interface SEOCheckResult {
 
 const WIDGETS_DIR = path.join(process.cwd(), 'app/tools/(widgets)')
 
-function checkWidgetSEO(widgetPath: string, widgetDirName: string): SEOCheckResult {
+function checkWidgetSEO(
+	widgetPath: string,
+	widgetDirName: string
+): SEOCheckResult {
 	// Find widget by path field, not id
 	const widget = widgets.find(w => w.path === widgetDirName)
 	const issues: string[] = []

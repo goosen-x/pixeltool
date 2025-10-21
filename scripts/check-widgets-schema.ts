@@ -82,7 +82,9 @@ function checkWidgetSchema(
 	const hasWidgetStructuredData = pageContent.includes('WidgetStructuredData')
 
 	if (!hasWidgetSEOWrapper && !hasWidgetStructuredData) {
-		issues.push('No Schema.org markup found (missing WidgetSEOWrapper/WidgetStructuredData)')
+		issues.push(
+			'No Schema.org markup found (missing WidgetSEOWrapper/WidgetStructuredData)'
+		)
 	}
 
 	// Check if WidgetSEOWrapper is imported
@@ -245,8 +247,7 @@ function main() {
 		withSEOWrapper: results.filter(r => r.hasWidgetSEOWrapper).length,
 		withStructuredData: results.filter(r => r.hasWidgetStructuredData).length,
 		withFAQs: results.filter(r => r.hasFAQs).length,
-		withToolSpecificSchema: results.filter(r => r.hasToolSpecificSchema)
-			.length,
+		withToolSpecificSchema: results.filter(r => r.hasToolSpecificSchema).length,
 		withCriticalIssues: Object.keys(criticalIssues).length,
 		withWarnings: Object.keys(warningIssues).length
 	}
@@ -496,7 +497,8 @@ function generateReport(
 		report += `${widgetsWithoutSchema.length} widgets need WidgetSEOWrapper added.\n\n`
 		report += '**Template for adding WidgetSEOWrapper**:\n\n'
 		report += '```tsx\n'
-		report += "import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'\n"
+		report +=
+			"import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'\n"
 		report += "import { getWidgetByPath } from '@/lib/constants/widgets'\n\n"
 		report += "const widget = getWidgetByPath('your-widget-path')!\n\n"
 		report += 'export default function YourWidget() {\n'
@@ -531,7 +533,8 @@ function generateReport(
 	report += '### Priority 3: Validation\n\n'
 	report +=
 		'1. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)\n'
-	report += '2. Validate with [Schema.org Validator](https://validator.schema.org/)\n'
+	report +=
+		'2. Validate with [Schema.org Validator](https://validator.schema.org/)\n'
 	report +=
 		'3. Check [Google Search Console](https://search.google.com/search-console) for structured data errors\n\n'
 

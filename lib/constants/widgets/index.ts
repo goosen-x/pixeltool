@@ -87,6 +87,8 @@ export const widgetCategories = {
 	tools: 'Утилиты'
 } as const
 
-export const getWidgetFAQs = (translationKey: string): any[] => {
-	return []
+export const getWidgetFAQs = (widgetId: string): any[] => {
+	const widget = getWidgetById(widgetId)
+	const faqs = widget?.faqs || []
+	return faqs
 }
