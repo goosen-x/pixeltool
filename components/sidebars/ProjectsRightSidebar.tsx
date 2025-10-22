@@ -3,10 +3,10 @@
 import { getWidgetByPath } from '@/lib/constants/widgets'
 import { usePathname } from 'next/navigation'
 import { AdSection } from '@/components/ads'
-import { WidgetInfoCard } from './WidgetInfoCard'
-import { UseCaseCard } from './UseCaseCard'
-import { FeedbackCard } from './FeedbackCard'
-import { QuickActionsCard } from './QuickActionsCard'
+import { WidgetInfoCard } from './widgets/WidgetInfoCard'
+import { UseCaseCard } from './widgets/UseCaseCard'
+import { FeedbackCard } from './widgets/FeedbackCard'
+import { QuickActionsCard } from './widgets/QuickActionsCard'
 
 export function ProjectsRightSidebar() {
 	const pathname = usePathname()

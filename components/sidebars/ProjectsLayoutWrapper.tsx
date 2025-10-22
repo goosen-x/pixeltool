@@ -1,8 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { ProjectsSidebar } from '@/components/sidebar/ProjectsSidebar'
-import { ProjectsRightSidebar } from '@/components/sidebar/ProjectsRightSidebar'
+
 import { WidgetWrapper, WidgetHeader } from '@/components/widgets'
 import { WidgetFAQ } from '@/components/widgets/WidgetFAQ'
 import { RelatedTools } from '@/components/seo/RelatedTools'
@@ -12,6 +11,8 @@ import { ReactNode, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { ProjectsLeftSidebar } from './ProjectsLeftSidebar'
+import { ProjectsRightSidebar } from './ProjectsRightSidebar'
 
 type Props = {
 	children: ReactNode
@@ -31,28 +32,6 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 
 	return (
 		<div className='flex h-[calc(100vh-5rem)] relative'>
-			{/* Mobile menu button */}
-			<Button
-				variant='outline'
-				size='icon'
-				className='fixed top-24 left-4 z-40 lg:hidden bg-background shadow-md hover:shadow-lg border-border'
-				onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-			>
-				{isSidebarOpen ? (
-					<X className='h-5 w-5' />
-				) : (
-					<Menu className='h-5 w-5' />
-				)}
-			</Button>
-
-			{/* Mobile overlay */}
-			{isSidebarOpen && (
-				<div
-					className='fixed inset-0 top-20 bg-black/50 z-30 lg:hidden'
-					onClick={() => setIsSidebarOpen(false)}
-				/>
-			)}
-
 			{/* Sidebar - hidden on mobile, shown on desktop */}
 			<div
 				className={cn(
@@ -60,26 +39,23 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 					isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
 				)}
 			>
-				<ProjectsSidebar onLinkClick={() => setIsSidebarOpen(false)} />
+				<ProjectsLeftSidebar onLinkClick={() => setIsSidebarOpen(false)} />
 			</div>
 
 			<main className='flex-1 flex flex-col overflow-hidden min-w-0'>
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
 						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
-							<div>
-								{widgetId && <WidgetHeader widgetId={widgetId} />}
-								<WidgetWrapper>
-									{children}
-									{widgetId && (
-										<>
-											<RelatedTools currentTool={widgetId} />
-
-											<WidgetFAQ widgetId={widgetId} />
-										</>
-									)}
-								</WidgetWrapper>
-							</div>
+							{widgetId && <WidgetHeader widgetId={widgetId} />}
+							<WidgetWrapper>
+								{children}
+								{widgetId && (
+									<>
+										<RelatedTools currentTool={widgetId} />
+										<WidgetFAQ widgetId={widgetId} />
+									</>
+								)}
+							</WidgetWrapper>
 						</div>
 					</div>
 					{/* Right sidebar - hidden on mobile and tablets, shown on desktop */}

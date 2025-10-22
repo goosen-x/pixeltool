@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
-import { ProjectsLayoutWrapper } from '@/components/sidebar/ProjectsLayoutWrapper'
-import './widget-transitions.css'
+import { ProjectsLayoutWrapper } from '@/components/sidebars/ProjectsLayoutWrapper'
 
 // Force dynamic rendering for all widget pages
 export const dynamic = 'force-dynamic'

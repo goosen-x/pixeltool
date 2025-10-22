@@ -2,31 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Tektur Font for special headings */
-@font-face {
-	font-family: 'Tektur';
-	src: url('/fonts/Tektur-Regular.ttf') format('truetype');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Tektur';
-	src: url('/fonts/Tektur-Medium.ttf') format('truetype');
-	font-weight: 500;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Tektur';
-	src: url('/fonts/Tektur-Bold.ttf') format('truetype');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-
 /* Progress bar animation */
 @keyframes shimmer {
 	0% {
@@ -1024,25 +999,25 @@ pre[class*='language-'] {
 
 	/* Widget Buttons */
 	.widget-btn-primary {
-		@apply h-12 px-6 text-base font-medium 
-           bg-gradient-to-r from-primary to-accent 
-           hover:from-primary/90 hover:to-accent/90 
-           transition-all duration-300 
+		@apply h-12 px-6 text-base font-medium
+           bg-gradient-to-r from-primary to-accent
+           hover:from-primary/90 hover:to-accent/90
+           transition-all duration-300
            shadow-lg hover:shadow-xl hover:scale-105
            rounded-xl;
 	}
 
 	.widget-btn-secondary {
 		@apply h-12 px-6 text-base font-medium
-           bg-background/80 
-           hover:bg-primary hover:text-primary-foreground hover:border-primary 
+           bg-background/80
+           hover:bg-primary hover:text-primary-foreground hover:border-primary
            transition-all duration-300
            rounded-xl border border-border;
 	}
 
 	.widget-btn-icon {
-		@apply h-9 w-9 
-           hover:bg-primary hover:text-primary-foreground 
+		@apply h-9 w-9
+           hover:bg-primary hover:text-primary-foreground
            transition-colors
            rounded-lg;
 	}
@@ -1050,17 +1025,17 @@ pre[class*='language-'] {
 	/* Widget Inputs */
 	.widget-input {
 		@apply h-14 text-lg px-4
-           rounded-2xl 
-           bg-background/80 border-border/50 
-           focus:bg-background 
+           rounded-2xl
+           bg-background/80 border-border/50
+           focus:bg-background
            transition-all duration-300;
 	}
 
 	.widget-textarea {
-		@apply min-h-[120px] p-4 text-lg 
+		@apply min-h-[120px] p-4 text-lg
            rounded-2xl resize-none
-           bg-background/80 border-border/50 
-           focus:bg-background 
+           bg-background/80 border-border/50
+           focus:bg-background
            transition-all duration-300;
 	}
 
