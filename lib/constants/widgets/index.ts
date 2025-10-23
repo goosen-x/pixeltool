@@ -78,11 +78,11 @@ export const getRecommendedWidgets = (widgetId: string): Widget[] => {
 }
 
 export const widgetCategories = {
+	generators: 'Генераторы',
 	html: 'HTML',
 	css: 'CSS',
 	javascript: 'JavaScript',
 	text: 'Текст',
-	generators: 'Генераторы',
 	security: 'Безопасность',
 	tools: 'Утилиты'
 } as const

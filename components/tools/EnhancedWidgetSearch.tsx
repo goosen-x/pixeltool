@@ -139,14 +139,14 @@ export function EnhancedWidgetSearch() {
 			<div className='relative'>
 				<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl' />
 				<div className='relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50'>
-					<div className='mb-16 space-y-6'>
+					<div className='mb-8 sm:mb-16 space-y-6'>
 						{/* Title */}
-						<h1 className='text-4xl sm:text-5xl lg:text-6xl font-heading font-black'>
+						<h1 className='text-3xl sm:text-5xl lg:text-6xl font-heading font-black'>
 							Все инструменты
 						</h1>
 
 						{/* Description */}
-						<p className='text-xl sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
+						<p className='text-lg sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
 							Найдите идеальный инструмент для вашей задачи
 						</p>
 					</div>
@@ -166,7 +166,7 @@ export function EnhancedWidgetSearch() {
 									addToHistory(searchQuery)
 								}
 							}}
-							className='pl-12 pr-24 h-14 text-base rounded-2xl border-border/50 bg-background/80 backdrop-blur-sm focus:bg-background transition-all duration-300 shadow-sm hover:shadow-md'
+							className='pl-12 pr-12 h-14 text-base rounded-2xl border-border/50 bg-background/80 backdrop-blur-sm focus:bg-background transition-all duration-300 shadow-sm hover:shadow-md'
 						/>
 						<div className='absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1'>
 							{searchQuery && (
@@ -193,7 +193,7 @@ export function EnhancedWidgetSearch() {
 							onClick={() => setSelectedCategory('')}
 							className='rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
 						>
-							Все категории
+							Все
 						</Button>
 
 						{Object.entries(widgetCategories).map(([key, title]) => (

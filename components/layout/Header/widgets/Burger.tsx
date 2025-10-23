@@ -67,7 +67,7 @@ export const Burger = ({ setIsSearchOpen }: Props) => {
 				href={href}
 				onClick={handleNavClick}
 				className={cn(
-					'group flex items-center gap-3 rounded-xl px-5 py-4 font-medium transition-all duration-300 relative',
+					'group flex items-center gap-3 rounded-xl px-4 py-4 font-medium transition-all duration-300 relative',
 					active
 						? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
 						: 'hover:bg-muted/50 text-muted-foreground hover:text-foreground'
@@ -122,10 +122,13 @@ export const Burger = ({ setIsSearchOpen }: Props) => {
 				</SheetTrigger>
 
 				{/* Выберите сторону и ширину по желанию */}
-				<SheetContent side='right' className={cn('z-[100] max-w-full')}>
+				<SheetContent
+					side='right'
+					className={cn('z-[100] max-w-full h-full flex flex-col px-2')}
+				>
 					<SheetHeader>
 						<div className='flex items-center justify-between'>
-							<SheetTitle className='text-xl font-bold'>Меню</SheetTitle>
+							<SheetTitle className='text-xl font-bold pl-2'>Меню</SheetTitle>
 						</div>
 					</SheetHeader>
 
@@ -136,21 +139,21 @@ export const Burger = ({ setIsSearchOpen }: Props) => {
 							{items}
 						</nav>
 
-						<div className='h-px my-4 bg-gradient-to-r from-transparent via-border/50 to-transparent' />
+						<div className='h-px  my-4 bg-gradient-to-r from-transparent via-border/50 to-transparent' />
 						<CategoriesNavigation
 							className='p-0'
 							collapsed={collapsed}
 							toggleCategory={toggleCategory}
 							onItemClick={handleNavClick}
 						/>
-						<section
-							aria-label='Настройки'
-							className='bg-muted/30 rounded-xl p-4 border border-border/30'
-						>
-							<div className='flex items-center gap-3'>
-								<ThemeToggle />
-							</div>
-						</section>
+					</div>
+					<div
+						aria-label='Настройки'
+						className='bg-muted/30 rounded-xl p-4 border border-border/30 mt-auto'
+					>
+						<div className='flex items-center gap-3'>
+							<ThemeToggle />
+						</div>
 					</div>
 				</SheetContent>
 			</Sheet>
