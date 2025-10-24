@@ -335,8 +335,12 @@ div.container > p::first-line
 						rows={8}
 						className='font-mono text-sm resize-none'
 					/>
-					<div className='flex gap-3'>
-						<Button onClick={analyzeSelectors} className='flex-1' size='lg'>
+					<div className='flex-col sm:flex-row flex gap-3'>
+						<Button
+							onClick={analyzeSelectors}
+							className='flex-1 py-2'
+							size='lg'
+						>
 							<BarChart3 className='w-4 h-4 mr-2' />
 							Анализировать специфичность
 						</Button>
@@ -359,7 +363,7 @@ div.container > p::first-line
 			{results.length > 0 && (
 				<Card>
 					<CardHeader className='pb-4'>
-						<div className='flex items-center justify-between'>
+						<div className='flex-col sm:flex-row gap-2 flex items-center justify-between'>
 							<div>
 								<CardTitle>Результаты анализа</CardTitle>
 								<p className='text-sm text-muted-foreground mt-1'>

@@ -676,8 +676,8 @@ export default function CSSKeyframesGeneratorPage() {
 					</Card>
 
 					{/* Generated CSS */}
-					<Card className='p-6'>
-						<div className='flex items-center justify-between mb-4'>
+					<Card className='p-6 overflow-scroll'>
+						<div className='flex items-center justify-between mb-4 flex-wrap'>
 							<h3 className='font-semibold'>Сгенерированный CSS</h3>
 							<Button onClick={copyCSS} size='sm' className='gap-2'>
 								<Copy className='w-4 h-4' />
@@ -686,7 +686,7 @@ export default function CSSKeyframesGeneratorPage() {
 						</div>
 
 						<pre className='p-4 rounded-lg bg-muted overflow-x-auto'>
-							<code className='text-sm'>{generateCSS()}</code>
+							<code className='text-xs sm:text-sm'>{generateCSS()}</code>
 						</pre>
 					</Card>
 				</div>

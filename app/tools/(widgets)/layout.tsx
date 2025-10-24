@@ -10,6 +10,5 @@ type Props = {
 }
 
 export default function WidgetsLayout({ children }: Props) {
-	// Wrap all widget pages with ProjectsLayoutWrapper (includes sidebar)
 	return <ProjectsLayoutWrapper>{children}</ProjectsLayoutWrapper>
 }

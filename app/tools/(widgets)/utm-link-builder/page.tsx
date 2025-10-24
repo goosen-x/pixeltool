@@ -376,7 +376,7 @@ export default function UTMBuilderPage() {
 						<div className='space-y-4'>
 							<Separator />
 							<div className='space-y-2'>
-								<div className='flex items-center justify-between'>
+								<div className='flex flex-wrap gap-2 items-center justify-between'>
 									<Label className='text-sm text-muted-foreground'>
 										Готовая ссылка
 									</Label>

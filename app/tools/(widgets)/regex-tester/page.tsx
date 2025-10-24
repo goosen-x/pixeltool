@@ -433,7 +433,7 @@ export default function RegexTesterPage() {
 					value={flavor}
 					onValueChange={(value: RegexFlavor) => setFlavor(value)}
 				>
-					<div className='grid grid-cols-3 gap-4'>
+					<div className='grid md:grid-cols-3 gap-4'>
 						{(['javascript', 'php', 'python'] as RegexFlavor[]).map(lang => {
 							const Icon = getFlavorIcon(lang)
 							return (
@@ -589,7 +589,7 @@ export default function RegexTesterPage() {
 							)}
 
 							{/* Actions */}
-							<div className='flex gap-2 pt-4'>
+							<div className='flex flex-wrap gap-2 pt-4'>
 								<Button onClick={copyPattern} className='gap-2'>
 									<Copy className='w-4 h-4' />
 									Копировать Regex

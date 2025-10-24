@@ -553,7 +553,7 @@ export default function JsonYamlFormatterPage() {
 		<div className='max-w-7xl mx-auto space-y-6'>
 			{/* Format Selection */}
 			<Card className='p-6'>
-				<div className='flex items-center justify-between'>
+				<div className='flex flex-wrap items-center justify-between'>
 					<div className='flex items-center gap-4'>
 						<Label className='text-base'>Определенный формат:</Label>
 						{detectedFormat ? (

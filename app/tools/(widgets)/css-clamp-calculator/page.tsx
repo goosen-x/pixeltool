@@ -349,7 +349,7 @@ export default function ClampCalculatorPage() {
 			)}
 
 			<Card className='mt-6 p-6'>
-				<div className='flex items-start justify-between mb-4'>
+				<div className='flex flex-col lg:flex-row items-start justify-between mb-4'>
 					<h3 className='font-semibold'>Результат</h3>
 					<div>
 						<RadioGroup

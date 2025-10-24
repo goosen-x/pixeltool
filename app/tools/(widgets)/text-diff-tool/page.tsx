@@ -407,7 +407,7 @@ export default function TextDiffToolPage() {
 						Номера строк
 					</Button>
 
-					<div className='flex items-center gap-2 ml-auto'>
+					<div className='flex flex-wrap items-center gap-2 ml-auto'>
 						<Button onClick={loadSampleTexts} variant='outline' size='sm'>
 							<FileText className='w-4 h-4 mr-2' />
 							Пример
@@ -427,8 +427,8 @@ export default function TextDiffToolPage() {
 			{/* Stats */}
 			{diffResult && (
 				<Card className='p-4'>
-					<div className='flex items-center justify-between'>
-						<div className='flex items-center gap-4'>
+					<div className='flex flex-wrap gap-2 items-center justify-between'>
+						<div className='flex flex-wrap items-center gap-4'>
 							<Badge variant='outline' className='text-green-600'>
 								+{diffResult.stats.additions} добавлений
 							</Badge>
@@ -443,7 +443,7 @@ export default function TextDiffToolPage() {
 							</Badge>
 						</div>
 
-						<div className='flex items-center gap-2'>
+						<div className='flex flex-wrap items-center gap-2'>
 							<Select
 								value={diffType}
 								onValueChange={(value: DiffType) => setDiffType(value)}

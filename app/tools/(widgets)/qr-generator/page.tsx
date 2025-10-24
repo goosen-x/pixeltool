@@ -192,15 +192,15 @@ export default function QRGeneratorPage() {
 						<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
 							<TabsList className='grid w-full grid-cols-3'>
 								<TabsTrigger value='url'>
-									<Link className='w-4 h-4 mr-2' />
+									<Link className='w-4 h-4 mr-2 hidden md:inline' />
 									URL
 								</TabsTrigger>
 								<TabsTrigger value='appstore'>
-									<Smartphone className='w-4 h-4 mr-2' />
-									App Store
+									<Smartphone className='w-4 h-4 mr-2 hidden md:inline' />
+									Mobile app
 								</TabsTrigger>
 								<TabsTrigger value='wifi'>
-									<Wifi className='w-4 h-4 mr-2' />
+									<Wifi className='w-4 h-4 mr-2 hidden md:inline' />
 									Wi-Fi
 								</TabsTrigger>
 							</TabsList>
@@ -258,7 +258,7 @@ export default function QRGeneratorPage() {
 
 								{appStoreConfig.platform === 'universal' ? (
 									<>
-										<div className='grid grid-cols-2 gap-4'>
+										<div className='grid md:grid-cols-2 gap-4'>
 											<div>
 												<Label htmlFor='iosId'>iOS App ID</Label>
 												<Input
@@ -411,7 +411,7 @@ export default function QRGeneratorPage() {
 						<div className='mt-6 space-y-4'>
 							<h3 className='text-lg font-semibold'>Настройки QR-кода</h3>
 
-							<div className='grid grid-cols-3 gap-4'>
+							<div className='grid md:grid-cols-3 gap-4'>
 								<div>
 									<Label htmlFor='darkColor'>Темный цвет</Label>
 									<div className='flex gap-2'>

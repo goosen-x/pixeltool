@@ -655,7 +655,7 @@ export default function TimerCountdownPage() {
 						)}
 
 						{/* Time Display */}
-						<div className='text-center mb-6'>
+						<div className='text-center mb-6 '>
 							{mode === 'countdown' && !isRunning ? (
 								<SlidingCountdown
 									hours={time.hours}

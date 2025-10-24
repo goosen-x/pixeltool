@@ -185,11 +185,7 @@ export default function GridGeneratorPage() {
 			await navigator.clipboard.writeText(generateCSS())
 			setCopiedCSS(true)
 			setTimeout(() => setCopiedCSS(false), 2000)
-			toast.success(
-				locale === 'ru'
-					? 'CSS код скопирован в буфер обмена'
-					: 'CSS code copied to clipboard'
-			)
+			toast.success('CSS код скопирован в буфер обмена')
 		} catch (err) {
 			toast.error('Ошибка копирования')
 		}
@@ -200,11 +196,7 @@ export default function GridGeneratorPage() {
 			await navigator.clipboard.writeText(generateTailwind())
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(
-				locale === 'ru'
-					? 'Tailwind классы скопированы в буфер обмена'
-					: 'Tailwind classes copied to clipboard'
-			)
+			toast.success('Tailwind классы скопированы в буфер обмена')
 		} catch (err) {
 			toast.error('Ошибка копирования')
 		}
@@ -215,14 +207,10 @@ export default function GridGeneratorPage() {
 		setUseUniformGap(true)
 		setItemCount(6)
 		setShowItemNumbers(true)
-		toast.success(locale === 'ru' ? 'Настройки сброшены' : 'Settings reset')
+		toast.success('Настройки сброшены')
 	}, [locale])
 
 	const renderLabel = (key: string, englishLabel: string) => {
-		if (locale !== 'ru') {
-			return <Label className='text-xs'>{englishLabel}</Label>
-		}
-
 		return (
 			<div className='flex items-center gap-1'>
 				<Label className='text-xs'>{englishLabel}</Label>
@@ -244,33 +232,33 @@ export default function GridGeneratorPage() {
 		const columns = props.columns.split(' ')
 		columns.push('1fr')
 		updateProp('columns', columns.join(' '))
-		toast.info(locale === 'ru' ? 'Колонка добавлена' : 'Column added')
-	}, [props.columns, locale, updateProp])
+		toast.info('Колонка добавлена')
+	}, [props.columns, updateProp])
 
 	const removeColumn = useCallback(() => {
 		const columns = props.columns.split(' ')
 		if (columns.length > 1) {
 			columns.pop()
 			updateProp('columns', columns.join(' '))
-			toast.info(locale === 'ru' ? 'Колонка удалена' : 'Column removed')
+			toast.info('Колонка удалена')
 		}
-	}, [props.columns, locale, updateProp])
+	}, [props.columns, updateProp])
 
 	const addRow = useCallback(() => {
 		const rows = props.rows.split(' ')
 		rows.push('1fr')
 		updateProp('rows', rows.join(' '))
-		toast.info(locale === 'ru' ? 'Ряд добавлен' : 'Row added')
-	}, [props.rows, locale, updateProp])
+		toast.info('Ряд добавлен')
+	}, [props.rows, updateProp])
 
 	const removeRow = useCallback(() => {
 		const rows = props.rows.split(' ')
 		if (rows.length > 1) {
 			rows.pop()
 			updateProp('rows', rows.join(' '))
-			toast.info(locale === 'ru' ? 'Ряд удален' : 'Row removed')
+			toast.info('Ряд удален')
 		}
-	}, [props.rows, locale, updateProp])
+	}, [props.rows, updateProp])
 
 	const containerStyle: React.CSSProperties = {
 		display: 'grid',
@@ -288,7 +276,8 @@ export default function GridGeneratorPage() {
 		backgroundColor: 'hsl(var(--muted))',
 		borderRadius: '8px',
 		padding: '20px',
-		border: '2px dashed hsl(var(--border))'
+		border: '2px dashed hsl(var(--border))',
+		width: 'fit-content'
 	}
 
 	// Keyboard shortcuts - matching widgetShortcuts.ts configuration
@@ -311,7 +300,7 @@ export default function GridGeneratorPage() {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='space-y-3'>
-					<div className='grid grid-cols-2 gap-3'>
+					<div className='grid gap-3'>
 						<div className='space-y-1'>
 							{renderLabel('columns', 'grid-template-columns')}
 							<div className='flex gap-1'>
@@ -371,23 +360,20 @@ export default function GridGeneratorPage() {
 
 					<div className='space-y-1'>
 						<div className='flex items-center justify-between'>
-							{locale === 'ru' ? (
-								<div className='flex items-center gap-1'>
-									<Label className='text-xs'>gap</Label>
-									<TooltipProvider>
-										<Tooltip>
-											<TooltipTrigger asChild>
-												<HelpCircle className='h-3 w-3 text-muted-foreground' />
-											</TooltipTrigger>
-											<TooltipContent>
-												<p className='text-xs'>Отступ между элементами</p>
-											</TooltipContent>
-										</Tooltip>
-									</TooltipProvider>
-								</div>
-							) : (
-								<Label className='text-xs'>Отступ</Label>
-							)}
+							<div className='flex items-center gap-1'>
+								<Label className='text-xs'>gap</Label>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<HelpCircle className='h-3 w-3 text-muted-foreground' />
+										</TooltipTrigger>
+										<TooltipContent>
+											<p className='text-xs'>Отступ между элементами</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							</div>
+
 							<Switch
 								checked={useUniformGap}
 								onCheckedChange={setUseUniformGap}
@@ -523,11 +509,11 @@ export default function GridGeneratorPage() {
 			</Card>
 
 			{/* Preview */}
-			<Card className='lg:col-span-2'>
+			<Card className='overflow-hidden lg:col-span-2'>
 				<CardHeader>
 					<CardTitle>Превью</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className='overflow-scroll'>
 					<div style={containerStyle}>
 						{Array.from({ length: itemCount }).map((_, i) => (
 							<div
@@ -542,7 +528,7 @@ export default function GridGeneratorPage() {
 			</Card>
 
 			{/* Generated CSS */}
-			<Card className='lg:col-span-3'>
+			<Card className='lg:col-span-3 overflow-scroll'>
 				<CardHeader>
 					<CardTitle>Сгенерированный CSS</CardTitle>
 				</CardHeader>

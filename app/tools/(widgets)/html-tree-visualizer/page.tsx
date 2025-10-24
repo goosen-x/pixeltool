@@ -719,26 +719,32 @@ export default function HTMLTreePage() {
 			{/* Results Tabs */}
 			{treeData && (
 				<Tabs defaultValue='tree' className='w-full'>
-					<TabsList className='grid w-full grid-cols-4'>
-						<TabsTrigger value='tree' className='gap-2'>
-							<FileCode className='w-4 h-4' />
+					<TabsList className='grid w-full grid-cols-4 text-xs sm:text-sm gap-1 sm:gap-2'>
+						<TabsTrigger value='tree' className='gap-1 sm:gap-2'>
+							<FileCode className='w-4 h-4 hidden sm:inline-block' />
 							Дерево
 						</TabsTrigger>
-						<TabsTrigger value='headings' className='gap-2'>
-							<Hash className='w-4 h-4' />
+
+						<TabsTrigger value='headings' className='gap-1 sm:gap-2'>
+							<Hash className='w-4 h-4 hidden sm:inline-block' />
 							Заголовки
 						</TabsTrigger>
-						<TabsTrigger value='bem' className='gap-2 relative'>
-							<AlertTriangle className='w-4 h-4' />
+
+						<TabsTrigger value='bem' className='gap-1 sm:gap-2 relative'>
+							<AlertTriangle className='w-4 h-4 hidden sm:inline-block' />
 							БЭМ
 							{bemIssuesCount > 0 && (
-								<Badge variant='destructive' className='ml-1 h-5 text-xs'>
+								<Badge
+									variant='destructive'
+									className='ml-1 h-5 text-[10px] sm:text-xs'
+								>
 									{bemIssuesCount}
 								</Badge>
 							)}
 						</TabsTrigger>
-						<TabsTrigger value='stats' className='gap-2'>
-							<BarChart3 className='w-4 h-4' />
+
+						<TabsTrigger value='stats' className='gap-1 sm:gap-2'>
+							<BarChart3 className='w-4 h-4 hidden sm:inline-block' />
 							Статистика
 						</TabsTrigger>
 					</TabsList>

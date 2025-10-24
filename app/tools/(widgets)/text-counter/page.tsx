@@ -601,7 +601,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 									Очистить
 								</Button>
 							</div>
-							<div className='flex gap-2'>
+							<div className='flex flex-wrap gap-2'>
 								<Button
 									onClick={copyText}
 									variant='outline'

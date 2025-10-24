@@ -169,38 +169,38 @@ export default function SystemInfoPage() {
 				<TabsList className='grid grid-cols-5 w-full p-1 h-auto'>
 					<TabsTrigger
 						value='overview'
-						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground '
 					>
-						<Eye className='w-4 h-4 mr-2' />
+						<Eye className='w-4 h-4 mr-2 hidden md:inline' />
 						Обзор
 					</TabsTrigger>
 					<TabsTrigger
 						value='hardware'
 						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
 					>
-						<CircuitBoard className='w-4 h-4 mr-2' />
+						<CircuitBoard className='w-4 h-4 mr-2 hidden md:inline' />
 						Железо
 					</TabsTrigger>
 					<TabsTrigger
 						value='display'
 						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
 					>
-						<Monitor className='w-4 h-4 mr-2' />
+						<Monitor className='w-4 h-4 mr-2 hidden md:inline' />
 						Дисплей
 					</TabsTrigger>
 					<TabsTrigger
 						value='browser'
 						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
 					>
-						<Chrome className='w-4 h-4 mr-2' />
+						<Chrome className='w-4 h-4 mr-2 hidden md:inline' />
 						Браузер
 					</TabsTrigger>
 					<TabsTrigger
 						value='features'
 						className='data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
 					>
-						<Shield className='w-4 h-4 mr-2' />
-						Возможности
+						<Shield className='w-4 h-4 mr-2 hidden md:inline' />
+						Прочее
 					</TabsTrigger>
 				</TabsList>
 

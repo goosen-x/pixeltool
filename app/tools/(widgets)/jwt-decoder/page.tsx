@@ -441,7 +441,7 @@ export default function JWTDecoderPage() {
 				{/* Input */}
 				<div className='space-y-4'>
 					<Card className='p-6'>
-						<div className='flex items-center justify-between mb-4'>
+						<div className='flex flex-wrap items-center justify-between mb-4'>
 							<Label className='text-base'>JWT токен</Label>
 							<div className='flex items-center gap-2'>
 								{jwt && (
@@ -503,9 +503,9 @@ export default function JWTDecoderPage() {
 					{decoded ? (
 						<>
 							<Card className='p-6'>
-								<div className='flex items-center justify-between mb-4'>
+								<div className='flex flex-wrap items-center justify-between mb-4'>
 									<h3 className='font-semibold'>Результат декодирования</h3>
-									<div className='flex items-center gap-2'>
+									<div className='flex flex-wrap items-center gap-2'>
 										<Button
 											onClick={() =>
 												copyToClipboard(JSON.stringify(decoded, null, 2))
@@ -535,7 +535,7 @@ export default function JWTDecoderPage() {
 								<Tabs value={activeTab} onValueChange={setActiveTab}>
 									<TabsList className='grid w-full grid-cols-3'>
 										<TabsTrigger value='header'>Заголовок</TabsTrigger>
-										<TabsTrigger value='payload'>Полезная нагрузка</TabsTrigger>
+										<TabsTrigger value='payload'>Payload</TabsTrigger>
 										<TabsTrigger value='signature'>Подпись</TabsTrigger>
 									</TabsList>
 

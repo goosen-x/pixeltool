@@ -507,7 +507,7 @@ export default function JavaScriptSyntaxCheckerPage() {
 							value={mode}
 							onValueChange={(value: ParseMode) => setMode(value)}
 						>
-							<div className='grid grid-cols-4 gap-4'>
+							<div className='grid md:grid-cols-4 gap-4'>
 								<div
 									className={cn(
 										'relative flex items-center space-x-3 rounded-lg border p-3 cursor-pointer transition-colors',

@@ -419,31 +419,6 @@ export default function PasswordGeneratorPage() {
 		}
 	}
 
-	const clearHistory = () => {
-		setHistory([])
-		localStorage.removeItem('password-history')
-		toast.success('История очищена')
-	}
-
-	const downloadPasswords = () => {
-		const content = history
-			.map(
-				item =>
-					`${item.password}\t${item.strength}%\t${item.timestamp.toLocaleString()}`
-			)
-			.join('\n')
-
-		const blob = new Blob([content], { type: 'text/plain' })
-		const url = URL.createObjectURL(blob)
-		const a = document.createElement('a')
-		a.href = url
-		a.download = `passwords-${Date.now()}.txt`
-		a.click()
-		URL.revokeObjectURL(url)
-
-		toast.success('Пароли загружены')
-	}
-
 	const getStrengthColor = (score: number) => {
 		if (score >= 80) return 'from-green-500 to-emerald-500'
 		if (score >= 60) return 'from-yellow-500 to-amber-500'
@@ -495,7 +470,7 @@ export default function PasswordGeneratorPage() {
 												onClick={() => setMode(item.key as GeneratorMode)}
 												className='h-8 px-3 w-full text-xs'
 											>
-												<item.icon className='w-3.5 h-3.5 mr-1.5' />
+												<item.icon className='w-3.5 h-3.5 mr-1.5 hidden md:inline' />
 												{item.label}
 											</Button>
 										</div>
@@ -508,7 +483,7 @@ export default function PasswordGeneratorPage() {
 								{mode === 'random' && (
 									<div className='space-y-4'>
 										{/* Length, Characters and Advanced in one row */}
-										<div className='flex items-center gap-3'>
+										<div className='flex flex-wrap items-center gap-3'>
 											{/* Length Slider */}
 											<div className='flex items-center gap-2'>
 												<Label className='text-xs font-medium flex items-center gap-1.5 whitespace-nowrap'>
@@ -670,7 +645,7 @@ export default function PasswordGeneratorPage() {
 												<Sparkles className='w-3.5 h-3.5 text-muted-foreground' />
 												{'Шаблон'}
 											</Label>
-											<div className='flex gap-2 overflow-x-auto'>
+											<div className='flex flex-wrap gap-2 overflow-x-auto'>
 												{MEMORABLE_PATTERNS.map((pattern, index) => {
 													const isSelected = selectedPattern === index
 													return (
@@ -866,108 +841,6 @@ export default function PasswordGeneratorPage() {
 							</Button>
 						</CardContent>
 					</Card>
-
-					{/* History Section */}
-					{history.length > 0 && (
-						<Card className='bg-background/50 border-border/50'>
-							<CardContent className='p-6'>
-								<div className='flex items-center justify-between mb-4'>
-									<h3 className='font-semibold flex items-center gap-2'>
-										<Clock className='w-4 h-4' />
-										{'Недавние пароли'}
-									</h3>
-									<div className='flex gap-2'>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => setShowHistory(!showHistory)}
-											className='h-8'
-										>
-											{showHistory ? 'Скрыть' : 'Показать'}
-										</Button>
-										{showHistory && (
-											<>
-												<Button
-													size='sm'
-													variant='outline'
-													onClick={downloadPasswords}
-													className='h-8'
-												>
-													<Download className='w-3.5 h-3.5 mr-1' />
-													{'Скачать'}
-												</Button>
-												<Button
-													size='sm'
-													variant='outline'
-													onClick={clearHistory}
-													className='h-8'
-												>
-													<Trash2 className='w-3.5 h-3.5 mr-1' />
-													{'Очистить'}
-												</Button>
-											</>
-										)}
-									</div>
-								</div>
-
-								<AnimatePresence>
-									{showHistory && (
-										<motion.div
-											initial={{ height: 0, opacity: 0 }}
-											animate={{ height: 'auto', opacity: 1 }}
-											exit={{ height: 0, opacity: 0 }}
-											transition={{ duration: 0.3 }}
-											className='space-y-2 overflow-hidden'
-										>
-											{history.slice(0, 5).map((item, index) => (
-												<motion.div
-													key={index}
-													initial={{ opacity: 0, x: -20 }}
-													animate={{ opacity: 1, x: 0 }}
-													transition={{ delay: index * 0.05 }}
-													className='p-3 bg-background/50 rounded-lg flex items-center justify-between gap-4 group hover:bg-background/80 transition-colors cursor-pointer'
-													onClick={async () => {
-														await navigator.clipboard.writeText(item.password)
-														toast.success('Пароль скопирован')
-													}}
-												>
-													<div className='flex-1 min-w-0'>
-														<code className='font-mono text-sm'>
-															{showPassword ? item.password : '••••••••••••'}
-														</code>
-													</div>
-													<div className='flex items-center gap-3'>
-														<Badge
-															variant='outline'
-															className={cn(
-																'text-xs',
-																item.strength >= 80 &&
-																	'border-green-500/50 text-green-600',
-																item.strength >= 60 &&
-																	item.strength < 80 &&
-																	'border-yellow-500/50 text-yellow-600',
-																item.strength >= 40 &&
-																	item.strength < 60 &&
-																	'border-orange-500/50 text-orange-600',
-																item.strength < 40 &&
-																	'border-red-500/50 text-red-600'
-															)}
-														>
-															{item.strength}%
-														</Badge>
-														<span className='text-xs text-muted-foreground'>
-															{new Date(item.timestamp).toLocaleTimeString()}
-														</span>
-														<Copy className='w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity' />
-													</div>
-												</motion.div>
-											))}
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</CardContent>
-						</Card>
-					)}
 				</div>
 			</WidgetLayout>
 		</WidgetSEOWrapper>

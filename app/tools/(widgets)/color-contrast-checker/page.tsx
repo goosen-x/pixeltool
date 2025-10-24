@@ -364,7 +364,7 @@ export default function ColorContrastCheckerPage() {
 						</div>
 
 						{/* Actions */}
-						<div className='flex gap-2'>
+						<div className='flex flex-wrap gap-2'>
 							<Button onClick={swapColors} variant='outline' className='flex-1'>
 								<RefreshCw className='w-4 h-4 mr-2' />
 								Поменять местами
@@ -462,7 +462,7 @@ export default function ColorContrastCheckerPage() {
 							</div>
 						</div>
 
-						<div className='flex gap-2 pt-2'>
+						<div className='flex flex-wrap gap-2 pt-2'>
 							<Button
 								onClick={copyResults}
 								variant='outline'

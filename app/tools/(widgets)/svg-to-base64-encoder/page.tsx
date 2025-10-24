@@ -292,10 +292,10 @@ export default function SVGEncoderPage() {
 			{(encodedResult || cssResult || tailwindResult) && (
 				<Card>
 					<CardHeader>
-						<div className='flex items-center justify-between'>
+						<div className='flex flex-wrap gap-2 items-center justify-between'>
 							<CardTitle>Результат</CardTitle>
 							{activeTab !== 'tailwind' && (
-								<div className='flex items-center gap-4'>
+								<div className='flex flex-wrap items-center gap-4'>
 									<Label className='text-sm'>Кавычки:</Label>
 									<RadioGroup
 										value={quotes}

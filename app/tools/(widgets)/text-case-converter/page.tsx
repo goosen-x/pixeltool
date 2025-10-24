@@ -187,7 +187,7 @@ export default function TextCaseConverterPage() {
 				{/* Input Area */}
 				<Card>
 					<CardHeader>
-						<CardTitle className='flex items-center justify-between'>
+						<CardTitle className='flex flex-wrap gap-2 items-center justify-between'>
 							<span className='flex items-center gap-2'>
 								<Sparkles className='w-5 h-5 text-primary' />
 								{'Мгновенное преобразование'}
@@ -245,7 +245,7 @@ export default function TextCaseConverterPage() {
 								{'Очистить'}
 							</Button>
 
-							<div className='ml-auto flex gap-2'>
+							<div className='ml-auto flex flex-wrap gap-2'>
 								<Button
 									onClick={copyAllResults}
 									variant='outline'
@@ -253,7 +253,7 @@ export default function TextCaseConverterPage() {
 									disabled={!input}
 								>
 									<Copy className='w-4 h-4 mr-2' />
-									{'Копировать'} {'Все категории'}
+									{'Копировать'}
 								</Button>
 
 								<Button

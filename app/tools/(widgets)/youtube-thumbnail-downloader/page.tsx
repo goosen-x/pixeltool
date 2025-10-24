@@ -141,16 +141,16 @@ export default function YouTubeThumbnailPage() {
 						>
 							Введите ссылку YouTube
 						</Label>
-						<div className='flex gap-2'>
+						<Input
+							id='youtube-url'
+							type='text'
+							value={url}
+							onChange={e => handleUrlChange(e.target.value)}
+							placeholder='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+							className='flex-1'
+						/>
+						<div className='flex flex-wrap gap-2'>
 							<div className='flex-1 flex gap-2'>
-								<Input
-									id='youtube-url'
-									type='text'
-									value={url}
-									onChange={e => handleUrlChange(e.target.value)}
-									placeholder='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-									className='flex-1'
-								/>
 								{videoId && (
 									<div className='flex items-center gap-2 px-3 bg-muted/50 rounded-md'>
 										<Youtube className='w-4 h-4 text-red-500' />

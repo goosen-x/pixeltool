@@ -140,12 +140,8 @@ export default function TeamRandomizerPage() {
 
 		const generatedTeams = distributeIntoTeams(participants, teamsToCreate)
 		setTeams(generatedTeams)
-		toast.success(
-			locale === 'ru'
-				? `Создано ${generatedTeams.length} команд!`
-				: `Generated ${generatedTeams.length} teams!`
-		)
-	}, [participants, numberOfTeams, preferredTeamSize, locale, validateInputs])
+		toast.success(`Создано ${generatedTeams.length} команд!`)
+	}, [participants, numberOfTeams, preferredTeamSize, validateInputs])
 
 	// Reset all inputs
 	const resetAll = useCallback(() => {
@@ -154,8 +150,8 @@ export default function TeamRandomizerPage() {
 		setPreferredTeamSize('')
 		setTeams([])
 		setErrors([])
-		toast.success(locale === 'ru' ? 'Все поля сброшены' : 'All fields reset')
-	}, [locale])
+		toast.success('Все поля сброшены')
+	}, [])
 
 	// Copy teams to clipboard
 	const copyTeamsToClipboard = useCallback(() => {
@@ -164,17 +160,13 @@ export default function TeamRandomizerPage() {
 		const teamsText = teams
 			.map(
 				team =>
-					`${locale === 'ru' ? 'Команда' : 'Team'} ${team.name}:\n${team.members.map(member => `- ${member}`).join('\n')}`
+					`Команда ${team.name}:\n${team.members.map(member => `- ${member}`).join('\n')}`
 			)
 			.join('\n\n')
 
 		navigator.clipboard.writeText(teamsText)
-		toast.success(
-			locale === 'ru'
-				? 'Команды скопированы в буфер обмена'
-				: 'Teams copied to clipboard'
-		)
-	}, [teams, locale])
+		toast.success('Команды скопированы в буфер обмена')
+	}, [teams])
 
 	// Export teams as text file
 	const exportTeams = () => {
@@ -196,7 +188,7 @@ export default function TeamRandomizerPage() {
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-		toast.success('Teams exported as file')
+		toast.success('Команды экспортированы в файл')
 	}
 
 	// Keyboard shortcuts
@@ -208,7 +200,7 @@ export default function TeamRandomizerPage() {
 					{/* Left Column - Input */}
 					<div>
 						{/* Header with participant count */}
-						<div className='flex items-center justify-between mb-4'>
+						<div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3'>
 							<div className='flex items-center gap-2'>
 								<Users className='w-5 h-5 text-muted-foreground' />
 								<h2 className='text-lg font-semibold'>Список участников</h2>
@@ -236,6 +228,7 @@ export default function TeamRandomizerPage() {
 
 						{/* Participants Input */}
 						<Textarea
+							id='members'
 							placeholder='Введите имена участников (по одному на строку)'
 							value={participantsInput}
 							onChange={e => setParticipantsInput(e.target.value)}
@@ -281,7 +274,7 @@ export default function TeamRandomizerPage() {
 										className='w-full'
 									/>
 									<p className='text-xs text-muted-foreground'>
-										Оставьте пустым для автоматического распределения
+										Оставьте пустым для автораспределения
 									</p>
 								</div>
 							</div>

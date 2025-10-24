@@ -95,16 +95,6 @@ body {
 	font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace !important;
 }
 
-/* Smooth theme transitions */
-html {
-	@apply transition-colors duration-300 ease-in-out;
-}
-
-/* Hover transitions */
-* {
-	@apply transition-colors duration-200;
-}
-
 button,
 a {
 	@apply transition-all duration-200;

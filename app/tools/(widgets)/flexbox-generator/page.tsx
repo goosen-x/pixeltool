@@ -136,11 +136,7 @@ export default function FlexboxGeneratorPage() {
 			await navigator.clipboard.writeText(generateCSS())
 			setCopiedCSS(true)
 			setTimeout(() => setCopiedCSS(false), 2000)
-			toast.success(
-				locale === 'ru'
-					? 'CSS код скопирован в буфер обмена'
-					: 'CSS code copied to clipboard'
-			)
+			toast.success('CSS код скопирован в буфер обмена')
 		} catch (err) {
 			toast.error('Ошибка копирования')
 		}
@@ -151,11 +147,7 @@ export default function FlexboxGeneratorPage() {
 			await navigator.clipboard.writeText(generateTailwind())
 			setCopiedTailwind(true)
 			setTimeout(() => setCopiedTailwind(false), 2000)
-			toast.success(
-				locale === 'ru'
-					? 'Tailwind классы скопированы в буфер обмена'
-					: 'Tailwind classes copied to clipboard'
-			)
+			toast.success('Tailwind классы скопированы в буфер обмена')
 		} catch (err) {
 			toast.error('Ошибка копирования')
 		}
@@ -165,36 +157,24 @@ export default function FlexboxGeneratorPage() {
 		setProps(defaultProps)
 		setItemCount(3)
 		setShowItemNumbers(true)
-		toast.success(locale === 'ru' ? 'Настройки сброшены' : 'Settings reset')
+		toast.success('Настройки сброшены')
 	}, [locale])
 
 	const addItem = useCallback(() => {
 		if (itemCount < 12) {
 			setItemCount(prev => prev + 1)
-			toast.info(
-				locale === 'ru'
-					? `Добавлен элемент ${itemCount + 1}`
-					: `Added item ${itemCount + 1}`
-			)
+			toast.info(`Added item ${itemCount + 1}`)
 		}
 	}, [itemCount, locale])
 
 	const removeItem = useCallback(() => {
 		if (itemCount > 1) {
 			setItemCount(prev => prev - 1)
-			toast.info(
-				locale === 'ru'
-					? `Удален элемент ${itemCount}`
-					: `Removed item ${itemCount}`
-			)
+			toast.info(`Removed item ${itemCount}`)
 		}
 	}, [itemCount, locale])
 
 	const renderLabel = (key: string, englishLabel: string) => {
-		if (locale !== 'ru') {
-			return <Label className='text-xs'>{englishLabel}</Label>
-		}
-
 		return (
 			<div className='flex items-center gap-1'>
 				<Label className='text-xs'>{englishLabel}</Label>
@@ -225,10 +205,9 @@ export default function FlexboxGeneratorPage() {
 		borderRadius: '8px',
 		padding: '20px',
 		border: '2px dashed hsl(var(--border))',
-		overflow: 'hidden'
+		width: 'fit-content'
 	}
 
-	// Keyboard shortcuts
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<div className='grid gap-6 lg:grid-cols-3'>
@@ -361,23 +340,20 @@ export default function FlexboxGeneratorPage() {
 
 						<div className='grid grid-cols-2 gap-3'>
 							<div className='space-y-1'>
-								{locale === 'ru' ? (
-									<div className='flex items-center gap-1'>
-										<Label className='text-xs'>gap: {props.gap}px</Label>
-										<TooltipProvider>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<HelpCircle className='h-3 w-3 text-muted-foreground' />
-												</TooltipTrigger>
-												<TooltipContent>
-													<p className='text-xs'>Отступ между элементами</p>
-												</TooltipContent>
-											</Tooltip>
-										</TooltipProvider>
-									</div>
-								) : (
-									<Label className='text-xs'>Отступ: {props.gap}px</Label>
-								)}
+								<div className='flex items-center gap-1'>
+									<Label className='text-xs'>gap: {props.gap}px</Label>
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<HelpCircle className='h-3 w-3 text-muted-foreground' />
+											</TooltipTrigger>
+											<TooltipContent>
+												<p className='text-xs'>Отступ между элементами</p>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
+
 								<Slider
 									value={[props.gap]}
 									onValueChange={([value]) => updateProp('gap', value)}
@@ -404,11 +380,11 @@ export default function FlexboxGeneratorPage() {
 				</Card>
 
 				{/* Preview */}
-				<Card className='lg:col-span-2'>
+				<Card className='overflow-hidden lg:col-span-2'>
 					<CardHeader>
 						<CardTitle>Превью</CardTitle>
 					</CardHeader>
-					<CardContent>
+					<CardContent className='overflow-scroll'>
 						<div style={containerStyle}>
 							{Array.from({ length: itemCount }).map((_, i) => (
 								<div

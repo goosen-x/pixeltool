@@ -449,7 +449,7 @@ export default function Base64EncoderPage() {
 				{/* Plain Text Section */}
 				<Card>
 					<CardHeader className='pb-4'>
-						<div className='flex items-center justify-between'>
+						<div className='flex flex-wrap gap-2 items-center justify-between'>
 							<CardTitle className='text-lg flex items-center gap-2'>
 								<FileText className='w-5 h-5' />
 								Обычный текст
@@ -502,7 +502,7 @@ export default function Base64EncoderPage() {
 				{/* Base64 Section */}
 				<Card>
 					<CardHeader className='pb-4'>
-						<div className='flex items-center justify-between'>
+						<div className='flex flex-wrap gap-2 items-center justify-between'>
 							<CardTitle
 								className={cn(
 									'text-lg flex items-center gap-2',
@@ -608,7 +608,7 @@ export default function Base64EncoderPage() {
 			{history.length > 0 && (
 				<Card>
 					<CardHeader>
-						<div className='flex items-center justify-between'>
+						<div className='flex flex-wrap gap-2 items-center justify-between'>
 							<CardTitle className='text-lg flex items-center gap-2'>
 								<History className='w-5 h-5' />
 								История

@@ -221,18 +221,11 @@ export const viewport = {
 }
 
 export default async function RootLayout({ children }: Readonly<Props>) {
-	const locale = 'ru' // Only Russian locale now
-
-	// if (!dev) console.log = () => undefined
-	console.log(
-		'env',
-		!!process.env.TELEGRAM_BOT_TOKEN,
-		!!process.env.TELEGRAM_CHAT_ID
-	)
+	if (!dev) console.log = () => undefined
 
 	return (
 		<html
-			lang={locale}
+			lang='ru'
 			className={cn(
 				'scroll-smooth scroll-pt-24',
 				interFont.variable,

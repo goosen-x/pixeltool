@@ -389,7 +389,7 @@ export default function BezierCurvePage() {
 			{/* Main Editor Card */}
 			<Card>
 				<CardHeader className='pb-4'>
-					<div className='flex items-start justify-between'>
+					<div className='flex-col md:flex-row gap-2 flex items-start justify-between'>
 						<div>
 							<CardTitle className='text-2xl'>Генератор кривых Безье</CardTitle>
 							<CardDescription className='mt-2'>

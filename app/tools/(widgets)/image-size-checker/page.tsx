@@ -214,7 +214,7 @@ export default function ImageSizeCheckerPage() {
 
 			{images.length > 0 && (
 				<>
-					<div className='flex justify-between items-center my-6'>
+					<div className='flex flex-wrap justify-between items-center my-6'>
 						<h2 className='text-2xl font-bold'>Результаты ({images.length})</h2>
 						<div className='flex gap-2'>
 							<Button onClick={exportData} variant='outline'>
