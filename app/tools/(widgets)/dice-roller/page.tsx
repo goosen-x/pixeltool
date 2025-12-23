@@ -485,9 +485,12 @@ export default function DiceRollerPage() {
 											cy='50%'
 											innerRadius={40}
 											outerRadius={70}
-											label={({ name, percentage }) =>
-												percentage > 0 ? `${percentage}%` : ''
-											}
+											label={props => {
+												const percentage = props.payload?.percentage
+												return percentage && percentage > 0
+													? `${percentage}%`
+													: ''
+											}}
 											labelLine={false}
 										>
 											{[1, 2, 3, 4, 5, 6].map((num, index) => (

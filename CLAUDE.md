@@ -1,7 +1,15 @@
 # CLAUDE.md
 
-делай в режиме паранойи This file provides comprehensive guidance to Claude Code
-(claude.ai/code) for senior-level development on this repository.
+**ВАЖНО: Делай в режиме паранойи!**
+
+This file provides comprehensive guidance to Claude Code (claude.ai/code) for
+senior-level development on this repository.
+
+**Контекст проекта**: PixelTool - это платформа с онлайн-инструментами
+(widgets/tools) для разработчиков и дизайнеров. Это НЕ портфолио, а коллекция
+профессиональных веб-инструментов.
+
+**Язык**: Весь контент сайта должен быть на русском языке.
 
 ## 🚀 Quick Start Commands
 
@@ -30,19 +38,29 @@ yarn tsx lib/scripts/check-supabase.ts    # Verify DB connection
 ### Project Structure
 
 ```
-portfolio/
+pixeltool/
 ├── app/                 # Next.js App Router
-│   ├── (main)/          # Homepage routes
-│   ├── (tools)/         # Widget/tool routes
-│   └── (other)/         # Blog, contact, etc.
+│   ├── page.tsx         # Homepage
+│   ├── tools/           # Widget/tool pages
+│   │   └── (widgets)/   # Individual widget pages
+│   ├── blog/            # Blog pages
+│   ├── contact/         # Contact page
+│   └── settings/        # Settings page
 ├── components/          # React components
 │   ├── widgets/         # Reusable widget components
 │   ├── ui/              # shadcn/ui components
-│   └── global/          # App-wide components
+│   ├── global/          # App-wide components
+│   └── homepage/        # Homepage-specific components
 ├── lib/                 # Core utilities
+│   ├── constants/       # Constants and configurations
+│   │   └── widgets/     # Widget definitions by category
 │   ├── hooks/           # Custom React hooks
 │   ├── utils/           # Helper functions
-│   └── db/              # Database layer
+│   ├── db/              # Database layer (Supabase)
+│   ├── types/           # TypeScript types
+│   └── seo/             # SEO utilities
+├── public/              # Static assets
+└── docs/                # Project documentation
 ```
 
 ### Critical Architectural Decisions
@@ -304,4 +322,10 @@ This configuration ensures your development workflow meets senior-level
 standards with automated quality checks, comprehensive validation, and best
 practices enforcement.
 
-- укажи что сайт должен быть на русском языке
+## 🌐 Язык и Локализация
+
+- **Весь контент на русском языке**: Все тексты, описания, заголовки должны быть
+  на русском
+- **Метаданные**: title, description, keywords - всё на русском
+- **Комментарии в коде**: могут быть на английском для поддержания стандартов
+- **Переменные и функции**: используем английский (стандарт разработки)

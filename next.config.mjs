@@ -4,17 +4,14 @@ import { SEO_REDIRECTS } from './lib/seo/seo-redirects.mjs'
 
 const nextConfig = {
 	output: 'standalone',
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
 	images: {
-		domains: [
-			'lh3.googleusercontent.com',
-			'pbs.twimg.com',
-			'images.unsplash.com',
-			'img.youtube.com',
-			'www.codewars.com'
-		]
+		remotePatterns: [
+			{ protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+			{ protocol: 'https', hostname: 'pbs.twimg.com' },
+			{ protocol: 'https', hostname: 'images.unsplash.com' },
+			{ protocol: 'https', hostname: 'img.youtube.com' },
+			{ protocol: 'https', hostname: 'www.codewars.com' },
+		],
 	},
 	// SEO Redirects - захват 5.7M поисковых запросов/месяц
 	// "рассчитать" (4.1M) + "посчитать" (1.6M) + синонимы

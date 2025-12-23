@@ -16,7 +16,11 @@ export const ProjectsLeftSidebar = ({ onLinkClick }: Props = {}) => {
 
 	const toggleCategory = (key: string) => {
 		const next = new Set(collapsed)
-		next.has(key) ? next.delete(key) : next.add(key)
+		if (next.has(key)) {
+			next.delete(key)
+		} else {
+			next.add(key)
+		}
 		setCollapsed(next)
 	}
 

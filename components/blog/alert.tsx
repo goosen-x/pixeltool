@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { EXAMPLE_PATH } from '@/lib/constants/blog'
 import { cn } from '@/lib/utils'
 
@@ -17,12 +18,12 @@ const Alert = ({ preview }: Props) => {
 				{preview ? (
 					<>
 						This page is a preview.{' '}
-						<a
+						<Link
 							href='/api/exit-preview'
 							className='underline hover:text-teal-300 duration-200 transition-colors'
 						>
 							Click here
-						</a>{' '}
+						</Link>{' '}
 						to exit preview mode.
 					</>
 				) : (
