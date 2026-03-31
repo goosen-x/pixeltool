@@ -1265,7 +1265,7 @@ pre[class*='language-'] {
 	font-size: 72px;
 	font-weight: bold;
 	font-family:
-		'Anton',
+		var(--font-anton),
 		system-ui,
 		-apple-system,
 		sans-serif;
@@ -1306,7 +1306,7 @@ pre[class*='language-'] {
 	font-size: 72px;
 	font-weight: bold;
 	font-family:
-		'Anton',
+		var(--font-anton),
 		system-ui,
 		-apple-system,
 		sans-serif;
@@ -1344,7 +1344,7 @@ pre[class*='language-'] {
 	font-size: 72px;
 	font-weight: bold;
 	font-family:
-		'Anton',
+		var(--font-anton),
 		system-ui,
 		-apple-system,
 		sans-serif;
@@ -1377,7 +1377,7 @@ pre[class*='language-'] {
 	font-size: 72px;
 	font-weight: bold;
 	font-family:
-		'Anton',
+		var(--font-anton),
 		system-ui,
 		-apple-system,
 		sans-serif;
@@ -1411,9 +1411,6 @@ pre[class*='language-'] {
 .flip-separator-small .flip-separator-dot {
 	@apply w-2 h-2 md:w-3 md:h-3;
 }
-
-/* Import Anton font for authentic flip clock look */
-@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
 /* Simple Flip Clock Styles */
 .flip-clock-simple-container {

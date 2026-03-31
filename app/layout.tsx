@@ -16,7 +16,7 @@ import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
 import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregister'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
-import { interFont, openSansFont } from '@/lib/fonts/fonts'
+import { antonFont, interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
 
@@ -229,7 +229,8 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 			className={cn(
 				'scroll-smooth scroll-pt-24',
 				interFont.variable,
-				openSansFont.variable
+				openSansFont.variable,
+				antonFont.variable
 			)}
 			suppressHydrationWarning
 		>

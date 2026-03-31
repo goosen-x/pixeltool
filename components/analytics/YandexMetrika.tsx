@@ -3,7 +3,7 @@
 import Script from 'next/script'
 
 const YandexMetrika = () => {
-	const metrikaId = '104375383'
+	const metrikaId = '108318042'
 	const isDevelopment = process.env.NODE_ENV === 'development'
 
 	// Don't load Yandex Metrika in development mode
@@ -30,6 +30,8 @@ const YandexMetrika = () => {
 							webvisor:true,
 							clickmap:true,
 							ecommerce:"dataLayer",
+							referrer: document.referrer,
+							url: location.href,
 							accurateTrackBounce:true,
 							trackLinks:true
 						});
