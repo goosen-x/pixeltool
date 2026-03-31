@@ -1,4 +1,5 @@
-import { SiGithub, SiLinkedin } from 'react-icons/si'
+import { SiGithub } from 'react-icons/si'
+import { Linkedin } from 'lucide-react'
 import { RiTwitterXFill } from 'react-icons/ri'
 import { BiLogoTelegram } from 'react-icons/bi'
 
@@ -21,7 +22,7 @@ export const socials = [
 	},
 	{
 		name: 'LinkedIn',
-		icon: <SiLinkedin />,
+		icon: <Linkedin />,
 		href: 'https://www.linkedin.com/in/dmitry-borisenko-9a8144128/'
 	}
 ]

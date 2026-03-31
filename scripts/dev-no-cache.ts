@@ -18,7 +18,7 @@ try {
 // 2. Регенерация типов
 console.log('🔨 Regenerating translation types...')
 try {
-	execSync('yarn generate:types', { stdio: 'inherit' })
+	execSync('pnpm generate:types', { stdio: 'inherit' })
 	console.log('✅ Types regenerated')
 } catch (error) {
 	console.error('❌ Error regenerating types:', error)

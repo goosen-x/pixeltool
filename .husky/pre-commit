@@ -25,7 +25,7 @@ echo "✅ TypeScript type check passed!"
 
 # Security checks (блокирует критические уязвимости)
 echo "🔒 Running security checks..."
-npm run check:security
+pnpm run check:security
 
 if [ $? -ne 0 ]; then
   echo "❌ Critical security issues found. Please fix before committing."
@@ -66,11 +66,11 @@ echo "🎯 Widget standards check temporarily disabled for this commit"
 
 # Run linting with auto-fix attempts
 echo "🔍 Final ESLint check..."
-npm run lint
+pnpm run lint
 
 # Check build (проверяем что проект собирается)
 # echo "🏗️  Testing build process..."
-# npm run build
+# pnpm run build
 
 # if [ $? -ne 0 ]; then
 #   echo "❌ Build failed. Please fix build errors before committing."
@@ -82,11 +82,11 @@ echo "⚠️  Build check temporarily disabled for this commit"
 
 # Bundle size check (предупреждение)
 echo "📦 Checking bundle size..."
-npm run check:bundle || echo "⚠️  Bundle size check failed, but allowing commit"
+pnpm run check:bundle || echo "⚠️  Bundle size check failed, but allowing commit"
 
 # Import optimization check
 echo "📄 Checking imports..."
-npm run check:imports || echo "⚠️  Import issues found, but allowing commit"
+pnpm run check:imports || echo "⚠️  Import issues found, but allowing commit"
 
 echo ""
 echo "🎉 All senior-level checks passed!"

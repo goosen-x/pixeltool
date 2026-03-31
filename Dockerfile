@@ -1,24 +1,19 @@
 # Multi-stage build for production optimization
 FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat python3 make g++
+RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
 WORKDIR /app
 
-# Copy package files and other necessary config
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-COPY .npmrc* ./
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies with increased network timeout
-ENV YARN_NETWORK_TIMEOUT=600000
-RUN \
-  if [ -f yarn.lock ]; then yarn install --frozen-lockfile --network-timeout 600000; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -33,7 +28,7 @@ ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder_key
 ENV DATABASE_URL=postgresql://user:pass@localhost/db
 
 # Build the application
-RUN yarn build
+RUN pnpm build
 
 # Production image, copy all the files and run next
 FROM node:20-alpine AS runner

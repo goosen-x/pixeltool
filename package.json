@@ -3,13 +3,12 @@
 	"version": "0.1.0",
 	"private": true,
 	"engines": {
-		"node": ">=18.0.0",
-		"yarn": ">=1.22.0",
-		"npm": "please-use-yarn"
+		"node": ">=18.0.0"
 	},
+	"packageManager": "pnpm@9.9.0",
 	"scripts": {
 		"dev": "next dev",
-		"dev:clean": "rm -rf .next && yarn dev",
+		"dev:clean": "rm -rf .next && pnpm dev",
 		"dev:no-cache": "npx tsx scripts/dev-no-cache.ts",
 		"build": "next build",
 		"start": "next start",
@@ -26,7 +25,7 @@
 		"check:bundle": "npx tsx scripts/check-bundle-size.ts",
 		"check:performance": "npx tsx scripts/check-performance.ts",
 		"check:accessibility": "npx tsx scripts/check-accessibility.ts",
-		"check:all": "yarn run check:security && yarn run check:imports && yarn run check:bundle && yarn run check:performance && yarn run check:accessibility",
+		"check:all": "pnpm run check:security && pnpm run check:imports && pnpm run check:bundle && pnpm run check:performance && pnpm run check:accessibility",
 		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"typecheck": "tsc --noEmit",
