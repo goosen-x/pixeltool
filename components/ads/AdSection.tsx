@@ -29,8 +29,8 @@ export function AdSection() {
 			window.yaContextCb.push(() => {
 				if (window.Ya?.Context?.AdvManager) {
 					window.Ya.Context.AdvManager.render({
-						blockId: 'R-A-17015351-1',
-						renderTo: 'yandex_rtb_R-A-17015351-1'
+						blockId: 'R-A-19531689-1',
+						renderTo: 'yandex_rtb_R-A-19531689-1'
 					})
 				}
 			})
@@ -39,7 +39,7 @@ export function AdSection() {
 
 	return (
 		<div
-			id='yandex_rtb_R-A-17015351-1'
+			id='yandex_rtb_R-A-19531689-1'
 			className='w-full min-h-[250px] flex items-center justify-center'
 		>
 			<div className='text-center p-4'>

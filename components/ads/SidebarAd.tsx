@@ -22,8 +22,8 @@ export function SidebarAd() {
 			window.yaContextCb.push(() => {
 				if (window.Ya?.Context?.AdvManager) {
 					window.Ya.Context.AdvManager.render({
-						blockId: 'R-A-17015351-1',
-						renderTo: 'yandex_rtb_R-A-17015351-1'
+						blockId: 'R-A-19531689-1',
+						renderTo: 'yandex_rtb_R-A-19531689-1'
 					})
 				}
 			})
@@ -32,8 +32,8 @@ export function SidebarAd() {
 
 	return (
 		<div className='sidebar-ad-container'>
-			{/* Yandex.RTB R-A-17015351-1 */}
-			<div id='yandex_rtb_R-A-17015351-1' className='sidebar-ad mx-auto' />
+			{/* Yandex.RTB R-A-19531689-1 */}
+			<div id='yandex_rtb_R-A-19531689-1' className='sidebar-ad mx-auto' />
 			<style jsx>{`
 				.sidebar-ad-container {
 					width: 100%;
