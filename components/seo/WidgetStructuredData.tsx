@@ -57,29 +57,6 @@ export function WidgetStructuredData({
 		url: url,
 		name: `${title} - Online Tool`,
 		description: description,
-		breadcrumb: {
-			'@type': 'BreadcrumbList',
-			itemListElement: [
-				{
-					'@type': 'ListItem',
-					position: 1,
-					name: 'Home',
-					item: baseUrl
-				},
-				{
-					'@type': 'ListItem',
-					position: 2,
-					name: 'Tools',
-					item: `${baseUrl}/tools`
-				},
-				{
-					'@type': 'ListItem',
-					position: 3,
-					name: title,
-					item: url
-				}
-			]
-		},
 		mainEntity: {
 			'@id': url
 		},

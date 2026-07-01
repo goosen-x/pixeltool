@@ -7,6 +7,7 @@ import { PostBodyWithHighlight } from '@/components/blog/post-body-with-highligh
 import { PostHeader } from '@/components/blog/post-header'
 import { Footer } from '@/components/layout'
 import Script from 'next/script'
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 
 export default async function Post(props: Params) {
 	const params = await props.params
@@ -54,31 +55,6 @@ export default async function Post(props: Params) {
 		inLanguage: 'ru-RU'
 	}
 
-	const breadcrumbData = {
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{
-				'@type': 'ListItem',
-				position: 1,
-				name: 'Главная',
-				item: baseUrl
-			},
-			{
-				'@type': 'ListItem',
-				position: 2,
-				name: 'Блог',
-				item: `${baseUrl}/blog`
-			},
-			{
-				'@type': 'ListItem',
-				position: 3,
-				name: post.title,
-				item: articleUrl
-			}
-		]
-	}
-
 	return (
 		<>
 			<Script
@@ -88,14 +64,14 @@ export default async function Post(props: Params) {
 					__html: JSON.stringify(structuredData)
 				}}
 			/>
-			<Script
-				id='breadcrumb-structured-data'
-				type='application/ld+json'
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(breadcrumbData)
-				}}
-			/>
 			<main>
+				<Breadcrumbs
+					items={[
+						{ name: 'Главная', url: '/' },
+						{ name: 'Блог', url: '/blog' },
+						{ name: post.title, url: `/blog/${post.slug}` }
+					]}
+				/>
 				{/* <Alert preview={post.preview} /> */}
 				<article className='mb-32'>
 					<PostHeader
