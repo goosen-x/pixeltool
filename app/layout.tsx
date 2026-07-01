@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
 			'Бесплатная коллекция 52+ профессиональных онлайн-инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Работает офлайн. Без регистрации.'
 	}
 	// Жестко задаем URL для Open Graph, так как env переменные могут не работать корректно
-	const siteUrl = 'https://pxtool.ru'
+	const siteUrl = 'https://pixeltool.pro'
 
 	// Shorten title and description for OG tags
 	const ogTitle = currentMetadata.title.default.slice(0, 60)
@@ -81,14 +81,14 @@ export async function generateMetadata(): Promise<Metadata> {
 			siteName: 'PixelTool',
 			images: [
 				{
-					url: `https://pxtool.ru/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
+					url: `https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
 					width: 1200,
 					height: 630,
 					alt: 'PixelTool - Professional Developer Tools',
 					type: 'image/png'
 				},
 				{
-					url: 'https://pxtool.ru/og-image.png',
+					url: 'https://pixeltool.pro/og-image.png',
 					width: 1024,
 					height: 1024,
 					alt: 'PixelTool - Online tools for developers',
@@ -101,15 +101,15 @@ export async function generateMetadata(): Promise<Metadata> {
 			title: ogTitle,
 			description: ogDescription,
 			images: [
-				'https://pxtool.ru/og-image.png',
-				`https://pxtool.ru/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`
+				'https://pixeltool.pro/og-image.png',
+				`https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`
 			],
 			creator: '@pixeltool',
 			site: '@pixeltool'
 		},
 		other: {
 			// VK
-			'vk:image': 'https://pxtool.ru/og-image.png',
+			'vk:image': 'https://pixeltool.pro/og-image.png',
 			// Mobile indicators for Yandex
 			'mobile-web-app-capable': 'yes',
 			HandheldFriendly: 'true',

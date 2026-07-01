@@ -4,7 +4,7 @@ export function HomePageStructuredData() {
 		'@type': 'WebApplication',
 		name: 'PixelTool',
 		alternateName: 'PixelTool Developer Tools',
-		url: 'https://pxtool.ru',
+		url: 'https://pixeltool.pro',
 		description:
 			'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики, валидаторы и более 50 утилит. Без установки, 100% бесплатно.',
 		applicationCategory: 'DeveloperApplication',
@@ -24,7 +24,7 @@ export function HomePageStructuredData() {
 			name: 'PixelTool',
 			logo: {
 				'@type': 'ImageObject',
-				url: 'https://pxtool.ru/logo.png'
+				url: 'https://pixeltool.pro/logo.png'
 			}
 		},
 		potentialAction: [
@@ -32,7 +32,7 @@ export function HomePageStructuredData() {
 				'@type': 'UseAction',
 				target: {
 					'@type': 'EntryPoint',
-					urlTemplate: 'https://pxtool.ru/tools/{tool_name}',
+					urlTemplate: 'https://pixeltool.pro/tools/{tool_name}',
 					actionPlatform: [
 						'http://schema.org/DesktopWebPlatform',
 						'http://schema.org/MobileWebPlatform'
@@ -53,7 +53,7 @@ export function HomePageStructuredData() {
 		screenshot: [
 			{
 				'@type': 'ImageObject',
-				url: 'https://pxtool.ru/screenshots/tools-page.png',
+				url: 'https://pixeltool.pro/screenshots/tools-page.png',
 				caption: 'PixelTool Tools Collection'
 			}
 		]

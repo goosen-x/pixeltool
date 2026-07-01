@@ -150,7 +150,7 @@ export function getBaseUrl(): string {
 	}
 
 	// Fallback
-	return 'https://pxtool.ru'
+	return 'https://pixeltool.pro'
 }
 
 // Generate full URL with UTM parameters

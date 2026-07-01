@@ -10,7 +10,7 @@ export function ToolsListingStructuredData({
 	locale,
 	totalTools
 }: ToolsListingStructuredDataProps) {
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools`
 
 	// CollectionPage schema for tools listing
@@ -84,7 +84,7 @@ export function ToolsListingStructuredData({
 			width: 512,
 			height: 512
 		},
-		sameAs: ['https://github.com/dmitriyborisenko', 'https://pxtool.ru'],
+		sameAs: ['https://github.com/dmitriyborisenko', 'https://pixeltool.pro'],
 		founder: {
 			'@type': 'Person',
 			name: 'Dmitry Borisenko',

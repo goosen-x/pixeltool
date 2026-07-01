@@ -180,7 +180,7 @@ export async function GET(request: NextRequest) {
 						color: '#64748b'
 					}}
 				>
-					pxtool.ru
+					pixeltool.pro
 				</div>
 			</div>,
 			{

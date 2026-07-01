@@ -486,7 +486,7 @@ export default function OpenGraphValidatorPage() {
 						<div className='flex flex-wrap gap-2 mt-2'>
 							<Button
 								onClick={() =>
-									widget.updateInput('url', 'https://pxtool.ru')
+									widget.updateInput('url', 'https://pixeltool.pro')
 								}
 								variant='outline'
 							>

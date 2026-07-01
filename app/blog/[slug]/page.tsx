@@ -17,7 +17,7 @@ export default async function Post(props: Params) {
 	}
 
 	const content = await markdownToHtml(post.content || '')
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const articleUrl = `${baseUrl}/blog/${post.slug}`
 
 	// JSON-LD structured data for SEO
@@ -131,7 +131,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 		}
 	}
 
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const articleUrl = `${baseUrl}/blog/${post.slug}`
 	const title = `${post.title} | PixelTool`
 	const imageUrl = post.coverImage

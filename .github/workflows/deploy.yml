@@ -79,7 +79,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
           DATABASE_URL=${DATABASE_URL}
           NEXT_PUBLIC_YANDEX_METRIKA_ID=${NEXT_PUBLIC_YANDEX_METRIKA_ID}
-          NEXT_PUBLIC_SITE_URL=https://pxtool.ru
+          NEXT_PUBLIC_SITE_URL=https://pixeltool.pro
           NODE_ENV=production
           PORT=3000
           HOSTNAME=0.0.0.0

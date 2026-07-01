@@ -13,7 +13,7 @@ export async function generateMetadata({
 	params: Promise<{ locale: string }>
 }): Promise<Metadata> {
 	// const { locale } = await params // Not needed for Russian-only
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools`
 
 	const metadata = {
