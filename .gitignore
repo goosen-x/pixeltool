@@ -34,3 +34,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local AI/agent config (keep out of public repo)
+CLAUDE.md
+.clinerules
+
+# Dev docs & reports
+docs/
+
+# Backup & junk
+*.bak
+.DS_Store
