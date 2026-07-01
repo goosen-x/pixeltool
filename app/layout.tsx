@@ -248,7 +248,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						/>
 						<Script
 							src='https://yandex.ru/ads/system/context.js'
-							strategy='afterInteractive'
+							strategy='lazyOnload'
 						/>
 					</>
 				)}

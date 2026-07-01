@@ -90,7 +90,7 @@ export default async function HomePage({ params }: Props) {
 			<HomePageTracker />
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
 				<section className='relative px-4 pt-8 pb-16 sm:pt-20 sm:pb-24 sm:px-6 lg:px-8 overflow-hidden'>
-					<div className='absolute inset-0 -z-10'>
+					<div className='absolute inset-0 -z-10 hidden sm:block'>
 						<div className='absolute top-10 -left-20 sm:top-20 sm:left-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-br from-primary/20 to-accent/10 rounded-full blur-2xl sm:blur-3xl animate-pulse' />
 						<div className='absolute bottom-10 -right-20 sm:bottom-20 sm:right-1/4 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-br from-accent/20 to-primary/10 rounded-full blur-2xl sm:blur-3xl' />
 						<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[600px] sm:h-[600px] bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-full blur-2xl sm:blur-3xl opacity-50 sm:opacity-100' />
@@ -107,7 +107,7 @@ export default async function HomePage({ params }: Props) {
 						{/* Main Title with ripple animation */}
 						<div className='mb-8 sm:mb-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8'>
 							<RippleLoader className='opacity-80 flex-shrink-0 scale-75 sm:scale-100' />
-							<p className='text-6xl sm:text-7xl md:text-8xl lg:text-[11rem] font-heading font-black tracking-tight leading-none bg-gradient-to-br from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent animate-gradient bg-300%'>
+							<p className='text-6xl sm:text-7xl md:text-8xl lg:text-[11rem] font-heading font-black tracking-tight leading-none bg-gradient-to-br from-foreground via-foreground to-foreground/80 bg-clip-text text-transparent sm:animate-gradient bg-300%'>
 								PixelTool
 							</p>
 						</div>
