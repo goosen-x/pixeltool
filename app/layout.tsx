@@ -199,7 +199,7 @@ export async function generateMetadata(): Promise<Metadata> {
 		},
 		verification: {
 			google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
-			yandex: 'b2796581b70a9cad'
+			yandex: ['b2796581b70a9cad', '8e30dae359a7bb48']
 		},
 		manifest: '/manifest.json',
 		appleWebApp: {
