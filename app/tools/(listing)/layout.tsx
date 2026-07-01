@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: `Бесплатные инструменты для веб разработки и дизайна онлайн`,
 		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Без установки, работает офлайн.`,
-		url: 'https://pixeltool.ru/tools',
+		url: 'https://pixeltool.pro/tools',
 		siteName: 'PixelTool',
 		type: 'website',
 		locale: 'ru_RU'
@@ -21,13 +21,9 @@ export const metadata: Metadata = {
 		description: `${widgets.length}+ бесплатных инструментов: CSS генераторы, конвертеры, калькуляторы. Работает офлайн.`
 	},
 	alternates: {
-		canonical: 'https://pixeltool.ru/tools'
+		canonical: 'https://pixeltool.pro/tools'
 	}
 }
-
-// Force dynamic rendering for all tools pages
-export const dynamic = 'force-dynamic'
-export const fetchCache = 'force-no-store'
 
 type Props = {
 	children: ReactNode

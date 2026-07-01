@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 		title: 'Настройки | PixelTool',
 		description:
 			'Настройте внешний вид и поведение приложения PixelTool под ваши предпочтения.',
-		url: 'https://pixeltool.ru/settings',
+		url: 'https://pixeltool.pro/settings',
 		siteName: 'PixelTool',
 		type: 'website'
 	}

@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout'
 
 // import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 import YandexMetrika from '@/components/analytics/YandexMetrika'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
@@ -19,10 +19,6 @@ import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { antonFont, interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
-
-// Force dynamic rendering for all pages to avoid useSearchParams build errors
-export const dynamic = 'force-dynamic'
-export const fetchCache = 'force-no-store'
 
 interface Props {
 	children: ReactNode
@@ -257,9 +253,13 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					</>
 				)}
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					<NavigationProgress />
+					<Suspense fallback={null}>
+						<NavigationProgress />
+					</Suspense>
 					<YandexMetrika />
-					<GlobalGoalsTracker />
+					<Suspense fallback={null}>
+						<GlobalGoalsTracker />
+					</Suspense>
 					<ServiceWorkerUnregister />
 					<WebVitals />
 					<Header />

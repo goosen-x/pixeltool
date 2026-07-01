@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 		title: 'Контакты - Свяжитесь с нами | PixelTool',
 		description:
 			'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы.',
-		url: 'https://pixeltool.ru/contact',
+		url: 'https://pixeltool.pro/contact',
 		siteName: 'PixelTool',
 		type: 'website'
 	}
