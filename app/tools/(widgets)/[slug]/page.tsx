@@ -4,7 +4,6 @@ import {
 	loadWidgetComponent,
 	hasWidgetLoader
 } from '@/lib/widgets/widget-loaders'
-import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 
 /**
  * Динамическая страница виджета
@@ -38,16 +37,5 @@ export default async function WidgetSlugPage({
 	}
 
 	// Рендерим загруженный компонент
-	return (
-		<>
-			<Breadcrumbs
-				items={[
-					{ name: 'Главная', url: '/' },
-					{ name: 'Инструменты', url: '/tools' },
-					{ name: widget.title || slug, url: `/tools/${slug}` }
-				]}
-			/>
-			<WidgetComponent />
-		</>
-	)
+	return <WidgetComponent />
 }
