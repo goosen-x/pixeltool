@@ -191,7 +191,7 @@ export default async function Image() {
 					letterSpacing: '0.05em'
 				}}
 			>
-				pixeltool.pro
+				pxtool.ru
 			</div>
 		</div>,
 		{

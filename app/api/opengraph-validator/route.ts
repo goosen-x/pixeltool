@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 			signal: controller.signal,
 			headers: {
 				'User-Agent':
-					'Mozilla/5.0 (compatible; OpenGraphValidator/1.0; +https://pixeltool.pro)'
+					'Mozilla/5.0 (compatible; OpenGraphValidator/1.0; +https://pxtool.ru)'
 			}
 		})
 

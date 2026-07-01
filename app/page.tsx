@@ -40,13 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		description: metadata.description,
 		keywords: metadata.keywords,
 		openGraph: {
-			url: 'https://pixeltool.pro',
+			url: 'https://pxtool.ru',
 			type: 'website',
 			title: metadata.title,
 			description: metadata.description,
 			images: [
 				{
-					url: 'https://pixeltool.pro/og-image.png',
+					url: 'https://pxtool.ru/og-image.png',
 					width: 1200,
 					height: 630,
 					alt: 'PixelTool - Профессиональные инструменты разработчика'
@@ -57,10 +57,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: 'summary_large_image',
 			title: metadata.title,
 			description: metadata.description,
-			images: ['https://pixeltool.pro/og-image.png']
+			images: ['https://pxtool.ru/og-image.png']
 		},
 		alternates: {
-			canonical: 'https://pixeltool.pro'
+			canonical: 'https://pxtool.ru'
 		},
 		other: {
 			'application-ld+json': JSON.stringify({
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 				'@type': 'WebApplication',
 				name: 'PixelTool',
 				alternateName: 'PixelTool Developer Tools',
-				url: 'https://pixeltool.pro',
+				url: 'https://pxtool.ru',
 				description: metadata.description,
 				applicationCategory: 'DeveloperApplication',
 				operatingSystem: 'All',

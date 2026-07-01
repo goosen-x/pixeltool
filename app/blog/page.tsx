@@ -12,7 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { locale } = await params
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
 	const url = `${baseUrl}/blog`
 
 	const currentMetadata = {
@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Blog(props: Props) {
 	const posts = await getAllPosts()
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
 
 	// JSON-LD structured data for blog listing
 	const structuredData = {

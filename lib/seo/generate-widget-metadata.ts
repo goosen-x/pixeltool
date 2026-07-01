@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { widgetMetadata } from './widget-metadata'
 import { getWidgetEmoji } from '@/lib/utils/widget-icons'
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
 
 export function generateWidgetMetadata(widgetKey: string): Metadata {
 	const metadata = widgetMetadata[widgetKey]?.ru

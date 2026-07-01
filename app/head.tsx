@@ -1,5 +1,5 @@
 export default function Head() {
-	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
 
 	return (
 		<>

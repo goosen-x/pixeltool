@@ -16,7 +16,7 @@ export function WidgetStructuredData({
 	title,
 	description
 }: WidgetStructuredDataProps) {
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pxtool.ru'
 	const url = `${baseUrl}/tools/${widget.path}`
 
 	// SoftwareApplication schema for tools
