@@ -46,7 +46,7 @@ const EXAMPLES: { title: string; desc: string; code: string }[] = [
 
 export function GridGuide() {
 	return (
-		<section className='mt-12 max-w-3xl mx-auto text-center text-foreground'>
+		<section className='mt-12 max-w-3xl mx-auto text-left text-foreground'>
 			<h2 className='text-2xl font-bold tracking-tight'>Что такое CSS Grid</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
 				CSS Grid — двумерная система раскладки: она управляет одновременно{' '}
