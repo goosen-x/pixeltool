@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { GridGuide } from './GridGuide'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
@@ -282,6 +283,7 @@ export default function GridGeneratorPage() {
 
 	// Keyboard shortcuts - matching widgetShortcuts.ts configuration
 	return (
+		<>
 		<div className='grid gap-6 lg:grid-cols-3'>
 			{/* Controls */}
 			<Card className='lg:col-span-1'>
@@ -587,5 +589,7 @@ export default function GridGeneratorPage() {
 				</CardContent>
 			</Card>
 		</div>
+		<GridGuide />
+		</>
 	)
 }
