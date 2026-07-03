@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const url = `${baseUrl}/blog`
 
 	const currentMetadata = {
-		title: 'Блог - Туториалы и Руководства для Разработчиков | PixelTool',
+		title: 'Блог - Туториалы и Руководства для Разработчиков',
 		description:
 			'Читайте наши статьи о веб-разработке, CSS техниках, JavaScript туториалах и инструментах разработчика. Учитесь на практических примерах и фрагментах кода.'
 	}

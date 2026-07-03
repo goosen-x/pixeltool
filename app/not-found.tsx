@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-	title: '404 - Страница не найдена | PixelTool',
+	title: '404 - Страница не найдена',
 	description:
 		'К сожалению, запрашиваемая страница не существует. Вернитесь на главную страницу PixelTool.'
 }

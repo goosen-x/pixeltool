@@ -3,12 +3,12 @@ import ContactInfo from '@/components/contact/ContactInfo'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-	title: 'Контакты - Свяжитесь с нами | PixelTool',
+	title: 'Контакты - Свяжитесь с нами',
 	description:
 		'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы. Email, социальные сети и форма обратной связи.',
 	keywords: 'контакты, связаться, поддержка, помощь, обратная связь, email',
 	openGraph: {
-		title: 'Контакты - Свяжитесь с нами | PixelTool',
+		title: 'Контакты - Свяжитесь с нами',
 		description:
 			'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы.',
 		url: 'https://pixeltool.pro/contact',

@@ -102,7 +102,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 
 	if (!post) {
 		return {
-			title: 'Статья не найдена | PixelTool Блог',
+			title: 'Статья не найдена',
 			description: 'Запрошенная статья не найдена.'
 		}
 	}

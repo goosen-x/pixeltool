@@ -17,7 +17,7 @@ export async function generateMetadata({
 	const url = `${baseUrl}/tools`
 
 	const metadata = {
-		title: `Бесплатные Онлайн Инструменты - ${widgets.length}+ Утилит | PixelTool`,
+		title: `Бесплатные Онлайн Инструменты - ${widgets.length}+ Утилит`,
 		description: `Коллекция из ${widgets.length}+ бесплатных онлайн инструментов для разработчиков, дизайнеров и создателей контента. CSS генераторы, конвертеры, калькуляторы, форматтеры, валидаторы и многое другое. Работает офлайн.`,
 		keywords: [
 			'онлайн инструменты',
