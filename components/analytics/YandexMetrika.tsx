@@ -3,7 +3,7 @@
 import Script from 'next/script'
 
 const YandexMetrika = () => {
-	const metrikaId = '108318042'
+	const metrikaId = '110360226'
 	const isDevelopment = process.env.NODE_ENV === 'development'
 
 	// Don't load Yandex Metrika in development mode

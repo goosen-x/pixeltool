@@ -6,7 +6,6 @@ import Alert from '@/components/blog/alert'
 import { PostBodyWithHighlight } from '@/components/blog/post-body-with-highlight'
 import { PostHeader } from '@/components/blog/post-header'
 import { Footer } from '@/components/layout'
-import Script from 'next/script'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 
 export default async function Post(props: Params) {
@@ -57,8 +56,8 @@ export default async function Post(props: Params) {
 
 	return (
 		<>
-			<Script
-				id='article-structured-data'
+			{/* Обычный <script> (не next/script) — BlogPosting попадает в SSR-HTML */}
+			<script
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(structuredData)
@@ -109,7 +108,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const articleUrl = `${baseUrl}/blog/${post.slug}`
-	const title = `${post.title} | PixelTool`
+	const title = post.title
 	const imageUrl = post.coverImage
 		? `${baseUrl}${post.coverImage}`
 		: `${baseUrl}/og-image.png`
