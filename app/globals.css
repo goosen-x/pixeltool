@@ -319,7 +319,7 @@ code.inline-code {
 		--secondary-foreground: 222 84% 5%;
 
 		--muted: 220 14% 96%;
-		--muted-foreground: 220 9% 46%;
+		--muted-foreground: 220 10% 40%; /* затемнён с 46% для контраста WCAG AA (≥4.5:1) */
 
 		--accent: 217 91% 60%; /* Blue #4A90E2 */
 		--accent-foreground: 0 0% 100%;

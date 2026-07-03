@@ -382,7 +382,7 @@ export default function FlexboxGeneratorPage() {
 				{/* Preview */}
 				<Card className='overflow-hidden lg:col-span-2'>
 					<CardHeader>
-						<CardTitle>Превью</CardTitle>
+						<CardTitle>Предпросмотр</CardTitle>
 					</CardHeader>
 					<CardContent className='overflow-scroll'>
 						<div style={containerStyle}>

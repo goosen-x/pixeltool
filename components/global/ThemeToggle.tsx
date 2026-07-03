@@ -17,6 +17,7 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 	if (!mounted) {
 		return (
 			<button
+				aria-label='Переключить тему'
 				className={cn(
 					'h-10 w-10 rounded-xl bg-background/50 animate-pulse border border-border/50',
 					className
@@ -34,7 +35,7 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 				'h-10 w-10 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 flex items-center justify-center group',
 				className
 			)}
-			aria-label='Toggle theme'
+			aria-label='Переключить тему'
 		>
 			{theme === 'dark' ? (
 				<Sun className='w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors' />

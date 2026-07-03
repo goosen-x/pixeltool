@@ -12,7 +12,6 @@ export const SearchButton = ({ setIsSearchOpen }: Props) => {
 			variant='ghost'
 			onClick={() => setIsSearchOpen(true)}
 			className='h-10 px-4 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 flex items-center gap-2'
-			aria-label='Search tools'
 		>
 			<Search className='w-4 h-4 text-muted-foreground' />
 			<span className='text-muted-foreground'>Поиск</span>

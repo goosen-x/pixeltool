@@ -317,6 +317,7 @@ export default function GridGeneratorPage() {
 									variant='outline'
 									onClick={addColumn}
 									className='h-9 w-9'
+									aria-label='Добавить колонку'
 								>
 									<Plus className='w-3 h-3' />
 								</Button>
@@ -325,6 +326,7 @@ export default function GridGeneratorPage() {
 									variant='outline'
 									onClick={removeColumn}
 									className='h-9 w-9'
+									aria-label='Удалить колонку'
 								>
 									<Minus className='w-3 h-3' />
 								</Button>
@@ -345,6 +347,7 @@ export default function GridGeneratorPage() {
 									variant='outline'
 									onClick={addRow}
 									className='h-9 w-9'
+									aria-label='Добавить ряд'
 								>
 									<Plus className='w-3 h-3' />
 								</Button>
@@ -353,6 +356,7 @@ export default function GridGeneratorPage() {
 									variant='outline'
 									onClick={removeRow}
 									className='h-9 w-9'
+									aria-label='Удалить ряд'
 								>
 									<Minus className='w-3 h-3' />
 								</Button>
@@ -393,6 +397,7 @@ export default function GridGeneratorPage() {
 									max={50}
 									step={1}
 									className='h-8'
+									aria-label='Отступ между элементами (gap)'
 								/>
 							</div>
 						) : (
@@ -408,6 +413,7 @@ export default function GridGeneratorPage() {
 										max={50}
 										step={1}
 										className='h-8'
+										aria-label='Вертикальный отступ (row-gap)'
 									/>
 								</div>
 								<div className='space-y-1'>
@@ -421,6 +427,7 @@ export default function GridGeneratorPage() {
 										max={50}
 										step={1}
 										className='h-8'
+										aria-label='Горизонтальный отступ (column-gap)'
 									/>
 								</div>
 							</div>
@@ -494,6 +501,7 @@ export default function GridGeneratorPage() {
 								max={20}
 								step={1}
 								className='h-8'
+								aria-label='Количество элементов'
 							/>
 						</div>
 
@@ -513,7 +521,7 @@ export default function GridGeneratorPage() {
 			{/* Preview */}
 			<Card className='overflow-hidden lg:col-span-2'>
 				<CardHeader>
-					<CardTitle>Превью</CardTitle>
+					<CardTitle>Предпросмотр</CardTitle>
 				</CardHeader>
 				<CardContent className='overflow-scroll'>
 					<div style={containerStyle}>
@@ -545,6 +553,7 @@ export default function GridGeneratorPage() {
 									variant='ghost'
 									onClick={copyToClipboard}
 									className='h-8 px-2 hover:bg-accent hover:text-white'
+									aria-label='Скопировать CSS'
 								>
 									{copiedCSS ? (
 										<Check className='h-3 w-3 text-green-500' />
@@ -571,6 +580,7 @@ export default function GridGeneratorPage() {
 									variant='ghost'
 									onClick={copyTailwindToClipboard}
 									className='h-8 px-2 hover:bg-accent hover:text-white'
+									aria-label='Скопировать Tailwind CSS'
 								>
 									{copiedTailwind ? (
 										<Check className='h-3 w-3 text-green-500' />
