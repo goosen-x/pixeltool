@@ -1,9 +1,6 @@
 'use client'
 
 import { Widget } from '@/lib/constants/widgets'
-
-import { WidgetStructuredData } from './WidgetStructuredData'
-import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 
 interface WidgetSEOWrapperProps {
@@ -11,22 +8,16 @@ interface WidgetSEOWrapperProps {
 	children: ReactNode
 }
 
+// Структурную JSON-LD разметку инструмента рендерит ProjectsLayoutWrapper
+// (серверный WidgetStructuredData) — здесь оставляем только микроразметку
+// itemScope/itemProp вокруг контента, без дублирующего JSON-LD.
 export function WidgetSEOWrapper({ widget, children }: WidgetSEOWrapperProps) {
-	const pathname = usePathname()
-	const locale = pathname.split('/')[1]
-
 	// Get title and description directly from widget data
 	const title = widget.title || widget.id
 	const description = widget.description || 'Инструмент для веб-разработки'
 
 	return (
 		<>
-			<WidgetStructuredData
-				widget={widget}
-				locale={locale}
-				title={title}
-				description={description}
-			/>
 			<article
 				className='w-full h-full'
 				itemScope

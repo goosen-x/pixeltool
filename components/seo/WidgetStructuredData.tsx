@@ -1,23 +1,27 @@
 import { Widget } from '@/lib/constants/widgets'
-import Script from 'next/script'
 import { getToolSpecificSchema } from '@/lib/seo/widget-schemas'
-import { getWidgetFAQs } from '@/lib/constants/widgets'
 
 interface WidgetStructuredDataProps {
 	widget: Widget
-	locale: string
-	title: string
-	description: string
 }
 
-export function WidgetStructuredData({
-	widget,
-	locale,
-	title,
-	description
-}: WidgetStructuredDataProps) {
+/**
+ * Серверная структурная разметка страницы инструмента:
+ * WebApplication + WebPage + HowTo + доп. схемы.
+ * Обычный <script> (не next/script) — JSON-LD попадает в SSR-HTML,
+ * поэтому Яндекс/Google видят его сразу, без клиентской подгрузки.
+ * FAQ здесь НЕ дублируем — его отдаёт FAQ.tsx (через WidgetFAQ).
+ * Крошки — глобальный AutoBreadcrumbs / ProjectsLayoutWrapper.
+ */
+export function WidgetStructuredData({ widget }: WidgetStructuredDataProps) {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools/${widget.path}`
+	const locale = 'ru'
+	const title = widget.title || widget.id
+	const description =
+		widget.metaDescription ||
+		widget.description ||
+		`Онлайн-инструмент «${widget.title || widget.id}»`
 
 	// WebApplication schema for tools (подтип SoftwareApplication для
 	// браузерных приложений без установки — точнее для инструментов PixelTool)
@@ -78,26 +82,8 @@ export function WidgetStructuredData({
 		step: getHowToSteps(widget.translationKey)
 	}
 
-	// FAQPage schema if widget has FAQs
-	const widgetFAQs = getWidgetFAQs(widget.translationKey)
-	const faqSchema =
-		widgetFAQs.length > 0 || (widget.faqs && widget.faqs.length > 0)
-			? {
-					'@context': 'https://schema.org',
-					'@type': 'FAQPage',
-					mainEntity: [
-						...widgetFAQs,
-						...(widget.faqs?.map(faq => ({
-							'@type': 'Question',
-							name: faq.question,
-							acceptedAnswer: {
-								'@type': 'Answer',
-								text: faq.answer
-							}
-						})) || [])
-					]
-				}
-			: null
+	// FAQ разметку намеренно не создаём здесь — её отдаёт FAQ.tsx (WidgetFAQ),
+	// чтобы на странице был ровно один FAQPage.
 
 	// Get additional schemas
 	const additionalSchemas = getToolSpecificSchema(
@@ -111,42 +97,29 @@ export function WidgetStructuredData({
 
 	return (
 		<>
-			<Script
-				id={`structured-data-software-${widget.id}`}
+			<script
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(softwareApplicationSchema)
 				}}
 			/>
-			<Script
-				id={`structured-data-webpage-${widget.id}`}
+			<script
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(webPageSchema)
 				}}
 			/>
 			{howToSchema && (
-				<Script
-					id={`structured-data-howto-${widget.id}`}
+				<script
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
 						__html: JSON.stringify(howToSchema)
 					}}
 				/>
 			)}
-			{faqSchema && (
-				<Script
-					id={`structured-data-faq-${widget.id}`}
-					type='application/ld+json'
-					dangerouslySetInnerHTML={{
-						__html: JSON.stringify(faqSchema)
-					}}
-				/>
-			)}
 			{additionalSchemas.map((schema, index) => (
-				<Script
+				<script
 					key={`additional-schema-${index}`}
-					id={`structured-data-additional-${widget.id}-${index}`}
 					type='application/ld+json'
 					dangerouslySetInnerHTML={{
 						__html: JSON.stringify(schema)

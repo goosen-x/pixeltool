@@ -6,6 +6,7 @@ import { WidgetWrapper, WidgetHeader } from '@/components/widgets'
 import { WidgetFAQ } from '@/components/widgets/WidgetFAQ'
 import { RelatedTools } from '@/components/seo/RelatedTools'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { WidgetStructuredData } from '@/components/seo/WidgetStructuredData'
 import { getWidgetByPath } from '@/lib/constants/widgets'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { ReactNode, useState } from 'react'
@@ -47,6 +48,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
 						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
+							{widget && <WidgetStructuredData widget={widget} />}
 							{widget && (
 								<Breadcrumbs
 									className='px-0 pt-0 mb-4 max-w-none mx-0'

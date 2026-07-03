@@ -1,8 +1,6 @@
-import { getWidgetByPath } from '@/lib/constants/widgets'
 import type { BreadcrumbItem } from '@/components/seo/Breadcrumbs'
 
 const HOME: BreadcrumbItem = { name: 'Главная', url: '/' }
-const TOOLS: BreadcrumbItem = { name: 'Инструменты', url: '/tools' }
 
 // Человекочитаемые названия известных статичных разделов
 const STATIC_LABELS: Record<string, string> = {
@@ -31,13 +29,10 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
 	// Статья блога — крошки со заголовком статьи рендерит страница
 	if (path.startsWith('/blog/')) return []
 
-	// Страница инструмента: /tools/{slug}
-	if (path.startsWith('/tools/')) {
-		const slug = path.split('/')[2]
-		if (!slug) return [HOME, TOOLS]
-		const widget = getWidgetByPath(slug)
-		return [HOME, TOOLS, { name: widget?.title || humanize(slug), url: `/tools/${slug}` }]
-	}
+	// Страница инструмента (/tools/{slug}) — крошки рендерит общий шелл
+	// ProjectsLayoutWrapper (в контенте, рядом с сайдбаром), поэтому здесь
+	// пропускаем, чтобы не было двойного BreadcrumbList.
+	if (path.startsWith('/tools/')) return []
 
 	// Известные статичные страницы
 	const staticLabel = STATIC_LABELS[path]
