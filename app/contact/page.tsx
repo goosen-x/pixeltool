@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 	description:
 		'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы. Email, социальные сети и форма обратной связи.',
 	keywords: 'контакты, связаться, поддержка, помощь, обратная связь, email',
+	alternates: { canonical: '/contact' },
 	openGraph: {
 		title: 'Контакты - Свяжитесь с нами',
 		description:

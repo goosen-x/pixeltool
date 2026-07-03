@@ -19,15 +19,17 @@ export function WidgetStructuredData({
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools/${widget.path}`
 
-	// SoftwareApplication schema for tools
+	// WebApplication schema for tools (подтип SoftwareApplication для
+	// браузерных приложений без установки — точнее для инструментов PixelTool)
 	const softwareApplicationSchema = {
 		'@context': 'https://schema.org',
-		'@type': 'SoftwareApplication',
+		'@type': 'WebApplication',
 		'@id': url,
 		name: title,
 		description: description,
 		url: url,
-		applicationCategory: 'WebApplication',
+		applicationCategory: 'DeveloperApplication',
+		browserRequirements: 'Requires JavaScript. Requires HTML5.',
 		applicationSubCategory: getCategoryName(widget.category),
 		operatingSystem: 'Web Browser',
 		offers: {

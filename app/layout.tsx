@@ -19,6 +19,8 @@ import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import { antonFont, interFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
+import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
+import { SiteStructuredData } from '@/components/seo/SiteStructuredData'
 
 interface Props {
 	children: ReactNode
@@ -258,6 +260,8 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<ServiceWorkerUnregister />
 					<WebVitals />
 					<Header />
+					<AutoBreadcrumbs />
+					<SiteStructuredData />
 					{children}
 					<ScrollToTop />
 					<Toaster />
