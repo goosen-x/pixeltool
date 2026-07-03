@@ -19,7 +19,7 @@ export const securityWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['qr', 'qrcode', 'generator', 'wifi', 'mobile'],
 		metaDescription:
-			'QR code generator for URLs, WiFi, and apps. Create customizable QR codes with colors and logos.',
+			'Генератор QR-кодов для ссылок, Wi-Fi и приложений. Создавайте настраиваемые QR-коды с цветами и логотипом.',
 		faqs: [
 			{
 				question: 'Что можно закодировать в QR-код?',
@@ -64,7 +64,7 @@ export const securityWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['password', 'security', 'generator', 'random', 'secure'],
 		metaDescription:
-			'Secure password generator. Create strong passwords with custom length and character sets.',
+			'Генератор надёжных паролей. Создавайте стойкие пароли с настройкой длины и набора символов.',
 		faqs: [
 			{
 				question: 'Что делает пароль надёжным?',
@@ -108,7 +108,7 @@ export const securityWidgets: Widget[] = [
 		useCase:
 			'Кодирование изображений и файлов в Base64 для встраивания в CSS/HTML',
 		metaDescription:
-			'Base64 encoder/decoder with file support. Encode and decode Base64 data.',
+			'Кодировщик и декодировщик Base64 с поддержкой файлов. Кодируйте и декодируйте данные в Base64 онлайн.',
 		faqs: [
 			{
 				question: 'Что такое кодирование Base64 и зачем оно используется?',
@@ -151,7 +151,7 @@ export const securityWidgets: Widget[] = [
 		tags: ['jwt', 'json', 'token', 'decoder', 'authentication'],
 		useCase: 'Анализ структуры JWT токенов для отладки авторизации',
 		metaDescription:
-			'JWT decoder and analyzer. Decode JSON Web Tokens and inspect claims.',
+			'Декодер и анализатор JWT. Декодируйте JSON Web Token и просматривайте payload без ключа.',
 		faqs: [
 			{
 				question: 'Что такое JWT и как он структурирован?',
@@ -194,7 +194,7 @@ export const securityWidgets: Widget[] = [
 		tags: ['uuid', 'guid', 'generator', 'unique', 'identifier'],
 		useCase: 'Генерация уникальных идентификаторов для API и баз данных',
 		metaDescription:
-			'UUID generator for all versions. Generate unique identifiers (UUID/GUID).',
+			'Генератор UUID всех версий. Создавайте уникальные идентификаторы UUID и GUID онлайн.',
 		faqs: [
 			{
 				question: 'В чём разница между версиями UUID?',

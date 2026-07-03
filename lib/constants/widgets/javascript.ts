@@ -23,7 +23,7 @@ export const javascriptWidgets: Widget[] = [
 			'parser'
 		],
 		metaDescription:
-			'JSON validator and formatter tool. Validate JSON syntax, format/beautify code, minify for production.',
+			'JSON-инструменты: валидатор и форматтер. Проверяйте синтаксис JSON, форматируйте, минифицируйте и сравнивайте данные онлайн.',
 		faqs: [
 			{
 				question: 'Что такое валидация JSON?',
@@ -125,7 +125,7 @@ export const javascriptWidgets: Widget[] = [
 			'quality'
 		],
 		metaDescription:
-			'JavaScript validator and syntax checker. Detect JS errors, validate code quality, debug syntax issues.',
+			'JavaScript-валидатор и проверка синтаксиса. Находите ошибки в JS-коде, проверяйте качество и отлаживайте синтаксис.',
 		faqs: [
 			{
 				question: 'Что проверяет JavaScript валидатор?',
@@ -172,7 +172,7 @@ export const javascriptWidgets: Widget[] = [
 		tags: ['regex', 'regular-expression', 'pattern', 'test', 'match'],
 		useCase: 'Отладка и тестирование регулярных выражений',
 		metaDescription:
-			'Regex tester for JavaScript, PHP, Python. Test and debug regular expressions.',
+			'Тестер регулярных выражений для JavaScript, PHP и Python. Проверяйте и отлаживайте regex онлайн с подсветкой совпадений.',
 		faqs: [
 			{
 				question: 'Какие типы regex поддерживаются?',
@@ -215,7 +215,7 @@ export const javascriptWidgets: Widget[] = [
 		tags: ['javascript', 'es6', 'syntax', 'checker', 'validator'],
 		useCase: 'Проверка JavaScript кода перед развёртыванием',
 		metaDescription:
-			'JavaScript syntax checker for ES6/ES2020+. Validate JS code with JSX support.',
+			'Проверка синтаксиса JavaScript для ES6/ES2020+ с поддержкой JSX. Находите ошибки в JS-коде онлайн.',
 		faqs: [
 			{
 				question: 'Какие версии JavaScript это поддерживает?',
@@ -262,7 +262,7 @@ export const javascriptWidgets: Widget[] = [
 		tags: ['json', 'yaml', 'formatter', 'validator', 'converter'],
 		useCase: 'Обработка и конвертация конфигурационных файлов',
 		metaDescription:
-			'JSON/YAML formatter and converter. Validate and convert between formats.',
+			'Форматтер и конвертер JSON/YAML. Валидируйте, форматируйте и конвертируйте данные между форматами онлайн.',
 		faqs: [
 			{
 				question: 'В чем разница между JSON и YAML?',

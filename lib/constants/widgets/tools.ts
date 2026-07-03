@@ -27,7 +27,7 @@ export const toolWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['svg', 'encoder', 'base64', 'css', 'background'],
 		metaDescription:
-			'SVG to CSS encoder. Convert SVG images to data URLs for CSS backgrounds.',
+			'Кодировщик SVG в CSS. Превращайте SVG-изображения в data URL для фоновых картинок в CSS.',
 		faqs: [
 			{
 				question: 'Что такое кодирование SVG?',
@@ -72,7 +72,7 @@ export const toolWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['youtube', 'thumbnail', 'download', 'media', 'video'],
 		metaDescription:
-			'YouTube thumbnail downloader. Get video thumbnails in all resolutions from any YouTube URL.',
+			'Граббер превью YouTube. Скачивайте обложки видео во всех разрешениях по ссылке на ролик.',
 		faqs: [
 			{
 				question: 'Какие разрешения доступны?',
@@ -117,7 +117,7 @@ export const toolWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['api', 'mock', 'data', 'json', 'testing', 'development'],
 		metaDescription:
-			'Mock data generator using free public APIs. Get sample users, posts, products, and more.',
+			'Генератор тестовых данных через бесплатные публичные API. Получайте примеры пользователей, постов, товаров и не только.',
 		faqs: [
 			{
 				question: 'Какие API включены?',
@@ -165,7 +165,7 @@ export const toolWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['utm', 'marketing', 'analytics', 'tracking', 'campaign'],
 		metaDescription:
-			'UTM link builder for marketing campaigns. Track traffic sources in Google Analytics.',
+			'UTM-конструктор ссылок для маркетинговых кампаний. Отслеживайте источники трафика в Google Analytics и Яндекс.Метрике.',
 		faqs: [
 			{
 				question: 'Что такое UTM параметры и зачем их использовать?',
@@ -222,7 +222,7 @@ export const toolWidgets: Widget[] = [
 			'aspect-ratio'
 		],
 		metaDescription:
-			'Image size checker and analyzer. Check dimensions, file size, format, and aspect ratio of multiple images.',
+			'Проверка размера изображений. Узнайте разрешение, вес, формат и соотношение сторон нескольких картинок сразу.',
 		faqs: [
 			{
 				question: 'Какие форматы изображений поддерживаются?',
@@ -278,7 +278,7 @@ export const toolWidgets: Widget[] = [
 		useCase:
 			'Мгновенное определение архитектуры системы (32/64-бит), разрешения экрана и характеристик устройства',
 		metaDescription:
-			'System information detector. Check if your computer is 32-bit or 64-bit, get screen resolution and device specs.',
+			'Определение информации о системе. Проверьте разрядность (32/64 бит), разрешение экрана и характеристики устройства.',
 		faqs: [
 			{
 				question: 'Зачем знать разрядность системы (32/64-бит)?',
@@ -325,7 +325,7 @@ export const toolWidgets: Widget[] = [
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase: 'Управление временем для работы, спорта или готовки',
 		metaDescription:
-			'Timer and countdown tool with notifications. Stopwatch, timer, and countdown in one tool.',
+			'Таймер, обратный отсчёт и секундомер с уведомлениями. Все инструменты для отсчёта времени в одном месте.',
 		faqs: [
 			{
 				question: 'В чём разница между режимами таймера и обратного отсчёта?',
@@ -373,7 +373,7 @@ export const toolWidgets: Widget[] = [
 		tags: ['php', 'syntax', 'checker', 'validator', 'code'],
 		useCase: 'Валидация PHP кода перед размещением на сервере',
 		metaDescription:
-			'PHP syntax checker for PHP 5/7/8. Validate PHP code and find syntax errors.',
+			'Проверка синтаксиса PHP для версий 5, 7 и 8. Валидируйте PHP-код и находите синтаксические ошибки.',
 		faqs: [
 			{
 				question: 'Какие версии PHP поддерживаются?',
@@ -416,7 +416,7 @@ export const toolWidgets: Widget[] = [
 		tags: ['mysql', 'sql', 'database', 'syntax', 'validator'],
 		useCase: 'Проверка SQL запросов перед выполнением в базе',
 		metaDescription:
-			'MySQL syntax checker and validator. Check SQL queries for syntax errors.',
+			'Валидатор и проверка синтаксиса MySQL. Проверяйте SQL-запросы на синтаксические ошибки онлайн.',
 		faqs: [
 			{
 				question: 'Какие диалекты SQL поддерживаются?',
@@ -472,7 +472,7 @@ export const toolWidgets: Widget[] = [
 		],
 		useCase: 'Создание ASCII арта для терминалов или подписей',
 		metaDescription:
-			'ASCII art generator - convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.',
+			'Генератор ASCII-арта из текста и изображений. Создавайте текстовые баннеры, преобразуйте картинки и просматривайте паттерны ASCII.',
 		faqs: [
 			{
 				question: 'Какие типы ASCII-арта можно создавать?',

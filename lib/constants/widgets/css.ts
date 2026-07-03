@@ -30,7 +30,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['css', 'responsive', 'typography', 'fluid', 'clamp'],
 		metaDescription:
-			'Generate CSS clamp() functions for fluid typography. Create responsive text that scales perfectly between viewports.',
+			'Генератор CSS clamp() для адаптивной типографики. Создавайте плавно масштабируемый текст между брейкпоинтами без медиазапросов.',
 		faqs: [
 			{
 				question: 'Что такое функция CSS clamp()?',
@@ -79,7 +79,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['css', 'flexbox', 'layout', 'responsive', 'alignment'],
 		metaDescription:
-			'Interactive Flexbox CSS generator. Visualize and generate flexbox layouts with real-time preview.',
+			'Интерактивный генератор CSS Flexbox. Визуально настраивайте флекс-раскладки и получайте готовый код с предпросмотром в реальном времени.',
 		faqs: [
 			{
 				question: 'Что такое CSS Flexbox?',
@@ -128,7 +128,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['css', 'grid', 'layout', 'responsive', 'css-grid'],
 		metaDescription:
-			'CSS Grid layout generator with visual editor. Create complex responsive grid layouts easily.',
+			'Генератор CSS Grid с визуальным редактором. Быстро создавайте сложные адаптивные сеточные раскладки и копируйте готовый код.',
 		faqs: [
 			{
 				question: 'Что такое CSS Grid?',
@@ -173,7 +173,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'advanced',
 		tags: ['css', 'specificity', 'selectors', 'debugging', 'cascade'],
 		metaDescription:
-			'CSS Specificity calculator and analyzer. Understand cascade and debug CSS conflicts.',
+			'Калькулятор специфичности CSS-селекторов. Разбирайте каскад, находите и устраняйте конфликты стилей.',
 		faqs: [
 			{
 				question: 'Что такое специфичность CSS?',
@@ -221,7 +221,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['css', 'animation', 'bezier', 'easing', 'transition'],
 		metaDescription:
-			'Interactive cubic-bezier curve generator for CSS animations. Create custom easing functions visually.',
+			'Интерактивный генератор кривых cubic-bezier для CSS-анимаций. Создавайте плавные функции ускорения визуально.',
 		faqs: [
 			{
 				question: 'Что такое функция cubic-bezier?',
@@ -266,7 +266,7 @@ export const cssWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['color', 'converter', 'hex', 'rgb', 'hsl', 'cmyk'],
 		metaDescription:
-			'Universal color converter. Convert between HEX, RGB, HSL, CMYK, LAB, and XYZ color formats.',
+			'Универсальный конвертер цветов. Переводите цвета между HEX, RGB, HSL, CMYK, LAB и XYZ онлайн.',
 		faqs: [
 			{
 				question: 'Какие форматы цветов поддерживаются?',
@@ -363,7 +363,7 @@ export const cssWidgets: Widget[] = [
 		useCase:
 			'Конвертация между px, rem и em единицами CSS с настраиваемым базовым размером',
 		metaDescription:
-			'PX to REM/EM converter for CSS. Convert between pixel, rem, and em units.',
+			'Конвертер единиц CSS: PX в REM и EM. Быстро переводите пиксели в rem и em для адаптивной вёрстки.',
 		faqs: [
 			{
 				question: 'В чём разница между единицами rem и em?',
@@ -408,7 +408,7 @@ export const cssWidgets: Widget[] = [
 		useCase:
 			'Генерация CSS box-shadow с визуальным предпросмотром и множественными тенями',
 		metaDescription:
-			'CSS box-shadow generator with preview. Create custom shadows for your designs.',
+			'Генератор CSS box-shadow с предпросмотром. Создавайте и настраивайте тени для элементов и копируйте готовый код.',
 		faqs: [
 			{
 				question: 'Какие есть параметры box-shadow?',
@@ -453,7 +453,7 @@ export const cssWidgets: Widget[] = [
 		useCase:
 			'Создание линейных, радиальных и конических CSS градиентов с визуальным редактором',
 		metaDescription:
-			'CSS gradient generator for linear, radial, conic gradients. Visual gradient editor.',
+			'Генератор CSS-градиентов: linear, radial и conic. Визуальный редактор градиентов с готовым кодом.',
 		faqs: [
 			{
 				question:
@@ -498,7 +498,7 @@ export const cssWidgets: Widget[] = [
 		tags: ['color', 'contrast', 'wcag', 'accessibility', 'a11y'],
 		useCase: 'Проверка коэффициента контрастности цветов для соответствия WCAG',
 		metaDescription:
-			'Color contrast checker for WCAG. Test color combinations for accessibility.',
+			'Проверка контраста цветов по стандарту WCAG. Тестируйте сочетания цветов на доступность текста.',
 		faqs: [
 			{
 				question: 'Каковы требования WCAG к контрастности?',
@@ -541,7 +541,7 @@ export const cssWidgets: Widget[] = [
 		tags: ['css', 'animation', 'keyframes', 'generator', 'motion'],
 		useCase: 'Генерация CSS @keyframes анимаций с визуальным редактором',
 		metaDescription:
-			'CSS keyframes animation generator. Create custom animations visually.',
+			'Генератор CSS keyframes-анимаций. Создавайте собственные @keyframes визуально и копируйте готовый код.',
 		faqs: [
 			{
 				question: 'Что такое CSS @keyframes и как они работают?',

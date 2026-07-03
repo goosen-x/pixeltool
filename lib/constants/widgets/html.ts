@@ -17,7 +17,7 @@ export const htmlWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['html', 'tree', 'bem', 'structure', 'visualization'],
 		metaDescription:
-			'HTML tree visualizer with BEM validation. Analyze HTML structure and class naming.',
+			'Визуализатор HTML-дерева с проверкой БЭМ. Анализируйте структуру HTML и именование классов наглядно.',
 		faqs: [
 			{
 				question: 'Что такое методология BEM?',
@@ -61,7 +61,7 @@ export const htmlWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['seo', 'markdown', 'blog', 'content', 'generator'],
 		metaDescription:
-			'SEO markdown generator for blogs. Create optimized blog post templates with metadata.',
+			'SEO-генератор Markdown для блогов. Создавайте оптимизированные шаблоны статей с метаданными.',
 		faqs: [
 			{
 				question: 'Что такое SEO markdown и почему это важно?',
@@ -110,7 +110,7 @@ export const htmlWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['html', 'xml', 'parser', 'formatter', 'validator', 'minify'],
 		metaDescription:
-			'HTML/XML parser and formatter. Beautify, minify, validate, and extract data from HTML and XML documents.',
+			'Парсер и форматтер HTML/XML. Форматируйте, минифицируйте, валидируйте и извлекайте данные из HTML и XML.',
 		faqs: [
 			{
 				question: 'В чем разница между парсингом HTML и XML?',
@@ -153,7 +153,7 @@ export const htmlWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['favicon', 'icon', 'generator', 'upload', 'png'],
 		metaDescription:
-			'Free favicon generator tool. Upload an image and generate favicon files in multiple sizes for websites and mobile apps.',
+			'Бесплатный генератор favicon. Загрузите изображение и получите фавиконки всех размеров для сайта и мобильных приложений.',
 		faqs: [
 			{
 				question: 'Какие форматы изображений можно загружать?',
@@ -195,7 +195,7 @@ export const htmlWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		useCase: 'Оптимизация превью ссылок в социальных сетях',
 		metaDescription:
-			'OpenGraph validator and previewer. Test how your webpage appears when shared on social platforms.',
+			'Валидатор OpenGraph с предпросмотром. Проверяйте, как страница выглядит при репосте в соцсетях.',
 		recommendedTools: [
 			'html-xml-parser',
 			'seo-markdown-generator',

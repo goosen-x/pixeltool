@@ -23,7 +23,7 @@ export const textWidgets: Widget[] = [
 		useCase:
 			'Быстрое копирование специальных символов и Unicode символов для использования в тексте',
 		metaDescription:
-			'Special symbols picker with one-click copy. Access Unicode symbols, emojis, and special characters.',
+			'Подборка специальных символов Unicode с копированием в один клик. Стрелки, математические знаки, валюты, эмодзи и другие символы.',
 		faqs: [
 			{
 				question: 'Что такое символы Unicode?',
@@ -72,7 +72,7 @@ export const textWidgets: Widget[] = [
 		useCase:
 			'Бесплатный онлайн генератор стилизованного текста для соцсетей, постов, профилей и сообщений',
 		metaDescription:
-			'Fancy text generator with Unicode fonts. Convert text to bold, italic, script, and decorative styles.',
+			'Генератор стилизованного текста с Unicode-шрифтами. Превращайте текст в жирный, курсив, рукописный и декоративные стили.',
 		faqs: [
 			{
 				question: 'Как работают красивые шрифты?',
@@ -128,7 +128,7 @@ export const textWidgets: Widget[] = [
 			'snake_case'
 		],
 		metaDescription:
-			'Text case converter for uppercase, lowercase, camelCase, snake_case, kebab-case, and more formatting styles.',
+			'Конвертер регистра текста: UPPERCASE, lowercase, camelCase, snake_case, kebab-case и другие форматы написания.',
 		faqs: [
 			{
 				question: 'Что такое преобразование регистра текста?',
@@ -175,7 +175,7 @@ export const textWidgets: Widget[] = [
 		tags: ['emoji', 'emoticons', 'unicode', 'copy', 'paste', 'symbols'],
 		useCase: 'Быстрый поиск и копирование эмодзи для соцсетей и чатов',
 		metaDescription:
-			'Complete emoji list with instant copy. Browse 1800+ emojis in 8 categories.',
+			'Полный список эмодзи с мгновенным копированием. Более 1800 эмодзи в 8 категориях для чатов и постов.',
 		faqs: [
 			{
 				question: 'Сколько эмодзи доступно?',
@@ -222,7 +222,7 @@ export const textWidgets: Widget[] = [
 		tags: ['emoticons', 'ascii', 'kaomoji', 'text', 'expressions', 'japanese'],
 		useCase: 'Коллекция текстовых смайликов для выражения эмоций',
 		metaDescription:
-			'Text emoticons and kaomoji collection. Copy ASCII art faces and Japanese emoticons.',
+			'Коллекция текстовых эмотиконов и каомодзи. Копируйте ASCII-смайлики и японские эмотиконы в один клик.',
 		faqs: [
 			{
 				question: 'Что такое эмотиконы и каомодзи?',
@@ -269,7 +269,7 @@ export const textWidgets: Widget[] = [
 		tags: ['tts', 'speech', 'voice', 'audio', 'accessibility', 'synthesis'],
 		useCase: 'Озвучивание текстов для аудиокниг или доступности',
 		metaDescription:
-			'Text to speech converter with voice customization. Convert any text to audio with different voices.',
+			'Конвертер текста в речь с выбором голоса. Озвучивайте любой текст разными голосами онлайн.',
 		faqs: [
 			{
 				question: 'Как работает синтез речи?',
@@ -316,7 +316,7 @@ export const textWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['text', 'counter', 'seo', 'words', 'characters', 'social-media'],
 		metaDescription:
-			'Text counter for SEO and social media. Count characters, words, sentences with platform limits.',
+			'Счётчик текста для SEO и соцсетей. Подсчёт символов, слов и предложений с учётом лимитов площадок.',
 		faqs: [
 			{
 				question: 'Что считается словом в счётчике?',
@@ -359,7 +359,7 @@ export const textWidgets: Widget[] = [
 		tags: ['diff', 'compare', 'text', 'code', 'changes'],
 		useCase: 'Анализ изменений в коде или документах',
 		metaDescription:
-			'Text difference tool. Compare two texts and see changes highlighted line by line.',
+			'Инструмент сравнения текстов. Находите различия между двумя текстами с подсветкой изменений построчно.',
 		faqs: [
 			{
 				question: 'Какие типы различий обнаруживает инструмент?',

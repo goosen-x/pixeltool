@@ -23,7 +23,7 @@ export const generatorWidgets: Widget[] = [
 		useCase:
 			'Случайное деление людей на сбалансированные команды для игр или активностей',
 		metaDescription:
-			'Random team generator. Create fair and balanced teams from a list of names.',
+			'Рандомайзер команд. Делите список участников на честные и сбалансированные команды случайным образом.',
 		faqs: [
 			{
 				question: 'Как работает случайное распределение?',
@@ -71,7 +71,7 @@ export const generatorWidgets: Widget[] = [
 			'Цифровая жеребьёвка - выбирайте имена или делайте случайный выбор честно',
 		useCase: 'Честный случайный выбор из списка опций или имён',
 		metaDescription:
-			'Digital draw lots tool. Draw straws, pick cards randomly for fair selection and decision making.',
+			'Онлайн-жеребьёвка. Тяните жребий, спички или карты случайным образом для честного выбора и решений.',
 		faqs: [
 			{
 				question: 'Как работает система жеребьёвки?',
@@ -120,7 +120,7 @@ export const generatorWidgets: Widget[] = [
 		useCase:
 			'Бесплатный генератор случайных чисел для игр, выборки, розыгрышей и безопасности',
 		metaDescription:
-			'Cryptographically secure random number generator. Generate random numbers with no duplicates option.',
+			'Криптостойкий генератор случайных чисел. Генерируйте числа в заданном диапазоне с опцией без повторов.',
 		faqs: [
 			{
 				question: 'Насколько безопасны эти случайные числа?',
@@ -169,7 +169,7 @@ export const generatorWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['random', 'list', 'shuffle', 'sort', 'generator', 'cryptographic'],
 		metaDescription:
-			'Random list generator using crypto.getRandomValues. Shuffle names, items, or numbers with true randomness.',
+			'Генератор случайных списков на crypto.getRandomValues. Перемешивайте имена, элементы и числа с настоящей случайностью.',
 		faqs: [
 			{
 				question: 'Как работает рандомизация?',
@@ -217,7 +217,7 @@ export const generatorWidgets: Widget[] = [
 		tags: ['coin', 'flip', 'random', 'decision', 'heads', 'tails', '3d'],
 		useCase: 'Принятие случайных решений орёл/решка с красивой анимацией',
 		metaDescription:
-			'Online coin flip with 3D animation. Heads or tails with multiple coin types and statistics.',
+			'Онлайн-подбрасывание монеты с 3D-анимацией. Орёл или решка с разными типами монет и статистикой бросков.',
 		faqs: [
 			{
 				question: 'Действительно ли бросок монеты случайный?',
@@ -261,7 +261,7 @@ export const generatorWidgets: Widget[] = [
 		tags: ['dice', 'random', 'game', '3d', 'probability', 'roll'],
 		useCase: 'Бросок костей для настольных игр или случайной генерации чисел',
 		metaDescription:
-			'Online dice roller with 3D animation. Roll up to 6 dice with true random numbers.',
+			'Онлайн-бросок игральных костей с 3D-анимацией. Бросайте до 6 кубиков с настоящими случайными числами.',
 		faqs: [
 			{
 				question: 'Действительно ли броски костей случайны?',
