@@ -1,8 +1,9 @@
 ---
-title: 'CSS Grid Layout: Complete Guide with Examples'
+title: 'CSS Grid Layout: полное руководство с примерами'
 excerpt:
-  'Master CSS Grid Layout with practical examples. Learn how to create complex
-  layouts with grid containers, grid items, and responsive design patterns.'
+  'Освойте CSS Grid Layout на практических примерах. Узнайте, как создавать
+  сложные макеты с помощью grid-контейнеров, grid-элементов и адаптивных
+  паттернов вёрстки.'
 coverImage: '/images/avatar.jpeg'
 date: '2024-12-10T10:00:00.000Z'
 author:
@@ -12,13 +13,14 @@ ogImage:
   url: '/images/avatar.jpeg'
 ---
 
-CSS Grid Layout is a powerful two-dimensional layout system that revolutionized
-how we create web layouts. Unlike Flexbox, which is primarily one-dimensional,
-Grid allows you to work with both rows and columns simultaneously.
+CSS Grid Layout — это мощная двумерная система вёрстки, которая совершила
+революцию в том, как мы создаём макеты для веба. В отличие от Flexbox, который в
+основном одномерный, Grid позволяет работать одновременно и со строками, и с
+колонками.
 
-## Basic Grid Container
+## Базовый grid-контейнер
 
-To create a grid container, simply apply `display: grid` to an element:
+Чтобы создать grid-контейнер, достаточно применить к элементу `display: grid`:
 
 ```css
 .container {
@@ -29,11 +31,12 @@ To create a grid container, simply apply `display: grid` to an element:
 }
 ```
 
-This creates a grid with 3 equal columns and 2 rows with specific heights.
+Так мы получаем сетку из трёх равных колонок и двух строк с заданной высотой.
 
 ## Grid Template Areas
 
-One of the most intuitive features of CSS Grid is template areas:
+Одна из самых наглядных возможностей CSS Grid — именованные области (template
+areas):
 
 ```css
 .container {
@@ -68,9 +71,9 @@ One of the most intuitive features of CSS Grid is template areas:
 }
 ```
 
-## Responsive Grid with auto-fit and minmax
+## Адаптивная сетка с auto-fit и minmax
 
-Create responsive grids without media queries:
+Создавайте адаптивные сетки без медиазапросов:
 
 ```css
 .gallery {
@@ -80,12 +83,12 @@ Create responsive grids without media queries:
 }
 ```
 
-This creates a responsive gallery where items automatically wrap to new rows as
-needed.
+Это создаёт адаптивную галерею, в которой элементы автоматически переносятся на
+новые строки по мере необходимости.
 
-## Advanced Grid Placement
+## Продвинутое размещение элементов
 
-Control item placement with precision:
+Управляйте расположением элементов с точностью до дорожки:
 
 ```css
 .item {
@@ -105,9 +108,9 @@ Control item placement with precision:
 }
 ```
 
-## Implicit vs Explicit Grid
+## Неявная и явная сетка
 
-CSS Grid automatically creates tracks when needed:
+CSS Grid автоматически создаёт дорожки, когда это необходимо:
 
 ```css
 .container {
@@ -118,9 +121,9 @@ CSS Grid automatically creates tracks when needed:
 }
 ```
 
-## Practical Example: Dashboard Layout
+## Практический пример: макет дашборда
 
-Here's a complete dashboard layout using CSS Grid:
+Вот полноценный макет дашборда на CSS Grid:
 
 ```html
 <div class="dashboard">
@@ -206,9 +209,9 @@ Here's a complete dashboard layout using CSS Grid:
 }
 ```
 
-## Grid Alignment
+## Выравнивание в сетке
 
-Control alignment of the entire grid and individual items:
+Управляйте выравниванием как всей сетки, так и отдельных элементов:
 
 ```css
 .container {
@@ -233,9 +236,9 @@ Control alignment of the entire grid and individual items:
 }
 ```
 
-## Subgrid (Modern Browsers)
+## Subgrid (современные браузеры)
 
-Subgrid allows nested grids to align with parent grid tracks:
+Subgrid позволяет вложенным сеткам выравниваться по дорожкам родительской сетки:
 
 ```css
 .parent {
@@ -251,16 +254,19 @@ Subgrid allows nested grids to align with parent grid tracks:
 }
 ```
 
-## Best Practices
+## Лучшие практики
 
-1. **Use Grid for 2D layouts**: When you need to control both rows and columns
-2. **Combine with Flexbox**: Use Grid for overall layout, Flexbox for component
-   internals
-3. **Mobile-first approach**: Start with simple layouts and enhance for larger
-   screens
-4. **Semantic HTML**: Use proper HTML elements regardless of grid placement
-5. **Fallbacks**: Provide fallbacks for older browsers when necessary
+1. **Используйте Grid для двумерных макетов**: когда нужно управлять и строками,
+   и колонками
+2. **Комбинируйте с Flexbox**: используйте Grid для общего макета, а Flexbox —
+   для внутренней структуры компонентов
+3. **Подход mobile-first**: начинайте с простых макетов и усложняйте их для
+   больших экранов
+4. **Семантичный HTML**: используйте правильные HTML-элементы независимо от
+   размещения в сетке
+5. **Запасные варианты**: при необходимости предусматривайте fallback для старых
+   браузеров
 
-CSS Grid has transformed web layout possibilities, making complex designs
-achievable with clean, maintainable code. Master it, and you'll have a powerful
-tool in your web development arsenal.
+CSS Grid преобразил возможности вёрстки для веба, сделав сложные дизайны
+достижимыми с помощью чистого и поддерживаемого кода. Освойте его — и в вашем
+арсенале веб-разработчика появится по-настоящему мощный инструмент.

@@ -1,8 +1,9 @@
 ---
-title: 'Interactive Code Examples: Live Preview Demo'
+title: 'Интерактивные примеры кода: демо живого превью'
 excerpt:
-  'See how our new live code preview feature works with interactive HTML, CSS,
-  and JavaScript examples you can edit and run in real-time.'
+  'Посмотрите, как работает наша новая функция живого превью кода на
+  интерактивных примерах HTML, CSS и JavaScript, которые можно редактировать
+  и запускать в реальном времени.'
 coverImage: '/images/avatar.jpeg'
 date: '2025-08-07T10:00:00.000Z'
 author:
@@ -12,12 +13,12 @@ ogImage:
   url: '/images/avatar.jpeg'
 ---
 
-This post demonstrates our new live code preview feature. You can now include
-interactive code examples that readers can see in action!
+Этот пост демонстрирует нашу новую функцию живого превью кода. Теперь вы можете
+добавлять интерактивные примеры, которые читатели увидят в действии!
 
-## Simple Button Example
+## Простой пример с кнопкой
 
-Let's start with a simple interactive button:
+Начнём с простой интерактивной кнопки:
 
 ```html:live
 // title: Interactive Button
@@ -68,9 +69,9 @@ function handleClick() {
 }
 ```
 
-## Animated Card Example
+## Пример с анимированной карточкой
 
-Here's a more complex example with CSS animations:
+А вот пример посложнее — с CSS-анимациями:
 
 ```html:live
 // title: Animated Card
@@ -136,9 +137,9 @@ Here's a more complex example with CSS animations:
 }
 ```
 
-## Dynamic Color Picker
+## Динамический выбор цвета
 
-An interactive color picker example:
+Интерактивный пример с выбором цвета:
 
 ```html:live
 // title: Color Picker Demo
@@ -213,21 +214,21 @@ function hexToRgb(hex) {
 }
 ```
 
-## How It Works
+## Как это работает
 
-To create these live examples in your markdown files, use the special `:live`
-suffix:
+Чтобы создать такие живые примеры в своих markdown-файлах, используйте
+специальный суффикс `:live`:
 
-- `html:live` for HTML code
-- `css:live` for CSS code
-- `js:live` for JavaScript code
+- `html:live` для HTML-кода
+- `css:live` для CSS-кода
+- `js:live` для JavaScript-кода
 
-The code blocks are automatically combined into an interactive preview that
-readers can experiment with!
+Блоки кода автоматически объединяются в интерактивное превью, с которым читатели
+могут экспериментировать!
 
-## Regular Code Still Works
+## Обычный код тоже работает
 
-Of course, regular code blocks still work as expected:
+Разумеется, обычные блоки кода по-прежнему работают как положено:
 
 ```javascript
 // This is a regular code block
@@ -239,5 +240,5 @@ function fibonacci(n) {
 console.log(fibonacci(10)) // 55
 ```
 
-This feature makes technical blog posts much more engaging and helps readers
-understand concepts through hands-on experimentation!
+Эта функция делает технические статьи гораздо интереснее и помогает читателям
+разобраться в материале через практические эксперименты!

@@ -1,9 +1,9 @@
 ---
-title: 'CSS Animations: From Basics to Advanced Techniques'
+title: 'CSS-анимации: от основ до продвинутых техник'
 excerpt:
-  'Learn how to create stunning animations with CSS. From simple transitions to
-  complex keyframe animations, performance optimization, and real-world
-  examples.'
+  'Разбираемся, как создавать впечатляющие анимации средствами CSS. От простых
+  переходов до сложных keyframe-анимаций, оптимизации производительности и
+  примеров из реальной практики.'
 coverImage: '/images/avatar.jpeg'
 date: '2024-12-06T10:00:00.000Z'
 author:
@@ -13,16 +13,16 @@ ogImage:
   url: '/images/avatar.jpeg'
 ---
 
-CSS animations bring life to web interfaces, creating engaging user experiences
-without JavaScript. This guide covers everything from basic transitions to
-advanced animation techniques.
+CSS-анимации оживляют веб-интерфейсы и создают увлекательный пользовательский
+опыт без единой строчки JavaScript. В этом руководстве мы разберём всё: от
+базовых переходов до продвинутых техник анимации.
 
-## CSS Transitions
+## CSS-переходы (transitions)
 
-Transitions are the simplest form of CSS animation, perfect for hover effects
-and state changes.
+Переходы — это простейшая форма CSS-анимации, идеально подходящая для эффектов
+при наведении и смены состояний.
 
-### Basic Transition Syntax
+### Базовый синтаксис перехода
 
 ```css
 .button {
@@ -51,7 +51,7 @@ and state changes.
 }
 ```
 
-### Transition Properties
+### Свойства перехода
 
 ```css
 .element {
@@ -66,7 +66,7 @@ and state changes.
 }
 ```
 
-### Timing Functions
+### Функции плавности (timing functions)
 
 ```css
 .examples {
@@ -90,11 +90,11 @@ and state changes.
 }
 ```
 
-## CSS Keyframe Animations
+## Keyframe-анимации в CSS
 
-Keyframe animations offer more control for complex animations.
+Анимации на ключевых кадрах дают куда больше контроля над сложными эффектами.
 
-### Basic @keyframes
+### Базовый @keyframes
 
 ```css
 @keyframes slide-in {
@@ -113,7 +113,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### Multiple Keyframes
+### Несколько ключевых кадров
 
 ```css
 @keyframes bounce {
@@ -139,7 +139,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### Animation Properties
+### Свойства анимации
 
 ```css
 .element {
@@ -159,9 +159,9 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-## Practical Animation Examples
+## Практические примеры анимаций
 
-### 1. Loading Spinner
+### 1. Спиннер загрузки
 
 ```css
 @keyframes spin {
@@ -180,7 +180,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### 2. Pulse Effect
+### 2. Эффект пульсации
 
 ```css
 @keyframes pulse {
@@ -209,7 +209,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### 3. Text Animation
+### 3. Анимация текста
 
 ```css
 @keyframes typing {
@@ -238,7 +238,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### 4. Card Flip Animation
+### 4. Переворот карточки
 
 ```css
 .flip-card {
@@ -280,7 +280,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### 5. Staggered Animation
+### 5. Каскадная (staggered) анимация
 
 ```css
 @keyframes fade-in-up {
@@ -318,7 +318,7 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-### 6. Morphing Shape
+### 6. Морфинг фигуры
 
 ```css
 @keyframes morph {
@@ -346,9 +346,9 @@ Keyframe animations offer more control for complex animations.
 }
 ```
 
-## Advanced Techniques
+## Продвинутые техники
 
-### 1. Animation with CSS Variables
+### 1. Анимация с CSS-переменными
 
 ```css
 .dynamic-animation {
@@ -363,7 +363,7 @@ element.style.setProperty('--rotation', '180deg');
 element.style.setProperty('--scale', '1.5');
 ```
 
-### 2. Scroll-Triggered Animations
+### 2. Анимации по скроллу
 
 ```css
 @keyframes slide-in-left {
@@ -388,7 +388,7 @@ element.style.setProperty('--scale', '1.5');
 /* Intersection Observer in JavaScript triggers .visible class */
 ```
 
-### 3. SVG Path Animation
+### 3. Анимация SVG-пути
 
 ```css
 .path {
@@ -404,9 +404,9 @@ element.style.setProperty('--scale', '1.5');
 }
 ```
 
-## Performance Optimization
+## Оптимизация производительности
 
-### 1. Use Transform and Opacity
+### 1. Используйте transform и opacity
 
 ```css
 /* Good - GPU accelerated */
@@ -422,7 +422,7 @@ element.style.setProperty('--scale', '1.5');
 }
 ```
 
-### 2. Will-Change Property
+### 2. Свойство will-change
 
 ```css
 .will-animate {
@@ -435,7 +435,7 @@ element.style.setProperty('--scale', '1.5');
 }
 ```
 
-### 3. Reduce Paint Areas
+### 3. Уменьшайте области перерисовки
 
 ```css
 /* Isolate animations */
@@ -445,10 +445,10 @@ element.style.setProperty('--scale', '1.5');
 }
 ```
 
-## Animation Best Practices
+## Лучшие практики анимации
 
-1. **Keep it subtle**: Animations should enhance, not distract
-2. **Respect motion preferences**:
+1. **Соблюдайте меру**: анимации должны дополнять интерфейс, а не отвлекать от него
+2. **Уважайте предпочтения по движению**:
    ```css
    @media (prefers-reduced-motion: reduce) {
    	* {
@@ -458,14 +458,14 @@ element.style.setProperty('--scale', '1.5');
    	}
    }
    ```
-3. **Test performance**: Use DevTools to check for dropped frames
-4. **Use appropriate durations**:
-   - Micro-interactions: 100-300ms
-   - Page transitions: 300-500ms
-   - Complex animations: 500-1000ms
-5. **Provide feedback**: Ensure animations communicate state changes
+3. **Проверяйте производительность**: используйте DevTools, чтобы отследить пропущенные кадры
+4. **Подбирайте подходящую длительность**:
+   - Микровзаимодействия: 100–300 мс
+   - Переходы между страницами: 300–500 мс
+   - Сложные анимации: 500–1000 мс
+5. **Давайте обратную связь**: убедитесь, что анимации отражают смену состояний
 
-## Debugging Animations
+## Отладка анимаций
 
 ```css
 /* Slow down all animations for debugging */
@@ -475,5 +475,5 @@ element.style.setProperty('--scale', '1.5');
 }
 ```
 
-CSS animations are powerful tools for creating engaging web experiences. Use
-them wisely to enhance usability and delight your users!
+CSS-анимации — мощный инструмент для создания увлекательных веб-интерфейсов.
+Используйте их с умом, чтобы улучшить удобство и порадовать своих пользователей!

@@ -1,8 +1,9 @@
 ---
-title: 'CSS Container Queries: The Future of Responsive Components'
+title: 'CSS Container Queries: будущее адаптивных компонентов'
 excerpt:
-  'Learn how CSS Container Queries enable truly responsive components. Create
-  layouts that adapt based on container size, not just viewport.'
+  'Разбираемся, как контейнерные запросы делают компоненты по-настоящему
+  адаптивными. Строим макеты, которые подстраиваются под размер контейнера, а не
+  только под ширину экрана.'
 coverImage: '/images/avatar.jpeg'
 date: '2024-12-02T10:00:00.000Z'
 author:
@@ -12,18 +13,19 @@ ogImage:
   url: '/images/avatar.jpeg'
 ---
 
-CSS Container Queries are a game-changer for responsive design. Unlike media
-queries that respond to viewport size, container queries allow components to
-adapt based on their container's size, enabling truly modular and reusable
-components.
+CSS Container Queries меняют правила игры в адаптивной вёрстке. В отличие от
+медиазапросов, которые реагируют на размер вьюпорта, контейнерные запросы
+позволяют компонентам подстраиваться под размер собственного контейнера. Это
+открывает путь к по-настоящему модульным и переиспользуемым компонентам.
 
-## Understanding Container Queries
+## Как устроены контейнерные запросы
 
-Container queries solve a fundamental limitation of media queries: components
-that need to work in different contexts (sidebar, main content, modal) can now
-adapt to their immediate container rather than the viewport.
+Контейнерные запросы решают фундаментальное ограничение медиазапросов:
+компоненты, которые должны работать в разных контекстах (боковая панель,
+основной контент, модальное окно), теперь могут ориентироваться на свой
+ближайший контейнер, а не на вьюпорт.
 
-### Basic Syntax
+### Базовый синтаксис
 
 ```css
 /* Define a container */
@@ -49,9 +51,9 @@ adapt to their immediate container rather than the viewport.
 }
 ```
 
-## Container Types
+## Типы контейнеров
 
-### 1. Inline-Size Container
+### 1. Контейнер inline-size
 
 ```css
 .container {
@@ -60,7 +62,7 @@ adapt to their immediate container rather than the viewport.
 }
 ```
 
-### 2. Size Container
+### 2. Контейнер size
 
 ```css
 .container {
@@ -70,7 +72,7 @@ adapt to their immediate container rather than the viewport.
 }
 ```
 
-### 3. Normal Container (Default)
+### 3. Контейнер normal (по умолчанию)
 
 ```css
 .container {
@@ -79,9 +81,10 @@ adapt to their immediate container rather than the viewport.
 }
 ```
 
-## Container Query Units
+## Единицы контейнерных запросов
 
-New viewport-relative units for container queries:
+Новые единицы, привязанные к размеру контейнера, по аналогии с
+вьюпорт-единицами:
 
 ```css
 .element {
@@ -99,9 +102,9 @@ New viewport-relative units for container queries:
 }
 ```
 
-## Practical Examples
+## Практические примеры
 
-### 1. Responsive Card Component
+### 1. Адаптивная карточка
 
 ```css
 /* Card that adapts to its container */
@@ -193,7 +196,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-### 2. Responsive Navigation
+### 2. Адаптивная навигация
 
 ```css
 .nav-container {
@@ -262,7 +265,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-### 3. Adaptive Grid Layout
+### 3. Гибкая сетка
 
 ```css
 .grid-container {
@@ -301,7 +304,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-### 4. Article Layout
+### 4. Макет статьи
 
 ```css
 .article-container {
@@ -368,9 +371,9 @@ New viewport-relative units for container queries:
 }
 ```
 
-## Advanced Techniques
+## Продвинутые приёмы
 
-### 1. Combining with CSS Variables
+### 1. Комбинация с CSS-переменными
 
 ```css
 .dynamic-container {
@@ -387,7 +390,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-### 2. Container Query with Aspect Ratio
+### 2. Контейнерный запрос по соотношению сторон
 
 ```css
 .aspect-container {
@@ -412,7 +415,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-### 3. Nested Container Queries
+### 3. Вложенные контейнерные запросы
 
 ```css
 .outer-container {
@@ -442,7 +445,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-### 4. Style Queries (Future)
+### 4. Запросы по стилям (на будущее)
 
 ```css
 /* Note: Style queries are still experimental */
@@ -461,7 +464,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-## Real-World Component Library
+## Библиотека компонентов на практике
 
 ```css
 /* Base container setup */
@@ -571,7 +574,7 @@ New viewport-relative units for container queries:
 }
 ```
 
-## Browser Support & Fallbacks
+## Поддержка браузерами и запасные варианты
 
 ```css
 /* Feature detection */
@@ -592,15 +595,16 @@ New viewport-relative units for container queries:
 }
 ```
 
-## Best Practices
+## Лучшие практики
 
-1. **Name your containers**: Use descriptive container names for clarity
-2. **Start with inline-size**: Most use cases only need width queries
-3. **Avoid size type when possible**: It can affect layout calculations
-4. **Use container units wisely**: They're powerful but can be confusing
-5. **Progressive enhancement**: Always provide fallbacks
-6. **Test in context**: Components should work in various container sizes
+1. **Давайте контейнерам имена**: понятные имена контейнеров делают код яснее
+2. **Начинайте с inline-size**: большинству задач достаточно запросов по ширине
+3. **По возможности избегайте типа size**: он может влиять на расчёт макета
+4. **Разумно используйте контейнерные единицы**: они мощные, но легко запутаться
+5. **Прогрессивное улучшение**: всегда предусматривайте запасные варианты
+6. **Тестируйте в контексте**: компоненты должны работать при разных размерах контейнера
 
-Container queries represent a paradigm shift in responsive design, enabling
-truly modular components that adapt intelligently to their environment. Master
-them to build more flexible and maintainable component systems!
+Контейнерные запросы — это смена парадигмы в адаптивной вёрстке. Они позволяют
+создавать по-настоящему модульные компоненты, которые умно подстраиваются под
+своё окружение. Освойте их, чтобы строить более гибкие и удобные в поддержке
+системы компонентов!

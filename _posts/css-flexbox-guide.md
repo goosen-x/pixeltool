@@ -1,8 +1,8 @@
 ---
-title: 'CSS Flexbox: The Ultimate Guide with Practical Examples'
+title: 'CSS Flexbox: полное руководство с практическими примерами'
 excerpt:
-  'Comprehensive guide to CSS Flexbox layout. Learn flex containers, flex items,
-  alignment, and real-world use cases with code examples.'
+  'Подробное руководство по раскладке CSS Flexbox. Разбираемся с флекс-контейнерами,
+  флекс-элементами, выравниванием и реальными сценариями применения на примерах кода.'
 coverImage: '/images/avatar.jpeg'
 date: '2024-12-08T10:00:00.000Z'
 author:
@@ -12,14 +12,14 @@ ogImage:
   url: '/images/avatar.jpeg'
 ---
 
-Flexbox (Flexible Box Layout) is a one-dimensional layout method that excels at
-distributing space and aligning items in a container. It's perfect for component
-layouts, navigation bars, and any scenario where you need flexible, responsive
-arrangements.
+Flexbox (Flexible Box Layout) — это одномерный способ раскладки, который отлично
+справляется с распределением пространства и выравниванием элементов внутри
+контейнера. Он идеально подходит для вёрстки компонентов, навигационных панелей и
+любых ситуаций, где нужны гибкие, адаптивные расположения.
 
-## Flex Container Basics
+## Основы флекс-контейнера
 
-To create a flex container, apply `display: flex`:
+Чтобы создать флекс-контейнер, задайте `display: flex`:
 
 ```css
 .container {
@@ -28,9 +28,9 @@ To create a flex container, apply `display: flex`:
 }
 ```
 
-## Main Axis and Cross Axis
+## Основная и поперечная ось
 
-Understanding axes is crucial for Flexbox:
+Понимание осей — ключ к работе с Flexbox:
 
 ```css
 .container {
@@ -40,9 +40,9 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-## Flex Container Properties
+## Свойства флекс-контейнера
 
-### 1. justify-content (Main Axis Alignment)
+### 1. justify-content (выравнивание по основной оси)
 
 ```css
 .container {
@@ -71,7 +71,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 2. align-items (Cross Axis Alignment)
+### 2. align-items (выравнивание по поперечной оси)
 
 ```css
 .container {
@@ -122,7 +122,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 4. align-content (Multi-line Cross Axis)
+### 4. align-content (поперечное выравнивание нескольких строк)
 
 ```css
 .container {
@@ -134,7 +134,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 5. gap (Spacing Between Items)
+### 5. gap (расстояние между элементами)
 
 ```css
 .container {
@@ -144,7 +144,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-## Flex Item Properties
+## Свойства флекс-элементов
 
 ### 1. flex-grow, flex-shrink, flex-basis
 
@@ -177,7 +177,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 2. align-self (Individual Cross Axis Alignment)
+### 2. align-self (индивидуальное выравнивание по поперечной оси)
 
 ```css
 .item {
@@ -206,7 +206,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 3. order (Visual Order)
+### 3. order (визуальный порядок)
 
 ```css
 .item {
@@ -250,9 +250,9 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-## Common Flexbox Patterns
+## Распространённые паттерны Flexbox
 
-### 1. Centering Content
+### 1. Центрирование содержимого
 
 ```css
 /* Perfect centering */
@@ -276,7 +276,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 2. Equal Height Columns
+### 2. Колонки одинаковой высоты
 
 ```css
 .columns {
@@ -293,7 +293,7 @@ Understanding axes is crucial for Flexbox:
 }
 ```
 
-### 3. Sticky Footer
+### 3. Прижатый к низу футер
 
 ```css
 body {
@@ -315,7 +315,7 @@ footer {
 }
 ```
 
-### 4. Media Object
+### 4. Медиа-объект
 
 ```css
 .media {
@@ -337,7 +337,7 @@ footer {
 }
 ```
 
-### 5. Responsive Navigation
+### 5. Адаптивная навигация
 
 ```css
 .navbar {
@@ -386,7 +386,7 @@ footer {
 }
 ```
 
-### 6. Card Grid with Flexbox
+### 6. Сетка карточек на Flexbox
 
 ```css
 .card-grid {
@@ -444,25 +444,25 @@ footer {
 }
 ```
 
-## Flexbox vs Grid
+## Flexbox или Grid
 
-Use Flexbox when:
+Используйте Flexbox, когда:
 
-- Working with one-dimensional layouts
-- Content size should determine layout
-- You need alignment and distribution of space
-- Building navigation bars, toolbars, or small components
+- работаете с одномерными раскладками;
+- размер содержимого должен определять раскладку;
+- нужно выравнивание и распределение пространства;
+- строите навигационные панели, тулбары или небольшие компоненты.
 
-Use Grid when:
+Используйте Grid, когда:
 
-- Working with two-dimensional layouts
-- You need precise control over rows and columns
-- Building complex page layouts
-- You want to overlap items
+- работаете с двумерными раскладками;
+- нужен точный контроль над строками и колонками;
+- строите сложные макеты страниц;
+- хотите накладывать элементы друг на друга.
 
-## Browser Support and Prefixes
+## Поддержка браузерами и префиксы
 
-Modern browsers fully support Flexbox, but for older browsers:
+Современные браузеры полностью поддерживают Flexbox, но для устаревших браузеров:
 
 ```css
 .container {
@@ -478,5 +478,5 @@ Modern browsers fully support Flexbox, but for older browsers:
 }
 ```
 
-Flexbox has become an essential tool for modern web development. Master these
-concepts, and you'll be able to create flexible, responsive layouts with ease!
+Flexbox стал незаменимым инструментом современной веб-разработки. Освойте эти
+концепции — и вы сможете с лёгкостью создавать гибкие адаптивные раскладки!
