@@ -16,7 +16,6 @@ import {
 	WidgetSection,
 	WidgetForm,
 	WidgetInfo,
-	WidgetShareSection,
 	WidgetTips,
 	WidgetTutorial,
 	type InputField
@@ -52,9 +51,9 @@ export default function AsciiArtGeneratorPage() {
 	const [showTutorial, setShowTutorial] = useState(false)
 
 	const config: BaseWidgetConfig = {
-		title: 'ASCII Art Generator',
+		title: 'Генератор ASCII-арта',
 		description:
-			'Convert text and images to ASCII art, or use pre-made patterns',
+			'Преобразуйте текст и изображения в ASCII-арт или используйте готовые шаблоны',
 		icon: <Type className='w-6 h-6' />,
 		category: 'Creative Tools',
 		keywords: ['ascii', 'art', 'text', 'image', 'converter', 'generator']
@@ -64,21 +63,21 @@ export default function AsciiArtGeneratorPage() {
 	const textFields: InputField[] = [
 		{
 			name: 'text',
-			label: 'Text to Convert',
+			label: 'Текст для преобразования',
 			type: 'text',
-			placeholder: 'Enter text to convert to ASCII art',
+			placeholder: 'Введите текст для преобразования в ASCII-арт',
 			required: true,
 			icon: <Type className='w-4 h-4' />
 		},
 		{
 			name: 'font',
-			label: 'Font Style',
+			label: 'Стиль шрифта',
 			type: 'select',
 			value: 'standard',
 			options: [
-				{ label: 'Standard', value: 'standard' },
-				{ label: 'Small', value: 'small' },
-				{ label: 'Big', value: 'big' }
+				{ label: 'Стандартный', value: 'standard' },
+				{ label: 'Мелкий', value: 'small' },
+				{ label: 'Крупный', value: 'big' }
 			]
 		}
 	]
@@ -87,7 +86,7 @@ export default function AsciiArtGeneratorPage() {
 	const imageFields: InputField[] = [
 		{
 			name: 'width',
-			label: 'Width (characters)',
+			label: 'Ширина (в символах)',
 			type: 'slider',
 			value: 80,
 			min: 40,
@@ -96,7 +95,7 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			name: 'charset',
-			label: 'Character Set',
+			label: 'Набор символов',
 			type: 'select',
 			value: 'basic',
 			options: Object.entries(asciiCharsets).map(([key, value]) => ({
@@ -106,7 +105,7 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			name: 'invert',
-			label: 'Invert brightness',
+			label: 'Инвертировать яркость',
 			type: 'switch',
 			value: false
 		}
@@ -116,7 +115,7 @@ export default function AsciiArtGeneratorPage() {
 		const { text, font } = data
 		const ascii = textToAscii(text, font)
 		setAsciiOutput(ascii)
-		toast.success('Text converted to ASCII art!')
+		toast.success('Текст преобразован в ASCII-арт!')
 	}
 
 	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +143,7 @@ export default function AsciiArtGeneratorPage() {
 					invert: false
 				})
 				setAsciiOutput(ascii)
-				toast.success('Image converted to ASCII art!')
+				toast.success('Изображение преобразовано в ASCII-арт!')
 			}
 			img.src = event.target?.result as string
 		}
@@ -153,7 +152,7 @@ export default function AsciiArtGeneratorPage() {
 
 	const handleImageToAscii = (data: Record<string, any>) => {
 		if (!imagePreview) {
-			toast.error('Please upload an image first')
+			toast.error('Сначала загрузите изображение')
 			return
 		}
 
@@ -174,7 +173,7 @@ export default function AsciiArtGeneratorPage() {
 			})
 
 			setAsciiOutput(ascii)
-			toast.success('Image converted with new settings!')
+			toast.success('Изображение преобразовано с новыми настройками!')
 		}
 		img.src = imagePreview
 	}
@@ -184,26 +183,26 @@ export default function AsciiArtGeneratorPage() {
 		if (pattern) {
 			setAsciiOutput(pattern.pattern.trim())
 			setSelectedPattern(patternId)
-			toast.success(`Selected ${pattern.name} pattern`)
+			toast.success(`Выбран шаблон «${pattern.name}»`)
 		}
 	}
 
 	const handleCopyAscii = async () => {
 		if (!asciiOutput) {
-			toast.error('No ASCII art to copy')
+			toast.error('Нет ASCII-арта для копирования')
 			return
 		}
 		try {
 			await navigator.clipboard.writeText(asciiOutput)
-			toast.success('ASCII art copied to clipboard!')
+			toast.success('ASCII-арт скопирован в буфер обмена!')
 		} catch (error) {
-			toast.error('Failed to copy')
+			toast.error('Не удалось скопировать')
 		}
 	}
 
 	const handleDownloadText = () => {
 		downloadAsciiAsText(asciiOutput, 'ascii-art.txt')
-		toast.success('Downloaded as text file!')
+		toast.success('Скачано в виде текстового файла!')
 	}
 
 	const handleDownloadImage = () => {
@@ -212,29 +211,29 @@ export default function AsciiArtGeneratorPage() {
 			color: '#000000',
 			background: '#FFFFFF'
 		})
-		toast.success('Downloaded as image!')
+		toast.success('Скачано в виде изображения!')
 	}
 
 	// Tutorial steps
 	const tutorialSteps = [
 		{
 			id: 'welcome',
-			title: 'Welcome to ASCII Art Generator',
+			title: 'Добро пожаловать в генератор ASCII-арта',
 			description:
-				'This tool helps you create ASCII art from text, images, or pre-made patterns'
+				'Этот инструмент помогает создавать ASCII-арт из текста, изображений или готовых шаблонов'
 		},
 		{
 			id: 'tabs',
-			title: 'Choose Your Input Type',
+			title: 'Выберите тип ввода',
 			description:
-				'Select Text for text-based art, Image to convert photos, or Patterns for pre-made designs',
+				'Выберите «Текст в ASCII» для арта из текста, «Изображение в ASCII» для конвертации фото или «Шаблоны» для готовых образцов',
 			element: '.tabs-list',
 			position: 'bottom' as const
 		},
 		{
 			id: 'text-input',
-			title: 'Enter Your Text',
-			description: 'Type any text here and choose a font style',
+			title: 'Введите текст',
+			description: 'Наберите здесь любой текст и выберите стиль шрифта',
 			element: 'input[name="text"]',
 			position: 'top' as const,
 			action: {
@@ -245,20 +244,20 @@ export default function AsciiArtGeneratorPage() {
 		},
 		{
 			id: 'generate',
-			title: 'Generate ASCII Art',
-			description: 'Click this button to create your ASCII art',
-			element: 'button:has-text("Generate ASCII Art")',
+			title: 'Создайте ASCII-арт',
+			description: 'Нажмите эту кнопку, чтобы создать ASCII-арт',
+			element: 'button:has-text("Создать ASCII-арт")',
 			position: 'top' as const,
 			action: {
 				type: 'click' as const,
-				target: 'button:has-text("Generate ASCII Art")'
+				target: 'button:has-text("Создать ASCII-арт")'
 			}
 		},
 		{
 			id: 'copy',
-			title: 'Copy or Download',
+			title: 'Копирование и скачивание',
 			description:
-				'Copy the result to clipboard or download as text/image file',
+				'Скопируйте результат в буфер обмена или скачайте как текстовый файл либо изображение',
 			element: '.ascii-output',
 			position: 'top' as const
 		}
@@ -268,33 +267,35 @@ export default function AsciiArtGeneratorPage() {
 	const asciiTips = [
 		{
 			id: 'font-styles',
-			title: 'Multiple Font Styles',
-			description: 'Try different font styles for varied artistic effects',
+			title: 'Несколько стилей шрифта',
+			description:
+				'Пробуйте разные стили шрифтов для различных художественных эффектов',
 			category: 'basic' as const
 		},
 		{
 			id: 'image-quality',
-			title: 'Image Quality Tips',
+			title: 'Советы по качеству изображения',
 			description:
-				'Use high-contrast images with clear subjects for best results',
+				'Используйте контрастные изображения с чётким объектом для лучшего результата',
 			category: 'advanced' as const
 		},
 		{
 			id: 'width-adjustment',
-			title: 'Adjust Width',
-			description: 'Change the width setting to fit your display or use case',
+			title: 'Настройка ширины',
+			description: 'Меняйте ширину под ваш экран или конкретную задачу',
 			category: 'basic' as const
 		},
 		{
 			id: 'keyboard-shortcut',
-			title: 'Quick Generate',
-			description: 'Press Ctrl/Cmd + Enter to quickly generate ASCII art',
+			title: 'Быстрое создание',
+			description: 'Нажмите Ctrl/Cmd + Enter, чтобы быстро создать ASCII-арт',
 			category: 'shortcut' as const
 		},
 		{
 			id: 'export-options',
-			title: 'Export Options',
-			description: 'Download as PNG for social media or TXT for code comments',
+			title: 'Варианты экспорта',
+			description:
+				'Скачивайте PNG для соцсетей или TXT для комментариев в коде',
 			category: 'pro' as const
 		}
 	]
@@ -315,7 +316,7 @@ export default function AsciiArtGeneratorPage() {
 						widgetId='ascii-art-generator'
 						onComplete={() => {
 							toast.success(
-								"Tutorial completed! You're ready to create ASCII art"
+								'Обучение пройдено! Теперь вы готовы создавать ASCII-арт'
 							)
 							setShowTutorial(false)
 						}}
@@ -326,15 +327,15 @@ export default function AsciiArtGeneratorPage() {
 				<TabsList className='grid w-full grid-cols-3'>
 					<TabsTrigger value='text' className='flex items-center gap-2'>
 						<Type className='w-4 h-4' />
-						Text to ASCII
+						Текст в ASCII
 					</TabsTrigger>
 					<TabsTrigger value='image' className='flex items-center gap-2'>
 						<ImageIcon className='w-4 h-4' />
-						Image to ASCII
+						Изображение в ASCII
 					</TabsTrigger>
 					<TabsTrigger value='patterns' className='flex items-center gap-2'>
 						<Palette className='w-4 h-4' />
-						Patterns
+						Шаблоны
 					</TabsTrigger>
 				</TabsList>
 
@@ -342,7 +343,7 @@ export default function AsciiArtGeneratorPage() {
 					<WidgetForm
 						fields={textFields}
 						onSubmit={handleTextToAscii}
-						submitLabel='Generate ASCII Art'
+						submitLabel='Создать ASCII-арт'
 					/>
 				</TabsContent>
 
@@ -351,14 +352,14 @@ export default function AsciiArtGeneratorPage() {
 						<div className='space-y-4'>
 							<div>
 								<label className='block text-sm font-medium mb-2'>
-									Upload Image
+									Загрузить изображение
 								</label>
 								<input
 									ref={fileInputRef}
 									type='file'
 									accept='image/*'
 									onChange={handleImageUpload}
-									aria-label='Upload Image'
+									aria-label='Загрузить изображение'
 									className='block w-full text-sm text-muted-foreground
                       file:mr-4 file:py-2 file:px-4
                       file:rounded-full file:border-0
@@ -370,10 +371,10 @@ export default function AsciiArtGeneratorPage() {
 
 							{imagePreview && (
 								<div className='space-y-2'>
-									<p className='text-sm text-muted-foreground'>Preview:</p>
+									<p className='text-sm text-muted-foreground'>Предпросмотр:</p>
 									<Image
 										src={imagePreview}
-										alt='Uploaded image preview'
+										alt='Предпросмотр загруженного изображения'
 										width={300}
 										height={200}
 										className='max-w-xs rounded-lg border'
@@ -387,7 +388,7 @@ export default function AsciiArtGeneratorPage() {
 						<WidgetForm
 							fields={imageFields}
 							onSubmit={handleImageToAscii}
-							submitLabel='Update ASCII Art'
+							submitLabel='Обновить ASCII-арт'
 							showReset={false}
 						/>
 					)}
@@ -435,19 +436,19 @@ export default function AsciiArtGeneratorPage() {
 			{asciiOutput && (
 				<Card className='p-6'>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='font-semibold'>ASCII Art Output</h3>
+						<h3 className='font-semibold'>Результат ASCII-арта</h3>
 						<div className='flex items-center gap-2'>
 							<Button onClick={handleCopyAscii} variant='outline' size='sm'>
 								<Copy className='w-4 h-4 mr-2' />
-								Copy
+								Копировать
 							</Button>
 							<Button onClick={handleDownloadText} variant='outline' size='sm'>
 								<FileText className='w-4 h-4 mr-2' />
-								Download Text
+								Скачать текст
 							</Button>
 							<Button onClick={handleDownloadImage} variant='outline' size='sm'>
 								<Download className='w-4 h-4 mr-2' />
-								Download Image
+								Скачать изображение
 							</Button>
 						</div>
 					</div>
@@ -460,7 +461,7 @@ export default function AsciiArtGeneratorPage() {
 							style={{ lineHeight: '1.2' }}
 						/>
 						<Badge variant='secondary' className='absolute top-2 right-2'>
-							{asciiOutput.split('\n').length} lines
+							{asciiOutput.split('\n').length} строк
 						</Badge>
 					</div>
 				</Card>
@@ -468,37 +469,31 @@ export default function AsciiArtGeneratorPage() {
 
 			<WidgetInfo
 				howToUse={[
-					'Text to ASCII: Enter any text and choose a font style',
-					'Image to ASCII: Upload an image to convert it to ASCII characters',
-					'Patterns: Browse and select from pre-made ASCII art patterns',
-					'Adjust settings like width and character set for images',
-					'Copy the result or download as text/image file'
+					'Текст в ASCII: введите любой текст и выберите стиль шрифта',
+					'Изображение в ASCII: загрузите изображение для преобразования в ASCII-символы',
+					'Шаблоны: просматривайте и выбирайте готовые образцы ASCII-арта',
+					'Настраивайте параметры изображения — ширину и набор символов',
+					'Скопируйте результат или скачайте как текстовый файл либо изображение'
 				]}
 				features={[
-					'Convert text to ASCII art with multiple font styles',
-					'Transform images into ASCII art with customizable settings',
-					'Library of pre-made ASCII art patterns',
-					'Multiple character sets for different styles',
-					'Export as text file or PNG image',
-					'Real-time preview and adjustments'
+					'Преобразование текста в ASCII-арт с несколькими стилями шрифта',
+					'Превращение изображений в ASCII-арт с настраиваемыми параметрами',
+					'Библиотека готовых шаблонов ASCII-арта',
+					'Несколько наборов символов для разных стилей',
+					'Экспорт в текстовый файл или изображение PNG',
+					'Предпросмотр и настройка в реальном времени'
 				]}
 				tips={[
-					'Use simple images with good contrast for best results',
-					'Adjust width based on where you plan to use the ASCII art',
-					'Try different character sets for varied artistic effects',
-					'Invert brightness for better results with dark images'
+					'Используйте простые контрастные изображения для лучшего результата',
+					'Подбирайте ширину под то, где будете использовать ASCII-арт',
+					'Пробуйте разные наборы символов для различных художественных эффектов',
+					'Инвертируйте яркость для лучшего результата с тёмными изображениями'
 				]}
 				warnings={[
-					'Large images may take time to process',
-					'ASCII art looks best with monospace fonts',
-					'Some detail will be lost in image conversion'
+					'Обработка больших изображений может занять время',
+					'ASCII-арт лучше всего выглядит с моноширинными шрифтами',
+					'При конвертации изображения часть деталей будет потеряна'
 				]}
-			/>
-
-			<WidgetShareSection
-				widgetTitle='ASCII Art Generator'
-				widgetDescription='Convert text and images to ASCII art. Create text banners, transform images, or browse ASCII art patterns.'
-				hashtags={['asciiart', 'textart', 'developertools', 'webdev']}
 			/>
 		</div>
 	)

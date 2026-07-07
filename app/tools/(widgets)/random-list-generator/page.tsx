@@ -36,7 +36,7 @@ function cryptoShuffle<T>(array: T[]): T[] {
 export default function RandomListGeneratorPage() {
 	const [mounted, setMounted] = useState(false)
 	const [inputText, setInputText] = useState(
-		'Item 1\nItem 2\nItem 3\nItem 4\nItem 5'
+		'Элемент 1\nЭлемент 2\nЭлемент 3\nЭлемент 4\nЭлемент 5'
 	)
 	const [outputText, setOutputText] = useState('')
 	const [isShuffling, setIsShuffling] = useState(false)
@@ -46,7 +46,7 @@ export default function RandomListGeneratorPage() {
 
 	useEffect(() => {
 		setMounted(true)
-		updateItemCount('Item 1\nItem 2\nItem 3\nItem 4\nItem 5')
+		updateItemCount('Элемент 1\nЭлемент 2\nЭлемент 3\nЭлемент 4\nЭлемент 5')
 	}, [])
 
 	const updateItemCount = (text: string) => {
@@ -64,12 +64,12 @@ export default function RandomListGeneratorPage() {
 			.filter(line => line.trim() !== '')
 
 		if (items.length === 0) {
-			toast.error('Please enter at least one item')
+			toast.error('Введите хотя бы один элемент')
 			return
 		}
 
 		if (items.length > 10000) {
-			toast.error('Maximum 10,000 items allowed')
+			toast.error('Максимум 10 000 элементов')
 			return
 		}
 
@@ -81,23 +81,23 @@ export default function RandomListGeneratorPage() {
 			setOutputText(shuffledItems.join('\n'))
 			setShuffleCount(prev => prev + 1)
 			setIsShuffling(false)
-			toast.success('List shuffled successfully!')
+			toast.success('Список успешно перемешан!')
 		}, 300)
 	}
 
 	const copyToClipboard = async () => {
 		if (!outputText) {
-			toast.error('Nothing to copy')
+			toast.error('Нечего копировать')
 			return
 		}
 
 		try {
 			await navigator.clipboard.writeText(outputText)
 			setCopiedOutput(true)
-			toast.success('Copied to clipboard')
+			toast.success('Скопировано в буфер обмена')
 			setTimeout(() => setCopiedOutput(false), 2000)
 		} catch (err) {
-			toast.error('Failed to copy')
+			toast.error('Не удалось скопировать')
 		}
 	}
 
@@ -106,18 +106,18 @@ export default function RandomListGeneratorPage() {
 		setOutputText('')
 		setItemCount(0)
 		setShuffleCount(0)
-		toast.success('Cleared all data')
+		toast.success('Все данные очищены')
 	}
 
 	const resetToOriginal = () => {
 		setOutputText('')
 		setShuffleCount(0)
-		toast.success('Reset to original order')
+		toast.success('Восстановлен исходный порядок')
 	}
 
 	const downloadList = () => {
 		if (!outputText) {
-			toast.error('Nothing to download')
+			toast.error('Нечего скачивать')
 			return
 		}
 
@@ -128,7 +128,7 @@ export default function RandomListGeneratorPage() {
 		a.download = `shuffled-list-${new Date().toISOString().split('T')[0]}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success('List downloaded')
+		toast.success('Список скачан')
 	}
 
 	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,7 +142,7 @@ export default function RandomListGeneratorPage() {
 			updateItemCount(text)
 			setOutputText('')
 			setShuffleCount(0)
-			toast.success('File uploaded successfully')
+			toast.success('Файл успешно загружен')
 		}
 		reader.readAsText(file)
 	}
@@ -152,10 +152,11 @@ export default function RandomListGeneratorPage() {
 			<div className='max-w-6xl mx-auto space-y-8'>
 				<div>
 					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Random List Generator
+						Генератор случайного списка
 					</h1>
 					<p className='text-muted-foreground'>
-						Randomly shuffle and sort lists with cryptographic randomness
+						Перемешивайте и сортируйте списки случайным образом с
+						криптографической стойкостью
 					</p>
 				</div>
 				<div className='animate-pulse space-y-8'>
@@ -174,17 +175,17 @@ export default function RandomListGeneratorPage() {
 					<div className='space-y-4'>
 						<div className='flex items-center justify-between'>
 							<Label htmlFor='input' className='text-base font-semibold'>
-								Input List (one item per line)
+								Исходный список (по одному элементу в строке)
 							</Label>
 							<div className='flex items-center gap-2'>
 								<Badge variant='secondary'>
-									{itemCount} {itemCount === 1 ? 'item' : 'items'}
+									{itemCount} {itemCount === 1 ? 'элемент' : 'элементов'}
 								</Badge>
 								<label htmlFor='file-upload' className='cursor-pointer'>
 									<Button variant='outline' size='sm' asChild>
 										<span>
 											<Upload className='w-4 h-4 mr-1' />
-											Upload
+											Загрузить
 										</span>
 									</Button>
 									<input
@@ -193,7 +194,7 @@ export default function RandomListGeneratorPage() {
 										accept='.txt'
 										onChange={handleFileUpload}
 										className='hidden'
-										aria-label='Upload text file with list items'
+										aria-label='Загрузить текстовый файл со списком элементов'
 									/>
 								</label>
 							</div>
@@ -206,7 +207,7 @@ export default function RandomListGeneratorPage() {
 								setInputText(e.target.value)
 								updateItemCount(e.target.value)
 							}}
-							placeholder='Enter items to shuffle...'
+							placeholder='Введите элементы для перемешивания...'
 							className='min-h-[400px] font-mono text-sm'
 							spellCheck={false}
 						/>
@@ -220,7 +221,7 @@ export default function RandomListGeneratorPage() {
 								<Shuffle
 									className={cn('w-4 h-4 mr-2', isShuffling && 'animate-spin')}
 								/>
-								Shuffle List
+								Перемешать список
 							</Button>
 							<Button
 								onClick={clearAll}
@@ -239,11 +240,11 @@ export default function RandomListGeneratorPage() {
 					<div className='space-y-4'>
 						<div className='flex items-center justify-between'>
 							<Label htmlFor='output' className='text-base font-semibold'>
-								Shuffled Result
+								Перемешанный результат
 							</Label>
 							<div className='flex items-center gap-2'>
 								{shuffleCount > 0 && (
-									<Badge variant='outline'>Shuffled {shuffleCount}x</Badge>
+									<Badge variant='outline'>Перемешано {shuffleCount}x</Badge>
 								)}
 								<Button
 									onClick={copyToClipboard}
@@ -254,12 +255,12 @@ export default function RandomListGeneratorPage() {
 									{copiedOutput ? (
 										<>
 											<Check className='w-4 h-4 mr-1' />
-											Copied
+											Скопировано
 										</>
 									) : (
 										<>
 											<Copy className='w-4 h-4 mr-1' />
-											Copy
+											Копировать
 										</>
 									)}
 								</Button>
@@ -278,7 +279,7 @@ export default function RandomListGeneratorPage() {
 							id='output'
 							value={outputText}
 							onChange={e => setOutputText(e.target.value)}
-							placeholder='Shuffled items will appear here...'
+							placeholder='Здесь появятся перемешанные элементы...'
 							className='min-h-[400px] font-mono text-sm'
 							spellCheck={false}
 						/>
@@ -293,7 +294,7 @@ export default function RandomListGeneratorPage() {
 								<Shuffle
 									className={cn('w-4 h-4 mr-2', isShuffling && 'animate-spin')}
 								/>
-								Re-shuffle
+								Перемешать заново
 							</Button>
 							<Button
 								onClick={resetToOriginal}
@@ -312,53 +313,60 @@ export default function RandomListGeneratorPage() {
 			<div className='grid md:grid-cols-3 gap-4'>
 				<Card className='p-4'>
 					<h3 className='font-semibold mb-2 text-sm'>
-						Cryptographic Randomness
+						Криптографическая случайность
 					</h3>
 					<p className='text-xs text-muted-foreground'>
-						Uses crypto.getRandomValues() for truly random shuffling, more
-						secure than Math.random()
+						Использует crypto.getRandomValues() для по-настоящему случайного
+						перемешивания — надёжнее, чем Math.random()
 					</p>
 				</Card>
 				<Card className='p-4'>
-					<h3 className='font-semibold mb-2 text-sm'>Editable Results</h3>
+					<h3 className='font-semibold mb-2 text-sm'>
+						Редактируемый результат
+					</h3>
 					<p className='text-xs text-muted-foreground'>
-						Results can be edited directly in the output field before copying or
-						downloading
+						Результат можно править прямо в поле вывода перед копированием или
+						скачиванием
 					</p>
 				</Card>
 				<Card className='p-4'>
-					<h3 className='font-semibold mb-2 text-sm'>Client-Side Processing</h3>
+					<h3 className='font-semibold mb-2 text-sm'>
+						Обработка на устройстве
+					</h3>
 					<p className='text-xs text-muted-foreground'>
-						All data is processed in your browser. Nothing is sent to any server
+						Все данные обрабатываются в вашем браузере. Ничего не отправляется
+						на сервер
 					</p>
 				</Card>
 			</div>
 
 			{/* Info Section */}
 			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>About This Tool</h3>
+				<h3 className='font-semibold mb-3'>Об инструменте</h3>
 				<div className='space-y-3 text-sm text-muted-foreground'>
 					<p>
-						This web application randomly sorts multiple items in a list using
-						the Fisher-Yates shuffle algorithm with cryptographically secure
-						random values. Items can be names, raffle entries, IDs, or numbers.
+						Это веб-приложение случайным образом сортирует элементы списка с
+						помощью алгоритма Fisher-Yates и криптографически стойких случайных
+						значений. Элементами могут быть имена, участники розыгрыша,
+						идентификаторы или числа.
 					</p>
 					<p>
-						Simply enter one item per line, then click the shuffle button to
-						randomize the order. All processing happens in your browser - no
-						data is sent to any server.
+						Просто введите по одному элементу в строке и нажмите кнопку
+						перемешивания, чтобы изменить порядок. Вся обработка происходит в
+						вашем браузере — данные никуда не отправляются.
 					</p>
 					<p>
-						Perfect for random sorting tasks that are difficult to do in Excel.
-						Just copy and paste your data here for instant random shuffling.
+						Идеально подходит для задач случайной сортировки, которые сложно
+						выполнить в Excel. Просто скопируйте и вставьте данные сюда, чтобы
+						мгновенно их перемешать.
 					</p>
 					<Alert className='mt-4'>
 						<AlertDescription className='text-xs'>
-							This application uses crypto.getRandomValues() for enhanced
-							randomness instead of Math.random(). Please comply with local
-							laws. Users are responsible for any violations. This service is
-							provided &quot;as is&quot; without any warranties, express or
-							implied.
+							Приложение использует crypto.getRandomValues() для повышенной
+							случайности вместо Math.random(). Пожалуйста, соблюдайте местное
+							законодательство. Ответственность за любые нарушения несёт
+							пользователь. Сервис предоставляется «как есть», без каких-либо
+							гарантий, явных или подразумеваемых.
 						</AlertDescription>
 					</Alert>
 				</div>

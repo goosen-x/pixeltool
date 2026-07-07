@@ -50,8 +50,8 @@ const publicAPIs: APIEndpoint[] = [
 	// Users & Profiles
 	{
 		id: 'jsonplaceholder-users',
-		name: 'Users List',
-		description: 'Get a list of fake users with complete profiles',
+		name: 'Список пользователей',
+		description: 'Список тестовых пользователей с полными профилями',
 		endpoint: 'https://jsonplaceholder.typicode.com/users',
 		category: 'users',
 		method: 'GET',
@@ -61,8 +61,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'randomuser',
-		name: 'Random User',
-		description: 'Generate random user data with photos',
+		name: 'Случайный пользователь',
+		description: 'Случайные данные пользователей с фотографиями',
 		endpoint: 'https://randomuser.me/api/?results=5',
 		category: 'users',
 		method: 'GET',
@@ -72,8 +72,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'reqres-users',
-		name: 'ReqRes Users',
-		description: 'Users with avatars for testing',
+		name: 'Пользователи ReqRes',
+		description: 'Пользователи с аватарами для тестирования',
 		endpoint: 'https://reqres.in/api/users?page=1',
 		category: 'users',
 		method: 'GET',
@@ -85,8 +85,8 @@ const publicAPIs: APIEndpoint[] = [
 	// Posts & Content
 	{
 		id: 'jsonplaceholder-posts',
-		name: 'Blog Posts',
-		description: 'Sample blog posts with comments',
+		name: 'Записи блога',
+		description: 'Примеры записей блога с комментариями',
 		endpoint: 'https://jsonplaceholder.typicode.com/posts',
 		category: 'content',
 		method: 'GET',
@@ -96,19 +96,19 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'quotable',
-		name: 'Random Quotes',
-		description: 'Inspirational quotes with authors',
+		name: 'Случайные цитаты',
+		description: 'Вдохновляющие цитаты с авторами',
 		endpoint: 'https://api.quotable.io/quotes/random?limit=5',
 		category: 'content',
 		method: 'GET',
 		requiresAuth: false,
-		rateLimit: '180 requests per minute',
+		rateLimit: '180 запросов в минуту',
 		documentation: 'https://github.com/lukePeavey/quotable'
 	},
 	{
 		id: 'lorem-picsum',
-		name: 'Lorem Picsum Images',
-		description: 'Random placeholder images',
+		name: 'Изображения Lorem Picsum',
+		description: 'Случайные изображения-заглушки',
 		endpoint: 'https://picsum.photos/v2/list?page=1&limit=10',
 		category: 'content',
 		method: 'GET',
@@ -120,8 +120,8 @@ const publicAPIs: APIEndpoint[] = [
 	// Products & E-commerce
 	{
 		id: 'fakestoreapi',
-		name: 'Fake Store Products',
-		description: 'E-commerce products with prices and images',
+		name: 'Товары Fake Store',
+		description: 'Товары интернет-магазина с ценами и изображениями',
 		endpoint: 'https://fakestoreapi.com/products?limit=5',
 		category: 'products',
 		method: 'GET',
@@ -131,8 +131,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'dummyjson-products',
-		name: 'DummyJSON Products',
-		description: 'Detailed product data with categories',
+		name: 'Товары DummyJSON',
+		description: 'Подробные данные о товарах с категориями',
 		endpoint: 'https://dummyjson.com/products?limit=5',
 		category: 'products',
 		method: 'GET',
@@ -144,8 +144,8 @@ const publicAPIs: APIEndpoint[] = [
 	// Geographic Data
 	{
 		id: 'restcountries',
-		name: 'Countries Data',
-		description: 'Detailed information about countries',
+		name: 'Данные о странах',
+		description: 'Подробная информация о странах',
 		endpoint: 'https://restcountries.com/v3.1/all',
 		category: 'geographic',
 		method: 'GET',
@@ -155,33 +155,33 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'openweather',
-		name: 'Weather Data',
-		description: 'Current weather for London (demo)',
+		name: 'Данные о погоде',
+		description: 'Текущая погода в Лондоне (демо)',
 		endpoint:
 			'https://api.openweathermap.org/data/2.5/weather?q=London&appid=demo',
 		category: 'geographic',
 		method: 'GET',
 		requiresAuth: false,
-		rateLimit: 'Limited demo key',
+		rateLimit: 'Ограниченный демо-ключ',
 		documentation: 'https://openweathermap.org/api'
 	},
 
 	// Entertainment
 	{
 		id: 'pokemon',
-		name: 'Pokemon List',
-		description: 'List of Pokemon with details',
+		name: 'Список покемонов',
+		description: 'Список покемонов с подробностями',
 		endpoint: 'https://pokeapi.co/api/v2/pokemon?limit=10',
 		category: 'entertainment',
 		method: 'GET',
 		requiresAuth: false,
-		rateLimit: '100 requests per IP per minute',
+		rateLimit: '100 запросов с IP в минуту',
 		documentation: 'https://pokeapi.co/'
 	},
 	{
 		id: 'rickandmorty',
-		name: 'Rick and Morty Characters',
-		description: 'Characters from Rick and Morty series',
+		name: 'Персонажи «Рика и Морти»',
+		description: 'Персонажи из сериала «Рик и Морти»',
 		endpoint: 'https://rickandmortyapi.com/api/character',
 		category: 'entertainment',
 		method: 'GET',
@@ -191,8 +191,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'chucknorris',
-		name: 'Chuck Norris Jokes',
-		description: 'Random Chuck Norris jokes',
+		name: 'Шутки о Чаке Норрисе',
+		description: 'Случайные шутки о Чаке Норрисе',
 		endpoint: 'https://api.chucknorris.io/jokes/random',
 		category: 'entertainment',
 		method: 'GET',
@@ -204,8 +204,8 @@ const publicAPIs: APIEndpoint[] = [
 	// Utilities
 	{
 		id: 'jsonplaceholder-todos',
-		name: 'Todo Items',
-		description: 'Sample todo list items',
+		name: 'Задачи',
+		description: 'Примеры пунктов списка задач',
 		endpoint: 'https://jsonplaceholder.typicode.com/todos?_limit=10',
 		category: 'utilities',
 		method: 'GET',
@@ -215,8 +215,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'httpbin',
-		name: 'HTTP Testing',
-		description: 'Test HTTP requests and responses',
+		name: 'Тестирование HTTP',
+		description: 'Проверка HTTP-запросов и ответов',
 		endpoint: 'https://httpbin.org/get',
 		category: 'utilities',
 		method: 'GET',
@@ -226,8 +226,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'dog-facts',
-		name: 'Dog Facts',
-		description: 'Random facts about dogs',
+		name: 'Факты о собаках',
+		description: 'Случайные факты о собаках',
 		endpoint: 'https://dog-api.kinduff.com/api/facts?number=5',
 		category: 'entertainment',
 		method: 'GET',
@@ -237,8 +237,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'cat-facts',
-		name: 'Cat Facts',
-		description: 'Random facts about cats',
+		name: 'Факты о кошках',
+		description: 'Случайные факты о кошках',
 		endpoint: 'https://catfact.ninja/facts?limit=5',
 		category: 'entertainment',
 		method: 'GET',
@@ -248,8 +248,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'advice-slip',
-		name: 'Advice Slip',
-		description: 'Random advice generator',
+		name: 'Совет дня',
+		description: 'Генератор случайных советов',
 		endpoint: 'https://api.adviceslip.com/advice',
 		category: 'content',
 		method: 'GET',
@@ -259,8 +259,8 @@ const publicAPIs: APIEndpoint[] = [
 	},
 	{
 		id: 'bored-api',
-		name: 'Bored API',
-		description: 'Find something to do when bored',
+		name: 'Чем заняться',
+		description: 'Идея, чем заняться от скуки',
 		endpoint: 'https://www.boredapi.com/api/activity',
 		category: 'entertainment',
 		method: 'GET',
@@ -271,12 +271,12 @@ const publicAPIs: APIEndpoint[] = [
 ]
 
 const categories = {
-	users: { name: 'Users & Profiles', icon: '👤' },
-	content: { name: 'Posts & Content', icon: '📝' },
-	products: { name: 'Products & E-commerce', icon: '🛍️' },
-	geographic: { name: 'Geographic Data', icon: '🌍' },
-	entertainment: { name: 'Entertainment', icon: '🎮' },
-	utilities: { name: 'Utilities', icon: '🔧' }
+	users: { name: 'Пользователи и профили', icon: '👤' },
+	content: { name: 'Записи и контент', icon: '📝' },
+	products: { name: 'Товары и e-commerce', icon: '🛍️' },
+	geographic: { name: 'Географические данные', icon: '🌍' },
+	entertainment: { name: 'Развлечения', icon: '🎮' },
+	utilities: { name: 'Утилиты', icon: '🔧' }
 }
 
 export default function MockDataGeneratorPage() {
@@ -299,7 +299,7 @@ export default function MockDataGeneratorPage() {
 	const fetchData = async (apiId?: string) => {
 		const targetApiId = apiId || selectedAPI
 		if (!targetApiId) {
-			setError('Please select an API endpoint')
+			setError('Выберите эндпоинт API')
 			return
 		}
 
@@ -328,7 +328,9 @@ export default function MockDataGeneratorPage() {
 			setResponseTime(responseTimeMs)
 			setDataSize(formatBytes(dataSizeBytes))
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Failed to fetch data')
+			setError(
+				err instanceof Error ? err.message : 'Не удалось загрузить данные'
+			)
 			setData(null)
 		} finally {
 			setLoading(false)
@@ -341,10 +343,10 @@ export default function MockDataGeneratorPage() {
 		try {
 			await navigator.clipboard.writeText(JSON.stringify(data, null, 2))
 			setCopiedData(true)
-			toast.success('Data copied to clipboard')
+			toast.success('Данные скопированы в буфер обмена')
 			setTimeout(() => setCopiedData(false), 2000)
 		} catch (err) {
-			toast.error('Failed to copy data')
+			toast.error('Не удалось скопировать данные')
 		}
 	}
 
@@ -360,7 +362,7 @@ export default function MockDataGeneratorPage() {
 		a.download = `mock-data-${new Date().toISOString().split('T')[0]}.json`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success('Data downloaded')
+		toast.success('Данные скачаны')
 	}
 
 	const formatBytes = (bytes: number) => {
@@ -429,10 +431,10 @@ export default function MockDataGeneratorPage() {
 			<div className='max-w-6xl mx-auto space-y-8'>
 				<div>
 					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Mock Data Generator
+						Генератор тестовых данных
 					</h1>
 					<p className='text-muted-foreground'>
-						Fetch sample data from popular free public APIs
+						Загружайте примеры данных из популярных бесплатных публичных API
 					</p>
 				</div>
 				<div className='animate-pulse space-y-8'>
@@ -449,7 +451,7 @@ export default function MockDataGeneratorPage() {
 				<div className='lg:col-span-1'>
 					<Card className='p-4 sticky top-4'>
 						<div className='flex items-center justify-between mb-4'>
-							<h3 className='font-semibold'>API Explorer</h3>
+							<h3 className='font-semibold'>Обзор API</h3>
 							<Badge variant='secondary' className='text-xs'>
 								<Sparkles className='w-3 h-3 mr-1' />
 								{publicAPIs.length} APIs
@@ -459,7 +461,7 @@ export default function MockDataGeneratorPage() {
 						{/* Search */}
 						<div className='relative mb-4'>
 							<Input
-								placeholder='Search APIs...'
+								placeholder='Поиск по API...'
 								value={searchQuery}
 								onChange={e => setSearchQuery(e.target.value)}
 								className='pl-8'
@@ -499,7 +501,7 @@ export default function MockDataGeneratorPage() {
 											{getAPIsByCategory(category).length === 0 ? (
 												<div className='text-center py-8 text-muted-foreground'>
 													<Database className='w-8 h-8 mx-auto mb-2 opacity-50' />
-													<p className='text-sm'>No APIs found</p>
+													<p className='text-sm'>API не найдены</p>
 												</div>
 											) : (
 												getAPIsByCategory(category).map(api => (
@@ -557,7 +559,7 @@ export default function MockDataGeneratorPage() {
 					<Card className='p-6'>
 						<div className='flex items-center justify-between mb-4'>
 							<div>
-								<h3 className='font-semibold'>Response Data</h3>
+								<h3 className='font-semibold'>Данные ответа</h3>
 								{responseTime !== null && dataSize && (
 									<div className='flex items-center gap-4 mt-1'>
 										<Badge variant='outline' className='text-xs'>
@@ -582,24 +584,24 @@ export default function MockDataGeneratorPage() {
 										<RefreshCw
 											className={cn('w-4 h-4 mr-1', loading && 'animate-spin')}
 										/>
-										Refresh
+										Обновить
 									</Button>
 									<Button variant='outline' size='sm' onClick={copyToClipboard}>
 										{copiedData ? (
 											<>
 												<Check className='w-4 h-4 mr-1' />
-												Copied
+												Скопировано
 											</>
 										) : (
 											<>
 												<Copy className='w-4 h-4 mr-1' />
-												Copy
+												Копировать
 											</>
 										)}
 									</Button>
 									<Button variant='outline' size='sm' onClick={downloadJSON}>
 										<Download className='w-4 h-4 mr-1' />
-										Download
+										Скачать
 									</Button>
 								</div>
 							)}
@@ -631,7 +633,7 @@ export default function MockDataGeneratorPage() {
 										</TabsTrigger>
 										<TabsTrigger value='formatted'>
 											<FileJson className='w-4 h-4 mr-2' />
-											Formatted
+											Форматированный
 										</TabsTrigger>
 									</TabsList>
 
@@ -657,7 +659,7 @@ export default function MockDataGeneratorPage() {
 						{!data && !loading && !error && (
 							<div className='text-center py-12 text-muted-foreground'>
 								<Database className='w-12 h-12 mx-auto mb-4 opacity-50' />
-								<p>Select an API endpoint to fetch data</p>
+								<p>Выберите эндпоинт API, чтобы загрузить данные</p>
 							</div>
 						)}
 
@@ -665,7 +667,7 @@ export default function MockDataGeneratorPage() {
 							<div className='mt-4 pt-4 border-t'>
 								<div className='flex items-center justify-between text-sm'>
 									<div className='text-muted-foreground'>
-										Endpoint:{' '}
+										Эндпоинт:{' '}
 										<code className='inline-code'>
 											{publicAPIs.find(a => a.id === selectedAPI)?.endpoint}
 										</code>
@@ -682,7 +684,7 @@ export default function MockDataGeneratorPage() {
 											className='flex items-center gap-1 text-primary hover:underline'
 										>
 											<ExternalLink className='w-3 h-3' />
-											Docs
+											Документация
 										</a>
 									)}
 								</div>
@@ -700,23 +702,23 @@ export default function MockDataGeneratorPage() {
 							<Sparkles className='w-5 h-5 text-primary' />
 						</div>
 						<div>
-							<h3 className='font-semibold mb-2'>Quick Start Guide</h3>
+							<h3 className='font-semibold mb-2'>Быстрый старт</h3>
 							<ol className='space-y-2 text-sm text-muted-foreground'>
 								<li className='flex items-start gap-2'>
 									<span className='font-medium text-primary'>1.</span>
-									<span>Select a category from the tabs</span>
+									<span>Выберите категорию во вкладках</span>
 								</li>
 								<li className='flex items-start gap-2'>
 									<span className='font-medium text-primary'>2.</span>
-									<span>Choose an API endpoint</span>
+									<span>Выберите эндпоинт API</span>
 								</li>
 								<li className='flex items-start gap-2'>
 									<span className='font-medium text-primary'>3.</span>
-									<span>View response in JSON or formatted mode</span>
+									<span>Просмотрите ответ в JSON или форматированном виде</span>
 								</li>
 								<li className='flex items-start gap-2'>
 									<span className='font-medium text-primary'>4.</span>
-									<span>Copy or download the data</span>
+									<span>Скопируйте или скачайте данные</span>
 								</li>
 							</ol>
 						</div>
@@ -726,7 +728,7 @@ export default function MockDataGeneratorPage() {
 				<Card className='p-6 bg-muted/50'>
 					<h3 className='font-semibold mb-3 flex items-center gap-2'>
 						<Zap className='w-5 h-5 text-yellow-500' />
-						Pro Tips
+						Полезные советы
 					</h3>
 					<div className='space-y-3 text-sm'>
 						<div className='flex items-start gap-2'>
@@ -734,23 +736,23 @@ export default function MockDataGeneratorPage() {
 								CORS
 							</Badge>
 							<p className='text-muted-foreground'>
-								All APIs support CORS for browser-based requests
+								Все API поддерживают CORS для запросов из браузера
 							</p>
 						</div>
 						<div className='flex items-start gap-2'>
 							<Badge variant='outline' className='mt-0.5'>
-								FREE
+								БЕСПЛАТНО
 							</Badge>
 							<p className='text-muted-foreground'>
-								No API keys required for basic usage
+								Для базового использования ключи API не нужны
 							</p>
 						</div>
 						<div className='flex items-start gap-2'>
 							<Badge variant='outline' className='mt-0.5'>
-								FAST
+								БЫСТРО
 							</Badge>
 							<p className='text-muted-foreground'>
-								Response times shown for each request
+								Для каждого запроса показывается время ответа
 							</p>
 						</div>
 					</div>
