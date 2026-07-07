@@ -1,7 +1,6 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { WidgetShareSection } from './WidgetShareSection'
 import { usePathname } from 'next/navigation'
 import { widgets } from '@/lib/constants/widgets'
 
@@ -68,18 +67,6 @@ export function WidgetLayout({
 	return (
 		<>
 			{children}
-			{showShare && (
-				<div className='mt-8'>
-					<WidgetShareSection
-						widgetTitle={customShareData?.title || widgetTitle}
-						widgetDescription={
-							customShareData?.description || widgetDescription
-						}
-						hashtags={customShareData?.hashtags || widget.tags}
-						variant='card'
-					/>
-				</div>
-			)}
 		</>
 	)
 }

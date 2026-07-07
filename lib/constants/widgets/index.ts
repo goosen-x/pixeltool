@@ -26,6 +26,12 @@ export interface Widget {
 	tags?: string[]
 	difficulty?: 'beginner' | 'intermediate' | 'advanced'
 	metaDescription?: string
+	/**
+	 * Дата последнего значимого изменения инструмента (YYYY-MM-DD) для sitemap
+	 * lastmod. Указывай только при реальной правке контента/логики тула — иначе
+	 * используется общая дата CONTENT_LAST_UPDATED из app/sitemap.ts.
+	 */
+	updatedAt?: string
 }
 
 export { cssWidgets } from './css'

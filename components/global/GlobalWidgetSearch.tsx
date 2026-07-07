@@ -7,7 +7,8 @@ import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
-	DialogTitle
+	DialogTitle,
+	DialogDescription
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -316,6 +317,9 @@ export function GlobalWidgetSearch({
 				<DialogContent className='sm:max-w-2xl p-0 overflow-hidden fixed inset-0 sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] w-full h-full sm:h-auto sm:max-h-[85vh] m-0 rounded-none sm:rounded-lg'>
 					<DialogHeader className='sr-only'>
 						<DialogTitle>Поиск инструментов</DialogTitle>
+						<DialogDescription>
+							Введите запрос, чтобы найти инструмент среди всех доступных.
+						</DialogDescription>
 					</DialogHeader>
 
 					{/* Search input */}

@@ -219,6 +219,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 	return (
 		<html
 			lang='ru'
+			data-scroll-behavior='smooth'
 			className={cn(
 				'scroll-smooth scroll-pt-24',
 				interFont.variable,

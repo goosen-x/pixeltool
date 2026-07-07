@@ -47,7 +47,9 @@ export function WidgetStructuredData({ widget }: WidgetStructuredDataProps) {
 			url: baseUrl
 		},
 		datePublished: '2024-01-01',
-		dateModified: new Date().toISOString(),
+		// Стабильная дата (не new Date()) — иначе JSON-LD различается между SSR
+		// и клиентом и ломает гидрацию. Берём updatedAt виджета либо дату публикации.
+		dateModified: widget.updatedAt || '2024-01-01',
 		keywords: widget.tags?.join(', ') || '',
 		inLanguage: locale,
 		isAccessibleForFree: true,
