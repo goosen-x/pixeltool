@@ -1,6 +1,9 @@
 'use client'
 
+import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { GradientGuide } from './GradientGuide'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
 	Palette,
 	Copy,
+	Check,
 	RefreshCw,
 	Plus,
 	Trash2,
@@ -23,7 +27,6 @@ import {
 	Download,
 	Sliders,
 	RotateCw,
-	Search,
 	Layers,
 	Settings2
 } from 'lucide-react'
@@ -49,16 +52,9 @@ export default function CSSGradientGeneratorPage() {
 		settings,
 		selectedStopId,
 		selectedStop,
-		activeCategory,
-		searchQuery,
-		exportFormat,
 		gradientCSS,
-		categories,
 		filteredGradients,
 		setSelectedStopId,
-		setActiveCategory,
-		setSearchQuery,
-		setExportFormat,
 		updateGradientType,
 		updateLinearDirection,
 		updateLinearAngle,
@@ -73,7 +69,6 @@ export default function CSSGradientGeneratorPage() {
 		updateSelectedStop,
 		applyPresetGradient,
 		generateRandom,
-		copyCSS,
 		exportGradient,
 		resetGradient
 	} = useCSSGradientGenerator({
@@ -87,6 +82,25 @@ export default function CSSGradientGeneratorPage() {
 		}
 	})
 
+	const [copiedCSS, setCopiedCSS] = useState(false)
+	const [copiedTailwind, setCopiedTailwind] = useState(false)
+
+	const copyCssCode = async () => {
+		await navigator.clipboard.writeText(`background: ${gradientCSS};`)
+		setCopiedCSS(true)
+		setTimeout(() => setCopiedCSS(false), 2000)
+		toast.success('CSS скопирован в буфер обмена')
+	}
+
+	const copyTailwindCode = async () => {
+		await navigator.clipboard.writeText(
+			`bg-[${gradientCSS.replace(/\s+/g, '_')}]`
+		)
+		setCopiedTailwind(true)
+		setTimeout(() => setCopiedTailwind(false), 2000)
+		toast.success('Tailwind-класс скопирован в буфер обмена')
+	}
+
 	// Keyboard shortcuts
 	return (
 		<WidgetSEOWrapper widget={widget}>
@@ -95,7 +109,7 @@ export default function CSSGradientGeneratorPage() {
 				<WidgetSection
 					icon={<Palette className='w-5 h-5' />}
 					title='Предварительный просмотр'
-					className='w-full'
+					className='w-full mt-6'
 				>
 					<div className='space-y-4'>
 						{/* Gradient Preview */}
@@ -114,24 +128,25 @@ export default function CSSGradientGeneratorPage() {
 						</WidgetOutput>
 
 						<div className='flex flex-wrap items-center gap-2 mt-4'>
-							<Select
-								value={exportFormat}
-								onValueChange={value =>
-									setExportFormat(value as 'css' | 'scss' | 'tailwind')
-								}
+							<Button onClick={copyCssCode} className='gap-2'>
+								{copiedCSS ? (
+									<Check className='w-4 h-4 text-green-500' />
+								) : (
+									<Copy className='w-4 h-4' />
+								)}
+								Копировать CSS
+							</Button>
+							<Button
+								onClick={copyTailwindCode}
+								variant='outline'
+								className='gap-2'
 							>
-								<SelectTrigger className='w-32'>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='css'>CSS</SelectItem>
-									<SelectItem value='scss'>SCSS</SelectItem>
-									<SelectItem value='tailwind'>Tailwind</SelectItem>
-								</SelectContent>
-							</Select>
-							<Button onClick={copyCSS} className='gap-2'>
-								<Copy className='w-4 h-4' />
-								Копировать
+								{copiedTailwind ? (
+									<Check className='w-4 h-4 text-green-500' />
+								) : (
+									<Copy className='w-4 h-4' />
+								)}
+								Копировать Tailwind
 							</Button>
 							<Button
 								onClick={generateRandom}
@@ -149,6 +164,33 @@ export default function CSSGradientGeneratorPage() {
 								<RefreshCw className='w-4 h-4' />
 								Сброс
 							</Button>
+						</div>
+
+						{/* Preset Grid */}
+						<div>
+							<p className='text-sm font-medium mb-2'>Готовые градиенты</p>
+							<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3'>
+								{filteredGradients.map((preset, index) => (
+									<button
+										key={index}
+										onClick={() => applyPresetGradient(preset)}
+										className='group relative h-20 rounded-xl overflow-hidden border-2 border-border/50 hover:border-primary transition-all hover:scale-105'
+										style={{
+											background: generateGradientCSS({
+												...DEFAULT_GRADIENT_SETTINGS,
+												...preset.settings
+											})
+										}}
+									>
+										<div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors' />
+										<div className='absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity'>
+											<span className='text-xs text-white font-medium truncate block'>
+												{preset.name}
+											</span>
+										</div>
+									</button>
+								))}
+							</div>
 						</div>
 					</div>
 				</WidgetSection>
@@ -474,70 +516,8 @@ export default function CSSGradientGeneratorPage() {
 						</div>
 					</WidgetSection>
 				</div>
-
-				{/* Presets Section */}
-				<WidgetSection
-					icon={<Sparkles className='w-5 h-5' />}
-					title='Готовые градиенты'
-					className='mt-6'
-				>
-					<div className='space-y-4'>
-						{/* Search and Categories */}
-						<div className='flex flex-col sm:flex-row gap-4'>
-							<div className='relative flex-1'>
-								<Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
-								<Input
-									value={searchQuery}
-									onChange={e => setSearchQuery(e.target.value)}
-									placeholder='Поиск градиентов...'
-									className='pl-10'
-								/>
-							</div>
-							<Select value={activeCategory} onValueChange={setActiveCategory}>
-								<SelectTrigger className='w-full sm:w-48'>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='all'>Все категории</SelectItem>
-									{categories.map(category => (
-										<SelectItem
-											key={category}
-											value={category}
-											className='capitalize'
-										>
-											{category}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						{/* Preset Grid */}
-						<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3'>
-							{filteredGradients.map((preset, index) => (
-								<button
-									key={index}
-									onClick={() => applyPresetGradient(preset)}
-									className='group relative h-20 rounded-xl overflow-hidden border-2 border-border/50 hover:border-primary transition-all hover:scale-105'
-									style={{
-										background: generateGradientCSS({
-											...DEFAULT_GRADIENT_SETTINGS,
-											...preset.settings
-										})
-									}}
-								>
-									<div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors' />
-									<div className='absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity'>
-										<span className='text-xs text-white font-medium truncate block'>
-											{preset.name}
-										</span>
-									</div>
-								</button>
-							))}
-						</div>
-					</div>
-				</WidgetSection>
 			</WidgetLayout>
+			<GradientGuide />
 		</WidgetSEOWrapper>
 	)
 }

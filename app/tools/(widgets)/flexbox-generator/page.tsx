@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { FlexboxGuide } from './FlexboxGuide'
 import { Label } from '@/components/ui/label'
 import {
 	Select,
@@ -458,6 +459,7 @@ export default function FlexboxGeneratorPage() {
 					</CardContent>
 				</Card>
 			</div>
+			<FlexboxGuide />
 		</WidgetSEOWrapper>
 	)
 }
