@@ -8,6 +8,7 @@ import { PostHeader } from '@/components/blog/post-header'
 import { Footer } from '@/components/layout'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { ProjectsRightSidebar } from '@/components/sidebars'
+import { RelatedPosts } from '@/components/blog/related-posts'
 
 export default async function Post(props: Params) {
 	const params = await props.params
@@ -85,6 +86,7 @@ export default async function Post(props: Params) {
 							slug={post.slug}
 						/>
 						<PostBodyWithHighlight content={content} />
+						<RelatedPosts post={post} />
 					</article>
 
 					<div className='hidden lg:block'>

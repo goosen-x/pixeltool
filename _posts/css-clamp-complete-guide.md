@@ -21,6 +21,10 @@ keywords:
     'clamp калькулятор'
   ]
 liveCodeExample: true
+related:
+  - css-container-queries
+  - css-grid-layout
+  - css-variables
 ---
 
 В этой статье разбираем `clamp()` — функцию CSS, которая задает значение с

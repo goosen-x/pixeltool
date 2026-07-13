@@ -12,6 +12,10 @@ author:
   picture: '/images/avatar.jpeg'
 ogImage:
   url: '/images/avatar.jpeg'
+related:
+  - css-animations
+  - css-clamp-complete-guide
+  - css-grid-layout
 ---
 
 Зелёная сотня в Lighthouse — цель, за которой гоняются, толком не понимая, из

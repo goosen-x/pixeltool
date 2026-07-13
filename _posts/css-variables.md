@@ -11,6 +11,10 @@ author:
   picture: '/images/avatar.jpeg'
 ogImage:
   url: '/images/avatar.jpeg'
+related:
+  - css-animations
+  - css-pseudo-selectors
+  - css-clamp-complete-guide
 ---
 
 CSS Custom Properties (известные как CSS Переменные) революционизируют способ

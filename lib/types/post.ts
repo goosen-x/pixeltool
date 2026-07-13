@@ -12,6 +12,8 @@ export type Post = {
 	}
 	content: string
 	preview?: boolean
+	/** Слаги связанных статей — задаются вручную во frontmatter */
+	related?: string[]
 }
 
 // Legacy support - mapped from database types

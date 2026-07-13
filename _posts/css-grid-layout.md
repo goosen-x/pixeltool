@@ -11,6 +11,10 @@ author:
   picture: '/images/avatar.jpeg'
 ogImage:
   url: '/images/avatar.jpeg'
+related:
+  - css-flexbox-guide
+  - css-container-queries
+  - css-clamp-complete-guide
 ---
 
 CSS Grid Layout — это мощная двумерная система вёрстки, которая совершила

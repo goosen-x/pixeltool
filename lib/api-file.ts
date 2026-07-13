@@ -44,7 +44,8 @@ export function getPostBySlugFromFile(slug: string): Post {
 			url: data.coverImage || '/images/avatar.jpeg'
 		},
 		content,
-		preview: data.preview || false
+		preview: data.preview || false,
+		related: Array.isArray(data.related) ? data.related : []
 	}
 }
 
