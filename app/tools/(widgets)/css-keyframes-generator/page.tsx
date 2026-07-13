@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { AnimationGuide } from './AnimationGuide'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -238,6 +238,7 @@ export default function CSSKeyframesGeneratorPage() {
 		{ id: '3', percentage: 100, properties: { transform: 'scale(1)' } }
 	])
 	const [isPlaying, setIsPlaying] = useState(false)
+	const [playCount, setPlayCount] = useState(0)
 	const [selectedProperty, setSelectedProperty] = useState('transform')
 	const [propertyValue, setPropertyValue] = useState('')
 
@@ -362,7 +363,30 @@ export default function CSSKeyframesGeneratorPage() {
 		toast.success('CSS скопирован!')
 	}
 
+	// Имя анимации попадает в CSS-идентификатор: пустое или с пробелами оно
+	// сделает правило невалидным, и предпросмотр молча перестанет работать.
+	const safeAnimationName =
+		animationName.trim().replace(/\s+/g, '-') || 'myAnimation'
+
+	// Правило @keyframes нужно реально отдать браузеру — иначе animation-name
+	// ссылается в пустоту и предпросмотр не двигается.
+	const keyframesRule = useMemo(() => {
+		const body = keyframes
+			.map(kf => {
+				const props = Object.entries(kf.properties)
+					.map(([prop, value]) => `    ${prop}: ${value};`)
+					.join('\n')
+				return `  ${kf.percentage}% {\n${props}\n  }`
+			})
+			.join('\n')
+
+		return `@keyframes ${safeAnimationName} {\n${body}\n}`
+	}, [safeAnimationName, keyframes])
+
 	const togglePlayPause = () => {
+		// Перемонтируем демо-элемент, чтобы повторное нажатие проигрывало
+		// анимацию заново, а не оставляло её в конечном кадре.
+		if (!isPlaying) setPlayCount(c => c + 1)
 		setIsPlaying(!isPlaying)
 	}
 
@@ -392,7 +416,7 @@ export default function CSSKeyframesGeneratorPage() {
 			easing === 'cubic-bezier' ? `cubic-bezier(${cubicBezier})` : easing
 
 		return {
-			animation: `${animationName} ${duration}s ${easingValue} ${delay}s ${iterationCount} ${direction} ${fillMode}`,
+			animation: `${safeAnimationName} ${duration}s ${easingValue} ${delay}s ${iterationCount} ${direction} ${fillMode}`,
 			...keyframes.reduce((acc, kf) => {
 				if (kf.percentage === 0) {
 					return { ...acc, ...kf.properties }
@@ -698,8 +722,10 @@ export default function CSSKeyframesGeneratorPage() {
 					<Card className='p-6'>
 						<h3 className='font-semibold mb-4'>Предпросмотр</h3>
 
+						<style>{keyframesRule}</style>
 						<div className='flex justify-center items-center h-48 bg-muted/20 rounded-lg mb-4'>
 							<div
+								key={playCount}
 								className='w-24 h-24 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold'
 								style={getAnimationStyle()}
 							>
