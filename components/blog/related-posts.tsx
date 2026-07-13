@@ -26,10 +26,9 @@ export async function RelatedPosts({ post }: Props) {
 
 	if (related.length === 0) return null
 
-	// Карусель занимает всю колонку статьи, как и обложка: карточкам с
-	// картинками нужна ширина, в узкой колонке текста они бы сплющились
+	// Та же центрированная колонка, что у текста и обложки
 	return (
-		<section className='mt-16 border-t pt-10'>
+		<section className='mx-auto mt-16 max-w-3xl border-t pt-10'>
 			<h2 className='text-2xl font-bold tracking-tight'>Читайте также</h2>
 			<RelatedPostsCarousel posts={related} />
 		</section>

@@ -30,7 +30,7 @@ export function PostBodySimple({ content }: Props) {
 	}, [content])
 
 	return (
-		<div className='max-w-2xl'>
+		<div className='max-w-3xl mx-auto'>
 			<div
 				className={markdownStyles['markdown']}
 				dangerouslySetInnerHTML={{ __html: content }}
