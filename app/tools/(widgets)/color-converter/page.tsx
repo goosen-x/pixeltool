@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ColorGuide } from './ColorGuide'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -452,6 +453,7 @@ export default function ColorConverterPage() {
 					</Tabs>
 				</CardContent>
 			</Card>
+			<ColorGuide />
 		</div>
 	)
 }

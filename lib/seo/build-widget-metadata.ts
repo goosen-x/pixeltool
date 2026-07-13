@@ -13,7 +13,7 @@ export function buildWidgetMetadata(slug: string): Metadata {
 	const widget = getWidgetByPath(slug)
 	if (!widget) return {}
 
-	const title = widget.title || widget.id
+	const title = widget.metaTitle || widget.title || widget.id
 	const description =
 		widget.metaDescription ||
 		widget.description ||

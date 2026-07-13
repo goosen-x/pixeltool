@@ -19,6 +19,7 @@ export interface Widget {
 	path: string
 	gradient: string
 	title?: string
+	metaTitle?: string
 	description?: string
 	useCase?: string
 	recommendedTools?: string[]
