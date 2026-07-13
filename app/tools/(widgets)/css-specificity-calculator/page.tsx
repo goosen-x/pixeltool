@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { useState, useMemo } from 'react'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { Info, BarChart3, Copy, Trash2 } from 'lucide-react'
+import { Copy, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
@@ -28,7 +28,6 @@ interface SpecificityResult {
 
 export default function CSSSpecificityPage() {
 	const [input, setInput] = useState('')
-	const [results, setResults] = useState<SpecificityResult[]>([])
 	const [sortBy, setSortBy] = useState<'order' | 'weight'>('order')
 
 	const calculateSpecificity = (selector: string): SpecificityResult => {
@@ -190,14 +189,10 @@ export default function CSSSpecificityPage() {
 		}
 	}
 
-	const analyzeSelectors = () => {
-		if (!input.trim()) {
-			toast.error('Введите CSS селекторы для анализа')
-			return
-		}
-
-		// Parse CSS to extract only selectors
-		const lines = input.split('\n')
+	// Чистый разбор: результат — производное от ввода, а не состояние.
+	// Кнопка «Анализировать» не нужна — считаем на лету.
+	const extractSelectors = (source: string): string[] => {
+		const lines = source.split('\n')
 		const selectors: string[] = []
 		let inRule = false
 		let currentSelector = ''
@@ -254,28 +249,21 @@ export default function CSSSpecificityPage() {
 			}
 		}
 
-		// Remove duplicates and empty selectors
-		const uniqueSelectors = [
-			...new Set(selectors.filter(sel => sel.length > 0))
-		]
+		return [...new Set(selectors.filter(sel => sel.length > 0))]
+	}
 
-		if (uniqueSelectors.length === 0) {
-			toast.error('Селекторы не найдены')
-			return
-		}
+	const results = useMemo(() => {
+		if (!input.trim()) return []
 
-		const newResults = uniqueSelectors.map(selector =>
+		const parsed = extractSelectors(input).map(selector =>
 			calculateSpecificity(selector)
 		)
 
-		// Sort results
-		if (sortBy === 'weight') {
-			newResults.sort((a, b) => b.weight - a.weight)
-		}
-
-		setResults(newResults)
-		toast.success(`Проанализировано ${newResults.length} селекторов`)
-	}
+		return sortBy === 'weight'
+			? [...parsed].sort((a, b) => b.weight - a.weight)
+			: parsed
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [input, sortBy])
 
 	const copyResults = () => {
 		const text = results
@@ -316,274 +304,226 @@ div.container > p::first-line
 	}
 
 	return (
-		<div className='space-y-6'>
-			{/* Input Section */}
-			<Card>
-				<CardHeader className='pb-4'>
-					<div className='flex items-center justify-between'>
-						<CardTitle>Ввод CSS селекторов</CardTitle>
-						<Button variant='outline' size='sm' onClick={loadExample}>
-							Загрузить пример
-						</Button>
-					</div>
-				</CardHeader>
-				<CardContent className='space-y-4'>
-					<Textarea
-						placeholder={`Введите CSS селекторы или правила:\n\nbody\n.header#main-content\nnav ul li a\n.btn.btn-primary\ninput[type="text"]\na:hover\n.card:nth-child(3)\n#sidebar .widget h3`}
-						value={input}
-						onChange={e => setInput(e.target.value)}
-						rows={8}
-						className='font-mono text-sm resize-none'
-					/>
-					<div className='flex-col sm:flex-row flex gap-3'>
-						<Button
-							onClick={analyzeSelectors}
-							className='flex-1 py-2'
-							size='lg'
-						>
-							<BarChart3 className='w-4 h-4 mr-2' />
-							Анализировать специфичность
-						</Button>
-						<Button
-							variant='outline'
-							size='lg'
-							onClick={() => {
-								setInput('')
-								setResults([])
-								toast.success('Очищено')
-							}}
-						>
-							<Trash2 className='w-4 h-4' />
-						</Button>
-					</div>
-				</CardContent>
-			</Card>
-
-			{/* Results Section */}
-			{results.length > 0 && (
-				<Card>
-					<CardHeader className='pb-4'>
-						<div className='flex-col sm:flex-row gap-2 flex items-center justify-between'>
-							<div>
-								<CardTitle>Результаты анализа</CardTitle>
-								<p className='text-sm text-muted-foreground mt-1'>
-									Найдено селекторов: {results.length}
-								</p>
-							</div>
-							<div className='flex gap-2'>
+		<div className='max-w-7xl mx-auto space-y-6'>
+			<Card className='space-y-8 p-6 sm:p-8'>
+				<div className='grid gap-10 lg:grid-cols-2'>
+					{/* Ввод */}
+					<div className='space-y-4'>
+						<div className='flex items-center justify-between'>
+							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
+								Селекторы
+							</h3>
+							<div className='flex gap-1'>
 								<Button
-									variant={sortBy === 'weight' ? 'default' : 'outline'}
+									variant='outline'
 									size='sm'
-									onClick={() => {
-										const newSort = sortBy === 'order' ? 'weight' : 'order'
-										setSortBy(newSort)
-										const sorted = [...results]
-										if (newSort === 'weight') {
-											sorted.sort((a, b) => b.weight - a.weight)
-										}
-										setResults(sorted)
-										toast.success(
-											newSort === 'weight'
-												? 'Сортировка по весу'
-												: 'Сортировка по порядку'
-										)
-									}}
+									onClick={loadExample}
+									className='cursor-pointer'
 								>
-									{sortBy === 'order' ? 'Сортировать по весу' : 'По порядку'}
+									Пример
 								</Button>
-								<Button variant='outline' size='sm' onClick={copyResults}>
-									<Copy className='w-4 h-4 mr-2' />
-									Копировать
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={() => setInput('')}
+									disabled={!input}
+									className='cursor-pointer'
+									aria-label='Очистить'
+								>
+									<Trash2 className='h-4 w-4' />
 								</Button>
 							</div>
 						</div>
-					</CardHeader>
-					<CardContent>
-						<div className='space-y-3 max-h-[600px] overflow-y-auto pr-2'>
-							{results.map((result, index) => (
-								<div
-									key={index}
-									className='p-4 border rounded-lg hover:border-primary/50 transition-colors space-y-3 bg-card'
-								>
-									{/* Selector and Specificity */}
-									<div className='flex items-start justify-between gap-4'>
-										<code className='text-sm font-mono break-all flex-1 pt-1'>
-											{result.selector}
-										</code>
-										<div className='flex flex-col items-end gap-2 shrink-0'>
-											<Badge
-												variant='outline'
-												className={cn(
-													'font-mono text-base px-3 py-1',
-													getSpecificityColor(result.weight)
-												)}
-											>
-												{result.specificityString}
-											</Badge>
-											<span className='text-xs text-muted-foreground'>
-												Вес: {result.weight}
-											</span>
-										</div>
-									</div>
 
-									{/* Breakdown of selector parts */}
-									{(result.parts.inline > 0 ||
-										result.parts.ids.length > 0 ||
-										result.parts.classes.length > 0 ||
-										result.parts.attributes.length > 0 ||
-										result.parts.pseudoClasses.length > 0 ||
-										result.parts.elements.length > 0 ||
-										result.parts.pseudoElements.length > 0) && (
+						<Textarea
+							placeholder={`body\n.header#main-content\nnav ul li a\n.btn.btn-primary\ninput[type="text"]\na:hover`}
+							value={input}
+							onChange={e => setInput(e.target.value)}
+							rows={14}
+							className='resize-none font-mono text-sm'
+						/>
+						<p className='text-xs text-muted-foreground'>
+							По одному селектору на строку. Вес считается на лету.
+						</p>
+					</div>
+
+					{/* Результат */}
+					<div className='space-y-4'>
+						<div className='flex items-center justify-between'>
+							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
+								Вес селекторов
+								{results.length > 0 && (
+									<span className='ml-2 font-mono normal-case'>
+										{results.length}
+									</span>
+								)}
+							</h3>
+							{results.length > 0 && (
+								<div className='flex gap-1'>
+									<Button
+										variant='ghost'
+										size='sm'
+										className='cursor-pointer text-xs'
+										onClick={() =>
+											setSortBy(sortBy === 'order' ? 'weight' : 'order')
+										}
+									>
+										{sortBy === 'order' ? 'По весу' : 'По порядку'}
+									</Button>
+									<Button
+										variant='ghost'
+										size='sm'
+										onClick={copyResults}
+										className='cursor-pointer'
+										aria-label='Скопировать результаты'
+									>
+										<Copy className='h-4 w-4' />
+									</Button>
+								</div>
+							)}
+						</div>
+
+						{results.length === 0 ? (
+							<div className='flex h-[320px] items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground'>
+								Вставьте селекторы — вес посчитается сам
+							</div>
+						) : (
+							<div className='max-h-[320px] space-y-2 overflow-y-auto pr-1'>
+								{results.map((result, index) => (
+									<div
+										key={index}
+										className='space-y-2 rounded-lg border p-3 transition-colors hover:border-primary/50'
+									>
+										<div className='flex items-start justify-between gap-3'>
+											<code className='flex-1 font-mono text-sm break-all'>
+												{result.selector}
+											</code>
+											<div className='flex shrink-0 items-center gap-2'>
+												<span
+													className={cn(
+														'font-mono text-sm font-semibold',
+														getSpecificityColor(result.weight)
+													)}
+												>
+													{result.specificityString}
+												</span>
+												<span className='text-xs text-muted-foreground'>
+													вес {result.weight}
+												</span>
+											</div>
+										</div>
+
+										{/* Разбор: раньше каждый тип части красился в свой цвет —
+										    шесть палитр в одном списке. Теперь нейтрально */}
 										<div className='flex flex-wrap gap-1.5'>
 											{result.parts.inline > 0 && (
-												<Badge
-													variant='secondary'
-													className='bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-												>
+												<Badge variant='secondary' className='text-xs'>
 													inline style
 												</Badge>
 											)}
-											{result.parts.ids.map((id, i) => (
+											{[
+												...result.parts.ids,
+												...result.parts.classes,
+												...result.parts.attributes,
+												...result.parts.pseudoClasses,
+												...result.parts.elements,
+												...result.parts.pseudoElements
+											].map((part, i) => (
 												<Badge
-													key={`id-${i}`}
+													key={i}
 													variant='secondary'
-													className='font-mono bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+													className='font-mono text-xs'
 												>
-													{id}
-												</Badge>
-											))}
-											{result.parts.classes.map((cls, i) => (
-												<Badge
-													key={`class-${i}`}
-													variant='secondary'
-													className='font-mono bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-												>
-													{cls}
-												</Badge>
-											))}
-											{result.parts.attributes.map((attr, i) => (
-												<Badge
-													key={`attr-${i}`}
-													variant='secondary'
-													className='font-mono bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300'
-												>
-													{attr}
-												</Badge>
-											))}
-											{result.parts.pseudoClasses.map((pc, i) => (
-												<Badge
-													key={`pc-${i}`}
-													variant='secondary'
-													className='font-mono bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
-												>
-													{pc}
-												</Badge>
-											))}
-											{result.parts.elements.map((el, i) => (
-												<Badge
-													key={`el-${i}`}
-													variant='secondary'
-													className='font-mono bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-												>
-													{el}
-												</Badge>
-											))}
-											{result.parts.pseudoElements.map((pe, i) => (
-												<Badge
-													key={`pe-${i}`}
-													variant='secondary'
-													className='font-mono bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
-												>
-													{pe}
+													{part}
 												</Badge>
 											))}
 										</div>
-									)}
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-			)}
-
-			{/* Info Card */}
-			<Card>
-				<CardHeader className='pb-4'>
-					<CardTitle className='flex items-center gap-2'>
-						<Info className='w-5 h-5' />
-						Как работает специфичность CSS
-					</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-6'>
-					<p className='text-sm text-muted-foreground leading-relaxed'>
-						Специфичность определяет, какие CSS правила применяются к элементу,
-						когда несколько правил конфликтуют. Более специфичные селекторы
-						имеют приоритет.
-					</p>
-
-					<div className='grid gap-6 md:grid-cols-2'>
-						<div className='space-y-3'>
-							<h4 className='font-semibold text-sm'>Уровни специфичности</h4>
-							<div className='space-y-2 text-sm'>
-								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
-									<Badge className='font-mono shrink-0 bg-red-600'>
-										1-0-0-0
-									</Badge>
-									<span>Инлайн стили (style="")</span>
-								</div>
-								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
-									<Badge className='font-mono shrink-0 bg-purple-600'>
-										0-1-0-0
-									</Badge>
-									<span>ID селекторы (#example)</span>
-								</div>
-								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
-									<Badge className='font-mono shrink-0 bg-blue-600'>
-										0-0-1-0
-									</Badge>
-									<span>Классы, атрибуты, псевдоклассы</span>
-								</div>
-								<div className='flex items-center gap-3 p-2 rounded-md bg-muted/50'>
-									<Badge className='font-mono shrink-0 bg-gray-600'>
-										0-0-0-1
-									</Badge>
-									<span>Элементы и псевдоэлементы</span>
-								</div>
+									</div>
+								))}
 							</div>
-						</div>
-
-						<div className='space-y-3'>
-							<h4 className='font-semibold text-sm'>Примеры</h4>
-							<div className='space-y-2 text-sm font-mono'>
-								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
-									<span>body</span>
-									<Badge variant='outline' className='font-mono'>
-										0-0-0-1
-									</Badge>
-								</div>
-								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
-									<span>.header</span>
-									<Badge variant='outline' className='font-mono'>
-										0-0-1-0
-									</Badge>
-								</div>
-								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
-									<span>#main</span>
-									<Badge variant='outline' className='font-mono'>
-										0-1-0-0
-									</Badge>
-								</div>
-								<div className='flex items-center justify-between p-2 rounded-md bg-muted/50'>
-									<span>#nav .active</span>
-									<Badge variant='outline' className='font-mono'>
-										0-1-1-0
-									</Badge>
-								</div>
-							</div>
-						</div>
+						)}
 					</div>
-				</CardContent>
+				</div>
 			</Card>
+
+			{/* Справка — секцией под тулом, как обучающие блоки в остальных инструментах */}
+			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Как считается вес селектора
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					Когда на один элемент претендуют несколько правил, побеждает не то,
+					что ниже в файле, а то, у которого больше вес. Порядок в файле
+					вступает в силу только при равном весе.
+				</p>
+				<p className='mt-3 leading-relaxed'>
+					Вес записывают четвёркой чисел и сравнивают слева направо. Любой
+					селектор с одним id перебьёт селектор хоть с сотней классов — разряды
+					не переполняются.
+				</p>
+
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>Вес</th>
+								<th className='py-2 font-semibold'>Что его даёт</th>
+							</tr>
+						</thead>
+						<tbody>
+							{[
+								['1-0-0-0', 'Инлайн-стиль в атрибуте style'],
+								['0-1-0-0', 'Идентификатор — #main'],
+								[
+									'0-0-1-0',
+									'Класс, атрибут, псевдокласс — .btn, [type], :hover'
+								],
+								['0-0-0-1', 'Тег и псевдоэлемент — div, ::before']
+							].map(([weight, desc]) => (
+								<tr key={weight} className='border-b align-top last:border-0'>
+									<td className='py-2 pr-4'>
+										<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-xs'>
+											{weight}
+										</code>
+									</td>
+									<td className='py-2'>{desc}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+
+				<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+					Почему не применяются стили
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					Самая частая причина — как раз специфичность: где-то лежит более
+					тяжёлый селектор, и он перебивает ваш, даже если ваш написан ниже.
+					Вставьте оба в калькулятор и сравните вес. Если веса равны, а стиль
+					всё равно не виден — ищите опечатку в имени класса, чужой{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						!important
+					</code>{' '}
+					или свойство, которое просто не наследуется.
+				</p>
+				<p className='mt-3 leading-relaxed'>
+					Перебивать чужой стиль лучше аккуратно: добавьте класс родителя или
+					продублируйте свой класс —{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						.btn.btn
+					</code>{' '}
+					вполне легальный приём, вес растёт, разметка не меняется.{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						!important
+					</code>{' '}
+					оставьте на крайний случай: перебить его потом можно будет только
+					другим{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						!important
+					</code>
+					, и так рождается война, из которой нет выхода.
+				</p>
+			</section>
 		</div>
 	)
 }
