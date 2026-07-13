@@ -4,13 +4,13 @@ excerpt:
   'Разбираемся, как контейнерные запросы делают компоненты по-настоящему
   адаптивными. Строим макеты, которые подстраиваются под размер контейнера, а не
   только под ширину экрана.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-container-queries.png'
 date: '2024-12-02T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-container-queries.png'
 related:
   - css-clamp-complete-guide
   - css-grid-layout
