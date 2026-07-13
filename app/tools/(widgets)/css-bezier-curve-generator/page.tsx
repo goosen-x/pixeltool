@@ -601,17 +601,20 @@ export default function BezierCurvePage() {
 							{
 								label: 'Движение',
 								hint: '0 → 200px',
-								style: { transform: `translateX(${progress * 200}px)` }
+								from: 'translateX(0)',
+								to: 'translateX(200px)'
 							},
 							{
 								label: 'Масштаб',
 								hint: '0.5 → 1.0',
-								style: { transform: `scale(${0.5 + progress * 0.5})` }
+								from: 'scale(0.5)',
+								to: 'scale(1)'
 							},
 							{
 								label: 'Вращение',
 								hint: '0° → 360°',
-								style: { transform: `rotate(${progress * 360}deg)` }
+								from: 'rotate(0deg)',
+								to: 'rotate(360deg)'
 							}
 						].map(demo => (
 							<div key={demo.label} className='space-y-2'>
@@ -622,10 +625,14 @@ export default function BezierCurvePage() {
 									</span>
 								</div>
 								<div className='flex h-20 items-center rounded-lg bg-muted/40 px-3'>
+									{/* Анимацию ведёт CSS: одно переключение значения и переход
+									    с нужной кривой. Раньше transform ещё и пересчитывался
+									    каждый кадр из rAF — переход и React дрались за одно
+									    свойство, движение выходило рваным, а кривая не читалась */}
 									<div
 										className='h-10 w-10 shrink-0 rounded-lg bg-primary'
 										style={{
-											...demo.style,
+											transform: isPlaying ? demo.to : demo.from,
 											transition: isPlaying
 												? `transform ${duration}s ${cssOutput}`
 												: 'none'
