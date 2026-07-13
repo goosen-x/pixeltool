@@ -1,5 +1,6 @@
 'use client'
 
+import { ContrastGuide } from './ContrastGuide'
 import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -738,6 +739,7 @@ export default function ColorContrastCheckerPage() {
 					</div>
 				</div>
 			</Card>
+			<ContrastGuide />
 		</div>
 	)
 }
