@@ -19,6 +19,8 @@ import { Input } from '@/components/ui/input'
 
 interface FeedbackModalProps {
 	variant?: 'default' | 'sidebar'
+	/** Свой триггер вместо кнопки по умолчанию — например вся карточка целиком */
+	trigger?: React.ReactNode
 }
 
 type FeedbackType = 'bug' | 'feature' | 'general'
@@ -31,7 +33,10 @@ interface FeedbackData {
 	widget?: string
 }
 
-export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
+export function FeedbackModal({
+	variant = 'sidebar',
+	trigger
+}: FeedbackModalProps) {
 	const [open, setOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
@@ -152,10 +157,16 @@ export function FeedbackModal({ variant = 'sidebar' }: FeedbackModalProps) {
 		return (
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>
-					<Button variant='outline' size='sm' className='w-full justify-start'>
-						<MessageSquare className='w-4 h-4 mr-2' />
-						Обратная связь
-					</Button>
+					{trigger ?? (
+						<Button
+							variant='outline'
+							size='sm'
+							className='w-full justify-start'
+						>
+							<MessageSquare className='w-4 h-4 mr-2' />
+							Обратная связь
+						</Button>
+					)}
 				</DialogTrigger>
 				<DialogContent className='sm:max-w-[500px]'>
 					<DialogHeader>
