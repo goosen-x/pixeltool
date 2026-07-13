@@ -361,132 +361,123 @@ export default function ColorContrastCheckerPage() {
 
 	return (
 		<div className='max-w-7xl mx-auto space-y-6'>
-			<div className='grid gap-6 lg:grid-cols-2'>
-				{/* Ввод: цвета и готовые пары */}
-				<Card className='p-6 space-y-6'>
-					<div className='grid gap-4 sm:grid-cols-2'>
-						<div>
-							<Label htmlFor='foreground' className='flex items-center gap-2'>
-								<Type className='w-4 h-4' />
-								Цвет текста
-							</Label>
-							<div className='mt-2 flex gap-2'>
-								<Input
-									id='foreground'
-									type='color'
-									value={foreground}
-									onChange={e => setForeground(e.target.value)}
-									className='h-10 w-14 cursor-pointer p-1'
-								/>
-								<Input
-									type='text'
-									value={foreground}
-									onChange={e => setForeground(e.target.value)}
-									placeholder='#000000'
-									className='flex-1 font-mono'
-								/>
+			<Card className='space-y-6 p-6'>
+				{/* Готовые пары — ряд наверху: с них удобно начинать */}
+				<div className='flex flex-wrap items-center gap-2'>
+					<span className='mr-1 text-sm font-medium text-muted-foreground'>
+						Готовые пары:
+					</span>
+					{COLOR_PAIRS.map((pair, index) => (
+						<Button
+							key={index}
+							onClick={() => loadColorPair(pair)}
+							variant='outline'
+							size='sm'
+							className='h-auto cursor-pointer gap-2 py-1.5'
+						>
+							<span
+								className='flex h-5 w-9 items-center justify-center rounded border text-[10px] font-bold'
+								style={{
+									backgroundColor: pair.background,
+									color: pair.foreground
+								}}
+								aria-hidden
+							>
+								Aa
+							</span>
+							<span className='text-xs'>{pair.name}</span>
+						</Button>
+					))}
+				</div>
+
+				<div className='grid gap-8 border-t pt-6 lg:grid-cols-2'>
+					{/* Слева: что задаём и как это выглядит */}
+					<div className='space-y-5'>
+						<div className='grid gap-4 sm:grid-cols-2'>
+							<div>
+								<Label htmlFor='foreground' className='flex items-center gap-2'>
+									<Type className='h-4 w-4' />
+									Цвет текста
+								</Label>
+								<div className='mt-2 flex gap-2'>
+									<Input
+										id='foreground'
+										type='color'
+										value={foreground}
+										onChange={e => setForeground(e.target.value)}
+										className='h-10 w-14 cursor-pointer p-1'
+									/>
+									<Input
+										type='text'
+										value={foreground}
+										onChange={e => setForeground(e.target.value)}
+										placeholder='#000000'
+										className='flex-1 font-mono'
+									/>
+								</div>
+							</div>
+
+							<div>
+								<Label htmlFor='background' className='flex items-center gap-2'>
+									<Palette className='h-4 w-4' />
+									Цвет фона
+								</Label>
+								<div className='mt-2 flex gap-2'>
+									<Input
+										id='background'
+										type='color'
+										value={background}
+										onChange={e => setBackground(e.target.value)}
+										className='h-10 w-14 cursor-pointer p-1'
+									/>
+									<Input
+										type='text'
+										value={background}
+										onChange={e => setBackground(e.target.value)}
+										placeholder='#ffffff'
+										className='flex-1 font-mono'
+									/>
+								</div>
 							</div>
 						</div>
 
-						<div>
-							<Label htmlFor='background' className='flex items-center gap-2'>
-								<Palette className='w-4 h-4' />
-								Цвет фона
-							</Label>
-							<div className='mt-2 flex gap-2'>
-								<Input
-									id='background'
-									type='color'
-									value={background}
-									onChange={e => setBackground(e.target.value)}
-									className='h-10 w-14 cursor-pointer p-1'
-								/>
-								<Input
-									type='text'
-									value={background}
-									onChange={e => setBackground(e.target.value)}
-									placeholder='#ffffff'
-									className='flex-1 font-mono'
-								/>
-							</div>
-						</div>
-					</div>
-
-					<div className='flex flex-wrap gap-2'>
-						<Button
-							onClick={swapColors}
-							variant='outline'
-							size='sm'
-							className='cursor-pointer'
-						>
-							<RefreshCw className='mr-2 h-4 w-4' />
-							Поменять местами
-						</Button>
-						<Button
-							onClick={randomColors}
-							variant='outline'
-							size='sm'
-							className='cursor-pointer'
-						>
-							<Shuffle className='mr-2 h-4 w-4' />
-							Случайные
-						</Button>
-						<Button
-							onClick={copyResults}
-							variant='outline'
-							size='sm'
-							disabled={!result}
-							className='cursor-pointer'
-						>
-							<Copy className='mr-2 h-4 w-4' />
-							Скопировать отчёт
-						</Button>
-						<Button
-							onClick={reset}
-							variant='ghost'
-							size='sm'
-							className='cursor-pointer'
-						>
-							Сбросить
-						</Button>
-					</div>
-
-					<div className='border-t pt-5'>
-						<h3 className='mb-3 text-sm font-medium text-muted-foreground'>
-							Готовые пары
-						</h3>
 						<div className='flex flex-wrap gap-2'>
-							{COLOR_PAIRS.map((pair, index) => (
-								<Button
-									key={index}
-									onClick={() => loadColorPair(pair)}
-									variant='outline'
-									size='sm'
-									className='h-auto cursor-pointer gap-2 py-1.5'
-								>
-									<span
-										className='flex h-5 w-9 items-center justify-center rounded border text-[10px] font-bold'
-										style={{
-											backgroundColor: pair.background,
-											color: pair.foreground
-										}}
-										aria-hidden
-									>
-										Aa
-									</span>
-									<span className='text-xs'>{pair.name}</span>
-								</Button>
-							))}
+							<Button
+								onClick={swapColors}
+								variant='outline'
+								size='sm'
+								className='cursor-pointer'
+							>
+								<RefreshCw className='mr-2 h-4 w-4' />
+								Поменять местами
+							</Button>
+							<Button
+								onClick={randomColors}
+								variant='outline'
+								size='sm'
+								className='cursor-pointer'
+							>
+								<Shuffle className='mr-2 h-4 w-4' />
+								Случайные
+							</Button>
+							<Button
+								onClick={copyResults}
+								variant='outline'
+								size='sm'
+								className='cursor-pointer'
+							>
+								<Copy className='mr-2 h-4 w-4' />
+								Скопировать отчёт
+							</Button>
+							<Button
+								onClick={reset}
+								variant='ghost'
+								size='sm'
+								className='cursor-pointer'
+							>
+								Сбросить
+							</Button>
 						</div>
-					</div>
-				</Card>
-
-				{/* Результат */}
-				<Card className='h-fit p-6 lg:sticky lg:top-6'>
-					<div className='space-y-4 pb-6'>
-						<h3 className='text-sm font-medium text-muted-foreground'>
-							Как выглядит текст
-						</h3>
 
 						<div className='grid gap-4 sm:grid-cols-2'>
 							<div>
@@ -540,6 +531,7 @@ export default function ColorContrastCheckerPage() {
 							</div>
 						</div>
 
+						{/* Предпросмотр — под своими же настройками */}
 						<div
 							className='rounded-lg border p-6'
 							style={{ backgroundColor: background }}
@@ -572,116 +564,121 @@ export default function ColorContrastCheckerPage() {
 						</div>
 					</div>
 
-					<div className='flex flex-col items-center gap-2 border-t pt-6 pb-6 text-center'>
-						<span className='text-sm text-muted-foreground'>
-							Коэффициент контрастности
-						</span>
-						<span
-							className={cn(
-								'font-mono text-5xl font-bold tabular-nums',
-								level.text
-							)}
-						>
-							{result.ratio.toFixed(2)}
-							<span className='text-2xl'>:1</span>
-						</span>
-						<span
-							className={cn(
-								'rounded-full px-3 py-1 text-sm font-semibold',
-								level.chip
-							)}
-						>
-							{level.label}
-						</span>
-						<span className='text-sm text-muted-foreground'>{level.hint}</span>
-					</div>
-
-					<div className='space-y-2 border-t pt-5'>
-						{CRITERIA.map((c, index) => (
-							<div
-								key={index}
-								className='flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2'
+					{/* Справа: вердикт */}
+					<div className='space-y-5'>
+						<div className='flex flex-col items-center gap-2 text-center'>
+							<span className='text-sm text-muted-foreground'>
+								Коэффициент контрастности
+							</span>
+							<span
+								className={cn(
+									'font-mono text-5xl font-bold tabular-nums',
+									level.text
+								)}
 							>
-								<div className='min-w-0'>
-									<span className='text-sm'>{c.label}</span>
-									<span className='ml-2 font-mono text-xs text-muted-foreground'>
-										{c.threshold}
-									</span>
-								</div>
-								{getStatusIcon(c.passed)}
-							</div>
-						))}
-					</div>
-
-					{(suggestions.foreground.length > 0 ||
-						suggestions.background.length > 0) && (
-						<div className='mt-5 space-y-4 border-t pt-5'>
-							<h3 className='flex items-center gap-2 text-sm font-medium'>
-								<AlertCircle className='h-4 w-4 text-amber-600' />
-								Как починить
-							</h3>
-
-							{suggestions.foreground.length > 0 && (
-								<div>
-									<p className='mb-2 text-xs text-muted-foreground'>
-										Затемнить текст:
-									</p>
-									<div className='flex flex-wrap gap-2'>
-										{suggestions.foreground.map((s, index) => (
-											<Button
-												key={index}
-												onClick={() => setForeground(s.color)}
-												variant='outline'
-												size='sm'
-												className='cursor-pointer gap-2'
-											>
-												<span
-													className='h-4 w-4 rounded border'
-													style={{ backgroundColor: s.color }}
-													aria-hidden
-												/>
-												<span className='font-mono text-xs'>{s.color}</span>
-												<span className='font-mono text-xs text-muted-foreground'>
-													{s.ratio.toFixed(1)}:1
-												</span>
-											</Button>
-										))}
-									</div>
-								</div>
-							)}
-
-							{suggestions.background.length > 0 && (
-								<div>
-									<p className='mb-2 text-xs text-muted-foreground'>
-										Осветлить фон:
-									</p>
-									<div className='flex flex-wrap gap-2'>
-										{suggestions.background.map((s, index) => (
-											<Button
-												key={index}
-												onClick={() => setBackground(s.color)}
-												variant='outline'
-												size='sm'
-												className='cursor-pointer gap-2'
-											>
-												<span
-													className='h-4 w-4 rounded border'
-													style={{ backgroundColor: s.color }}
-													aria-hidden
-												/>
-												<span className='font-mono text-xs'>{s.color}</span>
-												<span className='font-mono text-xs text-muted-foreground'>
-													{s.ratio.toFixed(1)}:1
-												</span>
-											</Button>
-										))}
-									</div>
-								</div>
-							)}
+								{result.ratio.toFixed(2)}
+								<span className='text-2xl'>:1</span>
+							</span>
+							<span
+								className={cn(
+									'rounded-full px-3 py-1 text-sm font-semibold',
+									level.chip
+								)}
+							>
+								{level.label}
+							</span>
+							<span className='text-sm text-muted-foreground'>
+								{level.hint}
+							</span>
 						</div>
-					)}
-				</Card>
-			</div>
+
+						<div className='space-y-2'>
+							{CRITERIA.map((c, index) => (
+								<div
+									key={index}
+									className='flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2'
+								>
+									<div className='min-w-0'>
+										<span className='text-sm'>{c.label}</span>
+										<span className='ml-2 font-mono text-xs text-muted-foreground'>
+											{c.threshold}
+										</span>
+									</div>
+									{getStatusIcon(c.passed)}
+								</div>
+							))}
+						</div>
+
+						{(suggestions.foreground.length > 0 ||
+							suggestions.background.length > 0) && (
+							<div className='space-y-4 border-t pt-5'>
+								<h3 className='flex items-center gap-2 text-sm font-medium'>
+									<AlertCircle className='h-4 w-4 text-amber-600' />
+									Как починить
+								</h3>
+
+								{suggestions.foreground.length > 0 && (
+									<div>
+										<p className='mb-2 text-xs text-muted-foreground'>
+											Затемнить текст:
+										</p>
+										<div className='flex flex-wrap gap-2'>
+											{suggestions.foreground.map((s, index) => (
+												<Button
+													key={index}
+													onClick={() => setForeground(s.color)}
+													variant='outline'
+													size='sm'
+													className='cursor-pointer gap-2'
+												>
+													<span
+														className='h-4 w-4 rounded border'
+														style={{ backgroundColor: s.color }}
+														aria-hidden
+													/>
+													<span className='font-mono text-xs'>{s.color}</span>
+													<span className='font-mono text-xs text-muted-foreground'>
+														{s.ratio.toFixed(1)}:1
+													</span>
+												</Button>
+											))}
+										</div>
+									</div>
+								)}
+
+								{suggestions.background.length > 0 && (
+									<div>
+										<p className='mb-2 text-xs text-muted-foreground'>
+											Осветлить фон:
+										</p>
+										<div className='flex flex-wrap gap-2'>
+											{suggestions.background.map((s, index) => (
+												<Button
+													key={index}
+													onClick={() => setBackground(s.color)}
+													variant='outline'
+													size='sm'
+													className='cursor-pointer gap-2'
+												>
+													<span
+														className='h-4 w-4 rounded border'
+														style={{ backgroundColor: s.color }}
+														aria-hidden
+													/>
+													<span className='font-mono text-xs'>{s.color}</span>
+													<span className='font-mono text-xs text-muted-foreground'>
+														{s.ratio.toFixed(1)}:1
+													</span>
+												</Button>
+											))}
+										</div>
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+				</div>
+			</Card>
 
 			<ContrastGuide />
 		</div>
