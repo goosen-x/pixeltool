@@ -3,11 +3,6 @@
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger
-} from '@/components/ui/tooltip'
 import { Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SharePopover } from '@/components/share/SharePopover'
@@ -31,24 +26,14 @@ function ToolRow({
 	const widget = getWidgetById(id)
 	if (!widget) return null
 
-	const title = widget.title || widget.id
-
 	return (
 		<li className='flex items-center gap-0.5'>
-			{/* Названия длинные и обрезаются — показываем полное при наведении */}
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<Link
-						href={`/tools/${widget.path}`}
-						className='min-w-0 flex-1 cursor-pointer truncate rounded px-2 py-1 text-[13px] leading-snug transition-colors hover:bg-muted'
-					>
-						{title}
-					</Link>
-				</TooltipTrigger>
-				<TooltipContent side='left' className='max-w-xs'>
-					{title}
-				</TooltipContent>
-			</Tooltip>
+			<Link
+				href={`/tools/${widget.path}`}
+				className='flex-1 cursor-pointer truncate rounded px-2 py-1 text-[13px] leading-snug transition-colors hover:bg-muted'
+			>
+				{widget.title || widget.id}
+			</Link>
 			<Button
 				variant='ghost'
 				size='icon'
