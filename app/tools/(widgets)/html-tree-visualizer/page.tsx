@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
+import Link from 'next/link'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -1081,6 +1082,28 @@ export default function HTMLTreePage() {
 					</TabsContent>
 				</Tabs>
 			)}
+
+			<section className='mt-16'>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Дерево разметки и дерево браузера — не одно и то же
+				</h2>
+				<p className='mt-3 max-w-3xl text-muted-foreground'>
+					Здесь вы видите дерево своего HTML: теги ровно там, где вы их
+					написали. Браузер же строит из этой разметки DOM-дерево и по дороге
+					чинит её — достраивает <code className='font-mono'>tbody</code>,
+					закрывает забытые теги, выносит лишнее из таблиц наружу. Из-за этого,
+					например, молча не работает селектор{' '}
+					<code className='font-mono'>table &gt; tr</code>. Где именно
+					расходятся два дерева — разбираем в статье{' '}
+					<Link
+						href='/blog/html-tree-vs-dom-tree'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						HTML-дерево и DOM-дерево
+					</Link>
+					.
+				</p>
+			</section>
 		</div>
 	)
 }
