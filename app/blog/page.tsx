@@ -1,6 +1,5 @@
 import { getAllPosts } from '@/lib/api-db'
 import { PostPreview } from '@/components/blog/post-preview'
-import { Footer } from '@/components/layout'
 import { Metadata } from 'next'
 import Script from 'next/script'
 
@@ -144,7 +143,6 @@ export default async function Blog(props: Props) {
 					</section>
 				</div>
 			</main>
-			<Footer />
 		</>
 	)
 }

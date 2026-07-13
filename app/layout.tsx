@@ -264,6 +264,9 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<AutoBreadcrumbs />
 					<SiteStructuredData />
 					{children}
+					{/* Футер был импортирован, но не отрисован — он существовал только
+					    на страницах блога, где его подключали вручную. Теперь общий */}
+					<Footer />
 					<ScrollToTop />
 					<Toaster />
 					<CookieConsent />

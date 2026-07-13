@@ -5,7 +5,6 @@ import markdownToHtml from '@/lib/helpers/markdownToHtml'
 import Alert from '@/components/blog/alert'
 import { PostBodyWithHighlight } from '@/components/blog/post-body-with-highlight'
 import { PostHeader } from '@/components/blog/post-header'
-import { Footer } from '@/components/layout'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { ProjectsRightSidebar } from '@/components/sidebars'
 import { RelatedPosts } from '@/components/blog/related-posts'
@@ -96,7 +95,6 @@ export default async function Post(props: Params) {
 					</div>
 				</div>
 			</main>
-			<Footer />
 		</>
 	)
 }
