@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { getAllPosts } from '@/lib/api-db'
+import { RelatedPostsCarousel } from './related-posts-carousel'
 import type { Post } from '@/lib/types/post'
 
 interface Props {
@@ -26,28 +26,12 @@ export async function RelatedPosts({ post }: Props) {
 
 	if (related.length === 0) return null
 
-	// Та же ширина, что у текста статьи (max-w-2xl в PostBody): иначе блок
-	// расползался на всю колонку и выглядел чужим
+	// Карусель занимает всю колонку статьи, как и обложка: карточкам с
+	// картинками нужна ширина, в узкой колонке текста они бы сплющились
 	return (
-		<section className='mx-auto mt-16 max-w-2xl border-t pt-10'>
+		<section className='mt-16 border-t pt-10'>
 			<h2 className='text-2xl font-bold tracking-tight'>Читайте также</h2>
-
-			<div className='mt-6 grid gap-4 sm:grid-cols-3'>
-				{related.map(item => (
-					<Link
-						key={item.slug}
-						href={`/blog/${item.slug}`}
-						className='group block cursor-pointer rounded-xl border bg-card p-4 transition-colors hover:border-primary/40'
-					>
-						<h3 className='text-base font-semibold transition-colors group-hover:text-primary'>
-							{item.title}
-						</h3>
-						<p className='mt-2 line-clamp-3 text-sm text-muted-foreground'>
-							{item.excerpt}
-						</p>
-					</Link>
-				))}
-			</div>
+			<RelatedPostsCarousel posts={related} />
 		</section>
 	)
 }

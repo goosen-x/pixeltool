@@ -36,7 +36,7 @@ export function getPostBySlugFromFile(slug: string): Post {
 		date: data.date || new Date().toISOString(),
 		coverImage: data.coverImage || '/images/avatar.jpeg',
 		author: data.author || {
-			name: 'Dmitry Borisenko',
+			name: 'Дмитрий Борисенко',
 			picture: '/images/avatar.jpeg'
 		},
 		excerpt: data.excerpt || '',

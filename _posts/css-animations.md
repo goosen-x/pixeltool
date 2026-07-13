@@ -7,7 +7,7 @@ excerpt:
 coverImage: '/images/blog/css-animations.png'
 date: '2025-04-22T10:00:00.000Z'
 author:
-  name: Dmitry Borisenko
+  name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 ogImage:
   url: '/images/blog/css-animations.png'

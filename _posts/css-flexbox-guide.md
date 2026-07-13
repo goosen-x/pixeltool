@@ -7,7 +7,7 @@ excerpt:
 coverImage: '/images/blog/css-flexbox-guide.png'
 date: '2025-06-24T10:00:00.000Z'
 author:
-  name: Dmitry Borisenko
+  name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 ogImage:
   url: '/images/blog/css-flexbox-guide.png'

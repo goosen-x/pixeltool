@@ -16,10 +16,9 @@ type Props = {
 export function PostHeader({ title, coverImage, date, author, slug }: Props) {
 	return (
 		<>
-			{/* Та же ширина, что у текста, и соотношение 16:9 — как у самих
-			    обложек (1672x941). При других пропорциях object-cover срезал
-			    у картинки края */}
-			<div className='mx-auto mb-8 max-w-2xl'>
+			{/* Обложка занимает всю колонку статьи — до сайдбара. Соотношение 16:9,
+			    как у самих картинок (1672x941), иначе object-cover срезает края */}
+			<div className='mb-8'>
 				<PostCover
 					title={title}
 					slug={slug}
@@ -28,7 +27,7 @@ export function PostHeader({ title, coverImage, date, author, slug }: Props) {
 				/>
 			</div>
 			<div className='max-w-2xl mx-auto'>
-				<h1 className='text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-tight mb-8'>
+				<h1 className='text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-8'>
 					{title}
 				</h1>
 				<div className='flex items-center gap-4 mb-8'>
