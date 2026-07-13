@@ -3,6 +3,7 @@ import html from 'remark-html'
 import gfm from 'remark-gfm'
 import remarkLiveCode from '@/lib/remark-plugins/remark-live-code'
 import remarkToolLink from '@/lib/remark-plugins/remark-tool-link'
+import remarkBaseline from '@/lib/remark-plugins/remark-baseline'
 
 export default async function markdownToHtml(
 	markdown: string
@@ -13,6 +14,7 @@ export default async function markdownToHtml(
 		// зачёркивание, списки задач и автоссылки
 		.use(gfm)
 		.use(remarkToolLink)
+		.use(remarkBaseline)
 		.use(remarkLiveCode)
 		.use(html, { sanitize: false })
 		.process(markdown)

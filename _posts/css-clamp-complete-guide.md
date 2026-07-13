@@ -36,6 +36,8 @@ related:
 
 /tools/css-clamp-calculator
 
+!baseline clamp
+
 ## Что такое clamp()?
 
 CSS функция `clamp()` позволяет установить значение, которое адаптируется в
