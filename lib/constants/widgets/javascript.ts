@@ -114,7 +114,11 @@ export const javascriptWidgets: Widget[] = [
 		title: 'JavaScript валидатор',
 		description: 'Найдите ошибки в JavaScript коде',
 		useCase: 'Быстрая проверка JavaScript на ошибки',
-		recommendedTools: ['js-minifier', 'json-tools', 'javascript-syntax-checker'],
+		recommendedTools: [
+			'js-minifier',
+			'json-tools',
+			'javascript-syntax-checker'
+		],
 		difficulty: 'beginner',
 		tags: [
 			'javascript',

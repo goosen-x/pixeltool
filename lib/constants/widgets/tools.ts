@@ -261,11 +261,7 @@ export const toolWidgets: Widget[] = [
 		title: 'Информация о системе',
 		description:
 			'Получите детальную информацию о вашем браузере, устройстве и операционной системе',
-		recommendedTools: [
-			'color-converter',
-			'qr-generator',
-			'css-specificity'
-		],
+		recommendedTools: ['color-converter', 'qr-generator', 'css-specificity'],
 		difficulty: 'beginner',
 		tags: [
 			'system',
@@ -316,9 +312,7 @@ export const toolWidgets: Widget[] = [
 		gradient: 'from-orange-500 to-red-600',
 		title: 'Таймер и секундомер',
 		description: 'Таймер, обратный отсчёт и секундомер с уведомлениями',
-		recommendedTools: [
-			'team-randomizer', 'draw-lots', 'dice-roller'
-		],
+		recommendedTools: ['team-randomizer', 'draw-lots', 'dice-roller'],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],
 		useCase: 'Управление временем для работы, спорта или готовки',

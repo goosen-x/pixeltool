@@ -189,7 +189,11 @@ export const securityWidgets: Widget[] = [
 		gradient: 'from-indigo-500 to-blue-600',
 		title: 'Генератор UUID',
 		description: 'Создавайте уникальные идентификаторы UUID всех версий',
-		recommendedTools: ['random-number-generator', 'password-generator', 'jwt-decoder'],
+		recommendedTools: [
+			'random-number-generator',
+			'password-generator',
+			'jwt-decoder'
+		],
 		difficulty: 'beginner',
 		tags: ['uuid', 'guid', 'generator', 'unique', 'identifier'],
 		useCase: 'Генерация уникальных идентификаторов для API и баз данных',
