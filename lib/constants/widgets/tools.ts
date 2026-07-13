@@ -15,6 +15,9 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'svg-encoder',
 		icon: SVGIcon,
+		// Собственный компонент, а не lucide: без явного имени карточка в блоге
+		// не могла подобрать иконку и рисовала запасной «гаечный ключ»
+		iconName: 'FileCode',
 		category: 'tools',
 		translationKey: 'svgEncoder',
 		path: 'svg-to-base64-encoder',

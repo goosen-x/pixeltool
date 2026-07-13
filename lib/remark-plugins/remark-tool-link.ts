@@ -26,10 +26,15 @@ const TOOL_METADATA: Record<
 widgets.forEach(widget => {
 	const href = `/tools/${widget.path}`
 
+	// Поле iconName заполнено лишь у трёх виджетов из полусотни, поэтому берём
+	// имя из самого компонента иконки: у lucide оно лежит в displayName.
+	// Иначе 49 инструментов рисовались с запасным «гаечным ключом»
+	const iconDisplayName = (widget.icon as { displayName?: string })?.displayName
+
 	TOOL_METADATA[href] = {
 		title: widget.title || widget.id,
 		description: widget.description || widget.useCase || '',
-		iconName: widget.iconName || 'Wrench',
+		iconName: widget.iconName || iconDisplayName || 'Wrench',
 		gradient: widget.gradient
 	}
 })

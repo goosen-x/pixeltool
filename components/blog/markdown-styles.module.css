@@ -18,12 +18,13 @@
 	font-size: 0.9rem;
 	overflow: hidden;
 	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	border: 1px solid hsl(var(--border));
 }
 
 .markdown thead {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	color: white;
+	background-color: hsl(var(--muted));
+	color: hsl(var(--foreground));
+	border-bottom: 1px solid hsl(var(--border));
 }
 
 .markdown th {
@@ -35,11 +36,7 @@
 
 .markdown td {
 	padding: 0.875rem 1rem;
-	border-bottom: 1px solid #e5e7eb;
-}
-
-.dark .markdown td {
-	border-bottom-color: #374151;
+	border-bottom: 1px solid hsl(var(--border));
 }
 
 .markdown tbody tr {
@@ -47,19 +44,11 @@
 }
 
 .markdown tbody tr:hover {
-	background-color: rgba(102, 126, 234, 0.05);
-}
-
-.dark .markdown tbody tr:hover {
-	background-color: rgba(102, 126, 234, 0.1);
+	background-color: hsl(var(--muted) / 0.5);
 }
 
 .markdown tbody tr:nth-child(even) {
-	background-color: #f9fafb;
-}
-
-.dark .markdown tbody tr:nth-child(even) {
-	background-color: #1f2937;
+	background-color: hsl(var(--muted) / 0.3);
 }
 
 .markdown h2 {

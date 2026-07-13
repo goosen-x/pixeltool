@@ -4,13 +4,36 @@ import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 
+type IconComponentType = React.ComponentType<{ className?: string }>
+
+/**
+ * Имя иконки приходит из displayName компонента lucide («Grid3x3»), а экспорт
+ * называется иначе («Grid3X3»). Прямой поиск по ключу поэтому промахивается —
+ * ищем ещё и по displayName, без учёта регистра.
+ */
+const resolveIcon = (name: string): IconComponentType => {
+	const icons = LucideIcons as unknown as Record<string, IconComponentType>
+
+	const direct = icons[name]
+	if (direct) return direct
+
+	const target = name.toLowerCase()
+	const found = Object.values(icons).find(
+		icon =>
+			typeof icon === 'object' &&
+			icon !== null &&
+			(icon as { displayName?: string }).displayName?.toLowerCase() === target
+	)
+
+	return found || LucideIcons.Wrench
+}
+
 interface ToolLinkProps {
 	href: string
 	title: string
 	subtitle?: string
 	description?: string
 	iconName?: string
-	/** Приходит из данных виджета, но карточка в статье рисуется без градиента */
 	gradient?: string
 }
 
@@ -19,13 +42,13 @@ export function ToolLink({
 	title,
 	subtitle,
 	description,
-	iconName = 'Wrench'
+	iconName = 'Wrench',
+	gradient = 'from-blue-500 to-cyan-500'
 }: ToolLinkProps) {
 	const isExternal = href.startsWith('http')
 	const buttonText = 'Попробовать →'
 
-	// Get icon component dynamically
-	const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.Wrench
+	const IconComponent = resolveIcon(iconName)
 
 	return (
 		<Link
@@ -36,8 +59,12 @@ export function ToolLink({
 		>
 			<div className='flex items-start gap-4'>
 				<div className='flex-shrink-0 mt-0.5'>
-					<div className='w-12 h-12 rounded-xl bg-muted flex items-center justify-center'>
-						<IconComponent className='w-6 h-6 text-foreground' />
+					{/* Градиент иконки — фирменный цвет инструмента, как на карточках
+					    по всему сайту. Тени убраны, градиент остаётся */}
+					<div
+						className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}
+					>
+						<IconComponent className='w-6 h-6 text-white' />
 					</div>
 				</div>
 
