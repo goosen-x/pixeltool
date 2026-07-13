@@ -4,13 +4,13 @@ excerpt:
   'Разбираемся, как создавать впечатляющие анимации средствами CSS. От простых
   переходов до сложных keyframe-анимаций, оптимизации производительности и
   примеров из реальной практики.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-animations.png'
 date: '2024-12-06T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-animations.png'
 related:
   - css-variables
   - css-pseudo-selectors

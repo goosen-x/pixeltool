@@ -4,13 +4,13 @@ excerpt:
   'Освойте CSS псевдоклассы и псевдоэлементы для создания продвинутых
   интерактивных элементов и визуальных эффектов без JavaScript. Интерактивные
   примеры и лучшие практики.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-pseudo-selectors.png'
 date: '2025-01-10T10:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-pseudo-selectors.png'
 categories: ['CSS', 'Web Development', 'Tutorial']
 keywords:
   [

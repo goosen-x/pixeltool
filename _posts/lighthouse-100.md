@@ -5,13 +5,13 @@ excerpt:
   'Разбираем, из чего складываются 100% в Lighthouse, почему половина усилий
   уходит впустую и какие метрики стоит чинить первыми. С инструментами под
   каждую задачу.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/lighthouse-100.png'
 date: '2026-07-13T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/lighthouse-100.png'
 related:
   - css-animations
   - css-clamp-complete-guide

@@ -4,13 +4,13 @@ excerpt:
   'Изучите CSS custom properties для создания динамических, поддерживаемых
   стилей. Узнайте, как создавать темы, отзывчивые дизайны и интерактивные
   компоненты с CSS переменными.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-variables.png'
 date: '2024-12-04T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-variables.png'
 related:
   - css-animations
   - css-pseudo-selectors

@@ -4,13 +4,13 @@ excerpt:
   'Освойте CSS Grid Layout на практических примерах. Узнайте, как создавать
   сложные макеты с помощью grid-контейнеров, grid-элементов и адаптивных
   паттернов вёрстки.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-grid-layout.png'
 date: '2024-12-10T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-grid-layout.png'
 related:
   - css-flexbox-guide
   - css-container-queries

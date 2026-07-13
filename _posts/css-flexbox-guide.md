@@ -4,13 +4,13 @@ excerpt:
   'Подробное руководство по раскладке CSS Flexbox. Разбираемся с
   флекс-контейнерами, флекс-элементами, выравниванием и реальными сценариями
   применения на примерах кода.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-flexbox-guide.png'
 date: '2024-12-08T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-flexbox-guide.png'
 related:
   - css-grid-layout
   - css-container-queries
