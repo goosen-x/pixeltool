@@ -146,7 +146,7 @@ export function RecentToolsCard({ widget }: Props) {
 					/* Избранное ничем не ограничено, и карточка росла бы бесконечно,
 					   выдавливая всё, что под ней в сайдбаре. Держим фиксированный
 					   потолок: список прокручивается внутри себя */
-					<div className='max-h-64 space-y-4 overflow-y-auto pr-1'>
+					<div className='max-h-40 space-y-4 overflow-y-auto pr-1'>
 						{favorites.length > 0 && (
 							<div className='space-y-1'>
 								<p className='px-2 text-xs font-medium text-muted-foreground'>
