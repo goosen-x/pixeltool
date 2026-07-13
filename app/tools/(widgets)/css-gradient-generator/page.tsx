@@ -113,6 +113,27 @@ export default function CSSGradientGeneratorPage() {
 						style={{ background: gradientCSS }}
 					/>
 
+					<div className='flex flex-wrap items-center gap-2'>
+						<Button
+							onClick={generateRandom}
+							variant='outline'
+							size='sm'
+							className='cursor-pointer gap-2'
+						>
+							<Sparkles className='h-4 w-4' />
+							Случайный
+						</Button>
+						<Button
+							onClick={resetGradient}
+							variant='ghost'
+							size='sm'
+							className='cursor-pointer gap-2'
+						>
+							<RefreshCw className='h-4 w-4' />
+							Сброс
+						</Button>
+					</div>
+
 					{/* Вывод как в grid-генераторе: CSS и Tailwind рядом,
 					    у каждого своя иконка копирования */}
 					<div className='grid gap-4 md:grid-cols-2'>
@@ -165,27 +186,6 @@ export default function CSSGradientGeneratorPage() {
 								</span>
 							</div>
 						</div>
-					</div>
-
-					<div className='flex flex-wrap items-center gap-2'>
-						<Button
-							onClick={generateRandom}
-							variant='outline'
-							size='sm'
-							className='cursor-pointer gap-2'
-						>
-							<Sparkles className='h-4 w-4' />
-							Случайный
-						</Button>
-						<Button
-							onClick={resetGradient}
-							variant='ghost'
-							size='sm'
-							className='cursor-pointer gap-2'
-						>
-							<RefreshCw className='h-4 w-4' />
-							Сброс
-						</Button>
 					</div>
 				</div>
 
