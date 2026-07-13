@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ChevronRight, Home } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface BreadcrumbItem {
@@ -39,10 +39,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 	return (
 		<nav
 			aria-label='Хлебные крошки'
-			className={cn(
-				'w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-4 sm:pb-6',
-				className
-			)}
+			className={cn('w-full max-w-7xl mx-auto pt-2 pb-4 sm:pb-6', className)}
 		>
 			<ol className='flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground'>
 				{items.map((item, index) => {
@@ -63,16 +60,9 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 							) : (
 								<Link
 									href={item.url}
-									className='flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors'
+									className='cursor-pointer hover:text-foreground transition-colors'
 								>
-									{index === 0 ? (
-										<>
-											<Home className='h-4 w-4' />
-											<span className='sr-only sm:not-sr-only'>{item.name}</span>
-										</>
-									) : (
-										item.name
-									)}
+									{item.name}
 								</Link>
 							)}
 						</li>
