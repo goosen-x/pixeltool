@@ -33,7 +33,7 @@ export function FAQ({ items, title = 'Frequently Asked Questions' }: FAQProps) {
 	}
 
 	return (
-		<div className='mt-12'>
+		<div className='mt-16'>
 			<script
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

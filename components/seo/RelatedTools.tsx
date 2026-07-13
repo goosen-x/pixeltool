@@ -38,7 +38,7 @@ export function RelatedTools({
 	}
 
 	return (
-		<section className='mt-12'>
+		<section className='mt-16'>
 			{/* Тот же размер, что у h2 в обучающих блоках (*Guide.tsx) */}
 			<h2 className='text-2xl font-bold tracking-tight'>Похожие инструменты</h2>
 			<p className='mt-1 text-sm text-muted-foreground'>
