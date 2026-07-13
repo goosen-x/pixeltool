@@ -2,6 +2,11 @@
 
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger
+} from '@/components/ui/tooltip'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -247,9 +252,17 @@ export function ToolsPageContent({
 													<Icon className='w-6 h-6 text-white' />
 												</div>
 												<div className='flex-1 min-w-0'>
-													<h3 className='font-semibold group-hover:text-primary transition-colors truncate'>
-														{tool.title || tool.translationKey}
-													</h3>
+													{/* Название обрезается — полное показываем при наведении */}
+													<Tooltip>
+														<TooltipTrigger asChild>
+															<h3 className='truncate font-semibold transition-colors group-hover:text-primary'>
+																{tool.title || tool.translationKey}
+															</h3>
+														</TooltipTrigger>
+														<TooltipContent className='max-w-xs'>
+															{tool.title || tool.translationKey}
+														</TooltipContent>
+													</Tooltip>
 													<p className='text-sm text-muted-foreground mt-1'>
 														{locale === 'ru'
 															? 'Добавлено недавно'
