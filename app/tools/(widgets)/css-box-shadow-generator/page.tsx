@@ -554,9 +554,9 @@ export default function CSSBoxShadowGeneratorPage() {
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='space-y-8 p-6 sm:p-8'>
 				{/* Режим и пресеты — горизонтальный ряд наверху */}
-				<div className='space-y-4'>
+				<div className='space-y-6'>
 					<div
-						className='inline-flex rounded-lg border p-1'
+						className='inline-flex gap-1 rounded-xl border bg-muted/40 p-1.5'
 						role='group'
 						aria-label='Тип тени'
 					>
@@ -581,7 +581,7 @@ export default function CSSBoxShadowGeneratorPage() {
 					</div>
 
 					{/* Пресеты: тени нужен воздух вокруг, иначе она обрезается рамкой */}
-					<div className='flex flex-wrap gap-2'>
+					<div className='flex flex-wrap gap-4'>
 						{presets.map((preset, index) => {
 							const css = preset.shadows
 								.map(s => {
@@ -598,24 +598,26 @@ export default function CSSBoxShadowGeneratorPage() {
 								<button
 									key={index}
 									onClick={() => loadPreset(preset)}
-									className='flex cursor-pointer flex-col items-center gap-2 rounded-lg border bg-muted/30 px-4 py-3 transition-colors hover:border-primary'
+									className='group flex cursor-pointer flex-col items-center gap-3'
 								>
-									<span className='flex h-12 w-16 items-center justify-center'>
+									{/* Рамка снята: тень сама рисует границу плитки,
+									    рамка вокруг неё только зашумляла ряд */}
+									<span className='flex h-20 w-24 items-center justify-center rounded-xl bg-muted/40 transition-colors group-hover:bg-muted'>
 										{mode === 'text' ? (
 											<span
-												className='text-lg font-bold'
+												className='text-xl font-bold'
 												style={{ textShadow: css }}
 											>
 												Аа
 											</span>
 										) : (
 											<span
-												className='block h-8 w-12 rounded bg-background'
+												className='block h-10 w-14 rounded-md bg-background'
 												style={{ boxShadow: css }}
 											/>
 										)}
 									</span>
-									<span className='text-xs whitespace-nowrap'>
+									<span className='text-xs whitespace-nowrap text-muted-foreground transition-colors group-hover:text-foreground'>
 										{preset.name}
 									</span>
 								</button>
