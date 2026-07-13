@@ -1,49 +1,21 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { MessageSquare, Bug, Lightbulb, Send } from 'lucide-react'
 import { FeedbackModal } from '@/components/feedback'
 
 export function FeedbackCard() {
 	return (
 		<Card>
-			<CardHeader className='pb-3'>
-				<CardTitle className='text-sm flex items-center gap-2'>
-					<MessageSquare className='w-4 h-4 text-muted-foreground' />
-					Обратная связь
-				</CardTitle>
+			<CardHeader className='pb-2'>
+				<CardTitle className='text-sm'>Обратная связь</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-3'>
+				{/* Три плашки с типами отзыва убраны: они дублировали то, что человек
+				    и так увидит в самой форме, и занимали половину карточки */}
 				<p className='text-xs text-muted-foreground'>
-					Помогите улучшить сервис! Сообщите об ошибках, предложите идеи или
-					задайте вопрос.
+					Нашли ошибку или есть идея — напишите.
 				</p>
 
-				{/* Информация о типах обратной связи */}
-				<div className='grid grid-cols-3 gap-2 text-center'>
-					<div className='flex flex-col items-center gap-1 rounded-lg bg-muted/50 p-2'>
-						<Bug className='w-4 h-4 text-muted-foreground' />
-						<span className='text-[10px] text-muted-foreground'>
-							Сообщить об ошибке
-						</span>
-					</div>
-
-					<div className='flex flex-col items-center gap-1 rounded-lg bg-muted/50 p-2'>
-						<Lightbulb className='w-4 h-4 text-muted-foreground' />
-						<span className='text-[10px] text-muted-foreground'>
-							Предложить идею
-						</span>
-					</div>
-
-					<div className='flex flex-col items-center gap-1 rounded-lg bg-muted/50 p-2'>
-						<MessageSquare className='w-4 h-4 text-muted-foreground' />
-						<span className='text-[10px] text-muted-foreground'>
-							Задать вопрос
-						</span>
-					</div>
-				</div>
-
-				{/* Основная кнопка - использует FeedbackModal внутри */}
 				<div className='[&>button]:w-full'>
 					<FeedbackModal variant='sidebar' />
 				</div>
