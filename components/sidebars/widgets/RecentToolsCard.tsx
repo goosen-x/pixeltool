@@ -16,7 +16,8 @@ import { getWidgetById, type Widget } from '@/lib/constants/widgets'
 import { useToolHistory } from '@/lib/hooks/useToolHistory'
 
 interface Props {
-	widget: Widget
+	/** Текущий инструмент. На страницах блога его нет — карточка работает и так */
+	widget?: Widget
 }
 
 function ToolRow({
@@ -102,7 +103,7 @@ function WhatsappIcon({ className }: { className?: string }) {
 
 export function RecentToolsCard({ widget }: Props) {
 	const { recent, favorites, ready, toggleFavorite, isFavorite } =
-		useToolHistory(widget.id)
+		useToolHistory(widget?.id)
 	const [copied, setCopied] = useState(false)
 
 	const copyLink = () => {
@@ -116,7 +117,7 @@ export function RecentToolsCard({ widget }: Props) {
 	// блокировщик всплывающих окон
 	const shareTo = (network: 'telegram' | 'vk' | 'whatsapp') => {
 		const url = encodeURIComponent(window.location.href)
-		const text = encodeURIComponent(widget.title || document.title)
+		const text = encodeURIComponent(widget?.title || document.title)
 
 		const links = {
 			telegram: `https://t.me/share/url?url=${url}&text=${text}`,
@@ -184,22 +185,24 @@ export function RecentToolsCard({ widget }: Props) {
 				)}
 
 				<div className='flex items-center gap-1 border-t pt-3'>
-					<Button
-						variant='ghost'
-						size='sm'
-						className='h-8 cursor-pointer gap-2 text-xs'
-						onClick={() => toggleFavorite(widget.id)}
-					>
-						<Star
-							className={cn(
-								'h-3.5 w-3.5',
-								isFavorite(widget.id)
-									? 'fill-current text-amber-500'
-									: 'text-muted-foreground'
-							)}
-						/>
-						{isFavorite(widget.id) ? 'В избранном' : 'В избранное'}
-					</Button>
+					{widget && (
+						<Button
+							variant='ghost'
+							size='sm'
+							className='h-8 cursor-pointer gap-2 text-xs'
+							onClick={() => toggleFavorite(widget.id)}
+						>
+							<Star
+								className={cn(
+									'h-3.5 w-3.5',
+									isFavorite(widget.id)
+										? 'fill-current text-amber-500'
+										: 'text-muted-foreground'
+								)}
+							/>
+							{isFavorite(widget.id) ? 'В избранном' : 'В избранное'}
+						</Button>
+					)}
 
 					<Popover>
 						<PopoverTrigger asChild>

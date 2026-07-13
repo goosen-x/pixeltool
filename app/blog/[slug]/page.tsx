@@ -7,6 +7,7 @@ import { PostBodyWithHighlight } from '@/components/blog/post-body-with-highligh
 import { PostHeader } from '@/components/blog/post-header'
 import { Footer } from '@/components/layout'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { ProjectsRightSidebar } from '@/components/sidebars'
 
 export default async function Post(props: Params) {
 	const params = await props.params
@@ -72,16 +73,26 @@ export default async function Post(props: Params) {
 					]}
 				/>
 				{/* <Alert preview={post.preview} /> */}
-				<article className='mb-32'>
-					<PostHeader
-						title={post.title}
-						coverImage={post.coverImage}
-						date={post.date}
-						author={post.author}
-						slug={post.slug}
-					/>
-					<PostBodyWithHighlight content={content} />
-				</article>
+				{/* Сайдбар прячем на узких экранах: в статье он второстепенен,
+				    а текст важнее — на мобильном он бы вытеснил чтение */}
+				<div className='flex gap-8'>
+					<article className='mb-32 min-w-0 flex-1'>
+						<PostHeader
+							title={post.title}
+							coverImage={post.coverImage}
+							date={post.date}
+							author={post.author}
+							slug={post.slug}
+						/>
+						<PostBodyWithHighlight content={content} />
+					</article>
+
+					<div className='hidden lg:block'>
+						<div className='sticky top-6'>
+							<ProjectsRightSidebar />
+						</div>
+					</div>
+				</div>
 			</main>
 			<Footer />
 		</>
