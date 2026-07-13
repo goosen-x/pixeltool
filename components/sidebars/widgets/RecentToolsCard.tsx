@@ -9,7 +9,7 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from '@/components/ui/popover'
-import { Star, Clock, Share2, Link2, Check } from 'lucide-react'
+import { Star, Share2, Link2, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { getWidgetById, type Widget } from '@/lib/constants/widgets'
@@ -133,10 +133,7 @@ export function RecentToolsCard({ widget }: Props) {
 	return (
 		<Card>
 			<CardHeader className='pb-3'>
-				<CardTitle className='flex items-center gap-2 text-sm'>
-					<Clock className='h-4 w-4' />
-					Ваши инструменты
-				</CardTitle>
+				<CardTitle className='text-sm'>Ваши инструменты</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-4'>
 				{!hasContent ? (
