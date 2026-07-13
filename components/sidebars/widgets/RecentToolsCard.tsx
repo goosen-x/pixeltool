@@ -30,7 +30,8 @@ function ToolRow({
 		<li className='flex items-center gap-0.5'>
 			<Link
 				href={`/tools/${widget.path}`}
-				className='flex-1 cursor-pointer truncate rounded px-2 py-1 text-[13px] leading-snug transition-colors hover:bg-muted'
+				title={widget.title || widget.id}
+				className='min-w-0 flex-1 cursor-pointer truncate rounded px-2 py-1 text-[13px] leading-snug transition-colors hover:bg-muted'
 			>
 				{widget.title || widget.id}
 			</Link>
