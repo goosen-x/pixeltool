@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ProjectsLeftSidebar } from './ProjectsLeftSidebar'
 import { ProjectsRightSidebar } from './ProjectsRightSidebar'
+import { CompactFooter } from '@/components/layout/CompactFooter'
 
 type Props = {
 	children: ReactNode
@@ -72,6 +73,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 									</>
 								)}
 							</WidgetWrapper>
+							<CompactFooter />
 						</div>
 					</div>
 					{/* Right sidebar - hidden on mobile and tablets, shown on desktop */}

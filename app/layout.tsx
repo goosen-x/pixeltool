@@ -2,7 +2,7 @@ import './globals.css'
 import '@/lib/utils/suppress-warnings'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Footer } from '@/components/layout'
+import { SiteFooter } from '@/components/layout'
 
 // import { routing } from '@/i18n/routing'
 import { dev } from '@/lib/config/env'
@@ -264,9 +264,9 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					<AutoBreadcrumbs />
 					<SiteStructuredData />
 					{children}
-					{/* Футер был импортирован, но не отрисован — он существовал только
-					    на страницах блога, где его подключали вручную. Теперь общий */}
-					<Footer />
+					{/* Общий футер везде, кроме страниц инструментов: там своя раскладка
+					    с фиксированной высотой, и большой футер ломал сайдбар */}
+					<SiteFooter />
 					<ScrollToTop />
 					<Toaster />
 					<CookieConsent />
