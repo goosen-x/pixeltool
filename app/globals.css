@@ -443,9 +443,14 @@ pre[class*='language-'] {
 	color: #e6f1ff !important;
 }
 
-/* Inline code */
+/* Inline code.
+   Было: жёстко зашитый rgba(110, 118, 129, 0.4) с !important — мутно-серый
+   полупрозрачный фон на каждом инлайн-code, одинаковый в светлой и тёмной теме,
+   и перебить его из компонента было нельзя. Теперь тема учитывается, а !important
+   снят, чтобы компонент мог задать свой фон. */
 :not(pre) > code {
-	background-color: rgba(110, 118, 129, 0.4) !important;
+	background-color: hsl(var(--muted));
+	color: hsl(var(--foreground));
 	padding: 0.125rem 0.375rem;
 	border-radius: 0.25rem;
 	font-size: 0.875rem;
