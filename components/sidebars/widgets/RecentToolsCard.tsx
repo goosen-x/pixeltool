@@ -143,11 +143,15 @@ export function RecentToolsCard({ widget }: Props) {
 						открытые появятся сами.
 					</p>
 				) : (
-					<>
+					/* Избранное ничем не ограничено, и карточка росла бы бесконечно,
+					   выдавливая всё, что под ней в сайдбаре. Держим фиксированный
+					   потолок: список прокручивается внутри себя */
+					<div className='max-h-64 space-y-4 overflow-y-auto pr-1'>
 						{favorites.length > 0 && (
 							<div className='space-y-1'>
 								<p className='px-2 text-xs font-medium text-muted-foreground'>
 									Избранное
+									<span className='ml-1 font-mono'>{favorites.length}</span>
 								</p>
 								<ul className='space-y-0.5'>
 									{favorites.map(id => (
@@ -181,7 +185,7 @@ export function RecentToolsCard({ widget }: Props) {
 								</ul>
 							</div>
 						)}
-					</>
+					</div>
 				)}
 
 				<div className='flex items-center gap-1 border-t pt-3'>
