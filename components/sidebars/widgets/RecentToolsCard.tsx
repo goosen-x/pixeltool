@@ -33,24 +33,24 @@ function ToolRow({
 	if (!widget) return null
 
 	return (
-		<li className='flex items-center gap-1'>
+		<li className='flex items-center gap-0.5'>
 			<Link
 				href={`/tools/${widget.path}`}
-				className='flex-1 cursor-pointer truncate rounded px-2 py-1.5 text-sm transition-colors hover:bg-muted'
+				className='flex-1 cursor-pointer truncate rounded px-2 py-1 text-[13px] leading-snug transition-colors hover:bg-muted'
 			>
 				{widget.title || widget.id}
 			</Link>
 			<Button
 				variant='ghost'
 				size='icon'
-				className='h-7 w-7 shrink-0 cursor-pointer'
+				className='h-6 w-6 shrink-0 cursor-pointer'
 				onClick={() => onToggle(id)}
 				aria-label={starred ? 'Убрать из избранного' : 'Добавить в избранное'}
 				aria-pressed={starred}
 			>
 				<Star
 					className={cn(
-						'h-3.5 w-3.5',
+						'h-3 w-3',
 						starred ? 'fill-current text-amber-500' : 'text-muted-foreground'
 					)}
 				/>
@@ -133,10 +133,10 @@ export function RecentToolsCard({ widget }: Props) {
 
 	return (
 		<Card>
-			<CardHeader className='pb-3'>
+			<CardHeader className='pb-2'>
 				<CardTitle className='text-sm'>Ваши инструменты</CardTitle>
 			</CardHeader>
-			<CardContent className='space-y-4'>
+			<CardContent className='space-y-3'>
 				{!hasContent ? (
 					<p className='text-xs text-muted-foreground'>
 						Отметьте инструмент звёздочкой — он закрепится здесь. Недавно
@@ -146,10 +146,10 @@ export function RecentToolsCard({ widget }: Props) {
 					/* Избранное ничем не ограничено, и карточка росла бы бесконечно,
 					   выдавливая всё, что под ней в сайдбаре. Держим фиксированный
 					   потолок: список прокручивается внутри себя */
-					<div className='max-h-40 space-y-4 overflow-y-auto pr-1'>
+					<div className='max-h-40 space-y-3 overflow-y-auto pr-1'>
 						{favorites.length > 0 && (
 							<div className='space-y-1'>
-								<p className='px-2 text-xs font-medium text-muted-foreground'>
+								<p className='px-2 text-[11px] font-medium tracking-wide text-muted-foreground uppercase'>
 									Избранное
 									<span className='ml-1 font-mono'>{favorites.length}</span>
 								</p>
@@ -168,7 +168,7 @@ export function RecentToolsCard({ widget }: Props) {
 
 						{recent.filter(id => !isFavorite(id)).length > 0 && (
 							<div className='space-y-1'>
-								<p className='px-2 text-xs font-medium text-muted-foreground'>
+								<p className='px-2 text-[11px] font-medium tracking-wide text-muted-foreground uppercase'>
 									Недавние
 								</p>
 								<ul className='space-y-0.5'>
@@ -188,7 +188,7 @@ export function RecentToolsCard({ widget }: Props) {
 					</div>
 				)}
 
-				<div className='flex items-center gap-1 border-t pt-3'>
+				<div className='flex items-center gap-1 border-t pt-2'>
 					{widget && (
 						<Button
 							variant='ghost'
@@ -213,7 +213,7 @@ export function RecentToolsCard({ widget }: Props) {
 							<Button
 								variant='ghost'
 								size='sm'
-								className='ml-auto h-8 cursor-pointer gap-2 text-xs'
+								className='ml-auto h-7 cursor-pointer gap-1.5 px-2 text-xs'
 							>
 								<Share2 className='h-3.5 w-3.5' />
 								Поделиться
