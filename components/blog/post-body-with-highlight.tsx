@@ -12,7 +12,6 @@ import { useTheme } from 'next-themes'
 import markdownStyles from './markdown-styles.module.css'
 import { LiveCodeExample } from './live-code-example'
 import { ToolLink } from './tool-link'
-import { BaselineSupport } from './baseline-support'
 
 type Props = {
 	content: string
@@ -42,19 +41,15 @@ export function PostBodyWithHighlight({ content }: Props) {
 		// Regular expression to match tool links
 		const toolLinkRegex = /<div data-tool-link='([^']+)'><\/div>/g
 
-		// Плашки поддержки браузерами
-		const baselineRegex = /<div data-baseline='([^']+)'><\/div>/g
-
 		let lastIndex = 0
 		const parts: React.ReactNode[] = []
 		let codeMatch
 		let liveMatch
 		let toolMatch
-		let baselineMatch
 
 		// Combine all matches and sort by index
 		const allMatches: Array<{
-			type: 'code' | 'live' | 'tool' | 'baseline'
+			type: 'code' | 'live' | 'tool'
 			match: RegExpExecArray
 		}> = []
 
@@ -68,10 +63,6 @@ export function PostBodyWithHighlight({ content }: Props) {
 
 		while ((toolMatch = toolLinkRegex.exec(content)) !== null) {
 			allMatches.push({ type: 'tool', match: toolMatch })
-		}
-
-		while ((baselineMatch = baselineRegex.exec(content)) !== null) {
-			allMatches.push({ type: 'baseline', match: baselineMatch })
 		}
 
 		// Sort matches by their position in content
@@ -126,16 +117,6 @@ export function PostBodyWithHighlight({ content }: Props) {
 					)
 				} catch (error) {
 					console.error('Failed to parse tool link data:', error)
-				}
-			} else if (type === 'baseline') {
-				const dataStr = match[1].replace(/&#39;/g, "'")
-				try {
-					const data = JSON.parse(dataStr)
-					parts.push(
-						<BaselineSupport key={`baseline-${match.index}`} {...data} />
-					)
-				} catch (error) {
-					console.error('Failed to parse baseline data:', error)
 				}
 			} else {
 				// Handle regular code block
