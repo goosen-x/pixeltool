@@ -16,12 +16,15 @@ type Props = {
 export function PostHeader({ title, coverImage, date, author, slug }: Props) {
 	return (
 		<>
-			<div className='mb-8'>
+			{/* Та же ширина, что у текста, и соотношение 16:9 — как у самих
+			    обложек (1672x941). При других пропорциях object-cover срезал
+			    у картинки края */}
+			<div className='mx-auto mb-8 max-w-2xl'>
 				<PostCover
 					title={title}
 					slug={slug}
 					coverImage={coverImage}
-					className='aspect-[16/6]'
+					className='aspect-[16/9] rounded-xl'
 				/>
 			</div>
 			<div className='max-w-2xl mx-auto'>
