@@ -190,7 +190,7 @@ export default function PxRemConverterPage() {
 			<Card>
 				<CardContent className='p-6'>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='font-semibold flex items-center gap-2'>
+						<h3 className='text-base font-semibold flex items-center gap-2'>
 							<Info className='w-4 h-4' />
 							Таблица популярных значений
 						</h3>
@@ -254,13 +254,13 @@ export default function PxRemConverterPage() {
 			{/* Info Card */}
 			<Card className='bg-muted/50'>
 				<CardContent className='p-6'>
-					<h3 className='font-semibold mb-4 flex items-center gap-2'>
+					<h3 className='text-base font-semibold mb-4 flex items-center gap-2'>
 						<Info className='w-4 h-4' />О единицах измерения CSS
 					</h3>
 
 					<div className='grid md:grid-cols-3 gap-6 text-sm'>
 						<div>
-							<h4 className='font-medium mb-2'>Абсолютные единицы</h4>
+							<h4 className='text-sm font-medium mb-2'>Абсолютные единицы</h4>
 							<ul className='text-muted-foreground space-y-1'>
 								<li>
 									• <strong className='font-semibold'>px</strong> - пиксели,
@@ -273,7 +273,9 @@ export default function PxRemConverterPage() {
 							</ul>
 						</div>
 						<div>
-							<h4 className='font-medium mb-2'>Относительные единицы</h4>
+							<h4 className='text-sm font-medium mb-2'>
+								Относительные единицы
+							</h4>
 							<ul className='text-muted-foreground space-y-1'>
 								<li>
 									• <strong className='font-semibold'>rem</strong> -
@@ -294,7 +296,7 @@ export default function PxRemConverterPage() {
 							</ul>
 						</div>
 						<div>
-							<h4 className='font-medium mb-2'>Рекомендации</h4>
+							<h4 className='text-sm font-medium mb-2'>Рекомендации</h4>
 							<ul className='text-muted-foreground space-y-1'>
 								<li>• Используйте rem для типографики</li>
 								<li>• Применяйте em для отступов компонентов</li>

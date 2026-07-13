@@ -455,7 +455,7 @@ export default function CSSKeyframesGeneratorPage() {
 				{/* Конструктор: параметры и кадры в одной карточке */}
 				<Card className='lg:col-span-2 p-6 space-y-6'>
 					<section>
-						<h3 className='mb-4 font-semibold'>Параметры</h3>
+						<h3 className='text-base mb-4 font-semibold'>Параметры</h3>
 
 						<div className='grid gap-4 md:grid-cols-2'>
 							<div>
@@ -751,7 +751,7 @@ export default function CSSKeyframesGeneratorPage() {
 
 				{/* Предпросмотр едет вместе со скроллом: кадры правятся слева */}
 				<Card className='h-fit p-6 lg:sticky lg:top-6'>
-					<h3 className='mb-4 font-semibold'>Предпросмотр</h3>
+					<h3 className='text-base mb-4 font-semibold'>Предпросмотр</h3>
 
 					<style>{keyframesRule}</style>
 					<div className='mb-4 flex h-48 items-center justify-center rounded-lg bg-muted/20'>

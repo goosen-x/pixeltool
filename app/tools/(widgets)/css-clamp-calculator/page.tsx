@@ -205,7 +205,7 @@ export default function ClampCalculatorPage() {
 			<div className='grid gap-6 md:grid-cols-2'>
 				<Card className='p-6'>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='font-semibold'>Значения</h3>
+						<h3 className='text-base font-semibold'>Значения</h3>
 						<RadioGroup
 							value={unit}
 							onValueChange={v => setUnit(v as 'px' | 'rem')}
@@ -285,7 +285,7 @@ export default function ClampCalculatorPage() {
 				</Card>
 
 				<Card className='p-6'>
-					<h3 className='font-semibold mb-4'>Viewport</h3>
+					<h3 className='text-base font-semibold mb-4'>Viewport</h3>
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
 							<Label htmlFor='min-viewport'>Минимум</Label>
@@ -350,7 +350,7 @@ export default function ClampCalculatorPage() {
 
 			<Card className='mt-6 p-6'>
 				<div className='flex flex-col lg:flex-row items-start justify-between mb-4'>
-					<h3 className='font-semibold'>Результат</h3>
+					<h3 className='text-base font-semibold'>Результат</h3>
 					<div>
 						<RadioGroup
 							value={property}
@@ -435,7 +435,7 @@ export default function ClampCalculatorPage() {
 			</Card>
 
 			<Card className='mt-6 p-6'>
-				<h3 className='font-semibold mb-4'>Пример в действии</h3>
+				<h3 className='text-base font-semibold mb-4'>Пример в действии</h3>
 				<p
 					className='text-lg leading-relaxed'
 					style={{ [property]: clampValue }}

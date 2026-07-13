@@ -720,7 +720,7 @@ export default function CSSMinifierPage() {
 				<div className='grid md:grid-cols-3 gap-6 text-sm'>
 					<div className='space-y-3'>
 						<div>
-							<h4 className='font-medium mb-2 flex items-center gap-2'>
+							<h4 className='text-sm font-medium mb-2 flex items-center gap-2'>
 								<Zap className='w-4 h-4 text-pink-500' />
 								Оптимизации
 							</h4>
@@ -734,7 +734,7 @@ export default function CSSMinifierPage() {
 					</div>
 					<div className='space-y-3'>
 						<div>
-							<h4 className='font-medium mb-2 flex items-center gap-2'>
+							<h4 className='text-sm font-medium mb-2 flex items-center gap-2'>
 								<TrendingDown className='w-4 h-4 text-green-500' />
 								Преимущества
 							</h4>
@@ -748,7 +748,7 @@ export default function CSSMinifierPage() {
 					</div>
 					<div className='space-y-3'>
 						<div>
-							<h4 className='font-medium mb-2 flex items-center gap-2'>
+							<h4 className='text-sm font-medium mb-2 flex items-center gap-2'>
 								<Info className='w-4 h-4 text-purple-500' />
 								Рекомендации
 							</h4>
