@@ -4,13 +4,13 @@ excerpt:
   'Как сделать тень блока и тень текста, чем inset отличается от обычной тени и
   почему красивая тень получается не из чёрного цвета. Готовый код для карточек,
   кнопок и наведения.'
-coverImage: '/images/avatar.jpeg'
+coverImage: '/images/blog/css-shadows.png'
 date: '2026-07-13T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
 ogImage:
-  url: '/images/avatar.jpeg'
+  url: '/images/blog/css-shadows.png'
 related:
   - css-animations
   - css-variables

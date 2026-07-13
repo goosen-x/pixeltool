@@ -37,17 +37,23 @@ export function LiveCodeExample({
 	const [mounted, setMounted] = useState(false)
 	const isDark = resolvedTheme === 'dark'
 
-	// Debug logging
-	useEffect(() => {
-		console.log(
-			'LiveCodeExample - resolvedTheme:',
-			resolvedTheme,
-			'isDark:',
-			isDark
-		)
-	}, [resolvedTheme, isDark])
+	const hasHtml = html.trim() !== ''
+	const hasCss = css.trim() !== ''
+	const hasJs = js.trim() !== ''
+
+	// Первой открываем вкладку с кодом, а не «Result»: srcDoc для iframe
+	// собирается в эффекте, поэтому результат до этого момента пустой — человек
+	// видел белый прямоугольник и думал, что пример сломан
+	const firstTab: 'html' | 'css' | 'js' | 'result' = hasHtml
+		? 'html'
+		: hasCss
+			? 'css'
+			: hasJs
+				? 'js'
+				: 'result'
+
 	const [activeTab, setActiveTab] = useState<'html' | 'css' | 'js' | 'result'>(
-		'result'
+		firstTab
 	)
 	const [isCopied, setIsCopied] = useState(false)
 	const [isFullscreen, setIsFullscreen] = useState(false)
@@ -57,10 +63,6 @@ export function LiveCodeExample({
 	useEffect(() => {
 		setMounted(true)
 	}, [])
-
-	const hasHtml = html.trim() !== ''
-	const hasCss = css.trim() !== ''
-	const hasJs = js.trim() !== ''
 
 	const tabs = [
 		...(hasHtml ? [{ id: 'html' as const, label: 'HTML' }] : []),
