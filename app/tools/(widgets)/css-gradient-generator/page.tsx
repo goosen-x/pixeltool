@@ -113,38 +113,61 @@ export default function CSSGradientGeneratorPage() {
 						style={{ background: gradientCSS }}
 					/>
 
-					<pre className='overflow-x-auto rounded-lg bg-muted p-4'>
-						<code className='font-mono text-sm'>
-							background: {gradientCSS};
-						</code>
-					</pre>
+					{/* Вывод как в grid-генераторе: CSS и Tailwind рядом,
+					    у каждого своя иконка копирования */}
+					<div className='grid gap-4 md:grid-cols-2'>
+						<div>
+							<div className='mb-2 flex items-center justify-between'>
+								<Label className='text-sm text-muted-foreground'>CSS</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyCssCode}
+									className='h-8 cursor-pointer px-2 hover:bg-accent hover:text-white'
+									aria-label='Скопировать CSS'
+								>
+									{copiedCSS ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
+								</Button>
+							</div>
+							<div className='rounded-lg bg-secondary p-4'>
+								<pre className='overflow-x-auto font-mono text-xs text-secondary-foreground'>
+									background: {gradientCSS};
+								</pre>
+							</div>
+						</div>
+
+						<div>
+							<div className='mb-2 flex items-center justify-between'>
+								<Label className='text-sm text-muted-foreground'>
+									Tailwind CSS
+								</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyTailwindCode}
+									className='h-8 cursor-pointer px-2 hover:bg-accent hover:text-white'
+									aria-label='Скопировать Tailwind CSS'
+								>
+									{copiedTailwind ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
+								</Button>
+							</div>
+							<div className='rounded-lg bg-secondary p-4'>
+								<span className='font-mono text-xs break-all text-secondary-foreground'>
+									bg-[{gradientCSS.replace(/\s+/g, '_')}]
+								</span>
+							</div>
+						</div>
+					</div>
 
 					<div className='flex flex-wrap items-center gap-2'>
-						<Button
-							onClick={copyCssCode}
-							size='sm'
-							className='cursor-pointer gap-2'
-						>
-							{copiedCSS ? (
-								<Check className='h-4 w-4' />
-							) : (
-								<Copy className='h-4 w-4' />
-							)}
-							Копировать CSS
-						</Button>
-						<Button
-							onClick={copyTailwindCode}
-							variant='outline'
-							size='sm'
-							className='cursor-pointer gap-2'
-						>
-							{copiedTailwind ? (
-								<Check className='h-4 w-4' />
-							) : (
-								<Copy className='h-4 w-4' />
-							)}
-							Копировать Tailwind
-						</Button>
 						<Button
 							onClick={generateRandom}
 							variant='outline'
