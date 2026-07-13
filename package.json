@@ -37,7 +37,8 @@
 		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"typecheck": "tsc --noEmit",
-		"prepare": "husky"
+		"prepare": "husky",
+		"wordstat": "npx tsx scripts/wordstat.ts"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.10.0",

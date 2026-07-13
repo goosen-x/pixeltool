@@ -45,3 +45,6 @@ docs/
 # Backup & junk
 *.bak
 .DS_Store
+
+# Wordstat cache
+.cache/
