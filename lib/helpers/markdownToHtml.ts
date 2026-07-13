@@ -1,5 +1,6 @@
 import { remark } from 'remark'
 import html from 'remark-html'
+import gfm from 'remark-gfm'
 import remarkLiveCode from '@/lib/remark-plugins/remark-live-code'
 import remarkToolLink from '@/lib/remark-plugins/remark-tool-link'
 
@@ -7,6 +8,10 @@ export default async function markdownToHtml(
 	markdown: string
 ): Promise<string> {
 	const result = await remark()
+		// Без remark-gfm таблицы в постах не работали вовсе: markdown-разметка
+		// выводилась как обычный текст с палками. Плагин также включает
+		// зачёркивание, списки задач и автоссылки
+		.use(gfm)
 		.use(remarkToolLink)
 		.use(remarkLiveCode)
 		.use(html, { sanitize: false })
