@@ -117,6 +117,23 @@ export function LiveCodeExample({
       <body>
         ${html}
         <script>
+          // Клик по якорю внутри srcDoc-iframe браузер пытается выполнить как
+          // переход на about:srcdoc#hash — такая навигация блокируется, и
+          // превью гаснет. Меняем хеш сами: это переход внутри того же
+          // документа, поэтому :target отрабатывает, а iframe не перезагружается
+          document.addEventListener('click', function (event) {
+            var link = event.target.closest && event.target.closest('a[href^="#"]');
+            if (!link) return;
+
+            event.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            if (!id) return;
+
+            location.hash = id;
+            var target = document.getElementById(id);
+            if (target) target.scrollIntoView({ block: 'nearest' });
+          });
+
           try {
             ${js}
           } catch (error) {
