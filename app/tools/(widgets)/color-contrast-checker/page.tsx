@@ -1,7 +1,7 @@
 'use client'
 
 import { ContrastGuide } from './ContrastGuide'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,18 +16,14 @@ import {
 	SelectValue
 } from '@/components/ui/select'
 import {
-	Eye,
 	Copy,
 	RefreshCw,
 	CheckCircle,
 	AlertCircle,
 	XCircle,
-	Info,
 	Palette,
 	Type,
-	Shuffle,
-	Sun,
-	Moon
+	Shuffle
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -80,7 +76,10 @@ const WCAG_GUIDELINES = {
 const LARGE_TEXT_PX = 24
 const LARGE_TEXT_BOLD_PX = 18.66
 
-const isLargeText = (fontSize: number, fontWeight: 'normal' | 'bold'): boolean =>
+const isLargeText = (
+	fontSize: number,
+	fontWeight: 'normal' | 'bold'
+): boolean =>
 	fontSize >= LARGE_TEXT_PX ||
 	(fontWeight === 'bold' && fontSize >= LARGE_TEXT_BOLD_PX)
 
@@ -89,11 +88,6 @@ export default function ColorContrastCheckerPage() {
 	const [background, setBackground] = useState('#ffffff')
 	const [fontSize, setFontSize] = useState(16)
 	const [fontWeight, setFontWeight] = useState<'normal' | 'bold'>('normal')
-	const [result, setResult] = useState<ContrastResult | null>(null)
-	const [suggestions, setSuggestions] = useState<{
-		foreground: ColorSuggestion[]
-		background: ColorSuggestion[]
-	}>({ foreground: [], background: [] })
 
 	// Helper functions
 	const hexToRgb = useCallback(
@@ -152,62 +146,11 @@ export default function ColorContrastCheckerPage() {
 		[getLuminance]
 	)
 
-	const generateSuggestions = useCallback(() => {
-		const foregroundSuggestions: ColorSuggestion[] = []
-		const backgroundSuggestions: ColorSuggestion[] = []
-
-		// Generate lighter/darker variations
-		const bgRgb = hexToRgb(background)
-		const fgRgb = hexToRgb(foreground)
-
-		if (bgRgb && fgRgb) {
-			// Suggest darker foreground colors
-			for (let i = 0.9; i >= 0.1; i -= 0.1) {
-				const newFg = rgbToHex(
-					Math.round(fgRgb[0] * i),
-					Math.round(fgRgb[1] * i),
-					Math.round(fgRgb[2] * i)
-				)
-				const ratio = getContrastRatio(newFg, background)
-				if (ratio >= WCAG_GUIDELINES.normalTextAA) {
-					foregroundSuggestions.push({
-						color: newFg,
-						ratio,
-						passesAA: ratio >= WCAG_GUIDELINES.normalTextAA,
-						passesAAA: ratio >= WCAG_GUIDELINES.normalTextAAA
-					})
-				}
-			}
-
-			// Suggest lighter background colors
-			for (let i = 0.1; i <= 1; i += 0.1) {
-				const newBg = rgbToHex(
-					Math.min(255, Math.round(bgRgb[0] + (255 - bgRgb[0]) * i)),
-					Math.min(255, Math.round(bgRgb[1] + (255 - bgRgb[1]) * i)),
-					Math.min(255, Math.round(bgRgb[2] + (255 - bgRgb[2]) * i))
-				)
-				const ratio = getContrastRatio(foreground, newBg)
-				if (ratio >= WCAG_GUIDELINES.normalTextAA) {
-					backgroundSuggestions.push({
-						color: newBg,
-						ratio,
-						passesAA: ratio >= WCAG_GUIDELINES.normalTextAA,
-						passesAAA: ratio >= WCAG_GUIDELINES.normalTextAAA
-					})
-				}
-			}
-		}
-
-		setSuggestions({
-			foreground: foregroundSuggestions.slice(0, 4),
-			background: backgroundSuggestions.slice(0, 4)
-		})
-	}, [background, foreground, getContrastRatio, hexToRgb, rgbToHex])
-
-	const calculateContrast = useCallback(() => {
+	// Результат — производное от цветов, а не состояние: считаем прямо при
+	// рендере, иначе на сервере карточка отдавалась пустой и мигала до гидратации.
+	const result: ContrastResult = useMemo(() => {
 		const ratio = getContrastRatio(foreground, background)
-
-		const contrastResult: ContrastResult = {
+		return {
 			ratio,
 			normalTextAA: ratio >= WCAG_GUIDELINES.normalTextAA,
 			normalTextAAA: ratio >= WCAG_GUIDELINES.normalTextAAA,
@@ -215,28 +158,71 @@ export default function ColorContrastCheckerPage() {
 			largeTextAAA: ratio >= WCAG_GUIDELINES.largeTextAAA,
 			uiComponentAA: ratio >= WCAG_GUIDELINES.uiComponentAA
 		}
+	}, [foreground, background, getContrastRatio])
 
-		setResult(contrastResult)
+	// Подсказки нужны, только когда контраст не дотягивает до AA
+	const suggestions = useMemo(() => {
+		const empty = {
+			foreground: [] as ColorSuggestion[],
+			background: [] as ColorSuggestion[]
+		}
+		if (result.normalTextAA) return empty
 
-		// Generate suggestions if contrast fails
-		if (!contrastResult.normalTextAA) {
-			generateSuggestions()
-		} else {
-			setSuggestions({ foreground: [], background: [] })
+		const fgRgb = hexToRgb(foreground)
+		const bgRgb = hexToRgb(background)
+		if (!fgRgb || !bgRgb) return empty
+
+		const foregroundSuggestions: ColorSuggestion[] = []
+		const backgroundSuggestions: ColorSuggestion[] = []
+
+		// Затемняем текст, пока не начнёт проходить AA
+		for (let i = 0.9; i >= 0.1; i -= 0.1) {
+			const color = rgbToHex(
+				Math.round(fgRgb[0] * i),
+				Math.round(fgRgb[1] * i),
+				Math.round(fgRgb[2] * i)
+			)
+			const ratio = getContrastRatio(color, background)
+			if (ratio >= WCAG_GUIDELINES.normalTextAA) {
+				foregroundSuggestions.push({
+					color,
+					ratio,
+					passesAA: true,
+					passesAAA: ratio >= WCAG_GUIDELINES.normalTextAAA
+				})
+			}
+		}
+
+		// Осветляем фон
+		for (let i = 0.1; i <= 1; i += 0.1) {
+			const color = rgbToHex(
+				Math.min(255, Math.round(bgRgb[0] + (255 - bgRgb[0]) * i)),
+				Math.min(255, Math.round(bgRgb[1] + (255 - bgRgb[1]) * i)),
+				Math.min(255, Math.round(bgRgb[2] + (255 - bgRgb[2]) * i))
+			)
+			const ratio = getContrastRatio(foreground, color)
+			if (ratio >= WCAG_GUIDELINES.normalTextAA) {
+				backgroundSuggestions.push({
+					color,
+					ratio,
+					passesAA: true,
+					passesAAA: ratio >= WCAG_GUIDELINES.normalTextAAA
+				})
+			}
+		}
+
+		return {
+			foreground: foregroundSuggestions.slice(0, 4),
+			background: backgroundSuggestions.slice(0, 4)
 		}
 	}, [
+		result.normalTextAA,
 		foreground,
 		background,
-		fontSize,
-		fontWeight,
-		generateSuggestions,
-		getContrastRatio
+		getContrastRatio,
+		hexToRgb,
+		rgbToHex
 	])
-
-	// Calculate contrast ratio whenever colors change
-	useEffect(() => {
-		calculateContrast()
-	}, [calculateContrast])
 
 	const swapColors = () => {
 		const temp = foreground
@@ -308,36 +294,89 @@ export default function ColorContrastCheckerPage() {
 		)
 	}
 
+	// Раньше сюда отдавался только цвет текста, и он навешивался на Badge поверх
+	// синего фона по умолчанию — получалось зелёное на синем, то есть сам
+	// индикатор контраста был нечитаемым. Теперь фон и текст задаются парой.
 	const getContrastLevel = (
 		ratio: number
-	): { label: string; color: string } => {
-		if (ratio >= 7) return { label: 'AAA', color: 'text-green-600' }
-		if (ratio >= 4.5) return { label: 'AA', color: 'text-blue-600' }
-		if (ratio >= 3) return { label: 'AA Large', color: 'text-yellow-600' }
-		return { label: 'Fail', color: 'text-red-600' }
+	): { label: string; hint: string; text: string; chip: string } => {
+		if (ratio >= 7)
+			return {
+				label: 'AAA',
+				hint: 'Отлично — проходит самый строгий уровень',
+				text: 'text-green-700 dark:text-green-400',
+				chip: 'bg-green-600 text-white'
+			}
+		if (ratio >= 4.5)
+			return {
+				label: 'AA',
+				hint: 'Хорошо — годится для обычного текста',
+				text: 'text-blue-700 dark:text-blue-400',
+				chip: 'bg-blue-600 text-white'
+			}
+		if (ratio >= 3)
+			return {
+				label: 'AA Large',
+				hint: 'Только для крупного текста от 24px',
+				text: 'text-amber-700 dark:text-amber-400',
+				chip: 'bg-amber-400 text-black'
+			}
+		return {
+			label: 'Fail',
+			hint: 'Не проходит — текст будет плохо читаться',
+			text: 'text-red-700 dark:text-red-400',
+			chip: 'bg-red-600 text-white'
+		}
 	}
+
+	const level = getContrastLevel(result.ratio)
+
+	const CRITERIA = [
+		{
+			label: 'Обычный текст',
+			threshold: 'AA · 4.5:1',
+			passed: result.normalTextAA
+		},
+		{
+			label: 'Обычный текст',
+			threshold: 'AAA · 7:1',
+			passed: result.normalTextAAA
+		},
+		{
+			label: 'Крупный текст',
+			threshold: 'AA · 3:1',
+			passed: result.largeTextAA
+		},
+		{
+			label: 'Крупный текст',
+			threshold: 'AAA · 4.5:1',
+			passed: result.largeTextAAA
+		},
+		{
+			label: 'Элементы интерфейса',
+			threshold: 'AA · 3:1',
+			passed: result.uiComponentAA
+		}
+	]
 
 	return (
 		<div className='max-w-7xl mx-auto space-y-6'>
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Color Inputs */}
-				<Card className='p-6'>
-					<h3 className='font-semibold mb-4'>Ввод цветов</h3>
-
-					<div className='space-y-6'>
-						{/* Foreground Color */}
+			<div className='grid gap-6 lg:grid-cols-2'>
+				{/* Ввод: цвета и готовые пары */}
+				<Card className='p-6 space-y-6'>
+					<div className='grid gap-4 sm:grid-cols-2'>
 						<div>
 							<Label htmlFor='foreground' className='flex items-center gap-2'>
 								<Type className='w-4 h-4' />
 								Цвет текста
 							</Label>
-							<div className='flex gap-2 mt-2'>
+							<div className='mt-2 flex gap-2'>
 								<Input
 									id='foreground'
 									type='color'
 									value={foreground}
 									onChange={e => setForeground(e.target.value)}
-									className='w-20 h-10 p-1'
+									className='h-10 w-14 cursor-pointer p-1'
 								/>
 								<Input
 									type='text'
@@ -349,19 +388,18 @@ export default function ColorContrastCheckerPage() {
 							</div>
 						</div>
 
-						{/* Background Color */}
 						<div>
 							<Label htmlFor='background' className='flex items-center gap-2'>
 								<Palette className='w-4 h-4' />
 								Цвет фона
 							</Label>
-							<div className='flex gap-2 mt-2'>
+							<div className='mt-2 flex gap-2'>
 								<Input
 									id='background'
 									type='color'
 									value={background}
 									onChange={e => setBackground(e.target.value)}
-									className='w-20 h-10 p-1'
+									className='h-10 w-14 cursor-pointer p-1'
 								/>
 								<Input
 									type='text'
@@ -372,30 +410,88 @@ export default function ColorContrastCheckerPage() {
 								/>
 							</div>
 						</div>
+					</div>
 
-						{/* Actions */}
+					<div className='flex flex-wrap gap-2'>
+						<Button
+							onClick={swapColors}
+							variant='outline'
+							size='sm'
+							className='cursor-pointer'
+						>
+							<RefreshCw className='mr-2 h-4 w-4' />
+							Поменять местами
+						</Button>
+						<Button
+							onClick={randomColors}
+							variant='outline'
+							size='sm'
+							className='cursor-pointer'
+						>
+							<Shuffle className='mr-2 h-4 w-4' />
+							Случайные
+						</Button>
+						<Button
+							onClick={copyResults}
+							variant='outline'
+							size='sm'
+							disabled={!result}
+							className='cursor-pointer'
+						>
+							<Copy className='mr-2 h-4 w-4' />
+							Скопировать отчёт
+						</Button>
+						<Button
+							onClick={reset}
+							variant='ghost'
+							size='sm'
+							className='cursor-pointer'
+						>
+							Сбросить
+						</Button>
+					</div>
+
+					<div className='border-t pt-5'>
+						<h3 className='mb-3 text-sm font-medium text-muted-foreground'>
+							Готовые пары
+						</h3>
 						<div className='flex flex-wrap gap-2'>
-							<Button onClick={swapColors} variant='outline' className='flex-1'>
-								<RefreshCw className='w-4 h-4 mr-2' />
-								Поменять местами
-							</Button>
-							<Button
-								onClick={randomColors}
-								variant='outline'
-								className='flex-1'
-							>
-								<Shuffle className='w-4 h-4 mr-2' />
-								Случайные
-							</Button>
+							{COLOR_PAIRS.map((pair, index) => (
+								<Button
+									key={index}
+									onClick={() => loadColorPair(pair)}
+									variant='outline'
+									size='sm'
+									className='h-auto cursor-pointer gap-2 py-1.5'
+								>
+									<span
+										className='flex h-5 w-9 items-center justify-center rounded border text-[10px] font-bold'
+										style={{
+											backgroundColor: pair.background,
+											color: pair.foreground
+										}}
+										aria-hidden
+									>
+										Aa
+									</span>
+									<span className='text-xs'>{pair.name}</span>
+								</Button>
+							))}
 						</div>
+					</div>
+				</Card>
 
-						{/* Text Settings */}
-						<div className='space-y-4 pt-4 border-t'>
-							<h4 className='font-medium'>Настройки текста</h4>
+				{/* Результат */}
+				<Card className='h-fit p-6 lg:sticky lg:top-6'>
+					<div className='space-y-4 pb-6'>
+						<h3 className='text-sm font-medium text-muted-foreground'>
+							Как выглядит текст
+						</h3>
 
+						<div className='grid gap-4 sm:grid-cols-2'>
 							<div>
-								<Label htmlFor='font-size'>Размер шрифта (px)</Label>
-								<div className='flex items-center gap-2 mt-1'>
+								<Label htmlFor='font-size'>Размер шрифта</Label>
+								<div className='mt-1 flex items-center gap-2'>
 									<Slider
 										id='font-size'
 										value={[fontSize]}
@@ -405,122 +501,61 @@ export default function ColorContrastCheckerPage() {
 										step={1}
 										className='flex-1'
 									/>
-									<span className='text-sm w-12 text-right'>{fontSize}px</span>
+									<span className='w-12 text-right text-sm'>{fontSize}px</span>
 								</div>
 							</div>
 
 							<div>
 								<Label htmlFor='font-weight'>Начертание</Label>
-								<Select
-									value={fontWeight}
-									onValueChange={(value: 'normal' | 'bold') =>
-										setFontWeight(value)
-									}
-								>
-									<SelectTrigger className='mt-1'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='normal'>Обычный</SelectItem>
-										<SelectItem value='bold'>Жирный</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-
-							<div className='text-sm text-muted-foreground'>
-								{isLargeText(fontSize, fontWeight) ? (
-									<Badge variant='secondary' className='gap-1'>
-										<Type className='w-3 h-3' />
-										Крупный текст
-									</Badge>
-								) : (
-									<Badge variant='outline' className='gap-1'>
-										<Type className='w-3 h-3' />
-										Обычный текст
-									</Badge>
-								)}
-							</div>
-						</div>
-
-						{/* Color Pairs */}
-						<div className='space-y-3 pt-4 border-t'>
-							<h4 className='font-medium'>Примеры цветовых пар</h4>
-							<div className='grid grid-cols-2 gap-2'>
-								{COLOR_PAIRS.map((pair, index) => (
-									<Button
-										key={index}
-										onClick={() => loadColorPair(pair)}
-										variant='outline'
-										size='sm'
-										className='justify-start h-auto p-2'
+								<div className='mt-1 flex items-center gap-2'>
+									<Select
+										value={fontWeight}
+										onValueChange={(value: 'normal' | 'bold') =>
+											setFontWeight(value)
+										}
 									>
-										<div className='flex items-center gap-2 w-full'>
-											<div className='flex'>
-												<div
-													className='w-6 h-6 rounded-l border'
-													style={{ backgroundColor: pair.foreground }}
-												/>
-												<div
-													className='w-6 h-6 rounded-r border'
-													style={{ backgroundColor: pair.background }}
-												/>
-											</div>
-											<span className='text-xs truncate'>{pair.name}</span>
-										</div>
-									</Button>
-								))}
+										<SelectTrigger className='flex-1 cursor-pointer'>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value='normal' className='cursor-pointer'>
+												Обычный
+											</SelectItem>
+											<SelectItem value='bold' className='cursor-pointer'>
+												Жирный
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<Badge
+										variant={
+											isLargeText(fontSize, fontWeight)
+												? 'secondary'
+												: 'outline'
+										}
+										className='shrink-0'
+									>
+										{isLargeText(fontSize, fontWeight) ? 'Крупный' : 'Обычный'}
+									</Badge>
+								</div>
 							</div>
 						</div>
-
-						<div className='flex flex-wrap gap-2 pt-2'>
-							<Button
-								onClick={copyResults}
-								variant='outline'
-								disabled={!result}
-							>
-								<Copy className='w-4 h-4 mr-2' />
-								Копировать результаты
-							</Button>
-							<Button onClick={reset} variant='outline'>
-								<RefreshCw className='w-4 h-4 mr-2' />
-								Сбросить
-							</Button>
-						</div>
-					</div>
-				</Card>
-
-				{/* Results and Preview */}
-				<div className='space-y-6'>
-					{/* Preview */}
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4'>Предпросмотр</h3>
 
 						<div
-							className='p-8 rounded-lg border'
+							className='rounded-lg border p-6'
 							style={{ backgroundColor: background }}
 						>
 							<p
-								className='mb-4'
 								style={{
 									color: foreground,
 									fontSize: `${fontSize}px`,
 									fontWeight: fontWeight
 								}}
 							>
-								Быстрая коричневая лиса перепрыгивает через ленивую собаку.
+								Съешь ещё этих мягких французских булок, да выпей чаю.
 							</p>
-							<p
-								className='text-sm'
-								style={{
-									color: foreground,
-									opacity: 0.8
-								}}
-							>
-								The quick brown fox jumps over the lazy dog.
-							</p>
-							<div className='mt-4 space-y-2'>
+							<div className='mt-4 flex items-center gap-3'>
 								<button
-									className='px-4 py-2 rounded border'
+									className='cursor-pointer rounded border px-3 py-1.5 text-sm'
 									style={{
 										color: foreground,
 										borderColor: foreground,
@@ -530,130 +565,85 @@ export default function ColorContrastCheckerPage() {
 									Кнопка
 								</button>
 								<div
-									className='w-full h-2 rounded'
+									className='h-2 flex-1 rounded'
 									style={{ backgroundColor: foreground, opacity: 0.2 }}
 								/>
 							</div>
 						</div>
-					</Card>
+					</div>
 
-					{/* Results */}
-					{result && (
-						<Card className='p-6'>
-							<h3 className='font-semibold mb-4'>Результаты проверки</h3>
+					<div className='flex flex-col items-center gap-2 border-t pt-6 pb-6 text-center'>
+						<span className='text-sm text-muted-foreground'>
+							Коэффициент контрастности
+						</span>
+						<span
+							className={cn(
+								'font-mono text-5xl font-bold tabular-nums',
+								level.text
+							)}
+						>
+							{result.ratio.toFixed(2)}
+							<span className='text-2xl'>:1</span>
+						</span>
+						<span
+							className={cn(
+								'rounded-full px-3 py-1 text-sm font-semibold',
+								level.chip
+							)}
+						>
+							{level.label}
+						</span>
+						<span className='text-sm text-muted-foreground'>{level.hint}</span>
+					</div>
 
-							{/* Contrast Ratio */}
-							<div className='mb-6'>
-								<div className='flex items-center justify-between mb-2'>
-									<span className='text-sm text-muted-foreground'>
-										Коэффициент контрастности
+					<div className='space-y-2 border-t pt-5'>
+						{CRITERIA.map((c, index) => (
+							<div
+								key={index}
+								className='flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2'
+							>
+								<div className='min-w-0'>
+									<span className='text-sm'>{c.label}</span>
+									<span className='ml-2 font-mono text-xs text-muted-foreground'>
+										{c.threshold}
 									</span>
-									<Badge
-										className={cn(
-											'text-lg',
-											getContrastLevel(result.ratio).color
-										)}
-									>
-										{result.ratio.toFixed(2)}:1
-									</Badge>
 								</div>
-								<div className='text-center py-2'>
-									<span
-										className={cn(
-											'text-2xl font-bold',
-											getContrastLevel(result.ratio).color
-										)}
-									>
-										{getContrastLevel(result.ratio).label}
-									</span>
-								</div>
+								{getStatusIcon(c.passed)}
 							</div>
+						))}
+					</div>
 
-							{/* WCAG Criteria */}
-							<div className='space-y-3'>
-								<div className='flex items-center justify-between p-3 rounded-lg bg-muted/50'>
-									<div className='flex items-center gap-2'>
-										<Type className='w-4 h-4' />
-										<span className='text-sm'>Обычный текст AA (4.5:1)</span>
-									</div>
-									{getStatusIcon(result.normalTextAA)}
-								</div>
-
-								<div className='flex items-center justify-between p-3 rounded-lg bg-muted/50'>
-									<div className='flex items-center gap-2'>
-										<Type className='w-4 h-4' />
-										<span className='text-sm'>Обычный текст AAA (7:1)</span>
-									</div>
-									{getStatusIcon(result.normalTextAAA)}
-								</div>
-
-								<div className='flex items-center justify-between p-3 rounded-lg bg-muted/50'>
-									<div className='flex items-center gap-2'>
-										<Type className='w-5 h-5' />
-										<span className='text-sm'>Крупный текст AA (3:1)</span>
-									</div>
-									{getStatusIcon(result.largeTextAA)}
-								</div>
-
-								<div className='flex items-center justify-between p-3 rounded-lg bg-muted/50'>
-									<div className='flex items-center gap-2'>
-										<Type className='w-5 h-5' />
-										<span className='text-sm'>Крупный текст AAA (4.5:1)</span>
-									</div>
-									{getStatusIcon(result.largeTextAAA)}
-								</div>
-
-								<div className='flex items-center justify-between p-3 rounded-lg bg-muted/50'>
-									<div className='flex items-center gap-2'>
-										<Palette className='w-4 h-4' />
-										<span className='text-sm'>UI компоненты AA (3:1)</span>
-									</div>
-									{getStatusIcon(result.uiComponentAA)}
-								</div>
-							</div>
-						</Card>
-					)}
-
-					{/* Suggestions */}
 					{(suggestions.foreground.length > 0 ||
 						suggestions.background.length > 0) && (
-						<Card className='p-6'>
-							<h3 className='font-semibold mb-4 flex items-center gap-2'>
-								<AlertCircle className='w-5 h-5 text-yellow-600' />
-								Рекомендуемые улучшения
+						<div className='mt-5 space-y-4 border-t pt-5'>
+							<h3 className='flex items-center gap-2 text-sm font-medium'>
+								<AlertCircle className='h-4 w-4 text-amber-600' />
+								Как починить
 							</h3>
 
 							{suggestions.foreground.length > 0 && (
-								<div className='mb-4'>
-									<h4 className='text-sm font-medium mb-2'>
-										Альтернативные цвета текста:
-									</h4>
-									<div className='grid grid-cols-2 gap-2'>
-										{suggestions.foreground.map((suggestion, index) => (
+								<div>
+									<p className='mb-2 text-xs text-muted-foreground'>
+										Затемнить текст:
+									</p>
+									<div className='flex flex-wrap gap-2'>
+										{suggestions.foreground.map((s, index) => (
 											<Button
 												key={index}
-												onClick={() => setForeground(suggestion.color)}
+												onClick={() => setForeground(s.color)}
 												variant='outline'
 												size='sm'
-												className='justify-between'
+												className='cursor-pointer gap-2'
 											>
-												<div className='flex items-center gap-2'>
-													<div
-														className='w-4 h-4 rounded border'
-														style={{ backgroundColor: suggestion.color }}
-													/>
-													<span className='font-mono text-xs'>
-														{suggestion.color}
-													</span>
-												</div>
-												<Badge
-													variant={
-														suggestion.passesAAA ? 'default' : 'secondary'
-													}
-													className='text-xs'
-												>
-													{suggestion.ratio.toFixed(1)}:1
-												</Badge>
+												<span
+													className='h-4 w-4 rounded border'
+													style={{ backgroundColor: s.color }}
+													aria-hidden
+												/>
+												<span className='font-mono text-xs'>{s.color}</span>
+												<span className='font-mono text-xs text-muted-foreground'>
+													{s.ratio.toFixed(1)}:1
+												</span>
 											</Button>
 										))}
 									</div>
@@ -662,92 +652,37 @@ export default function ColorContrastCheckerPage() {
 
 							{suggestions.background.length > 0 && (
 								<div>
-									<h4 className='text-sm font-medium mb-2'>
-										Альтернативные цвета фона:
-									</h4>
-									<div className='grid grid-cols-2 gap-2'>
-										{suggestions.background.map((suggestion, index) => (
+									<p className='mb-2 text-xs text-muted-foreground'>
+										Осветлить фон:
+									</p>
+									<div className='flex flex-wrap gap-2'>
+										{suggestions.background.map((s, index) => (
 											<Button
 												key={index}
-												onClick={() => setBackground(suggestion.color)}
+												onClick={() => setBackground(s.color)}
 												variant='outline'
 												size='sm'
-												className='justify-between'
+												className='cursor-pointer gap-2'
 											>
-												<div className='flex items-center gap-2'>
-													<div
-														className='w-4 h-4 rounded border'
-														style={{ backgroundColor: suggestion.color }}
-													/>
-													<span className='font-mono text-xs'>
-														{suggestion.color}
-													</span>
-												</div>
-												<Badge
-													variant={
-														suggestion.passesAAA ? 'default' : 'secondary'
-													}
-													className='text-xs'
-												>
-													{suggestion.ratio.toFixed(1)}:1
-												</Badge>
+												<span
+													className='h-4 w-4 rounded border'
+													style={{ backgroundColor: s.color }}
+													aria-hidden
+												/>
+												<span className='font-mono text-xs'>{s.color}</span>
+												<span className='font-mono text-xs text-muted-foreground'>
+													{s.ratio.toFixed(1)}:1
+												</span>
 											</Button>
 										))}
 									</div>
 								</div>
 							)}
-						</Card>
+						</div>
 					)}
-				</div>
+				</Card>
 			</div>
 
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4 flex items-center gap-2'>
-					<Info className='w-4 h-4' />О стандартах WCAG
-				</h3>
-				<div className='grid md:grid-cols-3 gap-6 text-sm'>
-					<div>
-						<h4 className='font-medium mb-2'>Уровни соответствия</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>
-								• <strong>Уровень A</strong> - минимальный уровень
-							</li>
-							<li>
-								• <strong>Уровень AA</strong> - рекомендуемый стандарт
-							</li>
-							<li>
-								• <strong>Уровень AAA</strong> - повышенный стандарт
-							</li>
-							<li>• Большинство сайтов стремятся к уровню AA</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Требования к контрасту</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>
-								• <strong>Обычный текст:</strong> 4.5:1 (AA), 7:1 (AAA)
-							</li>
-							<li>
-								• <strong>Крупный текст:</strong> 3:1 (AA), 4.5:1 (AAA)
-							</li>
-							<li>
-								• <strong>UI элементы:</strong> 3:1 (AA)
-							</li>
-							<li>• Крупный текст: 18px+ или 14px+ bold</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Почему это важно</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Доступность для слабовидящих</li>
-							<li>• Читаемость при ярком освещении</li>
-							<li>• Снижение нагрузки на глаза</li>
-							<li>• Юридические требования</li>
-						</ul>
-					</div>
-				</div>
-			</Card>
 			<ContrastGuide />
 		</div>
 	)
