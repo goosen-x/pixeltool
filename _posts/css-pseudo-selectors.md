@@ -84,7 +84,12 @@ div::before {
 	border: none;
 	border-radius: 8px;
 	cursor: pointer;
-	transition: all 0.3s ease;
+	/* Перечисляем свойства явно: transition: all цепляет и то, что
+	   анимировать не собирались, — вплоть до дёрганья раскладки */
+	transition:
+		background-color 0.3s ease,
+		transform 0.3s ease,
+		box-shadow 0.3s ease;
 	font-size: 16px;
 	margin-bottom: 10px;
 	display: block;
@@ -108,14 +113,18 @@ div::before {
 	border: 2px solid #ddd;
 	border-radius: 4px;
 	width: 100%;
-	transition: all 0.3s;
+	transition:
+		border-color 0.3s,
+		box-shadow 0.3s;
 	font-size: 14px;
 }
 
-.demo-input:focus {
-	outline: none;
+/* Обводку не убираем, а усиливаем: outline: none лишает человека
+   с клавиатурой единственного ориентира */
+.demo-input:focus-visible {
+	outline: 2px solid #3498db;
+	outline-offset: 2px;
 	border-color: #3498db;
-	box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 /* Фокус только с клавиатуры */
@@ -124,6 +133,37 @@ div::before {
 	outline-offset: 2px;
 }
 ```
+
+#### :focus или :focus-visible
+
+Самая частая ошибка в CSS-доступности выглядит так:
+
+```css
+/* Никогда так не делайте */
+:focus {
+	outline: none;
+}
+```
+
+Обводку убирают, потому что она «портит дизайн» при клике мышью. Но вместе с
+мышью её теряет и человек, который ходит по сайту с клавиатуры, — он просто
+перестаёт видеть, где находится.
+
+Для этого и появился `:focus-visible`. Браузер сам решает, показывать ли кольцо
+фокуса: при клике мышью — нет, при переходе по Tab — да. Вам не нужно ничего
+отслеживать.
+
+```css
+/* Кольцо появится по Tab, но не по клику мышью */
+.button:focus-visible {
+	outline: 3px solid #f39c12;
+	outline-offset: 2px;
+}
+```
+
+Если обводка по умолчанию не нравится — **замените** её, а не удаляйте. И не
+заменяйте на `box-shadow` в одиночку: в режиме высокой контрастности Windows
+тени не рисуются, а `outline` рисуется.
 
 ### 2. Структурные псевдоклассы
 
@@ -243,7 +283,9 @@ div::before {
 	padding: 10px;
 	border: 2px solid #ddd;
 	border-radius: 4px;
-	transition: all 0.3s;
+	transition:
+		border-color 0.3s,
+		background-color 0.3s;
 	font-size: 14px;
 }
 
@@ -292,6 +334,13 @@ div::before {
 
 #### :has() — Родительский селектор
 
+`:has()` — тот самый «родительский селектор», которого ждали двадцать лет. С
+конца 2023 года он Baseline и работает во всех основных браузерах, так что это
+уже не «продвинутая экзотика», а рабочий инструмент.
+
+Стилизовать элемент по тому, **что лежит внутри него**, раньше можно было только
+из JavaScript. Теперь — одной строкой CSS.
+
 ```html:live
 // title: Селектор :has() для родителей
 <div class="demo-card">
@@ -315,7 +364,10 @@ div::before {
 	padding: 16px;
 	border-radius: 8px;
 	margin-bottom: 16px;
-	transition: all 0.3s;
+	transition:
+		border-color 0.3s,
+		background-color 0.3s,
+		box-shadow 0.3s;
 }
 
 /* Карточка с изображением */
@@ -371,7 +423,10 @@ div::before {
 	margin: 10px 0;
 	border: 2px solid #ddd;
 	border-radius: 8px;
-	transition: all 0.3s;
+	transition:
+		background-color 0.3s,
+		border-color 0.3s,
+		box-shadow 0.3s;
 }
 
 .demo-section:target {
@@ -689,7 +744,9 @@ div::before {
 	border: 2px solid #3498db;
 	border-radius: 4px;
 	background: white;
-	transition: all 0.3s ease;
+	transition:
+		background-color 0.3s ease,
+		border-color 0.3s ease;
 }
 
 .checkbox-label::after {
