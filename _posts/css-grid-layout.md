@@ -14,7 +14,7 @@ ogImage:
 related:
   - css-flexbox-guide
   - css-container-queries
-  - css-clamp-complete-guide
+  - css-shadows
 ---
 
 CSS Grid Layout — это мощная двумерная система вёрстки, которая совершила

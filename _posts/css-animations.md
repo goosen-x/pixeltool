@@ -14,7 +14,7 @@ ogImage:
 related:
   - css-variables
   - css-pseudo-selectors
-  - lighthouse-100
+  - css-shadows
 ---
 
 CSS-анимации оживляют веб-интерфейсы и создают увлекательный пользовательский

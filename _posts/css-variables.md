@@ -14,7 +14,7 @@ ogImage:
 related:
   - css-animations
   - css-pseudo-selectors
-  - css-clamp-complete-guide
+  - css-shadows
 ---
 
 CSS Custom Properties (известные как CSS Переменные) революционизируют способ
