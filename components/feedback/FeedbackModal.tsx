@@ -2,9 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-
-import { MessageSquare, Bug, Lightbulb, Send } from 'lucide-react'
-import { toast } from 'sonner'
+import { MessageSquare, Bug, Lightbulb, Check, Loader2 } from 'lucide-react'
 import {
 	Dialog,
 	DialogContent,
@@ -13,9 +11,10 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 
 interface FeedbackModalProps {
 	variant?: 'default' | 'sidebar'
@@ -25,200 +24,252 @@ interface FeedbackModalProps {
 
 type FeedbackType = 'bug' | 'feature' | 'general'
 
-interface FeedbackData {
-	type: FeedbackType
-	title: string
-	description: string
-	email?: string
-	widget?: string
-}
+const TYPES: {
+	id: FeedbackType
+	icon: typeof Bug
+	label: string
+	titlePlaceholder: string
+	bodyPlaceholder: string
+	submitLabel: string
+}[] = [
+	{
+		id: 'bug',
+		icon: Bug,
+		label: 'Ошибка',
+		titlePlaceholder: 'Что сломалось?',
+		bodyPlaceholder:
+			'Что вы делали, что ожидали увидеть и что увидели вместо этого.',
+		submitLabel: 'Отправить отчёт'
+	},
+	{
+		id: 'feature',
+		icon: Lightbulb,
+		label: 'Идея',
+		titlePlaceholder: 'Чего не хватает?',
+		bodyPlaceholder: 'Какую задачу это помогло бы решить.',
+		submitLabel: 'Отправить идею'
+	},
+	{
+		id: 'general',
+		icon: MessageSquare,
+		label: 'Вопрос',
+		titlePlaceholder: 'О чём вопрос?',
+		bodyPlaceholder: 'Опишите подробнее.',
+		submitLabel: 'Отправить вопрос'
+	}
+]
 
 export function FeedbackModal({
 	variant = 'sidebar',
 	trigger
 }: FeedbackModalProps) {
 	const [open, setOpen] = useState(false)
+	const [type, setType] = useState<FeedbackType>('bug')
+	const [title, setTitle] = useState('')
+	const [description, setDescription] = useState('')
+	const [email, setEmail] = useState('')
+
 	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState('')
+	const [sent, setSent] = useState(false)
 
-	const [formData, setFormData] = useState<FeedbackData>({
-		type: 'bug',
-		title: '',
-		description: '',
-		email: '',
-		widget: ''
-	})
+	const active = TYPES.find(t => t.id === type)!
+	const canSubmit = title.trim() !== '' && description.trim() !== '' && !loading
 
-	const handleSubmit = async (type: FeedbackType) => {
-		if (!formData.title.trim() || !formData.description.trim()) {
-			toast.error('Пожалуйста, заполните все обязательные поля')
-			return
-		}
+	const reset = () => {
+		setType('bug')
+		setTitle('')
+		setDescription('')
+		setEmail('')
+		setError('')
+		setSent(false)
+	}
+
+	const submit = async () => {
+		if (!canSubmit) return
 
 		setLoading(true)
+		setError('')
 
 		try {
 			const response = await fetch('/api/feedback', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					...formData,
 					type,
-					widget: window.location.pathname.split('/').pop() // Get current widget name
+					title,
+					description,
+					email,
+					widget: window.location.pathname.split('/').pop()
 				})
 			})
 
 			if (!response.ok) {
-				throw new Error('Failed to submit feedback')
+				const data = await response.json().catch(() => ({}))
+				throw new Error(
+					data.error || 'Не удалось отправить. Попробуйте ещё раз.'
+				)
 			}
 
-			const result = await response.json()
-			console.log('Feedback submitted successfully:', result)
-
-			toast.success('Отзыв успешно отправлен')
-			setFormData({
-				type: 'bug',
-				title: '',
-				description: '',
-				email: '',
-				widget: ''
-			})
-			setOpen(false)
-		} catch (error) {
-			console.error('Error submitting feedback:', error)
-			toast.error('Ошибка при отправке отзыва')
+			// Успех показываем внутри окна, а не тостом: тост исчезает, и человек
+			// не понимает, дошло ли. Здесь же видно, что будет дальше
+			setSent(true)
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Что-то пошло не так')
 		} finally {
 			setLoading(false)
 		}
 	}
 
-	const updateFormData = (field: keyof FeedbackData, value: string) => {
-		setFormData(prev => ({ ...prev, [field]: value }))
+	// Ctrl/Cmd + Enter — привычное сочетание для отправки формы из textarea
+	const handleKeyDown = (event: React.KeyboardEvent) => {
+		if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') submit()
 	}
 
-	const renderForm = (type: FeedbackType) => (
-		<div className='space-y-4'>
-			<Input
-				placeholder={
-					type === 'bug'
-						? 'Краткое описание ошибки'
-						: type === 'feature'
-							? 'Название функции'
-							: 'Заголовок сообщения'
-				}
-				value={formData.title}
-				onChange={e => updateFormData('title', e.target.value)}
-			/>
+	if (variant !== 'sidebar') return null
 
-			<Textarea
-				placeholder={
-					type === 'bug'
-						? 'Шаги для воспроизведения ошибки, ожидаемое и фактическое поведение, информация о браузере...'
-						: type === 'feature'
-							? 'Опишите вашу идею функции, случаи использования и как это принесет пользу пользователям...'
-							: 'Опишите ваш отзыв или вопрос подробно...'
-				}
-				value={formData.description}
-				onChange={e => updateFormData('description', e.target.value)}
-				rows={4}
-			/>
+	return (
+		<Dialog
+			open={open}
+			onOpenChange={next => {
+				setOpen(next)
+				if (!next) setTimeout(reset, 200)
+			}}
+		>
+			<DialogTrigger asChild>
+				{trigger ?? (
+					<Button variant='outline' size='sm' className='w-full justify-start'>
+						<MessageSquare className='mr-2 h-4 w-4' />
+						Обратная связь
+					</Button>
+				)}
+			</DialogTrigger>
 
-			<Input
-				type='email'
-				placeholder='Ваш email (опционально)'
-				value={formData.email}
-				onChange={e => updateFormData('email', e.target.value)}
-			/>
+			<DialogContent className='sm:max-w-[460px]'>
+				{sent ? (
+					<div className='flex flex-col items-center gap-3 py-6 text-center'>
+						<div className='flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-950'>
+							<Check className='h-6 w-6 text-green-600 dark:text-green-400' />
+						</div>
 
-			<Button
-				onClick={() => handleSubmit(type)}
-				disabled={
-					loading || !formData.title.trim() || !formData.description.trim()
-				}
-				className='w-full'
-			>
-				{loading ? (
-					<div className='flex items-center gap-2'>
-						<div className='w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin' />
-						Отправка...
+						<DialogTitle className='text-lg'>Спасибо, получили</DialogTitle>
+						<DialogDescription className='max-w-xs'>
+							{email
+								? 'Прочитаем и ответим на почту, если потребуется.'
+								: 'Прочитаем каждое сообщение — они приходят нам напрямую.'}
+						</DialogDescription>
+
+						<Button
+							onClick={() => setOpen(false)}
+							variant='outline'
+							className='mt-2 cursor-pointer'
+						>
+							Закрыть
+						</Button>
 					</div>
 				) : (
-					<div className='flex items-center gap-2'>
-						<Send className='w-4 h-4' />
-						Отправить
-					</div>
-				)}
-			</Button>
-		</div>
-	)
+					<>
+						<DialogHeader>
+							<DialogTitle>Обратная связь</DialogTitle>
+							<DialogDescription>
+								Пишет живой человек — читает тоже.
+							</DialogDescription>
+						</DialogHeader>
 
-	if (variant === 'sidebar') {
-		return (
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogTrigger asChild>
-					{trigger ?? (
+						{/* Тип отзыва — сегментированный переключатель вместо вкладок:
+						    вкладки подразумевают разное содержимое, а форма здесь одна */}
+						<div className='grid grid-cols-3 gap-2'>
+							{TYPES.map(item => {
+								const Icon = item.icon
+								const selected = item.id === type
+
+								return (
+									<button
+										key={item.id}
+										type='button'
+										onClick={() => setType(item.id)}
+										aria-pressed={selected}
+										className={cn(
+											'flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition-colors',
+											selected
+												? 'border-primary bg-primary/5 text-foreground'
+												: 'text-muted-foreground hover:border-border hover:bg-muted/50'
+										)}
+									>
+										<Icon className='h-4 w-4' />
+										{item.label}
+									</button>
+								)
+							})}
+						</div>
+
+						<div className='space-y-3'>
+							<div className='space-y-1.5'>
+								<Label htmlFor='fb-title'>Коротко</Label>
+								<Input
+									id='fb-title'
+									placeholder={active.titlePlaceholder}
+									value={title}
+									onChange={e => setTitle(e.target.value)}
+									onKeyDown={handleKeyDown}
+									autoFocus
+								/>
+							</div>
+
+							<div className='space-y-1.5'>
+								<Label htmlFor='fb-body'>Подробности</Label>
+								<Textarea
+									id='fb-body'
+									placeholder={active.bodyPlaceholder}
+									value={description}
+									onChange={e => setDescription(e.target.value)}
+									onKeyDown={handleKeyDown}
+									rows={4}
+									className='resize-none'
+								/>
+							</div>
+
+							<div className='space-y-1.5'>
+								<Label htmlFor='fb-email'>
+									Email
+									<span className='ml-1 font-normal text-muted-foreground'>
+										— если нужен ответ
+									</span>
+								</Label>
+								<Input
+									id='fb-email'
+									type='email'
+									placeholder='you@example.com'
+									value={email}
+									onChange={e => setEmail(e.target.value)}
+									onKeyDown={handleKeyDown}
+								/>
+							</div>
+						</div>
+
+						{error && (
+							<p className='text-sm text-destructive' role='alert'>
+								{error}
+							</p>
+						)}
+
 						<Button
-							variant='outline'
-							size='sm'
-							className='w-full justify-start'
+							onClick={submit}
+							disabled={!canSubmit}
+							className='w-full cursor-pointer'
 						>
-							<MessageSquare className='w-4 h-4 mr-2' />
-							Обратная связь
+							{loading ? (
+								<>
+									<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+									Отправляем…
+								</>
+							) : (
+								active.submitLabel
+							)}
 						</Button>
-					)}
-				</DialogTrigger>
-				<DialogContent className='sm:max-w-[500px]'>
-					<DialogHeader>
-						<DialogTitle>Обратная связь</DialogTitle>
-						<DialogDescription>
-							Помогите нам улучшиться, сообщив об ошибках, предложив функции или
-							поделившись своими мыслями.
-						</DialogDescription>
-					</DialogHeader>
-
-					<Tabs defaultValue='bug' className='w-full'>
-						<TabsList className='grid w-full grid-cols-3'>
-							<TabsTrigger value='bug' className='flex items-center gap-1'>
-								<Bug className='w-3 h-3' />
-								<span className='hidden sm:inline'>Отчёт об ошибке</span>
-							</TabsTrigger>
-							<TabsTrigger value='feature' className='flex items-center gap-1'>
-								<Lightbulb className='w-3 h-3' />
-								<span className='hidden sm:inline'>Запрос функции</span>
-							</TabsTrigger>
-							<TabsTrigger value='general' className='flex items-center gap-1'>
-								<MessageSquare className='w-3 h-3' />
-								<span className='hidden sm:inline'>Общее</span>
-							</TabsTrigger>
-						</TabsList>
-
-						<TabsContent value='bug' className='space-y-4'>
-							<div className='text-sm text-muted-foreground'>
-								Нашли ошибку? Помогите нам исправить её, предоставив подробности
-								о проблеме.
-							</div>
-							{renderForm('bug')}
-						</TabsContent>
-
-						<TabsContent value='feature' className='space-y-4'>
-							<div className='text-sm text-muted-foreground'>
-								Есть идея для улучшения? Мы хотели бы услышать ваши предложения!
-							</div>
-							{renderForm('feature')}
-						</TabsContent>
-
-						<TabsContent value='general' className='space-y-4'>
-							<div className='text-sm text-muted-foreground'>
-								Любые другие отзывы или вопросы? Дайте нам знать!
-							</div>
-							{renderForm('general')}
-						</TabsContent>
-					</Tabs>
-				</DialogContent>
-			</Dialog>
-		)
-	}
-
-	return null
+					</>
+				)}
+			</DialogContent>
+		</Dialog>
+	)
 }
