@@ -4,31 +4,20 @@ import { useState, useEffect, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import {
-	Palette,
 	Copy,
 	Download,
 	Upload,
-	Zap,
-	RefreshCw,
 	AlertCircle,
 	CheckCircle,
-	FileText,
-	Sparkles,
-	TrendingDown,
-	Info,
-	Lightbulb,
-	BarChart3,
 	ChevronDown,
 	ChevronUp,
 	Settings,
 	X
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 
 interface MinificationResult {
 	originalSize: number
@@ -116,7 +105,6 @@ export default function CSSMinifierPage() {
 	const [input, setInput] = useState('')
 	const [output, setOutput] = useState('')
 	const [result, setResult] = useState<MinificationResult | null>(null)
-	const [isProcessing, setIsProcessing] = useState(false)
 	const [showOptions, setShowOptions] = useState(false)
 
 	// Options
@@ -283,37 +271,6 @@ export default function CSSMinifierPage() {
 		}
 	}
 
-	const handleMinify = () => {
-		if (!input.trim()) {
-			toast.error('Введите CSS код для минификации')
-			return
-		}
-
-		setIsProcessing(true)
-
-		setTimeout(() => {
-			try {
-				const minificationResult = minifyCSS(input)
-
-				setResult(minificationResult)
-				setOutput(minificationResult.minified)
-
-				if (minificationResult.errors && minificationResult.errors.length > 0) {
-					toast.error(`Обнаружены ошибки: ${minificationResult.errors.length}`)
-				} else {
-					toast.success(
-						`CSS минифицирован! Сжатие ${minificationResult.savings}%`
-					)
-				}
-			} catch (error) {
-				toast.error('Ошибка минификации CSS')
-				console.error('Minification error:', error)
-			} finally {
-				setIsProcessing(false)
-			}
-		}, 300)
-	}
-
 	const formatBytes = (bytes: number): string => {
 		if (bytes === 0) return '0 B'
 		const k = 1024
@@ -371,133 +328,103 @@ export default function CSSMinifierPage() {
 
 	return (
 		<div className='max-w-7xl mx-auto space-y-6'>
-			{/* Main Interface */}
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Input Panel */}
-				<Card className='p-6'>
+			<Card className='space-y-8 p-6 sm:p-8'>
+				{/* Примеры — ряд наверху, как в остальных CSS-тулах */}
+				<div className='flex flex-wrap items-center gap-2'>
+					<span className='mr-1 text-sm font-medium text-muted-foreground'>
+						Примеры:
+					</span>
+					{CSS_EXAMPLES.map(example => (
+						<Button
+							key={example.name}
+							onClick={() => loadExample(example)}
+							variant='outline'
+							size='sm'
+							className='cursor-pointer'
+						>
+							{example.name}
+						</Button>
+					))}
+					<div className='ml-auto flex items-center gap-2'>
+						<Label htmlFor='file-upload'>
+							<Button variant='outline' size='sm' asChild>
+								<span className='cursor-pointer'>
+									<Upload className='mr-2 h-4 w-4' />
+									Загрузить файл
+								</span>
+							</Button>
+						</Label>
+						<input
+							id='file-upload'
+							type='file'
+							accept='.css'
+							onChange={handleFileUpload}
+							className='hidden'
+							aria-label='Загрузить CSS-файл'
+						/>
+						<Button
+							variant='ghost'
+							size='sm'
+							onClick={resetAll}
+							disabled={!input.trim()}
+							className='cursor-pointer'
+						>
+							Сбросить
+						</Button>
+					</div>
+				</div>
+
+				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
+					{/* Ввод */}
 					<div className='space-y-4'>
-						{/* Header */}
-						<div className='flex flex-wrap items-center justify-between gap-3'>
-							<div className='flex items-center gap-2'>
-								<FileText className='w-5 h-5 text-pink-500' />
-								<h3 className='font-semibold text-sm sm:text-base'>
-									Исходный код
-								</h3>
-							</div>
-							<div className='flex flex-wrap items-center gap-2'>
-								{input && (
-									<Badge variant='secondary' className='font-mono text-xs'>
-										{formatBytes(new TextEncoder().encode(input).length)}
-									</Badge>
-								)}
-								<Label htmlFor='file-upload'>
-									<Button variant='outline' size='sm' asChild>
-										<span className='cursor-pointer text-xs sm:text-sm'>
-											<Upload className='w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2' />
-											<span className='hidden xs:inline'>Загрузить CSS</span>
-											<span className='xs:hidden'>CSS</span>
-										</span>
-									</Button>
-								</Label>
-								<input
-									id='file-upload'
-									type='file'
-									accept='.css'
-									onChange={handleFileUpload}
-									className='hidden'
-									aria-label='Upload CSS file'
-								/>
-							</div>
+						<div className='flex items-center justify-between'>
+							<h3 className='text-sm font-semibold tracking-wide uppercase text-muted-foreground'>
+								Исходный код
+							</h3>
+							{input && (
+								<span className='font-mono text-xs text-muted-foreground'>
+									{formatBytes(new TextEncoder().encode(input).length)}
+								</span>
+							)}
 						</div>
 
-						{/* Textarea */}
 						<Textarea
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							placeholder='Вставьте CSS код сюда...'
-							className='min-h-[300px] font-mono text-sm resize-none'
+							className='min-h-[320px] resize-none font-mono text-sm'
 						/>
 
-						{/* Examples */}
-						<div className='flex flex-wrap gap-2'>
-							{CSS_EXAMPLES.map(example => (
-								<Button
-									key={example.name}
-									onClick={() => loadExample(example)}
-									variant='outline'
-									size='sm'
-								>
-									{example.name}
-								</Button>
-							))}
-						</div>
-
-						{/* Options Toggle */}
 						<div className='space-y-4'>
 							<div className='flex flex-wrap items-center justify-between gap-2'>
 								<Button
 									variant='ghost'
 									size='sm'
-									className='gap-1 sm:gap-2 text-xs sm:text-sm'
+									className='cursor-pointer gap-2'
 									onClick={() => setShowOptions(!showOptions)}
 								>
-									<Settings className='h-3 w-3 sm:h-4 sm:w-4' />
-									<span className='hidden xs:inline'>
-										Настройки минификации
-									</span>
-									<span className='xs:hidden'>Настройки</span>
+									<Settings className='h-4 w-4' />
+									Настройки минификации
 									{showOptions ? (
-										<ChevronUp className='h-3 w-3 sm:h-4 sm:w-4' />
+										<ChevronUp className='h-4 w-4' />
 									) : (
-										<ChevronDown className='h-3 w-3 sm:h-4 sm:w-4' />
+										<ChevronDown className='h-4 w-4' />
 									)}
 								</Button>
-
-								{/* Primary Actions */}
-								<div className='flex flex-wrap gap-2'>
-									<Button
-										onClick={handleMinify}
-										disabled={isProcessing || !input.trim()}
-										size='sm'
-										className='bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-xs sm:text-sm'
-									>
-										{isProcessing ? (
-											<>
-												<RefreshCw className='w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin' />
-												<span className='hidden xs:inline'>Минификация...</span>
-											</>
-										) : (
-											<>
-												<Zap className='w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2' />
-												<span className='hidden xs:inline'>Минифицировать</span>
-												<span className='xs:hidden'>Старт</span>
-											</>
-										)}
-									</Button>
-									<Button
-										variant='outline'
-										onClick={resetAll}
-										disabled={!input.trim()}
-										size='icon'
-										className='h-8 w-8 sm:h-9 sm:w-9'
-									>
-										<X className='h-3 w-3 sm:h-4 sm:w-4' />
-									</Button>
-								</div>
 							</div>
 
-							{/* Options Content */}
 							{showOptions && (
-								<div className='grid grid-cols-2 gap-3 p-4 bg-muted/50 rounded-lg'>
+								<div className='grid grid-cols-2 gap-4 rounded-lg bg-muted/50 p-4'>
 									<div className='flex items-center space-x-2'>
 										<Switch
 											id='preserve-lines'
 											checked={preserveLineBreaks}
 											onCheckedChange={setPreserveLineBreaks}
+											className='cursor-pointer'
 										/>
 										<Label
 											htmlFor='preserve-lines'
-											className='text-sm cursor-pointer'
+											className='cursor-pointer text-sm'
 										>
 											Сохранить переносы строк
 										</Label>
@@ -508,10 +435,11 @@ export default function CSSMinifierPage() {
 											id='optimize-colors'
 											checked={optimizeColors}
 											onCheckedChange={setOptimizeColors}
+											className='cursor-pointer'
 										/>
 										<Label
 											htmlFor='optimize-colors'
-											className='text-sm cursor-pointer'
+											className='cursor-pointer text-sm'
 										>
 											Оптимизировать цвета
 										</Label>
@@ -522,10 +450,11 @@ export default function CSSMinifierPage() {
 											id='optimize-units'
 											checked={optimizeUnits}
 											onCheckedChange={setOptimizeUnits}
+											className='cursor-pointer'
 										/>
 										<Label
 											htmlFor='optimize-units'
-											className='text-sm cursor-pointer'
+											className='cursor-pointer text-sm'
 										>
 											Оптимизировать единицы
 										</Label>
@@ -536,10 +465,11 @@ export default function CSSMinifierPage() {
 											id='optimize-shorthand'
 											checked={optimizeShorthand}
 											onCheckedChange={setOptimizeShorthand}
+											className='cursor-pointer'
 										/>
 										<Label
 											htmlFor='optimize-shorthand'
-											className='text-sm cursor-pointer'
+											className='cursor-pointer text-sm'
 										>
 											Сокращённые свойства
 										</Label>
@@ -548,220 +478,150 @@ export default function CSSMinifierPage() {
 							)}
 						</div>
 					</div>
-				</Card>
 
-				{/* Output Panel */}
-				<Card className='p-6'>
+					{/* Вывод */}
 					<div className='space-y-4'>
-						{/* Header with inline stats */}
-						<div className='flex flex-col gap-3'>
-							<div className='flex flex-wrap items-center justify-between gap-2'>
-								<div className='flex items-center gap-2'>
-									<TrendingDown className='w-5 h-5 text-green-500' />
-									<h3 className='font-semibold text-sm sm:text-base'>
-										Минифицированный код
-									</h3>
-								</div>
-								{output && (
-									<div className='flex flex-wrap gap-2'>
-										<Button
-											onClick={() => copyToClipboard(output)}
-											variant='outline'
-											size='sm'
-											className='text-xs sm:text-sm'
-										>
-											<Copy className='w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2' />
-											<span className='hidden xs:inline'>Копировать</span>
-											<span className='xs:hidden'>Copy</span>
-										</Button>
-
-										<Button
-											onClick={downloadCode}
-											variant='outline'
-											size='sm'
-											className='text-xs sm:text-sm'
-										>
-											<Download className='w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2' />
-											<span className='hidden xs:inline'>Скачать</span>
-											<span className='xs:hidden'>Save</span>
-										</Button>
-									</div>
-								)}
-							</div>
-
-							{/* Inline stats bar */}
-							{result && (
-								<div className='flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-muted-foreground pb-3 border-b'>
-									<div className='flex items-center gap-1.5'>
-										<Badge className='bg-green-500 text-white text-xs'>
-											-{result.savings}%
-										</Badge>
-										<span className='whitespace-nowrap'>сжатие</span>
-									</div>
-									<div className='flex items-center gap-1'>
-										<span className='font-mono text-xs'>
-											{formatBytes(result.originalSize)}
-										</span>
-										<span>→</span>
-										<span className='font-mono font-medium text-xs'>
-											{formatBytes(result.minifiedSize)}
-										</span>
-									</div>
-									<div className='text-green-600 dark:text-green-400 font-medium whitespace-nowrap'>
-										Сохранено: {formatBytes(result.savingsBytes)}
-									</div>
+						<div className='flex items-center justify-between'>
+							<h3 className='text-sm font-semibold tracking-wide uppercase text-muted-foreground'>
+								Минифицированный код
+							</h3>
+							{output && (
+								<div className='flex gap-1'>
+									<Button
+										onClick={() => copyToClipboard(output)}
+										variant='ghost'
+										size='sm'
+										className='h-8 cursor-pointer px-2'
+										aria-label='Скопировать результат'
+									>
+										<Copy className='h-3.5 w-3.5' />
+									</Button>
+									<Button
+										onClick={downloadCode}
+										variant='ghost'
+										size='sm'
+										className='h-8 cursor-pointer px-2'
+										aria-label='Скачать файл'
+									>
+										<Download className='h-3.5 w-3.5' />
+									</Button>
 								</div>
 							)}
 						</div>
 
+						{result && (
+							<div className='flex flex-wrap items-center gap-x-4 gap-y-1 border-b pb-3 text-xs text-muted-foreground'>
+								<span className='font-mono text-sm font-semibold text-foreground'>
+									−{result.savings}%
+								</span>
+								<span className='font-mono'>
+									{formatBytes(result.originalSize)} →{' '}
+									{formatBytes(result.minifiedSize)}
+								</span>
+								<span>сэкономлено {formatBytes(result.savingsBytes)}</span>
+							</div>
+						)}
+
 						{!output ? (
-							<div className='flex flex-col items-center justify-center h-[300px] border-2 border-dashed rounded-lg text-muted-foreground'>
-								<Palette className='w-12 h-12 mb-3 opacity-20' />
-								<p className='text-sm'>Минифицированный CSS появится здесь</p>
+							<div className='flex h-[320px] flex-col items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground'>
+								Минифицированный CSS появится здесь
 							</div>
 						) : (
 							<Textarea
 								value={output}
 								readOnly
-								className='min-h-[300px] font-mono text-sm resize-none bg-muted/50'
+								className='min-h-[320px] resize-none bg-muted/50 font-mono text-sm'
 							/>
 						)}
-					</div>
-				</Card>
-			</div>
 
-			{/* Results Details */}
-			{result && (
-				<Card className='p-6'>
-					{/* Optimizations Applied */}
-					{result.optimizations && result.optimizations.length > 0 && (
-						<div className='mb-4 p-3 bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg'>
-							<div className='flex items-start gap-2'>
-								<CheckCircle className='w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0' />
-								<div className='flex-1'>
-									<p className='font-medium text-sm text-purple-900 dark:text-purple-100 mb-1.5'>
-										Применённые оптимизации
+						{result && (
+							<div className='space-y-3 text-sm'>
+								{result.errors && result.errors.length > 0 ? (
+									<div className='rounded-lg border border-destructive/30 bg-destructive/5 p-3'>
+										<p className='mb-1.5 flex items-center gap-2 font-medium text-destructive'>
+											<AlertCircle className='h-4 w-4' />
+											Обнаружены ошибки
+										</p>
+										<ul className='space-y-0.5 text-xs text-muted-foreground'>
+											{result.errors.map((error, index) => (
+												<li key={index}>• {error}</li>
+											))}
+										</ul>
+									</div>
+								) : (
+									<p className='flex items-center gap-2 text-sm text-muted-foreground'>
+										<CheckCircle className='h-4 w-4' />
+										CSS минифицирован без ошибок
 									</p>
-									<ul className='text-xs text-purple-800 dark:text-purple-200 space-y-0.5'>
-										{result.optimizations.map((opt, index) => (
-											<li key={index} className='flex items-start gap-1.5'>
-												<span className='text-purple-500'>•</span>
-												<span>{opt}</span>
-											</li>
-										))}
-									</ul>
-								</div>
-							</div>
-						</div>
-					)}
+								)}
 
-					{/* Warnings */}
-					{result.warnings && result.warnings.length > 0 && (
-						<div className='mb-4 p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg'>
-							<div className='flex items-start gap-2'>
-								<Info className='w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0' />
-								<div className='flex-1'>
-									<p className='font-medium text-sm text-yellow-900 dark:text-yellow-100 mb-1.5'>
-										Важные заметки
-									</p>
-									<ul className='text-xs text-yellow-800 dark:text-yellow-200 space-y-0.5'>
-										{result.warnings.map((warning, index) => (
-											<li key={index} className='flex items-start gap-1.5'>
-												<span className='text-yellow-500'>•</span>
-												<span>{warning}</span>
-											</li>
-										))}
-									</ul>
-								</div>
-							</div>
-						</div>
-					)}
+								{result.warnings && result.warnings.length > 0 && (
+									<div className='rounded-lg bg-muted/50 p-3'>
+										<p className='mb-1.5 text-xs font-medium'>Важные заметки</p>
+										<ul className='space-y-0.5 text-xs text-muted-foreground'>
+											{result.warnings.map((warning, index) => (
+												<li key={index}>• {warning}</li>
+											))}
+										</ul>
+									</div>
+								)}
 
-					{/* Errors */}
-					{result.errors && result.errors.length > 0 ? (
-						<div className='p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg'>
-							<div className='flex items-start gap-2'>
-								<AlertCircle className='w-4 h-4 text-red-600 mt-0.5 flex-shrink-0' />
-								<div className='flex-1'>
-									<p className='font-medium text-sm text-red-900 dark:text-red-100 mb-1.5'>
-										Обнаружены ошибки
-									</p>
-									<ul className='text-xs text-red-800 dark:text-red-200 space-y-0.5'>
-										{result.errors.map((error, index) => (
-											<li key={index} className='flex items-start gap-1.5'>
-												<span className='text-red-500'>•</span>
-												<span>{error}</span>
-											</li>
-										))}
-									</ul>
-								</div>
+								{result.optimizations && result.optimizations.length > 0 && (
+									<div className='rounded-lg bg-muted/50 p-3'>
+										<p className='mb-1.5 text-xs font-medium'>
+											Применённые оптимизации
+										</p>
+										<ul className='space-y-0.5 text-xs text-muted-foreground'>
+											{result.optimizations.map((opt, index) => (
+												<li key={index}>• {opt}</li>
+											))}
+										</ul>
+									</div>
+								)}
 							</div>
-						</div>
-					) : (
-						<div className='p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
-							<div className='flex items-center gap-2'>
-								<CheckCircle className='w-4 h-4 text-green-600' />
-								<p className='text-green-900 dark:text-green-100 font-medium text-sm'>
-									CSS успешно минифицирован без ошибок!
-								</p>
-							</div>
-						</div>
-					)}
-				</Card>
-			)}
-
-			{/* Info Card */}
-			<Card className='p-6 bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-950/20 dark:to-gray-950/20'>
-				<div className='flex items-center gap-2 mb-4'>
-					<Lightbulb className='w-5 h-5 text-amber-500' />
-					<h3 className='font-semibold text-lg'>О минификации CSS</h3>
-				</div>
-
-				<div className='grid md:grid-cols-3 gap-6 text-sm'>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='text-sm font-medium mb-2 flex items-center gap-2'>
-								<Zap className='w-4 h-4 text-pink-500' />
-								Оптимизации
-							</h4>
-							<ul className='text-muted-foreground space-y-1.5'>
-								<li>• Удаление комментариев и пробелов</li>
-								<li>• Сокращение HEX-кодов цветов</li>
-								<li>• Оптимизация нулевых значений</li>
-								<li>• Упрощение сокращённых свойств</li>
-							</ul>
-						</div>
-					</div>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='text-sm font-medium mb-2 flex items-center gap-2'>
-								<TrendingDown className='w-4 h-4 text-green-500' />
-								Преимущества
-							</h4>
-							<ul className='text-muted-foreground space-y-1.5'>
-								<li>• Уменьшение размера на 20-60%</li>
-								<li>• Быстрая загрузка стилей</li>
-								<li>• Снижение нагрузки на сервер</li>
-								<li>• Улучшение производительности</li>
-							</ul>
-						</div>
-					</div>
-					<div className='space-y-3'>
-						<div>
-							<h4 className='text-sm font-medium mb-2 flex items-center gap-2'>
-								<Info className='w-4 h-4 text-purple-500' />
-								Рекомендации
-							</h4>
-							<ul className='text-muted-foreground space-y-1.5'>
-								<li>• Храните оригинальные файлы</li>
-								<li>• Тестируйте в браузерах</li>
-								<li>• Используйте с препроцессорами</li>
-								<li>• Включите gzip на сервере</li>
-							</ul>
-						</div>
+						)}
 					</div>
 				</div>
 			</Card>
+
+			{/* Справка — секцией под карточкой, как обучающие блоки в других тулах */}
+			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Что делает минификация
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					Минификатор убирает из CSS всё, что нужно человеку, но не нужно
+					браузеру: комментарии, переносы строк и лишние пробелы. Плюс мелкая
+					оптимизация значений —{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						#ffffff
+					</code>{' '}
+					превращается в{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						#fff
+					</code>
+					, а{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						0px
+					</code>{' '}
+					просто в{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						0
+					</code>
+					. Поведение стилей при этом не меняется.
+				</p>
+				<p className='mt-3 leading-relaxed'>
+					Файл обычно худеет на 20–40%, а если код щедро откомментирован — то и
+					больше. Поверх этого сервер отдаёт стили сжатыми через gzip или
+					brotli, и там экономия ещё заметнее: в минифицированном CSS меньше
+					повторяющегося «воздуха», поэтому он сжимается лучше.
+				</p>
+				<p className='mt-3 leading-relaxed'>
+					Единственное, о чём стоит помнить: минифицированный CSS нечитаем для
+					человека. Исходник храните отдельно, а в продакшен кладите сжатую
+					версию — обычно это делает сборщик, а не руками.
+				</p>
+			</section>
 		</div>
 	)
 }
