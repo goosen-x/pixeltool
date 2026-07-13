@@ -1,9 +1,12 @@
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { ComponentProps } from 'react'
 
 type Props = {
 	title: string
 	slug: string
+	/** Обложка статьи. Если её нет — рисуем градиентную заглушку */
+	coverImage?: string
 } & ComponentProps<'div'>
 
 const coverPatterns = [
@@ -47,8 +50,32 @@ function getPatternForSlug(slug: string): (typeof coverPatterns)[0] {
 	return coverPatterns[index]
 }
 
-export function PostCover({ className, title, slug }: Props) {
+export function PostCover({ className, title, slug, coverImage }: Props) {
 	const pattern = getPatternForSlug(slug)
+
+	// Обложка есть — показываем её. Раньше coverImage игнорировался, и все
+	// статьи получали одинаковую градиентную заглушку с заголовком поверх
+	const hasCover = Boolean(coverImage) && coverImage !== '/images/avatar.jpeg'
+
+	if (hasCover) {
+		return (
+			<div
+				className={cn(
+					'relative overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.02]',
+					className
+				)}
+			>
+				<Image
+					src={coverImage as string}
+					alt={title}
+					fill
+					sizes='(max-width: 768px) 100vw, 900px'
+					className='object-cover'
+					priority
+				/>
+			</div>
+		)
+	}
 
 	return (
 		<div

@@ -13,11 +13,16 @@ type Props = {
 	slug: string
 }
 
-export function PostHeader({ title, date, author, slug }: Props) {
+export function PostHeader({ title, coverImage, date, author, slug }: Props) {
 	return (
 		<>
 			<div className='mb-8'>
-				<PostCover title={title} slug={slug} className='aspect-[16/4]' />
+				<PostCover
+					title={title}
+					slug={slug}
+					coverImage={coverImage}
+					className='aspect-[16/6]'
+				/>
 			</div>
 			<div className='max-w-2xl mx-auto'>
 				<h1 className='text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-tight mb-8'>

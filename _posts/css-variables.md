@@ -5,7 +5,7 @@ excerpt:
   стилей. Узнайте, как создавать темы, отзывчивые дизайны и интерактивные
   компоненты с CSS переменными.'
 coverImage: '/images/blog/css-variables.png'
-date: '2024-12-04T10:00:00.000Z'
+date: '2025-02-11T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'

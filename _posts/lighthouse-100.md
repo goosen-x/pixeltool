@@ -6,7 +6,7 @@ excerpt:
   уходит впустую и какие метрики стоит чинить первыми. С инструментами под
   каждую задачу.'
 coverImage: '/images/blog/lighthouse-100.png'
-date: '2026-07-13T10:00:00.000Z'
+date: '2026-05-19T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'

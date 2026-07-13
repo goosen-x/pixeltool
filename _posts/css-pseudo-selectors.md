@@ -5,7 +5,7 @@ excerpt:
   интерактивных элементов и визуальных эффектов без JavaScript. Интерактивные
   примеры и лучшие практики.'
 coverImage: '/images/blog/css-pseudo-selectors.png'
-date: '2025-01-10T10:00:00.000Z'
+date: '2026-01-27T10:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

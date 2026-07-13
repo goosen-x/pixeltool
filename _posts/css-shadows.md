@@ -5,7 +5,7 @@ excerpt:
   почему красивая тень получается не из чёрного цвета. Готовый код для карточек,
   кнопок и наведения.'
 coverImage: '/images/avatar.jpeg'
-date: '2026-07-13T14:00:00.000Z'
+date: '2026-07-13T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'

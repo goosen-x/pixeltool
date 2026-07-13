@@ -5,7 +5,7 @@ excerpt:
   сложные макеты с помощью grid-контейнеров, grid-элементов и адаптивных
   паттернов вёрстки.'
 coverImage: '/images/blog/css-grid-layout.png'
-date: '2024-12-10T10:00:00.000Z'
+date: '2025-09-02T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'

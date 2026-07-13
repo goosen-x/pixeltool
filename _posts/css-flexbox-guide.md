@@ -5,7 +5,7 @@ excerpt:
   флекс-контейнерами, флекс-элементами, выравниванием и реальными сценариями
   применения на примерах кода.'
 coverImage: '/images/blog/css-flexbox-guide.png'
-date: '2024-12-08T10:00:00.000Z'
+date: '2025-06-24T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'

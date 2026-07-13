@@ -4,7 +4,7 @@ excerpt:
   'Узнайте, как использовать CSS функцию clamp() для создания плавной адаптивной
   типографики и отступов. Практические примеры, калькулятор и лучшие практики.'
 coverImage: '/images/blog/css-clamp-complete-guide.png'
-date: '2025-01-09T10:00:00.000Z'
+date: '2025-11-11T10:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

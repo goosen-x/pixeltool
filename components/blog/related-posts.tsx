@@ -26,11 +26,13 @@ export async function RelatedPosts({ post }: Props) {
 
 	if (related.length === 0) return null
 
+	// Та же ширина, что у текста статьи (max-w-2xl в PostBody): иначе блок
+	// расползался на всю колонку и выглядел чужим
 	return (
-		<section className='mt-16 border-t pt-10'>
+		<section className='mx-auto mt-16 max-w-2xl border-t pt-10'>
 			<h2 className='text-2xl font-bold tracking-tight'>Читайте также</h2>
 
-			<div className='mt-6 grid gap-4 md:grid-cols-3'>
+			<div className='mt-6 grid gap-4 sm:grid-cols-3'>
 				{related.map(item => (
 					<Link
 						key={item.slug}

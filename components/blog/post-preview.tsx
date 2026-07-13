@@ -28,7 +28,12 @@ export function PostPreview({
 		<article>
 			<div className='mb-5'>
 				<Link href={`/blog/${slug}`} className='group'>
-					<PostCover title={title} slug={slug} className='aspect-[16/9]' />
+					<PostCover
+						title={title}
+						slug={slug}
+						coverImage={coverImage}
+						className='aspect-[16/9]'
+					/>
 				</Link>
 			</div>
 			<h3 className='text-3xl mb-3 leading-snug'></h3>

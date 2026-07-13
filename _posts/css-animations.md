@@ -5,7 +5,7 @@ excerpt:
   переходов до сложных keyframe-анимаций, оптимизации производительности и
   примеров из реальной практики.'
 coverImage: '/images/blog/css-animations.png'
-date: '2024-12-06T10:00:00.000Z'
+date: '2025-04-22T10:00:00.000Z'
 author:
   name: Dmitry Borisenko
   picture: '/images/avatar.jpeg'
