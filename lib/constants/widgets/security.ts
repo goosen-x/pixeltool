@@ -60,7 +60,7 @@ export const securityWidgets: Widget[] = [
 			'Бесплатный генератор паролей онлайн. Создать пароль любой сложности. Генератор надежных паролей с анализом стойкости',
 		useCase:
 			'Бесплатный онлайн генератор паролей для соцсетей, почты, аккаунтов и защиты данных',
-		recommendedTools: ['qr-generator', 'utm-builder', 'hash-generator'],
+		recommendedTools: ['qr-generator', 'utm-builder', 'uuid-generator'],
 		difficulty: 'beginner',
 		tags: ['password', 'security', 'generator', 'random', 'secure'],
 		metaDescription:
@@ -102,7 +102,7 @@ export const securityWidgets: Widget[] = [
 		gradient: 'from-green-500 to-teal-600',
 		title: 'Base64 кодировщик',
 		description: 'Кодируйте и декодируйте данные в формате Base64',
-		recommendedTools: ['jwt-decoder', 'hash-generator', 'json-tools'],
+		recommendedTools: ['jwt-decoder', 'svg-encoder', 'json-tools'],
 		difficulty: 'beginner',
 		tags: ['base64', 'encode', 'decode', 'converter', 'encryption'],
 		useCase:
@@ -189,7 +189,7 @@ export const securityWidgets: Widget[] = [
 		gradient: 'from-indigo-500 to-blue-600',
 		title: 'Генератор UUID',
 		description: 'Создавайте уникальные идентификаторы UUID всех версий',
-		recommendedTools: ['hash-generator', 'password-generator', 'jwt-decoder'],
+		recommendedTools: ['random-number-generator', 'password-generator', 'jwt-decoder'],
 		difficulty: 'beginner',
 		tags: ['uuid', 'guid', 'generator', 'unique', 'identifier'],
 		useCase: 'Генерация уникальных идентификаторов для API и баз данных',

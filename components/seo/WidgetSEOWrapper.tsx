@@ -23,12 +23,12 @@ export function WidgetSEOWrapper({ widget, children }: WidgetSEOWrapperProps) {
 				itemScope
 				itemType='https://schema.org/SoftwareApplication'
 			>
-				<header className='sr-only'>
-					<h1 itemProp='name'>{title}</h1>
-					<p itemProp='description'>{description}</p>
-					<meta itemProp='applicationCategory' content='WebApplication' />
-					<meta itemProp='operatingSystem' content='Web Browser' />
-				</header>
+				{/* Видимый h1 рендерит WidgetHeader из ProjectsLayoutWrapper — здесь
+				    только микроразметка, иначе на странице два заголовка первого уровня */}
+				<meta itemProp='name' content={title} />
+				<meta itemProp='description' content={description} />
+				<meta itemProp='applicationCategory' content='WebApplication' />
+				<meta itemProp='operatingSystem' content='Web Browser' />
 
 				<div
 					itemProp='offers'

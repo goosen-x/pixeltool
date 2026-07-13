@@ -210,7 +210,7 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'favicon-generator',
 			'qr-generator',
-			'youtube-thumbnail-downloader'
+			'youtube-thumbnail'
 		],
 		difficulty: 'beginner',
 		tags: [
@@ -263,7 +263,7 @@ export const toolWidgets: Widget[] = [
 			'Получите детальную информацию о вашем браузере, устройстве и операционной системе',
 		recommendedTools: [
 			'color-converter',
-			'qr-code-generator',
+			'qr-generator',
 			'css-specificity'
 		],
 		difficulty: 'beginner',
@@ -317,9 +317,7 @@ export const toolWidgets: Widget[] = [
 		title: 'Таймер и секундомер',
 		description: 'Таймер, обратный отсчёт и секундомер с уведомлениями',
 		recommendedTools: [
-			'unit-converter',
-			'temperature-converter',
-			'dice-roller'
+			'team-randomizer', 'draw-lots', 'dice-roller'
 		],
 		difficulty: 'beginner',
 		tags: ['timer', 'countdown', 'stopwatch', 'time', 'productivity'],

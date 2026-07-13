@@ -40,7 +40,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 		<nav
 			aria-label='Хлебные крошки'
 			className={cn(
-				'w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6',
+				'w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-4 sm:pb-6',
 				className
 			)}
 		>

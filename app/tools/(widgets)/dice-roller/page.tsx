@@ -235,14 +235,6 @@ export default function DiceRollerPage() {
 	if (!mounted) {
 		return (
 			<div className='max-w-6xl mx-auto space-y-8'>
-				<div>
-					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Dice Roller
-					</h1>
-					<p className='text-muted-foreground'>
-						Roll virtual dice with realistic 3D animation
-					</p>
-				</div>
 				<div className='animate-pulse space-y-8'>
 					<div className='h-96 bg-muted rounded-lg'></div>
 				</div>

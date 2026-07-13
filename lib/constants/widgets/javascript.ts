@@ -12,7 +12,7 @@ export const javascriptWidgets: Widget[] = [
 		title: 'JSON инструменты',
 		description: 'Форматирование, валидация, минификация и сравнение JSON',
 		useCase: 'Комплексная обработка JSON файлов для разработки',
-		recommendedTools: ['html-css-formatter', 'base64-converter', 'url-encoder'],
+		recommendedTools: ['json-yaml-formatter', 'base64-encoder', 'jwt-decoder'],
 		difficulty: 'beginner',
 		tags: [
 			'json',
@@ -64,7 +64,7 @@ export const javascriptWidgets: Widget[] = [
 		description:
 			'Оптимизируйте и сжимайте JavaScript код для лучшей производительности',
 		useCase: 'Уменьшение размера JavaScript файлов для быстрой загрузки сайта',
-		recommendedTools: ['css-minifier', 'json-tools', 'html-css-formatter'],
+		recommendedTools: ['css-minifier', 'json-tools', 'js-validator'],
 		difficulty: 'beginner',
 		tags: [
 			'minify',
@@ -114,7 +114,7 @@ export const javascriptWidgets: Widget[] = [
 		title: 'JavaScript валидатор',
 		description: 'Найдите ошибки в JavaScript коде',
 		useCase: 'Быстрая проверка JavaScript на ошибки',
-		recommendedTools: ['js-minifier', 'json-tools', 'html-css-formatter'],
+		recommendedTools: ['js-minifier', 'json-tools', 'javascript-syntax-checker'],
 		difficulty: 'beginner',
 		tags: [
 			'javascript',

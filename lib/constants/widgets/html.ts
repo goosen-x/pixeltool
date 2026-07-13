@@ -199,7 +199,7 @@ export const htmlWidgets: Widget[] = [
 		recommendedTools: [
 			'html-xml-parser',
 			'seo-markdown-generator',
-			'utm-link-builder'
+			'utm-builder'
 		],
 		faqs: [
 			{

@@ -354,7 +354,7 @@ export const textWidgets: Widget[] = [
 		gradient: 'from-purple-500 to-indigo-600',
 		title: 'Сравнение текстов',
 		description: 'Сравнивайте два текста и находите различия',
-		recommendedTools: ['json-tools', 'html-css-formatter', 'js-validator'],
+		recommendedTools: ['json-tools', 'text-counter', 'js-validator'],
 		difficulty: 'intermediate',
 		tags: ['diff', 'compare', 'text', 'code', 'changes'],
 		useCase: 'Анализ изменений в коде или документах',

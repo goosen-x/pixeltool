@@ -150,15 +150,6 @@ export default function RandomListGeneratorPage() {
 	if (!mounted) {
 		return (
 			<div className='max-w-6xl mx-auto space-y-8'>
-				<div>
-					<h1 className='text-3xl font-bold tracking-tight mb-2'>
-						Генератор случайного списка
-					</h1>
-					<p className='text-muted-foreground'>
-						Перемешивайте и сортируйте списки случайным образом с
-						криптографической стойкостью
-					</p>
-				</div>
 				<div className='animate-pulse space-y-8'>
 					<div className='h-96 bg-muted rounded-lg'></div>
 				</div>
