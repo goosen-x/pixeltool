@@ -868,7 +868,9 @@ export default function CSSBoxShadowGeneratorPage() {
 						{/* Box Settings */}
 						<WidgetSection
 							icon={<Palette className='w-5 h-5' />}
-							title={mode === 'text' ? 'Настройки текста' : 'Настройки элемента'}
+							title={
+								mode === 'text' ? 'Настройки текста' : 'Настройки элемента'
+							}
 						>
 							<div className='space-y-4'>
 								{mode === 'text' && (

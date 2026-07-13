@@ -27,7 +27,11 @@ export const cssWidgets: Widget[] = [
 			'Задайте минимальный и максимальный размер — калькулятор соберёт clamp(), и шрифт будет плавно тянуться за шириной экрана.',
 		useCase:
 			'Адаптивная типографика и отступы, плавно масштабируемые между размерами экрана',
-		recommendedTools: ['px-rem-converter', 'grid-generator', 'flexbox-generator'],
+		recommendedTools: [
+			'px-rem-converter',
+			'grid-generator',
+			'flexbox-generator'
+		],
 		difficulty: 'intermediate',
 		updatedAt: '2026-07-13',
 		tags: ['css', 'clamp', 'адаптивный шрифт', 'fluid', 'typography'],
@@ -216,8 +220,7 @@ export const cssWidgets: Widget[] = [
 		metaTitle: 'Специфичность CSS — калькулятор веса селекторов',
 		description:
 			'Вставьте селектор и узнайте его вес — станет понятно, какое правило победит в каскаде и почему стиль не применяется.',
-		useCase:
-			'Разбор конфликтов стилей: расчёт и сравнение веса CSS-селекторов',
+		useCase: 'Разбор конфликтов стилей: расчёт и сравнение веса CSS-селекторов',
 		recommendedTools: ['css-minifier', 'grid-generator', 'flexbox-generator'],
 		difficulty: 'advanced',
 		updatedAt: '2026-07-13',
@@ -376,8 +379,7 @@ export const cssWidgets: Widget[] = [
 		metaTitle: 'Сжать CSS онлайн — минификатор и оптимизация кода',
 		description:
 			'Вставьте стили и получите сжатый CSS: комментарии и пробелы уйдут, размер файла упадёт на 20–40%.',
-		useCase:
-			'Сжатие и оптимизация CSS-кода для ускорения загрузки страницы',
+		useCase: 'Сжатие и оптимизация CSS-кода для ускорения загрузки страницы',
 		recommendedTools: ['js-minifier', 'css-gradient', 'color-converter'],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-13',

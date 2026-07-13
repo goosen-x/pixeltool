@@ -215,9 +215,9 @@ export function AnimationGuide() {
 				Как сделать анимацию в CSS
 			</h2>
 			<p className='mt-3 leading-relaxed'>
-				Анимация собирается из двух частей. Сначала вы описываете кадры в правиле{' '}
-				<Code>@keyframes</Code>: что происходит в начале и в конце. Потом
-				подключаете их к элементу свойством <Code>animation</Code> — имя и
+				Анимация собирается из двух частей. Сначала вы описываете кадры в
+				правиле <Code>@keyframes</Code>: что происходит в начале и в конце.
+				Потом подключаете их к элементу свойством <Code>animation</Code> — имя и
 				длительность обязательны, остальное по необходимости.
 			</p>
 			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
@@ -307,9 +307,9 @@ export function AnimationGuide() {
 				<strong>Transition реагирует на событие</strong> — наведение, клик,
 				добавление класса — и умеет переходить только между двумя состояниями.{' '}
 				<strong>Animation живёт сама</strong>: стартует без событий, проходит
-				через любое число кадров и может повторяться бесконечно. Наведение и клик
-				— <Code>transition</Code>; лоадер, пульсация, появление при загрузке
-				страницы — <Code>animation</Code>.
+				через любое число кадров и может повторяться бесконечно. Наведение и
+				клик — <Code>transition</Code>; лоадер, пульсация, появление при
+				загрузке страницы — <Code>animation</Code>.
 			</p>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
@@ -339,7 +339,9 @@ export function AnimationGuide() {
 			</div>
 			<p className='mt-3 leading-relaxed'>
 				Всё это записывается одной строкой:{' '}
-				<Code>animation: pulse 1.5s ease-in-out 0s infinite alternate both</Code>
+				<Code>
+					animation: pulse 1.5s ease-in-out 0s infinite alternate both
+				</Code>
 				. Свою кривую скорости можно собрать в{' '}
 				<Link
 					href='/tools/css-bezier-curve-generator'

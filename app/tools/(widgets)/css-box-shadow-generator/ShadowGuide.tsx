@@ -145,7 +145,9 @@ function ExampleCard({ ex }: { ex: ShadowExample }) {
 export function ShadowGuide() {
 	return (
 		<section className='mt-12 max-w-3xl mx-auto text-left text-foreground'>
-			<h2 className='text-2xl font-bold tracking-tight'>Как сделать тень в CSS</h2>
+			<h2 className='text-2xl font-bold tracking-tight'>
+				Как сделать тень в CSS
+			</h2>
 			<p className='mt-3 leading-relaxed'>
 				В CSS две тени, и путать их не стоит. Тень блока рисует{' '}
 				<Code>box-shadow</Code> — она повторяет прямоугольник элемента вместе со
@@ -170,8 +172,8 @@ text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
 				Готовые тени для блоков
 			</h2>
 			<p className='mt-3 leading-relaxed'>
-				Четыре тени, которые закрывают почти все задачи вёрстки. Скопируйте код и
-				вставьте в свой CSS — или соберите свой вариант в генераторе выше.
+				Четыре тени, которые закрывают почти все задачи вёрстки. Скопируйте код
+				и вставьте в свой CSS — или соберите свой вариант в генераторе выше.
 			</p>
 			<div className='mt-4 space-y-5'>
 				{BOX_EXAMPLES.map(ex => (
@@ -185,8 +187,8 @@ text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
 			<p className='mt-3 leading-relaxed'>
 				Чтобы карточка приподнималась под курсором, опишите тень в состоянии{' '}
 				<Code>:hover</Code> и добавьте переход. Анимируйте только тень — не
-				трогайте <Code>margin</Code> или <Code>height</Code>, иначе браузер будет
-				пересчитывать вёрстку на каждом кадре.
+				трогайте <Code>margin</Code> или <Code>height</Code>, иначе браузер
+				будет пересчитывать вёрстку на каждом кадре.
 			</p>
 			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
 				<code className='font-mono text-secondary-foreground'>{`.card {
@@ -261,10 +263,10 @@ text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
 				Главная ошибка — чёрная тень на полной непрозрачности. В жизни свет
 				рассеивается, поэтому берите <Code>rgba</Code> с альфой{' '}
 				<strong>0.08–0.15</strong> и размытие <strong>15–30px</strong>.
-				Небольшое отрицательное растяжение подтягивает тень под элемент и убирает
-				ореол по краям. Два-три слоя с разным размытием дают глубину, которой не
-				добиться одним. Оттенок тени полезно брать не чёрный, а затемнённый цвет
-				фона — подобрать его поможет{' '}
+				Небольшое отрицательное растяжение подтягивает тень под элемент и
+				убирает ореол по краям. Два-три слоя с разным размытием дают глубину,
+				которой не добиться одним. Оттенок тени полезно брать не чёрный, а
+				затемнённый цвет фона — подобрать его поможет{' '}
 				<Link
 					href='/tools/color-converter'
 					className='cursor-pointer font-medium text-primary hover:underline'
@@ -280,9 +282,9 @@ text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
 			<p className='mt-3 leading-relaxed'>
 				<Code>box-shadow</Code> всегда повторяет прямоугольник элемента с учётом{' '}
 				<Code>border-radius</Code>. <Code>filter: drop-shadow()</Code> повторяет
-				фактическую форму содержимого — прозрачные области PNG и контуры SVG. Для
-				карточек и кнопок берите первое, для иконок и картинок с прозрачным фоном
-				— второе. Фон под тенью удобно собрать в{' '}
+				фактическую форму содержимого — прозрачные области PNG и контуры SVG.
+				Для карточек и кнопок берите первое, для иконок и картинок с прозрачным
+				фоном — второе. Фон под тенью удобно собрать в{' '}
 				<Link
 					href='/tools/css-gradient-generator'
 					className='cursor-pointer font-medium text-primary hover:underline'
