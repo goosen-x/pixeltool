@@ -611,7 +611,9 @@ export default function CSSKeyframesGeneratorPage() {
 
 					<section className='border-t pt-6'>
 						<div className='mb-4 flex items-center justify-between'>
-							<h3 className='font-semibold'>Ключевые кадры</h3>
+							<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+								Ключевые кадры
+							</h3>
 							<Button
 								onClick={addKeyframe}
 								size='sm'
@@ -659,33 +661,35 @@ export default function CSSKeyframesGeneratorPage() {
 									</div>
 
 									<div className='space-y-2'>
-										{Object.entries(keyframe.properties).map(([prop, value]) => (
-											<div key={prop} className='flex items-center gap-2'>
-												<code className='inline-code'>{prop}:</code>
-												<Input
-													value={value}
-													onChange={e =>
-														addPropertyToKeyframe(
-															keyframe.id,
-															prop,
-															e.target.value
-														)
-													}
-													className='flex-1'
-												/>
-												<Button
-													onClick={() =>
-														removePropertyFromKeyframe(keyframe.id, prop)
-													}
-													size='sm'
-													variant='ghost'
-													className='cursor-pointer'
-													aria-label={`Удалить свойство ${prop}`}
-												>
-													<Trash2 className='w-4 h-4' />
-												</Button>
-											</div>
-										))}
+										{Object.entries(keyframe.properties).map(
+											([prop, value]) => (
+												<div key={prop} className='flex items-center gap-2'>
+													<code className='inline-code'>{prop}:</code>
+													<Input
+														value={value}
+														onChange={e =>
+															addPropertyToKeyframe(
+																keyframe.id,
+																prop,
+																e.target.value
+															)
+														}
+														className='flex-1'
+													/>
+													<Button
+														onClick={() =>
+															removePropertyFromKeyframe(keyframe.id, prop)
+														}
+														size='sm'
+														variant='ghost'
+														className='cursor-pointer'
+														aria-label={`Удалить свойство ${prop}`}
+													>
+														<Trash2 className='w-4 h-4' />
+													</Button>
+												</div>
+											)
+										)}
 
 										<div className='flex items-center gap-2 pt-2'>
 											<Select
@@ -790,7 +794,9 @@ export default function CSSKeyframesGeneratorPage() {
 
 			<Card className='p-6'>
 				<div className='mb-4 flex flex-wrap items-center justify-between gap-2'>
-					<h3 className='font-semibold'>Сгенерированный CSS</h3>
+					<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+						Сгенерированный CSS
+					</h3>
 					<Button onClick={copyCSS} size='sm' className='cursor-pointer gap-2'>
 						<Copy className='w-4 h-4' />
 						Копировать

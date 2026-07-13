@@ -361,7 +361,7 @@ export default function ColorContrastCheckerPage() {
 
 	return (
 		<div className='max-w-7xl mx-auto space-y-6'>
-			<Card className='space-y-6 p-6'>
+			<Card className='space-y-8 p-6 sm:p-8'>
 				{/* Готовые пары — ряд наверху: с них удобно начинать */}
 				<div className='flex flex-wrap items-center gap-2'>
 					<span className='mr-1 text-sm font-medium text-muted-foreground'>
@@ -390,7 +390,7 @@ export default function ColorContrastCheckerPage() {
 					))}
 				</div>
 
-				<div className='grid gap-8 border-t pt-6 lg:grid-cols-2'>
+				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
 					{/* Слева: что задаём и как это выглядит */}
 					<div className='space-y-5'>
 						<div className='grid gap-4 sm:grid-cols-2'>
@@ -611,7 +611,7 @@ export default function ColorContrastCheckerPage() {
 
 						{(suggestions.foreground.length > 0 ||
 							suggestions.background.length > 0) && (
-							<div className='space-y-4 border-t pt-5'>
+							<div className='space-y-4 border-t pt-6'>
 								<h3 className='flex items-center gap-2 text-sm font-medium'>
 									<AlertCircle className='h-4 w-4 text-amber-600' />
 									Как починить

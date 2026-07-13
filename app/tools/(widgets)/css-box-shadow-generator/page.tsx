@@ -1,11 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { useState, useCallback } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,21 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { ShadowGuide } from './ShadowGuide'
-import {
-	Layers,
-	Copy,
-	RefreshCw,
-	Plus,
-	Trash2,
-	Eye,
-	EyeOff,
-	Move,
-	Maximize2,
-	Sparkles,
-	Palette,
-	Code2,
-	Download
-} from 'lucide-react'
+import { Copy, Check, RefreshCw, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -410,18 +393,6 @@ const TEXT_PRESET_SHADOWS: PresetShadow[] = [
 	}
 ]
 
-const CATEGORY_LABELS: Record<string, string> = {
-	basic: 'Базовые',
-	material: 'Material Design',
-	neumorphism: 'Неоморфизм',
-	inset: 'Внутренние',
-	glow: 'Свечение',
-	volume: 'Объём'
-}
-
-const BOX_CATEGORIES = ['basic', 'material', 'neumorphism', 'inset', 'glow']
-const TEXT_CATEGORIES = ['basic', 'volume', 'glow']
-
 export default function CSSBoxShadowGeneratorPage() {
 	const widget = getWidgetById('css-box-shadow')!
 	const [mode, setMode] = useState<ShadowMode>('box')
@@ -445,7 +416,8 @@ export default function CSSBoxShadowGeneratorPage() {
 	const [borderRadius, setBorderRadius] = useState(8)
 	const [boxSize, setBoxSize] = useState(200)
 	const [fontSize, setFontSize] = useState(56)
-	const [showCode, setShowCode] = useState(true)
+	const [copiedCSS, setCopiedCSS] = useState(false)
+	const [copiedTailwind, setCopiedTailwind] = useState(false)
 
 	const selectedShadow = shadows.find(s => s.id === selectedShadowId)
 
@@ -515,26 +487,25 @@ export default function CSSBoxShadowGeneratorPage() {
 		toast.success('Тень удалена')
 	}
 
+	// Tailwind принимает произвольное значение, если пробелы заменить на _
+	const tailwindClass =
+		mode === 'text'
+			? `[text-shadow:${generateCSS().replace(/\s+/g, '_')}]`
+			: `shadow-[${generateCSS().replace(/\s+/g, '_')}]`
+
 	const copyCSSCode = useCallback(() => {
-		const css = `${cssProperty}: ${generateCSS()};`
-		navigator.clipboard.writeText(css)
-		toast.success('CSS код скопирован!')
+		navigator.clipboard.writeText(`${cssProperty}: ${generateCSS()};`)
+		setCopiedCSS(true)
+		setTimeout(() => setCopiedCSS(false), 2000)
+		toast.success('CSS скопирован')
 	}, [generateCSS, cssProperty])
 
-	const copyFullCSS = () => {
-		const css =
-			mode === 'text'
-				? `.title {
-  text-shadow: ${generateCSS()};
-}`
-				: `.element {
-  box-shadow: ${generateCSS()};
-  border-radius: ${borderRadius}px;
-  background-color: ${boxColor};
-}`
-		navigator.clipboard.writeText(css)
-		toast.success('Полный CSS код скопирован!')
-	}
+	const copyTailwindCode = useCallback(() => {
+		navigator.clipboard.writeText(tailwindClass)
+		setCopiedTailwind(true)
+		setTimeout(() => setCopiedTailwind(false), 2000)
+		toast.success('Tailwind-класс скопирован')
+	}, [tailwindClass])
 
 	const loadPreset = useCallback((preset: PresetShadow) => {
 		const newShadows: Shadow[] = preset.shadows.map((shadow, index) => ({
@@ -548,7 +519,6 @@ export default function CSSBoxShadowGeneratorPage() {
 	}, [])
 
 	const presets = mode === 'text' ? TEXT_PRESET_SHADOWS : PRESET_SHADOWS
-	const presetCategories = mode === 'text' ? TEXT_CATEGORIES : BOX_CATEGORIES
 
 	const switchMode = (next: ShadowMode) => {
 		if (next === mode) return
@@ -579,19 +549,12 @@ export default function CSSBoxShadowGeneratorPage() {
 		toast.success('Настройки сброшены')
 	}, [])
 
-	const downloadAsImage = () => {
-		// In a real implementation, this would use canvas to create an image
-		toast.info('Функция экспорта в разработке')
-	}
-
 	// Keyboard shortcuts
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<WidgetLayout>
-				<WidgetSection
-					icon={<Layers className='w-5 h-5' />}
-					title='Что затеняем'
-				>
+			<Card className='space-y-8 p-6 sm:p-8'>
+				{/* Режим и пресеты — горизонтальный ряд наверху */}
+				<div className='space-y-4'>
 					<div
 						className='inline-flex rounded-lg border p-1'
 						role='group'
@@ -602,6 +565,7 @@ export default function CSSBoxShadowGeneratorPage() {
 							size='sm'
 							onClick={() => switchMode('box')}
 							aria-pressed={mode === 'box'}
+							className='cursor-pointer'
 						>
 							Тень блока — box-shadow
 						</Button>
@@ -610,24 +574,71 @@ export default function CSSBoxShadowGeneratorPage() {
 							size='sm'
 							onClick={() => switchMode('text')}
 							aria-pressed={mode === 'text'}
+							className='cursor-pointer'
 						>
 							Тень текста — text-shadow
 						</Button>
 					</div>
-				</WidgetSection>
 
-				<div className='grid lg:grid-cols-2 gap-6'>
-					{/* Controls */}
+					{/* Пресеты: тени нужен воздух вокруг, иначе она обрезается рамкой */}
+					<div className='flex flex-wrap gap-2'>
+						{presets.map((preset, index) => {
+							const css = preset.shadows
+								.map(s => {
+									const rgba = hexToRgba(s.color, s.opacity / 100)
+									if (mode === 'text') {
+										return `${s.offsetX}px ${s.offsetY}px ${s.blur}px ${rgba}`
+									}
+									const insetStr = s.inset ? 'inset ' : ''
+									return `${insetStr}${s.offsetX}px ${s.offsetY}px ${s.blur}px ${s.spread}px ${rgba}`
+								})
+								.join(', ')
+
+							return (
+								<button
+									key={index}
+									onClick={() => loadPreset(preset)}
+									className='flex cursor-pointer flex-col items-center gap-2 rounded-lg border bg-muted/30 px-4 py-3 transition-colors hover:border-primary'
+								>
+									<span className='flex h-12 w-16 items-center justify-center'>
+										{mode === 'text' ? (
+											<span
+												className='text-lg font-bold'
+												style={{ textShadow: css }}
+											>
+												Аа
+											</span>
+										) : (
+											<span
+												className='block h-8 w-12 rounded bg-background'
+												style={{ boxShadow: css }}
+											/>
+										)}
+									</span>
+									<span className='text-xs whitespace-nowrap'>
+										{preset.name}
+									</span>
+								</button>
+							)
+						})}
+					</div>
+				</div>
+
+				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
+					{/* Слева: слои и параметры */}
 					<div className='space-y-6'>
-						{/* Shadow Layers */}
-						<WidgetSection
-							icon={<Layers className='w-5 w-5' />}
-							title='Слои теней'
-						>
-							<div className='flex items-center justify-between mb-4'>
-								<div></div>
-								<Button onClick={addShadow} size='sm'>
-									<Plus className='w-4 h-4 mr-2' />
+						<div>
+							<div className='mb-3 flex items-center justify-between'>
+								<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+									Слои теней
+								</h3>
+								<Button
+									onClick={addShadow}
+									size='sm'
+									variant='outline'
+									className='cursor-pointer'
+								>
+									<Plus className='mr-2 h-4 w-4' />
 									Добавить
 								</Button>
 							</div>
@@ -637,9 +648,9 @@ export default function CSSBoxShadowGeneratorPage() {
 									<div
 										key={shadow.id}
 										className={cn(
-											'flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-colors',
+											'flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors',
 											selectedShadowId === shadow.id
-												? 'bg-primary/10 border-primary'
+												? 'border-primary bg-primary/5'
 												: 'hover:bg-muted/50'
 										)}
 										onClick={() => setSelectedShadowId(shadow.id)}
@@ -650,484 +661,423 @@ export default function CSSBoxShadowGeneratorPage() {
 												updateShadow(shadow.id, { enabled: checked })
 											}
 											onClick={e => e.stopPropagation()}
+											className='cursor-pointer'
+											aria-label={`Слой ${index + 1}`}
 										/>
-										<div className='flex-1'>
+										<div className='min-w-0 flex-1'>
 											<div className='flex items-center gap-2'>
 												<span className='text-sm font-medium'>
 													Тень {index + 1}
 												</span>
-												{shadow.inset && (
+												{mode === 'box' && shadow.inset && (
 													<Badge variant='secondary' className='text-xs'>
-														Inset
+														inset
 													</Badge>
 												)}
 											</div>
-											<div className='text-xs text-muted-foreground'>
-												{shadow.offsetX}/{shadow.offsetY}/{shadow.blur}/
-												{shadow.spread}
+											<div className='font-mono text-xs text-muted-foreground'>
+												{shadow.offsetX}/{shadow.offsetY}/{shadow.blur}
+												{mode === 'box' ? `/${shadow.spread}` : ''}
 											</div>
 										</div>
-										<div className='flex items-center gap-1'>
-											<div
-												className='w-6 h-6 rounded border'
-												style={{
-													backgroundColor: hexToRgba(
-														shadow.color,
-														shadow.opacity / 100
-													)
-												}}
-											/>
-											<Button
-												variant='ghost'
-												size='icon'
-												className='h-8 w-8'
-												onClick={e => {
-													e.stopPropagation()
-													deleteShadow(shadow.id)
-												}}
-											>
-												<Trash2 className='w-4 h-4' />
-											</Button>
-										</div>
+										<div
+											className='h-6 w-6 rounded border'
+											style={{
+												backgroundColor: hexToRgba(
+													shadow.color,
+													shadow.opacity / 100
+												)
+											}}
+										/>
+										<Button
+											variant='ghost'
+											size='icon'
+											className='h-8 w-8 cursor-pointer'
+											onClick={e => {
+												e.stopPropagation()
+												deleteShadow(shadow.id)
+											}}
+											aria-label={`Удалить тень ${index + 1}`}
+										>
+											<Trash2 className='h-4 w-4' />
+										</Button>
 									</div>
 								))}
 							</div>
-						</WidgetSection>
+						</div>
 
-						{/* Shadow Settings */}
 						{selectedShadow && (
-							<WidgetSection
-								icon={<Move className='w-5 h-5' />}
-								title='Настройки тени'
-							>
-								<div className='space-y-4'>
-									<div className='grid grid-cols-2 gap-4'>
-										<div>
-											<Label htmlFor='offset-x'>Смещение X</Label>
-											<div className='flex items-center gap-2 mt-1'>
-												<Slider
-													id='offset-x'
-													value={[selectedShadow.offsetX]}
-													onValueChange={value =>
-														updateShadow(selectedShadow.id, {
-															offsetX: value[0]
-														})
-													}
-													min={-50}
-													max={50}
-													step={1}
-													className='flex-1'
-												/>
-												<span className='text-sm w-10 text-right'>
-													{selectedShadow.offsetX}
-												</span>
-											</div>
-										</div>
+							<div className='space-y-4 border-t pt-6'>
+								<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+									Настройки тени
+								</h3>
 
-										<div>
-											<Label htmlFor='offset-y'>Смещение Y</Label>
-											<div className='flex items-center gap-2 mt-1'>
-												<Slider
-													id='offset-y'
-													value={[selectedShadow.offsetY]}
-													onValueChange={value =>
-														updateShadow(selectedShadow.id, {
-															offsetY: value[0]
-														})
-													}
-													min={-50}
-													max={50}
-													step={1}
-													className='flex-1'
-												/>
-												<span className='text-sm w-10 text-right'>
-													{selectedShadow.offsetY}
-												</span>
-											</div>
-										</div>
-									</div>
-
-									<div className='grid grid-cols-2 gap-4'>
-										<div>
-											<Label htmlFor='blur'>Размытие</Label>
-											<div className='flex items-center gap-2 mt-1'>
-												<Slider
-													id='blur'
-													value={[selectedShadow.blur]}
-													onValueChange={value =>
-														updateShadow(selectedShadow.id, { blur: value[0] })
-													}
-													min={0}
-													max={100}
-													step={1}
-													className='flex-1'
-												/>
-												<span className='text-sm w-10 text-right'>
-													{selectedShadow.blur}
-												</span>
-											</div>
-										</div>
-
-										{mode === 'box' && (
-											<div>
-												<Label htmlFor='spread'>Растяжение</Label>
-												<div className='flex items-center gap-2 mt-1'>
-													<Slider
-														id='spread'
-														value={[selectedShadow.spread]}
-														onValueChange={value =>
-															updateShadow(selectedShadow.id, {
-																spread: value[0]
-															})
-														}
-														min={-50}
-														max={50}
-														step={1}
-														className='flex-1'
-													/>
-													<span className='text-sm w-10 text-right'>
-														{selectedShadow.spread}
-													</span>
-												</div>
-											</div>
-										)}
-									</div>
-
-									<div className='grid grid-cols-2 gap-4'>
-										<div>
-											<Label htmlFor='color'>Цвет</Label>
-											<div className='flex gap-2 mt-1'>
-												<Input
-													id='color'
-													type='color'
-													value={selectedShadow.color}
-													onChange={e =>
-														updateShadow(selectedShadow.id, {
-															color: e.target.value
-														})
-													}
-													className='w-20 h-10 p-1'
-												/>
-												<Input
-													type='text'
-													value={selectedShadow.color}
-													onChange={e =>
-														updateShadow(selectedShadow.id, {
-															color: e.target.value
-														})
-													}
-													className='flex-1'
-												/>
-											</div>
-										</div>
-
-										<div>
-											<Label htmlFor='opacity'>Прозрачность</Label>
-											<div className='flex items-center gap-2 mt-1'>
-												<Slider
-													id='opacity'
-													value={[selectedShadow.opacity]}
-													onValueChange={value =>
-														updateShadow(selectedShadow.id, {
-															opacity: value[0]
-														})
-													}
-													min={0}
-													max={100}
-													step={1}
-													className='flex-1'
-												/>
-												<span className='text-sm w-10 text-right'>
-													{selectedShadow.opacity}%
-												</span>
-											</div>
-										</div>
-									</div>
-
-									{mode === 'box' ? (
-										<div className='flex items-center space-x-2'>
-											<Switch
-												id='inset'
-												checked={selectedShadow.inset}
-												onCheckedChange={checked =>
-													updateShadow(selectedShadow.id, { inset: checked })
+								<div className='grid grid-cols-2 gap-4'>
+									<div>
+										<Label htmlFor='offset-x'>Смещение X</Label>
+										<div className='mt-1 flex items-center gap-2'>
+											<Slider
+												id='offset-x'
+												value={[selectedShadow.offsetX]}
+												onValueChange={value =>
+													updateShadow(selectedShadow.id, { offsetX: value[0] })
 												}
-											/>
-											<Label htmlFor='inset'>Внутренняя тень (inset)</Label>
-										</div>
-									) : (
-										<p className='text-xs text-muted-foreground'>
-											У text-shadow нет растяжения (spread) и внутренней тени
-											(inset) — только смещение, размытие и цвет.
-										</p>
-									)}
-								</div>
-							</WidgetSection>
-						)}
-
-						{/* Box Settings */}
-						<WidgetSection
-							icon={<Palette className='w-5 h-5' />}
-							title={
-								mode === 'text' ? 'Настройки текста' : 'Настройки элемента'
-							}
-						>
-							<div className='space-y-4'>
-								{mode === 'text' && (
-									<div>
-										<Label htmlFor='preview-text'>Текст для примера</Label>
-										<Input
-											id='preview-text'
-											type='text'
-											value={previewText}
-											onChange={e => setPreviewText(e.target.value)}
-											className='mt-1'
-										/>
-									</div>
-								)}
-
-								<div className='grid grid-cols-2 gap-4'>
-									<div>
-										<Label htmlFor='box-color'>
-											{mode === 'text' ? 'Цвет текста' : 'Цвет элемента'}
-										</Label>
-										<div className='flex gap-2 mt-1'>
-											<Input
-												id='box-color'
-												type='color'
-												value={boxColor}
-												onChange={e => setBoxColor(e.target.value)}
-												className='w-20 h-10 p-1'
-											/>
-											<Input
-												type='text'
-												value={boxColor}
-												onChange={e => setBoxColor(e.target.value)}
+												min={-50}
+												max={50}
+												step={1}
 												className='flex-1'
 											/>
+											<span className='w-10 text-right text-sm'>
+												{selectedShadow.offsetX}
+											</span>
 										</div>
 									</div>
 
 									<div>
-										<Label htmlFor='bg-color'>Цвет фона</Label>
-										<div className='flex gap-2 mt-1'>
-											<Input
-												id='bg-color'
-												type='color'
-												value={bgColor}
-												onChange={e => setBgColor(e.target.value)}
-												className='w-20 h-10 p-1'
-											/>
-											<Input
-												type='text'
-												value={bgColor}
-												onChange={e => setBgColor(e.target.value)}
+										<Label htmlFor='offset-y'>Смещение Y</Label>
+										<div className='mt-1 flex items-center gap-2'>
+											<Slider
+												id='offset-y'
+												value={[selectedShadow.offsetY]}
+												onValueChange={value =>
+													updateShadow(selectedShadow.id, { offsetY: value[0] })
+												}
+												min={-50}
+												max={50}
+												step={1}
 												className='flex-1'
 											/>
+											<span className='w-10 text-right text-sm'>
+												{selectedShadow.offsetY}
+											</span>
 										</div>
 									</div>
-								</div>
 
-								<div className='grid grid-cols-2 gap-4'>
+									<div>
+										<Label htmlFor='blur'>Размытие</Label>
+										<div className='mt-1 flex items-center gap-2'>
+											<Slider
+												id='blur'
+												value={[selectedShadow.blur]}
+												onValueChange={value =>
+													updateShadow(selectedShadow.id, { blur: value[0] })
+												}
+												min={0}
+												max={100}
+												step={1}
+												className='flex-1'
+											/>
+											<span className='w-10 text-right text-sm'>
+												{selectedShadow.blur}
+											</span>
+										</div>
+									</div>
+
 									{mode === 'box' && (
 										<div>
-											<Label htmlFor='border-radius'>Скругление углов</Label>
-											<div className='flex items-center gap-2 mt-1'>
+											<Label htmlFor='spread'>Растяжение</Label>
+											<div className='mt-1 flex items-center gap-2'>
 												<Slider
-													id='border-radius'
-													value={[borderRadius]}
-													onValueChange={value => setBorderRadius(value[0])}
-													min={0}
+													id='spread'
+													value={[selectedShadow.spread]}
+													onValueChange={value =>
+														updateShadow(selectedShadow.id, {
+															spread: value[0]
+														})
+													}
+													min={-50}
 													max={50}
 													step={1}
 													className='flex-1'
 												/>
-												<span className='text-sm w-10 text-right'>
-													{borderRadius}px
+												<span className='w-10 text-right text-sm'>
+													{selectedShadow.spread}
 												</span>
 											</div>
 										</div>
 									)}
 
 									<div>
-										<Label htmlFor='box-size'>
-											{mode === 'text' ? 'Размер шрифта' : 'Размер элемента'}
-										</Label>
-										<div className='flex items-center gap-2 mt-1'>
-											<Slider
-												id='box-size'
-												value={[mode === 'text' ? fontSize : boxSize]}
-												onValueChange={value =>
-													mode === 'text'
-														? setFontSize(value[0])
-														: setBoxSize(value[0])
+										<Label htmlFor='color'>Цвет</Label>
+										<div className='mt-1 flex gap-2'>
+											<Input
+												id='color'
+												type='color'
+												value={selectedShadow.color}
+												onChange={e =>
+													updateShadow(selectedShadow.id, {
+														color: e.target.value
+													})
 												}
-												min={mode === 'text' ? 16 : 100}
-												max={mode === 'text' ? 120 : 300}
-												step={mode === 'text' ? 2 : 10}
+												className='h-10 w-14 cursor-pointer p-1'
+											/>
+											<Input
+												type='text'
+												value={selectedShadow.color}
+												onChange={e =>
+													updateShadow(selectedShadow.id, {
+														color: e.target.value
+													})
+												}
+												className='flex-1 font-mono'
+											/>
+										</div>
+									</div>
+
+									<div>
+										<Label htmlFor='opacity'>Прозрачность</Label>
+										<div className='mt-1 flex items-center gap-2'>
+											<Slider
+												id='opacity'
+												value={[selectedShadow.opacity]}
+												onValueChange={value =>
+													updateShadow(selectedShadow.id, { opacity: value[0] })
+												}
+												min={0}
+												max={100}
+												step={1}
 												className='flex-1'
 											/>
-											<span className='text-sm w-10 text-right'>
-												{mode === 'text' ? fontSize : boxSize}px
+											<span className='w-10 text-right text-sm'>
+												{selectedShadow.opacity}%
 											</span>
 										</div>
 									</div>
 								</div>
-							</div>
-						</WidgetSection>
-					</div>
 
-					{/* Preview */}
-					<div className='space-y-6'>
-						{/* Preview Box */}
-						<WidgetSection
-							icon={<Eye className='w-5 h-5' />}
-							title='Предпросмотр'
-						>
-							<div className='flex items-center justify-between mb-4'>
-								<div></div>
-								<div className='flex gap-2'>
-									<Button
-										onClick={() => setShowCode(!showCode)}
-										variant='outline'
-										size='sm'
-									>
-										{showCode ? (
-											<EyeOff className='w-4 h-4 mr-2' />
-										) : (
-											<Eye className='w-4 h-4 mr-2' />
-										)}
-										{showCode ? 'Скрыть код' : 'Показать код'}
-									</Button>
-									<Button onClick={reset} variant='outline' size='sm'>
-										<RefreshCw className='w-4 h-4 mr-2' />
-										Сбросить
-									</Button>
-								</div>
-							</div>
-
-							<div
-								className='flex items-center justify-center p-12 rounded-lg transition-colors overflow-hidden'
-								style={{ backgroundColor: bgColor }}
-							>
-								{mode === 'text' ? (
-									<span
-										className='font-bold text-center break-words transition-all'
-										style={{
-											color: boxColor,
-											fontSize: `${fontSize}px`,
-											lineHeight: 1.2,
-											textShadow: generateCSS()
-										}}
-									>
-										{previewText || 'Тень текста'}
-									</span>
+								{mode === 'box' ? (
+									<div className='flex items-center space-x-2'>
+										<Switch
+											id='inset'
+											checked={selectedShadow.inset}
+											onCheckedChange={checked =>
+												updateShadow(selectedShadow.id, { inset: checked })
+											}
+											className='cursor-pointer'
+										/>
+										<Label htmlFor='inset' className='cursor-pointer'>
+											Внутренняя тень (inset)
+										</Label>
+									</div>
 								) : (
-									<div
-										className='transition-all'
-										style={{
-											width: `${boxSize}px`,
-											height: `${boxSize}px`,
-											backgroundColor: boxColor,
-											borderRadius: `${borderRadius}px`,
-											boxShadow: generateCSS()
-										}}
-									/>
+									<p className='text-xs text-muted-foreground'>
+										У text-shadow нет растяжения (spread) и внутренней тени
+										(inset) — только смещение, размытие и цвет.
+									</p>
 								)}
 							</div>
+						)}
 
-							{showCode && (
-								<div className='mt-6 space-y-3'>
-									<div className='flex items-center justify-between'>
-										<Label>CSS код</Label>
-										<div className='flex gap-2'>
-											<Button onClick={copyCSSCode} size='sm' variant='outline'>
-												<Copy className='w-4 h-4 mr-2' />
-												Копировать
-											</Button>
-											<Button onClick={copyFullCSS} size='sm' variant='outline'>
-												<Code2 className='w-4 h-4 mr-2' />
-												Полный CSS
-											</Button>
-										</div>
-									</div>
-									<div className='bg-muted p-4 rounded-lg'>
-										<code className='text-sm font-mono break-all'>
-											{cssProperty}: {generateCSS()};
-										</code>
-									</div>
+						<div className='space-y-4 border-t pt-6'>
+							<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+								{mode === 'text' ? 'Настройки текста' : 'Настройки элемента'}
+							</h3>
+
+							{mode === 'text' && (
+								<div>
+									<Label htmlFor='preview-text'>Текст для примера</Label>
+									<Input
+										id='preview-text'
+										type='text'
+										value={previewText}
+										onChange={e => setPreviewText(e.target.value)}
+										className='mt-1'
+									/>
 								</div>
 							)}
-						</WidgetSection>
 
-						{/* Presets */}
-						<WidgetSection
-							icon={<Sparkles className='w-5 h-5' />}
-							title='Готовые пресеты'
-						>
-							<div className='space-y-4'>
-								{presetCategories.map(category => {
-									const inCategory = presets.filter(
-										preset => preset.category === category
-									)
-									if (inCategory.length === 0) return null
+							<div className='grid grid-cols-2 gap-4'>
+								<div>
+									<Label htmlFor='box-color'>
+										{mode === 'text' ? 'Цвет текста' : 'Цвет элемента'}
+									</Label>
+									<div className='mt-1 flex gap-2'>
+										<Input
+											id='box-color'
+											type='color'
+											value={boxColor}
+											onChange={e => setBoxColor(e.target.value)}
+											className='h-10 w-14 cursor-pointer p-1'
+										/>
+										<Input
+											type='text'
+											value={boxColor}
+											onChange={e => setBoxColor(e.target.value)}
+											className='flex-1 font-mono'
+										/>
+									</div>
+								</div>
 
-									return (
-										<div key={category}>
-											<h4 className='text-sm font-medium text-muted-foreground mb-2'>
-												{CATEGORY_LABELS[category]}
-											</h4>
-											<div className='grid grid-cols-2 gap-2'>
-												{inCategory.map((preset, index) => {
-													const css = preset.shadows
-														.map(s => {
-															const rgba = hexToRgba(s.color, s.opacity / 100)
-															if (mode === 'text') {
-																return `${s.offsetX}px ${s.offsetY}px ${s.blur}px ${rgba}`
-															}
-															const insetStr = s.inset ? 'inset ' : ''
-															return `${insetStr}${s.offsetX}px ${s.offsetY}px ${s.blur}px ${s.spread}px ${rgba}`
-														})
-														.join(', ')
+								<div>
+									<Label htmlFor='bg-color'>Цвет фона</Label>
+									<div className='mt-1 flex gap-2'>
+										<Input
+											id='bg-color'
+											type='color'
+											value={bgColor}
+											onChange={e => setBgColor(e.target.value)}
+											className='h-10 w-14 cursor-pointer p-1'
+										/>
+										<Input
+											type='text'
+											value={bgColor}
+											onChange={e => setBgColor(e.target.value)}
+											className='flex-1 font-mono'
+										/>
+									</div>
+								</div>
 
-													return (
-														<Button
-															key={index}
-															onClick={() => loadPreset(preset)}
-															variant='outline'
-															size='sm'
-															className='justify-start'
-														>
-															<div className='flex items-center gap-2 w-full'>
-																{mode === 'text' ? (
-																	<span
-																		className='w-8 h-8 flex items-center justify-center font-bold shrink-0'
-																		style={{ textShadow: css }}
-																	>
-																		Аа
-																	</span>
-																) : (
-																	<div
-																		className='w-8 h-8 bg-white rounded shrink-0'
-																		style={{ boxShadow: css }}
-																	/>
-																)}
-																<span className='text-xs'>{preset.name}</span>
-															</div>
-														</Button>
-													)
-												})}
-											</div>
+								{mode === 'box' && (
+									<div>
+										<Label htmlFor='border-radius'>Скругление углов</Label>
+										<div className='mt-1 flex items-center gap-2'>
+											<Slider
+												id='border-radius'
+												value={[borderRadius]}
+												onValueChange={value => setBorderRadius(value[0])}
+												min={0}
+												max={50}
+												step={1}
+												className='flex-1'
+											/>
+											<span className='w-12 text-right text-sm'>
+												{borderRadius}px
+											</span>
 										</div>
-									)
-								})}
+									</div>
+								)}
+
+								<div>
+									<Label htmlFor='box-size'>
+										{mode === 'text' ? 'Размер шрифта' : 'Размер элемента'}
+									</Label>
+									<div className='mt-1 flex items-center gap-2'>
+										<Slider
+											id='box-size'
+											value={[mode === 'text' ? fontSize : boxSize]}
+											onValueChange={value =>
+												mode === 'text'
+													? setFontSize(value[0])
+													: setBoxSize(value[0])
+											}
+											min={mode === 'text' ? 16 : 100}
+											max={mode === 'text' ? 120 : 300}
+											step={mode === 'text' ? 2 : 10}
+											className='flex-1'
+										/>
+										<span className='w-12 text-right text-sm'>
+											{mode === 'text' ? fontSize : boxSize}px
+										</span>
+									</div>
+								</div>
 							</div>
-						</WidgetSection>
+						</div>
+					</div>
+
+					{/* Справа: превью и код */}
+					<div className='space-y-4 lg:sticky lg:top-6 lg:self-start'>
+						<div className='flex items-center justify-between'>
+							<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+								Предпросмотр
+							</h3>
+							<Button
+								onClick={reset}
+								variant='ghost'
+								size='sm'
+								className='cursor-pointer'
+							>
+								<RefreshCw className='mr-2 h-4 w-4' />
+								Сбросить
+							</Button>
+						</div>
+
+						<div
+							className='flex items-center justify-center overflow-hidden rounded-lg p-12 transition-colors'
+							style={{ backgroundColor: bgColor }}
+						>
+							{mode === 'text' ? (
+								<span
+									className='text-center font-bold break-words transition-all'
+									style={{
+										color: boxColor,
+										fontSize: `${fontSize}px`,
+										lineHeight: 1.2,
+										textShadow: generateCSS()
+									}}
+								>
+									{previewText || 'Тень текста'}
+								</span>
+							) : (
+								<div
+									className='transition-all'
+									style={{
+										width: `${boxSize}px`,
+										height: `${boxSize}px`,
+										backgroundColor: boxColor,
+										borderRadius: `${borderRadius}px`,
+										boxShadow: generateCSS()
+									}}
+								/>
+							)}
+						</div>
+
+						{/* Вывод как в grid: CSS и Tailwind рядом */}
+						<div className='grid gap-4 md:grid-cols-2'>
+							<div>
+								<div className='mb-2 flex items-center justify-between'>
+									<Label className='text-sm text-muted-foreground'>CSS</Label>
+									<Button
+										size='sm'
+										variant='ghost'
+										onClick={copyCSSCode}
+										className='h-8 cursor-pointer px-2 hover:bg-accent hover:text-white'
+										aria-label='Скопировать CSS'
+									>
+										{copiedCSS ? (
+											<Check className='h-3 w-3 text-green-500' />
+										) : (
+											<Copy className='h-3 w-3' />
+										)}
+									</Button>
+								</div>
+								<div className='rounded-lg bg-secondary p-4'>
+									<pre className='overflow-x-auto font-mono text-xs break-all whitespace-pre-wrap text-secondary-foreground'>
+										{cssProperty}: {generateCSS()};
+									</pre>
+								</div>
+							</div>
+
+							<div>
+								<div className='mb-2 flex items-center justify-between'>
+									<Label className='text-sm text-muted-foreground'>
+										Tailwind CSS
+									</Label>
+									<Button
+										size='sm'
+										variant='ghost'
+										onClick={copyTailwindCode}
+										className='h-8 cursor-pointer px-2 hover:bg-accent hover:text-white'
+										aria-label='Скопировать Tailwind CSS'
+									>
+										{copiedTailwind ? (
+											<Check className='h-3 w-3 text-green-500' />
+										) : (
+											<Copy className='h-3 w-3' />
+										)}
+									</Button>
+								</div>
+								<div className='rounded-lg bg-secondary p-4'>
+									<span className='font-mono text-xs break-all text-secondary-foreground'>
+										{tailwindClass}
+									</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
+			</Card>
 
-				<ShadowGuide />
-			</WidgetLayout>
+			<ShadowGuide />
 		</WidgetSEOWrapper>
 	)
 }

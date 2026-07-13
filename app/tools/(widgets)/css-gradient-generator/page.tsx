@@ -86,7 +86,7 @@ export default function CSSGradientGeneratorPage() {
 	// Keyboard shortcuts
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<Card className='space-y-6 p-6'>
+			<Card className='space-y-8 p-6 sm:p-8'>
 				{/* Пресеты — компактный ряд наверху */}
 				<div className='flex flex-wrap items-center gap-2'>
 					{filteredGradients.map((preset, index) => (
@@ -189,10 +189,12 @@ export default function CSSGradientGeneratorPage() {
 					</div>
 				</div>
 
-				<div className='grid gap-8 border-t pt-6 lg:grid-cols-2'>
+				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
 					{/* Настройки */}
 					<div className='space-y-6'>
-						<h3 className='font-semibold'>Настройки</h3>
+						<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+							Настройки
+						</h3>
 
 						<div className='space-y-3'>
 							<Label className='text-sm font-medium'>Тип градиента</Label>
@@ -381,7 +383,9 @@ export default function CSSGradientGeneratorPage() {
 
 					{/* Цветовые точки */}
 					<div className='space-y-4'>
-						<h3 className='font-semibold'>Цветовые точки</h3>
+						<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
+							Цветовые точки
+						</h3>
 
 						<div className='space-y-2'>
 							{settings.colorStops.map(stop => (
