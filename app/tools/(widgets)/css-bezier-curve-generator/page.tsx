@@ -1,37 +1,23 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle
-} from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
 import { Copy, Play, Pause, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 import {
 	createBezierEasing,
 	generateCurvePoints,
 	EASING_PRESETS,
 	formatCubicBezier,
-	parseCubicBezier,
-	getBezierPath,
 	getHandlePositions,
 	updateCurveFromHandle,
-	type BezierCurve,
-	type Point
+	type BezierCurve
 } from '@/lib/utils/bezier-easing'
 
 export default function BezierCurvePage() {
@@ -44,13 +30,14 @@ export default function BezierCurvePage() {
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [progress, setProgress] = useState(0)
 	const [selectedPreset, setSelectedPreset] = useState('ease')
+	// Состояние, а не ref: от ref-а React не перерисовывается, и подсказка
+	// «Редактирование P1/P2» появлялась не тогда, когда надо
+	const [dragging, setDragging] = useState<'p1' | 'p2' | null>(null)
 
 	// Refs
-	const svgRef = useRef<SVGSVGElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const animationRef = useRef<number | undefined>(undefined)
 	const startTimeRef = useRef<number | undefined>(undefined)
-	const isDraggingRef = useRef<'p1' | 'p2' | null>(null)
 
 	// Canvas size
 	const canvasSize = { width: 400, height: 400 }
@@ -233,7 +220,14 @@ export default function BezierCurvePage() {
 		const ctx = canvas.getContext('2d')
 		if (!ctx) return
 
+		// Без учёта плотности пикселей кривая на Retina выглядела мылом
+		const dpr = window.devicePixelRatio || 1
+		canvas.width = canvasSize.width * dpr
+		canvas.height = canvasSize.height * dpr
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
 		drawGrid(ctx)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [drawGrid])
 
 	// Animation loop
@@ -285,61 +279,63 @@ export default function BezierCurvePage() {
 		}
 	}
 
-	// Handle mouse events for dragging
-	const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+	// Курсор приходит в CSS-пикселях, а точки посчитаны в координатах битмапа
+	// (400x400). Канвас растянут через w-full, поэтому без этого коэффициента
+	// промах равен отношению размеров — точка не следует за курсором.
+	const toCanvasCoords = (e: React.PointerEvent<HTMLCanvasElement>) => {
 		const canvas = canvasRef.current
-		if (!canvas) return
+		if (!canvas) return null
 
 		const rect = canvas.getBoundingClientRect()
-		const x = e.clientX - rect.left - padding
-		const y = e.clientY - rect.top - padding
+		const scaleX = canvasSize.width / rect.width
+		const scaleY = canvasSize.height / rect.height
 
-		const handles = getHandlePositions(gridSize, gridSize, curve)
-
-		// Check if clicking on P1
-		const p1Dist = Math.sqrt(
-			Math.pow(x - handles.p1.x, 2) + Math.pow(y - handles.p1.y, 2)
-		)
-		if (p1Dist < 15) {
-			isDraggingRef.current = 'p1'
-			return
-		}
-
-		// Check if clicking on P2
-		const p2Dist = Math.sqrt(
-			Math.pow(x - handles.p2.x, 2) + Math.pow(y - handles.p2.y, 2)
-		)
-		if (p2Dist < 15) {
-			isDraggingRef.current = 'p2'
-			return
+		return {
+			x: (e.clientX - rect.left) * scaleX - padding,
+			y: (e.clientY - rect.top) * scaleY - padding
 		}
 	}
 
-	const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-		if (!isDraggingRef.current) return
+	const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		const point = toCanvasCoords(e)
+		if (!point) return
 
-		const canvas = canvasRef.current
-		if (!canvas) return
+		const handles = getHandlePositions(gridSize, gridSize, curve)
+		const hit = (h: { x: number; y: number }) =>
+			Math.hypot(point.x - h.x, point.y - h.y) < 20
 
-		const rect = canvas.getBoundingClientRect()
-		const x = e.clientX - rect.left - padding
-		const y = e.clientY - rect.top - padding
+		const target = hit(handles.p1) ? 'p1' : hit(handles.p2) ? 'p2' : null
+		if (!target) return
 
-		const newCurve = updateCurveFromHandle(
-			isDraggingRef.current,
-			x,
-			y,
-			gridSize,
-			gridSize,
-			curve
+		// Захват указателя: перетаскивание продолжается, даже если курсор
+		// вышел за пределы канваса
+		e.currentTarget.setPointerCapture(e.pointerId)
+		setDragging(target)
+	}
+
+	const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		if (!dragging) return
+
+		const point = toCanvasCoords(e)
+		if (!point) return
+
+		setCurve(
+			updateCurveFromHandle(
+				dragging,
+				point.x,
+				point.y,
+				gridSize,
+				gridSize,
+				curve
+			)
 		)
-
-		setCurve(newCurve)
 		setSelectedPreset('custom')
 	}
 
-	const handleMouseUp = () => {
-		isDraggingRef.current = null
+	const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		if (!dragging) return
+		e.currentTarget.releasePointerCapture(e.pointerId)
+		setDragging(null)
 	}
 
 	// Handle preset change
@@ -382,241 +378,254 @@ export default function BezierCurvePage() {
 	// CSS output
 	const cssOutput = formatCubicBezier(curve)
 	const cssTransition = `transition: all ${duration}s ${cssOutput}`
-	const cssAnimation = `animation-timing-function: ${cssOutput}`
+	const tailwindClass = `transition-all duration-[${duration * 1000}ms] ease-[${cssOutput.replace(/\s+/g, '_')}]`
 
 	return (
-		<div className='space-y-6'>
-			{/* Main Editor Card */}
-			<Card>
-				<CardHeader className='pb-4'>
-					<div className='flex-col md:flex-row gap-2 flex items-start justify-between'>
-						<div>
-							<CardTitle className='text-2xl'>Генератор кривых Безье</CardTitle>
-							<CardDescription className='mt-2'>
-								Создавайте плавные анимации с помощью кривых cubic-bezier
-							</CardDescription>
-						</div>
-						<div className='flex gap-2'>
-							<Button
-								onClick={toggleAnimation}
-								variant={isPlaying ? 'default' : 'outline'}
-								size='lg'
-							>
-								{isPlaying ? (
-									<>
-										<Pause className='w-4 h-4 mr-2' />
-										Пауза
-									</>
-								) : (
-									<>
-										<Play className='w-4 h-4 mr-2' />
-										Воспроизвести
-									</>
-								)}
-							</Button>
-							<Button onClick={resetCurve} variant='outline' size='lg'>
-								<RotateCcw className='w-4 h-4' />
-							</Button>
-						</div>
+		<div className='max-w-7xl mx-auto space-y-6'>
+			<Card className='space-y-8 p-6 sm:p-8'>
+				{/* Пресеты — ряд наверху, как в остальных CSS-тулах */}
+				<div className='flex flex-wrap items-center gap-2'>
+					{Object.entries(EASING_PRESETS).map(([key, preset]) => (
+						<Button
+							key={key}
+							onClick={() => handlePresetChange(key)}
+							variant={selectedPreset === key ? 'default' : 'outline'}
+							size='sm'
+							className='cursor-pointer'
+						>
+							{preset.name}
+						</Button>
+					))}
+					{selectedPreset === 'custom' && (
+						<Badge variant='secondary'>Своя кривая</Badge>
+					)}
+
+					<div className='ml-auto flex items-center gap-2'>
+						<Button
+							onClick={toggleAnimation}
+							variant={isPlaying ? 'secondary' : 'default'}
+							size='sm'
+							className='cursor-pointer gap-2'
+						>
+							{isPlaying ? (
+								<>
+									<Pause className='h-4 w-4' />
+									Пауза
+								</>
+							) : (
+								<>
+									<Play className='h-4 w-4' />
+									Воспроизвести
+								</>
+							)}
+						</Button>
+						<Button
+							onClick={resetCurve}
+							variant='ghost'
+							size='sm'
+							className='cursor-pointer gap-2'
+						>
+							<RotateCcw className='h-4 w-4' />
+							Сброс
+						</Button>
 					</div>
-				</CardHeader>
-				<CardContent>
-					<div className='grid gap-6 lg:grid-cols-[420px_1fr]'>
-						{/* Canvas Section */}
-						<div className='space-y-4'>
-							<div className='relative'>
-								<canvas
-									ref={canvasRef}
-									width={canvasSize.width}
-									height={canvasSize.height}
-									className='w-full border-2 rounded-xl cursor-crosshair bg-white dark:bg-gray-950 hover:border-primary/50 transition-all shadow-sm'
-									onMouseDown={handleMouseDown}
-									onMouseMove={handleMouseMove}
-									onMouseUp={handleMouseUp}
-									onMouseLeave={handleMouseUp}
-								/>
-								{isDraggingRef.current && (
-									<div className='absolute top-3 left-3 text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-md font-medium shadow-lg'>
-										Редактирование {isDraggingRef.current.toUpperCase()}
+				</div>
+
+				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
+					{/* Кривая */}
+					<div className='space-y-4'>
+						<div className='relative'>
+							<canvas
+								ref={canvasRef}
+								style={{
+									width: `${canvasSize.width}px`,
+									height: `${canvasSize.height}px`,
+									maxWidth: '100%',
+									aspectRatio: '1 / 1'
+								}}
+								className='w-full cursor-grab touch-none rounded-xl border bg-white active:cursor-grabbing dark:bg-gray-950'
+								onPointerDown={handlePointerDown}
+								onPointerMove={handlePointerMove}
+								onPointerUp={handlePointerUp}
+								onPointerCancel={handlePointerUp}
+							/>
+							{dragging && (
+								<div className='absolute top-3 left-3 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground'>
+									Перетаскивание {dragging.toUpperCase()}
+								</div>
+							)}
+						</div>
+						<p className='text-xs text-muted-foreground'>
+							Тяните точки P1 и P2 мышью — или задайте координаты вручную
+							справа.
+						</p>
+					</div>
+
+					{/* Параметры */}
+					<div className='space-y-6'>
+						<div>
+							<div className='flex items-center justify-between'>
+								<Label className='text-sm'>Длительность анимации</Label>
+								<span className='font-mono text-sm'>
+									{duration.toFixed(1)}s
+								</span>
+							</div>
+							<Slider
+								value={[duration]}
+								onValueChange={([v]) => setDuration(v)}
+								min={0.1}
+								max={5}
+								step={0.1}
+								className='mt-2'
+							/>
+						</div>
+
+						<div className='space-y-3'>
+							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
+								Контрольные точки
+							</h3>
+							<div className='grid grid-cols-2 gap-4'>
+								{(
+									[
+										{ key: 'p1', label: 'Точка P1' },
+										{ key: 'p2', label: 'Точка P2' }
+									] as const
+								).map(({ key, label }) => (
+									<div
+										key={key}
+										className={cn(
+											'space-y-3 rounded-lg border p-4 transition-colors',
+											dragging === key ? 'border-primary bg-primary/5' : ''
+										)}
+									>
+										<Label className='text-sm font-medium'>{label}</Label>
+										<div className='grid grid-cols-2 gap-2'>
+											<div className='space-y-1.5'>
+												<Label className='text-xs text-muted-foreground'>
+													X
+												</Label>
+												<Input
+													type='number'
+													value={curve[key].x.toFixed(2)}
+													onChange={e =>
+														handleManualInput(
+															`${key}x` as 'p1x' | 'p2x',
+															e.target.value
+														)
+													}
+													min='0'
+													max='1'
+													step='0.01'
+													className='h-9 font-mono text-sm'
+												/>
+											</div>
+											<div className='space-y-1.5'>
+												<Label className='text-xs text-muted-foreground'>
+													Y
+												</Label>
+												<Input
+													type='number'
+													value={curve[key].y.toFixed(2)}
+													onChange={e =>
+														handleManualInput(
+															`${key}y` as 'p1y' | 'p2y',
+															e.target.value
+														)
+													}
+													min='-2'
+													max='2'
+													step='0.01'
+													className='h-9 font-mono text-sm'
+												/>
+											</div>
+										</div>
 									</div>
-								)}
+								))}
 							</div>
 						</div>
 
-						{/* Controls Section */}
-						<div className='space-y-6'>
-							{/* Duration Control */}
-							<div className='p-4 border rounded-lg bg-muted/30 space-y-3'>
-								<div className='flex items-center justify-between'>
-									<Label className='text-sm font-semibold'>
-										Длительность анимации
+						{/* Вывод как в grid: CSS и Tailwind рядом */}
+						<div className='grid gap-4 md:grid-cols-2'>
+							<div>
+								<div className='mb-2 flex items-center justify-between'>
+									<Label className='text-sm text-muted-foreground'>CSS</Label>
+									<Button
+										onClick={() => copyToClipboard(cssTransition)}
+										variant='ghost'
+										size='sm'
+										className='h-8 cursor-pointer px-2'
+										aria-label='Скопировать CSS'
+									>
+										<Copy className='h-3 w-3' />
+									</Button>
+								</div>
+								<div className='rounded-lg bg-secondary p-4'>
+									<code className='font-mono text-xs break-all text-secondary-foreground'>
+										{cssTransition};
+									</code>
+								</div>
+							</div>
+
+							<div>
+								<div className='mb-2 flex items-center justify-between'>
+									<Label className='text-sm text-muted-foreground'>
+										Tailwind CSS
 									</Label>
-									<span className='text-sm font-mono bg-background px-2 py-1 rounded border'>
-										{duration.toFixed(1)}s
+									<Button
+										onClick={() => copyToClipboard(tailwindClass)}
+										variant='ghost'
+										size='sm'
+										className='h-8 cursor-pointer px-2'
+										aria-label='Скопировать Tailwind CSS'
+									>
+										<Copy className='h-3 w-3' />
+									</Button>
+								</div>
+								<div className='rounded-lg bg-secondary p-4'>
+									<code className='font-mono text-xs break-all text-secondary-foreground'>
+										{tailwindClass}
+									</code>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Предпросмотр: как кривая ощущается в движении */}
+				<div className='space-y-4 border-t pt-8'>
+					<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
+						Предпросмотр
+					</h3>
+					<div className='grid gap-4 md:grid-cols-3'>
+						{[
+							{
+								label: 'Движение',
+								hint: '0 → 200px',
+								style: { transform: `translateX(${progress * 200}px)` }
+							},
+							{
+								label: 'Масштаб',
+								hint: '0.5 → 1.0',
+								style: { transform: `scale(${0.5 + progress * 0.5})` }
+							},
+							{
+								label: 'Вращение',
+								hint: '0° → 360°',
+								style: { transform: `rotate(${progress * 360}deg)` }
+							}
+						].map(demo => (
+							<div key={demo.label} className='space-y-2'>
+								<div className='flex items-center justify-between text-sm'>
+									<span>{demo.label}</span>
+									<span className='text-xs text-muted-foreground'>
+										{demo.hint}
 									</span>
 								</div>
-								<Slider
-									value={[duration]}
-									onValueChange={([v]) => setDuration(v)}
-									min={0.1}
-									max={5}
-									step={0.1}
-									className='w-full'
-								/>
-							</div>
-
-							{/* Presets */}
-							<div className='space-y-3'>
-								<Label className='text-base font-semibold'>
-									Готовые варианты
-								</Label>
-								<Select
-									value={selectedPreset}
-									onValueChange={handlePresetChange}
-								>
-									<SelectTrigger className='h-11'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='custom'>🎨 Своя кривая</SelectItem>
-										{Object.entries(EASING_PRESETS).map(([key, preset]) => (
-											<SelectItem key={key} value={key}>
-												{preset.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-
-							{/* Manual Control Points */}
-							<div className='space-y-3'>
-								<Label className='text-base font-semibold'>
-									Контрольные точки
-								</Label>
-								<div className='grid grid-cols-2 gap-3'>
-									{/* P1 */}
-									<div className='p-4 border-2 rounded-lg bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800 space-y-3'>
-										<div className='flex items-center gap-2'>
-											<div className='w-3 h-3 rounded-full bg-purple-600' />
-											<Label className='text-sm font-semibold text-purple-700 dark:text-purple-300'>
-												Точка P1
-											</Label>
-										</div>
-										<div className='grid grid-cols-2 gap-2'>
-											<div className='space-y-1.5'>
-												<Label className='text-xs text-muted-foreground'>
-													X
-												</Label>
-												<Input
-													type='number'
-													value={curve.p1.x.toFixed(2)}
-													onChange={e =>
-														handleManualInput('p1x', e.target.value)
-													}
-													min='0'
-													max='1'
-													step='0.01'
-													className='h-9 font-mono text-sm'
-												/>
-											</div>
-											<div className='space-y-1.5'>
-												<Label className='text-xs text-muted-foreground'>
-													Y
-												</Label>
-												<Input
-													type='number'
-													value={curve.p1.y.toFixed(2)}
-													onChange={e =>
-														handleManualInput('p1y', e.target.value)
-													}
-													min='-2'
-													max='2'
-													step='0.01'
-													className='h-9 font-mono text-sm'
-												/>
-											</div>
-										</div>
-									</div>
-
-									{/* P2 */}
-									<div className='p-4 border-2 rounded-lg bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800 space-y-3'>
-										<div className='flex items-center gap-2'>
-											<div className='w-3 h-3 rounded-full bg-purple-600' />
-											<Label className='text-sm font-semibold text-purple-700 dark:text-purple-300'>
-												Точка P2
-											</Label>
-										</div>
-										<div className='grid grid-cols-2 gap-2'>
-											<div className='space-y-1.5'>
-												<Label className='text-xs text-muted-foreground'>
-													X
-												</Label>
-												<Input
-													type='number'
-													value={curve.p2.x.toFixed(2)}
-													onChange={e =>
-														handleManualInput('p2x', e.target.value)
-													}
-													min='0'
-													max='1'
-													step='0.01'
-													className='h-9 font-mono text-sm'
-												/>
-											</div>
-											<div className='space-y-1.5'>
-												<Label className='text-xs text-muted-foreground'>
-													Y
-												</Label>
-												<Input
-													type='number'
-													value={curve.p2.y.toFixed(2)}
-													onChange={e =>
-														handleManualInput('p2y', e.target.value)
-													}
-													min='-2'
-													max='2'
-													step='0.01'
-													className='h-9 font-mono text-sm'
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-
-			{/* Preview Card */}
-			<Card>
-				<CardHeader className='pb-4'>
-					<div>
-						<CardTitle className='flex items-center gap-2'>
-							<Play className='w-5 h-5' />
-							Предпросмотр анимации
-						</CardTitle>
-						<CardDescription className='mt-1'>
-							Посмотрите как работает кривая с разными трансформациями
-						</CardDescription>
-					</div>
-				</CardHeader>
-				<CardContent>
-					<div className='grid gap-4 md:grid-cols-3'>
-						{/* translateX */}
-						<div className='space-y-3 p-4 border rounded-lg bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20'>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm font-medium'>Движение</span>
-								<code className='text-xs bg-background/80 px-2 py-1 rounded border font-mono'>
-									translateX
-								</code>
-							</div>
-							<div className='relative h-20 bg-white/50 dark:bg-gray-900/50 rounded-lg overflow-hidden border'>
-								<div className='absolute inset-2 flex items-center'>
+								<div className='flex h-20 items-center rounded-lg bg-muted/40 px-3'>
 									<div
-										className='w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg shadow-lg flex-shrink-0'
+										className='h-10 w-10 shrink-0 rounded-lg bg-primary'
 										style={{
-											transform: `translateX(${progress * 200}px)`,
+											...demo.style,
 											transition: isPlaying
 												? `transform ${duration}s ${cssOutput}`
 												: 'none'
@@ -624,208 +633,9 @@ export default function BezierCurvePage() {
 									/>
 								</div>
 							</div>
-							<div className='text-xs text-muted-foreground text-center'>
-								0px → 200px
-							</div>
-						</div>
-
-						{/* scale */}
-						<div className='space-y-3 p-4 border rounded-lg bg-gradient-to-br from-blue-50/50 to-cyan-50/50 dark:from-blue-950/20 dark:to-cyan-950/20'>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm font-medium'>Масштаб</span>
-								<code className='text-xs bg-background/80 px-2 py-1 rounded border font-mono'>
-									scale
-								</code>
-							</div>
-							<div className='relative h-20 bg-white/50 dark:bg-gray-900/50 rounded-lg overflow-hidden flex items-center justify-center border'>
-								<div
-									className='w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg shadow-lg'
-									style={{
-										transform: `scale(${0.5 + progress * 0.5})`,
-										transition: isPlaying
-											? `transform ${duration}s ${cssOutput}`
-											: 'none'
-									}}
-								/>
-							</div>
-							<div className='text-xs text-muted-foreground text-center'>
-								0.5 → 1.0
-							</div>
-						</div>
-
-						{/* rotate */}
-						<div className='space-y-3 p-4 border rounded-lg bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20'>
-							<div className='flex items-center justify-between'>
-								<span className='text-sm font-medium'>Вращение</span>
-								<code className='text-xs bg-background/80 px-2 py-1 rounded border font-mono'>
-									rotate
-								</code>
-							</div>
-							<div className='relative h-20 bg-white/50 dark:bg-gray-900/50 rounded-lg overflow-hidden flex items-center justify-center border'>
-								<div
-									className='w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-lg'
-									style={{
-										transform: `rotate(${progress * 360}deg)`,
-										transition: isPlaying
-											? `transform ${duration}s ${cssOutput}`
-											: 'none'
-									}}
-								/>
-							</div>
-							<div className='text-xs text-muted-foreground text-center'>
-								0° → 360°
-							</div>
-						</div>
+						))}
 					</div>
-				</CardContent>
-			</Card>
-
-			{/* CSS Output Card */}
-			<Card>
-				<CardHeader className='pb-4'>
-					<CardTitle className='text-lg'>Готовый CSS код</CardTitle>
-					<CardDescription>
-						Скопируйте значение для использования в ваших стилях
-					</CardDescription>
-				</CardHeader>
-				<CardContent className='space-y-6'>
-					{/* cubic-bezier value */}
-					<div className='space-y-3'>
-						<div className='flex items-center justify-between'>
-							<Label className='text-sm font-medium'>cubic-bezier</Label>
-						</div>
-						<div className='grid gap-3'>
-							{/* CSS Value */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-xs text-muted-foreground'>CSS</Label>
-									<Button
-										onClick={() => copyToClipboard(cssOutput)}
-										variant='ghost'
-										size='sm'
-										className='h-7 px-2'
-									>
-										<Copy className='w-3 h-3' />
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-3'>
-									<code className='text-secondary-foreground font-mono text-sm break-all'>
-										{cssOutput}
-									</code>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					{/* transition */}
-					<div className='space-y-3'>
-						<div className='flex items-center justify-between'>
-							<Label className='text-sm font-medium'>CSS Transition</Label>
-						</div>
-						<div className='grid gap-3'>
-							{/* CSS Value */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-xs text-muted-foreground'>CSS</Label>
-									<Button
-										onClick={() => copyToClipboard(cssTransition)}
-										variant='ghost'
-										size='sm'
-										className='h-7 px-2'
-									>
-										<Copy className='w-3 h-3' />
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-3'>
-									<code className='text-secondary-foreground font-mono text-sm break-all'>
-										{cssTransition}
-									</code>
-								</div>
-							</div>
-
-							{/* Tailwind Value */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-xs text-muted-foreground'>
-										Tailwind CSS
-									</Label>
-									<Button
-										onClick={() =>
-											copyToClipboard(
-												`transition-all duration-[${duration * 1000}ms] ease-[${cssOutput}]`
-											)
-										}
-										variant='ghost'
-										size='sm'
-										className='h-7 px-2'
-									>
-										<Copy className='w-3 h-3' />
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-3'>
-									<code className='text-secondary-foreground font-mono text-sm break-all'>
-										transition-all duration-[{duration * 1000}ms] ease-[
-										{cssOutput}]
-									</code>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					{/* animation */}
-					<div className='space-y-3'>
-						<div className='flex items-center justify-between'>
-							<Label className='text-sm font-medium'>CSS Animation</Label>
-						</div>
-						<div className='grid gap-3'>
-							{/* CSS Value */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-xs text-muted-foreground'>CSS</Label>
-									<Button
-										onClick={() => copyToClipboard(cssAnimation)}
-										variant='ghost'
-										size='sm'
-										className='h-7 px-2'
-									>
-										<Copy className='w-3 h-3' />
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-3'>
-									<code className='text-secondary-foreground font-mono text-sm break-all'>
-										{cssAnimation}
-									</code>
-								</div>
-							</div>
-
-							{/* Tailwind Value */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-xs text-muted-foreground'>
-										Tailwind CSS
-									</Label>
-									<Button
-										onClick={() =>
-											copyToClipboard(
-												`animate-[custom_${duration}s_ease-[${cssOutput}]]`
-											)
-										}
-										variant='ghost'
-										size='sm'
-										className='h-7 px-2'
-									>
-										<Copy className='w-3 h-3' />
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-3'>
-									<code className='text-secondary-foreground font-mono text-sm break-all'>
-										animate-[custom_{duration}s_ease-[{cssOutput}]]
-									</code>
-								</div>
-							</div>
-						</div>
-					</div>
-				</CardContent>
+				</div>
 			</Card>
 		</div>
 	)
