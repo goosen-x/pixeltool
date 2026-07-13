@@ -544,103 +544,103 @@ export default function BezierCurvePage() {
 							</div>
 						</div>
 
-						{/* Вывод как в grid: CSS и Tailwind рядом */}
-						<div className='grid gap-4 md:grid-cols-2'>
-							<div>
-								<div className='mb-2 flex items-center justify-between'>
-									<Label className='text-sm text-muted-foreground'>CSS</Label>
-									<Button
-										onClick={() => copyToClipboard(cssTransition)}
-										variant='ghost'
-										size='sm'
-										className='h-8 cursor-pointer px-2'
-										aria-label='Скопировать CSS'
-									>
-										<Copy className='h-3 w-3' />
-									</Button>
-								</div>
-								<div className='rounded-lg bg-secondary p-4'>
-									<code className='font-mono text-xs break-all text-secondary-foreground'>
-										{cssTransition};
-									</code>
-								</div>
-							</div>
-
-							<div>
-								<div className='mb-2 flex items-center justify-between'>
-									<Label className='text-sm text-muted-foreground'>
-										Tailwind CSS
-									</Label>
-									<Button
-										onClick={() => copyToClipboard(tailwindClass)}
-										variant='ghost'
-										size='sm'
-										className='h-8 cursor-pointer px-2'
-										aria-label='Скопировать Tailwind CSS'
-									>
-										<Copy className='h-3 w-3' />
-									</Button>
-								</div>
-								<div className='rounded-lg bg-secondary p-4'>
-									<code className='font-mono text-xs break-all text-secondary-foreground'>
-										{tailwindClass}
-									</code>
-								</div>
+						{/* Предпросмотр: как кривая ощущается в движении */}
+						<div className='space-y-4'>
+							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
+								Предпросмотр
+							</h3>
+							<div className='grid gap-4 grid-cols-1'>
+								{[
+									{
+										label: 'Движение',
+										hint: '0 → 200px',
+										from: 'translateX(0)',
+										to: 'translateX(200px)'
+									},
+									{
+										label: 'Масштаб',
+										hint: '0.5 → 1.0',
+										from: 'scale(0.5)',
+										to: 'scale(1)'
+									},
+									{
+										label: 'Вращение',
+										hint: '0° → 360°',
+										from: 'rotate(0deg)',
+										to: 'rotate(360deg)'
+									}
+								].map(demo => (
+									<div key={demo.label} className='space-y-2'>
+										<div className='flex items-center justify-between text-sm'>
+											<span>{demo.label}</span>
+											<span className='text-xs text-muted-foreground'>
+												{demo.hint}
+											</span>
+										</div>
+										<div className='flex h-20 items-center rounded-lg bg-muted/40 px-3'>
+											{/* Анимацию ведёт CSS: одно переключение значения и переход
+											    с нужной кривой. Раньше transform ещё и пересчитывался
+											    каждый кадр из rAF — переход и React дрались за одно
+											    свойство, движение выходило рваным, а кривая не читалась */}
+											<div
+												className='h-10 w-10 shrink-0 rounded-lg bg-primary'
+												style={{
+													transform: isPlaying ? demo.to : demo.from,
+													transition: isPlaying
+														? `transform ${duration}s ${cssOutput}`
+														: 'none'
+												}}
+											/>
+										</div>
+									</div>
+								))}
 							</div>
 						</div>
 					</div>
 				</div>
 
-				{/* Предпросмотр: как кривая ощущается в движении */}
-				<div className='space-y-4 border-t pt-8'>
-					<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
-						Предпросмотр
-					</h3>
-					<div className='grid gap-4 md:grid-cols-3'>
-						{[
-							{
-								label: 'Движение',
-								hint: '0 → 200px',
-								from: 'translateX(0)',
-								to: 'translateX(200px)'
-							},
-							{
-								label: 'Масштаб',
-								hint: '0.5 → 1.0',
-								from: 'scale(0.5)',
-								to: 'scale(1)'
-							},
-							{
-								label: 'Вращение',
-								hint: '0° → 360°',
-								from: 'rotate(0deg)',
-								to: 'rotate(360deg)'
-							}
-						].map(demo => (
-							<div key={demo.label} className='space-y-2'>
-								<div className='flex items-center justify-between text-sm'>
-									<span>{demo.label}</span>
-									<span className='text-xs text-muted-foreground'>
-										{demo.hint}
-									</span>
-								</div>
-								<div className='flex h-20 items-center rounded-lg bg-muted/40 px-3'>
-									{/* Анимацию ведёт CSS: одно переключение значения и переход
-									    с нужной кривой. Раньше transform ещё и пересчитывался
-									    каждый кадр из rAF — переход и React дрались за одно
-									    свойство, движение выходило рваным, а кривая не читалась */}
-									<div
-										className='h-10 w-10 shrink-0 rounded-lg bg-primary'
-										style={{
-											transform: isPlaying ? demo.to : demo.from,
-											transition: isPlaying
-												? `transform ${duration}s ${cssOutput}`
-												: 'none'
-										}}
-									/>
-								</div>
-							</div>
-						))}
+				{/* Готовый код — во всю ширину: длинным значениям нужен простор */}
+				<div className='grid gap-4 border-t pt-8 md:grid-cols-2'>
+					<div>
+						<div className='mb-2 flex items-center justify-between'>
+							<Label className='text-sm text-muted-foreground'>CSS</Label>
+							<Button
+								onClick={() => copyToClipboard(cssTransition)}
+								variant='ghost'
+								size='sm'
+								className='h-8 cursor-pointer px-2'
+								aria-label='Скопировать CSS'
+							>
+								<Copy className='h-3 w-3' />
+							</Button>
+						</div>
+						<div className='rounded-lg bg-secondary p-4'>
+							<code className='font-mono text-xs break-all text-secondary-foreground'>
+								{cssTransition};
+							</code>
+						</div>
+					</div>
+
+					<div>
+						<div className='mb-2 flex items-center justify-between'>
+							<Label className='text-sm text-muted-foreground'>
+								Tailwind CSS
+							</Label>
+							<Button
+								onClick={() => copyToClipboard(tailwindClass)}
+								variant='ghost'
+								size='sm'
+								className='h-8 cursor-pointer px-2'
+								aria-label='Скопировать Tailwind CSS'
+							>
+								<Copy className='h-3 w-3' />
+							</Button>
+						</div>
+						<div className='rounded-lg bg-secondary p-4'>
+							<code className='font-mono text-xs break-all text-secondary-foreground'>
+								{tailwindClass}
+							</code>
+						</div>
 					</div>
 				</div>
 			</Card>
