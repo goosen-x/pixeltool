@@ -544,46 +544,61 @@ export default function BezierCurvePage() {
 							</div>
 						</div>
 
-						{/* Предпросмотр: как кривая ощущается в движении */}
-						<div className='space-y-4'>
+						{/* Предпросмотр: как кривая ощущается в движении.
+						    Анимацию ведёт CSS — одно переключение значения и переход
+						    с нужной кривой; rAF остался только для точки на графике */}
+						<div className='space-y-3'>
 							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
 								Предпросмотр
 							</h3>
-							<div className='grid gap-4 grid-cols-1'>
+
+							{/* Движению нужна вся ширина — оно едет на 200px */}
+							<div className='space-y-1.5'>
+								<div className='flex items-center justify-between text-sm'>
+									<span>Движение</span>
+									<span className='text-xs text-muted-foreground'>
+										0 → 200px
+									</span>
+								</div>
+								<div className='flex h-14 items-center rounded-lg bg-muted/40 px-3'>
+									<div
+										className='h-8 w-8 shrink-0 rounded-lg bg-primary'
+										style={{
+											transform: isPlaying ? 'translateX(200px)' : 'none',
+											transition: isPlaying
+												? `transform ${duration}s ${cssOutput}`
+												: 'none'
+										}}
+									/>
+								</div>
+							</div>
+
+							{/* Масштаб и вращение меняются на месте — им хватает узкой ячейки */}
+							<div className='grid grid-cols-2 gap-3'>
 								{[
 									{
-										label: 'Движение',
-										hint: '0 → 200px',
-										from: 'translateX(0)',
-										to: 'translateX(200px)'
-									},
-									{
 										label: 'Масштаб',
-										hint: '0.5 → 1.0',
+										hint: '0.5 → 1',
 										from: 'scale(0.5)',
 										to: 'scale(1)'
 									},
 									{
 										label: 'Вращение',
-										hint: '0° → 360°',
+										hint: '0 → 360°',
 										from: 'rotate(0deg)',
 										to: 'rotate(360deg)'
 									}
 								].map(demo => (
-									<div key={demo.label} className='space-y-2'>
+									<div key={demo.label} className='space-y-1.5'>
 										<div className='flex items-center justify-between text-sm'>
 											<span>{demo.label}</span>
 											<span className='text-xs text-muted-foreground'>
 												{demo.hint}
 											</span>
 										</div>
-										<div className='flex h-20 items-center rounded-lg bg-muted/40 px-3'>
-											{/* Анимацию ведёт CSS: одно переключение значения и переход
-											    с нужной кривой. Раньше transform ещё и пересчитывался
-											    каждый кадр из rAF — переход и React дрались за одно
-											    свойство, движение выходило рваным, а кривая не читалась */}
+										<div className='flex h-14 items-center justify-center rounded-lg bg-muted/40'>
 											<div
-												className='h-10 w-10 shrink-0 rounded-lg bg-primary'
+												className='h-8 w-8 rounded-lg bg-primary'
 												style={{
 													transform: isPlaying ? demo.to : demo.from,
 													transition: isPlaying
