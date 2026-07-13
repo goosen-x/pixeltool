@@ -4,10 +4,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import {
-	atomDark,
-	oneLight
-} from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useTheme } from 'next-themes'
 import markdownStyles from './markdown-styles.module.css'
 import { LiveCodeExample } from './live-code-example'
@@ -20,7 +17,6 @@ type Props = {
 export function PostBodyWithHighlight({ content }: Props) {
 	const { resolvedTheme } = useTheme()
 	const [mounted, setMounted] = useState(false)
-	const isDark = resolvedTheme === 'dark'
 
 	useEffect(() => {
 		setMounted(true)
@@ -135,24 +131,18 @@ export function PostBodyWithHighlight({ content }: Props) {
 							key={`code-${match.index}-${resolvedTheme}`}
 							className='my-6 rounded-lg overflow-hidden'
 						>
-							<div
-								className={`flex items-center justify-between px-4 py-2 border-b ${
-									isDark
-										? 'bg-slate-900 border-slate-800'
-										: 'bg-slate-100 border-slate-300'
-								}`}
-							>
+							{/* Блок кода всегда тёмный, в обеих темах. В светлой он ломался:
+							    globals.css принудительно красит .language-* в тёмный фон через
+							    !important, а подсветка подставляла светлую тему с тёмным
+							    текстом — получался тёмный фон с тёмными буквами */}
+							<div className='flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2'>
 								<div className='flex items-center gap-2'>
 									<div className='flex items-center gap-1.5'>
 										<div className='w-3 h-3 rounded-full bg-red-500/20' />
 										<div className='w-3 h-3 rounded-full bg-yellow-500/20' />
 										<div className='w-3 h-3 rounded-full bg-green-500/20' />
 									</div>
-									<span
-										className={`text-xs ml-2 ${
-											isDark ? 'text-slate-400' : 'text-slate-600'
-										}`}
-									>
+									<span className='ml-2 text-xs text-slate-400'>
 										{language}
 									</span>
 								</div>
@@ -160,24 +150,16 @@ export function PostBodyWithHighlight({ content }: Props) {
 									onClick={() => {
 										navigator.clipboard.writeText(code.trim())
 									}}
-									className={`text-xs transition-colors px-3 py-1 rounded ${
-										isDark
-											? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-											: 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-									}`}
+									className='cursor-pointer rounded px-3 py-1 text-xs text-slate-400 transition-colors hover:bg-slate-800 hover:text-slate-200'
 								>
-									Copy
+									Копировать
 								</button>
 							</div>
-							<div
-								style={{
-									background: isDark ? 'rgb(15 23 42)' : 'rgb(250 250 250)'
-								}}
-							>
+							<div style={{ background: 'rgb(15 23 42)' }}>
 								<SyntaxHighlighter
 									key={`syntax-${resolvedTheme}`}
 									language={language}
-									style={isDark ? atomDark : oneLight}
+									style={atomDark}
 									customStyle={{
 										margin: 0,
 										padding: '1.5rem',
@@ -189,7 +171,7 @@ export function PostBodyWithHighlight({ content }: Props) {
 									lineNumberStyle={{
 										minWidth: '3em',
 										paddingRight: '1em',
-										color: isDark ? 'rgb(100 116 139)' : 'rgb(148 163 184)',
+										color: 'rgb(100 116 139)',
 										userSelect: 'none'
 									}}
 								>
