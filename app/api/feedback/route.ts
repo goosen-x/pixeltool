@@ -33,22 +33,28 @@ export async function POST(request: NextRequest) {
 			url: request.headers.get('referer')
 		}
 
-		// Send to Telegram
+		// Раньше ошибка доставки глоталась, и запрос всё равно отвечал 200:
+		// человек видел «отзыв отправлен», а до нас ничего не доходило.
+		// Теперь провал доставки — это провал запроса, и он виден.
 		try {
 			await sendToTelegram(feedbackData)
 		} catch (telegramError) {
-			console.error('Failed to send to Telegram:', telegramError)
-			// Don't fail the request if Telegram fails
+			console.error('Не удалось доставить отзыв в Telegram:', telegramError)
+
+			return NextResponse.json(
+				{
+					error: 'Не удалось отправить отзыв. Попробуйте ещё раз.',
+					details:
+						telegramError instanceof Error
+							? telegramError.message
+							: String(telegramError)
+				},
+				{ status: 502 }
+			)
 		}
 
-		// Log for debugging
-		console.log('Feedback received:', feedbackData)
-
 		return NextResponse.json(
-			{
-				message: 'Feedback submitted successfully',
-				id: Date.now().toString() // In production, use proper ID generation
-			},
+			{ message: 'Feedback submitted successfully' },
 			{ status: 200 }
 		)
 	} catch (error) {
@@ -115,67 +121,77 @@ ${data.description}
 	// return response.json()
 }
 
+/**
+ * Telegram HTML вместо Markdown.
+ *
+ * С parse_mode: 'Markdown' и неэкранированным текстом любой отзыв, где есть
+ * `*`, `_`, `[` или обратная кавычка, Telegram отклонял с ошибкой разбора —
+ * то есть ровно те отзывы, где человек приводит код или путь. HTML требует
+ * экранировать всего три символа, и это надёжно.
+ */
+const escapeHtml = (value: unknown): string =>
+	String(value ?? '')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+
 async function sendToTelegram(data: any) {
 	const botToken = process.env.TELEGRAM_BOT_TOKEN
 	const chatId = process.env.TELEGRAM_CHAT_ID
 
 	if (!botToken || !chatId) {
-		console.warn('Telegram credentials not configured')
-		return
+		throw new Error('Telegram credentials not configured')
 	}
 
-	// Emoji по типу обратной связи
-	const typeEmoji = {
+	const typeEmoji: Record<string, string> = {
 		bug: '🐛',
 		feature: '💡',
 		general: '💬'
 	}
 
-	const emoji = typeEmoji[data.type as keyof typeof typeEmoji] || '📝'
+	const emoji = typeEmoji[data.type] || '📝'
 
-	// Форматируем сообщение с Telegram Markdown
-	const message = `
-${emoji} *Новая обратная связь: ${data.type.toUpperCase()}*
+	const lines = [
+		`${emoji} <b>Обратная связь: ${escapeHtml(data.type).toUpperCase()}</b>`,
+		'',
+		`<b>Заголовок</b>`,
+		escapeHtml(data.title),
+		'',
+		`<b>Описание</b>`,
+		escapeHtml(data.description),
+		''
+	]
 
-📌 *Заголовок:*
-${data.title}
+	if (data.email) lines.push(`<b>Email:</b> ${escapeHtml(data.email)}`)
+	if (data.widget) lines.push(`<b>Инструмент:</b> ${escapeHtml(data.widget)}`)
+	if (data.url) lines.push(`<b>Страница:</b> ${escapeHtml(data.url)}`)
 
-📝 *Описание:*
-${data.description}
+	lines.push(
+		`<b>Время:</b> ${escapeHtml(new Date(data.timestamp).toLocaleString('ru-RU'))}`
+	)
 
-${data.email ? `📧 *Email:* ${data.email}` : ''}
-${data.widget ? `🔧 *Виджет:* ${data.widget}` : ''}
-${data.url ? `🔗 *URL:* ${data.url}` : ''}
+	if (data.userAgent) {
+		lines.push(`<b>Браузер:</b> ${escapeHtml(data.userAgent.slice(0, 120))}`)
+	}
 
-🕐 *Время:* ${new Date(data.timestamp).toLocaleString('ru-RU')}
-${data.userAgent ? `💻 *User Agent:* ${data.userAgent.slice(0, 100)}...` : ''}
-	`.trim()
-
-	try {
-		const response = await fetch(
-			`https://api.telegram.org/bot${botToken}/sendMessage`,
-			{
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					chat_id: chatId,
-					text: message,
-					parse_mode: 'Markdown',
-					disable_web_page_preview: true
-				})
-			}
-		)
-
-		if (!response.ok) {
-			const errorData = await response.json()
-			throw new Error(
-				`Telegram API error: ${errorData.description || 'Unknown error'}`
-			)
+	const response = await fetch(
+		`https://api.telegram.org/bot${botToken}/sendMessage`,
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				chat_id: chatId,
+				text: lines.join('\n'),
+				parse_mode: 'HTML',
+				disable_web_page_preview: true
+			})
 		}
+	)
 
-		console.log('Feedback sent to Telegram successfully')
-	} catch (error) {
-		console.error('Error sending to Telegram:', error)
-		throw error
+	if (!response.ok) {
+		const errorData = await response.json().catch(() => ({}))
+		throw new Error(
+			`Telegram API error: ${errorData.description || response.status}`
+		)
 	}
 }
