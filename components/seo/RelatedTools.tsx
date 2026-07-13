@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
 import {
 	widgets,
 	getWidgetById,
@@ -40,22 +38,17 @@ export function RelatedTools({
 	}
 
 	return (
-		<Card className='mt-8 border-border/50 bg-background/60 backdrop-blur-sm'>
-			<CardHeader>
-				<CardTitle className='text-xl font-heading bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-					Похожие инструменты
-				</CardTitle>
-				<p className='text-sm text-muted-foreground'>
-					Другие полезные инструменты из той же категории
-				</p>
-			</CardHeader>
-			<CardContent>
-				<div className='grid gap-6 md:grid-cols-3'>
-					{relatedTools.map(widget => (
-						<ToolCard key={widget.id} widget={widget} className='h-full' />
-					))}
-				</div>
-			</CardContent>
-		</Card>
+		<section className='mt-12'>
+			{/* Тот же размер, что у h2 в обучающих блоках (*Guide.tsx) */}
+			<h2 className='text-2xl font-bold tracking-tight'>Похожие инструменты</h2>
+			<p className='mt-1 text-sm text-muted-foreground'>
+				Другие полезные инструменты из той же категории
+			</p>
+			<div className='mt-6 grid gap-6 md:grid-cols-3'>
+				{relatedTools.map(widget => (
+					<ToolCard key={widget.id} widget={widget} className='h-full' />
+				))}
+			</div>
+		</section>
 	)
 }
