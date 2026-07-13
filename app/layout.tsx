@@ -214,8 +214,6 @@ export const viewport = {
 }
 
 export default async function RootLayout({ children }: Readonly<Props>) {
-	if (!dev) console.log = () => undefined
-
 	return (
 		<html
 			lang='ru'

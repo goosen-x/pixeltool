@@ -24,10 +24,6 @@ export function PostBodyWithHighlight({ content }: Props) {
 
 	// Parse HTML and replace code blocks with syntax highlighted versions
 	const renderContent = () => {
-		console.log(
-			'PostBodyWithHighlight - Sample content:',
-			content.substring(0, 500)
-		)
 		// Regular expression to match code blocks - support both rehype-highlight and plain formats
 		const codeBlockRegex =
 			/<pre><code(?:\s+class="(?:language-)?(\w+)")?>([\s\S]*?)<\/code><\/pre>/g
