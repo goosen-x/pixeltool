@@ -48,7 +48,7 @@ const SAMPLES: Sample[] = [
 		label: 'Белый на жёлтом',
 		fg: '#ffffff',
 		bg: '#facc15',
-		ratio: '1.6:1',
+		ratio: '1.5:1',
 		verdict:
 			'Не проходит. Жёлтый кажется ярким, но контраста с белым почти нет',
 		ok: false

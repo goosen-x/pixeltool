@@ -75,6 +75,15 @@ const WCAG_GUIDELINES = {
 	uiComponentAA: 3
 }
 
+// WCAG задаёт порог крупного текста в пунктах: 18pt обычного или 14pt жирного.
+// Размер здесь везде в пикселях, поэтому переводим: 18pt = 24px, 14pt = 18.66px.
+const LARGE_TEXT_PX = 24
+const LARGE_TEXT_BOLD_PX = 18.66
+
+const isLargeText = (fontSize: number, fontWeight: 'normal' | 'bold'): boolean =>
+	fontSize >= LARGE_TEXT_PX ||
+	(fontWeight === 'bold' && fontSize >= LARGE_TEXT_BOLD_PX)
+
 export default function ColorContrastCheckerPage() {
 	const [foreground, setForeground] = useState('#000000')
 	const [background, setBackground] = useState('#ffffff')
@@ -89,7 +98,9 @@ export default function ColorContrastCheckerPage() {
 	// Helper functions
 	const hexToRgb = useCallback(
 		(hex: string): [number, number, number] | null => {
-			const result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex)
+			// \d, а не \\d: с экранированным бэкслешем класс превращался в
+			// [a-f, \, d] и не принимал цифры — любой цвет вроде #2563eb отваливался
+			const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
 			return result
 				? [
 						parseInt(result[1], 16),
@@ -195,8 +206,6 @@ export default function ColorContrastCheckerPage() {
 
 	const calculateContrast = useCallback(() => {
 		const ratio = getContrastRatio(foreground, background)
-		const isLargeText =
-			fontSize >= 18 || (fontSize >= 14 && fontWeight === 'bold')
 
 		const contrastResult: ContrastResult = {
 			ratio,
@@ -419,7 +428,7 @@ export default function ColorContrastCheckerPage() {
 							</div>
 
 							<div className='text-sm text-muted-foreground'>
-								{fontSize >= 18 || (fontSize >= 14 && fontWeight === 'bold') ? (
+								{isLargeText(fontSize, fontWeight) ? (
 									<Badge variant='secondary' className='gap-1'>
 										<Type className='w-3 h-3' />
 										Крупный текст
