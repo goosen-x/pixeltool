@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
-import { Badge } from '@/components/ui/badge'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
 	Select,
 	SelectContent,
@@ -20,23 +18,18 @@ import { Switch } from '@/components/ui/switch'
 import {
 	Play,
 	Pause,
-	RotateCcw,
 	Copy,
 	RefreshCw,
 	Plus,
 	Trash2,
-	Sparkles,
 	Zap,
 	Move,
-	Scale,
 	RotateCw,
 	Eye,
-	Palette,
 	Activity,
 	ArrowRight
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 
 type AnimationType = 'transform' | 'opacity' | 'color' | 'position' | 'custom'
 type EasingType =
@@ -132,20 +125,6 @@ const ANIMATION_PRESETS: AnimationPreset[] = [
 			{ id: '1', percentage: 0, properties: { transform: 'scale(1)' } },
 			{ id: '2', percentage: 50, properties: { transform: 'scale(1.1)' } },
 			{ id: '3', percentage: 100, properties: { transform: 'scale(1)' } }
-		]
-	},
-	{
-		name: 'Color Change',
-		type: 'color',
-		icon: Palette,
-		duration: 3,
-		easing: 'linear',
-		infinite: true,
-		keyframes: [
-			{ id: '1', percentage: 0, properties: { backgroundColor: '#3b82f6' } },
-			{ id: '2', percentage: 33, properties: { backgroundColor: '#ef4444' } },
-			{ id: '3', percentage: 66, properties: { backgroundColor: '#10b981' } },
-			{ id: '4', percentage: 100, properties: { backgroundColor: '#3b82f6' } }
 		]
 	},
 	{
