@@ -78,7 +78,7 @@ export function ToolCard({
 								<Badge
 									key={tag}
 									variant='secondary'
-									className='text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors'
+									className='text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 bg-muted text-muted-foreground border-transparent font-normal'
 								>
 									{searchQuery ? highlightText(tag, searchQuery) : tag}
 								</Badge>
