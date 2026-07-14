@@ -17,9 +17,9 @@ export const Footer = () => {
 			title: 'Инструменты',
 			links: [
 				{ label: 'Все инструменты', href: '/tools' },
-				{ label: 'CSS инструменты', href: '/tools?category=css' },
-				{ label: 'HTML инструменты', href: '/tools?category=html' },
-				{ label: 'JavaScript инструменты', href: '/tools?category=javascript' }
+				{ label: 'CSS инструменты', href: '/tools/css' },
+				{ label: 'HTML инструменты', href: '/tools/html' },
+				{ label: 'JavaScript инструменты', href: '/tools/javascript' }
 			]
 		},
 		company: {

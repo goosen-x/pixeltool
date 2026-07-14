@@ -1,397 +1,118 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
-
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Search, X, Grid3X3, List } from 'lucide-react'
+import { useMemo } from 'react'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Search } from 'lucide-react'
 import { widgets, widgetCategories, type Widget } from '@/lib/constants/widgets'
-import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
-import { useAnalytics } from '@/lib/hooks/useAnalytics'
+import { filterWidgets } from '@/lib/utils/filter-widgets'
 import { highlightText } from '@/lib/utils/highlightText'
-import { cn } from '@/lib/utils'
 import { ToolCard } from './ToolCard'
 
-interface ProjectCard {
-	id: string
-	title: string
-	description: string
-	icon: React.ReactNode
-	gradient: string
-	path: string
+interface Props {
+	/** Категорию задаёт страница; внутри компонента она не меняется. */
 	category: string
-	tags: string[]
-	widget: Widget
+	search: string
+	viewMode: 'grid' | 'list'
 }
 
-interface EnhancedWidgetSearchProps {
-	/**
-	 * На /tools заголовок, строка поиска и чипсы категорий живут в шапке
-	 * (CategoryHero), а этот компонент показывает только результаты и карточки.
-	 * Без пропа он работает как раньше — со своим заголовком, поиском и
-	 * фильтрами, на собственном состоянии.
-	 */
-	embedded?: boolean
-	category?: string
-	onCategoryChange?: (category: string) => void
-	search?: string
-	onSearchChange?: (query: string) => void
-	viewMode?: 'grid' | 'list'
-}
-
-export function EnhancedWidgetSearch({
-	embedded = false,
-	category,
-	onCategoryChange,
-	search,
-	onSearchChange,
-	viewMode: viewModeProp
-}: EnhancedWidgetSearchProps = {}) {
-	const [internalSearch, setInternalSearch] = useState('')
-	const [internalCategory, setInternalCategory] = useState<string>('')
-	const [internalViewMode, setInternalViewMode] = useState<'grid' | 'list'>(
-		'grid'
+/**
+ * Список инструментов под шапкой каталога.
+ *
+ * Поиск, переключатель вида и выбор категории живут снаружи (CategoryHero и
+ * адрес страницы) — сюда приходит уже готовое состояние. Раньше компонент тащил
+ * в себе ещё и собственный заголовок, поиск и чипсы; после того как категории
+ * стали отдельными страницами, всё это осталось мёртвым кодом и убрано.
+ */
+export function EnhancedWidgetSearch({ category, search, viewMode }: Props) {
+	const filtered = useMemo(
+		() => filterWidgets(widgets, search, category),
+		[search, category]
 	)
 
-	// В embedded-режиме переключатель вида живёт в шапке.
-	const viewMode = viewModeProp ?? internalViewMode
-	const setViewMode = setInternalViewMode
+	// Группируем по категориям только в общем каталоге: на странице категории
+	// группа была бы одна, и заголовок над ней дублировал бы h1.
+	const groups = useMemo(() => {
+		if (category !== '') return [{ key: category, items: filtered }]
 
-	const selectedCategory = category ?? internalCategory
-	const setSelectedCategory = (next: string) => {
-		if (onCategoryChange) onCategoryChange(next)
-		else setInternalCategory(next)
-	}
-
-	const searchQuery = search ?? internalSearch
-	const setSearchQuery = (next: string) => {
-		if (onSearchChange) onSearchChange(next)
-		else setInternalSearch(next)
-	}
-	const inputRef = useRef<HTMLInputElement>(null)
-
-	// const searchT = useTranslations('widgets.search') // Removed translations
-	const { history, addToHistory, removeFromHistory, clearHistory } =
-		useSearchHistory()
-
-	// Convert widgets to project cards
-	const allProjectCards: ProjectCard[] = useMemo(() => {
-		return widgets.map(widget => {
-			const Icon = widget.icon
-			return {
-				id: widget.id,
-				title: widget.title || widget.translationKey,
-				description: widget.description || '',
-				icon: <Icon className='w-8 h-8' />,
-				gradient: widget.gradient,
-				path: widget.path,
-				category: widget.category,
-				tags: widget.tags || [],
-				widget
-			}
-		})
-	}, [])
-
-	// Filter widgets based on search query and category
-	const filteredWidgets = useMemo(() => {
-		return allProjectCards.filter(project => {
-			const matchesSearch =
-				searchQuery === '' ||
-				project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				project.tags.some(tag =>
-					tag.toLowerCase().includes(searchQuery.toLowerCase())
-				) ||
-				project.widget.useCase
-					?.toLowerCase()
-					.includes(searchQuery.toLowerCase())
-
-			const matchesCategory =
-				selectedCategory === '' || project.category === selectedCategory
-
-			return matchesSearch && matchesCategory
-		})
-	}, [allProjectCards, searchQuery, selectedCategory])
-
-	// Group filtered widgets by category
-	const groupedWidgets = useMemo(() => {
-		const grouped: Record<string, ProjectCard[]> = {}
-
-		filteredWidgets.forEach(project => {
-			if (!grouped[project.category]) {
-				grouped[project.category] = []
-			}
-			grouped[project.category].push(project)
-		})
-
-		return grouped
-	}, [filteredWidgets])
-
-	const clearSearch = () => {
-		setSearchQuery('')
-		setSelectedCategory('')
-	}
-
-	// Keyboard shortcuts
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			// Cmd/Ctrl + K to focus search
-			if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-				e.preventDefault()
-				inputRef.current?.focus()
-			}
-			// Escape to clear search
-			if (e.key === 'Escape') {
-				if (searchQuery || selectedCategory) {
-					clearSearch()
-				}
-			}
-			// Cmd/Ctrl + / to cycle through categories
-			if ((e.metaKey || e.ctrlKey) && e.key === '/') {
-				e.preventDefault()
-				const categories = ['', ...Object.keys(widgetCategories)]
-				const currentIndex = categories.indexOf(selectedCategory)
-				const nextIndex = (currentIndex + 1) % categories.length
-				setSelectedCategory(categories[nextIndex])
-			}
+		const byCategory: Record<string, Widget[]> = {}
+		for (const widget of filtered) {
+			byCategory[widget.category] ??= []
+			byCategory[widget.category].push(widget)
 		}
+		return Object.entries(byCategory).map(([key, items]) => ({ key, items }))
+	}, [filtered, category])
 
-		window.addEventListener('keydown', handleKeyDown)
-		return () => window.removeEventListener('keydown', handleKeyDown)
-	}, [searchQuery, selectedCategory])
-
-	const hasActiveFilters = searchQuery !== '' || selectedCategory !== ''
+	if (filtered.length === 0) {
+		return (
+			<div className='py-16 text-center'>
+				<Search
+					aria-hidden
+					className='mx-auto mb-4 h-10 w-10 text-muted-foreground/50'
+				/>
+				<p className='text-muted-foreground'>
+					Ничего не нашлось. Попробуйте другое слово.
+				</p>
+			</div>
+		)
+	}
 
 	return (
-		<div className='space-y-8'>
-			{/* Search Controls */}
-			<div className='relative'>
-				{!embedded && (
-					<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl' />
-				)}
-				<div
-					className={
-						embedded
-							? 'relative space-y-6'
-							: 'relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50'
-					}
-				>
-					{!embedded && (
-						<div className='mb-8 sm:mb-16 space-y-6'>
-							{/* Title */}
-							<h1 className='text-3xl sm:text-5xl lg:text-6xl font-heading font-black'>
-								Все инструменты
-							</h1>
-
-							{/* Description */}
-							<p className='text-lg sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
-								Найдите идеальный инструмент для вашей задачи
-							</p>
-						</div>
-					)}
-					{/* Search Input — в embedded-режиме поле живёт в шапке, второе в DOM
-					    не нужно: оно перехватывало бы фокус по ⌘K */}
-					{!embedded && (
-						<div className='relative max-w-2xl'>
-							<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
-							<Input
-								ref={inputRef}
-								placeholder='Поиск инструментов...'
-								value={searchQuery}
-								onChange={e => {
-									const value = e.target.value
-									setSearchQuery(value)
-								}}
-								onKeyDown={e => {
-									if (e.key === 'Enter' && searchQuery.trim()) {
-										addToHistory(searchQuery)
-									}
-								}}
-								className='pl-12 pr-12 h-14 text-base rounded-2xl border-border/50 bg-background/80 backdrop-blur-sm focus:bg-background transition-all duration-300 shadow-sm hover:shadow-md'
-							/>
-							<div className='absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1'>
-								{searchQuery && (
-									<Button
-										variant='ghost'
-										size='sm'
-										onClick={() => setSearchQuery('')}
-										className='p-1 h-8 w-8'
-									>
-										<X className='w-4 h-4' />
-									</Button>
-								)}
-								<kbd className='hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground'>
-									<span className='text-xs'>⌘</span>K
-								</kbd>
-							</div>
+		<div className='space-y-10'>
+			{groups.map(({ key, items }) => (
+				<section key={key}>
+					{category === '' && (
+						<div className='mb-6 flex items-center gap-3'>
+							<h2 className='text-2xl font-bold tracking-tight'>
+								{widgetCategories[key as keyof typeof widgetCategories] ?? key}
+							</h2>
+							<Badge variant='secondary'>{items.length}</Badge>
 						</div>
 					)}
 
-					{/* Filters */}
-					{!embedded && (
-						<div className='flex flex-wrap gap-2 items-center justify-start'>
-							<Button
-								variant={selectedCategory === '' ? 'default' : 'outline'}
-								size='sm'
-								onClick={() => setSelectedCategory('')}
-								className='cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
-							>
-								Все
-							</Button>
-
-							{Object.entries(widgetCategories).map(([key, title]) => (
-								<Button
-									key={key}
-									variant={selectedCategory === key ? 'default' : 'outline'}
-									size='sm'
-									onClick={() => setSelectedCategory(key)}
-									className='cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
-								>
-									{title}
-								</Button>
+					{viewMode === 'grid' ? (
+						<div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+							{items.map(widget => (
+								<ToolCard key={widget.id} widget={widget} searchQuery={search} />
 							))}
 						</div>
-					)}
+					) : (
+						<div className='space-y-3'>
+							{items.map(widget => {
+								const Icon = widget.icon
+								const title = widget.title || widget.translationKey
 
-					{/* Results info and view mode — в embedded-режиме они в шапке */}
-					{!embedded && (
-						<div className='flex items-center justify-between'>
-							<div className='flex items-center gap-2'>
-								<span className='text-sm font-medium text-muted-foreground'>
-									Найдено: {filteredWidgets.length}
-								</span>
-								{hasActiveFilters && (
-									<Button
-										variant='ghost'
-										size='sm'
-										onClick={clearSearch}
-										className='h-7 px-2'
+								return (
+									<Link
+										key={widget.id}
+										href={`/tools/${widget.path}`}
+										className='block cursor-pointer'
 									>
-										<X className='w-3 h-3 mr-1' />
-										Очистить фильтры
-									</Button>
-								)}
-							</div>
-
-							<div className='flex items-center gap-1'>
-								<Button
-									variant={viewMode === 'grid' ? 'default' : 'ghost'}
-									size='sm'
-									onClick={() => setViewMode('grid')}
-									className='h-8 w-8 p-0'
-								>
-									<Grid3X3 className='w-4 h-4' />
-								</Button>
-								<Button
-									variant={viewMode === 'list' ? 'default' : 'ghost'}
-									size='sm'
-									onClick={() => setViewMode('list')}
-									className='h-8 w-8 p-0'
-								>
-									<List className='w-4 h-4' />
-								</Button>
-							</div>
+										<Card className='border-border/50 transition-colors hover:border-primary/40'>
+											<CardContent className='flex items-center gap-4 p-5'>
+												<div
+													className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-white ${widget.gradient}`}
+												>
+													<Icon className='h-7 w-7' />
+												</div>
+												<div className='min-w-0'>
+													<h3 className='font-semibold'>
+														{search ? highlightText(title, search) : title}
+													</h3>
+													<p className='mt-1 line-clamp-2 text-sm text-muted-foreground'>
+														{widget.description}
+													</p>
+												</div>
+											</CardContent>
+										</Card>
+									</Link>
+								)
+							})}
 						</div>
 					)}
-				</div>
-			</div>
-
-			{/* Results */}
-			{filteredWidgets.length > 0 && (
-				<div className='space-y-8 animate-in fade-in duration-500'>
-					{Object.entries(groupedWidgets).map(([category, projects]) => (
-						<section key={category}>
-							<div className='flex items-center gap-3 mb-6'>
-								<h2 className='text-2xl font-heading font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-									{widgetCategories[
-										category as keyof typeof widgetCategories
-									] || category}
-								</h2>
-								<Badge variant='secondary' className='font-medium px-3 py-1'>
-									{projects.length}
-								</Badge>
-							</div>
-
-							{viewMode === 'grid' ? (
-								<div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-300'>
-									{projects.map(project => (
-										<ToolCard
-											key={project.id}
-											widget={project.widget}
-											searchQuery={searchQuery}
-										/>
-									))}
-								</div>
-							) : (
-								<div className='space-y-3 transition-all duration-300'>
-									{projects.map(project => (
-										<div key={project.id} className='relative'>
-											<Link
-												href={`/tools/${project.path}`}
-												className='block group'
-											>
-												<Card className='transition-all duration-300 hover:shadow-xl border-border/50 bg-background/60 backdrop-blur-sm relative group overflow-hidden'>
-													<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-													<CardContent className='p-5'>
-														<div className='flex items-center gap-4'>
-															<div
-																className={`w-14 h-14 rounded-xl bg-gradient-to-br ${project.gradient} flex items-center justify-center text-white group-hover:scale-110 transition-all duration-300 shadow-md`}
-															>
-																<project.widget.icon className='w-7 h-7' />
-															</div>
-															<div className='flex-1 pr-12'>
-																<h3 className='font-heading font-semibold text-lg mb-1 transition-all duration-300 group-hover:text-primary'>
-																	{searchQuery
-																		? highlightText(project.title, searchQuery)
-																		: project.title}
-																</h3>
-																<p className='text-sm text-muted-foreground mb-2'>
-																	{searchQuery
-																		? highlightText(
-																				project.description,
-																				searchQuery
-																			)
-																		: project.description}
-																</p>
-																{project.tags.length > 0 && (
-																	<div className='flex flex-wrap gap-1.5'>
-																		{project.tags.slice(0, 5).map(tag => (
-																			<Badge
-																				key={tag}
-																				variant='secondary'
-																				className='text-xs'
-																			>
-																				{searchQuery
-																					? highlightText(tag, searchQuery)
-																					: tag}
-																			</Badge>
-																		))}
-																		{project.tags.length > 5 && (
-																			<Badge
-																				variant='outline'
-																				className='text-xs'
-																			>
-																				+{project.tags.length - 5}
-																			</Badge>
-																		)}
-																	</div>
-																)}
-															</div>
-														</div>
-													</CardContent>
-												</Card>
-											</Link>
-										</div>
-									))}
-								</div>
-							)}
-						</section>
-					))}
-				</div>
-			)}
+				</section>
+			))}
 		</div>
 	)
 }

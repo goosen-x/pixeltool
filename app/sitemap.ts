@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
 import { widgets } from '@/lib/constants/widgets'
+import { CATEGORY_KEYS } from '@/lib/constants/categories'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -34,6 +35,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: CONTENT_LAST_UPDATED,
 			changeFrequency: route === '' ? 'weekly' : 'monthly',
 			priority: route === '' ? 1.0 : route === '/tools' ? 0.9 : 0.8
+		})
+	})
+
+	// Страницы категорий (/tools/css и подобные) — у каждой свой заголовок,
+	// текст и список инструментов, поэтому они индексируются отдельно.
+	CATEGORY_KEYS.forEach(category => {
+		sitemapEntries.push({
+			url: `${BASE_URL}/tools/${category}`,
+			lastModified: CONTENT_LAST_UPDATED,
+			changeFrequency: 'monthly',
+			priority: 0.8
 		})
 	})
 
