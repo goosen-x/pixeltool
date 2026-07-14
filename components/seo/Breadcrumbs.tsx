@@ -39,7 +39,12 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 	return (
 		<nav
 			aria-label='Хлебные крошки'
-			className={cn('w-full max-w-7xl mx-auto pt-2 pb-4 sm:pb-6', className)}
+			// Отступы по бокам те же, что у контейнера страницы, — иначе крошки
+			// висят левее контента, с которым должны быть на одной вертикали.
+			className={cn(
+				'w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4 sm:pt-6 sm:pb-6',
+				className
+			)}
 		>
 			<ol className='flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground'>
 				{items.map((item, index) => {

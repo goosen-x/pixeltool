@@ -38,10 +38,12 @@ export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
 						{description}
 					</p>
 				</div>
+			</div>
 
-				<div className='shrink-0 sm:ml-auto'>
-					<WidgetActions widgetId={widget.id} title={title} />
-				</div>
+			{/* Отдельной строкой: рядом с заголовком кнопки поджимали его и
+			    заставляли длинные названия переноситься раньше времени */}
+			<div className='mt-4'>
+				<WidgetActions widgetId={widget.id} title={title} />
 			</div>
 		</div>
 	)

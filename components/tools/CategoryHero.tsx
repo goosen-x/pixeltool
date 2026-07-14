@@ -4,15 +4,21 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, X } from 'lucide-react'
+import { Search, X, Grid3X3, List, Loader2 } from 'lucide-react'
 import { widgetCategories, widgets } from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
+import { filterWidgets } from '@/lib/utils/filter-widgets'
 
 interface Props {
 	selectedCategory: string
 	onCategoryChange: (category: string) => void
 	search: string
 	onSearchChange: (query: string) => void
+	/** Отложенное значение — по нему считается «Найдено», как и сам список. */
+	debouncedSearch: string
+	isSearching: boolean
+	viewMode: 'grid' | 'list'
+	onViewModeChange: (mode: 'grid' | 'list') => void
 }
 
 /** Сколько инструментов в категории — показываем на чипсе. */
@@ -26,8 +32,15 @@ export function CategoryHero({
 	selectedCategory,
 	onCategoryChange,
 	search,
-	onSearchChange
+	onSearchChange,
+	debouncedSearch,
+	isSearching,
+	viewMode,
+	onViewModeChange
 }: Props) {
+	// Считаем по отложенному значению — иначе счётчик обгонял бы список.
+	const found = filterWidgets(widgets, debouncedSearch, selectedCategory).length
+	const hasActiveFilters = search !== '' || selectedCategory !== ''
 	// Помним отвалившиеся картинки поимённо: если файла одной категории вдруг
 	// нет, это не должно прятать картинки остальных.
 	const [brokenImages, setBrokenImages] = useState<string[]>([])
@@ -97,20 +110,32 @@ export function CategoryHero({
 							onChange={event => onSearchChange(event.target.value)}
 							placeholder='Поиск инструментов…'
 							aria-label='Поиск инструментов'
-							className='h-14 rounded-2xl border-border/50 bg-background/80 pl-12 pr-12 text-base shadow-sm backdrop-blur-sm transition-all hover:shadow-md focus:bg-background'
+							className='h-14 rounded-2xl border-border/50 bg-background pl-12 pr-12 text-base'
 						/>
-						{search && (
-							<Button
-								variant='ghost'
-								size='sm'
-								onClick={() => onSearchChange('')}
-								aria-label='Очистить поиск'
-								className='absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer p-1'
-							>
-								<X className='h-4 w-4' />
-							</Button>
+						{isSearching ? (
+							<Loader2
+								aria-hidden
+								className='absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground'
+							/>
+						) : (
+							search && (
+								<Button
+									variant='ghost'
+									size='sm'
+									onClick={() => onSearchChange('')}
+									aria-label='Очистить поиск'
+									className='absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer p-1'
+								>
+									<X className='h-4 w-4' />
+								</Button>
+							)
 						)}
 					</div>
+
+					{/* Экранный диктор не видит спиннер — сообщаем результат словами */}
+					<span className='sr-only' role='status' aria-live='polite'>
+						{isSearching ? 'Идёт поиск' : `Найдено инструментов: ${found}`}
+					</span>
 				</div>
 
 				{/* Картинка левитирует: анимация на CSS (см. .animate-levitate в
@@ -138,6 +163,52 @@ export function CategoryHero({
 						</div>
 					</div>
 				)}
+			</div>
+			{/* Результаты и режим показа — отдельным рядом по низу карточки, поэтому
+			    переключатель садится в её правый нижний угол */}
+			<div className='relative mt-8 flex flex-wrap items-center justify-between gap-4 border-t pt-5'>
+				<div className='flex items-center gap-2'>
+					<span className='text-sm text-muted-foreground'>
+						Найдено: {found}
+					</span>
+					{hasActiveFilters && (
+						<Button
+							variant='ghost'
+							size='sm'
+							onClick={() => {
+								onSearchChange('')
+								onCategoryChange('')
+							}}
+							className='h-7 cursor-pointer px-2'
+						>
+							<X className='mr-1 h-3 w-3' />
+							Очистить фильтры
+						</Button>
+					)}
+				</div>
+
+				<div className='flex items-center gap-1'>
+					<Button
+						variant={viewMode === 'grid' ? 'default' : 'ghost'}
+						size='sm'
+						onClick={() => onViewModeChange('grid')}
+						aria-pressed={viewMode === 'grid'}
+						className='h-8 cursor-pointer gap-1.5 px-3'
+					>
+						<Grid3X3 className='h-4 w-4' />
+						Плиткой
+					</Button>
+					<Button
+						variant={viewMode === 'list' ? 'default' : 'ghost'}
+						size='sm'
+						onClick={() => onViewModeChange('list')}
+						aria-pressed={viewMode === 'list'}
+						className='h-8 cursor-pointer gap-1.5 px-3'
+					>
+						<List className='h-4 w-4' />
+						Списком
+					</Button>
+				</div>
 			</div>
 		</section>
 	)

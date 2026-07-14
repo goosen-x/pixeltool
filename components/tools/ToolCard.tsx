@@ -32,32 +32,20 @@ export function ToolCard({
 				textDecoration: 'none'
 			}}
 		>
+			{/* Ховер — только подсветка рамки. Раньше тут было четыре эффекта разом:
+			    тень и подъём классами, они же продублированы инлайновым JS, плюс
+			    градиентный оверлей поверх всего. Осталась одна рамка. */}
 			<Card
 				className={cn(
-					'h-full transition-all duration-300 border-border/50 bg-background/60 backdrop-blur-sm relative overflow-hidden transform-gpu',
-					'hover:shadow-lg hover:-translate-y-1 hover:border-primary/30',
+					'h-full cursor-pointer relative overflow-hidden border-border/50 transition-colors duration-200',
+					'hover:border-primary/40',
 					className
 				)}
-				style={{
-					transition: 'all 0.3s ease',
-					cursor: 'pointer'
-				}}
-				onMouseEnter={e => {
-					e.currentTarget.style.transform = 'translateY(-4px)'
-					e.currentTarget.style.boxShadow =
-						'0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)'
-				}}
-				onMouseLeave={e => {
-					e.currentTarget.style.transform = 'translateY(0)'
-					e.currentTarget.style.boxShadow = ''
-				}}
 			>
-				<div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500' />
-
 				<CardHeader className='relative z-10 p-4 sm:p-6'>
 					<div
 						className={cn(
-							'w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white mb-3 sm:mb-4 transition-all duration-300 shadow-lg',
+							'w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white mb-3 sm:mb-4',
 							widget.gradient
 						)}
 						style={{
@@ -86,7 +74,7 @@ export function ToolCard({
 
 					{widget.tags && widget.tags.length > 0 && (
 						<div className='flex flex-wrap gap-1.5'>
-							{widget.tags.slice(0, 2).map(tag => (
+							{widget.tags.map(tag => (
 								<Badge
 									key={tag}
 									variant='secondary'
@@ -95,14 +83,6 @@ export function ToolCard({
 									{searchQuery ? highlightText(tag, searchQuery) : tag}
 								</Badge>
 							))}
-							{widget.tags.length > 2 && (
-								<Badge
-									variant='outline'
-									className='text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 border-primary/30 text-primary/80 hover:border-primary/50 transition-colors'
-								>
-									+{widget.tags.length - 2}
-								</Badge>
-							)}
 						</div>
 					)}
 				</CardContent>

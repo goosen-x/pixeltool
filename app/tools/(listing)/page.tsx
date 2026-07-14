@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue'
+import { widgetCategories } from '@/lib/constants/widgets'
 import { Button } from '@/components/ui/button'
-import { Sparkles, Github } from 'lucide-react'
-import Link from 'next/link'
+import Image from 'next/image'
 import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
 import { CategoryHero } from '@/components/tools/CategoryHero'
+import { FeedbackModal } from '@/components/feedback'
 
 // Metadata can't be used in client components
 /*
@@ -141,6 +143,21 @@ export default function ToolsPage() {
 	// список ниже — иначе два блока показывали бы разное.
 	const [category, setCategory] = useState('')
 	const [search, setSearch] = useState('')
+	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
+	// Поле откликается сразу, а список пересчитывается с задержкой — иначе он
+	// перебирал бы полсотни виджетов на каждое нажатие клавиши.
+	const debouncedSearch = useDebouncedValue(search, 250)
+	const isSearching = search !== debouncedSearch
+
+	// Футер ведёт на /tools?category=css — без этого параметр молча игнорировался
+	// и все такие ссылки открывали просто общий список.
+	useEffect(() => {
+		const fromUrl = new URLSearchParams(window.location.search).get('category')
+		if (fromUrl && fromUrl in widgetCategories) {
+			setCategory(fromUrl)
+		}
+	}, [])
 
 	return (
 		<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl'>
@@ -149,6 +166,10 @@ export default function ToolsPage() {
 				onCategoryChange={setCategory}
 				search={search}
 				onSearchChange={setSearch}
+				debouncedSearch={debouncedSearch}
+				isSearching={isSearching}
+				viewMode={viewMode}
+				onViewModeChange={setViewMode}
 			/>
 
 			{/* Full Search Section */}
@@ -160,39 +181,44 @@ export default function ToolsPage() {
 					embedded
 					category={category}
 					onCategoryChange={setCategory}
-					search={search}
+					search={debouncedSearch}
 					onSearchChange={setSearch}
+					viewMode={viewMode}
 				/>
 			</section>
 
-			{/* CTA Section */}
-			<section className='py-12 lg:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4'>
-				<div className='container mx-auto px-4 text-center'>
-					<div className='max-w-6xl mx-auto space-y-6'>
-						<h2 className='text-3xl sm:text-4xl font-bold'>
-							Не нашли нужный инструмент?
-						</h2>
-						<p className='text-lg text-muted-foreground'>
-							Мы постоянно добавляем новые инструменты. Расскажите нам, что вам
-							нужно!
-						</p>
-						<div className='flex gap-4 justify-center flex-wrap'>
-							<Button size='lg' className='gap-2' asChild>
-								<Link href='/contact'>
-									<Sparkles className='w-5 h-5' />
+			{/* Карточка-секция в том же ключе, что и шапка: та же скруглённая рамка
+			    и та же контурная подложка */}
+			<section className='relative mb-12 overflow-hidden rounded-3xl border bg-card px-6 py-12 text-center sm:px-10 sm:py-16'>
+				<Image
+					src='/images/tools-hero-bg.png'
+					alt=''
+					aria-hidden
+					width={1200}
+					height={1200}
+					className='pointer-events-none absolute -left-32 -top-40 w-[34rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
+				/>
+
+				<div className='relative mx-auto max-w-xl space-y-4'>
+					<h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>
+						Не нашли нужный инструмент?
+					</h2>
+					<p className='text-base leading-relaxed text-muted-foreground sm:text-lg'>
+						Инструменты добавляются постоянно. Расскажите, чего вам не хватает,
+						— это лучший способ повлиять на то, что появится следующим.
+					</p>
+
+					{/* Тот же попап, что открывается из карточки обратной связи в
+					    сайдбаре, — заводить под это отдельную страницу незачем */}
+					<div className='pt-2'>
+						<FeedbackModal
+							defaultType='feature'
+							trigger={
+								<Button size='lg' className='cursor-pointer'>
 									Предложить инструмент
-								</Link>
-							</Button>
-							<Button size='lg' variant='outline' className='gap-2' asChild>
-								<Link
-									href='https://github.com/goosen-x/pixeltool'
-									target='_blank'
-								>
-									<Github className='w-5 h-5' />
-									GitHub
-								</Link>
-							</Button>
-						</div>
+								</Button>
+							}
+						/>
 					</div>
 				</div>
 			</section>

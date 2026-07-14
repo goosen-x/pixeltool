@@ -20,6 +20,11 @@ interface FeedbackModalProps {
 	variant?: 'default' | 'sidebar'
 	/** Свой триггер вместо кнопки по умолчанию — например вся карточка целиком */
 	trigger?: React.ReactNode
+	/**
+	 * С какой вкладки открывать. Кнопка «Предложить инструмент» — это заведомо
+	 * идея, и заставлять человека выбирать её руками незачем.
+	 */
+	defaultType?: FeedbackType
 }
 
 type FeedbackType = 'bug' | 'feature' | 'general'
@@ -61,10 +66,11 @@ const TYPES: {
 
 export function FeedbackModal({
 	variant = 'sidebar',
-	trigger
+	trigger,
+	defaultType = 'bug'
 }: FeedbackModalProps) {
 	const [open, setOpen] = useState(false)
-	const [type, setType] = useState<FeedbackType>('bug')
+	const [type, setType] = useState<FeedbackType>(defaultType)
 	const [title, setTitle] = useState('')
 	const [description, setDescription] = useState('')
 	const [email, setEmail] = useState('')
@@ -77,7 +83,7 @@ export function FeedbackModal({
 	const canSubmit = title.trim() !== '' && description.trim() !== '' && !loading
 
 	const reset = () => {
-		setType('bug')
+		setType(defaultType)
 		setTitle('')
 		setDescription('')
 		setEmail('')

@@ -256,7 +256,7 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'bezierCurve',
 		path: 'css-bezier-curve-generator',
 		gradient: 'from-purple-500 to-indigo-500',
-		title: 'cubic-bezier: кривая плавности для CSS',
+		title: 'Cubic-bezier: кривая плавности для CSS',
 		metaTitle: 'cubic-bezier — генератор easing для transition и animation',
 		description:
 			'Потяните за контрольные точки и получите свою cubic-bezier() для transition-timing-function или animation-timing-function.',

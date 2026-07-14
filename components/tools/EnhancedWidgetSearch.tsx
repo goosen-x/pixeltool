@@ -1,20 +1,12 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import {
-	Search,
-	X,
-	Grid3X3,
-	List,
-	Sparkles,
-	TrendingUp,
-	ArrowUp
-} from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Search, X, Grid3X3, List } from 'lucide-react'
 import Link from 'next/link'
 import { widgets, widgetCategories, type Widget } from '@/lib/constants/widgets'
 import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
@@ -47,6 +39,7 @@ interface EnhancedWidgetSearchProps {
 	onCategoryChange?: (category: string) => void
 	search?: string
 	onSearchChange?: (query: string) => void
+	viewMode?: 'grid' | 'list'
 }
 
 export function EnhancedWidgetSearch({
@@ -54,11 +47,18 @@ export function EnhancedWidgetSearch({
 	category,
 	onCategoryChange,
 	search,
-	onSearchChange
+	onSearchChange,
+	viewMode: viewModeProp
 }: EnhancedWidgetSearchProps = {}) {
 	const [internalSearch, setInternalSearch] = useState('')
 	const [internalCategory, setInternalCategory] = useState<string>('')
-	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+	const [internalViewMode, setInternalViewMode] = useState<'grid' | 'list'>(
+		'grid'
+	)
+
+	// В embedded-режиме переключатель вида живёт в шапке.
+	const viewMode = viewModeProp ?? internalViewMode
+	const setViewMode = setInternalViewMode
 
 	const selectedCategory = category ?? internalCategory
 	const setSelectedCategory = (next: string) => {
@@ -195,39 +195,39 @@ export function EnhancedWidgetSearch({
 					{/* Search Input — в embedded-режиме поле живёт в шапке, второе в DOM
 					    не нужно: оно перехватывало бы фокус по ⌘K */}
 					{!embedded && (
-					<div className='relative max-w-2xl'>
-						<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
-						<Input
-							ref={inputRef}
-							placeholder='Поиск инструментов...'
-							value={searchQuery}
-							onChange={e => {
-								const value = e.target.value
-								setSearchQuery(value)
-							}}
-							onKeyDown={e => {
-								if (e.key === 'Enter' && searchQuery.trim()) {
-									addToHistory(searchQuery)
-								}
-							}}
-							className='pl-12 pr-12 h-14 text-base rounded-2xl border-border/50 bg-background/80 backdrop-blur-sm focus:bg-background transition-all duration-300 shadow-sm hover:shadow-md'
-						/>
-						<div className='absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1'>
-							{searchQuery && (
-								<Button
-									variant='ghost'
-									size='sm'
-									onClick={() => setSearchQuery('')}
-									className='p-1 h-8 w-8'
-								>
-									<X className='w-4 h-4' />
-								</Button>
-							)}
-							<kbd className='hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground'>
-								<span className='text-xs'>⌘</span>K
-							</kbd>
+						<div className='relative max-w-2xl'>
+							<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
+							<Input
+								ref={inputRef}
+								placeholder='Поиск инструментов...'
+								value={searchQuery}
+								onChange={e => {
+									const value = e.target.value
+									setSearchQuery(value)
+								}}
+								onKeyDown={e => {
+									if (e.key === 'Enter' && searchQuery.trim()) {
+										addToHistory(searchQuery)
+									}
+								}}
+								className='pl-12 pr-12 h-14 text-base rounded-2xl border-border/50 bg-background/80 backdrop-blur-sm focus:bg-background transition-all duration-300 shadow-sm hover:shadow-md'
+							/>
+							<div className='absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1'>
+								{searchQuery && (
+									<Button
+										variant='ghost'
+										size='sm'
+										onClick={() => setSearchQuery('')}
+										className='p-1 h-8 w-8'
+									>
+										<X className='w-4 h-4' />
+									</Button>
+								)}
+								<kbd className='hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground'>
+									<span className='text-xs'>⌘</span>K
+								</kbd>
+							</div>
 						</div>
-					</div>
 					)}
 
 					{/* Filters */}
@@ -256,67 +256,51 @@ export function EnhancedWidgetSearch({
 						</div>
 					)}
 
-					{/* Results info and view mode */}
-					<div className='flex items-center justify-between'>
-						<div className='flex items-center gap-2'>
-							<span className='text-sm font-medium text-muted-foreground'>
-								Найдено: {filteredWidgets.length}
-							</span>
-							{hasActiveFilters && (
-								<Button
-									variant='ghost'
-									size='sm'
-									onClick={clearSearch}
-									className='h-7 px-2'
-								>
-									<X className='w-3 h-3 mr-1' />
-									Очистить фильтры
-								</Button>
-							)}
-						</div>
+					{/* Results info and view mode — в embedded-режиме они в шапке */}
+					{!embedded && (
+						<div className='flex items-center justify-between'>
+							<div className='flex items-center gap-2'>
+								<span className='text-sm font-medium text-muted-foreground'>
+									Найдено: {filteredWidgets.length}
+								</span>
+								{hasActiveFilters && (
+									<Button
+										variant='ghost'
+										size='sm'
+										onClick={clearSearch}
+										className='h-7 px-2'
+									>
+										<X className='w-3 h-3 mr-1' />
+										Очистить фильтры
+									</Button>
+								)}
+							</div>
 
-						<div className='flex items-center gap-1'>
-							<Button
-								variant={viewMode === 'grid' ? 'default' : 'ghost'}
-								size='sm'
-								onClick={() => setViewMode('grid')}
-								className='h-8 w-8 p-0'
-							>
-								<Grid3X3 className='w-4 h-4' />
-							</Button>
-							<Button
-								variant={viewMode === 'list' ? 'default' : 'ghost'}
-								size='sm'
-								onClick={() => setViewMode('list')}
-								className='h-8 w-8 p-0'
-							>
-								<List className='w-4 h-4' />
-							</Button>
+							<div className='flex items-center gap-1'>
+								<Button
+									variant={viewMode === 'grid' ? 'default' : 'ghost'}
+									size='sm'
+									onClick={() => setViewMode('grid')}
+									className='h-8 w-8 p-0'
+								>
+									<Grid3X3 className='w-4 h-4' />
+								</Button>
+								<Button
+									variant={viewMode === 'list' ? 'default' : 'ghost'}
+									size='sm'
+									onClick={() => setViewMode('list')}
+									className='h-8 w-8 p-0'
+								>
+									<List className='w-4 h-4' />
+								</Button>
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</div>
 
 			{/* Results */}
-			{filteredWidgets.length === 0 ? (
-				<div className='text-center py-16 px-4 animate-in fade-in duration-500'>
-					<div className='inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted/50 mb-6'>
-						<Search className='w-10 h-10 text-muted-foreground' />
-					</div>
-					<h3 className='text-xl font-heading font-semibold mb-2'>
-						Ничего не найдено
-					</h3>
-					<p className='text-muted-foreground mb-6 max-w-md mx-auto'>
-						Попробуйте изменить параметры поиска или выбрать другую категорию
-					</p>
-					{hasActiveFilters && (
-						<Button onClick={clearSearch} size='lg' className='rounded-full'>
-							<X className='w-4 h-4 mr-2' />
-							Очистить фильтры
-						</Button>
-					)}
-				</div>
-			) : (
+			{filteredWidgets.length > 0 && (
 				<div className='space-y-8 animate-in fade-in duration-500'>
 					{Object.entries(groupedWidgets).map(([category, projects]) => (
 						<section key={category}>
@@ -408,15 +392,6 @@ export function EnhancedWidgetSearch({
 					))}
 				</div>
 			)}
-
-			{/* Scroll to top button */}
-			<Button
-				onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-				className='fixed bottom-8 right-8 rounded-full w-12 h-12 p-0 shadow-lg'
-				size='icon'
-			>
-				<ArrowUp className='w-4 h-4' />
-			</Button>
 		</div>
 	)
 }
