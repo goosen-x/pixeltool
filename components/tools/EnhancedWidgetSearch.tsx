@@ -37,22 +37,26 @@ interface ProjectCard {
 
 interface EnhancedWidgetSearchProps {
 	/**
-	 * Категорию можно вести снаружи — на /tools её выбирают в шапке
-	 * (CategoryHero), и оба блока должны показывать одно и то же. Если проп не
-	 * передан, компонент живёт на своём состоянии, как раньше.
+	 * На /tools заголовок, строка поиска и чипсы категорий живут в шапке
+	 * (CategoryHero), а этот компонент показывает только результаты и карточки.
+	 * Без пропа он работает как раньше — со своим заголовком, поиском и
+	 * фильтрами, на собственном состоянии.
 	 */
+	embedded?: boolean
 	category?: string
 	onCategoryChange?: (category: string) => void
-	/** Скрыть свои чипсы, когда фильтр уже нарисован снаружи. */
-	hideCategoryFilter?: boolean
+	search?: string
+	onSearchChange?: (query: string) => void
 }
 
 export function EnhancedWidgetSearch({
+	embedded = false,
 	category,
 	onCategoryChange,
-	hideCategoryFilter = false
+	search,
+	onSearchChange
 }: EnhancedWidgetSearchProps = {}) {
-	const [searchQuery, setSearchQuery] = useState('')
+	const [internalSearch, setInternalSearch] = useState('')
 	const [internalCategory, setInternalCategory] = useState<string>('')
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
@@ -60,6 +64,12 @@ export function EnhancedWidgetSearch({
 	const setSelectedCategory = (next: string) => {
 		if (onCategoryChange) onCategoryChange(next)
 		else setInternalCategory(next)
+	}
+
+	const searchQuery = search ?? internalSearch
+	const setSearchQuery = (next: string) => {
+		if (onSearchChange) onSearchChange(next)
+		else setInternalSearch(next)
 	}
 	const inputRef = useRef<HTMLInputElement>(null)
 
@@ -159,20 +169,32 @@ export function EnhancedWidgetSearch({
 		<div className='space-y-8'>
 			{/* Search Controls */}
 			<div className='relative'>
-				<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl' />
-				<div className='relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50'>
-					<div className='mb-8 sm:mb-16 space-y-6'>
-						{/* Title */}
-						<h1 className='text-3xl sm:text-5xl lg:text-6xl font-heading font-black'>
-							Все инструменты
-						</h1>
+				{!embedded && (
+					<div className='absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 rounded-3xl' />
+				)}
+				<div
+					className={
+						embedded
+							? 'relative space-y-6'
+							: 'relative bg-background/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 space-y-6 border border-border/50'
+					}
+				>
+					{!embedded && (
+						<div className='mb-8 sm:mb-16 space-y-6'>
+							{/* Title */}
+							<h1 className='text-3xl sm:text-5xl lg:text-6xl font-heading font-black'>
+								Все инструменты
+							</h1>
 
-						{/* Description */}
-						<p className='text-lg sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
-							Найдите идеальный инструмент для вашей задачи
-						</p>
-					</div>
-					{/* Search Input */}
+							{/* Description */}
+							<p className='text-lg sm:text-2xl text-muted-foreground max-w-6xl leading-relaxed'>
+								Найдите идеальный инструмент для вашей задачи
+							</p>
+						</div>
+					)}
+					{/* Search Input — в embedded-режиме поле живёт в шапке, второе в DOM
+					    не нужно: оно перехватывало бы фокус по ⌘K */}
+					{!embedded && (
 					<div className='relative max-w-2xl'>
 						<Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5' />
 						<Input
@@ -206,9 +228,10 @@ export function EnhancedWidgetSearch({
 							</kbd>
 						</div>
 					</div>
+					)}
 
 					{/* Filters */}
-					{!hideCategoryFilter && (
+					{!embedded && (
 						<div className='flex flex-wrap gap-2 items-center justify-start'>
 							<Button
 								variant={selectedCategory === '' ? 'default' : 'outline'}

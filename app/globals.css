@@ -32,19 +32,20 @@
 	animation: fadeIn 0.5s ease-out;
 }
 
-/* Левитация: картинка категории на /tools медленно всплывает и покачивается.
-   alternate вместо повтора с нуля — иначе на стыке циклов был бы рывок. */
+/* Левитация картинки категории на /tools. Параметры как на moscow.mba: цикл 2
+   секунды, движение крошечное — читается в основном наклон, а не смещение.
+   alternate вместо повтора с нуля: иначе на стыке циклов был бы рывок. */
 @keyframes levitate {
 	from {
-		transform: translateY(0) rotate(-1deg);
+		transform: translateY(0) rotate(1deg);
 	}
 	to {
-		transform: translateY(-14px) rotate(1deg);
+		transform: translateY(-8px) rotate(0deg);
 	}
 }
 
 .animate-levitate {
-	animation: levitate 3s ease-in-out infinite alternate;
+	animation: levitate 2s ease-in-out infinite alternate;
 	will-change: transform;
 }
 

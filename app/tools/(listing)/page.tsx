@@ -137,15 +137,18 @@ export async function generateMetadata({
 */
 
 export default function ToolsPage() {
-	// Категорию держим здесь: её выбирают в шапке, а фильтруется по ней список
-	// ниже — иначе два блока показывали бы разное.
+	// Поиск и категорию держим здесь: их вводят в шапке, а фильтруется по ним
+	// список ниже — иначе два блока показывали бы разное.
 	const [category, setCategory] = useState('')
+	const [search, setSearch] = useState('')
 
 	return (
 		<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl'>
 			<CategoryHero
 				selectedCategory={category}
 				onCategoryChange={setCategory}
+				search={search}
+				onSearchChange={setSearch}
 			/>
 
 			{/* Full Search Section */}
@@ -154,14 +157,16 @@ export default function ToolsPage() {
 				id='tools-search'
 			>
 				<EnhancedWidgetSearch
+					embedded
 					category={category}
 					onCategoryChange={setCategory}
-					hideCategoryFilter
+					search={search}
+					onSearchChange={setSearch}
 				/>
 			</section>
 
 			{/* CTA Section */}
-			<section className='py-12 lg:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 bg-gradient-to-br from-primary/5 via-background to-accent/5'>
+			<section className='py-12 lg:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4'>
 				<div className='container mx-auto px-4 text-center'>
 					<div className='max-w-6xl mx-auto space-y-6'>
 						<h2 className='text-3xl sm:text-4xl font-bold'>
