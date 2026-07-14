@@ -868,20 +868,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'js-validator': {
-		ru: {
-			title: 'Валидатор JavaScript - Проверка Синтаксиса | Бесплатно',
-			description:
-				'Валидируйте синтаксис JavaScript кода онлайн. Находите ошибки и предупреждения. Поддержка ES6+ и JSX. Подсветка ошибок.',
-			keywords: [
-				'валидатор javascript',
-				'проверка js',
-				'проверка синтаксиса',
-				'валидатор кода',
-				'javascript линтер'
-			]
-		}
-	},
 	'php-syntax-checker': {
 		ru: {
 			title: 'Проверка Синтаксиса PHP - Валидатор Кода | Инструмент',
@@ -997,20 +983,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 				'css анимации',
 				'редактор keyframe',
 				'css движение'
-			]
-		}
-	},
-	'json-yaml-formatter': {
-		ru: {
-			title: 'JSON/YAML Форматтер - Конвертер и Валидатор | Инструмент',
-			description:
-				'Форматируйте, валидируйте и конвертируйте между JSON и YAML. Подсветка синтаксиса и обнаружение ошибок.',
-			keywords: [
-				'json yaml форматтер',
-				'json в yaml',
-				'yaml в json',
-				'конвертер конфигов',
-				'yaml валидатор'
 			]
 		}
 	},

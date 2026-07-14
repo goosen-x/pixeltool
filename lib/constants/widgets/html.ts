@@ -111,7 +111,7 @@ export const htmlWidgets: Widget[] = [
 		useCase:
 			'Отладка и валидация HTML/XML кода с визуальным представлением структуры',
 		recommendedTools: [
-			'json-yaml-formatter',
+			'json-tools',
 			'javascript-syntax-checker',
 			'php-syntax-checker'
 		],

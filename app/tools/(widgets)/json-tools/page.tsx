@@ -28,6 +28,7 @@ import {
 	Code2,
 	Settings2
 } from 'lucide-react'
+import { load as loadYAML, dump as dumpYAML } from 'js-yaml'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
@@ -48,6 +49,9 @@ interface JSONAnalysis {
 	error?: JSONError
 	formatted?: string
 	minified?: string
+	yaml?: string
+	/** Что распознали на входе — JSON или YAML. */
+	sourceFormat?: 'json' | 'yaml'
 	size: {
 		original: number
 		formatted: number
@@ -105,19 +109,44 @@ export default function JSONToolsPage() {
 		}
 	}, [input, indentSize])
 
+	/**
+	 * Разбирает вход как JSON, а если не вышло — как YAML. Порядок важен:
+	 * валидный JSON является валидным YAML, поэтому JSON пробуем первым, иначе
+	 * любой объект определялся бы как YAML.
+	 */
+	const parseInput = (
+		source: string
+	): { data: unknown; format: 'json' | 'yaml' } => {
+		try {
+			return { data: JSON.parse(source), format: 'json' }
+		} catch (jsonError) {
+			try {
+				const data = loadYAML(source)
+				// Скаляр («просто текст») YAML разбирает успешно, но это не документ,
+				// а признак того, что человек прислал мусор или сломанный JSON.
+				if (data === null || typeof data !== 'object') throw jsonError
+				return { data, format: 'yaml' }
+			} catch {
+				throw jsonError
+			}
+		}
+	}
+
 	const analyzeJSON = (jsonString: string) => {
 		setIsLoading(true)
 
 		try {
-			// Parse JSON to check validity
-			const parsed = JSON.parse(jsonString)
+			const { data: parsed, format } = parseInput(jsonString)
 
-			// Create formatted version
-			const indentSpaces = parseInt(indentSize)
-			const formatted = JSON.stringify(parsed, null, indentSpaces)
+			// Select отдаёт '\t' для табов — parseInt вернул бы NaN и убил отступы.
+			const indent: string | number =
+				indentSize === '\t' ? '\t' : parseInt(indentSize)
 
-			// Create minified version
+			const formatted = JSON.stringify(parsed, null, indent)
 			const minified = JSON.stringify(parsed)
+			const yaml = dumpYAML(parsed, {
+				indent: indentSize === '\t' ? 2 : parseInt(indentSize)
+			})
 
 			// Analyze structure
 			const structure = analyzeStructure(parsed)
@@ -131,6 +160,8 @@ export default function JSONToolsPage() {
 				isValid: true,
 				formatted,
 				minified,
+				yaml,
+				sourceFormat: format,
 				size: {
 					original: originalSize,
 					formatted: formattedSize,
@@ -395,16 +426,20 @@ export default function JSONToolsPage() {
 								onValueChange={setActiveTab}
 								className='h-full'
 							>
-								<TabsList className='grid w-full grid-cols-3'>
-									<TabsTrigger value='formatted'>
+								<TabsList className='grid w-full grid-cols-4'>
+									<TabsTrigger value='formatted' className='cursor-pointer'>
 										<Maximize2 className='h-4 w-4 mr-2' />
 										Formatted
 									</TabsTrigger>
-									<TabsTrigger value='minified'>
+									<TabsTrigger value='minified' className='cursor-pointer'>
 										<Minimize2 className='h-4 w-4 mr-2' />
 										Minified
 									</TabsTrigger>
-									<TabsTrigger value='analysis'>
+									<TabsTrigger value='yaml' className='cursor-pointer'>
+										<FileText className='h-4 w-4 mr-2' />
+										YAML
+									</TabsTrigger>
+									<TabsTrigger value='analysis' className='cursor-pointer'>
 										<Info className='h-4 w-4 mr-2' />
 										Analysis
 									</TabsTrigger>
@@ -463,6 +498,40 @@ export default function JSONToolsPage() {
 											onClick={() =>
 												handleDownload(analysis.minified!, 'minified.json')
 											}
+										>
+											<Download className='h-4 w-4 mr-2' />
+											Download
+										</Button>
+									</div>
+								</TabsContent>
+
+								<TabsContent value='yaml' className='space-y-4'>
+									{analysis.sourceFormat === 'yaml' && (
+										<p className='text-sm text-muted-foreground'>
+											На входе распознан YAML — во вкладках Formatted и Minified
+											лежит он же, переведённый в JSON.
+										</p>
+									)}
+									<WidgetOutput>
+										<pre className='text-sm font-mono overflow-auto'>
+											<code>{analysis.yaml}</code>
+										</pre>
+									</WidgetOutput>
+									<div className='flex items-center gap-2 mt-4'>
+										<Button
+											variant='outline'
+											size='sm'
+											className='cursor-pointer'
+											onClick={() => handleCopy(analysis.yaml!, 'YAML')}
+										>
+											<Copy className='h-4 w-4 mr-2' />
+											Copy
+										</Button>
+										<Button
+											variant='outline'
+											size='sm'
+											className='cursor-pointer'
+											onClick={() => handleDownload(analysis.yaml!, 'data.yaml')}
 										>
 											<Download className='h-4 w-4 mr-2' />
 											Download

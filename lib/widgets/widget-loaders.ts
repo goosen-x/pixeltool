@@ -51,9 +51,6 @@ export const widgetLoaders: Record<string, WidgetLoader> = {
 	'regex-tester': () => import('@/app/tools/(widgets)/regex-tester/page'),
 	'javascript-syntax-checker': () =>
 		import('@/app/tools/(widgets)/javascript-syntax-checker/page'),
-	'js-validator': () => import('@/app/tools/(widgets)/js-validator/page'),
-	'json-yaml-formatter': () =>
-		import('@/app/tools/(widgets)/json-yaml-formatter/page'),
 	'js-minifier': () => import('@/app/tools/(widgets)/js-minifier/page'),
 
 	// Text виджеты

@@ -1,5 +1,5 @@
 import { Widget } from './index'
-import { Braces, Bug, Code, FileJson, Search } from 'lucide-react'
+import { Braces, Code, Search } from 'lucide-react'
 
 export const javascriptWidgets: Widget[] = [
 	{
@@ -9,22 +9,24 @@ export const javascriptWidgets: Widget[] = [
 		translationKey: 'jsonTools',
 		path: 'json-tools',
 		gradient: 'from-orange-500 to-red-600',
-		title: 'JSON инструменты',
-		description: 'Форматирование, валидация, минификация и сравнение JSON',
-		useCase: 'Комплексная обработка JSON файлов для разработки',
-		recommendedTools: ['json-yaml-formatter', 'base64-encoder', 'jwt-decoder'],
+		title: 'JSON: форматирование, проверка и перевод в YAML',
+		metaTitle: 'JSON онлайн: форматировать, проверить, перевести в YAML',
+		description:
+			'Вставьте JSON или YAML — получите читаемый вид, сжатую версию, перевод между форматами и разбор структуры.',
+		useCase:
+			'Разбор и правка JSON: сделать читаемым, найти синтаксическую ошибку, сжать перед отправкой, перевести в YAML и обратно',
+		recommendedTools: ['base64-encoder', 'jwt-decoder', 'text-diff-tool'],
 		difficulty: 'beginner',
-		tags: [
-			'json',
-			'validator',
-			'formatter',
-			'beautifier',
-			'minifier',
-			'parser'
-		],
+		updatedAt: '2026-07-14',
+		tags: ['json', 'yaml', 'формат', 'валидатор', 'минификация'],
 		metaDescription:
-			'JSON-инструменты: валидатор и форматтер. Проверяйте синтаксис JSON, форматируйте, минифицируйте и сравнивайте данные онлайн.',
+			'Форматируйте и проверяйте JSON онлайн: читаемый вид с отступами, сжатие, разбор структуры и перевод JSON в YAML и обратно. Вставьте данные — остальное посчитается само.',
 		faqs: [
+			{
+				question: 'Как перевести JSON в YAML?',
+				answer:
+					'Вставьте JSON в поле ввода и откройте вкладку YAML — перевод произойдёт сразу, результат можно скопировать или скачать. Обратное тоже работает: если вставить YAML, инструмент распознает его сам и покажет JSON во вкладках Formatted и Minified. YAML удобнее для конфигов, потому что читается глазами и допускает комментарии, а JSON — для передачи данных между программами.'
+			},
 			{
 				question: 'Что такое валидация JSON?',
 				answer:
@@ -64,7 +66,7 @@ export const javascriptWidgets: Widget[] = [
 		description:
 			'Оптимизируйте и сжимайте JavaScript код для лучшей производительности',
 		useCase: 'Уменьшение размера JavaScript файлов для быстрой загрузки сайта',
-		recommendedTools: ['css-minifier', 'json-tools', 'js-validator'],
+		recommendedTools: ['css-minifier', 'json-tools', 'javascript-syntax-checker'],
 		difficulty: 'beginner',
 		tags: [
 			'minify',
@@ -101,60 +103,6 @@ export const javascriptWidgets: Widget[] = [
 				question: 'Поддерживается ли современный синтаксис ES6+?',
 				answer:
 					'Да! Минификатор полностью поддерживает ES6+ синтаксис, включая стрелочные функции, async/await, деструктуризацию, классы и модули. Работает с современным JavaScript кодом.'
-			}
-		]
-	},
-	{
-		id: 'js-validator',
-		icon: Bug,
-		category: 'javascript',
-		translationKey: 'jsValidator',
-		path: 'js-validator',
-		gradient: 'from-red-500 to-pink-600',
-		title: 'JavaScript валидатор',
-		description: 'Найдите ошибки в JavaScript коде',
-		useCase: 'Быстрая проверка JavaScript на ошибки',
-		recommendedTools: [
-			'js-minifier',
-			'json-tools',
-			'javascript-syntax-checker'
-		],
-		difficulty: 'beginner',
-		tags: [
-			'javascript',
-			'validator',
-			'syntax',
-			'linter',
-			'debugging',
-			'quality'
-		],
-		metaDescription:
-			'JavaScript-валидатор и проверка синтаксиса. Находите ошибки в JS-коде, проверяйте качество и отлаживайте синтаксис.',
-		faqs: [
-			{
-				question: 'Что проверяет JavaScript валидатор?',
-				answer:
-					'Валидатор проверяет синтаксические ошибки, неопределенные переменные, пропущенные точки с запятой, присваивание в условиях, незакрытые скобки и другие распространенные проблемы JavaScript.'
-			},
-			{
-				question: 'Какие версии JavaScript поддерживаются?',
-				answer:
-					'Инструмент поддерживает ES5, ES2015, ES2017, ES2020 и ES2022, включая современные возможности как async/await, классы и модули.'
-			},
-			{
-				question: 'В чем разница между ошибками и предупреждениями?',
-				answer:
-					'Ошибки - это синтаксические проблемы, которые не позволяют коду работать. Предупреждения - это проблемы стиля/качества, которые могут вызвать проблемы или усложнить поддержку кода.'
-			},
-			{
-				question: 'Можно ли использовать для React или Node.js кода?',
-				answer:
-					'Да, валидатор работает с любым JavaScript кодом, включая React JSX, модули Node.js и современный синтаксис ES6+.'
-			},
-			{
-				question: 'Заменяет ли валидатор ESLint или TypeScript?',
-				answer:
-					'Нет, это инструмент для быстрой проверки синтаксиса. ESLint обеспечивает комплексный линтинг и проверку стиля, TypeScript добавляет типизацию. Используйте валидатор для быстрых проверок, профессиональные инструменты для проектов.'
 			}
 		]
 	},
@@ -248,52 +196,4 @@ export const javascriptWidgets: Widget[] = [
 			}
 		]
 	},
-	{
-		id: 'json-yaml-formatter',
-		icon: FileJson,
-		category: 'javascript',
-		translationKey: 'jsonYamlFormatter',
-		path: 'json-yaml-formatter',
-		gradient: 'from-orange-500 to-yellow-600',
-		title: 'JSON/YAML форматтер',
-		description: 'Форматирование, валидация и конвертация JSON/YAML',
-		recommendedTools: [
-			'json-tools',
-			'base64-encoder',
-			'javascript-syntax-checker'
-		],
-		difficulty: 'beginner',
-		tags: ['json', 'yaml', 'formatter', 'validator', 'converter'],
-		useCase: 'Обработка и конвертация конфигурационных файлов',
-		metaDescription:
-			'Форматтер и конвертер JSON/YAML. Валидируйте, форматируйте и конвертируйте данные между форматами онлайн.',
-		faqs: [
-			{
-				question: 'В чем разница между JSON и YAML?',
-				answer:
-					'JSON использует скобки и кавычки, что делает его компактным, но менее читаемым. YAML использует отступы и более читаем для человека. Оба представляют одинаковые структуры данных (объекты, массивы, строки, числа), но YAML легче читать и редактировать вручную.'
-			},
-			{
-				question: 'Когда использовать JSON против YAML?',
-				answer:
-					'Используйте JSON для API, веб-приложений и когда размер имеет значение. Используйте YAML для конфигурационных файлов, документации и когда важна читаемость для человека. JSON быстрее парсится, YAML легче писать и поддерживать.'
-			},
-			{
-				question: 'Будут ли потеряны данные при конверсии между форматами?',
-				answer:
-					'Нет, оба формата поддерживают одинаковые типы данных (строки, числа, булевы значения, массивы, объекты, null). Конверсия без потерь - структура данных и значения остаются идентичными, изменяется только синтаксис.'
-			},
-			{
-				question: 'Как форматтер обрабатывает неверный синтаксис?',
-				answer:
-					'Инструмент покажет четкие сообщения об ошибках, указывающие на проблемную строку и символ. Для JSON обнаруживает пропущенные кавычки, завершающие запятые и несовпадения скобок. Для YAML обнаруживает ошибки отступов и структуры.'
-			},
-			{
-				question:
-					'Могу ли я форматировать минифицированные или компактные данные?',
-				answer:
-					'Да! Форматтер может взять минифицированный/сжатый JSON или компактный YAML и развернуть его с правильными отступами и переносами строк, что значительно облегчает чтение и отладку.'
-			}
-		]
-	}
 ]
