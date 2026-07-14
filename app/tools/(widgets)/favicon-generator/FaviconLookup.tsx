@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Search, Download, ExternalLink } from 'lucide-react'
+import { Search, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 
 /** По умолчанию показываем свой сайт — так сразу видно, что инструмент делает. */
@@ -63,21 +63,6 @@ export function FaviconLookup() {
 			toast.error('Не удалось связаться с сайтом')
 		} finally {
 			setIsLoading(false)
-		}
-	}
-
-	const download = async (icon: FoundIcon) => {
-		try {
-			const response = await fetch(icon.url)
-			const blob = await response.blob()
-			const url = URL.createObjectURL(blob)
-			const link = document.createElement('a')
-			link.href = url
-			link.download = icon.url.split('/').pop()?.split('?')[0] || 'favicon'
-			link.click()
-			URL.revokeObjectURL(url)
-		} catch {
-			toast.error('Файл не скачался — сайт мог запретить прямой доступ')
 		}
 	}
 
@@ -165,32 +150,24 @@ export function FaviconLookup() {
 							</div>
 
 							{icon.reachable && (
-								<div className='flex shrink-0 gap-1'>
-									<Button
-										size='sm'
-										variant='outline'
-										className='cursor-pointer'
-										onClick={() => download(icon)}
-										title='Скачать'
+								// Скачать напрямую нельзя: файл лежит на чужом домене, и
+								// fetch туда режет CORS. Открываем в новой вкладке — оттуда
+								// иконка сохраняется штатным «Сохранить как».
+								<Button
+									size='sm'
+									variant='outline'
+									className='shrink-0 cursor-pointer'
+									asChild
+								>
+									<a
+										href={icon.url}
+										target='_blank'
+										rel='noopener noreferrer'
+										title='Открыть иконку в новой вкладке'
 									>
-										<Download className='h-3 w-3' />
-									</Button>
-									<Button
-										size='sm'
-										variant='outline'
-										className='cursor-pointer'
-										asChild
-									>
-										<a
-											href={icon.url}
-											target='_blank'
-											rel='noopener noreferrer'
-											title='Открыть в новой вкладке'
-										>
-											<ExternalLink className='h-3 w-3' />
-										</a>
-									</Button>
-								</div>
+										<ExternalLink className='h-3 w-3' />
+									</a>
+								</Button>
 							)}
 						</div>
 					))}

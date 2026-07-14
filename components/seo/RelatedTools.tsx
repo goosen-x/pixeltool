@@ -34,8 +34,10 @@ export function RelatedTools({
 	}
 
 	return (
-		<section className='mt-16'>
-			{/* Тот же размер, что у h2 в обучающих блоках (*Guide.tsx) */}
+		// Та же ширина, что у обучающих блоков (*Guide.tsx), — иначе карусель
+		// растягивается на всю страницу и карточки выглядят непомерно широкими.
+		<section className='mt-16 max-w-3xl mx-auto'>
+			{/* Тот же размер, что у h2 в обучающих блоках */}
 			<h2 className='text-2xl font-bold tracking-tight'>Похожие инструменты</h2>
 			<p className='mt-1 text-sm text-muted-foreground'>
 				Другие полезные инструменты из той же категории

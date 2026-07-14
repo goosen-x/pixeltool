@@ -1,5 +1,5 @@
 import { Widget } from './index'
-import { Code, FileImage, GitBranch, Globe } from 'lucide-react'
+import { FileCode, FileImage, GitBranch, Globe } from 'lucide-react'
 import { MarkdownIcon } from '@/components/icons/MarkdownIcon'
 
 export const htmlWidgets: Widget[] = [
@@ -100,7 +100,7 @@ export const htmlWidgets: Widget[] = [
 	},
 	{
 		id: 'html-xml-parser',
-		icon: Code,
+		icon: FileCode,
 		category: 'html',
 		translationKey: 'htmlXmlParser',
 		path: 'html-xml-parser',

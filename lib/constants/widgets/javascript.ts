@@ -1,5 +1,5 @@
 import { Widget } from './index'
-import { Braces, Code, Search } from 'lucide-react'
+import { Braces, Code, Search, Shrink } from 'lucide-react'
 
 export const javascriptWidgets: Widget[] = [
 	{
@@ -56,7 +56,7 @@ export const javascriptWidgets: Widget[] = [
 	},
 	{
 		id: 'js-minifier',
-		icon: Code,
+		icon: Shrink,
 		iconName: 'Code',
 		category: 'javascript',
 		translationKey: 'jsMinifier',

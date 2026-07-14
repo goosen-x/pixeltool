@@ -1,16 +1,5 @@
 import { Widget } from './index'
-import {
-	Box,
-	Circle,
-	Grid3X3,
-	Hash,
-	Layers,
-	Palette,
-	Ruler,
-	Sparkles,
-	Spline,
-	Square
-} from 'lucide-react'
+import { ArrowLeftRight, Box, Circle, Grid3X3, Hash, Layers, Minimize2, Palette, Ruler, Sparkles, Spline, Square } from 'lucide-react'
 
 export const cssWidgets: Widget[] = [
 	{
@@ -369,7 +358,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'css-minifier',
-		icon: Palette,
+		icon: Minimize2,
 		iconName: 'Palette',
 		category: 'css',
 		translationKey: 'cssMinifier',
@@ -428,7 +417,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'px-rem-converter',
-		icon: Ruler,
+		icon: ArrowLeftRight,
 		category: 'css',
 		translationKey: 'pxRemConverter',
 		path: 'px-rem-converter',

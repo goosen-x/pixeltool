@@ -1,5 +1,5 @@
 import { Widget } from './index'
-import { Coins, Dices, List, Shuffle, Users } from 'lucide-react'
+import { Binary, Coins, Dices, List, Shuffle, Users } from 'lucide-react'
 
 export const generatorWidgets: Widget[] = [
 	{
@@ -102,7 +102,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'random-number-generator',
-		icon: Dices,
+		icon: Binary,
 		category: 'generators',
 		translationKey: 'randomNumberGenerator',
 		path: 'random-number-generator',

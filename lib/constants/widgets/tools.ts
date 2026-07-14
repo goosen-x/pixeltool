@@ -1,14 +1,5 @@
 import { Widget } from './index'
-import {
-	Clock,
-	Code,
-	Database,
-	ImageIcon,
-	LinkIcon,
-	Monitor,
-	TerminalSquare,
-	Youtube
-} from 'lucide-react'
+import { Clock, Database, DatabaseZap, ImageIcon, LinkIcon, Monitor, SquareCode, TerminalSquare, Youtube } from 'lucide-react'
 import { SVGIcon } from '@/components/icons/SVGIcon'
 
 export const toolWidgets: Widget[] = [
@@ -352,7 +343,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'php-syntax-checker',
-		icon: Code,
+		icon: SquareCode,
 		category: 'tools',
 		translationKey: 'phpSyntaxChecker',
 		path: 'php-syntax-checker',
@@ -399,7 +390,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'mysql-syntax-checker',
-		icon: Database,
+		icon: DatabaseZap,
 		category: 'tools',
 		translationKey: 'mysqlSyntaxChecker',
 		path: 'mysql-syntax-checker',

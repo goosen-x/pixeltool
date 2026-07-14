@@ -1,10 +1,10 @@
 import { Widget } from './index'
-import { FileSearch, GitCompare, Smile, Type, Volume2 } from 'lucide-react'
+import { Asterisk, CaseSensitive, FileSearch, GitCompare, Laugh, Smile, Volume2, WandSparkles } from 'lucide-react'
 
 export const textWidgets: Widget[] = [
 	{
 		id: 'special-symbols-picker',
-		icon: Type,
+		icon: Asterisk,
 		category: 'text',
 		translationKey: 'specialSymbolsPicker',
 		path: 'special-symbols-picker',
@@ -54,7 +54,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'fancy-text-generator',
-		icon: Type,
+		icon: WandSparkles,
 		category: 'text',
 		translationKey: 'fancyTextGenerator',
 		path: 'fancy-text-generator',
@@ -103,7 +103,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-case-converter',
-		icon: Type,
+		icon: CaseSensitive,
 		category: 'text',
 		translationKey: 'textCaseConverter',
 		path: 'text-case-converter',
@@ -206,7 +206,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-emoticons',
-		icon: Type,
+		icon: Laugh,
 		category: 'text',
 		translationKey: 'textEmoticons',
 		path: 'text-emoticons',
