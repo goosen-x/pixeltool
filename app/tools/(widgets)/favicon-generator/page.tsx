@@ -9,6 +9,8 @@ import { Upload, Download, Grid3x3 } from 'lucide-react'
 import { toast } from 'sonner'
 import JSZip from 'jszip'
 import { buildIco, buildIcoBuffer } from '@/lib/favicon/ico'
+import { FaviconGuide } from './FaviconGuide'
+import { FaviconLookup } from './FaviconLookup'
 
 /** Размеры, которые кладём в favicon.ico — так его собирают все генераторы. */
 const ICO_SIZES = [16, 32, 48]
@@ -343,8 +345,14 @@ export default function FaviconGeneratorPage() {
 							</div>
 						</>
 					)}
+
+					<div className='border-t pt-6'>
+						<FaviconLookup />
+					</div>
 				</CardContent>
 			</Card>
+
+			<FaviconGuide />
 
 			{/* Скрытый канвас для перерисовки картинки */}
 			<canvas ref={canvasRef} className='hidden' width={512} height={512} />
