@@ -190,13 +190,22 @@ export default function ToolsPage() {
 			{/* Карточка-секция в том же ключе, что и шапка: та же скруглённая рамка
 			    и та же контурная подложка */}
 			<section className='relative mb-12 overflow-hidden rounded-3xl border bg-card px-6 py-12 text-center sm:px-10 sm:py-16'>
+				{/* Два контура по углам — обрамляют текст, не залезая под него */}
 				<Image
-					src='/images/tools-hero-bg.png'
+					src='/images/patterns/contour-1.png'
 					alt=''
 					aria-hidden
-					width={1200}
-					height={1200}
-					className='pointer-events-none absolute -left-32 -top-40 w-[34rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
+					width={760}
+					height={760}
+					className='pointer-events-none absolute -left-56 -top-64 w-[60rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
+				/>
+				<Image
+					src='/images/patterns/contour-4.png'
+					alt=''
+					aria-hidden
+					width={760}
+					height={760}
+					className='pointer-events-none absolute -bottom-64 -right-56 hidden w-[60rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert sm:block'
 				/>
 
 				<div className='relative mx-auto max-w-xl space-y-4'>
