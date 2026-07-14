@@ -26,11 +26,18 @@ export function RelatedToolsCarousel({ widgets }: Props) {
 		// на -left-12, то есть за краем контейнера, где их обрезает. Отступ уводит
 		// сами карточки внутрь, а стрелки садятся в получившиеся поля — так они
 		// не наезжают на текст карточек.
-		<Carousel opts={{ align: 'start', loop: true }} className='mt-6 px-12'>
+		<Carousel opts={{ align: 'start', loop: true }} className='mt-3 px-12'>
 			{/* items-stretch тянет слайды на высоту самого высокого. ToolCard вешает
 			    h-full на Card, но оборачивает её в <a>, у которой высота по контенту,
-			    — поэтому высоту дожимаем ссылке через [&>a]:h-full */}
-			<CarouselContent className='-ml-4 items-stretch'>
+			    — поэтому высоту дожимаем ссылке через [&>a]:h-full
+
+			    Отступы p-3 — запас под ховер: карточка приподнимается на
+			    -translate-y-1 и отбрасывает тень, а viewport карусели с
+			    overflow-hidden срезал бы их по краям. Padding внутри вьюпорта даёт
+			    тени куда лечь. По горизонтали он гасит часть -ml-4, поэтому крайние
+			    карточки просто уходят на 12px внутрь, а расстояние между слайдами
+			    не меняется. */}
+			<CarouselContent className='-ml-4 items-stretch p-3'>
 				{widgets.map(widget => (
 					<CarouselItem key={widget.id} className='pl-4 sm:basis-1/2'>
 						<div className='h-full [&>a]:h-full'>
