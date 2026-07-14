@@ -3,9 +3,9 @@
 import React, { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { WidgetWrapper } from '@/components/widgets/WidgetWrapper'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, Download, Image as ImageIcon, Grid3x3 } from 'lucide-react'
+import { Upload, Download, Grid3x3 } from 'lucide-react'
 import { toast } from 'sonner'
 import JSZip from 'jszip'
 import { buildIco, buildIcoBuffer } from '@/lib/favicon/ico'
@@ -220,14 +220,7 @@ export default function FaviconGeneratorPage() {
 	return (
 		<WidgetWrapper>
 			<Card>
-				<CardHeader>
-					<CardTitle className='flex items-center gap-2'>
-						<ImageIcon className='w-4 h-4' />
-						Фавикон из картинки
-					</CardTitle>
-				</CardHeader>
-
-				<CardContent className='space-y-6'>
+				<CardContent className='space-y-6 pt-6'>
 					{/* Шаг 1 — картинка */}
 					<div className='grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center'>
 						<div
