@@ -5,22 +5,23 @@ import Image from 'next/image'
 import { WidgetWrapper } from '@/components/widgets/WidgetWrapper'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-	Upload,
-	Download,
-	Image as ImageIcon,
-	Palette,
-	Grid3x3,
-	Monitor
-} from 'lucide-react'
+import { Upload, Download, Image as ImageIcon, Grid3x3 } from 'lucide-react'
 import { toast } from 'sonner'
+import JSZip from 'jszip'
+import { buildIco, buildIcoBuffer } from '@/lib/favicon/ico'
+
+/** Размеры, которые кладём в favicon.ico — так его собирают все генераторы. */
+const ICO_SIZES = [16, 32, 48]
+
+/** Кладём и в архив, и на страницу — чтобы не разъезжались. */
+const HEAD_SNIPPET = `<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png">
+<link rel="apple-touch-icon" href="/favicon-180x180.png">`
 
 // Favicon sizes for different platforms
 const FAVICON_SIZES = [
-	{ size: 16, name: 'Классический фавикон', format: 'ico' },
+	// Канвас отдаёт только PNG. Настоящий .ico собирается отдельно из 16/32/48.
+	{ size: 16, name: 'Классический фавикон', format: 'png' },
 	{ size: 32, name: 'Стандартный фавикон', format: 'png' },
 	{ size: 48, name: 'Иконка сайта Windows', format: 'png' },
 	{ size: 57, name: 'Экран «Домой» iOS', format: 'png' },
@@ -110,10 +111,7 @@ export default function FaviconGeneratorPage() {
 
 				ctx.drawImage(img, x, y, minDim, minDim, 0, 0, size, size)
 
-				// Convert to data URL
-				const dataUrl = canvas.toDataURL(
-					`image/${format === 'ico' ? 'png' : format}`
-				)
+				const dataUrl = canvas.toDataURL(`image/${format}`)
 
 				return {
 					size,
@@ -139,199 +137,223 @@ export default function FaviconGeneratorPage() {
 		toast.success(`Скачано: ${favicon.name}`)
 	}
 
-	const downloadAll = () => {
+	/** data:image/png;base64,… → сырые байты PNG. */
+	const dataUrlToBytes = (dataUrl: string): ArrayBuffer => {
+		const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1)
+		const binary = atob(base64)
+		const bytes = new Uint8Array(binary.length)
+		for (let i = 0; i < binary.length; i++) {
+			bytes[i] = binary.charCodeAt(i)
+		}
+		return bytes.buffer
+	}
+
+	const downloadIco = () => {
+		const frames = ICO_SIZES.map(size => {
+			const favicon = generatedFavicons.find(item => item.size === size)
+			return favicon
+				? { size, png: dataUrlToBytes(favicon.dataUrl) }
+				: null
+		}).filter((frame): frame is { size: number; png: ArrayBuffer } => frame !== null)
+
+		if (frames.length === 0) {
+			toast.error('Сначала загрузите картинку')
+			return
+		}
+
+		const url = URL.createObjectURL(buildIco(frames))
+		const link = document.createElement('a')
+		link.download = 'favicon.ico'
+		link.href = url
+		link.click()
+		URL.revokeObjectURL(url)
+		toast.success('Скачан favicon.ico — внутри 16, 32 и 48 пикселей')
+	}
+
+	/**
+	 * Раньше здесь запускалось десять скачиваний подряд через setTimeout —
+	 * браузеры блокируют такое после второго-третьего файла. Отдаём архив.
+	 */
+	const downloadAll = async () => {
 		if (generatedFavicons.length === 0) {
 			toast.error('Нет фавиконов для скачивания')
 			return
 		}
 
-		generatedFavicons.forEach((favicon, index) => {
-			setTimeout(() => {
-				downloadFavicon(favicon)
-			}, index * 100) // Small delay between downloads
-		})
-		toast.success('Скачивание всех фавиконов...')
+		const zip = new JSZip()
+
+		for (const favicon of generatedFavicons) {
+			zip.file(
+				`favicon-${favicon.size}x${favicon.size}.png`,
+				dataUrlToBytes(favicon.dataUrl)
+			)
+		}
+
+		const icoFrames = ICO_SIZES.map(size =>
+			generatedFavicons.find(item => item.size === size)
+		).filter(Boolean) as typeof generatedFavicons
+
+		if (icoFrames.length > 0) {
+			zip.file(
+				'favicon.ico',
+				buildIcoBuffer(
+					icoFrames.map(item => ({
+						size: item.size,
+						png: dataUrlToBytes(item.dataUrl)
+					}))
+				)
+			)
+		}
+
+		zip.file('head.html', HEAD_SNIPPET)
+
+		const blob = await zip.generateAsync({ type: 'blob' })
+		const url = URL.createObjectURL(blob)
+		const link = document.createElement('a')
+		link.download = 'favicon.zip'
+		link.href = url
+		link.click()
+		URL.revokeObjectURL(url)
+		toast.success('Скачан favicon.zip')
 	}
 
 	return (
 		<WidgetWrapper>
-			<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-				{/* Upload Section */}
-				<div className='space-y-4'>
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center gap-2'>
-								<Upload className='w-4 h-4' />
-								Загрузка изображения
-							</CardTitle>
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							<div
-								className='border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center transition-colors hover:border-muted-foreground/50'
-								onDrop={handleDrop}
-								onDragOver={e => e.preventDefault()}
-								onClick={() => fileInputRef.current?.click()}
-							>
-								<ImageIcon className='w-12 h-12 mx-auto mb-4 text-muted-foreground' />
-								<p className='text-sm text-muted-foreground mb-2'>
-									Перетащите изображение сюда или нажмите для загрузки
-								</p>
-								<p className='text-xs text-muted-foreground'>
-									Поддерживает PNG, JPG, SVG • Макс. 5 МБ
-								</p>
-								<input
-									ref={fileInputRef}
-									type='file'
-									accept='image/*'
-									onChange={handleFileSelect}
-									className='hidden'
-									aria-label='Загрузить файл изображения для генерации фавикона'
+			<Card>
+				<CardHeader>
+					<CardTitle className='flex items-center gap-2'>
+						<ImageIcon className='w-4 h-4' />
+						Фавикон из картинки
+					</CardTitle>
+				</CardHeader>
+
+				<CardContent className='space-y-6'>
+					{/* Шаг 1 — картинка */}
+					<div className='grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center'>
+						<div
+							className='cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center transition-colors hover:border-muted-foreground/50'
+							onDrop={handleDrop}
+							onDragOver={e => e.preventDefault()}
+							onClick={() => fileInputRef.current?.click()}
+						>
+							<Upload className='mx-auto mb-2 h-8 w-8 text-muted-foreground' />
+							<p className='text-sm'>
+								Перетащите картинку или нажмите, чтобы выбрать
+							</p>
+							<p className='mt-1 text-xs text-muted-foreground'>
+								PNG, JPG, SVG до 5 МБ. Лучше всего — квадрат от 512 пикселей:
+								мелкие детали при 16 пикселях всё равно не видны.
+							</p>
+							<input
+								ref={fileInputRef}
+								type='file'
+								accept='image/*'
+								onChange={handleFileSelect}
+								className='hidden'
+								aria-label='Загрузить изображение для генерации фавикона'
+							/>
+						</div>
+
+						{previewUrl && (
+							<div className='relative mx-auto h-24 w-24 overflow-hidden rounded-lg bg-muted'>
+								<Image
+									src={previewUrl}
+									alt='Предпросмотр загруженной картинки'
+									fill
+									className='object-contain p-2'
 								/>
 							</div>
+						)}
+					</div>
 
-							{previewUrl && (
-								<div className='space-y-3'>
-									<h4 className='text-sm font-medium'>Предпросмотр</h4>
-									<div className='bg-muted rounded-lg p-4 flex justify-center'>
-										<div className='relative w-32 h-32'>
-											<Image
-												src={previewUrl}
-												alt='Предпросмотр'
-												fill
-												className='object-contain rounded'
-											/>
-										</div>
-									</div>
-								</div>
-							)}
+					<Button
+						onClick={generateFavicons}
+						disabled={!selectedImage || isGenerating}
+						className='w-full cursor-pointer'
+					>
+						<Grid3x3 className='mr-2 h-4 w-4' />
+						{isGenerating ? 'Генерация…' : 'Сгенерировать фавиконы'}
+					</Button>
 
-							<Button
-								onClick={generateFavicons}
-								disabled={!selectedImage || isGenerating}
-								className='w-full'
-							>
-								<Grid3x3 className='w-4 h-4 mr-2' />
-								{isGenerating ? 'Генерация...' : 'Сгенерировать фавиконы'}
-							</Button>
-						</CardContent>
-					</Card>
-
-					{/* Tips */}
-					<Card>
-						<CardHeader>
-							<CardTitle className='flex items-center gap-2'>
-								<Palette className='w-4 h-4' />
-								Советы для лучшего результата
-							</CardTitle>
-						</CardHeader>
-						<CardContent className='space-y-2 text-sm text-muted-foreground'>
-							<p>• Используйте квадратные изображения (соотношение 1:1)</p>
-							<p>• Минимальный рекомендуемый размер: 512x512px</p>
-							<p>
-								• Простые, контрастные изображения лучше смотрятся в малых
-								размерах
-							</p>
-							<p>• Избегайте мелких деталей, которые не видны при 16px</p>
-							<p>• Высокий контраст обеспечивает лучшую видимость</p>
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Generated Favicons */}
-				<div className='space-y-4'>
-					<Card>
-						<CardHeader className='flex flex-row items-center justify-between'>
-							<CardTitle className='flex items-center gap-2'>
-								<Monitor className='w-4 h-4' />
-								Сгенерированные фавиконы ({generatedFavicons.length})
-							</CardTitle>
-							{generatedFavicons.length > 0 && (
-								<Button onClick={downloadAll} size='sm'>
-									<Download className='w-4 h-4 mr-2' />
-									Скачать все
-								</Button>
-							)}
-						</CardHeader>
-						<CardContent>
-							{generatedFavicons.length === 0 ? (
-								<div className='text-center py-8 text-muted-foreground'>
-									<ImageIcon className='w-8 h-8 mx-auto mb-2 opacity-50' />
-									<p>Фавиконы ещё не сгенерированы</p>
-								</div>
-							) : (
-								<div className='space-y-3'>
-									{generatedFavicons.map((favicon, index) => (
-										<div
-											key={index}
-											className='flex items-center justify-between p-3 rounded-lg border bg-muted/30'
+					{/* Шаг 2 — результат */}
+					{generatedFavicons.length > 0 && (
+						<>
+							<div>
+								<h3 className='mb-3 text-sm font-medium'>
+									Размеры ({generatedFavicons.length})
+								</h3>
+								<div className='grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5'>
+									{generatedFavicons.map(favicon => (
+										<button
+											key={favicon.size}
+											type='button'
+											onClick={() => downloadFavicon(favicon)}
+											title={`${favicon.name} — скачать`}
+											className='flex cursor-pointer flex-col items-center gap-1 rounded-lg border bg-muted/30 p-3 transition-colors hover:bg-muted'
 										>
-											<div className='flex items-center gap-3'>
-												<div className='flex-shrink-0'>
-													<div
-														className='relative rounded overflow-hidden'
-														style={{
-															width: Math.min(favicon.size, 32),
-															height: Math.min(favicon.size, 32)
-														}}
-													>
-														<Image
-															src={favicon.dataUrl}
-															alt={favicon.name}
-															fill
-															className='object-contain'
-														/>
-													</div>
-												</div>
-												<div>
-													<p className='text-sm font-medium'>{favicon.name}</p>
-													<div className='flex items-center gap-2 text-xs text-muted-foreground'>
-														<Badge variant='outline' className='text-xs'>
-															{favicon.size}×{favicon.size}
-														</Badge>
-														<Badge variant='outline' className='text-xs'>
-															{favicon.format.toUpperCase()}
-														</Badge>
-													</div>
-												</div>
+											<div className='relative h-8 w-8'>
+												<Image
+													src={favicon.dataUrl}
+													alt={favicon.name}
+													fill
+													className='object-contain'
+												/>
 											</div>
-											<Button
-												size='sm'
-												variant='outline'
-												onClick={() => downloadFavicon(favicon)}
-											>
-												<Download className='w-3 h-3' />
-											</Button>
-										</div>
+											<span className='text-xs font-medium'>
+												{favicon.size}×{favicon.size}
+											</span>
+											<span className='text-[0.625rem] text-muted-foreground'>
+												{favicon.name}
+											</span>
+										</button>
 									))}
 								</div>
-							)}
-						</CardContent>
-					</Card>
-
-					{/* Usage Info */}
-					{generatedFavicons.length > 0 && (
-						<Card>
-							<CardHeader>
-								<CardTitle className='text-sm'>Как использовать</CardTitle>
-							</CardHeader>
-							<CardContent className='space-y-2 text-xs text-muted-foreground'>
-								<p>
-									<strong>HTML:</strong> Добавьте в секцию &lt;head&gt;:
+								<p className='mt-2 text-xs text-muted-foreground'>
+									Нажмите на размер, чтобы скачать его отдельно.
 								</p>
-								<code className='inline-code block'>
-									{`<link rel="icon" href="/favicon-32x32.png" sizes="32x32">`}
-									<br />
-									{`<link rel="icon" href="/favicon-16x16.png" sizes="16x16">`}
-									<br />
-									{`<link rel="apple-touch-icon" href="/favicon-180x180.png">`}
-								</code>
-							</CardContent>
-						</Card>
-					)}
-				</div>
-			</div>
+							</div>
 
-			{/* Hidden canvas for image processing */}
+							{/* Шаг 3 — скачивание */}
+							<div className='grid gap-2 sm:grid-cols-2'>
+								<Button onClick={downloadAll} className='cursor-pointer'>
+									<Download className='mr-2 h-4 w-4' />
+									Скачать всё архивом
+								</Button>
+								<Button
+									variant='outline'
+									onClick={downloadIco}
+									className='cursor-pointer'
+								>
+									<Download className='mr-2 h-4 w-4' />
+									Только favicon.ico
+								</Button>
+							</div>
+
+							{/* Шаг 4 — как подключить */}
+							<div className='space-y-2 rounded-lg border bg-muted/30 p-4'>
+								<h3 className='text-sm font-medium'>Как подключить</h3>
+								<p className='text-xs text-muted-foreground'>
+									В архиве лежат PNG всех размеров и настоящий{' '}
+									<code className='font-mono'>favicon.ico</code> — внутри него
+									сразу 16, 32 и 48 пикселей, браузер сам возьмёт нужный.
+									Положите файлы в корень сайта и добавьте в{' '}
+									<code className='font-mono'>&lt;head&gt;</code>:
+								</p>
+								<pre className='overflow-x-auto rounded bg-background p-3 text-xs'>
+									<code className='font-mono'>{HEAD_SNIPPET}</code>
+								</pre>
+								<p className='text-xs text-muted-foreground'>
+									Первая строка — для вкладок и старых браузеров, вторая даёт
+									чёткую иконку на плотных экранах, третья нужна, когда сайт
+									сохраняют на домашний экран айфона.
+								</p>
+							</div>
+						</>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Скрытый канвас для перерисовки картинки */}
 			<canvas ref={canvasRef} className='hidden' width={512} height={512} />
 		</WidgetWrapper>
 	)
