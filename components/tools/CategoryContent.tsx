@@ -1,5 +1,5 @@
-import { ChevronDown } from 'lucide-react'
 import { CATEGORY_META } from '@/lib/constants/categories'
+import { FaqAccordion } from '@/components/tools/FaqAccordion'
 
 interface Props {
 	category: string
@@ -25,20 +25,12 @@ export function CategoryContent({ category }: Props) {
 			{/* Каждый пункт — своя карточка: два абзаца подряд читаются как стена
 			    текста, а разнесённые по карточкам — как два отдельных утверждения */}
 			<section className='mb-12 grid gap-6 md:grid-cols-2'>
-				{meta.intro.map((item, index) => (
+				{meta.intro.map(item => (
 					<article
 						key={item.title}
 						className='rounded-3xl border bg-muted p-6 dark:bg-card sm:p-8'
 					>
-						<span
-							aria-hidden
-							className='text-sm font-semibold text-muted-foreground/60'
-						>
-							{String(index + 1).padStart(2, '0')}
-						</span>
-						<h2 className='mt-3 text-xl font-bold tracking-tight'>
-							{item.title}
-						</h2>
+						<h2 className='text-xl font-bold tracking-tight'>{item.title}</h2>
 						<p className='mt-3 leading-relaxed text-muted-foreground'>
 							{item.text}
 						</p>
@@ -48,22 +40,8 @@ export function CategoryContent({ category }: Props) {
 
 			<section className='mx-auto mb-12 max-w-3xl'>
 				<h2 className='text-2xl font-bold tracking-tight'>Частые вопросы</h2>
-
-				<div className='mt-6 divide-y rounded-2xl border'>
-					{meta.faqs.map(faq => (
-						<details key={faq.question} className='group px-5'>
-							<summary className='flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-medium marker:hidden [&::-webkit-details-marker]:hidden'>
-								{faq.question}
-								<ChevronDown
-									aria-hidden
-									className='h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180'
-								/>
-							</summary>
-							<p className='pb-4 leading-relaxed text-muted-foreground'>
-								{faq.answer}
-							</p>
-						</details>
-					))}
+				<div className='mt-6'>
+					<FaqAccordion items={meta.faqs} />
 				</div>
 			</section>
 		</>
