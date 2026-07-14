@@ -250,7 +250,16 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						/>
 					</>
 				)}
-				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+				{/* disableTransitionOnChange: у карточек, рамок и фона висят transition
+				    с разной длительностью, и при смене темы каждый элемент доезжал до
+				    нового цвета в своём темпе — картинка «плыла». Флаг гасит переходы
+				    на момент переключения, дальше они работают как обычно. */}
+				<ThemeProvider
+					attribute='class'
+					defaultTheme='system'
+					enableSystem
+					disableTransitionOnChange
+				>
 					<Suspense fallback={null}>
 						<NavigationProgress />
 					</Suspense>
