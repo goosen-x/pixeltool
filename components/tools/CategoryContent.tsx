@@ -22,16 +22,28 @@ export function CategoryContent({ category }: Props) {
 
 	return (
 		<>
-			{/* Вводный текст — своей карточкой, в том же ключе, что шапка и блок
-			    «Предложить инструмент» */}
-			<section className='mb-12 rounded-3xl border bg-muted px-6 py-10 dark:bg-card sm:px-10 sm:py-12'>
-				<div className='mx-auto max-w-3xl space-y-4'>
-					{meta.intro.map(paragraph => (
-						<p key={paragraph.slice(0, 40)} className='leading-relaxed'>
-							{paragraph}
+			{/* Каждый пункт — своя карточка: два абзаца подряд читаются как стена
+			    текста, а разнесённые по карточкам — как два отдельных утверждения */}
+			<section className='mb-12 grid gap-6 md:grid-cols-2'>
+				{meta.intro.map((item, index) => (
+					<article
+						key={item.title}
+						className='rounded-3xl border bg-muted p-6 dark:bg-card sm:p-8'
+					>
+						<span
+							aria-hidden
+							className='text-sm font-semibold text-muted-foreground/60'
+						>
+							{String(index + 1).padStart(2, '0')}
+						</span>
+						<h2 className='mt-3 text-xl font-bold tracking-tight'>
+							{item.title}
+						</h2>
+						<p className='mt-3 leading-relaxed text-muted-foreground'>
+							{item.text}
 						</p>
-					))}
-				</div>
+					</article>
+				))}
 			</section>
 
 			<section className='mx-auto mb-12 max-w-3xl'>
