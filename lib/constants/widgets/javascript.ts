@@ -66,7 +66,11 @@ export const javascriptWidgets: Widget[] = [
 		description:
 			'Оптимизируйте и сжимайте JavaScript код для лучшей производительности',
 		useCase: 'Уменьшение размера JavaScript файлов для быстрой загрузки сайта',
-		recommendedTools: ['css-minifier', 'json-tools', 'javascript-syntax-checker'],
+		recommendedTools: [
+			'css-minifier',
+			'json-tools',
+			'javascript-syntax-checker'
+		],
 		difficulty: 'beginner',
 		tags: [
 			'minify',
@@ -195,5 +199,5 @@ export const javascriptWidgets: Widget[] = [
 					'Отлично для быстрой проверки без открытия IDE, обмена фрагментами кода с другими, проверки кода на мобильных устройствах или когда нужно второе мнение о синтаксисе. Также полезно для обучения синтаксису JavaScript.'
 			}
 		]
-	},
+	}
 ]

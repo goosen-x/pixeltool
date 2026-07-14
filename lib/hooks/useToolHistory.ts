@@ -10,7 +10,9 @@ const read = (key: string): string[] => {
 	try {
 		const raw = localStorage.getItem(key)
 		const parsed = raw ? JSON.parse(raw) : []
-		return Array.isArray(parsed) ? parsed.filter(x => typeof x === 'string') : []
+		return Array.isArray(parsed)
+			? parsed.filter(x => typeof x === 'string')
+			: []
 	} catch {
 		// повреждённый JSON или заблокированное хранилище — не роняем страницу
 		return []

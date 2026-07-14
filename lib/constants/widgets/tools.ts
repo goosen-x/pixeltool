@@ -1,5 +1,15 @@
 import { Widget } from './index'
-import { Clock, Database, DatabaseZap, ImageIcon, LinkIcon, Monitor, SquareCode, TerminalSquare, Youtube } from 'lucide-react'
+import {
+	Clock,
+	Database,
+	DatabaseZap,
+	ImageIcon,
+	LinkIcon,
+	Monitor,
+	SquareCode,
+	TerminalSquare,
+	Youtube
+} from 'lucide-react'
 import { SVGIcon } from '@/components/icons/SVGIcon'
 
 export const toolWidgets: Widget[] = [

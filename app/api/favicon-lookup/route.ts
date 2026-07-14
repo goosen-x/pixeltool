@@ -18,7 +18,13 @@ const MAX_HTML_BYTES = 512 * 1024
 
 /** Адреса, по которым публичному сайту ходить незачем. */
 function isPrivateAddress(ip: string): boolean {
-	if (ip === '::1' || ip === '::' || ip.startsWith('fe80') || ip.startsWith('fc') || ip.startsWith('fd')) {
+	if (
+		ip === '::1' ||
+		ip === '::' ||
+		ip.startsWith('fe80') ||
+		ip.startsWith('fc') ||
+		ip.startsWith('fd')
+	) {
 		return true
 	}
 
@@ -65,7 +71,11 @@ interface FoundIcon {
 	reachable: boolean
 }
 
-async function probe(url: string, rel: string, sizes: string | null): Promise<FoundIcon> {
+async function probe(
+	url: string,
+	rel: string,
+	sizes: string | null
+): Promise<FoundIcon> {
 	try {
 		const response = await fetch(url, {
 			method: 'GET',
@@ -95,7 +105,10 @@ export async function GET(request: NextRequest) {
 	const input = request.nextUrl.searchParams.get('url')
 
 	if (!input) {
-		return NextResponse.json({ error: 'Не передан адрес сайта' }, { status: 400 })
+		return NextResponse.json(
+			{ error: 'Не передан адрес сайта' },
+			{ status: 400 }
+		)
 	}
 
 	let target: URL
@@ -103,7 +116,10 @@ export async function GET(request: NextRequest) {
 		// Человек вводит «example.com» — достраиваем протокол.
 		target = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`)
 	} catch {
-		return NextResponse.json({ error: 'Не похоже на адрес сайта' }, { status: 400 })
+		return NextResponse.json(
+			{ error: 'Не похоже на адрес сайта' },
+			{ status: 400 }
+		)
 	}
 
 	if (!['http:', 'https:'].includes(target.protocol)) {
@@ -141,7 +157,9 @@ export async function GET(request: NextRequest) {
 		const document = new JSDOM(html).window.document
 
 		const declared = Array.from(
-			document.querySelectorAll('link[rel~="icon"], link[rel~="apple-touch-icon"]')
+			document.querySelectorAll(
+				'link[rel~="icon"], link[rel~="apple-touch-icon"]'
+			)
 		)
 			.map(node => {
 				const href = node.getAttribute('href')
@@ -156,7 +174,10 @@ export async function GET(request: NextRequest) {
 					return null
 				}
 			})
-			.filter((item): item is { url: string; rel: string; sizes: string | null } => item !== null)
+			.filter(
+				(item): item is { url: string; rel: string; sizes: string | null } =>
+					item !== null
+			)
 
 		// Даже если в разметке ничего нет, браузер сам просит /favicon.ico.
 		const fallback = new URL('/favicon.ico', finalUrl).toString()
@@ -165,7 +186,8 @@ export async function GET(request: NextRequest) {
 		}
 
 		const unique = declared.filter(
-			(item, index) => declared.findIndex(other => other.url === item.url) === index
+			(item, index) =>
+				declared.findIndex(other => other.url === item.url) === index
 		)
 
 		const icons = await Promise.all(

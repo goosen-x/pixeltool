@@ -1,5 +1,14 @@
 import { Widget } from './index'
-import { Asterisk, CaseSensitive, FileSearch, GitCompare, Laugh, Smile, Volume2, WandSparkles } from 'lucide-react'
+import {
+	Asterisk,
+	CaseSensitive,
+	FileSearch,
+	GitCompare,
+	Laugh,
+	Smile,
+	Volume2,
+	WandSparkles
+} from 'lucide-react'
 
 export const textWidgets: Widget[] = [
 	{
@@ -354,7 +363,11 @@ export const textWidgets: Widget[] = [
 		gradient: 'from-purple-500 to-indigo-600',
 		title: 'Сравнение текстов',
 		description: 'Сравнивайте два текста и находите различия',
-		recommendedTools: ['json-tools', 'text-counter', 'javascript-syntax-checker'],
+		recommendedTools: [
+			'json-tools',
+			'text-counter',
+			'javascript-syntax-checker'
+		],
 		difficulty: 'intermediate',
 		tags: ['diff', 'compare', 'text', 'code', 'changes'],
 		useCase: 'Анализ изменений в коде или документах',

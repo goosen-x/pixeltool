@@ -153,10 +153,10 @@ export default function FaviconGeneratorPage() {
 	const downloadIco = () => {
 		const frames = ICO_SIZES.map(size => {
 			const favicon = generatedFavicons.find(item => item.size === size)
-			return favicon
-				? { size, png: dataUrlToBytes(favicon.dataUrl) }
-				: null
-		}).filter((frame): frame is { size: number; png: ArrayBuffer } => frame !== null)
+			return favicon ? { size, png: dataUrlToBytes(favicon.dataUrl) } : null
+		}).filter(
+			(frame): frame is { size: number; png: ArrayBuffer } => frame !== null
+		)
 
 		if (frames.length === 0) {
 			toast.error('Сначала загрузите картинку')

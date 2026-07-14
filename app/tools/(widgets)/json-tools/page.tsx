@@ -531,7 +531,9 @@ export default function JSONToolsPage() {
 											variant='outline'
 											size='sm'
 											className='cursor-pointer'
-											onClick={() => handleDownload(analysis.yaml!, 'data.yaml')}
+											onClick={() =>
+												handleDownload(analysis.yaml!, 'data.yaml')
+											}
 										>
 											<Download className='h-4 w-4 mr-2' />
 											Download

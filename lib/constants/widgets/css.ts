@@ -1,5 +1,18 @@
 import { Widget } from './index'
-import { ArrowLeftRight, Box, Circle, Grid3X3, Hash, Layers, Minimize2, Palette, Ruler, Sparkles, Spline, Square } from 'lucide-react'
+import {
+	ArrowLeftRight,
+	Box,
+	Circle,
+	Grid3X3,
+	Hash,
+	Layers,
+	Minimize2,
+	Palette,
+	Ruler,
+	Sparkles,
+	Spline,
+	Square
+} from 'lucide-react'
 
 export const cssWidgets: Widget[] = [
 	{

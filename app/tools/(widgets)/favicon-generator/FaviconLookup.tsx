@@ -55,7 +55,9 @@ export function FaviconLookup() {
 
 			const found = (data.icons as FoundIcon[]).filter(icon => icon.reachable)
 			if (found.length === 0) {
-				toast.warning('Фавикон не найден — сайт его не объявил и /favicon.ico пуст')
+				toast.warning(
+					'Фавикон не найден — сайт его не объявил и /favicon.ico пуст'
+				)
 			} else {
 				toast.success(`Найдено иконок: ${found.length}`)
 			}
@@ -67,7 +69,11 @@ export function FaviconLookup() {
 	}
 
 	const formatSize = (bytes: number | null) =>
-		bytes === null ? '' : bytes < 1024 ? `${bytes} Б` : `${Math.round(bytes / 1024)} КБ`
+		bytes === null
+			? ''
+			: bytes < 1024
+				? `${bytes} Б`
+				: `${Math.round(bytes / 1024)} КБ`
 
 	return (
 		<div className='space-y-4'>

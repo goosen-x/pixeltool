@@ -47,7 +47,9 @@ describe('buildIco', () => {
 			expect(view.getUint32(entry + 12, true)).toBe(expectedOffset)
 
 			// По указанному смещению должен лежать именно PNG.
-			const signature = Array.from(bytes.slice(expectedOffset, expectedOffset + 8))
+			const signature = Array.from(
+				bytes.slice(expectedOffset, expectedOffset + 8)
+			)
 			expect(signature).toEqual(PNG_SIGNATURE)
 
 			expectedOffset += frame.png.byteLength

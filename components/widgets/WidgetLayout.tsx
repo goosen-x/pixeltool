@@ -64,9 +64,5 @@ export function WidgetLayout({
 	const widgetDescription =
 		widgetData?.description || 'Инструмент для веб-разработки'
 
-	return (
-		<>
-			{children}
-		</>
-	)
+	return <>{children}</>
 }

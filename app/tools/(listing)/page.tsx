@@ -197,7 +197,7 @@ export default function ToolsPage() {
 					aria-hidden
 					width={760}
 					height={760}
-					className='pointer-events-none absolute -left-56 -top-64 w-[60rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
+					className='pointer-events-none absolute -left-96 -top-96 w-[60rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
 				/>
 				<Image
 					src='/images/patterns/contour-4.png'
@@ -205,7 +205,7 @@ export default function ToolsPage() {
 					aria-hidden
 					width={760}
 					height={760}
-					className='pointer-events-none absolute -bottom-64 -right-56 hidden w-[60rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert sm:block'
+					className='pointer-events-none absolute -bottom-56 -right-56 hidden w-[36rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert sm:block'
 				/>
 
 				<div className='relative mx-auto max-w-xl space-y-4'>

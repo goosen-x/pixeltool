@@ -47,7 +47,9 @@ describe('json-tools: перевод между JSON и YAML', () => {
 		await user.paste('просто текст, не данные')
 
 		await waitFor(() => {
-			expect(screen.queryByRole('tab', { name: /yaml/i })).not.toBeInTheDocument()
+			expect(
+				screen.queryByRole('tab', { name: /yaml/i })
+			).not.toBeInTheDocument()
 		})
 	})
 })
