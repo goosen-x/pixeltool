@@ -53,7 +53,6 @@ export const widgetIconEmojis: Record<string, string> = {
 	'dice-roller': '🎲',
 	'coin-flip': '🪙',
 	'random-picker': '🎰',
-	'bingo-generator': '🎱',
 	'emoji-list': '😊',
 
 	// Time & Date

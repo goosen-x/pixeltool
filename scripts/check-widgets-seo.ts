@@ -17,7 +17,7 @@ interface SEOCheckResult {
 	issues: string[]
 }
 
-const WIDGETS_DIR = path.join(process.cwd(), 'app/tools/(widgets)')
+const WIDGETS_DIR = path.join(process.cwd(), 'app/tools/(widget)')
 
 function checkWidgetSEO(
 	widgetPath: string,

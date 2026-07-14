@@ -18,7 +18,7 @@ interface SchemaCheckResult {
 	warnings: string[]
 }
 
-const WIDGETS_DIR = path.join(process.cwd(), 'app/tools/(widgets)')
+const WIDGETS_DIR = path.join(process.cwd(), 'app/tools/(widget)')
 
 // Schema types that should be present for different widget categories
 const EXPECTED_SCHEMAS: Record<string, string[]> = {
