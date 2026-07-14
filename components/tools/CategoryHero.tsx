@@ -72,10 +72,13 @@ export function CategoryHero({
 
 			<div className='relative grid items-center gap-8 lg:grid-cols-[1fr_auto]'>
 				<div className='max-w-2xl'>
-					<h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>
+					{/* Заголовки и описания у категорий разной длины, а это разные
+					    страницы — без запаса по высоте вся вёрстка ниже прыгала бы при
+					    каждом переходе. Запас: две строки на заголовок, три на описание. */}
+					<h1 className='min-h-[4.75rem] text-3xl font-bold leading-tight tracking-tight sm:min-h-[5.5rem] sm:text-4xl'>
 						{meta.heading}
 					</h1>
-					<p className='mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg'>
+					<p className='mt-4 min-h-[4.875rem] text-base leading-relaxed text-muted-foreground sm:min-h-[5.5rem] sm:text-lg'>
 						{meta.description}
 					</p>
 
