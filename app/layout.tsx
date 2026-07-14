@@ -116,15 +116,17 @@ export async function generateMetadata(): Promise<Metadata> {
 		icons: [
 			{
 				rel: 'icon',
+				// Внутри три кадра — 16, 32 и 48. sizes="any" говорит браузеру, что
+				// выбрать подходящий он может сам.
 				url: '/favicon.ico',
-				sizes: '16x16',
+				sizes: 'any',
 				type: 'image/x-icon'
 			},
 			{
 				rel: 'icon',
-				url: '/favicon-16x16.ico',
+				url: '/favicon-16x16.png',
 				sizes: '16x16',
-				type: 'image/x-icon'
+				type: 'image/png'
 			},
 			{
 				rel: 'icon',

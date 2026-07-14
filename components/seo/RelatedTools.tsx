@@ -1,37 +1,33 @@
-import {
-	widgets,
-	getWidgetById,
-	getRecommendedWidgets
-} from '@/lib/constants/widgets'
-import { ToolCard } from '@/components/tools/ToolCard'
+import { widgets, getRecommendedWidgets } from '@/lib/constants/widgets'
+import { RelatedToolsCarousel } from '@/components/seo/RelatedToolsCarousel'
 
 interface RelatedToolsProps {
 	currentTool: string
 	category?: string
 }
 
+/**
+ * Сначала берём инструменты, явно прописанные в recommendedTools, потом
+ * добираем соседями по категории. Набираем с запасом: в кадре карусели три
+ * карточки, и если слайдов ровно три, embla отключает зацикливание — крутить
+ * становится нечего.
+ */
+const MAX_RELATED = 9
+
 export function RelatedTools({
 	currentTool,
 	category = 'css'
 }: RelatedToolsProps) {
-	const locale = 'ru'
+	const recommended = getRecommendedWidgets(currentTool).slice(0, MAX_RELATED)
 
-	// First try to get recommended tools from widget data
-	let relatedTools = getRecommendedWidgets(currentTool).slice(0, 3)
+	const sameCategory = widgets.filter(
+		widget =>
+			widget.id !== currentTool &&
+			!recommended.some(item => item.id === widget.id) &&
+			widget.category === category
+	)
 
-	// If no recommended tools or less than 3, fall back to category-based selection
-	if (relatedTools.length < 3) {
-		const additionalTools = widgets
-			.filter(
-				widget =>
-					widget.id !== currentTool &&
-					!relatedTools.some(rt => rt.id === widget.id) &&
-					(category ? widget.category === category : true)
-			)
-			.slice(0, 3 - relatedTools.length)
-
-		relatedTools = [...relatedTools, ...additionalTools].slice(0, 3)
-	}
+	const relatedTools = [...recommended, ...sameCategory].slice(0, MAX_RELATED)
 
 	if (relatedTools.length === 0) {
 		return null
@@ -44,11 +40,7 @@ export function RelatedTools({
 			<p className='mt-1 text-sm text-muted-foreground'>
 				Другие полезные инструменты из той же категории
 			</p>
-			<div className='mt-6 grid gap-6 md:grid-cols-3'>
-				{relatedTools.map(widget => (
-					<ToolCard key={widget.id} widget={widget} className='h-full' />
-				))}
-			</div>
+			<RelatedToolsCarousel widgets={relatedTools} />
 		</section>
 	)
 }
