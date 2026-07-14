@@ -19,7 +19,9 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 		title: 'Инструменты',
 		description:
 			'Полсотни инструментов для работы с кодом, текстом и данными. Всё считается прямо в браузере: файлы никуда не уходят, регистрация не нужна.',
-		image: '/images/categories/all.png'
+		// Имя с суффиксом не случайно: под прежним all.png у Next осел старый
+		// вариант картинки, и кэш оптимизатора отдавал его даже после замены файла.
+		image: '/images/categories/all-laptop.png'
 	},
 	css: {
 		title: 'CSS',
