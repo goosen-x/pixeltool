@@ -63,7 +63,7 @@ export function CategoryHero({
 				width={1200}
 				height={1200}
 				priority
-				className='pointer-events-none absolute -right-24 -top-32 w-[38rem] max-w-none select-none opacity-[0.07] dark:opacity-[0.12] dark:invert'
+				className='pointer-events-none absolute -right-24 -top-32 w-[38rem] max-w-none select-none opacity-[0.14] dark:opacity-[0.12] dark:invert'
 			/>
 
 			<div className='relative grid items-center gap-8 lg:grid-cols-[1fr_auto]'>

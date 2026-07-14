@@ -201,7 +201,7 @@ export default function ToolsPage() {
 					aria-hidden
 					width={760}
 					height={760}
-					className='pointer-events-none absolute -right-24 -top-16 w-[22rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
+					className='pointer-events-none absolute -right-[36rem] -top-16 w-[72rem] max-w-none select-none opacity-[0.08] dark:opacity-[0.1] dark:invert'
 				/>
 
 				{/* Картинка слева, текст справа. Без левитации: в шапке она уместна,
