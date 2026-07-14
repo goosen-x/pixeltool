@@ -17,13 +17,16 @@ interface Props {
 /**
  * Карусель похожих инструментов — та же механика, что у карусели статей.
  *
- * По две карточки в кадре: embla отключает зацикливание, если все слайды
- * помещаются целиком, поэтому подборка должна быть длиннее кадра (см.
- * RelatedTools).
+ * По две карточки в кадре. Подборка должна быть заметно длиннее кадра: embla
+ * отключает зацикливание, если все слайды помещаются целиком (см. RelatedTools).
  */
 export function RelatedToolsCarousel({ widgets }: Props) {
 	return (
-		<Carousel opts={{ align: 'start', loop: true }} className='mt-6'>
+		// Боковые отступы освобождают место под стрелки: по умолчанию они стоят
+		// на -left-12, то есть за краем контейнера, где их обрезает. Отступ уводит
+		// сами карточки внутрь, а стрелки садятся в получившиеся поля — так они
+		// не наезжают на текст карточек.
+		<Carousel opts={{ align: 'start', loop: true }} className='mt-6 px-12'>
 			{/* items-stretch тянет слайды на высоту самого высокого. ToolCard вешает
 			    h-full на Card, но оборачивает её в <a>, у которой высота по контенту,
 			    — поэтому высоту дожимаем ссылке через [&>a]:h-full */}
@@ -39,10 +42,8 @@ export function RelatedToolsCarousel({ widgets }: Props) {
 
 			{widgets.length > 1 && (
 				<>
-					{/* По умолчанию стрелки уезжают на -left-12 — за край контейнера,
-					    где их обрезает. Заводим внутрь кадра. */}
-					<CarouselPrevious className='left-2 z-10 hidden cursor-pointer bg-background/90 shadow-md sm:flex' />
-					<CarouselNext className='right-2 z-10 hidden cursor-pointer bg-background/90 shadow-md sm:flex' />
+					<CarouselPrevious className='left-0 hidden cursor-pointer sm:flex' />
+					<CarouselNext className='right-0 hidden cursor-pointer sm:flex' />
 				</>
 			)}
 		</Carousel>
