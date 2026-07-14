@@ -49,8 +49,10 @@ export function CategoryHero({
 		CATEGORY_META[selectedCategory as keyof typeof CATEGORY_META] ??
 		CATEGORY_META['']
 
+	// bg-muted, а не bg-card: в светлой теме card — чистый белый, и карточка
+	// сливалась с фоном страницы
 	return (
-		<section className='relative overflow-hidden rounded-3xl border bg-card px-6 py-10 sm:px-10 sm:py-14'>
+		<section className='relative overflow-hidden rounded-3xl border bg-muted px-6 py-10 dark:bg-card sm:px-10 sm:py-14'>
 			{/* Контурная подложка. Линии чёрные, поэтому в тёмной теме инвертируем —
 			    иначе они сливались бы с фоном. aria-hidden: это украшение, скринридеру
 			    рассказывать о нём нечего. */}
@@ -145,7 +147,7 @@ export function CategoryHero({
 					<div className='hidden lg:block'>
 						<div
 							key={meta.image}
-							className='animate-scale-in relative h-64 w-64 xl:h-80 xl:w-80'
+							className='animate-scale-in relative h-52 w-52 xl:h-64 xl:w-64'
 						>
 							<div className='animate-levitate relative h-full w-full'>
 								<Image

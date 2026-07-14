@@ -189,45 +189,59 @@ export default function ToolsPage() {
 
 			{/* Карточка-секция в том же ключе, что и шапка: та же скруглённая рамка
 			    и та же контурная подложка */}
-			<section className='relative mb-12 overflow-hidden rounded-3xl border bg-card px-6 py-12 text-center sm:px-10 sm:py-16'>
-				{/* Два контура по углам — обрамляют текст, не залезая под него */}
+			{/* В светлой теме карточка на белом фоне страницы сливалась с ним — берём
+			    muted (96% светлоты). Без прозрачности: с ней поверх белого выходило
+			    почти чистые 255,255,255 и разницы не было видно. */}
+			<section className='relative mb-12 overflow-hidden rounded-3xl border bg-muted px-6 py-12 dark:bg-card sm:px-10 sm:py-14'>
+				{/* Контур ушёл в правый угол: слева теперь картинка, и там он лёг бы
+				    прямо под неё */}
 				<Image
 					src='/images/patterns/contour-1.png'
 					alt=''
 					aria-hidden
 					width={760}
 					height={760}
-					className='pointer-events-none absolute -left-96 -top-96 w-[60rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
-				/>
-				<Image
-					src='/images/patterns/contour-4.png'
-					alt=''
-					aria-hidden
-					width={760}
-					height={760}
-					className='pointer-events-none absolute -bottom-56 -right-56 hidden w-[36rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert sm:block'
+					className='pointer-events-none absolute -right-24 -top-16 w-[22rem] max-w-none select-none opacity-[0.06] dark:opacity-[0.1] dark:invert'
 				/>
 
-				<div className='relative mx-auto max-w-xl space-y-4'>
-					<h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>
-						Не нашли нужный инструмент?
-					</h2>
-					<p className='text-base leading-relaxed text-muted-foreground sm:text-lg'>
-						Инструменты добавляются постоянно. Расскажите, чего вам не хватает,
-						— это лучший способ повлиять на то, что появится следующим.
-					</p>
+				{/* Картинка слева, текст справа. Без левитации: в шапке она уместна,
+				    а здесь рядом с кнопкой только отвлекала бы от неё */}
+				<div className='relative grid items-center gap-8 lg:grid-cols-[auto_1fr] lg:gap-16'>
+					<div className='hidden lg:block'>
+						<div className='relative h-40 w-56 xl:h-44 xl:w-64'>
+							<Image
+								src='/images/categories/suggest.png'
+								alt=''
+								aria-hidden
+								fill
+								sizes='384px'
+								className='object-contain drop-shadow-2xl'
+							/>
+						</div>
+					</div>
 
-					{/* Тот же попап, что открывается из карточки обратной связи в
-					    сайдбаре, — заводить под это отдельную страницу незачем */}
-					<div className='pt-2'>
-						<FeedbackModal
-							defaultType='feature'
-							trigger={
-								<Button size='lg' className='cursor-pointer'>
-									Предложить инструмент
-								</Button>
-							}
-						/>
+					<div className='max-w-xl space-y-4'>
+						<h2 className='text-3xl font-bold tracking-tight sm:text-4xl'>
+							Не нашли нужный инструмент?
+						</h2>
+						<p className='text-base leading-relaxed text-muted-foreground sm:text-lg'>
+							Инструменты добавляются постоянно. Расскажите, чего вам не
+							хватает, — это лучший способ повлиять на то, что появится
+							следующим.
+						</p>
+
+						{/* Тот же попап, что открывается из карточки обратной связи в
+						    сайдбаре, — заводить под это отдельную страницу незачем */}
+						<div className='pt-2'>
+							<FeedbackModal
+								defaultType='feature'
+								trigger={
+									<Button size='lg' className='cursor-pointer'>
+										Предложить инструмент
+									</Button>
+								}
+							/>
+						</div>
 					</div>
 				</div>
 			</section>
