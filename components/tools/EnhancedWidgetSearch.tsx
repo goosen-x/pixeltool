@@ -35,10 +35,32 @@ interface ProjectCard {
 	widget: Widget
 }
 
-export function EnhancedWidgetSearch() {
+interface EnhancedWidgetSearchProps {
+	/**
+	 * Категорию можно вести снаружи — на /tools её выбирают в шапке
+	 * (CategoryHero), и оба блока должны показывать одно и то же. Если проп не
+	 * передан, компонент живёт на своём состоянии, как раньше.
+	 */
+	category?: string
+	onCategoryChange?: (category: string) => void
+	/** Скрыть свои чипсы, когда фильтр уже нарисован снаружи. */
+	hideCategoryFilter?: boolean
+}
+
+export function EnhancedWidgetSearch({
+	category,
+	onCategoryChange,
+	hideCategoryFilter = false
+}: EnhancedWidgetSearchProps = {}) {
 	const [searchQuery, setSearchQuery] = useState('')
-	const [selectedCategory, setSelectedCategory] = useState<string>('')
+	const [internalCategory, setInternalCategory] = useState<string>('')
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
+	const selectedCategory = category ?? internalCategory
+	const setSelectedCategory = (next: string) => {
+		if (onCategoryChange) onCategoryChange(next)
+		else setInternalCategory(next)
+	}
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	// const searchT = useTranslations('widgets.search') // Removed translations
@@ -186,28 +208,30 @@ export function EnhancedWidgetSearch() {
 					</div>
 
 					{/* Filters */}
-					<div className='flex flex-wrap gap-2 items-center justify-start'>
-						<Button
-							variant={selectedCategory === '' ? 'default' : 'outline'}
-							size='sm'
-							onClick={() => setSelectedCategory('')}
-							className='rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
-						>
-							Все
-						</Button>
-
-						{Object.entries(widgetCategories).map(([key, title]) => (
+					{!hideCategoryFilter && (
+						<div className='flex flex-wrap gap-2 items-center justify-start'>
 							<Button
-								key={key}
-								variant={selectedCategory === key ? 'default' : 'outline'}
+								variant={selectedCategory === '' ? 'default' : 'outline'}
 								size='sm'
-								onClick={() => setSelectedCategory(key)}
-								className='rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
+								onClick={() => setSelectedCategory('')}
+								className='cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
 							>
-								{title}
+								Все
 							</Button>
-						))}
-					</div>
+
+							{Object.entries(widgetCategories).map(([key, title]) => (
+								<Button
+									key={key}
+									variant={selectedCategory === key ? 'default' : 'outline'}
+									size='sm'
+									onClick={() => setSelectedCategory(key)}
+									className='cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all hover:scale-105'
+								>
+									{title}
+								</Button>
+							))}
+						</div>
+					)}
 
 					{/* Results info and view mode */}
 					<div className='flex items-center justify-between'>

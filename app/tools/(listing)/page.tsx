@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sparkles, Github } from 'lucide-react'
 import Link from 'next/link'
 import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
+import { CategoryHero } from '@/components/tools/CategoryHero'
 
 // Metadata can't be used in client components
 /*
@@ -134,18 +136,28 @@ export async function generateMetadata({
 }
 */
 
-export default function ToolsPage({
-	params
-}: {
-	params: Promise<{ locale: string }>
-}) {
-	// const { locale } = await params // Can't use await in non-async function, but we don't need locale anyway
+export default function ToolsPage() {
+	// Категорию держим здесь: её выбирают в шапке, а фильтруется по ней список
+	// ниже — иначе два блока показывали бы разное.
+	const [category, setCategory] = useState('')
 
 	return (
 		<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl'>
+			<CategoryHero
+				selectedCategory={category}
+				onCategoryChange={setCategory}
+			/>
+
 			{/* Full Search Section */}
-			<section className='relative overflow-hidden mb-12' id='tools-search'>
-				<EnhancedWidgetSearch />
+			<section
+				className='relative overflow-hidden mb-12 mt-10'
+				id='tools-search'
+			>
+				<EnhancedWidgetSearch
+					category={category}
+					onCategoryChange={setCategory}
+					hideCategoryFilter
+				/>
 			</section>
 
 			{/* CTA Section */}
