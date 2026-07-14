@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react'
 import { CATEGORY_META } from '@/lib/constants/categories'
 
 interface Props {
@@ -10,6 +11,10 @@ interface Props {
  * Ради него страница и индексируется — из одного списка карточек поисковику
  * нечего взять. Тексты у каждой категории свои: одинаковые на восьми страницах
  * считались бы дублями.
+ *
+ * FAQ собран на <details>, а не на JS-аккордеоне: раскрытие работает без
+ * скриптов, клавиатура и скринридеры поддерживаются браузером из коробки, а
+ * содержимое ответов остаётся в разметке — его видит поисковик.
  */
 export function CategoryContent({ category }: Props) {
 	const meta =
@@ -25,19 +30,24 @@ export function CategoryContent({ category }: Props) {
 				))}
 			</div>
 
-			<h2 className='mt-12 text-2xl font-bold tracking-tight'>
-				Частые вопросы
-			</h2>
-			<dl className='mt-6 space-y-6'>
+			<h2 className='mt-12 text-2xl font-bold tracking-tight'>Частые вопросы</h2>
+
+			<div className='mt-6 divide-y rounded-2xl border'>
 				{meta.faqs.map(faq => (
-					<div key={faq.question}>
-						<dt className='font-semibold'>{faq.question}</dt>
-						<dd className='mt-2 leading-relaxed text-muted-foreground'>
+					<details key={faq.question} className='group px-5'>
+						<summary className='flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-medium marker:hidden [&::-webkit-details-marker]:hidden'>
+							{faq.question}
+							<ChevronDown
+								aria-hidden
+								className='h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180'
+							/>
+						</summary>
+						<p className='pb-4 leading-relaxed text-muted-foreground'>
 							{faq.answer}
-						</dd>
-					</div>
+						</p>
+					</details>
 				))}
-			</dl>
+			</div>
 		</section>
 	)
 }

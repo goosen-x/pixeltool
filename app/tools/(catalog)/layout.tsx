@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import { CATEGORY_META } from '@/lib/constants/categories'
-import { SuggestToolSection } from '@/components/tools/SuggestToolSection'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 const meta = CATEGORY_META['']
@@ -34,14 +33,5 @@ export default function ToolsListingLayout({
 }: {
 	children: ReactNode
 }) {
-	return (
-		<>
-			{children}
-			{/* Блок общий для каталога и всех страниц категорий — поэтому живёт в
-			    лейауте, а не дублируется в восьми страницах */}
-			<div className='container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-				<SuggestToolSection />
-			</div>
-		</>
-	)
+	return <>{children}</>
 }
