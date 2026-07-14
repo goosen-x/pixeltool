@@ -32,6 +32,29 @@
 	animation: fadeIn 0.5s ease-out;
 }
 
+/* Левитация: картинка категории на /tools медленно всплывает и покачивается.
+   alternate вместо повтора с нуля — иначе на стыке циклов был бы рывок. */
+@keyframes levitate {
+	from {
+		transform: translateY(0) rotate(-1deg);
+	}
+	to {
+		transform: translateY(-14px) rotate(1deg);
+	}
+}
+
+.animate-levitate {
+	animation: levitate 3s ease-in-out infinite alternate;
+	will-change: transform;
+}
+
+/* Покачивание — украшение, а не смысл. Кому оно мешает, тому его быть не должно. */
+@media (prefers-reduced-motion: reduce) {
+	.animate-levitate {
+		animation: none;
+	}
+}
+
 /* Smooth scale animation */
 @keyframes scaleIn {
 	from {

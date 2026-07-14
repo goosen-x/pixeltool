@@ -2,11 +2,9 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { widgetCategories, widgets } from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
-import { cn } from '@/lib/utils'
 
 interface Props {
 	selectedCategory: string
@@ -21,10 +19,9 @@ function countIn(category: string): number {
 }
 
 export function CategoryHero({ selectedCategory, onCategoryChange }: Props) {
-	// Помним отвалившиеся картинки поимённо: если файла одной категории ещё нет,
-	// это не должно прятать картинки остальных.
+	// Помним отвалившиеся картинки поимённо: если файла одной категории вдруг
+	// нет, это не должно прятать картинки остальных.
 	const [brokenImages, setBrokenImages] = useState<string[]>([])
-	const reduceMotion = useReducedMotion()
 
 	const meta =
 		CATEGORY_META[selectedCategory as keyof typeof CATEGORY_META] ??
@@ -34,22 +31,15 @@ export function CategoryHero({ selectedCategory, onCategoryChange }: Props) {
 		<section className='relative overflow-hidden rounded-3xl border bg-gradient-to-br from-primary/5 via-background to-accent/5 px-6 py-10 sm:px-10 sm:py-14'>
 			<div className='grid items-center gap-8 lg:grid-cols-[1fr_auto]'>
 				<div className='max-w-2xl'>
-					<AnimatePresence mode='wait'>
-						<motion.div
-							key={selectedCategory || 'all'}
-							initial={{ opacity: 0, y: 8 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -8 }}
-							transition={{ duration: 0.25 }}
-						>
-							<h1 className='text-4xl font-bold tracking-tight sm:text-5xl'>
-								{meta.title}
-							</h1>
-							<p className='mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg'>
-								{meta.description}
-							</p>
-						</motion.div>
-					</AnimatePresence>
+					{/* key на смене категории перезапускает появление текста */}
+					<div key={selectedCategory || 'all'} className='animate-fade-in'>
+						<h1 className='text-4xl font-bold tracking-tight sm:text-5xl'>
+							{meta.title}
+						</h1>
+						<p className='mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg'>
+							{meta.description}
+						</p>
+					</div>
 
 					<div className='mt-8 flex flex-wrap gap-2'>
 						<Button
@@ -77,48 +67,29 @@ export function CategoryHero({ selectedCategory, onCategoryChange }: Props) {
 					</div>
 				</div>
 
-				{/* Картинка левитирует: бесконечное покачивание по вертикали с лёгким
-				    наклоном. repeatType mirror — чтобы не было рывка на стыке циклов.
-				    Если файла категории ещё нет, блок просто не рисуется и вёрстка
-				    не разъезжается. */}
+				{/* Картинка левитирует: анимация на CSS (см. .animate-levitate в
+				    globals.css), она же гасится при prefers-reduced-motion. Если файла
+				    категории вдруг нет, блок просто не рисуется — вёрстка не поедет. */}
 				{!brokenImages.includes(meta.image) && (
 					<div className='hidden lg:block'>
-						<AnimatePresence mode='wait'>
-							<motion.div
-								key={meta.image}
-								initial={{ opacity: 0, scale: 0.95 }}
-								animate={{ opacity: 1, scale: 1 }}
-								exit={{ opacity: 0, scale: 0.95 }}
-								transition={{ duration: 0.3 }}
-							>
-								<motion.div
-									animate={
-										reduceMotion
-											? undefined
-											: { y: [0, -14, 0], rotate: [-1, 1, -1] }
+						<div
+							key={meta.image}
+							className='animate-scale-in relative h-64 w-64 xl:h-80 xl:w-80'
+						>
+							<div className='animate-levitate relative h-full w-full'>
+								<Image
+									src={meta.image}
+									alt=''
+									fill
+									priority
+									sizes='320px'
+									className='object-contain drop-shadow-2xl'
+									onError={() =>
+										setBrokenImages(current => [...current, meta.image])
 									}
-									transition={{
-										duration: 6,
-										repeat: Infinity,
-										repeatType: 'mirror',
-										ease: 'easeInOut'
-									}}
-									className={cn('relative h-64 w-64 xl:h-80 xl:w-80')}
-								>
-									<Image
-										src={meta.image}
-										alt=''
-										fill
-										priority
-										sizes='320px'
-										className='object-contain drop-shadow-2xl'
-										onError={() =>
-											setBrokenImages(current => [...current, meta.image])
-										}
-									/>
-								</motion.div>
-							</motion.div>
-						</AnimatePresence>
+								/>
+							</div>
+						</div>
 					</div>
 				)}
 			</div>
