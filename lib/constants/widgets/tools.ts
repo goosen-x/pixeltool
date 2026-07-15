@@ -19,7 +19,7 @@ export const toolWidgets: Widget[] = [
 		// Собственный компонент, а не lucide: без явного имени карточка в блоге
 		// не могла подобрать иконку и рисовала запасной «гаечный ключ»
 		iconName: 'FileCode',
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'svgEncoder',
 		path: 'svg-to-base64-encoder',
 		gradient: 'from-teal-500 to-cyan-500',
@@ -63,7 +63,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'youtube-thumbnail',
 		icon: Youtube,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'youtubeThumbnail',
 		path: 'youtube-thumbnail-downloader',
 		gradient: 'from-red-500 to-pink-500',
@@ -108,7 +108,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'mock-data-generator',
 		icon: Database,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'mockDataGenerator',
 		path: 'mock-data-generator',
 		gradient: 'from-emerald-500 to-teal-600',
@@ -153,7 +153,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'utm-builder',
 		icon: LinkIcon,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'utmBuilder',
 		path: 'utm-link-builder',
 		gradient: 'from-pink-500 to-rose-500',
@@ -198,7 +198,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'image-size-checker',
 		icon: ImageIcon,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'imageSizeChecker',
 		path: 'image-size-checker',
 		gradient: 'from-cyan-500 to-blue-600',
@@ -254,7 +254,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'system-info',
 		icon: Monitor,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'systemInfo',
 		path: 'system-info',
 		gradient: 'from-indigo-500 to-purple-600',
@@ -306,7 +306,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'timer-countdown',
 		icon: Clock,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'timerCountdown',
 		path: 'timer-countdown',
 		gradient: 'from-orange-500 to-red-600',
@@ -350,7 +350,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'php-syntax-checker',
 		icon: SquareCode,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'phpSyntaxChecker',
 		path: 'php-syntax-checker',
 		gradient: 'from-indigo-500 to-blue-600',
@@ -397,7 +397,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'mysql-syntax-checker',
 		icon: DatabaseZap,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'mysqlSyntaxChecker',
 		path: 'mysql-syntax-checker',
 		gradient: 'from-blue-500 to-teal-600',
@@ -441,7 +441,7 @@ export const toolWidgets: Widget[] = [
 	{
 		id: 'ascii-art-generator',
 		icon: TerminalSquare,
-		category: 'tools',
+		category: 'utilities',
 		translationKey: 'asciiArtGenerator',
 		path: 'ascii-art-generator',
 		gradient: 'from-green-500 to-emerald-600',

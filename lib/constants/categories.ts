@@ -310,7 +310,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 		image: '/images/categories/security.png'
 	},
 
-	tools: {
+	utilities: {
 		title: 'Утилиты',
 		heading: 'Утилиты: таймер, конвертеры, UTM-метки',
 		description:

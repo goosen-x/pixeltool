@@ -139,7 +139,7 @@ function checkWidgetSchema(
 
 	// Service for calculators/converters
 	if (
-		widget.category === 'tools' ||
+		widget.category === 'utilities' ||
 		widget.translationKey.includes('calculator') ||
 		widget.translationKey.includes('converter')
 	) {
@@ -163,7 +163,7 @@ function checkWidgetSchema(
 
 	// ImageObject for image tools
 	if (
-		widget.category === 'tools' ||
+		widget.category === 'utilities' ||
 		widget.translationKey.includes('image') ||
 		widget.translationKey.includes('favicon')
 	) {

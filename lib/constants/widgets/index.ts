@@ -14,7 +14,7 @@ export interface Widget {
 		| 'text'
 		| 'generators'
 		| 'security'
-		| 'tools'
+		| 'utilities'
 	translationKey: string
 	path: string
 	gradient: string
@@ -91,7 +91,7 @@ export const widgetCategories = {
 	javascript: 'JavaScript',
 	text: 'Текст',
 	security: 'Безопасность',
-	tools: 'Утилиты'
+	utilities: 'Утилиты'
 } as const
 
 export const getWidgetFAQs = (widgetId: string): any[] => {
