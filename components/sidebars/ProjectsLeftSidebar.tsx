@@ -25,7 +25,7 @@ export const ProjectsLeftSidebar = ({ onLinkClick }: Props = {}) => {
 	}
 
 	return (
-		<aside className='w-64 lg:w-56 xl:w-64 h-[calc(100vh-5rem)] lg:h-full border-r bg-background lg:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
+		<aside className='w-64 lg:w-56 xl:w-64 h-[calc(100vh-5rem)] lg:h-full shadow-[1px_0_8px_rgba(0,0,0,0.04)] bg-background lg:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
 			<div className='flex h-full flex-col'>
 				<SidebarHeader />
 

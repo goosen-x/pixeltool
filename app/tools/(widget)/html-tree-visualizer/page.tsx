@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -22,7 +22,8 @@ import {
 	Info,
 	Layers,
 	Eye,
-	EyeOff
+	EyeOff,
+	Upload
 } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { toast } from 'sonner'
@@ -138,6 +139,7 @@ const HIGHLIGHT_COLORS = [
 export default function HTMLTreePage() {
 	const [htmlInput, setHtmlInput] = useState('')
 	const [treeData, setTreeData] = useState<TreeNode | null>(null)
+	const fileInputRef = useRef<HTMLInputElement>(null)
 	const [headingAnalysis, setHeadingAnalysis] =
 		useState<HeadingAnalysis | null>(null)
 	const [statistics, setStatistics] = useState<Statistics | null>(null)
@@ -704,17 +706,47 @@ export default function HTMLTreePage() {
 						className='min-h-[200px] font-mono text-sm'
 						spellCheck={false}
 					/>
-					<Button
-						variant='outline'
-						size='sm'
-						onClick={() => {
-							handleInputChange(EXAMPLE_HTML)
-							toast.success('Пример загружен')
-						}}
-						className='w-fit'
-					>
-						Загрузить пример
-					</Button>
+					<div className='flex flex-wrap gap-2'>
+						<Button
+							variant='outline'
+							size='sm'
+							onClick={() => fileInputRef.current?.click()}
+							className='w-fit cursor-pointer'
+						>
+							<Upload className='mr-2 h-4 w-4' />
+							Загрузить файл
+						</Button>
+						<Button
+							variant='outline'
+							size='sm'
+							onClick={() => {
+								handleInputChange(EXAMPLE_HTML)
+								toast.success('Пример загружен')
+							}}
+							className='w-fit cursor-pointer'
+						>
+							Загрузить пример
+						</Button>
+						<input
+							ref={fileInputRef}
+							type='file'
+							accept='.html,.htm,.xml,.svg,text/html'
+							className='hidden'
+							onChange={async event => {
+								const file = event.target.files?.[0]
+								if (!file) return
+								try {
+									const text = await file.text()
+									handleInputChange(text)
+									toast.success(`Загружен ${file.name}`)
+								} catch {
+									toast.error('Не удалось прочитать файл')
+								}
+								// сбрасываем, чтобы повторный выбор того же файла сработал
+								event.target.value = ''
+							}}
+						/>
+					</div>
 				</CardContent>
 			</Card>
 
