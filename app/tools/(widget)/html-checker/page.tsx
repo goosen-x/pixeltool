@@ -569,15 +569,15 @@ export default function HTMLTreePage() {
 						{/* Прижат к верху и бокам карточки: отрицательные отступы гасят
 						    padding CardContent, верхние углы скруглены под карточку */}
 						<TabsList className='-mx-6 -mt-6 mb-6 grid h-auto w-[calc(100%+3rem)] grid-cols-3 gap-0 overflow-hidden rounded-b-none rounded-t-2xl p-0'>
-							<TabsTrigger value='paste' className='flex-col gap-1 py-3'>
+							<TabsTrigger value='paste' className='h-full flex-col gap-1 rounded-none border-b-2 border-transparent py-3 data-[state=active]:border-primary data-[state=active]:shadow-none'>
 								<FileCode className='h-5 w-5' />
 								Вставить код
 							</TabsTrigger>
-							<TabsTrigger value='url' className='flex-col gap-1 py-3'>
+							<TabsTrigger value='url' className='h-full flex-col gap-1 rounded-none border-b-2 border-transparent py-3 data-[state=active]:border-primary data-[state=active]:shadow-none'>
 								<Globe className='h-5 w-5' />
 								По адресу
 							</TabsTrigger>
-							<TabsTrigger value='file' className='flex-col gap-1 py-3'>
+							<TabsTrigger value='file' className='h-full flex-col gap-1 rounded-none border-b-2 border-transparent py-3 data-[state=active]:border-primary data-[state=active]:shadow-none'>
 								<Upload className='h-5 w-5' />
 								Из файла
 							</TabsTrigger>
