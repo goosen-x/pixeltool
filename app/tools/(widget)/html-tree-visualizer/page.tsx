@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo, useRef } from 'react'
+import { W3CValidation } from './W3CValidation'
 import Link from 'next/link'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -23,7 +24,8 @@ import {
 	Layers,
 	Eye,
 	EyeOff,
-	Upload
+	Upload,
+	ShieldCheck
 } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { toast } from 'sonner'
@@ -750,7 +752,7 @@ export default function HTMLTreePage() {
 					{/* Results Tabs — тот же контейнер, ниже поля ввода */}
 					{treeData && (
 						<Tabs defaultValue='tree' className='w-full'>
-					<TabsList className='grid w-full grid-cols-4 text-xs sm:text-sm gap-1 sm:gap-2'>
+					<TabsList className='grid w-full grid-cols-5 text-xs sm:text-sm gap-1 sm:gap-2'>
 						<TabsTrigger value='tree' className='gap-1 sm:gap-2'>
 							<FileCode className='w-4 h-4 hidden sm:inline-block' />
 							Дерево
@@ -777,6 +779,11 @@ export default function HTMLTreePage() {
 						<TabsTrigger value='stats' className='gap-1 sm:gap-2'>
 							<BarChart3 className='w-4 h-4 hidden sm:inline-block' />
 							Статистика
+						</TabsTrigger>
+
+						<TabsTrigger value='w3c' className='gap-1 sm:gap-2'>
+							<ShieldCheck className='w-4 h-4 hidden sm:inline-block' />
+							Валидация
 						</TabsTrigger>
 					</TabsList>
 
@@ -1110,7 +1117,11 @@ export default function HTMLTreePage() {
 							</Card>
 						</div>
 					</TabsContent>
-				</Tabs>
+					{/* W3C Validation */}
+					<TabsContent value='w3c' className='space-y-4'>
+						<W3CValidation html={htmlInput} />
+					</TabsContent>
+								</Tabs>
 			)}
 				</CardContent>
 			</Card>
