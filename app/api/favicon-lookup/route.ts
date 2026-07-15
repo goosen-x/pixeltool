@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { JSDOM } from 'jsdom'
-import { lookup } from 'dns/promises'
-import { isIP } from 'net'
+import { assertPublicHost } from '@/lib/security/ssrf'
 
 /**
  * Поиск фавикона чужого сайта по адресу.
@@ -16,49 +15,6 @@ const FETCH_TIMEOUT_MS = 8000
 /** Не тянем гигантские страницы — фавикон объявляется в <head>. */
 const MAX_HTML_BYTES = 512 * 1024
 
-/** Адреса, по которым публичному сайту ходить незачем. */
-function isPrivateAddress(ip: string): boolean {
-	if (
-		ip === '::1' ||
-		ip === '::' ||
-		ip.startsWith('fe80') ||
-		ip.startsWith('fc') ||
-		ip.startsWith('fd')
-	) {
-		return true
-	}
-
-	// IPv4, в том числе завёрнутый в IPv6 (::ffff:10.0.0.1).
-	const v4 = ip.replace(/^::ffff:/i, '')
-	const parts = v4.split('.').map(Number)
-	if (parts.length !== 4 || parts.some(n => !Number.isInteger(n))) return false
-
-	const [a, b] = parts
-	return (
-		a === 0 ||
-		a === 10 ||
-		a === 127 ||
-		(a === 169 && b === 254) || // link-local и метаданные облака
-		(a === 172 && b >= 16 && b <= 31) ||
-		(a === 192 && b === 168) ||
-		(a === 100 && b >= 64 && b <= 127) // CGNAT
-	)
-}
-
-async function assertPublicHost(hostname: string): Promise<void> {
-	// Литеральный IP в адресе проверяем сразу, без DNS.
-	if (isIP(hostname)) {
-		if (isPrivateAddress(hostname)) {
-			throw new Error('Адрес ведёт во внутреннюю сеть')
-		}
-		return
-	}
-
-	const addresses = await lookup(hostname, { all: true })
-	if (addresses.some(entry => isPrivateAddress(entry.address))) {
-		throw new Error('Адрес ведёт во внутреннюю сеть')
-	}
-}
 
 interface FoundIcon {
 	url: string

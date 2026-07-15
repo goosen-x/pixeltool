@@ -142,6 +142,8 @@ export default function HTMLTreePage() {
 	const [htmlInput, setHtmlInput] = useState('')
 	const [treeData, setTreeData] = useState<TreeNode | null>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
+	const [urlValue, setUrlValue] = useState('')
+	const [isFetchingUrl, setIsFetchingUrl] = useState(false)
 	const [headingAnalysis, setHeadingAnalysis] =
 		useState<HeadingAnalysis | null>(null)
 	const [statistics, setStatistics] = useState<Statistics | null>(null)
@@ -707,7 +709,42 @@ export default function HTMLTreePage() {
 						className='min-h-[200px] font-mono text-sm'
 						spellCheck={false}
 					/>
-					<div className='flex flex-wrap gap-2'>
+					{/* Три источника HTML: вставка в поле выше, загрузка по адресу
+					    (через серверный роут — из браузера чужую страницу не забрать) и
+					    файл. Все три наполняют то же поле ввода. */}
+					<div className='flex flex-wrap items-center gap-2'>
+						<Input
+							value={urlValue}
+							onChange={e => setUrlValue(e.target.value)}
+							onKeyDown={async e => {
+								if (e.key !== 'Enter') return
+								const address = urlValue.trim()
+								if (!address) return
+								setIsFetchingUrl(true)
+								try {
+									const res = await fetch(
+										`/api/fetch-html?url=${encodeURIComponent(address)}`
+									)
+									const data = await res.json()
+									if (!res.ok) {
+										toast.error(data.error ?? 'Не удалось загрузить страницу')
+									} else {
+										handleInputChange(data.html)
+										toast.success('Страница загружена')
+									}
+								} catch {
+									toast.error('Не удалось загрузить страницу')
+								} finally {
+									setIsFetchingUrl(false)
+								}
+							}}
+							placeholder='Или вставьте адрес страницы и нажмите Enter'
+							aria-label='Адрес страницы для загрузки HTML'
+							className='h-9 max-w-xs'
+						/>
+						{isFetchingUrl && (
+							<span className='text-xs text-muted-foreground'>Загрузка…</span>
+						)}
 						<Button
 							variant='outline'
 							size='sm'

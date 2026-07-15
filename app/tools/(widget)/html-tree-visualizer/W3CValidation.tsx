@@ -1,19 +1,16 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import {
 	CheckCircle2,
 	AlertTriangle,
 	XCircle,
 	Info,
 	ShieldCheck,
-	Loader2,
-	Upload
+	Loader2
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 /** Сообщение из Nu HTML Checker (validator.w3.org/nu). */
 interface W3CMessage {
@@ -21,13 +18,11 @@ interface W3CMessage {
 	subType?: 'warning' | 'fatal'
 	message: string
 	lastLine?: number
+	firstLine?: number
 	extract?: string
 }
 
 type Severity = 'error' | 'warning' | 'info'
-type Mode = 'text' | 'url' | 'file'
-
-const NU_ENDPOINT = 'https://validator.w3.org/nu/?out=json'
 
 function severityOf(msg: W3CMessage): Severity {
 	if (msg.type === 'error' || msg.subType === 'fatal') return 'error'
@@ -48,34 +43,37 @@ const SEVERITY_META: Record<
 	info: { icon: Info, className: 'text-blue-600', label: 'Заметка' }
 }
 
-const MODES: { id: Mode; label: string }[] = [
-	{ id: 'text', label: 'Из поля ввода' },
-	{ id: 'url', label: 'По адресу' },
-	{ id: 'file', label: 'Из файла' }
-]
-
 /**
- * Проверка разметки через официальный Nu HTML Checker (движок validator.w3.org).
- * У сервиса открытый CORS, поэтому запросы идут прямо из браузера — свой сервер
- * не нужен. Три источника: код из поля ввода виджета, чужой адрес и файл.
- *
- * @param html — текущий HTML из поля ввода виджета (для режима «Из поля ввода»).
+ * Проверка разметки через официальный Nu HTML Checker (тот же движок, что на
+ * validator.w3.org). У сервиса открытый CORS, поэтому запрос идёт прямо из
+ * браузера — свой сервер-прокси не нужен, и код никуда, кроме W3C, не уходит.
  */
 export function W3CValidation({ html }: { html: string }) {
-	const [mode, setMode] = useState<Mode>('text')
-	const [url, setUrl] = useState('')
 	const [messages, setMessages] = useState<W3CMessage[] | null>(null)
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
-	const fileInputRef = useRef<HTMLInputElement>(null)
 
-	const request = async (init: RequestInit) => {
+	const validate = async () => {
+		if (!html.trim()) {
+			setError('Сначала вставьте HTML в поле выше')
+			return
+		}
+
 		setLoading(true)
 		setError(null)
 		setMessages(null)
+
 		try {
-			const response = await fetch(NU_ENDPOINT, init)
-			if (!response.ok) throw new Error(String(response.status))
+			const response = await fetch('https://validator.w3.org/nu/?out=json', {
+				method: 'POST',
+				headers: { 'Content-Type': 'text/html; charset=utf-8' },
+				body: html
+			})
+
+			if (!response.ok) {
+				throw new Error(`Валидатор ответил ${response.status}`)
+			}
+
 			const data = (await response.json()) as { messages: W3CMessage[] }
 			setMessages(data.messages ?? [])
 		} catch {
@@ -85,65 +83,6 @@ export function W3CValidation({ html }: { html: string }) {
 		} finally {
 			setLoading(false)
 		}
-	}
-
-	const validateBody = (body: string) =>
-		request({
-			method: 'POST',
-			headers: { 'Content-Type': 'text/html; charset=utf-8' },
-			body
-		})
-
-	const validateText = () => {
-		if (!html.trim()) {
-			setError('Поле ввода пустое — вставьте HTML выше')
-			return
-		}
-		validateBody(html)
-	}
-
-	const validateUrl = () => {
-		const trimmed = url.trim()
-		if (!trimmed) {
-			setError('Введите адрес страницы')
-			return
-		}
-		let target: URL
-		try {
-			target = new URL(/^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`)
-		} catch {
-			setError('Не похоже на адрес сайта')
-			return
-		}
-		// Валидатор сам сходит на страницу по ?doc — прокси нам не нужен.
-		setLoading(true)
-		setError(null)
-		setMessages(null)
-		fetch(`${NU_ENDPOINT}&doc=${encodeURIComponent(target.toString())}`)
-			.then(async response => {
-				if (!response.ok) throw new Error(String(response.status))
-				const data = (await response.json()) as { messages: W3CMessage[] }
-				setMessages(data.messages ?? [])
-			})
-			.catch(() =>
-				setError('Не удалось проверить адрес. Возможно, страница недоступна.')
-			)
-			.finally(() => setLoading(false))
-	}
-
-	const validateFile = async (file: File) => {
-		try {
-			const text = await file.text()
-			await validateBody(text)
-		} catch {
-			setError('Не удалось прочитать файл')
-		}
-	}
-
-	const run = () => {
-		if (mode === 'text') validateText()
-		else if (mode === 'url') validateUrl()
-		else fileInputRef.current?.click()
 	}
 
 	const counts = messages
@@ -158,74 +97,26 @@ export function W3CValidation({ html }: { html: string }) {
 
 	return (
 		<div className='space-y-4'>
-			<div>
-				<h3 className='text-lg font-semibold'>Валидация W3C</h3>
-				<p className='text-sm text-muted-foreground'>
-					Официальная проверка разметки — тот же движок, что на
-					validator.w3.org.
-				</p>
-			</div>
-
-			{/* Переключатель источника */}
-			<div className='inline-flex rounded-lg border p-1'>
-				{MODES.map(item => (
-					<button
-						key={item.id}
-						type='button'
-						onClick={() => {
-							setMode(item.id)
-							setError(null)
-						}}
-						className={cn(
-							'cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-							mode === item.id
-								? 'bg-primary text-primary-foreground'
-								: 'text-muted-foreground hover:text-foreground'
-						)}
-					>
-						{item.label}
-					</button>
-				))}
-			</div>
-
-			<div className='flex flex-wrap items-center gap-2'>
-				{mode === 'url' && (
-					<Input
-						value={url}
-						onChange={event => setUrl(event.target.value)}
-						onKeyDown={event => event.key === 'Enter' && validateUrl()}
-						placeholder='example.com'
-						aria-label='Адрес страницы для проверки'
-						className='max-w-sm'
-					/>
-				)}
-
-				<Button onClick={run} disabled={loading} className='cursor-pointer'>
+			<div className='flex flex-wrap items-center justify-between gap-4'>
+				<div>
+					<h3 className='text-lg font-semibold'>Валидация W3C</h3>
+					<p className='text-sm text-muted-foreground'>
+						Официальная проверка разметки — тот же движок, что на
+						validator.w3.org.
+					</p>
+				</div>
+				<Button
+					onClick={validate}
+					disabled={loading}
+					className='cursor-pointer'
+				>
 					{loading ? (
 						<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-					) : mode === 'file' ? (
-						<Upload className='mr-2 h-4 w-4' />
 					) : (
 						<ShieldCheck className='mr-2 h-4 w-4' />
 					)}
-					{loading
-						? 'Проверяем…'
-						: mode === 'file'
-							? 'Выбрать файл'
-							: 'Проверить'}
+					{loading ? 'Проверяем…' : 'Проверить'}
 				</Button>
-
-				<input
-					ref={fileInputRef}
-					type='file'
-					accept='.html,.htm,.xml,.svg,text/html'
-					className='hidden'
-					onChange={event => {
-						const file = event.target.files?.[0]
-						if (file) validateFile(file)
-						event.target.value = ''
-					}}
-				/>
 			</div>
 
 			{error && (
@@ -260,7 +151,8 @@ export function W3CValidation({ html }: { html: string }) {
 			{messages && messages.length > 0 && (
 				<ul className='space-y-2'>
 					{messages.map((msg, index) => {
-						const meta = SEVERITY_META[severityOf(msg)]
+						const severity = severityOf(msg)
+						const meta = SEVERITY_META[severity]
 						const Icon = meta.icon
 
 						return (
