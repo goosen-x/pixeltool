@@ -2,6 +2,7 @@
 
 import { useId, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface FaqItem {
 	question: string
@@ -62,16 +63,25 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 				<h2 className='mb-6 font-heading text-2xl font-bold'>{title}</h2>
 			)}
 
-			<div className='divide-y rounded-2xl border'>
+			<div className='space-y-3'>
 				{items.map((faq, index) => {
 					const open = openIndex === index
 					const panelId = `${baseId}-panel-${index}`
 					const buttonId = `${baseId}-button-${index}`
 
 					return (
-						<div key={faq.question}>
-							{/* h3 несёт глобальные стили заголовка (крупный размер) — гасим их
-							    на кнопке явным text-base, чтобы вопрос был обычного размера */}
+						<div
+							key={faq.question}
+							className={cn(
+								'group overflow-hidden rounded-2xl border transition-colors',
+								open
+									? 'border-primary/30 bg-muted/60 dark:bg-muted/30'
+									: 'border-border bg-card hover:border-primary/30'
+							)}
+						>
+							{/* h3 несёт глобальные стили заголовка (крупный размер) — гасим
+							    их на кнопке явным text-base, чтобы вопрос был обычного
+							    размера */}
 							<h3 className='m-0'>
 								<button
 									type='button'
@@ -79,15 +89,32 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 									aria-expanded={open}
 									aria-controls={panelId}
 									onClick={() => setOpenIndex(open ? null : index)}
-									className='flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left text-base font-medium transition-colors hover:bg-muted/50'
+									className='flex w-full cursor-pointer items-center gap-4 px-5 py-4 text-left'
 								>
-									{faq.question}
-									<ChevronDown
+									<span
+										className={cn(
+											'text-base font-medium transition-colors',
+											open
+												? 'text-foreground'
+												: 'text-foreground/90 group-hover:text-foreground'
+										)}
+									>
+										{faq.question}
+									</span>
+
+									{/* Иконка в круглой «таблетке»: на раскрытии заливается
+									    цветом и поворачивается — это и есть акцент состояния */}
+									<span
 										aria-hidden
-										className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
-											open ? 'rotate-180' : ''
-										}`}
-									/>
+										className={cn(
+											'ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-all duration-300',
+											open
+												? 'rotate-180 border-primary bg-primary text-primary-foreground'
+												: 'border-border text-muted-foreground group-hover:border-primary/40 group-hover:text-foreground'
+										)}
+									>
+										<ChevronDown className='h-4 w-4' />
+									</span>
 								</button>
 							</h3>
 
@@ -95,12 +122,13 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 								id={panelId}
 								role='region'
 								aria-labelledby={buttonId}
-								className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+								className={cn(
+									'grid transition-[grid-template-rows] duration-300 ease-out',
 									open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-								}`}
+								)}
 							>
 								<div className='overflow-hidden'>
-									<p className='px-5 pb-4 leading-relaxed text-muted-foreground'>
+									<p className='px-5 pb-5 leading-relaxed text-muted-foreground'>
 										{faq.answer}
 									</p>
 								</div>

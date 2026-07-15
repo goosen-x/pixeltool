@@ -1083,11 +1083,11 @@ export default function HTMLTreePage() {
 				</Tabs>
 			)}
 
-			<section className='mt-16'>
+			<section className='mx-auto mt-16 max-w-3xl'>
 				<h2 className='text-2xl font-bold tracking-tight'>
 					Дерево разметки и дерево браузера — не одно и то же
 				</h2>
-				<p className='mt-3 max-w-3xl text-muted-foreground'>
+				<p className='mt-3 text-muted-foreground'>
 					Здесь вы видите дерево своего HTML: теги ровно там, где вы их
 					написали. Браузер же строит из этой разметки DOM-дерево и по дороге
 					чинит её — достраивает <code className='font-mono'>tbody</code>,
