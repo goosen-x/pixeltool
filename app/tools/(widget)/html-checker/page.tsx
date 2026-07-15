@@ -132,6 +132,7 @@ export default function HTMLTreePage() {
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const [urlValue, setUrlValue] = useState('')
 	const [isFetchingUrl, setIsFetchingUrl] = useState(false)
+	const [isDragging, setIsDragging] = useState(false)
 
 	const loadFromUrl = useCallback(async () => {
 		const address = urlValue.trim()
@@ -583,13 +584,90 @@ export default function HTMLTreePage() {
 							</TabsTrigger>
 						</TabsList>
 
-						<TabsContent value='paste' className='min-h-[18rem]'>
+						<TabsContent value='paste' className='h-72'>
 							<Textarea
 								placeholder='Вставьте HTML код страницы...'
 								value={htmlInput}
 								onChange={e => handleInputChange(e.target.value)}
-								className='min-h-[240px] font-mono text-sm'
+								className='h-full resize-none font-mono text-sm'
 								spellCheck={false}
+							/>
+						</TabsContent>
+
+						<TabsContent value='url' className='h-72'>
+							<div className='flex h-full flex-col justify-center rounded-xl border bg-muted/20 p-8'>
+								<div className='flex flex-wrap items-center gap-2'>
+									<Input
+										value={urlValue}
+										onChange={e => setUrlValue(e.target.value)}
+										onKeyDown={e => e.key === 'Enter' && loadFromUrl()}
+										placeholder='example.com'
+										aria-label='Адрес страницы для загрузки HTML'
+										className='max-w-sm bg-background'
+									/>
+									<Button
+										onClick={loadFromUrl}
+										disabled={isFetchingUrl}
+										className='cursor-pointer'
+									>
+										{isFetchingUrl ? 'Загрузка…' : 'Загрузить'}
+									</Button>
+								</div>
+								<p className='mt-2 text-xs text-muted-foreground'>
+									Загрузим HTML страницы и построим по нему дерево. Данные
+									обрабатываются на нашем сервере только для скачивания.
+								</p>
+							</div>
+						</TabsContent>
+
+						<TabsContent value='file' className='h-72'>
+							{/* Объединённая зона: клик или перетаскивание файла */}
+							<div
+								role='button'
+								tabIndex={0}
+								onClick={() => fileInputRef.current?.click()}
+								onKeyDown={e => {
+									if (e.key === 'Enter' || e.key === ' ') {
+										e.preventDefault()
+										fileInputRef.current?.click()
+									}
+								}}
+								onDragOver={e => {
+									e.preventDefault()
+									setIsDragging(true)
+								}}
+								onDragLeave={() => setIsDragging(false)}
+								onDrop={e => {
+									e.preventDefault()
+									setIsDragging(false)
+									const file = e.dataTransfer.files?.[0]
+									if (file) loadFromFile(file)
+								}}
+								className={cn(
+									'flex h-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed text-center transition-colors',
+									isDragging
+										? 'border-primary bg-primary/5'
+										: 'hover:border-primary/40'
+								)}
+							>
+								<Upload className='h-8 w-8 text-muted-foreground' />
+								<span className='text-sm font-medium'>
+									Перетащите файл сюда или нажмите
+								</span>
+								<span className='text-xs text-muted-foreground'>
+									.html, .htm, .xml, .svg — читается в браузере
+								</span>
+							</div>
+							<input
+								ref={fileInputRef}
+								type='file'
+								accept='.html,.htm,.xml,.svg,text/html'
+								className='hidden'
+								onChange={event => {
+									const file = event.target.files?.[0]
+									if (file) loadFromFile(file)
+									event.target.value = ''
+								}}
 							/>
 						</TabsContent>
 
