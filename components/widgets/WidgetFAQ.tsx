@@ -1,7 +1,7 @@
 'use client'
 
 import { getWidgetFAQs } from '@/lib/constants/widgets'
-import { FAQ } from '@/components/seo/FAQ'
+import { FaqAccordion } from '@/components/tools/FaqAccordion'
 
 interface WidgetFAQProps {
 	widgetId: string
@@ -14,7 +14,15 @@ export function WidgetFAQ({ widgetId }: WidgetFAQProps) {
 		return null
 	}
 
-	const title = 'Часто задаваемые вопросы'
-
-	return <FAQ items={faqs} title={title} />
+	// withSchema: на странице инструмента FAQPage больше никто не объявляет
+	// (см. комментарий в WidgetStructuredData), поэтому разметку даёт аккордеон.
+	return (
+		<div className='mt-16'>
+			<FaqAccordion
+				items={faqs}
+				title='Часто задаваемые вопросы'
+				withSchema
+			/>
+		</div>
+	)
 }
