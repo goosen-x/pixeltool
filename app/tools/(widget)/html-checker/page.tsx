@@ -581,7 +581,7 @@ export default function HTMLTreePage() {
 							</TabsTrigger>
 						</TabsList>
 
-						<TabsContent value='paste' className='space-y-3'>
+						<TabsContent value='paste' className='min-h-[18rem]'>
 							<Textarea
 								placeholder='Вставьте HTML код страницы...'
 								value={htmlInput}
@@ -589,20 +589,9 @@ export default function HTMLTreePage() {
 								className='min-h-[240px] font-mono text-sm'
 								spellCheck={false}
 							/>
-							<Button
-								variant='outline'
-								size='sm'
-								onClick={() => {
-									handleInputChange(EXAMPLE_HTML)
-									toast.success('Пример загружен')
-								}}
-								className='w-fit cursor-pointer'
-							>
-								Загрузить пример
-							</Button>
 						</TabsContent>
 
-						<TabsContent value='url'>
+						<TabsContent value='url' className='min-h-[18rem]'>
 							<div className='flex flex-wrap items-center gap-2'>
 								<Input
 									value={urlValue}
@@ -626,7 +615,7 @@ export default function HTMLTreePage() {
 							</p>
 						</TabsContent>
 
-						<TabsContent value='file'>
+						<TabsContent value='file' className='min-h-[18rem]'>
 							<button
 								type='button'
 								onClick={() => fileInputRef.current?.click()}
@@ -651,6 +640,19 @@ export default function HTMLTreePage() {
 							/>
 						</TabsContent>
 					</Tabs>
+
+					{/* Пример — вне табов: полезен независимо от выбранного источника */}
+					<Button
+						variant='outline'
+						size='sm'
+						onClick={() => {
+							handleInputChange(EXAMPLE_HTML)
+							toast.success('Пример загружен')
+						}}
+						className='mt-3 w-fit cursor-pointer'
+					>
+						Загрузить пример
+					</Button>
 
 					{treeData && (
 						<div className='mt-6 space-y-8'>
