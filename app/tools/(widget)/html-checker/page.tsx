@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { HtmlAnalysis } from './HtmlAnalysis'
 import Link from 'next/link'
 import { Textarea } from '@/components/ui/textarea'
@@ -22,8 +22,6 @@ import {
 	XCircle,
 	Info,
 	Layers,
-	Eye,
-	EyeOff,
 	Upload,
 	ShieldCheck,
 	Globe
@@ -35,7 +33,7 @@ import { cn } from '@/lib/utils'
 const EXAMPLE_HTML = `<!DOCTYPE html>
 <html class="page" lang="ru">
 <head>
-  <title>Пример BEM страницы</title>
+  <title>Пример HTML-страницы</title>
   <meta charset="utf-8">
 </head>
 <body class="page__body">
@@ -84,15 +82,8 @@ interface TreeNode {
 	level: number
 	text?: string
 	path: string
-	bemIssues: BemIssue[]
 	isHighlighted?: boolean
 	highlightColor?: string
-}
-
-interface BemIssue {
-	className: string
-	type: 'missing-block' | 'invalid-modifier' | 'wrong-element'
-	message: string
 }
 
 interface HeadingInfo {
@@ -117,7 +108,6 @@ interface Statistics {
 	elementCounts: Record<string, number>
 	classCount: number
 	idCount: number
-	bemIssuesCount: number
 }
 
 const WHOLE_PAGE_MARKERS = ['META', 'TITLE', 'LINK']
@@ -191,73 +181,6 @@ export default function HTMLTreePage() {
 	const [classHighlights, setClassHighlights] = useState<Map<string, string>>(
 		new Map()
 	)
-	const [showBemIssues, setShowBemIssues] = useState(true)
-
-	const validateBemClass = useCallback(
-		(className: string, element: Element, allClasses: string[]): BemIssue[] => {
-			const issues: BemIssue[] = []
-
-			// Check for BEM patterns
-			const hasModifier = className.includes('--')
-			const hasElement = className.includes('__')
-			const hasSingleUnderscore = /[^_]_[^_]/.test(className)
-
-			if (!hasModifier && !hasElement && !hasSingleUnderscore) {
-				return issues // Regular class, no BEM validation needed
-			}
-
-			// Validate elements (with __)
-			if (hasElement) {
-				const blockName = className.split('__')[0]
-				const hasBlockOnElement = allClasses.includes(blockName)
-
-				if (!hasBlockOnElement) {
-					// Check if block exists on parent elements
-					let parent = element.parentElement
-					let blockFoundOnParent = false
-
-					while (parent && parent !== document.body) {
-						if (parent.classList.contains(blockName)) {
-							blockFoundOnParent = true
-							break
-						}
-						parent = parent.parentElement
-					}
-
-					if (!blockFoundOnParent) {
-						issues.push({
-							className,
-							type: 'missing-block',
-							message: `Блок "${blockName}" не найден на элементе или родителях`
-						})
-					}
-				}
-			}
-
-			// Validate modifiers (with -- or single _)
-			let modifierBase = ''
-			if (hasModifier) {
-				modifierBase = className.split('--')[0]
-			} else if (hasSingleUnderscore) {
-				const match = className.match(/^(.+?)_[^_]+$/)
-				if (match) {
-					modifierBase = match[1]
-				}
-			}
-
-			if (modifierBase && !allClasses.includes(modifierBase)) {
-				issues.push({
-					className,
-					type: 'invalid-modifier',
-					message: `Базовый класс "${modifierBase}" не найден для модификатора`
-				})
-			}
-
-			return issues
-		},
-		[]
-	)
-
 	const analyzeHeadings = useCallback((doc: Document): HeadingAnalysis => {
 		const headingTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		const headings: HeadingInfo[] = []
@@ -329,7 +252,6 @@ export default function HTMLTreePage() {
 		let maxDepth = 0
 		let classCount = 0
 		let idCount = 0
-		let bemIssuesCount = 0
 
 		const traverse = (n: TreeNode) => {
 			totalElements++
@@ -337,7 +259,6 @@ export default function HTMLTreePage() {
 			maxDepth = Math.max(maxDepth, n.level)
 			classCount += n.classes.length
 			if (n.id) idCount++
-			bemIssuesCount += n.bemIssues.length
 			n.children.forEach(traverse)
 		}
 
@@ -348,8 +269,7 @@ export default function HTMLTreePage() {
 			maxDepth,
 			elementCounts,
 			classCount,
-			idCount,
-			bemIssuesCount
+			idCount
 		}
 	}, [])
 
@@ -388,13 +308,6 @@ export default function HTMLTreePage() {
 
 					const classes = Array.from(element.classList)
 					const id = element.id || undefined
-
-					// Validate BEM for this element
-					const bemIssues: BemIssue[] = []
-					classes.forEach(className => {
-						const issues = validateBemClass(className, element, classes)
-						bemIssues.push(...issues)
-					})
 
 					// Determine display tag name
 					let displayTag = element.tagName.toLowerCase()
@@ -435,8 +348,7 @@ export default function HTMLTreePage() {
 						children,
 						level,
 						text: element.textContent?.substring(0, 50),
-						path,
-						bemIssues
+						path
 					}
 				}
 
@@ -481,7 +393,6 @@ export default function HTMLTreePage() {
 			analyzeHeadings,
 			calculateStatistics,
 			getTagClass,
-			validateBemClass,
 			expandAll
 		]
 	)
@@ -567,7 +478,6 @@ export default function HTMLTreePage() {
 			const hasChildren = node.children.length > 0
 			const isExpanded = expandAll ? true : expandedNodes.has(node.path)
 			const matches = matchesSearch(node)
-			const hasBemIssues = showBemIssues && node.bemIssues.length > 0
 
 			if (!matches && !node.children.some(child => matchesSearch(child)))
 				return null
@@ -577,8 +487,7 @@ export default function HTMLTreePage() {
 					<div
 						className={cn(
 							'flex items-center gap-2 py-1.5 px-2 rounded hover:bg-muted/50 cursor-pointer group',
-							matches && searchQuery && 'bg-yellow-100 dark:bg-yellow-900/20',
-							hasBemIssues && 'border-l-2 border-red-400'
+							matches && searchQuery && 'bg-yellow-100 dark:bg-yellow-900/20'
 						)}
 						onClick={() => hasChildren && toggleNode(node.path)}
 					>
@@ -608,18 +517,12 @@ export default function HTMLTreePage() {
 							<div className='flex items-center gap-1 flex-wrap'>
 								{node.classes.map((className, index) => {
 									const highlightColor = classHighlights.get(className)
-									const hasIssue = node.bemIssues.some(
-										issue => issue.className === className
-									)
 
 									return (
 										<span
 											key={index}
 											className={cn(
-												'text-xs font-mono px-1.5 py-0.5 rounded cursor-pointer hover:bg-muted transition-colors',
-												hasIssue
-													? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
-													: 'text-blue-600 dark:text-blue-400'
+												'text-xs font-mono px-1.5 py-0.5 rounded cursor-pointer hover:bg-muted transition-colors text-blue-600 dark:text-blue-400'
 											)}
 											style={{
 												backgroundColor: highlightColor || undefined,
@@ -637,31 +540,12 @@ export default function HTMLTreePage() {
 							</div>
 						)}
 
-						{hasBemIssues && (
-							<AlertTriangle className='w-4 h-4 text-red-500 flex-shrink-0' />
-						)}
-
 						{node.children.length > 0 && (
 							<span className='text-xs text-muted-foreground ml-auto'>
 								{node.children.length}
 							</span>
 						)}
 					</div>
-
-					{/* BEM Issues */}
-					{showBemIssues && node.bemIssues.length > 0 && (
-						<div className='ml-6 pl-2 border-l-2 border-red-200 dark:border-red-800'>
-							{node.bemIssues.map((issue, index) => (
-								<div
-									key={index}
-									className='text-xs text-red-600 dark:text-red-400 py-1'
-								>
-									<span className='font-mono'>.{issue.className}</span>:{' '}
-									{issue.message}
-								</div>
-							))}
-						</div>
-					)}
 
 					{hasChildren && isExpanded && (
 						<div className='ml-6 border-l-2 border-border/50 pl-2'>
@@ -676,58 +560,12 @@ export default function HTMLTreePage() {
 			expandAll,
 			expandedNodes,
 			matchesSearch,
-			showBemIssues,
 			classHighlights,
 			searchQuery,
 			toggleNode,
 			toggleClassHighlight
 		]
 	)
-
-	const renderBemIssues = useCallback(
-		(node: TreeNode): React.ReactElement[] => {
-			const issues: React.ReactElement[] = []
-
-			const collectIssues = (n: TreeNode) => {
-				if (n.bemIssues.length > 0) {
-					issues.push(
-						<div key={n.path} className='border rounded-lg p-3 space-y-2'>
-							<div className='flex items-center gap-2'>
-								<Badge variant='outline' className='font-mono text-xs'>
-									{n.tag}
-								</Badge>
-								<span className='text-sm text-muted-foreground'>
-									{n.bemIssues.length} проблем
-								</span>
-							</div>
-							<div className='space-y-1'>
-								{n.bemIssues.map((issue, index) => (
-									<div key={index} className='text-sm'>
-										<span className='font-mono text-red-600'>
-											.{issue.className}
-										</span>
-										<span className='text-muted-foreground ml-2'>
-											{issue.message}
-										</span>
-									</div>
-								))}
-							</div>
-						</div>
-					)
-				}
-				n.children.forEach(collectIssues)
-			}
-
-			collectIssues(node)
-			return issues
-		},
-		[]
-	)
-
-	const bemIssuesCount = useMemo(() => {
-		if (!statistics) return 0
-		return statistics.bemIssuesCount
-	}, [statistics])
 
 	return (
 		<div className='space-y-6'>
@@ -859,18 +697,6 @@ export default function HTMLTreePage() {
 								<div className='flex items-center justify-between gap-4'>
 									<CardTitle>Дерево элементов</CardTitle>
 									<div className='flex items-center gap-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => setShowBemIssues(!showBemIssues)}
-										>
-											{showBemIssues ? (
-												<Eye className='w-4 h-4' />
-											) : (
-												<EyeOff className='w-4 h-4' />
-											)}
-											БЭМ
-										</Button>
 										<Button
 											variant='outline'
 											size='sm'
