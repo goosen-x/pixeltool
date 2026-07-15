@@ -157,11 +157,7 @@ export const toolWidgets: Widget[] = [
 		translationKey: 'utmBuilder',
 		path: 'utm-link-builder',
 		gradient: 'from-pink-500 to-rose-500',
-		recommendedTools: [
-			'qr-generator',
-			'seo-markdown-generator',
-			'youtube-thumbnail'
-		],
+		recommendedTools: ['qr-generator', 'youtube-thumbnail'],
 		title: 'UTM конструктор ссылок',
 		description:
 			'Создавайте отслеживаемые ссылки с UTM параметрами для маркетинговых кампаний',

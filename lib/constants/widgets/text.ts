@@ -68,11 +68,7 @@ export const textWidgets: Widget[] = [
 		translationKey: 'fancyTextGenerator',
 		path: 'fancy-text-generator',
 		gradient: 'from-fuchsia-500 to-pink-600',
-		recommendedTools: [
-			'special-symbols-picker',
-			'password-generator',
-			'seo-markdown-generator'
-		],
+		recommendedTools: ['special-symbols-picker', 'password-generator'],
 		difficulty: 'beginner',
 		tags: ['text', 'unicode', 'fonts', 'style', 'generator'],
 		title: 'Генератор стилизованного текста',

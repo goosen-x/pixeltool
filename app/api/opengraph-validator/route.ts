@@ -24,13 +24,20 @@ export async function GET(request: NextRequest) {
 
 		// Fetch the webpage
 		const controller = new AbortController()
-		const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+		const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
 
+		// Ходим под браузерным User-Agent и браузерными заголовками: ботовый UA
+		// с датацентр-IP крупные сайты за Cloudflare/CDN режут (запрос висит до
+		// таймаута). Реалистичные заголовки проходят большинство базовых фильтров.
 		const response = await fetch(url, {
 			signal: controller.signal,
+			redirect: 'follow',
 			headers: {
 				'User-Agent':
-					'Mozilla/5.0 (compatible; OpenGraphValidator/1.0; +https://pixeltool.pro)'
+					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+				Accept:
+					'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+				'Accept-Language': 'ru,en;q=0.9'
 			}
 		})
 

@@ -18,11 +18,13 @@ export function CatalogStructuredData({ category }: Props) {
 	const meta =
 		CATEGORY_META[category as keyof typeof CATEGORY_META] ?? CATEGORY_META['']
 
-	const url = category === '' ? `${BASE_URL}/tools` : `${BASE_URL}/tools/${category}`
+	const url =
+		category === '' ? `${BASE_URL}/tools` : `${BASE_URL}/tools/${category}`
 
-	const items = category === ''
-		? widgets
-		: widgets.filter(widget => widget.category === category)
+	const items =
+		category === ''
+			? widgets
+			: widgets.filter(widget => widget.category === category)
 
 	const collectionPage = {
 		'@context': 'https://schema.org',

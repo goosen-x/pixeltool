@@ -179,22 +179,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'seo-markdown-generator': {
-		ru: {
-			title:
-				'Сгенерировать SEO Markdown - Создание Оптимизированных Постов | Онлайн Бесплатно',
-			description:
-				'Генерируйте SEO-оптимизированные markdown файлы для блога. Создавайте структурированный контент с метаданными и ключевыми словами.',
-			keywords: [
-				'seo markdown',
-				'генератор markdown',
-				'генератор постов',
-				'seo контент',
-				'создать markdown',
-				'генератор контента'
-			]
-		}
-	},
 	'html-tree': {
 		ru: {
 			title: 'HTML Дерево - Визуализатор DOM Структуры | Инструмент',

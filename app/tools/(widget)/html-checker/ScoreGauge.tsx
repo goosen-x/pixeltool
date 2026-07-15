@@ -45,10 +45,7 @@ export function ScoreGauge({ score }: { score: number }) {
 			</ResponsiveContainer>
 
 			<div className='absolute inset-x-0 bottom-2 flex flex-col items-center'>
-				<span
-					className='text-4xl font-bold'
-					style={{ color: color(score) }}
-				>
+				<span className='text-4xl font-bold' style={{ color: color(score) }}>
 					{score}
 				</span>
 				<span className='text-xs text-muted-foreground'>из 100</span>

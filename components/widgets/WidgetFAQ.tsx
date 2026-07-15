@@ -18,11 +18,7 @@ export function WidgetFAQ({ widgetId }: WidgetFAQProps) {
 	// (см. комментарий в WidgetStructuredData), поэтому разметку даёт аккордеон.
 	return (
 		<div className='mt-16'>
-			<FaqAccordion
-				items={faqs}
-				title='Часто задаваемые вопросы'
-				withSchema
-			/>
+			<FaqAccordion items={faqs} title='Часто задаваемые вопросы' withSchema />
 		</div>
 	)
 }

@@ -16,7 +16,9 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { inflateSync, deflateSync } from 'zlib'
 
-const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+const PNG_SIGNATURE = Buffer.from([
+	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a
+])
 
 interface Decoded {
 	width: number
@@ -186,7 +188,10 @@ function opaqueBounds(
 	return right < 0 ? null : { left, top, right, bottom }
 }
 
-function crop(image: Decoded, box: NonNullable<ReturnType<typeof opaqueBounds>>): Decoded {
+function crop(
+	image: Decoded,
+	box: NonNullable<ReturnType<typeof opaqueBounds>>
+): Decoded {
 	const width = box.right - box.left + 1
 	const height = box.bottom - box.top + 1
 	const pixels = Buffer.alloc(width * height * 4)
@@ -222,7 +227,9 @@ function main(): void {
 		const height = box.bottom - box.top + 1
 
 		if (width === image.width && height === image.height) {
-			console.log(`${path}: ${image.width}×${image.height}, прозрачных полей нет`)
+			console.log(
+				`${path}: ${image.width}×${image.height}, прозрачных полей нет`
+			)
 			continue
 		}
 

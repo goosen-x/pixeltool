@@ -44,7 +44,9 @@ export async function GET(request: NextRequest) {
 		}
 
 		const type = response.headers.get('content-type') ?? ''
-		if (!/text\/html|application\/xhtml|text\/xml|application\/xml/i.test(type)) {
+		if (
+			!/text\/html|application\/xhtml|text\/xml|application\/xml/i.test(type)
+		) {
 			return NextResponse.json(
 				{ error: 'По адресу не HTML-страница' },
 				{ status: 400 }

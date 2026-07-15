@@ -1,18 +1,11 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-import {
-	Copy,
-	Download,
-	Code,
-	FileCode,
-	AlertCircle,
-	CheckCircle2
-} from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { HtmlXmlParserSeo } from './HtmlXmlParserSeo'
+import { Copy, Download, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { toast } from 'sonner'
 import {
 	Select,
@@ -21,12 +14,9 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select'
-import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-
-type ParseMode = 'format' | 'minify' | 'validate' | 'extract'
 
 interface ParseResult {
 	output: string
@@ -40,13 +30,16 @@ interface ParseResult {
 	}
 }
 
+// Нарочно в одну строку — чтобы форматирование сразу показало результат.
+const EXAMPLE_HTML =
+	'<article class="card"><header><h2>Заголовок статьи</h2><span class="tag">новости</span></header><p>Короткий текст со <a href="/news">ссылкой</a> внутри.</p><!-- список пунктов --><ul><li>Первый пункт</li><li>Второй пункт</li></ul></article>'
+
 export default function HtmlXmlParserPage() {
 	const [input, setInput] = useState('')
 	const [result, setResult] = useState<ParseResult | null>(null)
-	const [mode, setMode] = useState<ParseMode>('format')
+	const [minify, setMinify] = useState(false)
 	const [indentSize, setIndentSize] = useState(2)
 	const [preserveComments, setPreserveComments] = useState(true)
-	const [isProcessing, setIsProcessing] = useState(false)
 
 	const detectType = (content: string): 'html' | 'xml' => {
 		const trimmed = content.trim()
@@ -127,47 +120,6 @@ export default function HtmlXmlParserPage() {
 			.trim()
 	}
 
-	const extractData = (doc: Document): string => {
-		const extract = (node: Node, path: string = ''): string[] => {
-			const results: string[] = []
-
-			if (node.nodeType === Node.ELEMENT_NODE) {
-				const element = node as Element
-				const currentPath = path
-					? `${path} > ${element.tagName}`
-					: element.tagName
-
-				// Extract attributes
-				if (element.attributes.length > 0) {
-					const attrs = Array.from(element.attributes)
-						.map(attr => `${attr.name}="${attr.value}"`)
-						.join(' ')
-					results.push(`${currentPath}: ${attrs}`)
-				}
-
-				// Extract text content
-				const textContent = Array.from(element.childNodes)
-					.filter(n => n.nodeType === Node.TEXT_NODE)
-					.map(n => n.textContent?.trim())
-					.filter(t => t)
-					.join(' ')
-
-				if (textContent) {
-					results.push(`${currentPath}: "${textContent}"`)
-				}
-
-				// Process children
-				Array.from(element.childNodes).forEach(child => {
-					results.push(...extract(child, currentPath))
-				})
-			}
-
-			return results
-		}
-
-		return extract(doc.documentElement).join('\n')
-	}
-
 	const getDocumentStats = (doc: Document) => {
 		let elements = 0
 		let attributes = 0
@@ -194,11 +146,9 @@ export default function HtmlXmlParserPage() {
 
 	const processInput = useCallback(() => {
 		if (!input.trim()) {
-			toast.error('Введите HTML или XML код')
+			setResult(null)
 			return
 		}
-
-		setIsProcessing(true)
 
 		try {
 			const { doc, errors } = parseAndValidate(input)
@@ -209,26 +159,12 @@ export default function HtmlXmlParserPage() {
 					isValid: false,
 					errors
 				})
-				setIsProcessing(false)
 				return
 			}
 
-			let output = ''
-
-			switch (mode) {
-				case 'format':
-					output = formatDocument(doc, indentSize)
-					break
-				case 'minify':
-					output = minifyDocument(input)
-					break
-				case 'validate':
-					output = 'Документ валиден'
-					break
-				case 'extract':
-					output = extractData(doc)
-					break
-			}
+			const output = minify
+				? minifyDocument(input)
+				: formatDocument(doc, indentSize)
 
 			setResult({
 				output,
@@ -242,10 +178,15 @@ export default function HtmlXmlParserPage() {
 				isValid: false,
 				errors: [error instanceof Error ? error.message : 'Unknown error']
 			})
-		} finally {
-			setIsProcessing(false)
 		}
-	}, [input, mode, indentSize, preserveComments])
+	}, [input, minify, indentSize, preserveComments])
+
+	// Живой результат: обрабатываем сам по вводу и смене настроек, с дебаунсом,
+	// чтобы разбор не дёргался на каждое нажатие клавиши.
+	useEffect(() => {
+		const timer = setTimeout(processInput, 300)
+		return () => clearTimeout(timer)
+	}, [processInput])
 
 	const handleCopy = useCallback(() => {
 		if (!result?.output) return
@@ -259,211 +200,199 @@ export default function HtmlXmlParserPage() {
 		const url = URL.createObjectURL(blob)
 		const a = document.createElement('a')
 		a.href = url
-		a.download = `parsed-${mode}.${detectType(input)}`
+		a.download = `${minify ? 'minified' : 'formatted'}.${detectType(input)}`
 		document.body.appendChild(a)
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
 		toast.success('Файл загружен')
-	}, [result, mode, input])
+	}, [result, minify, input])
 
 	return (
-		<WidgetWrapper>
-			<div className='grid gap-6 lg:grid-cols-2'>
-				<Card>
-					<CardHeader>
-						<CardTitle>Ввод</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<Textarea
-							value={input}
-							onChange={e => setInput(e.target.value)}
-							placeholder='Вставьте HTML или XML код здесь...'
-							className='min-h-[400px] font-mono text-sm'
-						/>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader>
-						<CardTitle className='flex items-center justify-between'>
-							Результат
-							{result && (
-								<span
-									className={cn(
-										'text-sm font-normal flex items-center gap-1',
-										result.isValid ? 'text-green-600' : 'text-red-600'
-									)}
-								>
-									{result.isValid ? (
-										<>
-											<CheckCircle2 className='w-4 h-4' />
-											Валидный
-										</>
-									) : (
-										<>
-											<AlertCircle className='w-4 h-4' />
-											Невалидный
-										</>
-									)}
-								</span>
-							)}
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						{result?.errors.length ? (
-							<div className='mb-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg'>
-								<p className='font-medium text-red-600 dark:text-red-400 mb-2'>
-									Ошибки:
-								</p>
-								<ul className='list-disc list-inside space-y-1'>
-									{result.errors.map((error, index) => (
-										<li
-											key={index}
-											className='text-sm text-red-600 dark:text-red-400'
-										>
-											{error}
-										</li>
-									))}
-								</ul>
-							</div>
-						) : null}
-
-						<Textarea
-							value={result?.output || ''}
-							readOnly
-							placeholder='Результат обработки появится здесь'
-							className='min-h-[400px] font-mono text-sm'
-						/>
-
-						{result?.stats && (
-							<div className='mt-4 grid grid-cols-2 gap-2 text-sm'>
-								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>Элементы:</span>
-									<span className='font-mono'>{result.stats.elements}</span>
-								</div>
-								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>Атрибуты:</span>
-									<span className='font-mono'>{result.stats.attributes}</span>
-								</div>
-								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>Текстовые узлы:</span>
-									<span className='font-mono'>{result.stats.textNodes}</span>
-								</div>
-								<div className='flex justify-between p-2 bg-muted rounded'>
-									<span>Комментарии:</span>
-									<span className='font-mono'>{result.stats.comments}</span>
-								</div>
-							</div>
-						)}
-
-						<div className='mt-4 flex gap-2'>
-							<Button
-								onClick={handleCopy}
-								variant='outline'
-								className='flex-1'
-								disabled={!result?.output}
-							>
-								<Copy className='w-4 h-4 mr-2' />
-								Копировать
-							</Button>
-							<Button
-								onClick={handleDownload}
-								variant='outline'
-								className='flex-1'
-								disabled={!result?.output}
-							>
-								<Download className='w-4 h-4 mr-2' />
-								Скачать
-							</Button>
-						</div>
-					</CardContent>
-				</Card>
-			</div>
-
+		<>
 			<Card>
-				<CardHeader>
-					<CardTitle>Настройки</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-4'>
-					<div>
-						<Label htmlFor='mode'>Режим</Label>
-						<Select
-							value={mode}
-							onValueChange={value => setMode(value as ParseMode)}
-						>
-							<SelectTrigger id='mode'>
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value='format'>
-									<div className='flex items-center gap-2'>
-										<Code className='w-4 h-4' />
-										Форматирование
-									</div>
-								</SelectItem>
-								<SelectItem value='minify'>
-									<div className='flex items-center gap-2'>
-										<FileCode className='w-4 h-4' />
-										Минификация
-									</div>
-								</SelectItem>
-								<SelectItem value='validate'>
-									<div className='flex items-center gap-2'>
-										<CheckCircle2 className='w-4 h-4' />
-										Валидация
-									</div>
-								</SelectItem>
-								<SelectItem value='extract'>
-									<div className='flex items-center gap-2'>
-										<AlertCircle className='w-4 h-4' />
-										Извлечение данных
-									</div>
-								</SelectItem>
-							</SelectContent>
-						</Select>
+				<CardContent className='space-y-4 pt-6'>
+					{/* Форматтер: по умолчанию — читаемый вид с отступами, тумблер
+					    переключает на минификацию. Настройки отступа и комментариев
+					    нужны только в режиме форматирования. */}
+					<div className='flex flex-wrap items-center gap-x-6 gap-y-3'>
+						<div className='flex items-center gap-2'>
+							<Switch
+								id='minify'
+								checked={minify}
+								onCheckedChange={setMinify}
+								className='cursor-pointer'
+							/>
+							<Label htmlFor='minify' className='cursor-pointer text-sm'>
+								Минифицировать
+							</Label>
+						</div>
+
+						{!minify && (
+							<>
+								<div className='flex items-center gap-2'>
+									<Label
+										htmlFor='indent'
+										className='text-sm text-muted-foreground'
+									>
+										Отступ
+									</Label>
+									<Select
+										value={indentSize.toString()}
+										onValueChange={value => setIndentSize(parseInt(value))}
+									>
+										<SelectTrigger id='indent' className='w-32 cursor-pointer'>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value='2'>2 пробела</SelectItem>
+											<SelectItem value='4'>4 пробела</SelectItem>
+											<SelectItem value='8'>8 пробелов</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+
+								<div className='flex items-center gap-2'>
+									<Switch
+										id='comments'
+										checked={preserveComments}
+										onCheckedChange={setPreserveComments}
+										className='cursor-pointer'
+									/>
+									<Label
+										htmlFor='comments'
+										className='cursor-pointer text-sm text-muted-foreground'
+									>
+										Сохранять комментарии
+									</Label>
+								</div>
+							</>
+						)}
 					</div>
 
-					{mode === 'format' && (
-						<>
-							<div>
-								<Label htmlFor='indent'>Размер отступа</Label>
-								<Select
-									value={indentSize.toString()}
-									onValueChange={value => setIndentSize(parseInt(value))}
+					{/* Ввод и результат — рядом, в одной карточке */}
+					<div className='grid gap-4 lg:grid-cols-2'>
+						<div className='space-y-2'>
+							<div className='flex h-7 items-center justify-between gap-2'>
+								<span className='text-sm font-medium'>Ввод</span>
+								<Button
+									variant='ghost'
+									size='sm'
+									className='h-7 cursor-pointer px-2'
+									onClick={() => setInput(EXAMPLE_HTML)}
 								>
-									<SelectTrigger id='indent'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='2'>2 пробелов</SelectItem>
-										<SelectItem value='4'>4 пробелов</SelectItem>
-										<SelectItem value='8'>8 пробелов</SelectItem>
-									</SelectContent>
-								</Select>
+									Пример
+								</Button>
+							</div>
+							<Textarea
+								value={input}
+								onChange={e => setInput(e.target.value)}
+								placeholder='Вставьте HTML или XML код здесь...'
+								className='min-h-[420px] resize-none font-mono text-sm'
+								spellCheck={false}
+							/>
+						</div>
+
+						<div className='space-y-2'>
+							<div className='flex h-7 items-center justify-between gap-2'>
+								<div className='flex items-center gap-3'>
+									<span className='text-sm font-medium'>Результат</span>
+									{result && (
+										<span
+											className={cn(
+												'flex items-center gap-1 text-xs font-medium',
+												result.isValid ? 'text-green-600' : 'text-red-600'
+											)}
+										>
+											{result.isValid ? (
+												<>
+													<CheckCircle2 className='h-3.5 w-3.5' />
+													Валидный
+												</>
+											) : (
+												<>
+													<AlertCircle className='h-3.5 w-3.5' />
+													Невалидный
+												</>
+											)}
+										</span>
+									)}
+								</div>
+								<div className='flex items-center gap-1'>
+									<Button
+										onClick={handleCopy}
+										variant='ghost'
+										size='sm'
+										className='h-7 cursor-pointer px-2'
+										disabled={!result?.output}
+									>
+										<Copy className='mr-1.5 h-3.5 w-3.5' />
+										Копировать
+									</Button>
+									<Button
+										onClick={handleDownload}
+										variant='ghost'
+										size='sm'
+										className='h-7 cursor-pointer px-2'
+										disabled={!result?.output}
+									>
+										<Download className='mr-1.5 h-3.5 w-3.5' />
+										Скачать
+									</Button>
+								</div>
 							</div>
 
-							<div className='flex items-center space-x-2'>
-								<Switch
-									id='comments'
-									checked={preserveComments}
-									onCheckedChange={setPreserveComments}
+							{result?.errors.length ? (
+								<div className='rounded-lg bg-red-50 p-4 dark:bg-red-900/20'>
+									<p className='mb-2 font-medium text-red-600 dark:text-red-400'>
+										Ошибки:
+									</p>
+									<ul className='list-inside list-disc space-y-1'>
+										{result.errors.map((error, index) => (
+											<li
+												key={index}
+												className='text-sm text-red-600 dark:text-red-400'
+											>
+												{error}
+											</li>
+										))}
+									</ul>
+								</div>
+							) : (
+								<Textarea
+									value={result?.output || ''}
+									readOnly
+									placeholder='Результат появится здесь автоматически'
+									className='min-h-[420px] resize-none bg-muted/30 font-mono text-sm'
+									spellCheck={false}
 								/>
-								<Label htmlFor='comments'>Сохранять комментарии</Label>
-							</div>
-						</>
-					)}
+							)}
 
-					<Button
-						onClick={processInput}
-						className='w-full'
-						size='lg'
-						disabled={!input || isProcessing}
-					>
-						{isProcessing ? 'Обработка...' : 'Обработать'}
-					</Button>
+							{result?.stats && (
+								<div className='grid grid-cols-2 gap-2 text-sm'>
+									<div className='flex justify-between rounded bg-muted p-2'>
+										<span className='text-muted-foreground'>Элементы</span>
+										<span className='font-mono'>{result.stats.elements}</span>
+									</div>
+									<div className='flex justify-between rounded bg-muted p-2'>
+										<span className='text-muted-foreground'>Атрибуты</span>
+										<span className='font-mono'>{result.stats.attributes}</span>
+									</div>
+									<div className='flex justify-between rounded bg-muted p-2'>
+										<span className='text-muted-foreground'>Текст. узлы</span>
+										<span className='font-mono'>{result.stats.textNodes}</span>
+									</div>
+									<div className='flex justify-between rounded bg-muted p-2'>
+										<span className='text-muted-foreground'>Комментарии</span>
+										<span className='font-mono'>{result.stats.comments}</span>
+									</div>
+								</div>
+							)}
+						</div>
+					</div>
 				</CardContent>
 			</Card>
-		</WidgetWrapper>
+			<HtmlXmlParserSeo />
+		</>
 	)
 }

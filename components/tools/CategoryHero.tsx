@@ -179,7 +179,9 @@ export function CategoryHero({
 			{/* Результаты и режим показа — отдельным рядом по низу карточки */}
 			<div className='relative mt-8 flex flex-wrap items-center justify-between gap-4 border-t pt-5'>
 				<div className='flex items-center gap-2'>
-					<span className='text-sm text-muted-foreground'>Найдено: {found}</span>
+					<span className='text-sm text-muted-foreground'>
+						Найдено: {found}
+					</span>
 					{search !== '' && (
 						<Button
 							variant='ghost'

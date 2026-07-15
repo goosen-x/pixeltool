@@ -15,7 +15,6 @@ const FETCH_TIMEOUT_MS = 8000
 /** Не тянем гигантские страницы — фавикон объявляется в <head>. */
 const MAX_HTML_BYTES = 512 * 1024
 
-
 interface FoundIcon {
 	url: string
 	/** Что было написано в rel: icon, apple-touch-icon, shortcut icon. */

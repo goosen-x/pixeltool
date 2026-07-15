@@ -15,6 +15,17 @@ input[type='button'] {
 	corner-shape: squircle;
 }
 
+/* Тумблеры (switch) — трек и бегунок должны быть идеально круглыми, без
+   squircle. Radix рендерит свитч как <button>, поэтому его ловит правило выше;
+   возвращаем round точечно. Селектор unlayered и специфичнее (0,1,0 > 0,0,1),
+   поэтому перебивает squircle. */
+[role='switch'],
+[role='switch'] *,
+[data-slot='switch'],
+[data-slot='switch-thumb'] {
+	corner-shape: round;
+}
+
 /* Progress bar animation */
 @keyframes shimmer {
 	0% {

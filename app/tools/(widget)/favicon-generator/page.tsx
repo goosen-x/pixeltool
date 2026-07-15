@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { WidgetWrapper } from '@/components/widgets/WidgetWrapper'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, Download, Grid3x3 } from 'lucide-react'
+import { Upload, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import JSZip from 'jszip'
 import { buildIco, buildIcoBuffer } from '@/lib/favicon/ico'
@@ -46,7 +46,6 @@ export default function FaviconGeneratorPage() {
 			dataUrl: string
 		}>
 	>([])
-	const [isGenerating, setIsGenerating] = useState(false)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -87,12 +86,8 @@ export default function FaviconGeneratorPage() {
 	}
 
 	const generateFavicons = useCallback(async () => {
-		if (!selectedImage || !previewUrl) {
-			toast.error('Сначала выберите изображение')
-			return
-		}
+		if (!selectedImage || !previewUrl) return
 
-		setIsGenerating(true)
 		const canvas = canvasRef.current
 		const ctx = canvas?.getContext('2d')
 		if (!canvas || !ctx) return
@@ -124,12 +119,16 @@ export default function FaviconGeneratorPage() {
 			})
 
 			setGeneratedFavicons(favicons)
-			setIsGenerating(false)
-			toast.success(`Создано размеров фавикона: ${favicons.length}`)
 		}
 
 		img.src = previewUrl
 	}, [selectedImage, previewUrl])
+
+	// Фавиконы генерируются сами, как только загружена картинка — отдельная
+	// кнопка «Сгенерировать» не нужна.
+	useEffect(() => {
+		if (selectedImage && previewUrl) void generateFavicons()
+	}, [selectedImage, previewUrl, generateFavicons])
 
 	const downloadFavicon = (favicon: (typeof generatedFavicons)[0]) => {
 		const link = document.createElement('a')
@@ -260,15 +259,6 @@ export default function FaviconGeneratorPage() {
 							</div>
 						)}
 					</div>
-
-					<Button
-						onClick={generateFavicons}
-						disabled={!selectedImage || isGenerating}
-						className='w-full cursor-pointer'
-					>
-						<Grid3x3 className='mr-2 h-4 w-4' />
-						{isGenerating ? 'Генерация…' : 'Сгенерировать фавиконы'}
-					</Button>
 
 					{/* Шаг 2 — результат */}
 					{generatedFavicons.length > 0 && (

@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { HtmlAnalysis } from './HtmlAnalysis'
-import Link from 'next/link'
+import { HtmlCheckerSeo } from './HtmlCheckerSeo'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -187,15 +187,16 @@ export default function HTMLTreePage() {
 			tag => doc.querySelector(tag.toLowerCase()) !== null
 		)
 
-		headingTags.forEach(tag => {
-			const elements = doc.querySelectorAll(tag)
-			elements.forEach((el, index) => {
-				headings.push({
-					level: parseInt(tag[1]),
-					tag: tag.toUpperCase(),
-					text: el.textContent?.trim() || '',
-					position: headings.length
-				})
+		// Единый запрос по всем тегам сразу — querySelectorAll возвращает узлы в
+		// порядке документа, поэтому заголовки идут деревом (H3 сразу за своим H2),
+		// а не сгруппированными по уровню.
+		doc.querySelectorAll(headingTags.join(',')).forEach(el => {
+			const tag = el.tagName.toLowerCase()
+			headings.push({
+				level: parseInt(tag[1]),
+				tag: tag.toUpperCase(),
+				text: el.textContent?.trim() || '',
+				position: headings.length
 			})
 		})
 
@@ -570,21 +571,30 @@ export default function HTMLTreePage() {
 						{/* Прижат к верху и бокам карточки: отрицательные отступы гасят
 						    padding CardContent, верхние углы скруглены под карточку */}
 						<TabsList className='-mx-6 -mt-6 mb-6 grid h-auto w-[calc(100%+3rem)] grid-cols-3 gap-0 overflow-hidden rounded-b-none rounded-t-2xl p-0'>
-							<TabsTrigger value='paste' className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'>
+							<TabsTrigger
+								value='paste'
+								className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'
+							>
 								<FileCode className='h-5 w-5' />
 								Вставить код
 							</TabsTrigger>
-							<TabsTrigger value='url' className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'>
+							<TabsTrigger
+								value='url'
+								className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'
+							>
 								<Globe className='h-5 w-5' />
 								По адресу
 							</TabsTrigger>
-							<TabsTrigger value='file' className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'>
+							<TabsTrigger
+								value='file'
+								className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'
+							>
 								<Upload className='h-5 w-5' />
 								Из файла
 							</TabsTrigger>
 						</TabsList>
 
-						<TabsContent value='paste' className='h-72'>
+						<TabsContent value='paste' className='h-56 flex-none'>
 							<Textarea
 								placeholder='Вставьте HTML код страницы...'
 								value={htmlInput}
@@ -594,7 +604,7 @@ export default function HTMLTreePage() {
 							/>
 						</TabsContent>
 
-						<TabsContent value='url' className='h-72'>
+						<TabsContent value='url' className='h-56 flex-none'>
 							<div className='flex h-full flex-col justify-center rounded-xl border bg-muted/20 p-8'>
 								<div className='flex flex-wrap items-center gap-2'>
 									<Input
@@ -603,7 +613,7 @@ export default function HTMLTreePage() {
 										onKeyDown={e => e.key === 'Enter' && loadFromUrl()}
 										placeholder='example.com'
 										aria-label='Адрес страницы для загрузки HTML'
-										className='max-w-sm bg-background'
+										className='h-10 max-w-sm bg-background'
 									/>
 									<Button
 										onClick={loadFromUrl}
@@ -620,7 +630,7 @@ export default function HTMLTreePage() {
 							</div>
 						</TabsContent>
 
-						<TabsContent value='file' className='h-72'>
+						<TabsContent value='file' className='h-56 flex-none'>
 							{/* Объединённая зона: клик или перетаскивание файла */}
 							<div
 								role='button'
@@ -670,7 +680,6 @@ export default function HTMLTreePage() {
 								}}
 							/>
 						</TabsContent>
-
 					</Tabs>
 
 					{/* Пример — вне табов: полезен независимо от выбранного источника */}
@@ -857,7 +866,7 @@ export default function HTMLTreePage() {
 												</Alert>
 											)}
 
-									{/* Heading Structure — отступ по реальной вложенности, а не по
+										{/* Heading Structure — отступ по реальной вложенности, а не по
 										    номеру тега: заголовок вкладывается под ближайший
 										    предыдущий более высокого уровня (стек уровней). Так
 										    пропуск h2→h4 не даёт ложной глубины. */}
@@ -887,7 +896,9 @@ export default function HTMLTreePage() {
 																<div
 																	key={index}
 																	className='flex items-start gap-3 py-1.5 font-mono text-sm'
-																	style={{ paddingLeft: `${heading.depth * 24}px` }}
+																	style={{
+																		paddingLeft: `${heading.depth * 24}px`
+																	}}
 																>
 																	{heading.depth > 0 && (
 																		<span
@@ -897,7 +908,9 @@ export default function HTMLTreePage() {
 																	)}
 																	<Badge
 																		variant={
-																			heading.level === 1 ? 'default' : 'secondary'
+																			heading.level === 1
+																				? 'default'
+																				: 'secondary'
 																		}
 																		className='flex-shrink-0'
 																	>
@@ -966,19 +979,37 @@ export default function HTMLTreePage() {
 											</CardTitle>
 										</CardHeader>
 										<CardContent>
-											<div className='space-y-2 max-h-[300px] overflow-auto'>
+											<div className='flex flex-wrap gap-2 max-h-[300px] overflow-auto'>
 												{statistics &&
-													Object.entries(statistics.elementCounts)
-														.sort((a, b) => b[1] - a[1])
-														.map(([tag, count]) => (
-															<div
-																key={tag}
-																className='flex justify-between items-center'
-															>
-																<code className='text-sm font-mono'>{tag}</code>
-																<Badge variant='outline'>{count}</Badge>
-															</div>
-														))}
+													(() => {
+														const entries = Object.entries(
+															statistics.elementCounts
+														).sort((a, b) => b[1] - a[1])
+														// Корень сглаживает разрыв: частоты падают резко (356 → 1),
+														// без него тепло было бы только у первого тега.
+														const max = entries[0]?.[1] || 1
+														return entries.map(([tag, count]) => {
+															const t = Math.sqrt(count / max)
+															const bg = 6 + t * 46
+															const border = 25 + t * 45
+															return (
+																<Badge
+																	key={tag}
+																	variant='outline'
+																	className='gap-1.5 font-mono font-normal'
+																	style={{
+																		backgroundColor: `color-mix(in oklab, hsl(var(--primary)) ${bg}%, hsl(var(--background)))`,
+																		borderColor: `color-mix(in oklab, hsl(var(--primary)) ${border}%, hsl(var(--border)))`
+																	}}
+																>
+																	{tag}
+																	<span className='font-semibold tabular-nums'>
+																		{count}
+																	</span>
+																</Badge>
+															)
+														})
+													})()}
 											</div>
 										</CardContent>
 									</Card>
@@ -990,27 +1021,7 @@ export default function HTMLTreePage() {
 				</CardContent>
 			</Card>
 
-			<section className='mx-auto mt-16 max-w-3xl'>
-				<h2 className='text-2xl font-bold tracking-tight'>
-					Дерево разметки и дерево браузера — не одно и то же
-				</h2>
-				<p className='mt-3 text-muted-foreground'>
-					Здесь вы видите дерево своего HTML: теги ровно там, где вы их
-					написали. Браузер же строит из этой разметки DOM-дерево и по дороге
-					чинит её — достраивает <code className='font-mono'>tbody</code>,
-					закрывает забытые теги, выносит лишнее из таблиц наружу. Из-за этого,
-					например, молча не работает селектор{' '}
-					<code className='font-mono'>table &gt; tr</code>. Где именно
-					расходятся два дерева — разбираем в статье{' '}
-					<Link
-						href='/blog/html-tree-vs-dom-tree'
-						className='cursor-pointer font-medium text-primary hover:underline'
-					>
-						HTML-дерево и DOM-дерево
-					</Link>
-					.
-				</p>
-			</section>
+			<HtmlCheckerSeo />
 		</div>
 	)
 }

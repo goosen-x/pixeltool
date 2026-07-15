@@ -69,7 +69,9 @@ export async function downloadAnalysisPdf(
 	text('Отчёт об анализе HTML', 22, { gap: 4 })
 	text(dateLabel, 10, { color: [107, 114, 128], gap: 6 })
 	text(
-		report.isWholePage ? 'Проверена целая страница' : 'Проверен фрагмент разметки',
+		report.isWholePage
+			? 'Проверена целая страница'
+			: 'Проверен фрагмент разметки',
 		10,
 		{ color: [107, 114, 128], gap: 16 }
 	)

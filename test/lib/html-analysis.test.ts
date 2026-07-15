@@ -54,15 +54,15 @@ describe('доступность', () => {
 	})
 
 	it('пустой alt допустим (декоративная)', () => {
-		expect(hasCheck('<img src="a.png" alt="">', 'accessibility', 'img-no-alt')).toBe(
-			false
-		)
+		expect(
+			hasCheck('<img src="a.png" alt="">', 'accessibility', 'img-no-alt')
+		).toBe(false)
 	})
 
 	it('ловит поле без подписи', () => {
-		expect(hasCheck('<input type="text">', 'accessibility', 'field-no-label')).toBe(
-			true
-		)
+		expect(
+			hasCheck('<input type="text">', 'accessibility', 'field-no-label')
+		).toBe(true)
 	})
 
 	it('поле с label по for — не проблема', () => {
@@ -71,25 +71,39 @@ describe('доступность', () => {
 	})
 
 	it('ловит дубли id', () => {
-		expect(hasCheck('<div id="a"></div><div id="a"></div>', 'accessibility', 'dup-id')).toBe(
-			true
-		)
+		expect(
+			hasCheck(
+				'<div id="a"></div><div id="a"></div>',
+				'accessibility',
+				'dup-id'
+			)
+		).toBe(true)
 	})
 
 	it('ловит ссылку без текста', () => {
-		expect(hasCheck('<a href="/"></a>', 'accessibility', 'empty-control')).toBe(true)
+		expect(hasCheck('<a href="/"></a>', 'accessibility', 'empty-control')).toBe(
+			true
+		)
 	})
 
 	it('ссылка с aria-label — не проблема', () => {
 		expect(
-			hasCheck('<a href="/" aria-label="Домой"></a>', 'accessibility', 'empty-control')
+			hasCheck(
+				'<a href="/" aria-label="Домой"></a>',
+				'accessibility',
+				'empty-control'
+			)
 		).toBe(false)
 	})
 
 	it('нет lang только для целой страницы', () => {
-		expect(hasCheck('<!DOCTYPE html><html><body></body></html>', 'accessibility', 'no-lang')).toBe(
-			true
-		)
+		expect(
+			hasCheck(
+				'<!DOCTYPE html><html><body></body></html>',
+				'accessibility',
+				'no-lang'
+			)
+		).toBe(true)
 		// фрагмент — не ругаемся на lang
 		expect(hasCheck('<div>hi</div>', 'accessibility', 'no-lang')).toBe(false)
 	})
@@ -98,7 +112,11 @@ describe('доступность', () => {
 describe('семантика', () => {
 	it('целая страница без main — ошибка', () => {
 		expect(
-			hasCheck('<!DOCTYPE html><html><body><div>x</div></body></html>', 'semantics', 'no-main')
+			hasCheck(
+				'<!DOCTYPE html><html><body><div>x</div></body></html>',
+				'semantics',
+				'no-main'
+			)
 		).toBe(true)
 	})
 
@@ -111,17 +129,23 @@ describe('семантика', () => {
 	})
 
 	it('<i class> (иконка) не считается', () => {
-		expect(hasCheck('<i class="icon"></i>', 'semantics', 'legacy-bi')).toBe(false)
+		expect(hasCheck('<i class="icon"></i>', 'semantics', 'legacy-bi')).toBe(
+			false
+		)
 	})
 })
 
 describe('заголовки', () => {
 	it('пропуск уровня h2→h4', () => {
-		expect(hasCheck('<h2>a</h2><h4>b</h4>', 'headings', 'heading-skip')).toBe(true)
+		expect(hasCheck('<h2>a</h2><h4>b</h4>', 'headings', 'heading-skip')).toBe(
+			true
+		)
 	})
 
 	it('несколько h1', () => {
-		expect(hasCheck('<h1>a</h1><h1>b</h1>', 'headings', 'multiple-h1')).toBe(true)
+		expect(hasCheck('<h1>a</h1><h1>b</h1>', 'headings', 'multiple-h1')).toBe(
+			true
+		)
 	})
 })
 
