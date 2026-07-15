@@ -690,15 +690,14 @@ export default function HTMLTreePage() {
 
 	return (
 		<div className='space-y-6'>
-			{/* Input Section */}
+			{/* Ввод и результаты — в одной карточке: разрыв на три блока (ввод,
+			    полоса табов, дерево) выглядел раздробленно */}
 			<Card>
-				<CardHeader>
-					<CardTitle className='flex items-center gap-2'>
+				<CardContent className='space-y-6 pt-6'>
+					<div className='flex items-center gap-2 font-semibold'>
 						<FileCode className='w-5 h-5' />
 						Ввод HTML
-					</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-4'>
+					</div>
 					<Textarea
 						placeholder='Вставьте HTML код страницы...'
 						value={htmlInput}
@@ -747,12 +746,10 @@ export default function HTMLTreePage() {
 							}}
 						/>
 					</div>
-				</CardContent>
-			</Card>
 
-			{/* Results Tabs */}
-			{treeData && (
-				<Tabs defaultValue='tree' className='w-full'>
+					{/* Results Tabs — тот же контейнер, ниже поля ввода */}
+					{treeData && (
+						<Tabs defaultValue='tree' className='w-full'>
 					<TabsList className='grid w-full grid-cols-4 text-xs sm:text-sm gap-1 sm:gap-2'>
 						<TabsTrigger value='tree' className='gap-1 sm:gap-2'>
 							<FileCode className='w-4 h-4 hidden sm:inline-block' />
@@ -785,7 +782,7 @@ export default function HTMLTreePage() {
 
 					{/* Tree View */}
 					<TabsContent value='tree' className='space-y-4'>
-						<Card>
+						<Card className='border-0 bg-transparent shadow-none'>
 							<CardHeader>
 								<div className='flex items-center justify-between gap-4'>
 									<CardTitle>Дерево элементов</CardTitle>
@@ -892,7 +889,7 @@ export default function HTMLTreePage() {
 
 					{/* Headings Analysis */}
 					<TabsContent value='headings' className='space-y-4'>
-						<Card>
+						<Card className='border-0 bg-transparent shadow-none'>
 							<CardHeader>
 								<CardTitle>Анализ заголовков</CardTitle>
 							</CardHeader>
@@ -993,7 +990,7 @@ export default function HTMLTreePage() {
 
 					{/* BEM Analysis */}
 					<TabsContent value='bem' className='space-y-4'>
-						<Card>
+						<Card className='border-0 bg-transparent shadow-none'>
 							<CardHeader>
 								<CardTitle className='flex items-center gap-2'>
 									БЭМ Валидация
@@ -1046,7 +1043,7 @@ export default function HTMLTreePage() {
 					{/* Statistics */}
 					<TabsContent value='stats' className='space-y-4'>
 						<div className='grid gap-4 md:grid-cols-2'>
-							<Card>
+							<Card className='border-0 bg-transparent shadow-none'>
 								<CardHeader>
 									<CardTitle className='text-base'>Общая информация</CardTitle>
 								</CardHeader>
@@ -1090,7 +1087,7 @@ export default function HTMLTreePage() {
 								</CardContent>
 							</Card>
 
-							<Card>
+							<Card className='border-0 bg-transparent shadow-none'>
 								<CardHeader>
 									<CardTitle className='text-base'>Элементы по типам</CardTitle>
 								</CardHeader>
@@ -1115,6 +1112,8 @@ export default function HTMLTreePage() {
 					</TabsContent>
 				</Tabs>
 			)}
+				</CardContent>
+			</Card>
 
 			<section className='mx-auto mt-16 max-w-3xl'>
 				<h2 className='text-2xl font-bold tracking-tight'>
