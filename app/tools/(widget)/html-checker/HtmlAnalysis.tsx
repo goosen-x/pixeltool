@@ -17,6 +17,7 @@ import {
 } from '@/lib/html-analysis/analyze'
 import { validateW3C, w3cCategory } from '@/lib/html-analysis/w3c'
 import { downloadAnalysisPdf } from '@/lib/html-analysis/report-pdf'
+import { ScoreGauge } from './ScoreGauge'
 
 /** Цвет балла: зелёный от 90, янтарный от 60, иначе красный. */
 function scoreColor(score: number): string {
@@ -126,36 +127,34 @@ export function HtmlAnalysis({ html }: { html: string }) {
 
 			{report && (
 				<>
-					{/* Баллы */}
-					<div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
-						<div className='rounded-xl border bg-muted/30 p-4 text-center'>
-							<div
-								className={cn('text-3xl font-bold', scoreColor(report.overall))}
-							>
-								{report.overall}
-							</div>
-							<div className='mt-1 text-xs text-muted-foreground'>
+					{/* Общий балл датчиком, категории — плитками рядом */}
+					<div className='grid gap-4 lg:grid-cols-[minmax(0,16rem)_1fr] lg:items-center'>
+						<div className='rounded-xl border bg-muted/30 p-4'>
+							<ScoreGauge score={report.overall} />
+							<div className='text-center text-xs text-muted-foreground'>
 								Общий балл
 							</div>
 						</div>
-						{report.categories.map(category => (
-							<div
-								key={category.key}
-								className='rounded-xl border p-4 text-center'
-							>
+						<div className='grid gap-3 sm:grid-cols-2'>
+							{report.categories.map(category => (
 								<div
-									className={cn(
-										'text-3xl font-bold',
-										scoreColor(category.score)
-									)}
+									key={category.key}
+									className='flex items-center justify-between rounded-xl border p-4'
 								>
-									{category.score}
+									<span className='text-sm text-muted-foreground'>
+										{category.label}
+									</span>
+									<span
+										className={cn(
+											'text-2xl font-bold',
+											scoreColor(category.score)
+										)}
+									>
+										{category.score}
+									</span>
 								</div>
-								<div className='mt-1 text-xs text-muted-foreground'>
-									{category.label}
-								</div>
-							</div>
-						))}
+							))}
+						</div>
 					</div>
 
 					{/* Проблемы по категориям */}
