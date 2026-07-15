@@ -87,6 +87,7 @@
 		"i18next": "^23.16.8",
 		"ioredis": "^5.8.2",
 		"js-yaml": "^5.2.1",
+		"jspdf": "^4.2.1",
 		"jszip": "^3.10.1",
 		"lucide-react": "^0.561.0",
 		"mini-svg-data-uri": "^1.4.4",

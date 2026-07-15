@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo, useRef } from 'react'
-import { W3CValidation } from './W3CValidation'
+import { HtmlAnalysis } from './HtmlAnalysis'
 import Link from 'next/link'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -830,7 +830,7 @@ export default function HTMLTreePage() {
 					{/* Results Tabs — тот же контейнер, ниже поля ввода */}
 					{treeData && (
 						<Tabs defaultValue='tree' className='w-full'>
-					<TabsList className='grid w-full grid-cols-5 text-xs sm:text-sm gap-1 sm:gap-2'>
+					<TabsList className='grid w-full grid-cols-4 text-xs sm:text-sm gap-1 sm:gap-2'>
 						<TabsTrigger value='tree' className='gap-1 sm:gap-2'>
 							<FileCode className='w-4 h-4 hidden sm:inline-block' />
 							Дерево
@@ -841,27 +841,14 @@ export default function HTMLTreePage() {
 							Заголовки
 						</TabsTrigger>
 
-						<TabsTrigger value='bem' className='gap-1 sm:gap-2 relative'>
-							<AlertTriangle className='w-4 h-4 hidden sm:inline-block' />
-							БЭМ
-							{bemIssuesCount > 0 && (
-								<Badge
-									variant='destructive'
-									className='ml-1 h-5 text-[10px] sm:text-xs'
-								>
-									{bemIssuesCount}
-								</Badge>
-							)}
-						</TabsTrigger>
-
 						<TabsTrigger value='stats' className='gap-1 sm:gap-2'>
 							<BarChart3 className='w-4 h-4 hidden sm:inline-block' />
 							Статистика
 						</TabsTrigger>
 
-						<TabsTrigger value='w3c' className='gap-1 sm:gap-2'>
+						<TabsTrigger value='analysis' className='gap-1 sm:gap-2'>
 							<ShieldCheck className='w-4 h-4 hidden sm:inline-block' />
-							Валидация
+							Анализ
 						</TabsTrigger>
 					</TabsList>
 
@@ -1073,57 +1060,6 @@ export default function HTMLTreePage() {
 						</Card>
 					</TabsContent>
 
-					{/* BEM Analysis */}
-					<TabsContent value='bem' className='space-y-4'>
-						<Card className='border-0 bg-transparent shadow-none'>
-							<CardHeader>
-								<CardTitle className='flex items-center gap-2'>
-									БЭМ Валидация
-									{bemIssuesCount > 0 && (
-										<Badge variant='destructive'>
-											{bemIssuesCount} проблем
-										</Badge>
-									)}
-								</CardTitle>
-							</CardHeader>
-							<CardContent className='space-y-4'>
-								{bemIssuesCount === 0 ? (
-									<div className='text-center py-8'>
-										<CheckCircle2 className='w-12 h-12 text-green-600 mx-auto mb-4' />
-										<h3 className='text-lg font-semibold text-green-600 mb-2'>
-											Отлично! БЭМ ошибок не найдено
-										</h3>
-										<p className='text-muted-foreground'>
-											Все классы соответствуют методологии БЭМ
-										</p>
-									</div>
-								) : (
-									<Alert variant='destructive'>
-										<AlertTriangle className='h-4 w-4' />
-										<AlertTitle>Найдены БЭМ нарушения</AlertTitle>
-										<AlertDescription>
-											Обнаружено {bemIssuesCount} проблем с именованием классов
-											по БЭМ методологии. Проверьте дерево элементов для
-											детального анализа.
-										</AlertDescription>
-									</Alert>
-								)}
-
-								{/* BEM Issues Details */}
-								{bemIssuesCount > 0 && treeData && (
-									<div className='space-y-4'>
-										<h3 className='font-semibold text-sm'>
-											Детали БЭМ нарушений:
-										</h3>
-										<div className='text-xs text-muted-foreground mb-2'>
-											Кликните на класс в дереве, чтобы выделить его цветом
-										</div>
-										{renderBemIssues(treeData)}
-									</div>
-								)}
-							</CardContent>
-						</Card>
-					</TabsContent>
 
 					{/* Statistics */}
 					<TabsContent value='stats' className='space-y-4'>
@@ -1159,16 +1095,6 @@ export default function HTMLTreePage() {
 										</span>
 										<Badge variant='secondary'>{statistics?.idCount}</Badge>
 									</div>
-									<div className='flex justify-between items-center'>
-										<span className='text-sm text-muted-foreground'>
-											БЭМ нарушений:
-										</span>
-										<Badge
-											variant={bemIssuesCount > 0 ? 'destructive' : 'secondary'}
-										>
-											{bemIssuesCount}
-										</Badge>
-									</div>
 								</CardContent>
 							</Card>
 
@@ -1196,8 +1122,8 @@ export default function HTMLTreePage() {
 						</div>
 					</TabsContent>
 					{/* W3C Validation */}
-					<TabsContent value='w3c' className='space-y-4'>
-						<W3CValidation html={htmlInput} />
+					<TabsContent value='analysis' className='space-y-4'>
+						<HtmlAnalysis html={htmlInput} />
 					</TabsContent>
 								</Tabs>
 			)}
