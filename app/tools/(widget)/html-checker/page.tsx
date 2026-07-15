@@ -15,15 +15,12 @@ import {
 	ChevronDown,
 	Search,
 	FileCode,
-	Hash,
-	BarChart3,
 	AlertTriangle,
 	CheckCircle2,
 	XCircle,
 	Info,
 	Layers,
 	Upload,
-	ShieldCheck,
 	Globe
 } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -159,18 +156,15 @@ export default function HTMLTreePage() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [urlValue])
 
-	const loadFromFile = useCallback(
-		async (file: File) => {
-			try {
-				handleInputChange(await file.text())
-				toast.success(`Загружен ${file.name}`)
-			} catch {
-				toast.error('Не удалось прочитать файл')
-			}
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		},
-		[]
-	)
+	const loadFromFile = useCallback(async (file: File) => {
+		try {
+			handleInputChange(await file.text())
+			toast.success(`Загружен ${file.name}`)
+		} catch {
+			toast.error('Не удалось прочитать файл')
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 	const [headingAnalysis, setHeadingAnalysis] =
 		useState<HeadingAnalysis | null>(null)
 	const [statistics, setStatistics] = useState<Statistics | null>(null)
@@ -389,12 +383,7 @@ export default function HTMLTreePage() {
 				setStatistics(null)
 			}
 		},
-		[
-			analyzeHeadings,
-			calculateStatistics,
-			getTagClass,
-			expandAll
-		]
+		[analyzeHeadings, calculateStatistics, getTagClass, expandAll]
 	)
 
 	const handleInputChange = useCallback(
@@ -644,9 +633,7 @@ export default function HTMLTreePage() {
 								className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed py-10 text-center transition-colors hover:border-primary/40'
 							>
 								<Upload className='h-8 w-8 text-muted-foreground' />
-								<span className='text-sm font-medium'>
-									Выберите HTML-файл
-								</span>
+								<span className='text-sm font-medium'>Выберите HTML-файл</span>
 								<span className='text-xs text-muted-foreground'>
 									.html, .htm, .xml, .svg — читается в браузере
 								</span>
@@ -665,294 +652,286 @@ export default function HTMLTreePage() {
 						</TabsContent>
 					</Tabs>
 
-					{/* Results Tabs — тот же контейнер, ниже поля ввода */}
 					{treeData && (
-						<Tabs defaultValue='tree' className='w-full'>
-					<TabsList className='grid w-full grid-cols-4 text-xs sm:text-sm gap-1 sm:gap-2'>
-						<TabsTrigger value='tree' className='gap-1 sm:gap-2'>
-							<FileCode className='w-4 h-4 hidden sm:inline-block' />
-							Дерево
-						</TabsTrigger>
+						<div className='mt-6 space-y-8'>
+							{/* Единый отчёт: сводка анализа, затем дерево, заголовки и статистика */}
+							<HtmlAnalysis html={htmlInput} />
 
-						<TabsTrigger value='headings' className='gap-1 sm:gap-2'>
-							<Hash className='w-4 h-4 hidden sm:inline-block' />
-							Заголовки
-						</TabsTrigger>
-
-						<TabsTrigger value='stats' className='gap-1 sm:gap-2'>
-							<BarChart3 className='w-4 h-4 hidden sm:inline-block' />
-							Статистика
-						</TabsTrigger>
-
-						<TabsTrigger value='analysis' className='gap-1 sm:gap-2'>
-							<ShieldCheck className='w-4 h-4 hidden sm:inline-block' />
-							Анализ
-						</TabsTrigger>
-					</TabsList>
-
-					{/* Tree View */}
-					<TabsContent value='tree' className='space-y-4'>
-						<Card className='border-0 bg-transparent shadow-none'>
-							<CardHeader>
-								<div className='flex items-center justify-between gap-4'>
-									<CardTitle>Дерево элементов</CardTitle>
-									<div className='flex items-center gap-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => {
-												if (expandAll) {
-													// Collapse all
-													setExpandAll(false)
-													setExpandedNodes(new Set())
-												} else {
-													// Expand all
-													setExpandAll(true)
-													const allPaths = new Set<string>()
-													const collectAllPaths = (node: TreeNode) => {
-														allPaths.add(node.path)
-														node.children.forEach(collectAllPaths)
-													}
-													if (treeData) collectAllPaths(treeData)
-													setExpandedNodes(allPaths)
-												}
-											}}
-										>
-											{expandAll ? 'Свернуть все' : 'Развернуть все'}
-										</Button>
-									</div>
-								</div>
-							</CardHeader>
-							<CardContent className='space-y-4'>
-								{/* Search */}
-								<div className='relative'>
-									<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-									<Input
-										placeholder='Поиск по тегам, классам, ID...'
-										value={searchQuery}
-										onChange={e => setSearchQuery(e.target.value)}
-										className='pl-10'
-									/>
-								</div>
-
-								{/* Depth Control */}
-								<div className='space-y-2'>
-									<div className='flex items-center gap-4'>
-										<Layers className='w-4 h-4 text-muted-foreground' />
-										<span className='text-sm font-medium'>
-											Максимальная глубина: {maxVisibleDepth}
-										</span>
-									</div>
-									<Slider
-										value={[maxVisibleDepth]}
-										onValueChange={value => setMaxVisibleDepth(value[0])}
-										max={statistics?.maxDepth || 10}
-										min={1}
-										step={1}
-										className='w-full'
-									/>
-								</div>
-
-								{/* Class Highlights */}
-								{classHighlights.size > 0 && (
-									<div className='space-y-2'>
-										<span className='text-sm font-medium'>
-											Выделенные классы:
-										</span>
-										<div className='flex flex-wrap gap-2'>
-											{Array.from(classHighlights.entries()).map(
-												([className, color]) => (
-													<Badge
-														key={className}
-														variant='outline'
-														className='cursor-pointer'
-														style={{ backgroundColor: color, color: '#000' }}
-														onClick={() => toggleClassHighlight(className)}
-													>
-														.{className} ×
-													</Badge>
-												)
-											)}
-										</div>
-									</div>
-								)}
-
-								{/* Tree */}
-								<div className='border rounded-lg p-4 bg-muted/20 max-h-[600px] overflow-auto'>
-									{renderTree(treeData)}
-								</div>
-							</CardContent>
-						</Card>
-					</TabsContent>
-
-					{/* Headings Analysis */}
-					<TabsContent value='headings' className='space-y-4'>
-						<Card className='border-0 bg-transparent shadow-none'>
-							<CardHeader>
-								<CardTitle>Анализ заголовков</CardTitle>
-							</CardHeader>
-							<CardContent className='space-y-4'>
-								{/* Status */}
-								<div className='flex items-center gap-4'>
-									<div className='flex items-center gap-2'>
-										{headingAnalysis?.hasH1 ? (
-											<CheckCircle2 className='w-5 h-5 text-green-600' />
-										) : (
-											<XCircle className='w-5 h-5 text-red-600' />
-										)}
-										<span className='text-sm font-medium'>
-											{headingAnalysis?.hasH1
-												? 'H1 присутствует'
-												: 'H1 отсутствует'}
-										</span>
-									</div>
-									<Badge variant='secondary'>
-										Всего заголовков: {headingAnalysis?.headings.length || 0}
-									</Badge>
-									{headingAnalysis?.isWholePage && (
-										<Badge variant='outline'>Полная страница</Badge>
-									)}
-								</div>
-
-								{/* Issues */}
-								{headingAnalysis?.issues &&
-									headingAnalysis.issues.length > 0 && (
-										<Alert variant='destructive'>
-											<AlertTriangle className='h-4 w-4' />
-											<AlertTitle>Критические проблемы</AlertTitle>
-											<AlertDescription>
-												<ul className='list-disc list-inside space-y-1 mt-2'>
-													{headingAnalysis.issues.map((issue, index) => (
-														<li key={index} className='text-sm'>
-															{issue}
-														</li>
-													))}
-												</ul>
-											</AlertDescription>
-										</Alert>
-									)}
-
-								{/* Warnings */}
-								{headingAnalysis?.warnings &&
-									headingAnalysis.warnings.length > 0 && (
-										<Alert>
-											<Info className='h-4 w-4' />
-											<AlertTitle>Предупреждения</AlertTitle>
-											<AlertDescription>
-												<ul className='list-disc list-inside space-y-1 mt-2'>
-													{headingAnalysis.warnings.map((warning, index) => (
-														<li key={index} className='text-sm'>
-															{warning}
-														</li>
-													))}
-												</ul>
-											</AlertDescription>
-										</Alert>
-									)}
-
-								{/* Heading Structure */}
-								{headingAnalysis?.headings &&
-									headingAnalysis.headings.length > 0 && (
-										<div className='space-y-2'>
-											<h3 className='font-semibold text-sm'>
-												Структура заголовков:
-											</h3>
-											<div className='space-y-1 p-4 rounded-lg border bg-muted/30'>
-												{headingAnalysis.headings.map((heading, index) => (
-													<div
-														key={index}
-														className='flex items-start gap-3 py-2 font-mono text-sm'
-														style={{
-															paddingLeft: `${(heading.level - 1) * 20}px`
-														}}
-													>
-														<Badge
-															variant={
-																heading.level === 1 ? 'default' : 'secondary'
+							{/* Tree View */}
+							<section className='space-y-4 border-t pt-8'>
+								<Card className='border-0 bg-transparent shadow-none'>
+									<CardHeader>
+										<div className='flex items-center justify-between gap-4'>
+											<CardTitle>Дерево элементов</CardTitle>
+											<div className='flex items-center gap-2'>
+												<Button
+													variant='outline'
+													size='sm'
+													onClick={() => {
+														if (expandAll) {
+															// Collapse all
+															setExpandAll(false)
+															setExpandedNodes(new Set())
+														} else {
+															// Expand all
+															setExpandAll(true)
+															const allPaths = new Set<string>()
+															const collectAllPaths = (node: TreeNode) => {
+																allPaths.add(node.path)
+																node.children.forEach(collectAllPaths)
 															}
-															className='flex-shrink-0'
-														>
-															{heading.tag}
-														</Badge>
-														<span className='flex-1 truncate'>
-															{heading.text || '(пустой заголовок)'}
-														</span>
-													</div>
-												))}
+															if (treeData) collectAllPaths(treeData)
+															setExpandedNodes(allPaths)
+														}
+													}}
+												>
+													{expandAll ? 'Свернуть все' : 'Развернуть все'}
+												</Button>
 											</div>
 										</div>
-									)}
-							</CardContent>
-						</Card>
-					</TabsContent>
+									</CardHeader>
+									<CardContent className='space-y-4'>
+										{/* Search */}
+										<div className='relative'>
+											<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+											<Input
+												placeholder='Поиск по тегам, классам, ID...'
+												value={searchQuery}
+												onChange={e => setSearchQuery(e.target.value)}
+												className='pl-10'
+											/>
+										</div>
 
+										{/* Depth Control */}
+										<div className='space-y-2'>
+											<div className='flex items-center gap-4'>
+												<Layers className='w-4 h-4 text-muted-foreground' />
+												<span className='text-sm font-medium'>
+													Максимальная глубина: {maxVisibleDepth}
+												</span>
+											</div>
+											<Slider
+												value={[maxVisibleDepth]}
+												onValueChange={value => setMaxVisibleDepth(value[0])}
+												max={statistics?.maxDepth || 10}
+												min={1}
+												step={1}
+												className='w-full'
+											/>
+										</div>
 
-					{/* Statistics */}
-					<TabsContent value='stats' className='space-y-4'>
-						<div className='grid gap-4 md:grid-cols-2'>
-							<Card className='border-0 bg-transparent shadow-none'>
-								<CardHeader>
-									<CardTitle className='text-base'>Общая информация</CardTitle>
-								</CardHeader>
-								<CardContent className='space-y-3'>
-									<div className='flex justify-between items-center'>
-										<span className='text-sm text-muted-foreground'>
-											Всего элементов:
-										</span>
-										<Badge variant='secondary'>
-											{statistics?.totalElements}
-										</Badge>
-									</div>
-									<div className='flex justify-between items-center'>
-										<span className='text-sm text-muted-foreground'>
-											Максимальная глубина:
-										</span>
-										<Badge variant='secondary'>{statistics?.maxDepth}</Badge>
-									</div>
-									<div className='flex justify-between items-center'>
-										<span className='text-sm text-muted-foreground'>
-											Всего классов:
-										</span>
-										<Badge variant='secondary'>{statistics?.classCount}</Badge>
-									</div>
-									<div className='flex justify-between items-center'>
-										<span className='text-sm text-muted-foreground'>
-											Всего ID:
-										</span>
-										<Badge variant='secondary'>{statistics?.idCount}</Badge>
-									</div>
-								</CardContent>
-							</Card>
+										{/* Class Highlights */}
+										{classHighlights.size > 0 && (
+											<div className='space-y-2'>
+												<span className='text-sm font-medium'>
+													Выделенные классы:
+												</span>
+												<div className='flex flex-wrap gap-2'>
+													{Array.from(classHighlights.entries()).map(
+														([className, color]) => (
+															<Badge
+																key={className}
+																variant='outline'
+																className='cursor-pointer'
+																style={{
+																	backgroundColor: color,
+																	color: '#000'
+																}}
+																onClick={() => toggleClassHighlight(className)}
+															>
+																.{className} ×
+															</Badge>
+														)
+													)}
+												</div>
+											</div>
+										)}
 
-							<Card className='border-0 bg-transparent shadow-none'>
-								<CardHeader>
-									<CardTitle className='text-base'>Элементы по типам</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<div className='space-y-2 max-h-[300px] overflow-auto'>
-										{statistics &&
-											Object.entries(statistics.elementCounts)
-												.sort((a, b) => b[1] - a[1])
-												.map(([tag, count]) => (
-													<div
-														key={tag}
-														className='flex justify-between items-center'
-													>
-														<code className='text-sm font-mono'>{tag}</code>
-														<Badge variant='outline'>{count}</Badge>
+										{/* Tree */}
+										<div className='border rounded-lg p-4 bg-muted/20 max-h-[600px] overflow-auto'>
+											{renderTree(treeData)}
+										</div>
+									</CardContent>
+								</Card>
+							</section>
+
+							{/* Headings Analysis */}
+							<section className='space-y-4 border-t pt-8'>
+								<Card className='border-0 bg-transparent shadow-none'>
+									<CardHeader>
+										<CardTitle>Анализ заголовков</CardTitle>
+									</CardHeader>
+									<CardContent className='space-y-4'>
+										{/* Status */}
+										<div className='flex items-center gap-4'>
+											<div className='flex items-center gap-2'>
+												{headingAnalysis?.hasH1 ? (
+													<CheckCircle2 className='w-5 h-5 text-green-600' />
+												) : (
+													<XCircle className='w-5 h-5 text-red-600' />
+												)}
+												<span className='text-sm font-medium'>
+													{headingAnalysis?.hasH1
+														? 'H1 присутствует'
+														: 'H1 отсутствует'}
+												</span>
+											</div>
+											<Badge variant='secondary'>
+												Всего заголовков:{' '}
+												{headingAnalysis?.headings.length || 0}
+											</Badge>
+											{headingAnalysis?.isWholePage && (
+												<Badge variant='outline'>Полная страница</Badge>
+											)}
+										</div>
+
+										{/* Issues */}
+										{headingAnalysis?.issues &&
+											headingAnalysis.issues.length > 0 && (
+												<Alert variant='destructive'>
+													<AlertTriangle className='h-4 w-4' />
+													<AlertTitle>Критические проблемы</AlertTitle>
+													<AlertDescription>
+														<ul className='list-disc list-inside space-y-1 mt-2'>
+															{headingAnalysis.issues.map((issue, index) => (
+																<li key={index} className='text-sm'>
+																	{issue}
+																</li>
+															))}
+														</ul>
+													</AlertDescription>
+												</Alert>
+											)}
+
+										{/* Warnings */}
+										{headingAnalysis?.warnings &&
+											headingAnalysis.warnings.length > 0 && (
+												<Alert>
+													<Info className='h-4 w-4' />
+													<AlertTitle>Предупреждения</AlertTitle>
+													<AlertDescription>
+														<ul className='list-disc list-inside space-y-1 mt-2'>
+															{headingAnalysis.warnings.map(
+																(warning, index) => (
+																	<li key={index} className='text-sm'>
+																		{warning}
+																	</li>
+																)
+															)}
+														</ul>
+													</AlertDescription>
+												</Alert>
+											)}
+
+										{/* Heading Structure */}
+										{headingAnalysis?.headings &&
+											headingAnalysis.headings.length > 0 && (
+												<div className='space-y-2'>
+													<h3 className='font-semibold text-sm'>
+														Структура заголовков:
+													</h3>
+													<div className='space-y-1 p-4 rounded-lg border bg-muted/30'>
+														{headingAnalysis.headings.map((heading, index) => (
+															<div
+																key={index}
+																className='flex items-start gap-3 py-2 font-mono text-sm'
+																style={{
+																	paddingLeft: `${(heading.level - 1) * 20}px`
+																}}
+															>
+																<Badge
+																	variant={
+																		heading.level === 1
+																			? 'default'
+																			: 'secondary'
+																	}
+																	className='flex-shrink-0'
+																>
+																	{heading.tag}
+																</Badge>
+																<span className='flex-1 truncate'>
+																	{heading.text || '(пустой заголовок)'}
+																</span>
+															</div>
+														))}
 													</div>
-												))}
-									</div>
-								</CardContent>
-							</Card>
+												</div>
+											)}
+									</CardContent>
+								</Card>
+							</section>
+
+							{/* Statistics */}
+							<section className='space-y-4 border-t pt-8'>
+								<div className='grid gap-4 md:grid-cols-2'>
+									<Card className='border-0 bg-transparent shadow-none'>
+										<CardHeader>
+											<CardTitle className='text-base'>
+												Общая информация
+											</CardTitle>
+										</CardHeader>
+										<CardContent className='space-y-3'>
+											<div className='flex justify-between items-center'>
+												<span className='text-sm text-muted-foreground'>
+													Всего элементов:
+												</span>
+												<Badge variant='secondary'>
+													{statistics?.totalElements}
+												</Badge>
+											</div>
+											<div className='flex justify-between items-center'>
+												<span className='text-sm text-muted-foreground'>
+													Максимальная глубина:
+												</span>
+												<Badge variant='secondary'>
+													{statistics?.maxDepth}
+												</Badge>
+											</div>
+											<div className='flex justify-between items-center'>
+												<span className='text-sm text-muted-foreground'>
+													Всего классов:
+												</span>
+												<Badge variant='secondary'>
+													{statistics?.classCount}
+												</Badge>
+											</div>
+											<div className='flex justify-between items-center'>
+												<span className='text-sm text-muted-foreground'>
+													Всего ID:
+												</span>
+												<Badge variant='secondary'>{statistics?.idCount}</Badge>
+											</div>
+										</CardContent>
+									</Card>
+
+									<Card className='border-0 bg-transparent shadow-none'>
+										<CardHeader>
+											<CardTitle className='text-base'>
+												Элементы по типам
+											</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<div className='space-y-2 max-h-[300px] overflow-auto'>
+												{statistics &&
+													Object.entries(statistics.elementCounts)
+														.sort((a, b) => b[1] - a[1])
+														.map(([tag, count]) => (
+															<div
+																key={tag}
+																className='flex justify-between items-center'
+															>
+																<code className='text-sm font-mono'>{tag}</code>
+																<Badge variant='outline'>{count}</Badge>
+															</div>
+														))}
+											</div>
+										</CardContent>
+									</Card>
+								</div>
+							</section>
+							{/* W3C Validation */}
 						</div>
-					</TabsContent>
-					{/* W3C Validation */}
-					<TabsContent value='analysis' className='space-y-4'>
-						<HtmlAnalysis html={htmlInput} />
-					</TabsContent>
-								</Tabs>
-			)}
+					)}
 				</CardContent>
 			</Card>
 

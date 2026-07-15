@@ -1,18 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
 	AlertTriangle,
 	XCircle,
 	CheckCircle2,
 	Loader2,
-	Download,
-	ShieldCheck
+	Download
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { analyzeDocument, type AnalysisReport } from '@/lib/html-analysis/analyze'
+import {
+	analyzeDocument,
+	type AnalysisReport
+} from '@/lib/html-analysis/analyze'
 import { validateW3C, w3cCategory } from '@/lib/html-analysis/w3c'
 import { downloadAnalysisPdf } from '@/lib/html-analysis/report-pdf'
 
@@ -28,22 +30,27 @@ export function HtmlAnalysis({ html }: { html: string }) {
 	const [loading, setLoading] = useState(false)
 	const [downloading, setDownloading] = useState(false)
 
+	// Свежий html в ref, чтобы отложенный анализ брал последнее значение и не
+	// тянул html в зависимости эффекта.
+	const htmlRef = useRef(html)
+	htmlRef.current = html
+
 	const run = async () => {
-		if (!html.trim()) {
-			toast.error('Сначала введите HTML')
-			return
-		}
+		const current = htmlRef.current
+		if (!current.trim()) return
 		setLoading(true)
 		try {
-			const local = analyzeDocument(html)
+			const local = analyzeDocument(current)
 
 			// W3C — по сети. Если сервис недоступен, показываем локальный отчёт без
 			// категории валидности, а не роняем весь анализ.
 			let validity
 			try {
-				validity = w3cCategory(await validateW3C(html))
+				validity = w3cCategory(await validateW3C(current))
 			} catch {
-				toast.warning('Валидатор W3C недоступен — отчёт без проверки валидности')
+				toast.warning(
+					'Валидатор W3C недоступен — отчёт без проверки валидности'
+				)
 			}
 
 			const categories = validity
@@ -59,14 +66,25 @@ export function HtmlAnalysis({ html }: { html: string }) {
 		}
 	}
 
+	// Анализ запускается сам, как только появился HTML. Дебаунс — потому что
+	// W3C ходит по сети: без задержки печать в поле спамила бы валидатор.
+	useEffect(() => {
+		if (!html.trim()) {
+			setReport(null)
+			return
+		}
+		const timer = setTimeout(() => {
+			void run()
+		}, 900)
+		return () => clearTimeout(timer)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [html])
+
 	const download = async () => {
 		if (!report) return
 		setDownloading(true)
 		try {
-			await downloadAnalysisPdf(
-				report,
-				new Date().toLocaleString('ru-RU')
-			)
+			await downloadAnalysisPdf(report, new Date().toLocaleString('ru-RU'))
 		} catch {
 			toast.error('Не удалось собрать PDF')
 		} finally {
@@ -78,36 +96,32 @@ export function HtmlAnalysis({ html }: { html: string }) {
 		<div className='space-y-6'>
 			<div className='flex flex-wrap items-center justify-between gap-4'>
 				<div>
-					<h3 className='text-lg font-semibold'>Анализ качества</h3>
+					<h3 className='flex items-center gap-2 text-lg font-semibold'>
+						Анализ качества
+						{loading && (
+							<Loader2 className='h-4 w-4 animate-spin text-muted-foreground' />
+						)}
+					</h3>
 					<p className='text-sm text-muted-foreground'>
 						Семантика, доступность, заголовки и валидность W3C — одной оценкой.
+						Обновляется автоматически.
 					</p>
 				</div>
-				<div className='flex gap-2'>
-					{report && (
-						<Button
-							variant='outline'
-							onClick={download}
-							disabled={downloading}
-							className='cursor-pointer'
-						>
-							{downloading ? (
-								<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-							) : (
-								<Download className='mr-2 h-4 w-4' />
-							)}
-							Скачать PDF
-						</Button>
-					)}
-					<Button onClick={run} disabled={loading} className='cursor-pointer'>
-						{loading ? (
+				{report && (
+					<Button
+						variant='outline'
+						onClick={download}
+						disabled={downloading}
+						className='cursor-pointer'
+					>
+						{downloading ? (
 							<Loader2 className='mr-2 h-4 w-4 animate-spin' />
 						) : (
-							<ShieldCheck className='mr-2 h-4 w-4' />
+							<Download className='mr-2 h-4 w-4' />
 						)}
-						{loading ? 'Анализируем…' : 'Анализировать'}
+						Скачать PDF
 					</Button>
-				</div>
+				)}
 			</div>
 
 			{report && (
@@ -115,10 +129,14 @@ export function HtmlAnalysis({ html }: { html: string }) {
 					{/* Баллы */}
 					<div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
 						<div className='rounded-xl border bg-muted/30 p-4 text-center'>
-							<div className={cn('text-3xl font-bold', scoreColor(report.overall))}>
+							<div
+								className={cn('text-3xl font-bold', scoreColor(report.overall))}
+							>
 								{report.overall}
 							</div>
-							<div className='mt-1 text-xs text-muted-foreground'>Общий балл</div>
+							<div className='mt-1 text-xs text-muted-foreground'>
+								Общий балл
+							</div>
 						</div>
 						{report.categories.map(category => (
 							<div
