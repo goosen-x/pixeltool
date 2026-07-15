@@ -566,7 +566,9 @@ export default function HTMLTreePage() {
 					    по адресу (через серверный роут — из браузера чужую страницу не
 					    забрать) или из файла. Все три наполняют одно поле ввода. */}
 					<Tabs defaultValue='paste' className='w-full'>
-						<TabsList className='grid h-auto w-full grid-cols-3 gap-1 sm:gap-2'>
+						{/* Прижат к верху и бокам карточки: отрицательные отступы гасят
+						    padding CardContent, верхние углы скруглены под карточку */}
+						<TabsList className='-mx-6 -mt-6 mb-6 grid h-auto w-[calc(100%+3rem)] grid-cols-3 gap-0 overflow-hidden rounded-b-none rounded-t-2xl p-0'>
 							<TabsTrigger value='paste' className='flex-col gap-1 py-3'>
 								<FileCode className='h-5 w-5' />
 								Вставить код
