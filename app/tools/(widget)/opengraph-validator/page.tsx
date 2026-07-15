@@ -630,43 +630,37 @@ export default function OpenGraphValidatorPage() {
 						<Alert
 							className={
 								validationResult.isValid
-									? 'border-green-200 bg-green-50 dark:border-green-900/50 dark:bg-green-950/40'
-									: 'border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-950/40'
+									? 'border-l-4 border-l-green-500 bg-muted/40'
+									: 'border-l-4 border-l-red-500 bg-muted/40'
 							}
 						>
 							{validationResult.isValid ? (
-								<CheckCircle className='h-4 w-4 text-green-600 dark:text-green-400' />
+								<CheckCircle className='h-4 w-4 text-green-600 dark:text-green-500' />
 							) : (
-								<AlertCircle className='h-4 w-4 text-red-600 dark:text-red-400' />
+								<AlertCircle className='h-4 w-4 text-red-600 dark:text-red-500' />
 							)}
 							<AlertDescription>
-								<div
-									className={
-										validationResult.isValid
-											? 'text-green-800 dark:text-green-300'
-											: 'text-red-800 dark:text-red-300'
-									}
-								>
+								<div className='font-medium text-foreground'>
 									{validationResult.isValid
 										? 'Все Open Graph теги корректны!'
 										: 'Обнаружены проблемы с Open Graph тегами'}
 								</div>
 								{validationResult.errors.length > 0 && (
-									<div className='mt-2 text-sm'>
+									<div className='mt-2 text-sm text-red-600 dark:text-red-400'>
 										{validationResult.errors.map((error, index) => (
 											<div key={index}>{error}</div>
 										))}
 									</div>
 								)}
 								{validationResult.warnings.length > 0 && (
-									<div className='mt-2 text-sm text-yellow-700 dark:text-yellow-400'>
+									<div className='mt-2 text-sm text-amber-600 dark:text-amber-400'>
 										{validationResult.warnings.map((warning, index) => (
 											<div key={index}>{warning}</div>
 										))}
 									</div>
 								)}
 								{validationResult.recommendations.length > 0 && (
-									<div className='mt-2 text-sm text-blue-700 dark:text-blue-400'>
+									<div className='mt-2 text-sm text-muted-foreground'>
 										{validationResult.recommendations.map((rec, index) => (
 											<div key={index}>{rec}</div>
 										))}
@@ -713,9 +707,9 @@ export default function OpenGraphValidatorPage() {
 
 				{/* Ошибка */}
 				{widget.error && (
-					<Alert className='border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-950/40'>
-						<AlertCircle className='h-4 w-4 text-red-600 dark:text-red-400' />
-						<AlertDescription className='text-red-800 dark:text-red-300'>
+					<Alert className='border-l-4 border-l-red-500 bg-muted/40'>
+						<AlertCircle className='h-4 w-4 text-red-600 dark:text-red-500' />
+						<AlertDescription className='text-foreground'>
 							{widget.error}
 						</AlertDescription>
 					</Alert>
