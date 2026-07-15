@@ -644,7 +644,7 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'html-tree-visualizer': {
+	'html-checker': {
 		ru: {
 			title: 'Визуализатор HTML Дерева - Структура DOM | Инструмент',
 			description:
