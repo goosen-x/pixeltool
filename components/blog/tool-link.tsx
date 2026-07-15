@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { ExternalLink } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 
@@ -55,43 +56,50 @@ export function ToolLink({
 			href={href}
 			target={isExternal ? '_blank' : undefined}
 			rel={isExternal ? 'noopener noreferrer' : undefined}
-			className='group relative block my-6 p-4 rounded-xl border bg-card transition-colors hover:border-primary/40'
+			className='group relative my-8 block cursor-pointer overflow-hidden rounded-3xl border bg-muted px-6 py-8 transition-colors hover:border-primary/40 dark:bg-card sm:px-10 sm:py-10'
 		>
-			<div className='flex items-start gap-4'>
-				<div className='flex-shrink-0 mt-0.5'>
-					{/* Градиент иконки — фирменный цвет инструмента, как на карточках
-					    по всему сайту. Тени убраны, градиент остаётся */}
+			{/* Тот же контурный паттерн, что в блоке «Не нашли нужный инструмент?» */}
+			<Image
+				src='/images/patterns/contour-1.png'
+				alt=''
+				aria-hidden
+				width={760}
+				height={760}
+				className='pointer-events-none absolute -right-72 top-1/2 w-[36rem] max-w-none -translate-y-1/2 select-none opacity-[0.07] dark:opacity-[0.1] dark:invert'
+			/>
+
+			<div className='relative grid items-center gap-6 sm:grid-cols-[auto_1fr] sm:gap-8'>
+				{/* Градиент иконки — фирменный цвет инструмента, как на карточках
+				    по всему сайту */}
+				<div className='hidden sm:block'>
 					<div
-						className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}
+						className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient}`}
 					>
-						<IconComponent className='w-6 h-6 text-white' />
+						<IconComponent className='h-8 w-8 text-white' />
 					</div>
 				</div>
 
-				<div className='flex-1 min-w-0'>
-					<div className='flex items-center gap-2 mb-1'>
-						<h4 className='font-semibold text-foreground group-hover:text-primary transition-colors'>
+				<div className='min-w-0 space-y-3'>
+					<div className='flex items-center gap-2'>
+						<h4 className='text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-3xl'>
 							{title}
 						</h4>
 						{isExternal && (
-							<ExternalLink className='w-4 h-4 text-muted-foreground flex-shrink-0' />
+							<ExternalLink className='h-5 w-5 flex-shrink-0 text-muted-foreground' />
 						)}
 					</div>
 					{subtitle && (
-						<p className='text-sm font-medium text-primary/80 mb-1'>
-							{subtitle}
-						</p>
+						<p className='text-sm font-medium text-primary/80'>{subtitle}</p>
 					)}
 					{description && (
-						<p className='text-sm text-muted-foreground line-clamp-2'>
+						<p className='text-base leading-relaxed text-muted-foreground'>
 							{description}
 						</p>
 					)}
-				</div>
-
-				<div className='flex-shrink-0 flex items-center'>
-					<div className='px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium group-hover:bg-primary/90 transition-colors'>
-						{buttonText}
+					<div className='pt-1'>
+						<span className='inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
+							{buttonText}
+						</span>
 					</div>
 				</div>
 			</div>

@@ -294,7 +294,7 @@ const updateThemeColor = hue => {
 Плавную альтернативу даёт `clamp()` — размер тянется вместе с экраном без
 единого медиазапроса.
 
-/tools/css-clamp-generator
+/tools/css-clamp-calculator
 
 ## Лучшие практики
 

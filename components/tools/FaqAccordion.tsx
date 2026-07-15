@@ -1,7 +1,7 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface FaqItem {
@@ -104,17 +104,18 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 									</span>
 
 									{/* Иконка в круглой «таблетке»: на раскрытии заливается
-									    цветом и поворачивается — это и есть акцент состояния */}
+									    цветом и поворачивается — это и есть акцент состояния.
+									    Стрелка линейная, как у кнопок карусели */}
 									<span
 										aria-hidden
 										className={cn(
-											'ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-all duration-300',
+											'ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-xl border transition-all duration-300 [corner-shape:squircle]',
 											open
 												? 'rotate-180 border-primary bg-primary text-primary-foreground'
 												: 'border-border text-muted-foreground group-hover:border-primary/40 group-hover:text-foreground'
 										)}
 									>
-										<ChevronDown className='h-4 w-4' />
+										<ArrowDown className='h-4 w-4' />
 									</span>
 								</button>
 							</h3>

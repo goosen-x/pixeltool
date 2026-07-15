@@ -159,39 +159,50 @@ export const htmlWidgets: Widget[] = [
 		icon: Globe,
 		gradient: 'from-blue-500 to-purple-600',
 		category: 'html',
-		title: 'OpenGraph валидатор',
-		description: 'Проверяйте OpenGraph теги для соцсетей',
-		tags: ['opengraph', 'meta', 'social', 'seo', 'preview', 'validator'],
+		title: 'Превью ссылки: проверка Open Graph для соцсетей',
+		metaTitle: 'Превью ссылки онлайн: проверить Open Graph и og:image',
+		description:
+			'Проверьте, как ссылка выглядит при репосте: превью для Telegram, Facebook, Twitter и WhatsApp, разбор тегов Open Graph и og:image, генерация недостающих тегов.',
+		tags: [
+			'превью ссылки',
+			'open graph',
+			'og image',
+			'og картинка',
+			'соцсети',
+			'валидатор'
+		],
 		difficulty: 'intermediate',
-		useCase: 'Оптимизация превью ссылок в социальных сетях',
+		updatedAt: '2026-07-15',
+		useCase:
+			'Проверить и настроить превью ссылки в соцсетях: Open Graph, og:image, предпросмотр для Telegram, Facebook, Twitter и WhatsApp',
 		metaDescription:
-			'Валидатор OpenGraph с предпросмотром. Проверяйте, как страница выглядит при репосте в соцсетях.',
-		recommendedTools: ['html-xml-parser', 'utm-builder'],
+			'Проверка превью ссылки онлайн: как страница выглядит при репосте в Telegram, Facebook и Twitter. Разбор Open Graph и og:image плюс готовые теги для вставки.',
+		recommendedTools: ['html-tree', 'favicon-generator', 'utm-builder'],
 		faqs: [
 			{
-				question: 'Что такое теги Open Graph?',
+				question: 'Как сделать превью ссылки?',
 				answer:
-					'Open Graph теги - это HTML мета-теги, которые контролируют, как ваш контент отображается при публикации в социальных сетях вроде Facebook, Twitter и LinkedIn.'
+					'Добавьте в <head> страницы теги Open Graph: og:title (заголовок), og:description (описание), og:image (картинка 1200×630) и og:url. Тогда при вставке ссылки в Telegram, ВКонтакте, Facebook или Twitter соцсеть покажет карточку с картинкой и текстом. Вставьте адрес страницы в инструмент — он покажет превью для каждой соцсети и подскажет, каких тегов не хватает.'
 			},
 			{
-				question: 'Какие теги обязательны?',
+				question: 'Почему у ссылки нет превью?',
 				answer:
-					'Основные теги: og:title, og:description, og:image, og:url и og:type. Они предоставляют базовую информацию для социального обмена.'
+					'Частые причины: нет тегов og:title/og:description/og:image; картинка og:image недоступна или отдаётся не по HTTPS; страница закрыта авторизацией или robots; соцсеть закэшировала старую (пустую) версию. Инструмент покажет, какие теги отсутствуют, а картинку стоит проверить на доступность по прямой ссылке.'
 			},
 			{
-				question: 'Как исправить отсутствующие теги?',
+				question: 'Какой размер og:image нужен?',
 				answer:
-					'Добавьте недостающие мета-теги в секцию head вашего HTML. Каждый тег должен иметь атрибут property (например "og:title") и атрибут content с вашим значением.'
+					'Оптимально 1200×630 пикселей (соотношение 1.91:1), минимум 600×315. Форматы JPG или PNG, файл до 8 МБ, обязательно по HTTPS. Такой размер корректно показывают Facebook, Twitter, Telegram и большинство соцсетей. Полезно также задать og:image:width и og:image:height.'
 			},
 			{
-				question: 'Какой размер изображения og:image рекомендуется?',
+				question: 'Как обновить превью (og:image) в Telegram?',
 				answer:
-					'Рекомендуется 1200x630px (соотношение 1.91:1). Минимум 600x315px. Facebook, LinkedIn и Twitter используют это соотношение. Файл до 8МБ, форматы JPG, PNG или GIF.'
+					'Telegram кэширует превью ссылки надолго. Чтобы сбросить кэш, напишите боту @WebpageBot, отправьте ему ваш URL — он перечитает страницу и обновит превью. После этого новая ссылка в чатах покажет свежую картинку. Подробнее — в статье про обновление og:image в соцсетях.'
 			},
 			{
-				question: 'Почему Facebook показывает старое превью после обновления?',
+				question: 'Почему Facebook показывает старое превью?',
 				answer:
-					'Facebook кэширует Open Graph данные. Используйте Facebook Sharing Debugger (developers.facebook.com/tools/debug) для очистки кэша и обновления превью. Для Twitter используйте Card Validator.'
+					'Facebook тоже кэширует Open Graph. Откройте Facebook Sharing Debugger (developers.facebook.com/tools/debug), вставьте URL и нажмите «Scrape Again» — кэш обновится. Для Twitter/X используйте Card Validator, для ВКонтакте кэш обычно сбрасывается сам через некоторое время.'
 			}
 		]
 	}

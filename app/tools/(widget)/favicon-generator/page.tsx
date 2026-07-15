@@ -223,7 +223,7 @@ export default function FaviconGeneratorPage() {
 			<Card>
 				<CardContent className='space-y-6 pt-6'>
 					{/* Шаг 1 — картинка */}
-					<div className='grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center'>
+					<div className='grid gap-4 sm:grid-cols-[minmax(0,26rem)_auto] sm:items-center'>
 						<div
 							className='cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center transition-colors hover:border-muted-foreground/50'
 							onDrop={handleDrop}
