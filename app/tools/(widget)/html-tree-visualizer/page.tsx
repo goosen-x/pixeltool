@@ -25,7 +25,8 @@ import {
 	Eye,
 	EyeOff,
 	Upload,
-	ShieldCheck
+	ShieldCheck,
+	Globe
 } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { toast } from 'sonner'
@@ -144,6 +145,42 @@ export default function HTMLTreePage() {
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const [urlValue, setUrlValue] = useState('')
 	const [isFetchingUrl, setIsFetchingUrl] = useState(false)
+
+	const loadFromUrl = useCallback(async () => {
+		const address = urlValue.trim()
+		if (!address) return
+		setIsFetchingUrl(true)
+		try {
+			const res = await fetch(
+				`/api/fetch-html?url=${encodeURIComponent(address)}`
+			)
+			const data = await res.json()
+			if (!res.ok) {
+				toast.error(data.error ?? 'Не удалось загрузить страницу')
+			} else {
+				handleInputChange(data.html)
+				toast.success('Страница загружена')
+			}
+		} catch {
+			toast.error('Не удалось загрузить страницу')
+		} finally {
+			setIsFetchingUrl(false)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [urlValue])
+
+	const loadFromFile = useCallback(
+		async (file: File) => {
+			try {
+				handleInputChange(await file.text())
+				toast.success(`Загружен ${file.name}`)
+			} catch {
+				toast.error('Не удалось прочитать файл')
+			}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		},
+		[]
+	)
 	const [headingAnalysis, setHeadingAnalysis] =
 		useState<HeadingAnalysis | null>(null)
 	const [statistics, setStatistics] = useState<Statistics | null>(null)
@@ -698,93 +735,97 @@ export default function HTMLTreePage() {
 			    полоса табов, дерево) выглядел раздробленно */}
 			<Card>
 				<CardContent className='space-y-6 pt-6'>
-					<div className='flex items-center gap-2 font-semibold'>
-						<FileCode className='w-5 h-5' />
-						Ввод HTML
-					</div>
-					<Textarea
-						placeholder='Вставьте HTML код страницы...'
-						value={htmlInput}
-						onChange={e => handleInputChange(e.target.value)}
-						className='min-h-[200px] font-mono text-sm'
-						spellCheck={false}
-					/>
-					{/* Три источника HTML: вставка в поле выше, загрузка по адресу
-					    (через серверный роут — из браузера чужую страницу не забрать) и
-					    файл. Все три наполняют то же поле ввода. */}
-					<div className='flex flex-wrap items-center gap-2'>
-						<Input
-							value={urlValue}
-							onChange={e => setUrlValue(e.target.value)}
-							onKeyDown={async e => {
-								if (e.key !== 'Enter') return
-								const address = urlValue.trim()
-								if (!address) return
-								setIsFetchingUrl(true)
-								try {
-									const res = await fetch(
-										`/api/fetch-html?url=${encodeURIComponent(address)}`
-									)
-									const data = await res.json()
-									if (!res.ok) {
-										toast.error(data.error ?? 'Не удалось загрузить страницу')
-									} else {
-										handleInputChange(data.html)
-										toast.success('Страница загружена')
-									}
-								} catch {
-									toast.error('Не удалось загрузить страницу')
-								} finally {
-									setIsFetchingUrl(false)
-								}
-							}}
-							placeholder='Или вставьте адрес страницы и нажмите Enter'
-							aria-label='Адрес страницы для загрузки HTML'
-							className='h-9 max-w-xs'
-						/>
-						{isFetchingUrl && (
-							<span className='text-xs text-muted-foreground'>Загрузка…</span>
-						)}
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={() => fileInputRef.current?.click()}
-							className='w-fit cursor-pointer'
-						>
-							<Upload className='mr-2 h-4 w-4' />
-							Загрузить файл
-						</Button>
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={() => {
-								handleInputChange(EXAMPLE_HTML)
-								toast.success('Пример загружен')
-							}}
-							className='w-fit cursor-pointer'
-						>
-							Загрузить пример
-						</Button>
-						<input
-							ref={fileInputRef}
-							type='file'
-							accept='.html,.htm,.xml,.svg,text/html'
-							className='hidden'
-							onChange={async event => {
-								const file = event.target.files?.[0]
-								if (!file) return
-								try {
-									const text = await file.text()
-									handleInputChange(text)
-									toast.success(`Загружен ${file.name}`)
-								} catch {
-									toast.error('Не удалось прочитать файл')
-								}
-								// сбрасываем, чтобы повторный выбор того же файла сработал
-								event.target.value = ''
-							}}
-						/>
-					</div>
+					{/* Три источника HTML большими вкладками: вставить код, загрузить
+					    по адресу (через серверный роут — из браузера чужую страницу не
+					    забрать) или из файла. Все три наполняют одно поле ввода. */}
+					<Tabs defaultValue='paste' className='w-full'>
+						<TabsList className='grid h-auto w-full grid-cols-3 gap-1 sm:gap-2'>
+							<TabsTrigger value='paste' className='flex-col gap-1 py-3'>
+								<FileCode className='h-5 w-5' />
+								Вставить код
+							</TabsTrigger>
+							<TabsTrigger value='url' className='flex-col gap-1 py-3'>
+								<Globe className='h-5 w-5' />
+								По адресу
+							</TabsTrigger>
+							<TabsTrigger value='file' className='flex-col gap-1 py-3'>
+								<Upload className='h-5 w-5' />
+								Из файла
+							</TabsTrigger>
+						</TabsList>
+
+						<TabsContent value='paste' className='space-y-3'>
+							<Textarea
+								placeholder='Вставьте HTML код страницы...'
+								value={htmlInput}
+								onChange={e => handleInputChange(e.target.value)}
+								className='min-h-[240px] font-mono text-sm'
+								spellCheck={false}
+							/>
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={() => {
+									handleInputChange(EXAMPLE_HTML)
+									toast.success('Пример загружен')
+								}}
+								className='w-fit cursor-pointer'
+							>
+								Загрузить пример
+							</Button>
+						</TabsContent>
+
+						<TabsContent value='url'>
+							<div className='flex flex-wrap items-center gap-2'>
+								<Input
+									value={urlValue}
+									onChange={e => setUrlValue(e.target.value)}
+									onKeyDown={e => e.key === 'Enter' && loadFromUrl()}
+									placeholder='example.com'
+									aria-label='Адрес страницы для загрузки HTML'
+									className='max-w-sm'
+								/>
+								<Button
+									onClick={loadFromUrl}
+									disabled={isFetchingUrl}
+									className='cursor-pointer'
+								>
+									{isFetchingUrl ? 'Загрузка…' : 'Загрузить'}
+								</Button>
+							</div>
+							<p className='mt-2 text-xs text-muted-foreground'>
+								Загрузим HTML страницы и построим по нему дерево. Данные
+								обрабатываются на нашем сервере только для скачивания.
+							</p>
+						</TabsContent>
+
+						<TabsContent value='file'>
+							<button
+								type='button'
+								onClick={() => fileInputRef.current?.click()}
+								className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed py-10 text-center transition-colors hover:border-primary/40'
+							>
+								<Upload className='h-8 w-8 text-muted-foreground' />
+								<span className='text-sm font-medium'>
+									Выберите HTML-файл
+								</span>
+								<span className='text-xs text-muted-foreground'>
+									.html, .htm, .xml, .svg — читается в браузере
+								</span>
+							</button>
+							<input
+								ref={fileInputRef}
+								type='file'
+								accept='.html,.htm,.xml,.svg,text/html'
+								className='hidden'
+								onChange={event => {
+									const file = event.target.files?.[0]
+									if (file) loadFromFile(file)
+									event.target.value = ''
+								}}
+							/>
+						</TabsContent>
+					</Tabs>
 
 					{/* Results Tabs — тот же контейнер, ниже поля ввода */}
 					{treeData && (
