@@ -41,7 +41,7 @@ export const ProjectsLeftSidebar = ({ onLinkClick }: Props = {}) => {
 						onClick={onLinkClick}
 						aria-current={pathname === '/settings' ? 'page' : undefined}
 						className={cn(
-							'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-primary/10 hover:text-primary',
+							'flex items-center gap-3 rounded-lg [corner-shape:squircle] px-3 py-2 text-sm transition-all hover:bg-primary/10 hover:text-primary',
 							pathname === '/settings' && 'bg-primary text-white'
 						)}
 					>

@@ -2,6 +2,19 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* corner-shape: squircle — плавные «сквиркл»-углы на всех интерактивных
+   элементах (кнопки, триггеры табов/аккордеона, роль button). Свойство видно
+   только там, где задан border-radius, и игнорируется браузерами без поддержки
+   (не Chromium 139+), поэтому применять глобально безопасно. Ссылки-пункты
+   навигации и сайдбара — это <a>, им класс [corner-shape:squircle] добавлен
+   точечно в компонентах. */
+button,
+[role='button'],
+input[type='submit'],
+input[type='button'] {
+	corner-shape: squircle;
+}
+
 /* Progress bar animation */
 @keyframes shimmer {
 	0% {

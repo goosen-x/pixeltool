@@ -33,7 +33,7 @@ export const ToolLink = ({
 			title={title}
 			aria-current={active ? 'page' : undefined}
 			className={cn(
-				'relative isolate flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 hover:translate-x-1 hover:bg-primary/10 hover:text-primary',
+				'relative isolate flex items-center gap-3 rounded-lg [corner-shape:squircle] px-3 py-2 text-sm transition-all duration-200 hover:translate-x-1 hover:bg-primary/10 hover:text-primary',
 				active && 'bg-primary text-white'
 			)}
 		>

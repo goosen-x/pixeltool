@@ -32,7 +32,7 @@ export const Navigation = () => {
 							href={href}
 							aria-current={active ? 'page' : undefined}
 							className={cn(
-								'cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-colors',
+								'cursor-pointer rounded-lg [corner-shape:squircle] px-4 py-2 text-sm font-medium transition-colors',
 								active
 									? 'bg-primary text-primary-foreground'
 									: 'text-muted-foreground hover:bg-muted hover:text-foreground'
