@@ -59,7 +59,7 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 			)}
 
 			{title && (
-				<h2 className='mb-6 text-2xl font-bold tracking-tight'>{title}</h2>
+				<h2 className='mb-6 font-heading text-2xl font-bold'>{title}</h2>
 			)}
 
 			<div className='divide-y rounded-2xl border'>
@@ -70,14 +70,16 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 
 					return (
 						<div key={faq.question}>
-							<h3>
+							{/* h3 несёт глобальные стили заголовка (крупный размер) — гасим их
+							    на кнопке явным text-base, чтобы вопрос был обычного размера */}
+							<h3 className='m-0'>
 								<button
 									type='button'
 									id={buttonId}
 									aria-expanded={open}
 									aria-controls={panelId}
 									onClick={() => setOpenIndex(open ? null : index)}
-									className='flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left font-medium transition-colors hover:bg-muted/50'
+									className='flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left text-base font-medium transition-colors hover:bg-muted/50'
 								>
 									{faq.question}
 									<ChevronDown
