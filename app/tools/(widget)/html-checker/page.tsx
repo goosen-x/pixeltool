@@ -671,54 +671,6 @@ export default function HTMLTreePage() {
 							/>
 						</TabsContent>
 
-						<TabsContent value='url' className='min-h-[18rem]'>
-							<div className='flex flex-wrap items-center gap-2'>
-								<Input
-									value={urlValue}
-									onChange={e => setUrlValue(e.target.value)}
-									onKeyDown={e => e.key === 'Enter' && loadFromUrl()}
-									placeholder='example.com'
-									aria-label='Адрес страницы для загрузки HTML'
-									className='max-w-sm'
-								/>
-								<Button
-									onClick={loadFromUrl}
-									disabled={isFetchingUrl}
-									className='cursor-pointer'
-								>
-									{isFetchingUrl ? 'Загрузка…' : 'Загрузить'}
-								</Button>
-							</div>
-							<p className='mt-2 text-xs text-muted-foreground'>
-								Загрузим HTML страницы и построим по нему дерево. Данные
-								обрабатываются на нашем сервере только для скачивания.
-							</p>
-						</TabsContent>
-
-						<TabsContent value='file' className='min-h-[18rem]'>
-							<button
-								type='button'
-								onClick={() => fileInputRef.current?.click()}
-								className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed py-10 text-center transition-colors hover:border-primary/40'
-							>
-								<Upload className='h-8 w-8 text-muted-foreground' />
-								<span className='text-sm font-medium'>Выберите HTML-файл</span>
-								<span className='text-xs text-muted-foreground'>
-									.html, .htm, .xml, .svg — читается в браузере
-								</span>
-							</button>
-							<input
-								ref={fileInputRef}
-								type='file'
-								accept='.html,.htm,.xml,.svg,text/html'
-								className='hidden'
-								onChange={event => {
-									const file = event.target.files?.[0]
-									if (file) loadFromFile(file)
-									event.target.value = ''
-								}}
-							/>
-						</TabsContent>
 					</Tabs>
 
 					{/* Пример — вне табов: полезен независимо от выбранного источника */}
