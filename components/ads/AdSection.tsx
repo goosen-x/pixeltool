@@ -17,10 +17,17 @@ declare global {
 	}
 }
 
+/**
+ * Реклама временно отключена: аккаунт заблокирован в РСЯ (15.07.2026). Пока он
+ * не разблокирован, блок не рендерится — иначе висел бы вечной заглушкой
+ * «Загрузка рекламы…». Чтобы вернуть, снять этот флаг.
+ */
+const ADS_DISABLED = true
+
 export function AdSection() {
 	useEffect(() => {
 		// Skip ads in development to avoid domain errors
-		if (dev) {
+		if (dev || ADS_DISABLED) {
 			return
 		}
 
@@ -36,6 +43,11 @@ export function AdSection() {
 			})
 		}
 	}, [])
+
+	// Ничего не показываем: пустой блок-заглушка на 250px выглядел бы поломкой.
+	if (ADS_DISABLED) {
+		return null
+	}
 
 	return (
 		<div

@@ -706,11 +706,12 @@ export default function HTMLTreePage() {
 					/>
 					<Button
 						variant='outline'
+						size='sm'
 						onClick={() => {
 							handleInputChange(EXAMPLE_HTML)
 							toast.success('Пример загружен')
 						}}
-						className='w-full'
+						className='w-fit'
 					>
 						Загрузить пример
 					</Button>

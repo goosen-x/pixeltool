@@ -73,10 +73,13 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 						<div
 							key={faq.question}
 							className={cn(
+								// Акцент открытого пункта несут иконка и вес шрифта, а не
+								// цветной фон: primary-рамка с muted-подложкой давали блёклый
+								// голубой блок. Здесь оттенки строго нейтральные.
 								'group overflow-hidden rounded-2xl border transition-colors',
 								open
-									? 'border-primary/30 bg-muted/60 dark:bg-muted/30'
-									: 'border-border bg-card hover:border-primary/30'
+									? 'border-border bg-muted/50 dark:bg-muted/25'
+									: 'border-border bg-card hover:bg-muted/40'
 							)}
 						>
 							{/* h3 несёт глобальные стили заголовка (крупный размер) — гасим
@@ -93,10 +96,8 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 								>
 									<span
 										className={cn(
-											'text-base font-medium transition-colors',
-											open
-												? 'text-foreground'
-												: 'text-foreground/90 group-hover:text-foreground'
+											'text-base text-foreground transition-all',
+											open ? 'font-semibold' : 'font-medium'
 										)}
 									>
 										{faq.question}

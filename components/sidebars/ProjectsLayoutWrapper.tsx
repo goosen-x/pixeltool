@@ -52,7 +52,7 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 							{widget && <WidgetStructuredData widget={widget} />}
 							{widget && (
 								<Breadcrumbs
-									className='px-0 sm:px-0 lg:px-0 pt-0 sm:pt-0 pb-0 sm:pb-0 mb-4 max-w-none mx-0'
+									className='px-0 sm:px-0 lg:px-0 pt-0 sm:pt-0 pb-0 sm:pb-0 mb-8 max-w-none mx-0'
 									items={[
 										{ name: 'Главная', url: '/' },
 										{ name: 'Инструменты', url: '/tools' },
