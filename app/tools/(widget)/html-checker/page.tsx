@@ -905,40 +905,61 @@ export default function HTMLTreePage() {
 												</Alert>
 											)}
 
-										{/* Heading Structure */}
+									{/* Heading Structure — отступ по реальной вложенности, а не по
+										    номеру тега: заголовок вкладывается под ближайший
+										    предыдущий более высокого уровня (стек уровней). Так
+										    пропуск h2→h4 не даёт ложной глубины. */}
 										{headingAnalysis?.headings &&
-											headingAnalysis.headings.length > 0 && (
-												<div className='space-y-2'>
-													<h3 className='font-semibold text-sm'>
-														Структура заголовков:
-													</h3>
-													<div className='space-y-1 p-4 rounded-lg border bg-muted/30'>
-														{headingAnalysis.headings.map((heading, index) => (
-															<div
-																key={index}
-																className='flex items-start gap-3 py-2 font-mono text-sm'
-																style={{
-																	paddingLeft: `${(heading.level - 1) * 20}px`
-																}}
-															>
-																<Badge
-																	variant={
-																		heading.level === 1
-																			? 'default'
-																			: 'secondary'
-																	}
-																	className='flex-shrink-0'
+											headingAnalysis.headings.length > 0 &&
+											(() => {
+												const stack: number[] = []
+												const withDepth = headingAnalysis.headings.map(h => {
+													while (
+														stack.length > 0 &&
+														stack[stack.length - 1] >= h.level
+													) {
+														stack.pop()
+													}
+													const depth = stack.length
+													stack.push(h.level)
+													return { ...h, depth }
+												})
+
+												return (
+													<div className='space-y-2'>
+														<h3 className='font-semibold text-sm'>
+															Структура заголовков:
+														</h3>
+														<div className='rounded-lg border bg-muted/30 p-4'>
+															{withDepth.map((heading, index) => (
+																<div
+																	key={index}
+																	className='flex items-start gap-3 py-1.5 font-mono text-sm'
+																	style={{ paddingLeft: `${heading.depth * 24}px` }}
 																>
-																	{heading.tag}
-																</Badge>
-																<span className='flex-1 truncate'>
-																	{heading.text || '(пустой заголовок)'}
-																</span>
-															</div>
-														))}
+																	{heading.depth > 0 && (
+																		<span
+																			aria-hidden
+																			className='-ml-3 self-stretch border-l border-border'
+																		/>
+																	)}
+																	<Badge
+																		variant={
+																			heading.level === 1 ? 'default' : 'secondary'
+																		}
+																		className='flex-shrink-0'
+																	>
+																		{heading.tag}
+																	</Badge>
+																	<span className='flex-1 truncate'>
+																		{heading.text || '(пустой заголовок)'}
+																	</span>
+																</div>
+															))}
+														</div>
 													</div>
-												</div>
-											)}
+												)
+											})()}
 									</CardContent>
 								</Card>
 							</section>
