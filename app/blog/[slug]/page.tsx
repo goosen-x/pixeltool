@@ -64,7 +64,7 @@ export default async function Post(props: Params) {
 					__html: JSON.stringify(structuredData)
 				}}
 			/>
-			<main>
+			<main className='mx-auto max-w-6xl px-4 sm:px-6 lg:px-8'>
 				<Breadcrumbs
 					items={[
 						{ name: 'Главная', url: '/' },

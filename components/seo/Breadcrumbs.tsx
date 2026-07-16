@@ -46,12 +46,12 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 				className
 			)}
 		>
-			<ol className='flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground'>
+			<ol className='flex items-center gap-1.5 overflow-x-auto text-sm text-muted-foreground [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
 				{items.map((item, index) => {
 					const isLast = index === items.length - 1
 
 					return (
-						<li key={item.url} className='flex items-center gap-1.5'>
+						<li key={item.url} className='flex shrink-0 items-center gap-1.5'>
 							{index > 0 && (
 								<ChevronRight className='h-3.5 w-3.5 shrink-0 opacity-40' />
 							)}

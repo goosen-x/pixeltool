@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { ArrowRight } from 'lucide-react'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
+import { CardPattern, patternIndexForCategory } from './CardPattern'
 import type { Widget } from '@/lib/constants/widgets'
 
 interface ToolCardProps {
@@ -26,67 +26,44 @@ export function ToolCard({
 	return (
 		<Link
 			href={`/tools/${widget.path}`}
-			className='block group/card'
-			style={{
-				display: 'block',
-				textDecoration: 'none'
-			}}
+			className={cn(
+				'group relative flex h-full cursor-pointer flex-col rounded-3xl px-6 py-7',
+				className
+			)}
 		>
-			{/* Ховер — только подсветка рамки. Раньше тут было четыре эффекта разом:
-			    тень и подъём классами, они же продублированы инлайновым JS, плюс
-			    градиентный оверлей поверх всего. Осталась одна рамка. */}
-			<Card
+			{/* Фон карточки отдельным слоем: маска выгрызает вырез под угловую
+			    иконку, контурный паттерн клипуется по скруглению. Иконка и текст —
+			    вне этого слоя, иначе маска обрезала бы и их */}
+			<span className='tool-link-cutout pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
+				<span className='absolute inset-0 text-foreground opacity-[0.08] transition-opacity duration-500 group-hover:opacity-[0.14] dark:opacity-[0.12]'>
+					<CardPattern variant={patternIndexForCategory(widget.category)} />
+				</span>
+			</span>
+
+			{/* Иконка сидит в вырезе правого верхнего угла */}
+			<div
 				className={cn(
-					'h-full cursor-pointer relative overflow-hidden border-border/50 transition-colors duration-200',
-					'hover:border-primary/40',
-					className
+					'absolute -right-2 -top-2 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br text-white shadow-lg sm:-right-3 sm:-top-3 sm:h-16 sm:w-16',
+					widget.gradient
 				)}
 			>
-				<CardHeader className='relative z-10 p-4 sm:p-6'>
-					<div
-						className={cn(
-							'w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white mb-3 sm:mb-4',
-							widget.gradient
-						)}
-						style={{
-							transition: 'transform 0.3s ease'
-						}}
-						onMouseEnter={e => {
-							e.currentTarget.style.transform = 'scale(1.1)'
-						}}
-						onMouseLeave={e => {
-							e.currentTarget.style.transform = 'scale(1)'
-						}}
-					>
-						<Icon className='w-6 h-6 sm:w-8 sm:h-8' />
-					</div>
-					<CardTitle className='text-base sm:text-lg font-heading transition-all duration-300 group-hover/card:text-primary pr-8'>
-						{searchQuery ? highlightText(title, searchQuery) : title}
-					</CardTitle>
-				</CardHeader>
+				<Icon className='h-6 w-6 sm:h-7 sm:w-7' />
+			</div>
 
-				<CardContent className='relative z-10 p-4 pt-0 sm:p-6 sm:pt-0'>
-					<p className='text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-2'>
-						{searchQuery
-							? highlightText(description, searchQuery)
-							: description}
-					</p>
-
-					{widget.tags && widget.tags.length > 0 && (
-						<div className='flex flex-wrap gap-1.5'>
-							{widget.tags.map(tag => (
-								<Badge
-									key={tag}
-									variant='secondary'
-									className='text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 bg-muted text-muted-foreground border-transparent font-normal'
-								>
-									{searchQuery ? highlightText(tag, searchQuery) : tag}
-								</Badge>
-							))}
-						</div>
-					)}
-				</CardContent>
-			</Card>
+			<div className='relative flex flex-1 flex-col'>
+				<h3 className='pr-14 text-balance text-lg font-bold tracking-tight text-foreground'>
+					{searchQuery ? highlightText(title, searchQuery) : title}
+				</h3>
+				<p className='mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground'>
+					{searchQuery
+						? highlightText(description, searchQuery)
+						: description}
+				</p>
+				<span className='mt-5 inline-flex w-fit items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
+					Попробовать
+					<ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-0.5' />
+				</span>
+			</div>
 		</Link>
 	)
 }

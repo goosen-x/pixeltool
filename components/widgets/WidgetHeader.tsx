@@ -31,7 +31,7 @@ export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
 					<Icon className='w-8 h-8 sm:w-10 sm:h-10' />
 				</div>
 				<div className='flex min-w-0 flex-col gap-2'>
-					<h1 className='text-2xl sm:text-3xl md:text-4xl font-heading font-bold'>
+					<h1 className='text-balance text-2xl sm:text-3xl md:text-4xl font-heading font-bold'>
 						{title}
 					</h1>
 					<p className='text-base sm:text-lg md:text-xl text-muted-foreground'>

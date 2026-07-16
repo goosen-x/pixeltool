@@ -115,15 +115,23 @@ export const htmlWidgets: Widget[] = [
 		title: 'Фавикон: сделать favicon.ico из картинки',
 		metaTitle: 'Favicon онлайн: сделать favicon.ico и подключить его',
 		description:
-			'Загрузите картинку — получите favicon.ico и PNG всех размеров одним архивом, плюс готовый код для вставки в <head>.',
+			'Загрузите PNG или JPG — получите favicon.ico и PNG всех размеров одним архивом, плюс готовый код для вставки в <head>. По сути конвертер картинки в иконку для сайта.',
 		useCase:
 			'Сделать иконку сайта: получить favicon.ico, набор PNG под браузеры и мобильные, узнать каким тегом это подключается',
 		recommendedTools: ['color-converter', 'image-size-checker', 'html-tree'],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-14',
-		tags: ['favicon', 'фавикон', 'ico', 'иконка сайта', 'html'],
+		tags: [
+			'favicon',
+			'фавикон',
+			'ico',
+			'png в ico',
+			'ico конвертер',
+			'иконка сайта',
+			'иконка для сайта'
+		],
 		metaDescription:
-			'Сделайте фавикон онлайн: загрузите картинку и скачайте архивом настоящий favicon.ico и PNG всех размеров. Плюс готовый код link rel icon для вставки в head.',
+			'Сделайте фавикон онлайн: конвертер PNG и JPG в настоящий favicon.ico плюс PNG всех размеров одним архивом. Готовый код link rel icon для вставки в head.',
 		faqs: [
 			{
 				question: 'Как подключить фавикон к сайту?',
@@ -162,21 +170,21 @@ export const htmlWidgets: Widget[] = [
 		title: 'Превью ссылки: проверка Open Graph для соцсетей',
 		metaTitle: 'Превью ссылки онлайн: проверить Open Graph и og:image',
 		description:
-			'Проверьте, как ссылка выглядит при репосте: превью для Telegram, Facebook, Twitter и WhatsApp, разбор тегов Open Graph и og:image, генерация недостающих тегов.',
+			'Проверьте, как ссылка выглядит при репосте: превью и предпросмотр ссылки для Telegram, Facebook, Twitter и WhatsApp, разбор тегов Open Graph и og:image, генерация недостающих тегов.',
 		tags: [
 			'превью ссылки',
+			'предпросмотр ссылок',
 			'open graph',
 			'og image',
 			'og картинка',
-			'соцсети',
-			'валидатор'
+			'соцсети'
 		],
 		difficulty: 'intermediate',
 		updatedAt: '2026-07-15',
 		useCase:
 			'Проверить и настроить превью ссылки в соцсетях: Open Graph, og:image, предпросмотр для Telegram, Facebook, Twitter и WhatsApp',
 		metaDescription:
-			'Проверка превью ссылки онлайн: как страница выглядит при репосте в Telegram, Facebook и Twitter. Разбор Open Graph и og:image плюс готовые теги для вставки.',
+			'Превью и предпросмотр ссылки онлайн: как страница выглядит при репосте в Telegram, Facebook и Twitter. Разбор Open Graph и og:image плюс готовые теги для вставки.',
 		recommendedTools: ['html-tree', 'favicon-generator', 'utm-builder'],
 		faqs: [
 			{

@@ -321,6 +321,7 @@ export const cssWidgets: Widget[] = [
 		path: 'color-converter',
 		gradient: 'from-pink-500 to-purple-500',
 		title: 'Конвертер цветов',
+		metaTitle: 'Конвертер цветов онлайн — hex в rgb, hsl, cmyk',
 		description:
 			'Переводите цвет между HEX, RGB, HSL, CMYK и LAB: вставьте значение в любом формате — остальные посчитаются автоматически.',
 		useCase:
@@ -382,7 +383,7 @@ export const cssWidgets: Widget[] = [
 		description:
 			'Вставьте стили и получите сжатый CSS: комментарии и пробелы уйдут, размер файла упадёт на 20–40%.',
 		useCase: 'Сжатие и оптимизация CSS-кода для ускорения загрузки страницы',
-		recommendedTools: ['js-minifier', 'css-gradient', 'color-converter'],
+		recommendedTools: ['css-gradient', 'color-converter'],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-13',
 		tags: [
@@ -553,7 +554,8 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'cssGradient',
 		path: 'css-gradient-generator',
 		gradient: 'from-purple-500 via-pink-500 to-red-500',
-		title: 'CSS Gradient генератор',
+		title: 'CSS градиент: генератор фона онлайн',
+		metaTitle: 'CSS градиент онлайн — генератор фона linear, radial, conic',
 		description:
 			'Соберите CSS-градиент визуально — линейный, радиальный или конический — настройте цветовые точки и направление и скопируйте готовый код CSS и Tailwind.',
 		recommendedTools: ['css-box-shadow', 'color-converter', 'px-rem-converter'],
@@ -617,7 +619,14 @@ export const cssWidgets: Widget[] = [
 		recommendedTools: ['color-converter', 'css-gradient', 'css-box-shadow'],
 		difficulty: 'intermediate',
 		updatedAt: '2026-07-13',
-		tags: ['контраст', 'contrast', 'wcag', 'accessibility', 'a11y', 'цвет'],
+		tags: [
+			'контраст цветов',
+			'проверка контраста',
+			'контраст',
+			'wcag',
+			'accessibility',
+			'a11y'
+		],
 		useCase:
 			'Проверка читаемости текста на фоне и соответствия контраста уровням WCAG AA и AAA',
 		metaDescription:

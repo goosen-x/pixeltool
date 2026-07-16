@@ -1,11 +1,17 @@
 import Link from 'next/link'
 
+// На локальной разработке (next dev) прячем графическую эмблему — так вкладка
+// с localhost сразу отличается от продакшена. В собранном приложении
+// (NODE_ENV=production) логотип показывается как обычно.
+const isDev = process.env.NODE_ENV === 'development'
+
 export const LogoLink = () => {
 	return (
 		<Link
 			href='/'
 			className='flex items-center gap-2 text-lg font-semibold md:text-base'
 		>
+			{!isDev && (
 			<div className='w-10 h-10 rounded-lg overflow-hidden'>
 				<svg
 					width='40'
@@ -28,6 +34,7 @@ export const LogoLink = () => {
 					</g>
 				</svg>
 			</div>
+			)}
 			<span className='font-bold text-xl'>PixelTool</span>
 		</Link>
 	)

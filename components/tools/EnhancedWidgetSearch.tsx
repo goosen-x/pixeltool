@@ -72,7 +72,7 @@ export function EnhancedWidgetSearch({ category, search, viewMode }: Props) {
 					)}
 
 					{viewMode === 'grid' ? (
-						<div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+						<div className='grid gap-6 px-1 pt-3 pr-4 sm:grid-cols-2 lg:grid-cols-3'>
 							{items.map(widget => (
 								<ToolCard
 									key={widget.id}

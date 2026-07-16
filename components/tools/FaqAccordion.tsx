@@ -111,11 +111,16 @@ export function FaqAccordion({ items, title, withSchema = false }: Props) {
 										className={cn(
 											'ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-xl border transition-all duration-300 [corner-shape:squircle]',
 											open
-												? 'rotate-180 border-primary bg-primary text-primary-foreground'
+												? 'border-primary bg-primary text-primary-foreground'
 												: 'border-border text-muted-foreground group-hover:border-primary/40 group-hover:text-foreground'
 										)}
 									>
-										<ArrowDown className='h-4 w-4' />
+										<ArrowDown
+											className={cn(
+												'h-4 w-4 transition-transform duration-300',
+												open && 'rotate-180'
+											)}
+										/>
 									</span>
 								</button>
 							</h3>

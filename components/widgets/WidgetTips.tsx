@@ -16,7 +16,8 @@ import {
 	Sparkles,
 	PlayCircle,
 	PauseCircle,
-	RotateCw
+	RotateCw,
+	ArrowRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -214,7 +215,8 @@ export function WidgetTips({
 											size='sm'
 											className='mt-2 p-0 h-auto'
 										>
-											{currentTip.action.label} →
+											{currentTip.action.label}
+<ArrowRight className='ml-1 inline h-3.5 w-3.5' />
 										</Button>
 									)}
 								</div>
@@ -324,7 +326,8 @@ export function WidgetTips({
 								size='sm'
 								className='mt-1 p-0 h-auto text-xs'
 							>
-								{currentTip.action.label} →
+								{currentTip.action.label}
+<ArrowRight className='ml-1 inline h-3.5 w-3.5' />
 							</Button>
 						)}
 					</div>

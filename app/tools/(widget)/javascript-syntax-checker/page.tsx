@@ -5,27 +5,11 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
-import {
-	Code2,
-	Copy,
-	RefreshCw,
-	CheckCircle,
-	XCircle,
-	AlertCircle,
-	Info,
-	FileCode,
-	Sparkles,
-	Zap,
-	Bug,
-	Terminal,
-	BookOpen,
-	FileJson
-} from 'lucide-react'
+import { Code2, Copy, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { JsSyntaxSeo } from './JsSyntaxSeo'
 // Simple JavaScript syntax checker without external dependencies
 
 type ParseMode = 'es5' | 'es6' | 'es2020' | 'latest'
@@ -481,180 +465,144 @@ export default function JavaScriptSyntaxCheckerPage() {
 
 	const formatCode = () => {
 		try {
-			// Простое форматирование с отступами
-			const formatted = code
-				.replace(/\{/g, ' {\n  ')
-				.replace(/\}/g, '\n}')
-				.replace(/;/g, ';\n')
-				.replace(/\n\s*\n/g, '\n')
+			// Сначала схлопываем любое существующее форматирование в одну строку,
+			// затем расставляем переносы и отступы заново по вложенности скобок.
+			// Благодаря нормализации повторное нажатие даёт тот же результат, а не
+			// плодит пробелы.
+			const withBreaks = code
+				.replace(/\s+/g, ' ')
 				.trim()
+				.replace(/([{;])/g, '$1\n')
+				.replace(/\}/g, '\n}\n')
+
+			let indent = 0
+			const formatted = withBreaks
+				.split('\n')
+				.map(line => line.trim())
+				.filter(Boolean)
+				.map(line => {
+					if (line.startsWith('}')) indent = Math.max(0, indent - 1)
+					const out = '  '.repeat(indent) + line
+					if (line.endsWith('{')) indent++
+					return out
+				})
+				.join('\n')
 
 			setCode(formatted)
 			toast.success('Код отформатирован')
-		} catch (err) {
+		} catch {
 			toast.error('Ошибка форматирования')
 		}
 	}
 
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			{/* Settings */}
-			<Card className='p-6'>
-				<div className='space-y-4'>
-					<div>
-						<Label className='text-base mb-3 block'>Версия ECMAScript</Label>
-						<RadioGroup
-							value={mode}
-							onValueChange={(value: ParseMode) => setMode(value)}
-						>
-							<div className='grid md:grid-cols-4 gap-4'>
-								<div
-									className={cn(
-										'relative flex items-center space-x-3 rounded-lg border p-3 cursor-pointer transition-colors',
-										mode === 'es5'
-											? 'bg-primary/10 border-primary'
-											: 'hover:bg-muted/50'
-									)}
-									onClick={() => setMode('es5')}
+		<div className='mx-auto max-w-5xl'>
+			<Card className='space-y-8 p-6 sm:p-8'>
+				{/* Быстрый старт: примеры кода + настройки проверки */}
+				<div className='space-y-5 border-b pb-7'>
+					<div className='space-y-2'>
+						<Label className='text-sm font-medium'>Примеры кода</Label>
+						<div className='flex flex-wrap gap-2'>
+							{CODE_EXAMPLES.map((example, index) => (
+								<Button
+									key={index}
+									onClick={() => loadExample(example)}
+									variant='outline'
+									size='sm'
+									className='text-xs'
+									title={example.description}
 								>
-									<RadioGroupItem value='es5' id='es5' />
-									<Label htmlFor='es5' className='cursor-pointer'>
-										ES5
-									</Label>
-								</div>
-								<div
-									className={cn(
-										'relative flex items-center space-x-3 rounded-lg border p-3 cursor-pointer transition-colors',
-										mode === 'es6'
-											? 'bg-primary/10 border-primary'
-											: 'hover:bg-muted/50'
-									)}
-									onClick={() => setMode('es6')}
-								>
-									<RadioGroupItem value='es6' id='es6' />
-									<Label htmlFor='es6' className='cursor-pointer'>
-										ES6/ES2015
-									</Label>
-								</div>
-								<div
-									className={cn(
-										'relative flex items-center space-x-3 rounded-lg border p-3 cursor-pointer transition-colors',
-										mode === 'es2020'
-											? 'bg-primary/10 border-primary'
-											: 'hover:bg-muted/50'
-									)}
-									onClick={() => setMode('es2020')}
-								>
-									<RadioGroupItem value='es2020' id='es2020' />
-									<Label htmlFor='es2020' className='cursor-pointer'>
-										ES2020
-									</Label>
-								</div>
-								<div
-									className={cn(
-										'relative flex items-center space-x-3 rounded-lg border p-3 cursor-pointer transition-colors',
-										mode === 'latest'
-											? 'bg-primary/10 border-primary'
-											: 'hover:bg-muted/50'
-									)}
-									onClick={() => setMode('latest')}
-								>
-									<RadioGroupItem value='latest' id='latest' />
-									<Label htmlFor='latest' className='cursor-pointer'>
-										Latest
-									</Label>
-								</div>
-							</div>
-						</RadioGroup>
+									{example.name}
+								</Button>
+							))}
+						</div>
 					</div>
 
-					<div className='flex items-center justify-between'>
-						<div className='flex items-center gap-6'>
-							<div className='flex items-center space-x-2'>
-								<Switch
-									id='source-type'
-									checked={sourceType === 'module'}
-									onCheckedChange={checked =>
-										setSourceType(checked ? 'module' : 'script')
-									}
-								/>
-								<Label htmlFor='source-type'>Модуль (ES6 imports)</Label>
-							</div>
-							<div className='flex items-center space-x-2'>
-								<Switch
-									id='jsx'
-									checked={allowJsx}
-									onCheckedChange={setAllowJsx}
-								/>
-								<Label htmlFor='jsx'>Поддержка JSX</Label>
-							</div>
+					<div className='flex flex-wrap items-center gap-x-6 gap-y-3'>
+						<div className='flex items-center gap-2'>
+							<span className='text-sm text-muted-foreground'>Версия</span>
+							{(
+								[
+									['es5', 'ES5'],
+									['es6', 'ES6'],
+									['es2020', 'ES2020'],
+									['latest', 'Latest']
+								] as [ParseMode, string][]
+							).map(([value, label]) => (
+								<Button
+									key={value}
+									variant={mode === value ? 'default' : 'outline'}
+									size='sm'
+									onClick={() => setMode(value)}
+								>
+									{label}
+								</Button>
+							))}
+						</div>
+						<div className='flex items-center gap-2'>
+							<Switch
+								id='source-type'
+								checked={sourceType === 'module'}
+								onCheckedChange={checked =>
+									setSourceType(checked ? 'module' : 'script')
+								}
+							/>
+							<Label htmlFor='source-type' className='text-sm'>
+								Модуль (import/export)
+							</Label>
+						</div>
+						<div className='flex items-center gap-2'>
+							<Switch id='jsx' checked={allowJsx} onCheckedChange={setAllowJsx} />
+							<Label htmlFor='jsx' className='text-sm'>
+								JSX
+							</Label>
 						</div>
 					</div>
 				</div>
-			</Card>
 
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Code Editor */}
-				<div className='lg:col-span-2 space-y-6'>
-					<Card className='p-6'>
-						<div className='space-y-4'>
-							<div className='flex items-center justify-between'>
-								<Label htmlFor='code-input' className='text-base'>
-									JavaScript код
-								</Label>
-								<div className='flex gap-2'>
-									<Button onClick={formatCode} variant='outline' size='sm'>
-										<Sparkles className='w-4 h-4 mr-2' />
-										Формат
-									</Button>
-								</div>
+				{/* Две колонки: ввод кода и результат */}
+				<div className='grid gap-8 lg:grid-cols-2 lg:gap-10'>
+					{/* Ввод */}
+					<div className='space-y-4'>
+						<div className='flex items-center justify-between gap-3'>
+							<h3 className='text-lg font-semibold'>JavaScript код</h3>
+							<div className='flex gap-2'>
+								<Button onClick={formatCode} variant='outline' size='sm'>
+									Форматировать
+								</Button>
+								<Button onClick={reset} variant='outline' size='sm'>
+									Очистить
+								</Button>
 							</div>
+						</div>
+						<Textarea
+							id='code-input'
+							value={code}
+							onChange={e => setCode(e.target.value)}
+							placeholder='Вставьте JavaScript код для проверки…'
+							className='min-h-[320px] font-mono text-sm'
+							spellCheck={false}
+						/>
+					</div>
 
-							<Textarea
-								id='code-input'
-								value={code}
-								onChange={e => setCode(e.target.value)}
-								placeholder='Введите JavaScript код для проверки...'
-								className='font-mono text-sm'
-								rows={12}
-							/>
-
-							{/* Code Preview with Syntax Highlighting */}
-							{highlightedCode && (
-								<div>
-									<Label>Предпросмотр</Label>
-									<div
-										className='mt-1 p-4 rounded-lg bg-muted font-mono text-sm whitespace-pre overflow-x-auto'
-										dangerouslySetInnerHTML={{ __html: highlightedCode }}
-									/>
-								</div>
-							)}
-
-							{/* Results */}
-							{result && (
-								<div
-									className={cn(
-										'p-4 rounded-lg',
-										result.valid
-											? 'bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800'
-											: 'bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800'
-									)}
-								>
-									<div className='flex items-start gap-3'>
+					{/* Результат */}
+					<div className='space-y-4'>
+						<h3 className='text-lg font-semibold'>Результат</h3>
+						{result ? (
+							<div
+								className={cn(
+									'rounded-xl border border-l-4 bg-muted/40 p-4',
+									result.valid ? 'border-l-green-500' : 'border-l-red-500'
+								)}
+							>
+								<div className='flex items-start gap-3'>
 										{result.valid ? (
 											<CheckCircle className='w-5 h-5 text-green-600 dark:text-green-400 mt-0.5' />
 										) : (
 											<XCircle className='w-5 h-5 text-red-600 dark:text-red-400 mt-0.5' />
 										)}
 										<div className='flex-1'>
-											<h3
-												className={cn(
-													'font-semibold',
-													result.valid
-														? 'text-green-900 dark:text-green-100'
-														: 'text-red-900 dark:text-red-100'
-												)}
-											>
+											<h3 className='text-base font-semibold text-foreground'>
 												{result.valid
 													? 'Синтаксис корректен'
 													: 'Ошибка синтаксиса'}
@@ -682,13 +630,13 @@ export default function JavaScriptSyntaxCheckerPage() {
 
 											{result.warnings.length > 0 && (
 												<div className='mt-3 space-y-1'>
-													<h4 className='font-medium text-yellow-800 dark:text-yellow-200'>
-														Предупреждения:
-													</h4>
+													<p className='text-sm font-medium text-amber-600 dark:text-amber-400'>
+														Предупреждения
+													</p>
 													{result.warnings.map((warning, index) => (
 														<div
 															key={index}
-															className='flex items-start gap-2 text-sm text-yellow-700 dark:text-yellow-300'
+															className='flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400'
 														>
 															<AlertCircle className='w-4 h-4 mt-0.5' />
 															<span>{warning}</span>
@@ -698,153 +646,58 @@ export default function JavaScriptSyntaxCheckerPage() {
 											)}
 
 											{result.stats && result.valid && (
-												<div className='mt-3 pt-3 border-t border-green-200 dark:border-green-800'>
-													<h4 className='font-medium text-green-800 dark:text-green-200 mb-2'>
-														Статистика:
-													</h4>
-													<div className='grid grid-cols-2 md:grid-cols-5 gap-3 text-sm'>
-														<div className='text-center p-2 rounded bg-white/50 dark:bg-black/20'>
-															<div className='text-2xl font-bold text-green-600'>
-																{result.stats.functions}
+												<div className='mt-3 grid grid-cols-3 gap-2 border-t pt-3'>
+													{(
+														[
+															['Функций', result.stats.functions],
+															['Переменных', result.stats.variables],
+															['Классов', result.stats.classes],
+															['Импортов', result.stats.imports],
+															['Экспортов', result.stats.exports]
+														] as [string, number][]
+													).map(([label, value]) => (
+														<div
+															key={label}
+															className='rounded bg-white/60 p-2 text-center dark:bg-black/20'
+														>
+															<div className='text-xl font-bold text-green-600'>
+																{value}
 															</div>
 															<div className='text-xs text-muted-foreground'>
-																Функций
+																{label}
 															</div>
 														</div>
-														<div className='text-center p-2 rounded bg-white/50 dark:bg-black/20'>
-															<div className='text-2xl font-bold text-green-600'>
-																{result.stats.variables}
-															</div>
-															<div className='text-xs text-muted-foreground'>
-																Переменных
-															</div>
-														</div>
-														<div className='text-center p-2 rounded bg-white/50 dark:bg-black/20'>
-															<div className='text-2xl font-bold text-green-600'>
-																{result.stats.classes}
-															</div>
-															<div className='text-xs text-muted-foreground'>
-																Классов
-															</div>
-														</div>
-														<div className='text-center p-2 rounded bg-white/50 dark:bg-black/20'>
-															<div className='text-2xl font-bold text-green-600'>
-																{result.stats.imports}
-															</div>
-															<div className='text-xs text-muted-foreground'>
-																Импортов
-															</div>
-														</div>
-														<div className='text-center p-2 rounded bg-white/50 dark:bg-black/20'>
-															<div className='text-2xl font-bold text-green-600'>
-																{result.stats.exports}
-															</div>
-															<div className='text-xs text-muted-foreground'>
-																Экспортов
-															</div>
-														</div>
-													</div>
+													))}
 												</div>
+											)}
+											{result.valid && (
+												<Button
+													onClick={copyResult}
+													variant='outline'
+													size='sm'
+													className='mt-4'
+												>
+													<Copy className='mr-2 h-4 w-4' />
+													Копировать результат
+												</Button>
 											)}
 										</div>
 									</div>
 								</div>
-							)}
-
-							{/* Actions */}
-							<div className='flex gap-2 pt-4'>
-								<Button
-									onClick={copyResult}
-									disabled={!result}
-									className='gap-2'
-								>
-									<Copy className='w-4 h-4' />
-									Копировать результат
-								</Button>
-								<Button onClick={reset} variant='outline' className='gap-2'>
-									<RefreshCw className='w-4 h-4' />
-									Сброс
-								</Button>
-							</div>
-						</div>
-					</Card>
-				</div>
-
-				{/* Sidebar */}
-				<div className='space-y-6'>
-					{/* Examples */}
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4 flex items-center gap-2'>
-							<FileCode className='w-5 h-5' />
-							Примеры кода
-						</h3>
-						<div className='space-y-2'>
-							{CODE_EXAMPLES.map((example, index) => (
-								<Button
-									key={index}
-									onClick={() => loadExample(example)}
-									variant='outline'
-									size='sm'
-									className='w-full justify-start text-left'
-								>
-									<div>
-										<div className='font-medium'>{example.name}</div>
-										<div className='text-xs text-muted-foreground'>
-											{example.description}
-										</div>
+							) : (
+								<div className='flex min-h-[320px] items-center justify-center rounded-xl border border-dashed text-muted-foreground'>
+									<div className='space-y-3 text-center'>
+										<Code2 className='mx-auto h-12 w-12 opacity-20' />
+										<p className='text-sm'>
+											Вставьте код — здесь появится результат проверки
+										</p>
 									</div>
-								</Button>
-							))}
-						</div>
-					</Card>
-
-					{/* ES6 Features */}
-					<Card className='p-6'>
-						<h3 className='font-semibold mb-4 flex items-center gap-2'>
-							<Zap className='w-5 h-5' />
-							ES6+ возможности
-						</h3>
-						<div className='space-y-3 text-sm'>
-							<div>
-								<h4 className='font-medium mb-1'>ES6 (ES2015)</h4>
-								<ul className='text-muted-foreground space-y-1'>
-									<li>• let/const</li>
-									<li>• Стрелочные функции</li>
-									<li>• Классы</li>
-									<li>• Шаблонные строки</li>
-									<li>• Деструктуризация</li>
-									<li>• Модули</li>
-								</ul>
-							</div>
-							<div>
-								<h4 className='font-medium mb-1'>ES2020+</h4>
-								<ul className='text-muted-foreground space-y-1'>
-									<li>• Optional chaining (?.)</li>
-									<li>• Nullish coalescing (??)</li>
-									<li>• BigInt</li>
-									<li>• Dynamic import</li>
-									<li>• Private fields (#)</li>
-								</ul>
-							</div>
-						</div>
-					</Card>
-
-					{/* Tips */}
-					<Card className='p-6 bg-muted/50'>
-						<h3 className='font-semibold mb-3 flex items-center gap-2'>
-							<Info className='w-4 h-4' />
-							Советы
-						</h3>
-						<ul className='space-y-2 text-sm text-muted-foreground'>
-							<li>• Используйте &apos;use strict&apos; для строгого режима</li>
-							<li>• Предпочитайте const для неизменяемых значений</li>
-							<li>• Используйте === вместо ==</li>
-							<li>• Объявляйте переменные перед использованием</li>
-							<li>• Избегайте глобальных переменных</li>
-						</ul>
-					</Card>
+								</div>
+							)}
+					</div>
 				</div>
-			</div>
+			</Card>
+			<JsSyntaxSeo />
 		</div>
 	)
 }

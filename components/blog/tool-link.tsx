@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, ArrowRight } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 
 type IconComponentType = React.ComponentType<{ className?: string }>
@@ -47,7 +47,6 @@ export function ToolLink({
 	gradient = 'from-blue-500 to-cyan-500'
 }: ToolLinkProps) {
 	const isExternal = href.startsWith('http')
-	const buttonText = 'Попробовать →'
 
 	const IconComponent = resolveIcon(iconName)
 
@@ -56,32 +55,32 @@ export function ToolLink({
 			href={href}
 			target={isExternal ? '_blank' : undefined}
 			rel={isExternal ? 'noopener noreferrer' : undefined}
-			className='group relative my-8 block cursor-pointer overflow-hidden rounded-3xl border bg-muted px-6 py-8 transition-colors hover:border-primary/40 dark:bg-card sm:px-10 sm:py-10'
+			className='group relative my-8 block cursor-pointer px-6 py-8 sm:px-10 sm:py-10'
 		>
-			{/* Тот же контурный паттерн, что в блоке «Не нашли нужный инструмент?» */}
-			<Image
-				src='/images/patterns/contour-1.png'
-				alt=''
-				aria-hidden
-				width={760}
-				height={760}
-				className='pointer-events-none absolute -right-72 top-1/2 w-[36rem] max-w-none -translate-y-1/2 select-none opacity-[0.07] dark:opacity-[0.1] dark:invert'
-			/>
+			{/* Фон карточки отдельным слоем: маска выгрызает вогнутую выемку под
+			    иконку, а сам паттерн клипуется по скруглению. Иконка и контент лежат
+			    ВНЕ этого слоя — иначе маска обрезала бы и их */}
+			<span className='tool-link-cutout pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
+				<Image
+					src='/images/patterns/contour-1.png'
+					alt=''
+					aria-hidden
+					width={760}
+					height={760}
+					className='absolute -right-72 top-1/2 w-[36rem] max-w-none -translate-y-1/2 select-none opacity-[0.07] transition duration-500 group-hover:scale-110 group-hover:opacity-[0.16] dark:opacity-[0.1] dark:group-hover:opacity-[0.2] dark:invert'
+				/>
+			</span>
 
-			<div className='relative grid items-center gap-6 sm:grid-cols-[auto_1fr] sm:gap-8'>
-				{/* Градиент иконки — фирменный цвет инструмента, как на карточках
-				    по всему сайту */}
-				<div className='hidden sm:block'>
-					<div
-						className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient}`}
-					>
-						<IconComponent className='h-8 w-8 text-white' />
-					</div>
-				</div>
+			{/* Иконка сидит в вырезе — фирменный градиент инструмента */}
+			<div
+				className={`absolute -right-2 -top-2 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br shadow-lg ${gradient} sm:-right-3 sm:-top-3 sm:h-16 sm:w-16`}
+			>
+				<IconComponent className='h-7 w-7 text-white sm:h-8 sm:w-8' />
+			</div>
 
-				<div className='min-w-0 space-y-3'>
+			<div className='relative min-w-0 space-y-3'>
 					<div className='flex items-center gap-2'>
-						<h4 className='text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-3xl'>
+						<h4 className='text-2xl font-bold tracking-tight text-foreground text-balance sm:text-3xl'>
 							{title}
 						</h4>
 						{isExternal && (
@@ -97,12 +96,12 @@ export function ToolLink({
 						</p>
 					)}
 					<div className='pt-1'>
-						<span className='inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
-							{buttonText}
+						<span className='inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
+							Попробовать
+							<ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-0.5' />
 						</span>
 					</div>
 				</div>
-			</div>
 		</Link>
 	)
 }

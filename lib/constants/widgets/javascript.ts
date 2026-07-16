@@ -1,5 +1,5 @@
 import { Widget } from './index'
-import { Braces, Code, Search, Shrink } from 'lucide-react'
+import { Braces, Code, Search } from 'lucide-react'
 
 export const javascriptWidgets: Widget[] = [
 	{
@@ -18,7 +18,14 @@ export const javascriptWidgets: Widget[] = [
 		recommendedTools: ['base64-encoder', 'jwt-decoder', 'text-diff-tool'],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-14',
-		tags: ['json', 'yaml', 'формат', 'валидатор', 'минификация'],
+		tags: [
+			'json',
+			'json валидатор',
+			'проверить json',
+			'yaml',
+			'формат',
+			'минификация'
+		],
 		metaDescription:
 			'Форматируйте и проверяйте JSON онлайн: читаемый вид с отступами, сжатие, разбор структуры и перевод JSON в YAML и обратно. Вставьте данные — остальное посчитается само.',
 		faqs: [
@@ -55,62 +62,6 @@ export const javascriptWidgets: Widget[] = [
 		]
 	},
 	{
-		id: 'js-minifier',
-		icon: Shrink,
-		iconName: 'Code',
-		category: 'javascript',
-		translationKey: 'jsMinifier',
-		path: 'js-minifier',
-		gradient: 'from-blue-500 to-indigo-600',
-		title: 'JavaScript Минификатор',
-		description:
-			'Оптимизируйте и сжимайте JavaScript код для лучшей производительности',
-		useCase: 'Уменьшение размера JavaScript файлов для быстрой загрузки сайта',
-		recommendedTools: [
-			'css-minifier',
-			'json-tools',
-			'javascript-syntax-checker'
-		],
-		difficulty: 'beginner',
-		tags: [
-			'minify',
-			'javascript',
-			'js',
-			'optimization',
-			'performance',
-			'compress'
-		],
-		metaDescription:
-			'JavaScript минификатор. Сжимайте и оптимизируйте JS код, уменьшайте размер файлов, улучшайте производительность сайта.',
-		faqs: [
-			{
-				question: 'Что такое минификация JavaScript?',
-				answer:
-					'Минификация JavaScript удаляет ненужные символы: пробелы, комментарии и переносы строк. Также сокращает имена переменных для уменьшения размера файла при сохранении функциональности.'
-			},
-			{
-				question: 'Безопасно ли использовать минифицированный JavaScript?',
-				answer:
-					'Да, при правильной минификации. Инструмент сохраняет функциональность кода, удаляя только ненужные элементы. Всегда тестируйте минифицированный код перед развёртыванием в продакшн.'
-			},
-			{
-				question: 'Сколько места можно сэкономить?',
-				answer:
-					'Обычная экономия составляет 30-70% в зависимости от стиля кода. JavaScript с большим количеством комментариев может достичь большего сжатия, чем уже оптимизированный код.'
-			},
-			{
-				question: 'Нужно ли минифицировать код в продакшне?',
-				answer:
-					'Да! Минификация критична для продакшна - она уменьшает размер файлов, ускоряет загрузку страниц и снижает использование трафика. Используйте оригинальные файлы для разработки, минифицированные для развёртывания.'
-			},
-			{
-				question: 'Поддерживается ли современный синтаксис ES6+?',
-				answer:
-					'Да! Минификатор полностью поддерживает ES6+ синтаксис, включая стрелочные функции, async/await, деструктуризацию, классы и модули. Работает с современным JavaScript кодом.'
-			}
-		]
-	},
-	{
 		id: 'regex-tester',
 		icon: Search,
 		category: 'javascript',
@@ -118,14 +69,22 @@ export const javascriptWidgets: Widget[] = [
 		path: 'regex-tester',
 		gradient: 'from-green-500 to-teal-600',
 		title: 'Regex тестер регулярных выражений',
-		description: 'Тестируйте регулярные выражения для JavaScript, PHP и Python',
+		metaTitle: 'Регулярные выражения онлайн — regex тестер с подсветкой',
+		description:
+			'Проверяйте регулярные выражения онлайн для JavaScript, PHP и Python: подсветка совпадений и групп захвата сразу по мере ввода.',
 		recommendedTools: [
 			'javascript-syntax-checker',
 			'php-syntax-checker',
 			'text-diff'
 		],
 		difficulty: 'advanced',
-		tags: ['regex', 'regular-expression', 'pattern', 'test', 'match'],
+		tags: [
+			'регулярные выражения',
+			'regex',
+			'проверить регулярное выражение',
+			'pattern',
+			'match'
+		],
 		useCase: 'Отладка и тестирование регулярных выражений',
 		metaDescription:
 			'Тестер регулярных выражений для JavaScript, PHP и Python. Проверяйте и отлаживайте regex онлайн с подсветкой совпадений.',
@@ -164,14 +123,23 @@ export const javascriptWidgets: Widget[] = [
 		translationKey: 'javascriptSyntaxChecker',
 		path: 'javascript-syntax-checker',
 		gradient: 'from-yellow-500 to-red-600',
-		title: 'JavaScript валидатор',
-		description: 'Проверка синтаксиса JavaScript/ES6/ES2020+ с JSX',
-		recommendedTools: ['json-tools', 'js-minifier', 'regex-tester'],
+		title: 'Проверить JavaScript: синтаксис и ошибки',
+		metaTitle: 'Проверить JavaScript онлайн — синтаксис и ошибки в коде',
+		description:
+			'Проверьте JavaScript онлайн: найдите синтаксические ошибки в коде ES6/ES2020+ и JSX прямо в браузере, без запуска.',
+		recommendedTools: ['json-tools', 'regex-tester'],
 		difficulty: 'intermediate',
-		tags: ['javascript', 'es6', 'syntax', 'checker', 'validator'],
+		tags: [
+			'проверка js',
+			'проверить javascript',
+			'javascript ошибки',
+			'js онлайн',
+			'синтаксис javascript',
+			'es6'
+		],
 		useCase: 'Проверка JavaScript кода перед развёртыванием',
 		metaDescription:
-			'Проверка синтаксиса JavaScript для ES6/ES2020+ с поддержкой JSX. Находите ошибки в JS-коде онлайн.',
+			'Проверить JavaScript онлайн: найдите синтаксические ошибки в JS-коде ES6/ES2020+ с поддержкой JSX. Быстрая проверка js в браузере без запуска.',
 		faqs: [
 			{
 				question: 'Какие версии JavaScript это поддерживает?',

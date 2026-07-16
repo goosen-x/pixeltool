@@ -36,7 +36,14 @@ export function PostPreview({
 					/>
 				</Link>
 			</div>
-			<h3 className='text-3xl mb-3 leading-snug'></h3>
+			<h3 className='mb-3 text-2xl font-bold leading-snug text-balance'>
+				<Link
+					href={`/blog/${slug}`}
+					className='transition-colors hover:text-primary'
+				>
+					{title}
+				</Link>
+			</h3>
 			<div className='flex items-center gap-4 mb-4'>
 				<OptimizedImage
 					src={author.picture}

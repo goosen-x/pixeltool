@@ -20,22 +20,16 @@ import {
 	Download,
 	Upload,
 	FileText,
-	Minimize2,
-	Maximize2,
-	Braces,
-	AlertCircle,
-	Info,
-	Code2,
-	Settings2
+	Braces
 } from 'lucide-react'
 import { load as loadYAML, dump as dumpYAML } from 'js-yaml'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { Card } from '@/components/ui/card'
+import { JsonToolsSeo } from './JsonToolsSeo'
 import { getWidgetById } from '@/lib/constants/widgets'
 interface JSONError {
 	message: string
@@ -71,19 +65,19 @@ interface JSONAnalysis {
 
 const JSON_EXAMPLES = [
 	{
-		name: 'Simple Object',
+		name: 'Простой объект',
 		data: '{"name": "John", "age": 30, "city": "New York"}'
 	},
 	{
-		name: 'Array of Objects',
+		name: 'Массив объектов',
 		data: '[{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]'
 	},
 	{
-		name: 'Nested Structure',
+		name: 'Вложенная структура',
 		data: '{"users": [{"profile": {"name": "John", "settings": {"theme": "dark", "notifications": true}}}], "meta": {"version": "1.0"}}'
 	},
 	{
-		name: 'Complex Data',
+		name: 'Сложные данные',
 		data: '{"api": {"endpoints": [{"method": "GET", "path": "/users", "params": ["limit", "offset"]}, {"method": "POST", "path": "/users", "body": {"name": "string", "email": "string"}}], "auth": {"type": "Bearer", "required": true}}, "config": {"timeout": 5000, "retries": 3, "debug": false}}'
 	}
 ]
@@ -311,19 +305,68 @@ export default function JSONToolsPage() {
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<WidgetLayout>
-				<div className='grid gap-6 lg:grid-cols-2'>
-					{/* Input Section */}
-					<WidgetSection icon={<Code2 className='w-5 h-5' />} title='Ввод JSON'>
-						<div className='space-y-4'>
-							<WidgetInput label='JSON Input' className='h-full'>
-								<Textarea
-									value={input}
-									onChange={e => setInput(e.target.value)}
-									placeholder='Paste your JSON here...'
-									className='min-h-[300px] font-mono text-sm'
-									spellCheck={false}
-								/>
-							</WidgetInput>
+				{/* Всё в одной карточке: секции внутри — без собственных рамок */}
+				<Card className='space-y-8 p-6 sm:p-8'>
+				{/* Быстрый старт: примеры и загрузка/очистка вынесены наверх, чтобы
+				    сразу было понятно, с чего начать */}
+				<div className='flex flex-col gap-5 border-b pb-7'>
+					<div className='min-w-0 space-y-2'>
+						<Label className='text-sm font-medium'>Примеры</Label>
+						<div className='flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+							{JSON_EXAMPLES.map((example, index) => (
+								<Button
+									key={index}
+									variant='outline'
+									size='sm'
+									onClick={() => loadExample(example.data)}
+									className='shrink-0 text-xs'
+								>
+									<FileText className='mr-1.5 h-3 w-3' />
+									{example.name}
+								</Button>
+							))}
+						</div>
+					</div>
+				</div>
+
+				<div className='grid gap-8 lg:grid-cols-2 lg:gap-10'>
+					{/* Ввод */}
+					<div className='space-y-4'>
+						<div className='flex items-center justify-between gap-3'>
+							<h3 className='text-lg font-semibold'>Исходный JSON</h3>
+							<div className='flex gap-2'>
+								<label>
+									<Button variant='outline' size='sm' asChild>
+										<span>
+											<Upload className='mr-2 h-4 w-4' />
+											Загрузить
+										</span>
+									</Button>
+									<input
+										type='file'
+										accept='.json'
+										onChange={handleFileUpload}
+										aria-label='Загрузить JSON файл'
+										className='hidden'
+									/>
+								</label>
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={() => setInput('')}
+									disabled={!input}
+								>
+									Очистить
+								</Button>
+							</div>
+						</div>
+						<Textarea
+							value={input}
+							onChange={e => setInput(e.target.value)}
+							placeholder='Вставьте JSON сюда…'
+							className='min-h-[300px] font-mono text-sm'
+							spellCheck={false}
+						/>
 
 							{/* Validation Status */}
 							{analysis && (
@@ -340,14 +383,14 @@ export default function JSONToolsPage() {
 											<>
 												<CheckCircle className='h-4 w-4 text-green-600 dark:text-green-400' />
 												<span className='text-sm font-medium text-green-700 dark:text-green-300'>
-													Valid JSON
+													JSON корректен
 												</span>
 											</>
 										) : (
 											<>
 												<XCircle className='h-4 w-4 text-red-600 dark:text-red-400' />
 												<span className='text-sm font-medium text-red-700 dark:text-red-300'>
-													Invalid JSON
+													Ошибка в JSON
 												</span>
 											</>
 										)}
@@ -357,7 +400,7 @@ export default function JSONToolsPage() {
 											<p className='font-mono'>{analysis.error.message}</p>
 											{analysis.error.line && analysis.error.column && (
 												<p className='mt-1'>
-													Line {analysis.error.line}, Column{' '}
+													Строка {analysis.error.line}, столбец{' '}
 													{analysis.error.column}
 												</p>
 											)}
@@ -365,61 +408,28 @@ export default function JSONToolsPage() {
 									)}
 								</div>
 							)}
+					</div>
 
-							<div className='flex items-center gap-2 mt-4'>
-								<Button
-									variant='outline'
-									size='sm'
-									onClick={() => setInput('')}
-									disabled={!input}
-								>
-									Clear
-								</Button>
-								<label>
-									<Button variant='outline' size='sm' asChild>
-										<span>
-											<Upload className='h-4 w-4 mr-2' />
-											Upload
-										</span>
-									</Button>
-									<input
-										type='file'
-										accept='.json'
-										onChange={handleFileUpload}
-										aria-label='Загрузить JSON файл'
-										className='hidden'
-									/>
-								</label>
-							</div>
-
-							{/* Examples */}
-							<div className='space-y-2'>
-								<Label className='text-sm text-muted-foreground'>
-									Examples
+					{/* Результат */}
+					<div className='space-y-4'>
+						<div className='flex items-center justify-between gap-3'>
+							<h3 className='text-lg font-semibold'>Результат</h3>
+							<div className='flex items-center gap-2'>
+								<Label className='whitespace-nowrap text-sm text-muted-foreground'>
+									Отступ
 								</Label>
-								<div className='grid grid-cols-2 gap-2'>
-									{JSON_EXAMPLES.map((example, index) => (
-										<Button
-											key={index}
-											variant='outline'
-											size='sm'
-											onClick={() => loadExample(example.data)}
-											className='justify-start text-xs'
-										>
-											<FileText className='h-3 w-3 mr-1' />
-											{example.name}
-										</Button>
-									))}
-								</div>
+								<Select value={indentSize} onValueChange={setIndentSize}>
+									<SelectTrigger className='h-9 w-[132px]'>
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='2'>2 пробела</SelectItem>
+										<SelectItem value='4'>4 пробела</SelectItem>
+										<SelectItem value='\t'>Табуляция</SelectItem>
+									</SelectContent>
+								</Select>
 							</div>
 						</div>
-					</WidgetSection>
-
-					{/* Output Section */}
-					<WidgetSection
-						icon={<Braces className='w-5 h-5' />}
-						title='Обработка JSON'
-					>
 						{analysis && analysis.isValid ? (
 							<Tabs
 								value={activeTab}
@@ -427,21 +437,29 @@ export default function JSONToolsPage() {
 								className='h-full'
 							>
 								<TabsList className='grid w-full grid-cols-4'>
-									<TabsTrigger value='formatted' className='cursor-pointer'>
-										<Maximize2 className='h-4 w-4 mr-2' />
-										Formatted
+									<TabsTrigger
+										value='formatted'
+										className='cursor-pointer text-xs sm:text-sm'
+									>
+										Формат
 									</TabsTrigger>
-									<TabsTrigger value='minified' className='cursor-pointer'>
-										<Minimize2 className='h-4 w-4 mr-2' />
-										Minified
+									<TabsTrigger
+										value='minified'
+										className='cursor-pointer text-xs sm:text-sm'
+									>
+										Сжатый
 									</TabsTrigger>
-									<TabsTrigger value='yaml' className='cursor-pointer'>
-										<FileText className='h-4 w-4 mr-2' />
+									<TabsTrigger
+										value='yaml'
+										className='cursor-pointer text-xs sm:text-sm'
+									>
 										YAML
 									</TabsTrigger>
-									<TabsTrigger value='analysis' className='cursor-pointer'>
-										<Info className='h-4 w-4 mr-2' />
-										Analysis
+									<TabsTrigger
+										value='analysis'
+										className='cursor-pointer text-xs sm:text-sm'
+									>
+										Анализ
 									</TabsTrigger>
 								</TabsList>
 
@@ -460,7 +478,7 @@ export default function JSONToolsPage() {
 											}
 										>
 											<Copy className='h-4 w-4 mr-2' />
-											Copy
+											Копировать
 										</Button>
 										<Button
 											variant='outline'
@@ -470,7 +488,7 @@ export default function JSONToolsPage() {
 											}
 										>
 											<Download className='h-4 w-4 mr-2' />
-											Download
+											Скачать
 										</Button>
 									</div>
 								</TabsContent>
@@ -490,7 +508,7 @@ export default function JSONToolsPage() {
 											}
 										>
 											<Copy className='h-4 w-4 mr-2' />
-											Copy
+											Копировать
 										</Button>
 										<Button
 											variant='outline'
@@ -500,7 +518,7 @@ export default function JSONToolsPage() {
 											}
 										>
 											<Download className='h-4 w-4 mr-2' />
-											Download
+											Скачать
 										</Button>
 									</div>
 								</TabsContent>
@@ -508,8 +526,8 @@ export default function JSONToolsPage() {
 								<TabsContent value='yaml' className='space-y-4'>
 									{analysis.sourceFormat === 'yaml' && (
 										<p className='text-sm text-muted-foreground'>
-											На входе распознан YAML — во вкладках Formatted и Minified
-											лежит он же, переведённый в JSON.
+											На входе распознан YAML — во вкладках «Форматированный»
+											и «Сжатый» лежит он же, переведённый в JSON.
 										</p>
 									)}
 									<WidgetOutput>
@@ -525,7 +543,7 @@ export default function JSONToolsPage() {
 											onClick={() => handleCopy(analysis.yaml!, 'YAML')}
 										>
 											<Copy className='h-4 w-4 mr-2' />
-											Copy
+											Копировать
 										</Button>
 										<Button
 											variant='outline'
@@ -536,7 +554,7 @@ export default function JSONToolsPage() {
 											}
 										>
 											<Download className='h-4 w-4 mr-2' />
-											Download
+											Скачать
 										</Button>
 									</div>
 								</TabsContent>
@@ -545,13 +563,11 @@ export default function JSONToolsPage() {
 									<div className='space-y-4'>
 										{/* Size Analysis */}
 										<div className='p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50'>
-											<h4 className='font-medium text-sm mb-3'>
-												Size Analysis
-											</h4>
+											<h4 className='font-medium text-sm mb-3'>Размеры</h4>
 											<div className='space-y-2'>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Original
+														Исходный
 													</span>
 													<Badge variant='secondary'>
 														{formatBytes(analysis.size.original)}
@@ -559,7 +575,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Formatted
+														Форматированный
 													</span>
 													<Badge variant='secondary'>
 														{formatBytes(analysis.size.formatted)}
@@ -567,7 +583,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Minified
+														Сжатый
 													</span>
 													<Badge variant='secondary'>
 														{formatBytes(analysis.size.minified)}
@@ -575,7 +591,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center pt-2 border-t'>
 													<span className='text-sm font-medium'>
-														Compression
+														Сжатие
 													</span>
 													<Badge className='bg-gradient-to-r from-primary to-accent text-white'>
 														{Math.round(
@@ -592,13 +608,11 @@ export default function JSONToolsPage() {
 
 										{/* Structure Analysis */}
 										<div className='p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50'>
-											<h4 className='font-medium text-sm mb-3'>
-												Structure Analysis
-											</h4>
+											<h4 className='font-medium text-sm mb-3'>Структура</h4>
 											<div className='grid grid-cols-2 gap-3'>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Objects
+														Объекты
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.objects}
@@ -606,7 +620,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Arrays
+														Массивы
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.arrays}
@@ -614,7 +628,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Strings
+														Строки
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.strings}
@@ -622,7 +636,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Numbers
+														Числа
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.numbers}
@@ -630,7 +644,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Booleans
+														Логические
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.booleans}
@@ -638,7 +652,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center'>
 													<span className='text-sm text-muted-foreground'>
-														Nulls
+														null
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.nulls}
@@ -646,7 +660,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center col-span-2 pt-2 border-t'>
 													<span className='text-sm text-muted-foreground'>
-														Total Keys
+														Всего ключей
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.totalKeys}
@@ -654,7 +668,7 @@ export default function JSONToolsPage() {
 												</div>
 												<div className='flex justify-between items-center col-span-2'>
 													<span className='text-sm text-muted-foreground'>
-														Max Depth
+														Глубина
 													</span>
 													<Badge variant='outline'>
 														{analysis.structure.maxDepth}
@@ -666,42 +680,22 @@ export default function JSONToolsPage() {
 								</TabsContent>
 							</Tabs>
 						) : (
-							<div className='flex items-center justify-center h-[400px] text-muted-foreground'>
-								<div className='text-center space-y-3'>
-									<Braces className='h-12 w-12 mx-auto opacity-20' />
+							<div className='flex h-[400px] items-center justify-center text-muted-foreground'>
+								<div className='space-y-3 text-center'>
+									<Braces className='mx-auto h-12 w-12 opacity-20' />
 									<p className='text-sm'>
 										{analysis?.error
-											? 'Fix JSON errors to see output'
-											: 'Enter JSON to see output'}
+											? 'Исправьте ошибки в JSON'
+											: 'Вставьте JSON — здесь появится результат'}
 									</p>
 								</div>
 							</div>
 						)}
-					</WidgetSection>
-				</div>
-
-				{/* Settings Section */}
-				<WidgetSection
-					icon={<Settings2 className='w-5 h-5' />}
-					title='Настройки'
-					className='mt-6'
-				>
-					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-						<WidgetInput label='Indent Size'>
-							<Select value={indentSize} onValueChange={setIndentSize}>
-								<SelectTrigger>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='2'>2 spaces</SelectItem>
-									<SelectItem value='4'>4 spaces</SelectItem>
-									<SelectItem value='\t'>Tab</SelectItem>
-								</SelectContent>
-							</Select>
-						</WidgetInput>
 					</div>
-				</WidgetSection>
+				</div>
+				</Card>
 			</WidgetLayout>
+			<JsonToolsSeo />
 		</WidgetSEOWrapper>
 	)
 }
