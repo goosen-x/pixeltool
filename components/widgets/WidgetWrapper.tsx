@@ -80,7 +80,7 @@ export function WidgetWrapper({
 	return (
 		<>
 			<ProgressBar isLoading={isLoading} />
-			<div key={pathname} className='widget-fade-in'>
+			<div key={pathname} className='animate-fade-in'>
 				{children}
 			</div>
 		</>

@@ -307,66 +307,66 @@ export default function JSONToolsPage() {
 			<WidgetLayout>
 				{/* Всё в одной карточке: секции внутри — без собственных рамок */}
 				<Card className='space-y-8 p-6 sm:p-8'>
-				{/* Быстрый старт: примеры и загрузка/очистка вынесены наверх, чтобы
+					{/* Быстрый старт: примеры и загрузка/очистка вынесены наверх, чтобы
 				    сразу было понятно, с чего начать */}
-				<div className='flex flex-col gap-5 border-b pb-7'>
-					<div className='min-w-0 space-y-2'>
-						<Label className='text-sm font-medium'>Примеры</Label>
-						<div className='flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-							{JSON_EXAMPLES.map((example, index) => (
-								<Button
-									key={index}
-									variant='outline'
-									size='sm'
-									onClick={() => loadExample(example.data)}
-									className='shrink-0 text-xs'
-								>
-									<FileText className='mr-1.5 h-3 w-3' />
-									{example.name}
-								</Button>
-							))}
-						</div>
-					</div>
-				</div>
-
-				<div className='grid gap-8 lg:grid-cols-2 lg:gap-10'>
-					{/* Ввод */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between gap-3'>
-							<h3 className='text-lg font-semibold'>Исходный JSON</h3>
-							<div className='flex gap-2'>
-								<label>
-									<Button variant='outline' size='sm' asChild>
-										<span>
-											<Upload className='mr-2 h-4 w-4' />
-											Загрузить
-										</span>
+					<div className='flex flex-col gap-5 border-b pb-7'>
+						<div className='min-w-0 space-y-2'>
+							<Label className='text-sm font-medium'>Примеры</Label>
+							<div className='flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+								{JSON_EXAMPLES.map((example, index) => (
+									<Button
+										key={index}
+										variant='outline'
+										size='sm'
+										onClick={() => loadExample(example.data)}
+										className='shrink-0 text-xs'
+									>
+										<FileText className='mr-1.5 h-3 w-3' />
+										{example.name}
 									</Button>
-									<input
-										type='file'
-										accept='.json'
-										onChange={handleFileUpload}
-										aria-label='Загрузить JSON файл'
-										className='hidden'
-									/>
-								</label>
-								<Button
-									variant='outline'
-									size='sm'
-									onClick={() => setInput('')}
-									disabled={!input}
-								>
-									Очистить
-								</Button>
+								))}
 							</div>
 						</div>
-						<Textarea
-							value={input}
-							onChange={e => setInput(e.target.value)}
-							placeholder='Вставьте JSON сюда…'
-							className='min-h-[300px] font-mono text-sm'
-							spellCheck={false}
-						/>
+					</div>
+
+					<div className='grid gap-8 lg:grid-cols-2 lg:gap-10'>
+						{/* Ввод */}
+						<div className='space-y-4'>
+							<div className='flex items-center justify-between gap-3'>
+								<h3 className='text-lg font-semibold'>Исходный JSON</h3>
+								<div className='flex gap-2'>
+									<label>
+										<Button variant='outline' size='sm' asChild>
+											<span>
+												<Upload className='mr-2 h-4 w-4' />
+												Загрузить
+											</span>
+										</Button>
+										<input
+											type='file'
+											accept='.json'
+											onChange={handleFileUpload}
+											aria-label='Загрузить JSON файл'
+											className='hidden'
+										/>
+									</label>
+									<Button
+										variant='outline'
+										size='sm'
+										onClick={() => setInput('')}
+										disabled={!input}
+									>
+										Очистить
+									</Button>
+								</div>
+							</div>
+							<Textarea
+								value={input}
+								onChange={e => setInput(e.target.value)}
+								placeholder='Вставьте JSON сюда…'
+								className='min-h-[300px] font-mono text-sm'
+								spellCheck={false}
+							/>
 
 							{/* Validation Status */}
 							{analysis && (
@@ -408,291 +408,289 @@ export default function JSONToolsPage() {
 									)}
 								</div>
 							)}
-					</div>
-
-					{/* Результат */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between gap-3'>
-							<h3 className='text-lg font-semibold'>Результат</h3>
-							<div className='flex items-center gap-2'>
-								<Label className='whitespace-nowrap text-sm text-muted-foreground'>
-									Отступ
-								</Label>
-								<Select value={indentSize} onValueChange={setIndentSize}>
-									<SelectTrigger className='h-9 w-[132px]'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='2'>2 пробела</SelectItem>
-										<SelectItem value='4'>4 пробела</SelectItem>
-										<SelectItem value='\t'>Табуляция</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
 						</div>
-						{analysis && analysis.isValid ? (
-							<Tabs
-								value={activeTab}
-								onValueChange={setActiveTab}
-								className='h-full'
-							>
-								<TabsList className='grid w-full grid-cols-4'>
-									<TabsTrigger
-										value='formatted'
-										className='cursor-pointer text-xs sm:text-sm'
-									>
-										Формат
-									</TabsTrigger>
-									<TabsTrigger
-										value='minified'
-										className='cursor-pointer text-xs sm:text-sm'
-									>
-										Сжатый
-									</TabsTrigger>
-									<TabsTrigger
-										value='yaml'
-										className='cursor-pointer text-xs sm:text-sm'
-									>
-										YAML
-									</TabsTrigger>
-									<TabsTrigger
-										value='analysis'
-										className='cursor-pointer text-xs sm:text-sm'
-									>
-										Анализ
-									</TabsTrigger>
-								</TabsList>
 
-								<TabsContent value='formatted' className='space-y-4'>
-									<WidgetOutput>
-										<pre className='text-sm font-mono overflow-auto'>
-											<code>{analysis.formatted}</code>
-										</pre>
-									</WidgetOutput>
-									<div className='flex items-center gap-2 mt-4'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() =>
-												handleCopy(analysis.formatted!, 'Formatted JSON')
-											}
-										>
-											<Copy className='h-4 w-4 mr-2' />
-											Копировать
-										</Button>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() =>
-												handleDownload(analysis.formatted!, 'formatted.json')
-											}
-										>
-											<Download className='h-4 w-4 mr-2' />
-											Скачать
-										</Button>
-									</div>
-								</TabsContent>
-
-								<TabsContent value='minified' className='space-y-4'>
-									<WidgetOutput>
-										<pre className='text-sm font-mono overflow-auto break-all'>
-											<code>{analysis.minified}</code>
-										</pre>
-									</WidgetOutput>
-									<div className='flex items-center gap-2 mt-4'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() =>
-												handleCopy(analysis.minified!, 'Minified JSON')
-											}
-										>
-											<Copy className='h-4 w-4 mr-2' />
-											Копировать
-										</Button>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() =>
-												handleDownload(analysis.minified!, 'minified.json')
-											}
-										>
-											<Download className='h-4 w-4 mr-2' />
-											Скачать
-										</Button>
-									</div>
-								</TabsContent>
-
-								<TabsContent value='yaml' className='space-y-4'>
-									{analysis.sourceFormat === 'yaml' && (
-										<p className='text-sm text-muted-foreground'>
-											На входе распознан YAML — во вкладках «Форматированный»
-											и «Сжатый» лежит он же, переведённый в JSON.
-										</p>
-									)}
-									<WidgetOutput>
-										<pre className='text-sm font-mono overflow-auto'>
-											<code>{analysis.yaml}</code>
-										</pre>
-									</WidgetOutput>
-									<div className='flex items-center gap-2 mt-4'>
-										<Button
-											variant='outline'
-											size='sm'
-											className='cursor-pointer'
-											onClick={() => handleCopy(analysis.yaml!, 'YAML')}
-										>
-											<Copy className='h-4 w-4 mr-2' />
-											Копировать
-										</Button>
-										<Button
-											variant='outline'
-											size='sm'
-											className='cursor-pointer'
-											onClick={() =>
-												handleDownload(analysis.yaml!, 'data.yaml')
-											}
-										>
-											<Download className='h-4 w-4 mr-2' />
-											Скачать
-										</Button>
-									</div>
-								</TabsContent>
-
-								<TabsContent value='analysis' className='space-y-4'>
-									<div className='space-y-4'>
-										{/* Size Analysis */}
-										<div className='p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50'>
-											<h4 className='font-medium text-sm mb-3'>Размеры</h4>
-											<div className='space-y-2'>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Исходный
-													</span>
-													<Badge variant='secondary'>
-														{formatBytes(analysis.size.original)}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Форматированный
-													</span>
-													<Badge variant='secondary'>
-														{formatBytes(analysis.size.formatted)}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Сжатый
-													</span>
-													<Badge variant='secondary'>
-														{formatBytes(analysis.size.minified)}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center pt-2 border-t'>
-													<span className='text-sm font-medium'>
-														Сжатие
-													</span>
-													<Badge className='bg-gradient-to-r from-primary to-accent text-white'>
-														{Math.round(
-															(1 -
-																analysis.size.minified /
-																	analysis.size.original) *
-																100
-														)}
-														%
-													</Badge>
-												</div>
-											</div>
-										</div>
-
-										{/* Structure Analysis */}
-										<div className='p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50'>
-											<h4 className='font-medium text-sm mb-3'>Структура</h4>
-											<div className='grid grid-cols-2 gap-3'>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Объекты
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.objects}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Массивы
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.arrays}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Строки
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.strings}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Числа
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.numbers}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														Логические
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.booleans}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center'>
-													<span className='text-sm text-muted-foreground'>
-														null
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.nulls}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center col-span-2 pt-2 border-t'>
-													<span className='text-sm text-muted-foreground'>
-														Всего ключей
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.totalKeys}
-													</Badge>
-												</div>
-												<div className='flex justify-between items-center col-span-2'>
-													<span className='text-sm text-muted-foreground'>
-														Глубина
-													</span>
-													<Badge variant='outline'>
-														{analysis.structure.maxDepth}
-													</Badge>
-												</div>
-											</div>
-										</div>
-									</div>
-								</TabsContent>
-							</Tabs>
-						) : (
-							<div className='flex h-[400px] items-center justify-center text-muted-foreground'>
-								<div className='space-y-3 text-center'>
-									<Braces className='mx-auto h-12 w-12 opacity-20' />
-									<p className='text-sm'>
-										{analysis?.error
-											? 'Исправьте ошибки в JSON'
-											: 'Вставьте JSON — здесь появится результат'}
-									</p>
+						{/* Результат */}
+						<div className='space-y-4'>
+							<div className='flex items-center justify-between gap-3'>
+								<h3 className='text-lg font-semibold'>Результат</h3>
+								<div className='flex items-center gap-2'>
+									<Label className='whitespace-nowrap text-sm text-muted-foreground'>
+										Отступ
+									</Label>
+									<Select value={indentSize} onValueChange={setIndentSize}>
+										<SelectTrigger className='h-9 w-[132px]'>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value='2'>2 пробела</SelectItem>
+											<SelectItem value='4'>4 пробела</SelectItem>
+											<SelectItem value='\t'>Табуляция</SelectItem>
+										</SelectContent>
+									</Select>
 								</div>
 							</div>
-						)}
+							{analysis && analysis.isValid ? (
+								<Tabs
+									value={activeTab}
+									onValueChange={setActiveTab}
+									className='h-full'
+								>
+									<TabsList className='grid w-full grid-cols-4'>
+										<TabsTrigger
+											value='formatted'
+											className='cursor-pointer text-xs sm:text-sm'
+										>
+											Формат
+										</TabsTrigger>
+										<TabsTrigger
+											value='minified'
+											className='cursor-pointer text-xs sm:text-sm'
+										>
+											Сжатый
+										</TabsTrigger>
+										<TabsTrigger
+											value='yaml'
+											className='cursor-pointer text-xs sm:text-sm'
+										>
+											YAML
+										</TabsTrigger>
+										<TabsTrigger
+											value='analysis'
+											className='cursor-pointer text-xs sm:text-sm'
+										>
+											Анализ
+										</TabsTrigger>
+									</TabsList>
+
+									<TabsContent value='formatted' className='space-y-4'>
+										<WidgetOutput>
+											<pre className='text-sm font-mono overflow-auto'>
+												<code>{analysis.formatted}</code>
+											</pre>
+										</WidgetOutput>
+										<div className='flex items-center gap-2 mt-4'>
+											<Button
+												variant='outline'
+												size='sm'
+												onClick={() =>
+													handleCopy(analysis.formatted!, 'Formatted JSON')
+												}
+											>
+												<Copy className='h-4 w-4 mr-2' />
+												Копировать
+											</Button>
+											<Button
+												variant='outline'
+												size='sm'
+												onClick={() =>
+													handleDownload(analysis.formatted!, 'formatted.json')
+												}
+											>
+												<Download className='h-4 w-4 mr-2' />
+												Скачать
+											</Button>
+										</div>
+									</TabsContent>
+
+									<TabsContent value='minified' className='space-y-4'>
+										<WidgetOutput>
+											<pre className='text-sm font-mono overflow-auto break-all'>
+												<code>{analysis.minified}</code>
+											</pre>
+										</WidgetOutput>
+										<div className='flex items-center gap-2 mt-4'>
+											<Button
+												variant='outline'
+												size='sm'
+												onClick={() =>
+													handleCopy(analysis.minified!, 'Minified JSON')
+												}
+											>
+												<Copy className='h-4 w-4 mr-2' />
+												Копировать
+											</Button>
+											<Button
+												variant='outline'
+												size='sm'
+												onClick={() =>
+													handleDownload(analysis.minified!, 'minified.json')
+												}
+											>
+												<Download className='h-4 w-4 mr-2' />
+												Скачать
+											</Button>
+										</div>
+									</TabsContent>
+
+									<TabsContent value='yaml' className='space-y-4'>
+										{analysis.sourceFormat === 'yaml' && (
+											<p className='text-sm text-muted-foreground'>
+												На входе распознан YAML — во вкладках «Форматированный»
+												и «Сжатый» лежит он же, переведённый в JSON.
+											</p>
+										)}
+										<WidgetOutput>
+											<pre className='text-sm font-mono overflow-auto'>
+												<code>{analysis.yaml}</code>
+											</pre>
+										</WidgetOutput>
+										<div className='flex items-center gap-2 mt-4'>
+											<Button
+												variant='outline'
+												size='sm'
+												className='cursor-pointer'
+												onClick={() => handleCopy(analysis.yaml!, 'YAML')}
+											>
+												<Copy className='h-4 w-4 mr-2' />
+												Копировать
+											</Button>
+											<Button
+												variant='outline'
+												size='sm'
+												className='cursor-pointer'
+												onClick={() =>
+													handleDownload(analysis.yaml!, 'data.yaml')
+												}
+											>
+												<Download className='h-4 w-4 mr-2' />
+												Скачать
+											</Button>
+										</div>
+									</TabsContent>
+
+									<TabsContent value='analysis' className='space-y-4'>
+										<div className='space-y-4'>
+											{/* Size Analysis */}
+											<div className='p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50'>
+												<h4 className='font-medium text-sm mb-3'>Размеры</h4>
+												<div className='space-y-2'>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Исходный
+														</span>
+														<Badge variant='secondary'>
+															{formatBytes(analysis.size.original)}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Форматированный
+														</span>
+														<Badge variant='secondary'>
+															{formatBytes(analysis.size.formatted)}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Сжатый
+														</span>
+														<Badge variant='secondary'>
+															{formatBytes(analysis.size.minified)}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center pt-2 border-t'>
+														<span className='text-sm font-medium'>Сжатие</span>
+														<Badge className='bg-gradient-to-r from-primary to-accent text-white'>
+															{Math.round(
+																(1 -
+																	analysis.size.minified /
+																		analysis.size.original) *
+																	100
+															)}
+															%
+														</Badge>
+													</div>
+												</div>
+											</div>
+
+											{/* Structure Analysis */}
+											<div className='p-4 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-border/50'>
+												<h4 className='font-medium text-sm mb-3'>Структура</h4>
+												<div className='grid grid-cols-2 gap-3'>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Объекты
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.objects}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Массивы
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.arrays}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Строки
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.strings}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Числа
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.numbers}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															Логические
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.booleans}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center'>
+														<span className='text-sm text-muted-foreground'>
+															null
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.nulls}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center col-span-2 pt-2 border-t'>
+														<span className='text-sm text-muted-foreground'>
+															Всего ключей
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.totalKeys}
+														</Badge>
+													</div>
+													<div className='flex justify-between items-center col-span-2'>
+														<span className='text-sm text-muted-foreground'>
+															Глубина
+														</span>
+														<Badge variant='outline'>
+															{analysis.structure.maxDepth}
+														</Badge>
+													</div>
+												</div>
+											</div>
+										</div>
+									</TabsContent>
+								</Tabs>
+							) : (
+								<div className='flex h-[400px] items-center justify-center text-muted-foreground'>
+									<div className='space-y-3 text-center'>
+										<Braces className='mx-auto h-12 w-12 opacity-20' />
+										<p className='text-sm'>
+											{analysis?.error
+												? 'Исправьте ошибки в JSON'
+												: 'Вставьте JSON — здесь появится результат'}
+										</p>
+									</div>
+								</div>
+							)}
+						</div>
 					</div>
-				</div>
 				</Card>
 			</WidgetLayout>
 			<JsonToolsSeo />

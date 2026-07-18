@@ -29,8 +29,8 @@ export function JsSyntaxSeo() {
 				<p className='mt-3 text-muted-foreground'>
 					Больше девяти из десяти «поломок» — это одно из нескольких: незакрытая
 					скобка <code className='font-mono'>{'}'}</code> или кавычка,
-					пропущенная запятая между полями объекта, опечатка в ключевом слове
-					(<code className='font-mono'>fucntion</code>,{' '}
+					пропущенная запятая между полями объекта, опечатка в ключевом слове (
+					<code className='font-mono'>fucntion</code>,{' '}
 					<code className='font-mono'>retrun</code>), забытые кавычки у строки.
 					Все эти случаи проверка ловит до запуска — просто разбирая текст кода,
 					как это делает движок браузера.
@@ -43,9 +43,9 @@ export function JsSyntaxSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					Ошибки в JavaScript бывают двух видов. <strong>Синтаксические</strong>{' '}
-					(<code className='font-mono'>SyntaxError</code>) — код не соответствует
-					грамматике языка и не запускается вообще; их и находит проверка
-					синтаксиса. <strong>Ошибки выполнения</strong> (
+					(<code className='font-mono'>SyntaxError</code>) — код не
+					соответствует грамматике языка и не запускается вообще; их и находит
+					проверка синтаксиса. <strong>Ошибки выполнения</strong> (
 					<code className='font-mono'>TypeError</code>,{' '}
 					<code className='font-mono'>ReferenceError</code>) возникают уже в
 					работающем коде и видны только в консоли браузера. Этот инструмент
@@ -60,11 +60,12 @@ export function JsSyntaxSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					TypeScript — это тот же JavaScript плюс типы:{' '}
-					<code className='font-mono'>name: string</code>, интерфейсы, дженерики.
-					Обычная проверка JS на таком коде споткнётся уже на двоеточии с типом —
-					для JavaScript это чужой синтаксис. Типы проверяет компилятор
-					TypeScript (<code className='font-mono'>tsc</code>) или онлайн-песочница
-					Playground. Этот инструмент рассчитан на JavaScript и JSX.
+					<code className='font-mono'>name: string</code>, интерфейсы,
+					дженерики. Обычная проверка JS на таком коде споткнётся уже на
+					двоеточии с типом — для JavaScript это чужой синтаксис. Типы проверяет
+					компилятор TypeScript (<code className='font-mono'>tsc</code>) или
+					онлайн-песочница Playground. Этот инструмент рассчитан на JavaScript и
+					JSX.
 				</p>
 			</section>
 

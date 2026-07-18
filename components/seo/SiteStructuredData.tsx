@@ -36,7 +36,8 @@ export function SiteStructuredData() {
 		'@id': `${BASE_URL}#website`,
 		url: BASE_URL,
 		name: 'PixelTool',
-		description: 'Бесплатные онлайн инструменты для разработчиков и дизайнеров',
+		description:
+			'Бесплатные онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом. Без установки и регистрации, прямо в браузере',
 		publisher: { '@id': `${BASE_URL}#organization` },
 		potentialAction: {
 			'@type': 'SearchAction',

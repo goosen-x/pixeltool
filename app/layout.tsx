@@ -12,11 +12,12 @@ import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { WebVitals } from '@/components/analytics/WebVitals'
+import { widgets } from '@/lib/constants/widgets'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
 import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregister'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
-import { antonFont, interFont, openSansFont } from '@/lib/fonts/fonts'
+import { antonFont, interFont, onestFont, openSansFont } from '@/lib/fonts/fonts'
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
@@ -29,14 +30,15 @@ interface Props {
 export async function generateMetadata(): Promise<Metadata> {
 	const locale = 'ru' // Only Russian locale now
 
-	// Only Russian metadata
+	// Запасной заголовок: показывается только там, где сегмент не задал свой.
+	// Число берём из widgets.length — «52+» тут держалось годами при 48 реальных
+	// тулах, а «калькуляторы» обещали то, чего в продукте нет вовсе.
 	const currentMetadata = {
 		title: {
-			default: 'PixelTool - 52+ Бесплатных Инструмента для Веб-Разработчиков',
+			default: `PixelTool — ${widgets.length} бесплатных онлайн-инструментов`,
 			template: '%s | PixelTool'
 		},
-		description:
-			'Бесплатная коллекция 52+ профессиональных онлайн-инструментов: CSS генераторы, конвертеры, калькуляторы, форматировщики. Работает офлайн. Без регистрации.'
+		description: `Бесплатные онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом и кодом. Без установки и регистрации.`
 	}
 	// Жестко задаем URL для Open Graph, так как env переменные могут не работать корректно
 	const siteUrl = 'https://pixeltool.pro'
@@ -224,7 +226,8 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 				'scroll-smooth scroll-pt-24',
 				interFont.variable,
 				openSansFont.variable,
-				antonFont.variable
+				antonFont.variable,
+				onestFont.variable
 			)}
 			suppressHydrationWarning
 		>

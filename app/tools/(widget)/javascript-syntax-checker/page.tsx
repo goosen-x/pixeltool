@@ -552,7 +552,11 @@ export default function JavaScriptSyntaxCheckerPage() {
 							</Label>
 						</div>
 						<div className='flex items-center gap-2'>
-							<Switch id='jsx' checked={allowJsx} onCheckedChange={setAllowJsx} />
+							<Switch
+								id='jsx'
+								checked={allowJsx}
+								onCheckedChange={setAllowJsx}
+							/>
 							<Label htmlFor='jsx' className='text-sm'>
 								JSX
 							</Label>
@@ -596,104 +600,104 @@ export default function JavaScriptSyntaxCheckerPage() {
 								)}
 							>
 								<div className='flex items-start gap-3'>
-										{result.valid ? (
-											<CheckCircle className='w-5 h-5 text-green-600 dark:text-green-400 mt-0.5' />
-										) : (
-											<XCircle className='w-5 h-5 text-red-600 dark:text-red-400 mt-0.5' />
+									{result.valid ? (
+										<CheckCircle className='w-5 h-5 text-green-600 dark:text-green-400 mt-0.5' />
+									) : (
+										<XCircle className='w-5 h-5 text-red-600 dark:text-red-400 mt-0.5' />
+									)}
+									<div className='flex-1'>
+										<h3 className='text-base font-semibold text-foreground'>
+											{result.valid
+												? 'Синтаксис корректен'
+												: 'Ошибка синтаксиса'}
+										</h3>
+
+										{result.errors.length > 0 && (
+											<div className='mt-2 space-y-2'>
+												{result.errors.map((error, index) => (
+													<div key={index} className='text-sm'>
+														<div className='font-medium text-red-800 dark:text-red-200'>
+															Строка {error.line}, столбец {error.column}
+														</div>
+														<div className='text-red-700 dark:text-red-300'>
+															{error.message}
+														</div>
+														{error.suggestion && (
+															<div className='text-red-600 dark:text-red-400 italic'>
+																Предложение: {error.suggestion}
+															</div>
+														)}
+													</div>
+												))}
+											</div>
 										)}
-										<div className='flex-1'>
-											<h3 className='text-base font-semibold text-foreground'>
-												{result.valid
-													? 'Синтаксис корректен'
-													: 'Ошибка синтаксиса'}
-											</h3>
 
-											{result.errors.length > 0 && (
-												<div className='mt-2 space-y-2'>
-													{result.errors.map((error, index) => (
-														<div key={index} className='text-sm'>
-															<div className='font-medium text-red-800 dark:text-red-200'>
-																Строка {error.line}, столбец {error.column}
-															</div>
-															<div className='text-red-700 dark:text-red-300'>
-																{error.message}
-															</div>
-															{error.suggestion && (
-																<div className='text-red-600 dark:text-red-400 italic'>
-																	Предложение: {error.suggestion}
-																</div>
-															)}
-														</div>
-													))}
-												</div>
-											)}
+										{result.warnings.length > 0 && (
+											<div className='mt-3 space-y-1'>
+												<p className='text-sm font-medium text-amber-600 dark:text-amber-400'>
+													Предупреждения
+												</p>
+												{result.warnings.map((warning, index) => (
+													<div
+														key={index}
+														className='flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400'
+													>
+														<AlertCircle className='w-4 h-4 mt-0.5' />
+														<span>{warning}</span>
+													</div>
+												))}
+											</div>
+										)}
 
-											{result.warnings.length > 0 && (
-												<div className='mt-3 space-y-1'>
-													<p className='text-sm font-medium text-amber-600 dark:text-amber-400'>
-														Предупреждения
-													</p>
-													{result.warnings.map((warning, index) => (
-														<div
-															key={index}
-															className='flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400'
-														>
-															<AlertCircle className='w-4 h-4 mt-0.5' />
-															<span>{warning}</span>
+										{result.stats && result.valid && (
+											<div className='mt-3 grid grid-cols-3 gap-2 border-t pt-3'>
+												{(
+													[
+														['Функций', result.stats.functions],
+														['Переменных', result.stats.variables],
+														['Классов', result.stats.classes],
+														['Импортов', result.stats.imports],
+														['Экспортов', result.stats.exports]
+													] as [string, number][]
+												).map(([label, value]) => (
+													<div
+														key={label}
+														className='rounded bg-white/60 p-2 text-center dark:bg-black/20'
+													>
+														<div className='text-xl font-bold text-green-600'>
+															{value}
 														</div>
-													))}
-												</div>
-											)}
-
-											{result.stats && result.valid && (
-												<div className='mt-3 grid grid-cols-3 gap-2 border-t pt-3'>
-													{(
-														[
-															['Функций', result.stats.functions],
-															['Переменных', result.stats.variables],
-															['Классов', result.stats.classes],
-															['Импортов', result.stats.imports],
-															['Экспортов', result.stats.exports]
-														] as [string, number][]
-													).map(([label, value]) => (
-														<div
-															key={label}
-															className='rounded bg-white/60 p-2 text-center dark:bg-black/20'
-														>
-															<div className='text-xl font-bold text-green-600'>
-																{value}
-															</div>
-															<div className='text-xs text-muted-foreground'>
-																{label}
-															</div>
+														<div className='text-xs text-muted-foreground'>
+															{label}
 														</div>
-													))}
-												</div>
-											)}
-											{result.valid && (
-												<Button
-													onClick={copyResult}
-													variant='outline'
-													size='sm'
-													className='mt-4'
-												>
-													<Copy className='mr-2 h-4 w-4' />
-													Копировать результат
-												</Button>
-											)}
-										</div>
+													</div>
+												))}
+											</div>
+										)}
+										{result.valid && (
+											<Button
+												onClick={copyResult}
+												variant='outline'
+												size='sm'
+												className='mt-4'
+											>
+												<Copy className='mr-2 h-4 w-4' />
+												Копировать результат
+											</Button>
+										)}
 									</div>
 								</div>
-							) : (
-								<div className='flex min-h-[320px] items-center justify-center rounded-xl border border-dashed text-muted-foreground'>
-									<div className='space-y-3 text-center'>
-										<Code2 className='mx-auto h-12 w-12 opacity-20' />
-										<p className='text-sm'>
-											Вставьте код — здесь появится результат проверки
-										</p>
-									</div>
+							</div>
+						) : (
+							<div className='flex min-h-[320px] items-center justify-center rounded-xl border border-dashed text-muted-foreground'>
+								<div className='space-y-3 text-center'>
+									<Code2 className='mx-auto h-12 w-12 opacity-20' />
+									<p className='text-sm'>
+										Вставьте код — здесь появится результат проверки
+									</p>
 								</div>
-							)}
+							</div>
+						)}
 					</div>
 				</div>
 			</Card>

@@ -79,29 +79,29 @@ export function ToolLink({
 			</div>
 
 			<div className='relative min-w-0 space-y-3'>
-					<div className='flex items-center gap-2'>
-						<h4 className='text-2xl font-bold tracking-tight text-foreground text-balance sm:text-3xl'>
-							{title}
-						</h4>
-						{isExternal && (
-							<ExternalLink className='h-5 w-5 flex-shrink-0 text-muted-foreground' />
-						)}
-					</div>
-					{subtitle && (
-						<p className='text-sm font-medium text-primary/80'>{subtitle}</p>
+				<div className='flex items-center gap-2'>
+					<h4 className='text-2xl font-bold tracking-tight text-foreground text-balance sm:text-3xl'>
+						{title}
+					</h4>
+					{isExternal && (
+						<ExternalLink className='h-5 w-5 flex-shrink-0 text-muted-foreground' />
 					)}
-					{description && (
-						<p className='text-base leading-relaxed text-muted-foreground'>
-							{description}
-						</p>
-					)}
-					<div className='pt-1'>
-						<span className='inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
-							Попробовать
-							<ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-0.5' />
-						</span>
-					</div>
 				</div>
+				{subtitle && (
+					<p className='text-sm font-medium text-primary/80'>{subtitle}</p>
+				)}
+				{description && (
+					<p className='text-base leading-relaxed text-muted-foreground'>
+						{description}
+					</p>
+				)}
+				<div className='pt-1'>
+					<span className='inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
+						Попробовать
+						<ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-0.5' />
+					</span>
+				</div>
+			</div>
 		</Link>
 	)
 }

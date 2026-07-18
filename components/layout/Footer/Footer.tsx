@@ -71,8 +71,8 @@ export const Footer = () => {
 							</span>
 						</Link>
 						<p className='text-sm text-muted-foreground mb-6 leading-relaxed max-w-sm'>
-							Профессиональные веб-инструменты для разработчиков и дизайнеров.
-							Работают прямо в браузере, быстро и бесплатно.
+							Всё нужное под рукой: от QR-кода и случайного числа до генераторов
+							CSS. Работают прямо в браузере, быстро и бесплатно.
 						</p>
 
 						{/* Social Links */}
@@ -169,7 +169,7 @@ export const Footer = () => {
 						<div className='flex items-center gap-1.5 text-xs'>
 							<span>Сделано с</span>
 							<Heart className='w-3.5 h-3.5 text-red-500 fill-current animate-pulse' />
-							<span>для разработчиков</span>
+							<span>чтобы всё нужное было под рукой</span>
 						</div>
 					</div>
 				</div>

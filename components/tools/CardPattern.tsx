@@ -40,7 +40,12 @@ const waves = wrap(
 const dots = wrap(
 	<>
 		<defs>
-			<pattern id='cp-dots' width='18' height='18' patternUnits='userSpaceOnUse'>
+			<pattern
+				id='cp-dots'
+				width='18'
+				height='18'
+				patternUnits='userSpaceOnUse'
+			>
 				<circle cx='2' cy='2' r='1.6' fill='currentColor' stroke='none' />
 			</pattern>
 		</defs>
@@ -80,7 +85,12 @@ const rings = wrap(
 const grid = wrap(
 	<>
 		<defs>
-			<pattern id='cp-grid' width='22' height='22' patternUnits='userSpaceOnUse'>
+			<pattern
+				id='cp-grid'
+				width='22'
+				height='22'
+				patternUnits='userSpaceOnUse'
+			>
 				<path d='M22 0 L 0 0 0 22' strokeWidth={1} />
 			</pattern>
 		</defs>

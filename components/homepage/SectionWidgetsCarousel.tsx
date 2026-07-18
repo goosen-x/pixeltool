@@ -13,9 +13,35 @@ import {
 } from '@/components/ui/carousel'
 import Autoplay from 'embla-carousel-autoplay'
 
+// Порядок — по замеренному спросу (docs/seo/wordstat.md), а не по алфавиту или
+// порядку в коде. Раньше здесь стоял widgets.slice(0, 15), и поскольку widgets
+// собран как [...cssWidgets, ...htmlWidgets, ...], блок «Популярные инструменты»
+// показывал 12 CSS и 3 HTML — то есть ровно тот кластер, который даёт 0,3%
+// спроса, и ни одного из тех, что дают 72%.
+const POPULAR_IDS = [
+	'random-number-generator', // случайное число — 507k/мес
+	'emoji-list', // эмодзи — 541k валовых
+	'password-generator', // генератор паролей — 103k
+	'qr-generator', // генератор qr — 41k
+	'coin-flip',
+	'dice-roller',
+	'team-randomizer',
+	'draw-lots',
+	'text-counter',
+	'special-symbols-picker',
+	'text-case-converter',
+	'uuid-generator',
+	'base64-encoder',
+	'color-contrast', // контраст — 4244, топ CSS-раздела
+	'css-box-shadow' // тень — 2758
+] as const
+
 export function SectionWidgetsCarousel() {
-	// Get popular widgets (first 15)
-	const popularWidgets = widgets.slice(0, 15)
+	// filter(Boolean) — страховка: если id переименуют, блок потеряет карточку,
+	// но не упадёт с undefined в ToolCard.
+	const popularWidgets = POPULAR_IDS.map(id =>
+		widgets.find(widget => widget.id === id)
+	).filter((widget): widget is NonNullable<typeof widget> => Boolean(widget))
 
 	return (
 		<section className='relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden'>
@@ -30,16 +56,15 @@ export function SectionWidgetsCarousel() {
 					<div className='inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 backdrop-blur-sm mb-4 sm:mb-6'>
 						<Sparkles className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary' />
 						<span className='text-xs sm:text-sm font-medium text-primary'>
-							Популярные инструменты
+							Чаще всего открывают
 						</span>
 					</div>
 					<h2 className='text-3xl sm:text-4xl lg:text-6xl font-heading font-bold mb-4 sm:mb-6 text-balance'>
-						Исследуйте наши самые используемые инструменты
+						Популярные инструменты
 					</h2>
 					<p className='text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0'>
-						От CSS генераторов до утилит безопасности - откройте для себя
-						профессиональные инструменты, которые тысячи разработчиков
-						используют ежедневно
+						То, за чем приходят чаще всего: случайные числа, QR-коды, пароли и
+						эмодзи. Открывается сразу, ничего устанавливать не нужно.
 					</p>
 				</div>
 

@@ -216,7 +216,7 @@ export function WidgetTips({
 											className='mt-2 p-0 h-auto'
 										>
 											{currentTip.action.label}
-<ArrowRight className='ml-1 inline h-3.5 w-3.5' />
+											<ArrowRight className='ml-1 inline h-3.5 w-3.5' />
 										</Button>
 									)}
 								</div>
@@ -327,7 +327,7 @@ export function WidgetTips({
 								className='mt-1 p-0 h-auto text-xs'
 							>
 								{currentTip.action.label}
-<ArrowRight className='ml-1 inline h-3.5 w-3.5' />
+								<ArrowRight className='ml-1 inline h-3.5 w-3.5' />
 							</Button>
 						)}
 					</div>

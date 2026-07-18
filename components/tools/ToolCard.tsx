@@ -55,9 +55,7 @@ export function ToolCard({
 					{searchQuery ? highlightText(title, searchQuery) : title}
 				</h3>
 				<p className='mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground'>
-					{searchQuery
-						? highlightText(description, searchQuery)
-						: description}
+					{searchQuery ? highlightText(description, searchQuery) : description}
 				</p>
 				<span className='mt-5 inline-flex w-fit items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
 					Попробовать
