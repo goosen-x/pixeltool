@@ -17,7 +17,12 @@ import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
 import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregister'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
-import { antonFont, interFont, onestFont, openSansFont } from '@/lib/fonts/fonts'
+import {
+	antonFont,
+	interFont,
+	onestFont,
+	openSansFont
+} from '@/lib/fonts/fonts'
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
