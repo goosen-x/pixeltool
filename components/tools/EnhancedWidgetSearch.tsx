@@ -52,7 +52,10 @@ export function EnhancedWidgetSearch({
 
 		if (sort === 'alpha') {
 			result = [...result].sort((a, b) =>
-				(a.title ?? a.translationKey).localeCompare(b.title ?? b.translationKey, 'ru')
+				(a.title ?? a.translationKey).localeCompare(
+					b.title ?? b.translationKey,
+					'ru'
+				)
 			)
 		} else if (sort === 'difficulty') {
 			result = [...result].sort(

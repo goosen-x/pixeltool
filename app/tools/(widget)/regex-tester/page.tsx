@@ -425,257 +425,269 @@ export default function RegexTesterPage() {
 	return (
 		<>
 			<WidgetLayout>
-			{/* Flavor Selection */}
-			<WidgetSection
-				icon={<Globe className='h-5 w-5' />}
-				title='Выбор языка'
-				description='Выберите язык программирования для генерации кода'
-			>
-				<RadioGroup
-					value={flavor}
-					onValueChange={(value: RegexFlavor) => setFlavor(value)}
+				{/* Flavor Selection */}
+				<WidgetSection
+					icon={<Globe className='h-5 w-5' />}
+					title='Выбор языка'
+					description='Выберите язык программирования для генерации кода'
 				>
-					<div className='grid md:grid-cols-3 gap-4'>
-						{(['javascript', 'php', 'python'] as RegexFlavor[]).map(lang => {
-							const Icon = getFlavorIcon(lang)
-							return (
-								<div
-									key={lang}
-									className={cn(
-										'relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors',
-										flavor === lang
-											? 'bg-primary/10 border-primary'
-											: 'hover:bg-muted/50'
-									)}
-									onClick={() => setFlavor(lang)}
-								>
-									<RadioGroupItem value={lang} id={lang} />
-									<Label
-										htmlFor={lang}
-										className='cursor-pointer flex items-center gap-2'
-									>
-										<Icon className='w-4 h-4' />
-										<span className='capitalize'>{lang}</span>
-									</Label>
-								</div>
-							)
-						})}
-					</div>
-				</RadioGroup>
-			</WidgetSection>
-
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Main Editor */}
-				<div className='lg:col-span-2 space-y-6'>
-					<WidgetSection
-						icon={<Regex className='h-5 w-5' />}
-						title='Тестер регулярных выражений'
+					<RadioGroup
+						value={flavor}
+						onValueChange={(value: RegexFlavor) => setFlavor(value)}
 					>
-						<div className='space-y-4'>
-							{/* Pattern Input */}
-							<WidgetInput label='Регулярное выражение'>
-								<div className='relative mt-1'>
-									<Input
-										id='pattern'
-										value={pattern}
-										onChange={e => setPattern(e.target.value)}
-										placeholder='Например: ^[a-zA-Z0-9]+$'
-										className={cn('font-mono pr-10', error && 'border-red-500')}
-									/>
-									<div className='absolute right-2 top-1/2 -translate-y-1/2'>
-										{error ? (
-											<AlertCircle className='w-4 h-4 text-red-500' />
-										) : matches.length > 0 ? (
-											<CheckCircle className='w-4 h-4 text-green-500' />
-										) : null}
-									</div>
-								</div>
-								{error && <p className='text-sm text-red-500 mt-1'>{error}</p>}
-							</WidgetInput>
-
-							{/* Flags */}
-							<WidgetInput label='Флаги'>
-								<div className='flex flex-wrap gap-2 mt-2'>
-									{REGEX_FLAGS[flavor].map(({ flag, name, description }) => (
-										<Button
-											key={flag}
-											variant={
-												flags.includes(flag.split('.')[1] || flag)
-													? 'default'
-													: 'outline'
-											}
-											size='sm'
-											onClick={() => toggleFlag(flag.split('.')[1] || flag)}
-											title={description}
-										>
-											<code className='text-xs'>{flag}</code>
-											<span className='ml-2'>{name}</span>
-										</Button>
-									))}
-								</div>
-							</WidgetInput>
-
-							{/* Test Text */}
-							<WidgetInput label='Тестовый текст'>
-								<Textarea
-									id='test-text'
-									value={testText}
-									onChange={e => setTestText(e.target.value)}
-									placeholder='Введите текст для тестирования...'
-									className='font-mono mt-1'
-									rows={6}
-								/>
-							</WidgetInput>
-
-							{/* Results */}
-							{testText && (
-								<WidgetOutput
-									gradientFrom='from-green-500/10'
-									gradientTo='to-blue-500/10'
-								>
-									<div className='space-y-3'>
-										<div className='flex items-center justify-between'>
-											<span className='text-sm font-medium'>Результат</span>
-											<Badge variant='secondary'>
-												Совпадений: {matches.length}
-											</Badge>
-										</div>
-										<div
-											className='p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border'
-											dangerouslySetInnerHTML={{ __html: highlightedText }}
-										/>
-									</div>
-								</WidgetOutput>
-							)}
-
-							{/* Replace Mode */}
-							<WidgetInput label='Режим замены'>
-								<div className='flex items-center space-x-2'>
-									<Switch
-										id='replace-mode'
-										checked={showReplace}
-										onCheckedChange={setShowReplace}
-									/>
-									<Label htmlFor='replace-mode'>Включить режим замены</Label>
-								</div>
-							</WidgetInput>
-
-							{showReplace && (
-								<>
-									<WidgetInput label='Заменить на'>
-										<Input
-											id='replace-pattern'
-											value={replacePattern}
-											onChange={e => setReplacePattern(e.target.value)}
-											placeholder='Например: $1 или \1'
-											className='font-mono'
-										/>
-									</WidgetInput>
-
-									{replacedText && (
-										<WidgetOutput
-											gradientFrom='from-purple-500/10'
-											gradientTo='to-pink-500/10'
-										>
-											<div className='space-y-2'>
-												<span className='text-sm font-medium'>
-													Результат замены
-												</span>
-												<div className='p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border'>
-													{replacedText}
-												</div>
-											</div>
-										</WidgetOutput>
-									)}
-								</>
-							)}
-
-							{/* Actions */}
-							<div className='flex flex-wrap gap-2 pt-4'>
-								<Button onClick={copyPattern} className='gap-2'>
-									<Copy className='w-4 h-4' />
-									Копировать Regex
-								</Button>
-								<Button onClick={copyCode} variant='outline' className='gap-2'>
-									<Code className='w-4 h-4' />
-									Копировать код
-								</Button>
-								<Button onClick={reset} variant='outline' className='gap-2'>
-									<RefreshCw className='w-4 h-4' />
-									Сброс
-								</Button>
-							</div>
-						</div>
-					</WidgetSection>
-
-					{/* Match Details */}
-					{matches.length > 0 && (
-						<WidgetSection
-							icon={<Search className='h-5 w-5' />}
-							title='Детали совпадений'
-						>
-							<div className='space-y-2'>
-								{matches.map((match, index) => (
+						<div className='grid md:grid-cols-3 gap-4'>
+							{(['javascript', 'php', 'python'] as RegexFlavor[]).map(lang => {
+								const Icon = getFlavorIcon(lang)
+								return (
 									<div
-										key={index}
-										className='p-3 rounded-lg bg-muted/50 font-mono text-sm'
-									>
-										<div className='flex items-center justify-between mb-1'>
-											<span className='text-muted-foreground'>
-												Совпадение #{index + 1}
-											</span>
-											<Badge variant='secondary'>Позиция: {match.index}</Badge>
-										</div>
-										<div className='text-green-600 dark:text-green-400'>
-											&quot;{match.match}&quot;
-										</div>
-										{match.groups && Object.keys(match.groups).length > 0 && (
-											<div className='mt-2 pt-2 border-t'>
-												<div className='text-xs text-muted-foreground mb-1'>
-													Группы:
-												</div>
-												{Object.entries(match.groups).map(([key, value]) => (
-													<div key={key} className='text-xs'>
-														<span className='text-muted-foreground'>
-															{key}:
-														</span>{' '}
-														&quot;{value}&quot;
-													</div>
-												))}
-											</div>
+										key={lang}
+										className={cn(
+											'relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors',
+											flavor === lang
+												? 'bg-primary/10 border-primary'
+												: 'hover:bg-muted/50'
 										)}
+										onClick={() => setFlavor(lang)}
+									>
+										<RadioGroupItem value={lang} id={lang} />
+										<Label
+											htmlFor={lang}
+											className='cursor-pointer flex items-center gap-2'
+										>
+											<Icon className='w-4 h-4' />
+											<span className='capitalize'>{lang}</span>
+										</Label>
 									</div>
-								))}
+								)
+							})}
+						</div>
+					</RadioGroup>
+				</WidgetSection>
+
+				<div className='grid lg:grid-cols-3 gap-6'>
+					{/* Main Editor */}
+					<div className='lg:col-span-2 space-y-6'>
+						<WidgetSection
+							icon={<Regex className='h-5 w-5' />}
+							title='Тестер регулярных выражений'
+						>
+							<div className='space-y-4'>
+								{/* Pattern Input */}
+								<WidgetInput label='Регулярное выражение'>
+									<div className='relative mt-1'>
+										<Input
+											id='pattern'
+											value={pattern}
+											onChange={e => setPattern(e.target.value)}
+											placeholder='Например: ^[a-zA-Z0-9]+$'
+											className={cn(
+												'font-mono pr-10',
+												error && 'border-red-500'
+											)}
+										/>
+										<div className='absolute right-2 top-1/2 -translate-y-1/2'>
+											{error ? (
+												<AlertCircle className='w-4 h-4 text-red-500' />
+											) : matches.length > 0 ? (
+												<CheckCircle className='w-4 h-4 text-green-500' />
+											) : null}
+										</div>
+									</div>
+									{error && (
+										<p className='text-sm text-red-500 mt-1'>{error}</p>
+									)}
+								</WidgetInput>
+
+								{/* Flags */}
+								<WidgetInput label='Флаги'>
+									<div className='flex flex-wrap gap-2 mt-2'>
+										{REGEX_FLAGS[flavor].map(({ flag, name, description }) => (
+											<Button
+												key={flag}
+												variant={
+													flags.includes(flag.split('.')[1] || flag)
+														? 'default'
+														: 'outline'
+												}
+												size='sm'
+												onClick={() => toggleFlag(flag.split('.')[1] || flag)}
+												title={description}
+											>
+												<code className='text-xs'>{flag}</code>
+												<span className='ml-2'>{name}</span>
+											</Button>
+										))}
+									</div>
+								</WidgetInput>
+
+								{/* Test Text */}
+								<WidgetInput label='Тестовый текст'>
+									<Textarea
+										id='test-text'
+										value={testText}
+										onChange={e => setTestText(e.target.value)}
+										placeholder='Введите текст для тестирования...'
+										className='font-mono mt-1'
+										rows={6}
+									/>
+								</WidgetInput>
+
+								{/* Results */}
+								{testText && (
+									<WidgetOutput
+										gradientFrom='from-green-500/10'
+										gradientTo='to-blue-500/10'
+									>
+										<div className='space-y-3'>
+											<div className='flex items-center justify-between'>
+												<span className='text-sm font-medium'>Результат</span>
+												<Badge variant='secondary'>
+													Совпадений: {matches.length}
+												</Badge>
+											</div>
+											<div
+												className='p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border'
+												dangerouslySetInnerHTML={{ __html: highlightedText }}
+											/>
+										</div>
+									</WidgetOutput>
+								)}
+
+								{/* Replace Mode */}
+								<WidgetInput label='Режим замены'>
+									<div className='flex items-center space-x-2'>
+										<Switch
+											id='replace-mode'
+											checked={showReplace}
+											onCheckedChange={setShowReplace}
+										/>
+										<Label htmlFor='replace-mode'>Включить режим замены</Label>
+									</div>
+								</WidgetInput>
+
+								{showReplace && (
+									<>
+										<WidgetInput label='Заменить на'>
+											<Input
+												id='replace-pattern'
+												value={replacePattern}
+												onChange={e => setReplacePattern(e.target.value)}
+												placeholder='Например: $1 или \1'
+												className='font-mono'
+											/>
+										</WidgetInput>
+
+										{replacedText && (
+											<WidgetOutput
+												gradientFrom='from-purple-500/10'
+												gradientTo='to-pink-500/10'
+											>
+												<div className='space-y-2'>
+													<span className='text-sm font-medium'>
+														Результат замены
+													</span>
+													<div className='p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border'>
+														{replacedText}
+													</div>
+												</div>
+											</WidgetOutput>
+										)}
+									</>
+								)}
+
+								{/* Actions */}
+								<div className='flex flex-wrap gap-2 pt-4'>
+									<Button onClick={copyPattern} className='gap-2'>
+										<Copy className='w-4 h-4' />
+										Копировать Regex
+									</Button>
+									<Button
+										onClick={copyCode}
+										variant='outline'
+										className='gap-2'
+									>
+										<Code className='w-4 h-4' />
+										Копировать код
+									</Button>
+									<Button onClick={reset} variant='outline' className='gap-2'>
+										<RefreshCw className='w-4 h-4' />
+										Сброс
+									</Button>
+								</div>
 							</div>
 						</WidgetSection>
-					)}
-				</div>
 
-				{/* Sidebar */}
-				<div className='space-y-6'>
-					{/* Common Patterns */}
-					<WidgetSection
-						icon={<Lightbulb className='h-5 w-5' />}
-						title='Готовые шаблоны'
-					>
-						<div className='space-y-4'>
-							{['validation', 'numbers', 'text', 'html', 'code'].map(
-								category => (
-									<div key={category}>
-										<h4 className='text-sm font-medium text-muted-foreground mb-2 capitalize'>
-											{category === 'validation'
-												? 'Валидация'
-												: category === 'numbers'
-													? 'Числа'
-													: category === 'text'
-														? 'Текст'
-														: category === 'html'
-															? 'HTML/XML'
-															: 'Код'}
-										</h4>
-										<div className='space-y-1'>
-											{REGEX_PATTERNS.filter(p => p.category === category).map(
-												(regexPattern, index) => (
+						{/* Match Details */}
+						{matches.length > 0 && (
+							<WidgetSection
+								icon={<Search className='h-5 w-5' />}
+								title='Детали совпадений'
+							>
+								<div className='space-y-2'>
+									{matches.map((match, index) => (
+										<div
+											key={index}
+											className='p-3 rounded-lg bg-muted/50 font-mono text-sm'
+										>
+											<div className='flex items-center justify-between mb-1'>
+												<span className='text-muted-foreground'>
+													Совпадение #{index + 1}
+												</span>
+												<Badge variant='secondary'>
+													Позиция: {match.index}
+												</Badge>
+											</div>
+											<div className='text-green-600 dark:text-green-400'>
+												&quot;{match.match}&quot;
+											</div>
+											{match.groups && Object.keys(match.groups).length > 0 && (
+												<div className='mt-2 pt-2 border-t'>
+													<div className='text-xs text-muted-foreground mb-1'>
+														Группы:
+													</div>
+													{Object.entries(match.groups).map(([key, value]) => (
+														<div key={key} className='text-xs'>
+															<span className='text-muted-foreground'>
+																{key}:
+															</span>{' '}
+															&quot;{value}&quot;
+														</div>
+													))}
+												</div>
+											)}
+										</div>
+									))}
+								</div>
+							</WidgetSection>
+						)}
+					</div>
+
+					{/* Sidebar */}
+					<div className='space-y-6'>
+						{/* Common Patterns */}
+						<WidgetSection
+							icon={<Lightbulb className='h-5 w-5' />}
+							title='Готовые шаблоны'
+						>
+							<div className='space-y-4'>
+								{['validation', 'numbers', 'text', 'html', 'code'].map(
+									category => (
+										<div key={category}>
+											<h4 className='text-sm font-medium text-muted-foreground mb-2 capitalize'>
+												{category === 'validation'
+													? 'Валидация'
+													: category === 'numbers'
+														? 'Числа'
+														: category === 'text'
+															? 'Текст'
+															: category === 'html'
+																? 'HTML/XML'
+																: 'Код'}
+											</h4>
+											<div className='space-y-1'>
+												{REGEX_PATTERNS.filter(
+													p => p.category === category
+												).map((regexPattern, index) => (
 													<Button
 														key={index}
 														onClick={() => loadPattern(regexPattern)}
@@ -687,74 +699,73 @@ export default function RegexTesterPage() {
 															{regexPattern.name}
 														</span>
 													</Button>
-												)
-											)}
+												))}
+											</div>
 										</div>
+									)
+								)}
+							</div>
+						</WidgetSection>
+
+						{/* Quick Reference */}
+						<WidgetSection
+							icon={<BookOpen className='h-5 w-5' />}
+							title='Справочник'
+						>
+							<div className='space-y-3 text-sm'>
+								<div>
+									<h4 className='font-medium mb-1'>Символьные классы</h4>
+									<div className='space-y-1 text-muted-foreground font-mono'>
+										<div>\d - цифра [0-9]</div>
+										<div>\w - буква/цифра/_ </div>
+										<div>\s - пробельный символ</div>
+										<div>. - любой символ</div>
 									</div>
-								)
-							)}
-						</div>
-					</WidgetSection>
+								</div>
+								<div>
+									<h4 className='font-medium mb-1'>Квантификаторы</h4>
+									<div className='space-y-1 text-muted-foreground font-mono'>
+										<div>* - 0 или более</div>
+										<div>+ - 1 или более</div>
+										<div>? - 0 или 1</div>
+										<div>{`{n}`} - ровно n раз</div>
+										<div>{`{n,}`} - n или более</div>
+										<div>{`{n,m}`} - от n до m</div>
+									</div>
+								</div>
+								<div>
+									<h4 className='font-medium mb-1'>Позиция</h4>
+									<div className='space-y-1 text-muted-foreground font-mono'>
+										<div>^ - начало строки</div>
+										<div>$ - конец строки</div>
+										<div>\b - граница слова</div>
+									</div>
+								</div>
+								<div>
+									<h4 className='font-medium mb-1'>Группы</h4>
+									<div className='space-y-1 text-muted-foreground font-mono'>
+										<div>(...) - захват группы</div>
+										<div>(?:...) - без захвата</div>
+										<div>(?&lt;name&gt;...) - именованная</div>
+									</div>
+								</div>
+							</div>
+						</WidgetSection>
 
-					{/* Quick Reference */}
-					<WidgetSection
-						icon={<BookOpen className='h-5 w-5' />}
-						title='Справочник'
-					>
-						<div className='space-y-3 text-sm'>
-							<div>
-								<h4 className='font-medium mb-1'>Символьные классы</h4>
-								<div className='space-y-1 text-muted-foreground font-mono'>
-									<div>\d - цифра [0-9]</div>
-									<div>\w - буква/цифра/_ </div>
-									<div>\s - пробельный символ</div>
-									<div>. - любой символ</div>
-								</div>
-							</div>
-							<div>
-								<h4 className='font-medium mb-1'>Квантификаторы</h4>
-								<div className='space-y-1 text-muted-foreground font-mono'>
-									<div>* - 0 или более</div>
-									<div>+ - 1 или более</div>
-									<div>? - 0 или 1</div>
-									<div>{`{n}`} - ровно n раз</div>
-									<div>{`{n,}`} - n или более</div>
-									<div>{`{n,m}`} - от n до m</div>
-								</div>
-							</div>
-							<div>
-								<h4 className='font-medium mb-1'>Позиция</h4>
-								<div className='space-y-1 text-muted-foreground font-mono'>
-									<div>^ - начало строки</div>
-									<div>$ - конец строки</div>
-									<div>\b - граница слова</div>
-								</div>
-							</div>
-							<div>
-								<h4 className='font-medium mb-1'>Группы</h4>
-								<div className='space-y-1 text-muted-foreground font-mono'>
-									<div>(...) - захват группы</div>
-									<div>(?:...) - без захвата</div>
-									<div>(?&lt;name&gt;...) - именованная</div>
-								</div>
-							</div>
-						</div>
-					</WidgetSection>
-
-					{/* Tips */}
-					<WidgetSection icon={<Info className='h-5 w-5' />} title='Советы'>
-						<ul className='space-y-2 text-sm text-muted-foreground'>
-							<li>• Используйте группы для извлечения частей текста</li>
-							<li>• Флаг &apos;g&apos; для поиска всех совпадений</li>
-							<li>• Экранируйте спецсимволы: . * + ? [ ] ( ) {} ^ $ \ |</li>
-							<li>• Тестируйте на разных примерах текста</li>
-							<li>• Именованные группы упрощают работу с результатами</li>
-						</ul>
-					</WidgetSection>
+						{/* Tips */}
+						<WidgetSection icon={<Info className='h-5 w-5' />} title='Советы'>
+							<ul className='space-y-2 text-sm text-muted-foreground'>
+								<li>• Используйте группы для извлечения частей текста</li>
+								<li>• Флаг &apos;g&apos; для поиска всех совпадений</li>
+								<li>• Экранируйте спецсимволы: . * + ? [ ] ( ) {} ^ $ \ |</li>
+								<li>• Тестируйте на разных примерах текста</li>
+								<li>• Именованные группы упрощают работу с результатами</li>
+							</ul>
+						</WidgetSection>
+					</div>
 				</div>
-			</div>
-		</WidgetLayout>
-		<RegexGuide />
+			</WidgetLayout>
+			<RegexGuide />
 		</>
 	)
 }

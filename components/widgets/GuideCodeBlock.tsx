@@ -55,7 +55,11 @@ export function GuideCodeBlock({ code, language = 'css', className }: Props) {
 					onClick={copyCode}
 					className='code-block__copy flex items-center gap-1 rounded-md border border-[#30363d] bg-transparent px-2.5 py-1 text-xs text-[#adbac7] transition-colors'
 				>
-					{copied ? <Check className='h-3 w-3' /> : <Copy className='h-3 w-3' />}
+					{copied ? (
+						<Check className='h-3 w-3' />
+					) : (
+						<Copy className='h-3 w-3' />
+					)}
 					{copied ? 'Скопировано' : 'Копировать'}
 				</button>
 			</div>

@@ -59,8 +59,8 @@ export function HtmlXmlParserSeo() {
 			</section>
 
 			<p className='leading-relaxed'>
-				Подробнее о разнице между форматированием текста и кода, а также о
-				том, чем XML строже HTML, — в статье{' '}
+				Подробнее о разнице между форматированием текста и кода, а также о том,
+				чем XML строже HTML, — в статье{' '}
 				<Link
 					href='/blog/html-xml-parser'
 					className='cursor-pointer font-medium text-primary hover:underline'

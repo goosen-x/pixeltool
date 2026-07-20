@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue'
 import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
 import { CategoryHero } from '@/components/tools/CategoryHero'
-import { ToolsFilterBar, type SortOption } from '@/components/tools/ToolsFilterBar'
+import {
+	ToolsFilterBar,
+	type SortOption
+} from '@/components/tools/ToolsFilterBar'
 import { widgets } from '@/lib/constants/widgets'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
 

@@ -144,9 +144,7 @@ export function ToolsFilterBar({
 							<button
 								key={key}
 								type='button'
-								onClick={() =>
-									onDifficultyChange(active ? [] : [key])
-								}
+								onClick={() => onDifficultyChange(active ? [] : [key])}
 								aria-pressed={active}
 								aria-label={DIFFICULTY_LABELS[key]}
 								title={DIFFICULTY_LABELS[key]}
