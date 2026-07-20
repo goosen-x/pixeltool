@@ -363,7 +363,7 @@ CSS `clamp()` — это мощный инструмент для создани
 1. Используйте `clamp()` для типографики и отступов
 2. Комбинируйте с относительными единицами
 3. Тестируйте на разных размерах экрана
-4. Применяйте наш [калькулятор](/ru/projects/clamp-calculator) для точных
+4. Применяйте наш [калькулятор](/tools/css-clamp-calculator) для точных
    расчётов
 
 Начните использовать `clamp()` уже сегодня и сделайте ваш дизайн более гибким и
@@ -371,7 +371,7 @@ CSS `clamp()` — это мощный инструмент для создани
 
 ## Полезные ресурсы
 
-- [CSS Clamp Calculator](/ru/projects/clamp-calculator) — наш инструмент для
+- [CSS Clamp Calculator](/tools/css-clamp-calculator) — наш инструмент для
   расчётов
 - [MDN: clamp()](https://developer.mozilla.org/ru/docs/Web/CSS/clamp)
 - [Fluid Typography Calculator](https://www.fluid-type-scale.com/)

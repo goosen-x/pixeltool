@@ -4,6 +4,7 @@ import { FileCode, FileImage, GitBranch, Globe } from 'lucide-react'
 export const htmlWidgets: Widget[] = [
 	{
 		id: 'html-tree',
+		searchVolume: 1071,
 		icon: GitBranch,
 		category: 'html',
 		translationKey: 'htmlTree',
@@ -60,6 +61,7 @@ export const htmlWidgets: Widget[] = [
 	},
 	{
 		id: 'html-xml-parser',
+		searchVolume: 670,
 		icon: FileCode,
 		category: 'html',
 		translationKey: 'htmlXmlParser',
@@ -68,7 +70,7 @@ export const htmlWidgets: Widget[] = [
 		title: 'Форматирование HTML и XML онлайн',
 		metaTitle: 'Форматировать HTML и XML онлайн: beautify и минификация',
 		description:
-			'Отформатируйте HTML или XML: читаемый вид с отступами (beautify) или минификация в одну строку. Результат появляется сразу, невалидная разметка подсвечивает ошибку. Всё в браузере.',
+			'Отформатируйте HTML или XML: читаемый вид с отступами (beautify) или минификация в одну строку. Результат появляется сразу, невалидная разметка подсвечивает ошибку.',
 		useCase:
 			'Привести HTML или XML в читаемый вид с отступами или сжать минификацией — прямо в браузере, результат сразу',
 		recommendedTools: ['html-tree', 'json-tools', 'javascript-syntax-checker'],
@@ -107,6 +109,7 @@ export const htmlWidgets: Widget[] = [
 	},
 	{
 		id: 'favicon-generator',
+		searchVolume: 5945,
 		icon: FileImage,
 		category: 'html',
 		translationKey: 'faviconGenerator',
@@ -162,6 +165,7 @@ export const htmlWidgets: Widget[] = [
 	},
 	{
 		id: 'opengraph-validator',
+		searchVolume: 1207,
 		path: 'opengraph-validator',
 		translationKey: 'openGraphValidator',
 		icon: Globe,

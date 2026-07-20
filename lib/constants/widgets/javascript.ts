@@ -4,6 +4,7 @@ import { Braces, Code, Search } from 'lucide-react'
 export const javascriptWidgets: Widget[] = [
 	{
 		id: 'json-tools',
+		searchVolume: 142097,
 		icon: Braces,
 		category: 'javascript',
 		translationKey: 'jsonTools',
@@ -63,6 +64,7 @@ export const javascriptWidgets: Widget[] = [
 	},
 	{
 		id: 'regex-tester',
+		searchVolume: 16655,
 		icon: Search,
 		category: 'javascript',
 		translationKey: 'regexTester',
@@ -118,6 +120,7 @@ export const javascriptWidgets: Widget[] = [
 	},
 	{
 		id: 'javascript-syntax-checker',
+		searchVolume: 899,
 		icon: Code,
 		category: 'javascript',
 		translationKey: 'javascriptSyntaxChecker',

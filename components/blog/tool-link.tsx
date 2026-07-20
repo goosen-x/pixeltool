@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ExternalLink, ArrowRight } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
+import { CornerBadge } from '@/components/tools/CornerBadge'
 
 type IconComponentType = React.ComponentType<{ className?: string }>
 
@@ -55,12 +56,12 @@ export function ToolLink({
 			href={href}
 			target={isExternal ? '_blank' : undefined}
 			rel={isExternal ? 'noopener noreferrer' : undefined}
-			className='group relative my-8 block cursor-pointer px-6 py-8 sm:px-10 sm:py-10'
+			className='group relative my-8 block cursor-pointer overflow-hidden rounded-3xl px-6 py-8 sm:px-10 sm:py-10'
 		>
-			{/* Фон карточки отдельным слоем: маска выгрызает вогнутую выемку под
-			    иконку, а сам паттерн клипуется по скруглению. Иконка и контент лежат
-			    ВНЕ этого слоя — иначе маска обрезала бы и их */}
-			<span className='tool-link-cutout pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
+			{/* Фон карточки: паттерн клипуется по скруглению. Квадратный
+			    бейдж-уголок (CornerBadge) сидит поверх, вплотную в углу — тот же
+			    приём, что и в ToolCard/hero, вырезать под него дыру не нужно */}
+			<span className='pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
 				<Image
 					src='/images/patterns/contour-1.png'
 					alt=''
@@ -71,12 +72,7 @@ export function ToolLink({
 				/>
 			</span>
 
-			{/* Иконка сидит в вырезе — фирменный градиент инструмента */}
-			<div
-				className={`absolute -right-2 -top-2 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br shadow-lg ${gradient} sm:-right-3 sm:-top-3 sm:h-16 sm:w-16`}
-			>
-				<IconComponent className='h-7 w-7 text-white sm:h-8 sm:w-8' />
-			</div>
+			<CornerBadge icon={IconComponent} gradient={gradient} />
 
 			<div className='relative min-w-0 space-y-3'>
 				<div className='flex items-center gap-2'>

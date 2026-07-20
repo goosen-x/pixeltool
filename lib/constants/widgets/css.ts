@@ -17,6 +17,7 @@ import {
 export const cssWidgets: Widget[] = [
 	{
 		id: 'css-clamp-calculator',
+		searchVolume: 173,
 		icon: Ruler,
 		iconName: 'Ruler',
 		category: 'css',
@@ -69,12 +70,14 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'flexbox-generator',
+		searchVolume: 1758,
 		icon: Box,
 		category: 'css',
 		translationKey: 'flexboxGenerator',
 		path: 'flexbox-generator',
 		gradient: 'from-blue-500 to-indigo-500',
 		title: 'CSS Flexbox генератор',
+		metaTitle: 'CSS Flexbox онлайн — генератор justify-content и align-items',
 		description:
 			'Визуальный генератор CSS Flexbox: настройте направление, выравнивание и перенос элементов и скопируйте готовый код CSS и Tailwind.',
 		useCase:
@@ -149,12 +152,14 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'grid-generator',
+		searchVolume: 1699,
 		icon: Grid3X3,
 		category: 'css',
 		translationKey: 'gridGenerator',
 		path: 'grid-generator',
 		gradient: 'from-green-500 to-emerald-500',
 		title: 'CSS Grid генератор',
+		metaTitle: 'CSS Grid онлайн — генератор сетки, grid-template-columns и gap',
 		description:
 			'Визуальный генератор CSS Grid: постройте адаптивную сетку без кода и скопируйте результат в CSS или Tailwind.',
 		useCase:
@@ -213,6 +218,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'css-specificity',
+		searchVolume: 75,
 		icon: Hash,
 		category: 'css',
 		translationKey: 'cssSpecificity',
@@ -264,6 +270,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'bezier-curve',
+		searchVolume: 115,
 		icon: Spline,
 		category: 'css',
 		translationKey: 'bezierCurve',
@@ -315,6 +322,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'color-converter',
+		searchVolume: 1132,
 		icon: Palette,
 		category: 'css',
 		translationKey: 'colorConverter',
@@ -372,6 +380,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'css-minifier',
+		searchVolume: 85,
 		icon: Minimize2,
 		iconName: 'Palette',
 		category: 'css',
@@ -431,6 +440,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'px-rem-converter',
+		searchVolume: 90,
 		icon: ArrowLeftRight,
 		category: 'css',
 		translationKey: 'pxRemConverter',
@@ -487,6 +497,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'css-box-shadow',
+		searchVolume: 2758,
 		icon: Square,
 		category: 'css',
 		translationKey: 'cssBoxShadow',
@@ -549,6 +560,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'css-gradient',
+		searchVolume: 865,
 		icon: Layers,
 		category: 'css',
 		translationKey: 'cssGradient',
@@ -607,6 +619,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'color-contrast',
+		searchVolume: 4244,
 		icon: Circle,
 		category: 'css',
 		translationKey: 'colorContrast',
@@ -635,7 +648,7 @@ export const cssWidgets: Widget[] = [
 			{
 				question: 'Какой контраст текста и фона считается достаточным?',
 				answer:
-					'Обычному тексту нужен коэффициент не ниже 4.5:1, крупному — 3:1. Это уровень AA, к которому и стоит стремиться в обычном интерфейсе. Строгий уровень AAA требует 7:1 для обычного текста и 4.5:1 для крупного. Введите свои цвета выше — коэффициент и вердикт посчитаются сразу.'
+					'Обычному тексту нужен коэффициент не ниже 4.5:1, крупному — 3:1. Это уровень AA, к которому и стоит стремиться в обычном интерфейсе — именно этот порог проверяет аудит accessibility в Google Lighthouse. Строгий уровень AAA требует 7:1 для обычного текста и 4.5:1 для крупного. Введите свои цвета выше — коэффициент и вердикт посчитаются сразу.'
 			},
 			{
 				question: 'Что считается крупным текстом?',
@@ -666,6 +679,7 @@ export const cssWidgets: Widget[] = [
 	},
 	{
 		id: 'css-keyframes',
+		searchVolume: 23,
 		icon: Sparkles,
 		category: 'css',
 		translationKey: 'cssKeyframes',

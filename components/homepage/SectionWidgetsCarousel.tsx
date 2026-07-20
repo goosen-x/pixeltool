@@ -53,7 +53,7 @@ export function SectionWidgetsCarousel() {
 			<div className='max-w-7xl mx-auto'>
 				{/* Section Header */}
 				<div className='text-center mb-8 sm:mb-12'>
-					<div className='inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 backdrop-blur-sm mb-4 sm:mb-6'>
+					<div className='-rotate-3 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 backdrop-blur-sm mb-4 sm:mb-6'>
 						<Sparkles className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary' />
 						<span className='text-xs sm:text-sm font-medium text-primary'>
 							Чаще всего открывают

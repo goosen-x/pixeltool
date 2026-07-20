@@ -494,34 +494,6 @@ pre[class*='language-'] {
 	color: #e6f1ff !important;
 }
 
-/* Карточка инструмента с вогнутым вырезом под угловую иконку: круглой маской
-   «выгрызаем» левый верхний угол, чтобы карточка огибала иконку выемкой.
-   Радиус и центр совпадают с иконкой + небольшой зазор; значения разные для
-   мобилы (иконка 56px, смещение -12px) и десктопа (64px, -20px). */
-.tool-link-cutout {
-	--cut-x: calc(100% - 20px);
-	--cut-y: 20px;
-	--cut-r: 34px;
-	-webkit-mask: radial-gradient(
-		circle var(--cut-r) at var(--cut-x) var(--cut-y),
-		transparent calc(var(--cut-r) - 0.5px),
-		#000 var(--cut-r)
-	);
-	mask: radial-gradient(
-		circle var(--cut-r) at var(--cut-x) var(--cut-y),
-		transparent calc(var(--cut-r) - 0.5px),
-		#000 var(--cut-r)
-	);
-}
-
-@media (min-width: 640px) {
-	.tool-link-cutout {
-		--cut-x: calc(100% - 20px);
-		--cut-y: 20px;
-		--cut-r: 39px;
-	}
-}
-
 /* Код-блоки в статьях: шапка (точки + язык + «Копировать») над кодом, который
    подсвечивает Shiki на этапе сборки. Оформление шапки задано инлайном в
    markdownToHtml; здесь — обёртка, hover кнопки и посадка Shiki-<pre>. */

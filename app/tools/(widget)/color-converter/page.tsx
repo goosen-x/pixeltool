@@ -31,6 +31,65 @@ import {
 	type HSL
 } from '@/lib/utils/color-converter'
 
+// Вынесен из тела ColorConverterPage: компонент, объявленный внутри другого
+// компонента, пересоздаётся при каждом рендере — React видит новый тип и
+// полностью размонтирует/монтирует все карточки заново вместо обновления.
+// При перетаскивании ползунка onChange стреляет десятки раз в секунду, и это
+// пересоздание на каждый тик и было причиной подвисания UI.
+function FormatCard({
+	title,
+	value,
+	formatKey,
+	description,
+	copiedFormat,
+	onCopy
+}: {
+	title: string
+	value: string
+	formatKey: string
+	description?: string
+	copiedFormat: string | null
+	onCopy: (text: string, format: string) => void
+}) {
+	const isCopied = copiedFormat === formatKey
+	return (
+		<div className='group relative p-4 rounded-xl border-2 border-border/50 bg-gradient-to-br from-background to-muted/20 hover:border-primary/50 transition-all hover:shadow-md'>
+			<div className='flex items-start justify-between gap-3'>
+				<div className='flex-1 min-w-0'>
+					<div className='flex items-center gap-2 mb-1'>
+						<h4 className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
+							{title}
+						</h4>
+						{description && (
+							<span className='text-[10px] text-muted-foreground/60'>
+								{description}
+							</span>
+						)}
+					</div>
+					<code className='block font-mono text-sm font-medium break-all'>
+						{value}
+					</code>
+				</div>
+				<Button
+					size='sm'
+					variant='ghost'
+					onClick={() => onCopy(value, title)}
+					className={cn(
+						'h-8 w-8 p-0 flex-shrink-0 transition-all',
+						isCopied && 'bg-green-500/10 text-green-600'
+					)}
+				>
+					{isCopied ? (
+						<Check className='h-3.5 w-3.5' />
+					) : (
+						<Copy className='h-3.5 w-3.5' />
+					)}
+				</Button>
+			</div>
+		</div>
+	)
+}
+
 export default function ColorConverterPage() {
 	const [hexValue, setHexValue] = useState('#FF6B9D')
 	const [rgbValue, setRgbValue] = useState<RGB>({ r: 255, g: 107, b: 157 })
@@ -72,56 +131,6 @@ export default function ColorConverterPage() {
 		}
 		setRgbValue(randomRgb)
 		updateFromRgb(randomRgb)
-	}
-
-	const FormatCard = ({
-		title,
-		value,
-		formatKey,
-		description
-	}: {
-		title: string
-		value: string
-		formatKey: string
-		description?: string
-	}) => {
-		const isCopied = copiedFormat === formatKey
-		return (
-			<div className='group relative p-4 rounded-xl border-2 border-border/50 bg-gradient-to-br from-background to-muted/20 hover:border-primary/50 transition-all hover:shadow-md'>
-				<div className='flex items-start justify-between gap-3'>
-					<div className='flex-1 min-w-0'>
-						<div className='flex items-center gap-2 mb-1'>
-							<h4 className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
-								{title}
-							</h4>
-							{description && (
-								<span className='text-[10px] text-muted-foreground/60'>
-									{description}
-								</span>
-							)}
-						</div>
-						<code className='block font-mono text-sm font-medium break-all'>
-							{value}
-						</code>
-					</div>
-					<Button
-						size='sm'
-						variant='ghost'
-						onClick={() => copyToClipboard(value, title)}
-						className={cn(
-							'h-8 w-8 p-0 flex-shrink-0 transition-all',
-							isCopied && 'bg-green-500/10 text-green-600'
-						)}
-					>
-						{isCopied ? (
-							<Check className='h-3.5 w-3.5' />
-						) : (
-							<Copy className='h-3.5 w-3.5' />
-						)}
-					</Button>
-				</div>
-			</div>
-		)
 	}
 
 	return (
@@ -366,33 +375,45 @@ export default function ColorConverterPage() {
 									title='HEX'
 									value={hexValue.toUpperCase()}
 									formatKey='hex'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='RGB'
 									value={formatRgb(rgbValue)}
 									formatKey='rgb'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='RGBA'
 									value={formatRgba(rgba, 2)}
 									formatKey='rgba'
 									description='с альфа'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='HSL'
 									value={formatHsl(hslValue)}
 									formatKey='hsl'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='HSLA'
 									value={formatHsla({ ...hslValue, a: alpha }, 2)}
 									formatKey='hsla'
 									description='с альфа'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='HSB/HSV'
 									value={formatHsb(hsbValue)}
 									formatKey='hsb'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 							</div>
 						</TabsContent>
@@ -404,12 +425,16 @@ export default function ColorConverterPage() {
 									value={formatCmyk(cmykValue)}
 									formatKey='cmyk'
 									description='печать'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='LAB'
 									value={formatLab(labValue, 2)}
 									formatKey='lab'
 									description='перцептуальная'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 							</div>
 						</TabsContent>
@@ -420,33 +445,45 @@ export default function ColorConverterPage() {
 									title='CSS HEX'
 									value={`color: ${hexValue.toUpperCase()};`}
 									formatKey='css-hex'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='CSS RGB'
 									value={`color: ${formatRgb(rgbValue)};`}
 									formatKey='css-rgb'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='CSS RGBA'
 									value={`color: ${formatRgba(rgba, 2)};`}
 									formatKey='css-rgba'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='CSS HSL'
 									value={`color: ${formatHsl(hslValue)};`}
 									formatKey='css-hsl'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='Websafe'
 									value={websafe.toUpperCase()}
 									formatKey='websafe'
 									description='безопасный'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 								<FormatCard
 									title='Tailwind'
 									value={`[${hexValue}]`}
 									formatKey='tailwind'
 									description='arbitrary value'
+									copiedFormat={copiedFormat}
+									onCopy={copyToClipboard}
 								/>
 							</div>
 						</TabsContent>

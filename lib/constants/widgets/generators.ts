@@ -4,6 +4,7 @@ import { Binary, Coins, Dices, List, Shuffle, Users } from 'lucide-react'
 export const generatorWidgets: Widget[] = [
 	{
 		id: 'team-randomizer',
+		searchVolume: 2881,
 		icon: Users,
 		category: 'generators',
 		translationKey: 'teamRandomizer',
@@ -54,6 +55,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'draw-lots',
+		searchVolume: 5470,
 		icon: Shuffle,
 		category: 'generators',
 		translationKey: 'drawLots',
@@ -102,6 +104,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'random-number-generator',
+		searchVolume: 507142,
 		icon: Binary,
 		category: 'generators',
 		translationKey: 'randomNumberGenerator',
@@ -200,6 +203,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'coin-flip',
+		searchVolume: 7936,
 		icon: Coins,
 		category: 'generators',
 		translationKey: 'coinFlip',
@@ -248,6 +252,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'dice-roller',
+		searchVolume: 22647,
 		icon: Dices,
 		category: 'generators',
 		translationKey: 'diceRoller',

@@ -5,6 +5,7 @@ import { JWTIcon } from '@/components/icons/JWTIcon'
 export const securityWidgets: Widget[] = [
 	{
 		id: 'qr-generator',
+		searchVolume: 815073,
 		icon: QrCode,
 		category: 'security',
 		translationKey: 'qrGenerator',
@@ -50,6 +51,7 @@ export const securityWidgets: Widget[] = [
 	},
 	{
 		id: 'password-generator',
+		searchVolume: 25880,
 		icon: Key,
 		category: 'security',
 		translationKey: 'passwordGenerator',
@@ -95,6 +97,7 @@ export const securityWidgets: Widget[] = [
 	},
 	{
 		id: 'base64-encoder',
+		searchVolume: 25350,
 		icon: Lock,
 		category: 'security',
 		translationKey: 'base64Encoder',
@@ -139,6 +142,7 @@ export const securityWidgets: Widget[] = [
 	},
 	{
 		id: 'jwt-decoder',
+		searchVolume: 10391,
 		icon: JWTIcon,
 		category: 'security',
 		translationKey: 'jwtDecoder',
@@ -182,6 +186,7 @@ export const securityWidgets: Widget[] = [
 	},
 	{
 		id: 'uuid-generator',
+		searchVolume: 34872,
 		icon: Fingerprint,
 		category: 'security',
 		translationKey: 'uuidGenerator',

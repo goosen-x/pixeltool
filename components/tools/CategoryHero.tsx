@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, X, Grid3X3, List, Loader2 } from 'lucide-react'
+import { Search, X, Loader2 } from 'lucide-react'
 import { widgetCategories, widgets } from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
@@ -19,8 +19,6 @@ interface Props {
 	/** Отложенное значение — по нему считается «Найдено», как и сам список. */
 	debouncedSearch: string
 	isSearching: boolean
-	viewMode: 'grid' | 'list'
-	onViewModeChange: (mode: 'grid' | 'list') => void
 }
 
 /** Сколько инструментов в категории — показываем на чипсе. */
@@ -39,9 +37,7 @@ export function CategoryHero({
 	search,
 	onSearchChange,
 	debouncedSearch,
-	isSearching,
-	viewMode,
-	onViewModeChange
+	isSearching
 }: Props) {
 	// Помним отвалившиеся картинки поимённо: если файла одной категории вдруг
 	// нет, это не должно прятать картинки остальных.
@@ -174,49 +170,6 @@ export function CategoryHero({
 						</div>
 					</div>
 				)}
-			</div>
-
-			{/* Результаты и режим показа — отдельным рядом по низу карточки */}
-			<div className='relative mt-8 flex flex-wrap items-center justify-between gap-4 border-t pt-5'>
-				<div className='flex items-center gap-2'>
-					<span className='text-sm text-muted-foreground'>
-						Найдено: {found}
-					</span>
-					{search !== '' && (
-						<Button
-							variant='ghost'
-							size='sm'
-							onClick={() => onSearchChange('')}
-							className='h-7 cursor-pointer px-2'
-						>
-							<X className='mr-1 h-3 w-3' />
-							Очистить поиск
-						</Button>
-					)}
-				</div>
-
-				<div className='flex items-center gap-1'>
-					<Button
-						variant={viewMode === 'grid' ? 'default' : 'ghost'}
-						size='sm'
-						onClick={() => onViewModeChange('grid')}
-						aria-pressed={viewMode === 'grid'}
-						className='h-8 cursor-pointer gap-1.5 px-3'
-					>
-						<Grid3X3 className='h-4 w-4' />
-						Плиткой
-					</Button>
-					<Button
-						variant={viewMode === 'list' ? 'default' : 'ghost'}
-						size='sm'
-						onClick={() => onViewModeChange('list')}
-						aria-pressed={viewMode === 'list'}
-						className='h-8 cursor-pointer gap-1.5 px-3'
-					>
-						<List className='h-4 w-4' />
-						Списком
-					</Button>
-				</div>
 			</div>
 		</section>
 	)

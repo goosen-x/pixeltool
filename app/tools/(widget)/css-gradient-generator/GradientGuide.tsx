@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 /**
  * Образовательный контент под инструментом генератора градиентов.
@@ -126,11 +127,7 @@ export function GradientGuide() {
 						<h3 className='font-semibold'>{ex.title}</h3>
 						<p className='mt-1 text-sm text-foreground'>{ex.desc}</p>
 						<GradientPreview demo={ex.demo} />
-						<pre className='mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-							<code className='font-mono text-secondary-foreground'>
-								{ex.code}
-							</code>
-						</pre>
+						<GuideCodeBlock className='mt-3' code={ex.code} />
 					</div>
 				))}
 			</div>

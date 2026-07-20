@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { CSSProperties } from 'react'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 interface ShadowExample {
 	title: string
@@ -135,9 +136,7 @@ function ExampleCard({ ex }: { ex: ShadowExample }) {
 					</span>
 				)}
 			</div>
-			<pre className='mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{ex.code}</code>
-			</pre>
+			<GuideCodeBlock className='mt-3' code={ex.code} />
 		</div>
 	)
 }
@@ -160,13 +159,14 @@ export function ShadowGuide() {
 				размытие, затем (только у <Code>box-shadow</Code>) растяжение, и в конце
 				цвет.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`/* смещение X, смещение Y, размытие, растяжение, цвет */
+			<GuideCodeBlock
+				className='mt-4'
+				code={`/* смещение X, смещение Y, размытие, растяжение, цвет */
 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
 /* смещение X, смещение Y, размытие, цвет */
-text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
-			</pre>
+text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}
+			/>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
 				Готовые тени для блоков
@@ -190,16 +190,17 @@ text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
 				трогайте <Code>margin</Code> или <Code>height</Code>, иначе браузер
 				будет пересчитывать вёрстку на каждом кадре.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`.card {
+			<GuideCodeBlock
+				className='mt-4'
+				code={`.card {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s ease;
 }
 
 .card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}`}</code>
-			</pre>
+}`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Плавность перехода задаёт функция времени: подобрать свою можно в{' '}
 				<Link
@@ -290,6 +291,18 @@ text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`}</code>
 					className='cursor-pointer font-medium text-primary hover:underline'
 				>
 					генераторе градиентов
+				</Link>
+				.
+			</p>
+
+			<p className='mt-8 leading-relaxed'>
+				Больше готовых теней, разбор inset и приёмы для «красивой», а не серой
+				тени — в{' '}
+				<Link
+					href='/blog/css-shadows'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					полном руководстве по теням в CSS
 				</Link>
 				.
 			</p>

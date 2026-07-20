@@ -5,6 +5,7 @@ import { widgets, widgetCategories } from '@/lib/constants/widgets'
 import { cn } from '@/lib/utils'
 import { FlipFadeText } from '@/components/ui/flip-fade-text'
 import { DitherHeroBackground } from '@/components/homepage/DitherHeroBackground'
+import { RandomToolButton } from '@/components/homepage/RandomToolButton'
 
 // Вогнутый («инвертированный») угол: квадрат 48×48, залитый цветом фона страницы,
 // с четвертью-кругом-вырезом — создаёт плавную дугу, огибающую белый блок внутрь
@@ -138,7 +139,7 @@ export function HeroSection() {
 							{/* SEO-заголовок скрыт для глаз, визуальный — с flip-fade словом */}
 							<h1 className='sr-only'>
 								Онлайн-инструменты для любых задач: случайные числа, пароли,
-								QR-коды и эмодзи — бесплатно и без регистрации
+								QR-коды и эмодзи — всегда под рукой, без регистрации
 							</h1>
 							<div
 								aria-hidden
@@ -149,9 +150,18 @@ export function HeroSection() {
 								    пароли 103k, QR 41k, эмодзи (541k валовых, но хвост —
 								    игры и стикеры, нам достаётся «эмодзи скопировать» ~16k).
 								    Были «Калькуляторы» и «Конвертеры» — рекламировали то,
-								    чего в продукте нет. */}
+								    чего в продукте нет.
+								    Пасхалка: смайлики после «Эмодзи» и отдельным словом в
+								    цикле — кайомодзи «переворот стола», для тех, кто
+								    досматривает цикл до конца. */}
 								<FlipFadeText
-									words={['Случайные числа', 'Пароли', 'QR-коды', 'Эмодзи']}
+									words={[
+										'Случайные числа',
+										'Пароли',
+										'QR-коды',
+										'Эмодзи 🔥😉',
+										'Каомодзи (◕‿◕)'
+									]}
 									// Сборка слова занимает ~1,8 с (12 букв × stagger 0,1 с +
 									// 0,6 с анимации), поэтому интервал должен быть заметно
 									// больше — иначе слово улетает, не успев прочитаться
@@ -162,22 +172,21 @@ export function HeroSection() {
 									// до которой tracking не дотягивается
 									textClassName='font-heading gap-0 text-[clamp(1.5rem,8vw,4.5rem)] md:text-[clamp(1.5rem,8vw,4.5rem)] font-bold normal-case tracking-tight text-primary dark:text-primary'
 								/>
-								<div className='whitespace-nowrap'>онлайн и бесплатно</div>
+								<div className='whitespace-nowrap'>всегда под рукой</div>
 							</div>
 
 							<p className='mt-5 max-w-xl text-lg leading-relaxed text-white/85 [text-shadow:0_1px_16px_rgba(0,0,0,0.6)] sm:text-xl'>
 								Случайные числа, пароли, QR-коды, эмодзи, работа с текстом и
-								инструменты для разработки — {widgets.length} штук, бесплатно и
-								прямо в браузере.
+								инструменты для разработки — всегда под рукой.
 							</p>
 
 							{/* Две кнопки — два разных намерения, а не одно продублированное:
-							    «не знаю, что мне надо» → каталог, «знаю» → сразу в самый
-							    востребованный тул. Витриной стоит генератор случайных чисел
-							    (507k показов/мес — см. docs/seo/wordstat.md): раньше здесь был
-							    QR-код, а он по спросу в 12 раз меньше (41k).
+							    «не знаю, что мне надо» → каталог, «знаю, но не что конкретно» →
+							    случайный тул (RandomToolButton — путь неизвестен на рендере,
+							    выбирается в момент клика, поэтому кнопка, а не ссылка).
 							    corner-shape задаём классом: глобальное правило в globals.css
-							    ловит <button>, а это <a> — до него оно не достаёт. */}
+							    ловит <button>, а это <a> у первой кнопки — до него оно не
+							    достаёт. */}
 							<div className='mt-8 flex flex-col gap-3 sm:flex-row'>
 								<Link
 									href='/tools'
@@ -186,12 +195,7 @@ export function HeroSection() {
 									Все инструменты
 									<ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-1' />
 								</Link>
-								<Link
-									href='/tools/random-number-generator'
-									className='inline-flex cursor-pointer items-center justify-center gap-2 rounded-full [corner-shape:squircle] border-2 border-primary/70 bg-[#081020]/40 px-7 py-3 font-medium text-white backdrop-blur-sm transition-colors hover:border-primary hover:bg-primary/20'
-								>
-									Случайное число
-								</Link>
+								<RandomToolButton className='inline-flex cursor-pointer items-center justify-center gap-2 rounded-full [corner-shape:squircle] border-2 border-primary/70 bg-[#081020]/40 px-7 py-3 font-medium text-white backdrop-blur-sm transition-colors hover:border-primary hover:bg-primary/20' />
 							</div>
 						</div>
 					</div>

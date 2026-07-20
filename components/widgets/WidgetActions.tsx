@@ -27,14 +27,16 @@ export function WidgetActions({ widgetId, title }: Props) {
 			<Button
 				variant='outline'
 				size='sm'
-				className='cursor-pointer gap-2'
+				className='group cursor-pointer gap-2'
 				onClick={() => toggleFavorite(widgetId)}
 				aria-pressed={starred}
 			>
 				<Star
 					className={cn(
 						'h-4 w-4',
-						starred ? 'fill-current text-amber-500' : 'text-muted-foreground'
+						starred
+							? 'fill-current text-amber-500'
+							: 'text-muted-foreground group-hover:text-accent-foreground'
 					)}
 				/>
 				{starred ? 'В избранном' : 'В избранное'}

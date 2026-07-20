@@ -33,6 +33,15 @@ export interface Widget {
 	 * используется общая дата CONTENT_LAST_UPDATED из app/sitemap.ts.
 	 */
 	updatedAt?: string
+	/**
+	 * Показов/мес в Вордстате по головной фразе тула (см. lib/seo/phrases.txt,
+	 * lib/seo/demand-report.md) — сырая частота, без очистки от чужого интента.
+	 * У части тулов (qr-generator, emoji-list и т.п.) реальный релевантный спрос
+	 * заметно меньше: см. demand-report.md, разделы B/C. Используется только для
+	 * сортировки «по популярности» в каталоге — не для SEO-текстов.
+	 * Проставлено не у всех: где цифры не снимались, поле отсутствует.
+	 */
+	searchVolume?: number
 }
 
 export { cssWidgets } from './css'

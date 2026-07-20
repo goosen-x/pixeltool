@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -659,6 +660,136 @@ export default function BezierCurvePage() {
 					</div>
 				</div>
 			</Card>
+
+			{/* Справка — секцией под карточкой, как обучающие блоки в других тулах */}
+			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Что такое cubic-bezier
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						cubic-bezier(x1, y1, x2, y2)
+					</code>{' '}
+					— функция плавности (easing) для{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						transition-timing-function
+					</code>{' '}
+					и{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						animation-timing-function
+					</code>
+					. Четыре числа — координаты двух контрольных точек кривой Безье,
+					которая описывает скорость движения во времени: где анимация
+					разгоняется, а где тормозит. Ключевые слова{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						ease
+					</code>
+					,{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						ease-in
+					</code>
+					,{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						ease-out
+					</code>{' '}
+					— просто готовые cubic-bezier с заранее подобранными числами.
+				</p>
+
+				<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+					Как пользоваться генератором
+				</h2>
+				<ol className='mt-3 space-y-2 leading-relaxed'>
+					<li>Перетащите точки P1 и P2 на графике — или впишите координаты вручную.</li>
+					<li>Нажмите «Воспроизвести», чтобы увидеть кривую в движении на трёх примерах.</li>
+					<li>Настройте длительность анимации ползунком — форма кривой от неё не зависит.</li>
+					<li>Скопируйте готовое значение CSS или Tailwind-класс одной кнопкой.</li>
+				</ol>
+
+				<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+					Готовые кривые и их числа
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					Стандартные ключевые слова — это конкретные cubic-bezier, только с
+					именем вместо чисел.
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>Ключевое слово</th>
+								<th className='py-2 font-semibold'>cubic-bezier()</th>
+							</tr>
+						</thead>
+						<tbody>
+							{[
+								['linear', '0, 0, 1, 1'],
+								['ease', '0.25, 0.1, 0.25, 1'],
+								['ease-in', '0.42, 0, 1, 1'],
+								['ease-out', '0, 0, 0.58, 1'],
+								['ease-in-out', '0.42, 0, 0.58, 1']
+							].map(([name, values]) => (
+								<tr key={name} className='border-b align-top last:border-0'>
+									<td className='py-2 pr-4'>
+										<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-xs'>
+											{name}
+										</code>
+									</td>
+									<td className='py-2 font-mono text-xs text-muted-foreground'>
+										cubic-bezier({values})
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+
+				<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+					Как читать контрольные точки
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					P1 отвечает за начало движения, P2 — за конец. Чем дальше точка от
+					своего края графика, тем резче эффект в этой части анимации.
+					Координата X всегда лежит между 0 и 1 — это время, от начала до конца
+					перехода. Координата Y может выходить за пределы 0–1: тогда элемент
+					«перелетает» конечное значение и возвращается — получается эффект
+					отскока, как в{' '}
+					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
+						easeOutBack
+					</code>
+					.
+				</p>
+
+				<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+					Какую кривую выбрать
+				</h2>
+				<p className='mt-3 leading-relaxed'>
+					Для интерфейсных переходов — открытие меню, появление модалки, наведение
+					на кнопку — обычно нужен ease-out: движение начинается быстро и мягко
+					останавливается, это ощущается отзывчивее, чем плавный разгон. Ease-in
+					подходит, когда элемент уходит со экрана — исчезновение можно начать
+					неспешно. Linear уместен только для механических процессов вроде
+					прогресс-бара или бесконечного вращения — в остальных случаях он
+					выглядит неестественно.
+				</p>
+
+				<p className='mt-8 leading-relaxed'>
+					Собранную кривую можно сразу применить к анимации по кадрам в{' '}
+					<Link
+						href='/tools/css-keyframes-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						конструкторе CSS-анимаций
+					</Link>{' '}
+					или к тени, которая плавно нарастает при наведении, в{' '}
+					<Link
+						href='/tools/css-box-shadow-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						генераторе теней box-shadow
+					</Link>
+					.
+				</p>
+			</section>
 		</div>
 	)
 }

@@ -58,7 +58,10 @@ const Letter = memo(function Letter({
 }) {
 	return (
 		<motion.span
-			style={{ transformStyle: 'preserve-3d' }}
+			// whiteSpace: 'pre' — пробел как отдельная буква в своём собственном
+			// flex-элементе иначе схлопывается до нулевой ширины (браузер трактует
+			// одиночный пробел как обрезаемый), и слова визуально слипаются.
+			style={{ transformStyle: 'preserve-3d', whiteSpace: 'pre' }}
 			variants={{
 				initial: {
 					rotateX: 90,
@@ -108,7 +111,9 @@ const Word = memo(function Word({
 	letterDuration: number
 	textClassName?: string
 }) {
-	const letters = useMemo(() => text.split(''), [text])
+	// Array.from, а не split(''): эмодзи вне BMP (например 🌍) — суррогатная
+	// пара из двух code unit, split('') разорвал бы её на два битых символа.
+	const letters = useMemo(() => Array.from(text), [text])
 
 	return (
 		<motion.div

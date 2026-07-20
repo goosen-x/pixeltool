@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 const TABLE: { px: number; rem: string; usage: string }[] = [
 	{
@@ -37,10 +38,11 @@ export function RemGuide() {
 				Обе формулы держатся на одном числе — базовом размере шрифта корневого
 				элемента. По умолчанию в браузерах это <strong>16px</strong>.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`px  = rem × 16      /* 1.5rem × 16 = 24px */
-rem = px  ÷ 16      /* 24px  ÷ 16 = 1.5rem */`}</code>
-			</pre>
+			<GuideCodeBlock
+				className='mt-4'
+				code={`px  = rem × 16      /* 1.5rem × 16 = 24px */
+rem = px  ÷ 16      /* 24px  ÷ 16 = 1.5rem */`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Если база другая — скажем, дизайн-система живёт на 14px — подставьте её
 				вместо шестнадцати. Конвертер выше умеет считать с любой базой.
@@ -82,15 +84,16 @@ rem = px  ÷ 16      /* 24px  ÷ 16 = 1.5rem */`}</code>
 				<Code>em</Code> — от размера шрифта родителя. Разница вылезает при
 				вложенности: <Code>em</Code> накапливается.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`/* em копится: каждый уровень умножает предыдущий */
+			<GuideCodeBlock
+				className='mt-4'
+				code={`/* em копится: каждый уровень умножает предыдущий */
 .a { font-size: 0.9em; }  /* 14.4px от базовых 16px */
 .a .b { font-size: 0.9em; }  /* 12.96px — уже не от 16px, а от 14.4px */
 .a .b .c { font-size: 0.9em; }  /* 11.66px */
 
 /* rem не копится: отсчёт всегда от html */
-.a, .a .b, .a .b .c { font-size: 0.9rem; }  /* везде 14.4px */`}</code>
-			</pre>
+.a, .a .b, .a .b .c { font-size: 0.9rem; }  /* везде 14.4px */`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Поэтому для типографики и отступов берут <Code>rem</Code> — он
 				предсказуем. <Code>em</Code> остаётся полезен там, где размер должен
@@ -123,10 +126,11 @@ rem = px  ÷ 16      /* 24px  ÷ 16 = 1.5rem */`}</code>
 				После этого <Code>1rem = 10px</Code>, и перевод превращается в сдвиг
 				запятой: 24px — это 2.4rem.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`html { font-size: 62.5%; }  /* 1rem = 10px */
-body { font-size: 1.6rem; } /* вернули читаемые 16px тексту */`}</code>
-			</pre>
+			<GuideCodeBlock
+				className='mt-4'
+				code={`html { font-size: 62.5%; }  /* 1rem = 10px */
+body { font-size: 1.6rem; } /* вернули читаемые 16px тексту */`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Важная деталь: базу задают в процентах, а не в пикселях. Жёсткое{' '}
 				<Code>font-size: 10px</Code> на корне отрезало бы пользовательскую
@@ -147,6 +151,18 @@ body { font-size: 1.6rem; } /* вернули читаемые 16px тексту
 					className='cursor-pointer font-medium text-primary hover:underline'
 				>
 					калькуляторе clamp
+				</Link>
+				.
+			</p>
+
+			<p className='mt-8 leading-relaxed'>
+				Подробнее о формуле перевода, трюке с базой 10px и о том, почему rem
+				важен для доступности, — в статье{' '}
+				<Link
+					href='/blog/px-rem-converter'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					«Как перевести px в rem (и обратно)»
 				</Link>
 				.
 			</p>

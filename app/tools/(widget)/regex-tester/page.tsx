@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { RegexGuide } from './RegexGuide'
 import { WidgetSection } from '@/components/widgets/WidgetSection'
 import { WidgetInput } from '@/components/widgets/WidgetInput'
 import { WidgetOutput } from '@/components/widgets/WidgetOutput'
@@ -422,7 +423,8 @@ export default function RegexTesterPage() {
 	}
 
 	return (
-		<WidgetLayout>
+		<>
+			<WidgetLayout>
 			{/* Flavor Selection */}
 			<WidgetSection
 				icon={<Globe className='h-5 w-5' />}
@@ -752,5 +754,7 @@ export default function RegexTesterPage() {
 				</div>
 			</div>
 		</WidgetLayout>
+		<RegexGuide />
+		</>
 	)
 }

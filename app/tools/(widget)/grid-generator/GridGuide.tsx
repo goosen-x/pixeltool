@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 /**
  * Образовательный контент под инструментом Grid-генератора.
@@ -234,11 +235,7 @@ export function GridGuide() {
 						<h3 className='font-semibold'>{ex.title}</h3>
 						<p className='mt-1 text-sm text-foreground'>{ex.desc}</p>
 						<GridPreview demo={ex.demo} />
-						<pre className='mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-							<code className='font-mono text-secondary-foreground'>
-								{ex.code}
-							</code>
-						</pre>
+						<GuideCodeBlock className='mt-3' code={ex.code} />
 					</div>
 				))}
 			</div>

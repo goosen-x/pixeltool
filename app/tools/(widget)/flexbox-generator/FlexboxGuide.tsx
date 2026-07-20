@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 /**
  * Образовательный контент под инструментом Flexbox-генератора.
@@ -215,23 +216,19 @@ export function FlexboxGuide() {
 				</li>
 			</ol>
 
-			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+			<h1 className='mt-10 text-2xl font-bold tracking-tight'>
 				Примеры раскладок
-			</h2>
+			</h1>
 			<div className='mt-4 space-y-5'>
 				{EXAMPLES.map(ex => (
 					<div
 						key={ex.title}
 						className='rounded-xl border bg-card p-5 text-left'
 					>
-						<h3 className='font-semibold'>{ex.title}</h3>
+						<h2 className='font-semibold'>{ex.title}</h2>
 						<p className='mt-1 text-sm text-foreground'>{ex.desc}</p>
 						<FlexPreview demo={ex.demo} />
-						<pre className='mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-							<code className='font-mono text-secondary-foreground'>
-								{ex.code}
-							</code>
-						</pre>
+						<GuideCodeBlock className='mt-3' code={ex.code} />
 					</div>
 				))}
 			</div>

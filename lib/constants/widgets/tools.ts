@@ -62,6 +62,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'youtube-thumbnail',
+		searchVolume: 553,
 		icon: Youtube,
 		category: 'utilities',
 		translationKey: 'youtubeThumbnail',
@@ -107,6 +108,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'mock-data-generator',
+		searchVolume: 18438,
 		icon: Database,
 		category: 'utilities',
 		translationKey: 'mockDataGenerator',
@@ -152,6 +154,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'utm-builder',
+		searchVolume: 10613,
 		icon: LinkIcon,
 		category: 'utilities',
 		translationKey: 'utmBuilder',
@@ -197,6 +200,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'image-size-checker',
+		searchVolume: 74390,
 		icon: ImageIcon,
 		category: 'utilities',
 		translationKey: 'imageSizeChecker',
@@ -253,6 +257,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'system-info',
+		searchVolume: 105405,
 		icon: Monitor,
 		category: 'utilities',
 		translationKey: 'systemInfo',
@@ -305,6 +310,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'timer-countdown',
+		searchVolume: 4267,
 		icon: Clock,
 		category: 'utilities',
 		translationKey: 'timerCountdown',

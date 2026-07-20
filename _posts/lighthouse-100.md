@@ -101,7 +101,7 @@ gzip: в минифицированном коде меньше повторяю
 
 /tools/css-minifier
 
-/tools/js-minifier
+/tools/javascript-syntax-checker
 
 ### 3. Картинки: вес и размеры
 

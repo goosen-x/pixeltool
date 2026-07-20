@@ -57,6 +57,18 @@ export function HtmlXmlParserSeo() {
 					сжать, в том числе для XML, который проверка не разбирает.
 				</p>
 			</section>
+
+			<p className='leading-relaxed'>
+				Подробнее о разнице между форматированием текста и кода, а также о
+				том, чем XML строже HTML, — в статье{' '}
+				<Link
+					href='/blog/html-xml-parser'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					«Как отформатировать HTML и XML: beautify и минификация»
+				</Link>
+				.
+			</p>
 		</div>
 	)
 }

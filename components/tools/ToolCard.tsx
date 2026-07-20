@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
 import { CardPattern, patternIndexForCategory } from './CardPattern'
+import { CornerBadge } from './CornerBadge'
 import type { Widget } from '@/lib/constants/widgets'
 
 interface ToolCardProps {
@@ -27,28 +28,20 @@ export function ToolCard({
 		<Link
 			href={`/tools/${widget.path}`}
 			className={cn(
-				'group relative flex h-full cursor-pointer flex-col rounded-3xl px-6 py-7',
+				'group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl px-6 py-7',
 				className
 			)}
 		>
-			{/* Фон карточки отдельным слоем: маска выгрызает вырез под угловую
-			    иконку, контурный паттерн клипуется по скруглению. Иконка и текст —
-			    вне этого слоя, иначе маска обрезала бы и их */}
-			<span className='tool-link-cutout pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
-				<span className='absolute inset-0 text-foreground opacity-[0.08] transition-opacity duration-500 group-hover:opacity-[0.14] dark:opacity-[0.12]'>
+			{/* Фон карточки: контурный паттерн клипуется по скруглению. Квадратный
+			    бейдж иконки сидит вплотную в углу поверх него — вырезать под него
+			    дыру не нужно, он и так закрывает всё под собой */}
+			<span className='pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
+				<span className='absolute inset-0 text-foreground opacity-[0.02] transition-opacity duration-500 group-hover:opacity-[0.04] dark:opacity-[0.03]'>
 					<CardPattern variant={patternIndexForCategory(widget.category)} />
 				</span>
 			</span>
 
-			{/* Иконка сидит в вырезе правого верхнего угла */}
-			<div
-				className={cn(
-					'absolute -right-2 -top-2 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br text-white shadow-lg sm:-right-3 sm:-top-3 sm:h-16 sm:w-16',
-					widget.gradient
-				)}
-			>
-				<Icon className='h-6 w-6 sm:h-7 sm:w-7' />
-			</div>
+			<CornerBadge icon={Icon} gradient={widget.gradient} />
 
 			<div className='relative flex flex-1 flex-col'>
 				<h3 className='pr-14 text-balance text-lg font-bold tracking-tight text-foreground'>

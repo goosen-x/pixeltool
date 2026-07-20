@@ -13,6 +13,7 @@ import {
 export const textWidgets: Widget[] = [
 	{
 		id: 'special-symbols-picker',
+		searchVolume: 22696,
 		icon: Asterisk,
 		category: 'text',
 		translationKey: 'specialSymbolsPicker',
@@ -164,6 +165,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'emoji-list',
+		searchVolume: 541434,
 		icon: Smile,
 		category: 'text',
 		translationKey: 'emojiList',
@@ -211,6 +213,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-emoticons',
+		searchVolume: 23568,
 		icon: Laugh,
 		category: 'text',
 		translationKey: 'textEmoticons',
@@ -258,6 +261,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-to-speech',
+		searchVolume: 79424,
 		icon: Volume2,
 		category: 'text',
 		translationKey: 'textToSpeech',
@@ -305,6 +309,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-counter',
+		searchVolume: 14182,
 		icon: FileSearch,
 		category: 'text',
 		translationKey: 'textCounter',
@@ -352,6 +357,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-diff',
+		searchVolume: 16768,
 		icon: GitCompare,
 		category: 'text',
 		translationKey: 'textDiff',

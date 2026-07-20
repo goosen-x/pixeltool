@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -620,6 +621,25 @@ export default function CSSMinifierPage() {
 					Единственное, о чём стоит помнить: минифицированный CSS нечитаем для
 					человека. Исходник храните отдельно, а в продакшен кладите сжатую
 					версию — обычно это делает сборщик, а не руками.
+				</p>
+				<p className='mt-3 leading-relaxed'>
+					Удобный порядок работы: сначала соберите стили в генераторах —
+					например, подберите цвета в{' '}
+					<Link
+						href='/tools/color-converter'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						конвертере цветов
+					</Link>{' '}
+					и фон в{' '}
+					<Link
+						href='/tools/css-gradient-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						генераторе градиентов
+					</Link>
+					, — а минификатор примените последним шагом, перед тем как положить
+					файл в продакшен.
 				</p>
 			</section>
 		</div>

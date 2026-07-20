@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,6 +15,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '@/components/ui/tooltip'
+import { ClampGuide } from './ClampGuide'
+
 export default function ClampCalculatorPage() {
 	const [unit, setUnit] = useState<'px' | 'rem'>('rem')
 	const [property, setProperty] = useState<'font-size' | 'margin' | 'padding'>(
@@ -43,6 +45,13 @@ export default function ClampCalculatorPage() {
 	)
 
 	const clampValue = `clamp(${toRem(numMinValue)}rem,${constant ? ` ${constant}rem +` : ''} ${parseFloat((100 * variablePart).toFixed(2))}vw, ${toRem(numMaxValue)}rem)`
+
+	// Когда минимум/максимум растут строго пропорционально ширине viewport,
+	// свободный член формулы — ровно 0, и rem-слагаемое пропадает из вывода:
+	// получается чистый vw. Добавить «0rem +» косметически ничего не даст —
+	// роста от rem в этой точке действительно нет, значит нет и реакции на
+	// зум браузера (см. ClampGuide, «Почему нельзя писать только vw»).
+	const isPureVw = constant === 0
 
 	const result = `${property}: ${clampValue};`
 
@@ -199,252 +208,311 @@ export default function ClampCalculatorPage() {
 		}
 	}, [])
 
+	// Демо-контейнер ресайзится мышью (CSS resize), но vw в реальном CSS
+	// реагирует на ширину БРАУЗЕРА, а не этого блока — ресайз ничего бы не
+	// показал. Поэтому здесь считаем результат clamp() в JS от ширины именно
+	// контейнера (ResizeObserver) и применяем как px напрямую.
+	const demoContainerRef = useRef<HTMLDivElement>(null)
+	const [demoWidth, setDemoWidth] = useState(numMaxViewport)
+
+	useEffect(() => {
+		const el = demoContainerRef.current
+		if (!el) return
+		const observer = new ResizeObserver(entries => {
+			setDemoWidth(entries[0].contentRect.width)
+		})
+		observer.observe(el)
+		return () => observer.disconnect()
+	}, [])
+
+	const demoComputedPx = Math.min(
+		numMaxValue,
+		Math.max(
+			numMinValue,
+			numMinValue + variablePart * (demoWidth - numMinViewport)
+		)
+	)
+
 	// Keyboard shortcuts
 	return (
 		<>
-			<div className='grid gap-6 md:grid-cols-2'>
-				<Card className='p-6'>
+			<Card className='p-6'>
+				<div className='grid gap-6 md:grid-cols-2'>
+					<div>
+						<div className='flex items-center justify-between mb-4'>
+							<h3 className='text-base font-semibold'>Значения</h3>
+							<RadioGroup
+								value={unit}
+								onValueChange={v => setUnit(v as 'px' | 'rem')}
+							>
+								<div className='flex items-center space-x-4'>
+									<div className='flex items-center space-x-2'>
+										<RadioGroupItem value='px' id='px' />
+										<Label htmlFor='px'>px</Label>
+									</div>
+									<div className='flex items-center space-x-2'>
+										<RadioGroupItem value='rem' id='rem' />
+										<Label htmlFor='rem'>rem</Label>
+									</div>
+								</div>
+							</RadioGroup>
+						</div>
+
+						<div className='grid grid-cols-2 gap-4'>
+							<div>
+								<div className='flex items-center gap-1 mb-2'>
+									<Label htmlFor='min-value'>Минимум</Label>
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<HelpCircle className='h-3.5 w-3.5 text-muted-foreground' />
+											</TooltipTrigger>
+											<TooltipContent className='max-w-[200px]'>
+												<p className='text-xs'>Может быть отрицательным</p>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
+								<div className='relative'>
+									<Input
+										id='min-value'
+										type='number'
+										step='any'
+										value={
+											minValue === ''
+												? ''
+												: unit === 'px'
+													? minValue
+													: toRem(minValue as number)
+										}
+										onChange={e =>
+											handleValueChange(e.target.value, setMinValue)
+										}
+										className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+									/>
+									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
+										{unit}
+									</span>
+								</div>
+							</div>
+
+							<div>
+								<Label htmlFor='max-value'>Максимум</Label>
+								<div className='relative'>
+									<Input
+										id='max-value'
+										type='number'
+										step='any'
+										value={
+											maxValue === ''
+												? ''
+												: unit === 'px'
+													? maxValue
+													: toRem(maxValue as number)
+										}
+										onChange={e =>
+											handleValueChange(e.target.value, setMaxValue)
+										}
+										className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+									/>
+									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
+										{unit}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<h3 className='text-base font-semibold mb-4'>Viewport</h3>
+						<div className='grid grid-cols-2 gap-4'>
+							<div>
+								<Label htmlFor='min-viewport'>Минимум</Label>
+								<div className='relative'>
+									<Input
+										id='min-viewport'
+										type='number'
+										step='any'
+										min='0'
+										value={minViewport}
+										onChange={e =>
+											setMinViewport(
+												e.target.value === '' ? '' : parseFloat(e.target.value)
+											)
+										}
+										className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+									/>
+									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
+										px
+									</span>
+								</div>
+							</div>
+
+							<div>
+								<Label htmlFor='max-viewport'>Максимум</Label>
+								<div className='relative'>
+									<Input
+										id='max-viewport'
+										type='number'
+										step='any'
+										min='0'
+										value={maxViewport}
+										onChange={e =>
+											setMaxViewport(
+												e.target.value === '' ? '' : parseFloat(e.target.value)
+											)
+										}
+										className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+									/>
+									<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
+										px
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{errors.length > 0 && (
+					<Alert variant='destructive' className='mt-6'>
+						<AlertCircle className='h-4 w-4' />
+						<AlertDescription>
+							<strong>Ошибки</strong>
+							<ul className='list-disc list-inside mt-2'>
+								{errors.map((error, index) => (
+									<li key={index}>{error}</li>
+								))}
+							</ul>
+						</AlertDescription>
+					</Alert>
+				)}
+
+				{errors.length === 0 && isPureVw && (
+					<Alert className='mt-6 border-l-4 border-l-amber-500 bg-muted/40'>
+						<AlertCircle className='h-4 w-4 text-amber-600 dark:text-amber-500' />
+						<AlertDescription>
+							При этих значениях минимум и максимум растут строго
+							пропорционально ширине экрана, поэтому предпочтительное
+							значение получилось чистым <code>vw</code> — без{' '}
+							<code>rem</code>. Такой размер не отреагирует на
+							увеличение масштаба в браузере (зум), что не проходит WCAG
+							1.4.4. Попробуйте слегка изменить минимум или максимум.
+						</AlertDescription>
+					</Alert>
+				)}
+
+				<div className='mt-6 border-t pt-6'>
+					<div className='flex flex-col lg:flex-row items-start justify-between mb-4'>
+						<h3 className='text-base font-semibold'>Результат</h3>
+						<div>
+							<RadioGroup
+								value={property}
+								onValueChange={v =>
+									setProperty(v as 'font-size' | 'margin' | 'padding')
+								}
+								className='flex items-center space-x-3'
+							>
+								<div className='flex items-center space-x-2'>
+									<RadioGroupItem value='font-size' id='font-size' />
+									<Label htmlFor='font-size' className='text-sm cursor-pointer'>
+										font-size
+									</Label>
+								</div>
+								<div className='flex items-center space-x-2'>
+									<RadioGroupItem value='margin' id='margin' />
+									<Label htmlFor='margin' className='text-sm cursor-pointer'>
+										margin
+									</Label>
+								</div>
+								<div className='flex items-center space-x-2'>
+									<RadioGroupItem value='padding' id='padding' />
+									<Label htmlFor='padding' className='text-sm cursor-pointer'>
+										padding
+									</Label>
+								</div>
+							</RadioGroup>
+						</div>
+					</div>
+
+					<div className='grid md:grid-cols-2 gap-4'>
+						{/* CSS Result */}
+						<div>
+							<div className='flex items-center justify-between mb-2'>
+								<Label className='text-sm text-muted-foreground'>CSS</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyToClipboard}
+									className='h-8 px-2 hover:bg-accent hover:text-white'
+								>
+									{copied ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
+								</Button>
+							</div>
+							<div className='bg-secondary rounded-lg p-4'>
+								<span className='text-secondary-foreground break-all font-mono text-xs'>
+									{result}
+								</span>
+							</div>
+						</div>
+
+						{/* Tailwind Result */}
+						<div>
+							<div className='flex items-center justify-between mb-2'>
+								<Label className='text-sm text-muted-foreground'>
+									Tailwind CSS
+								</Label>
+								<Button
+									size='sm'
+									variant='ghost'
+									onClick={copyTailwindToClipboard}
+									className='h-8 px-2 hover:bg-accent hover:text-white'
+								>
+									{copiedTailwind ? (
+										<Check className='h-3 w-3 text-green-500' />
+									) : (
+										<Copy className='h-3 w-3' />
+									)}
+								</Button>
+							</div>
+							<div className='bg-secondary rounded-lg p-4'>
+								<span className='text-secondary-foreground break-all font-mono text-xs'>
+									{tailwindResult}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className='mt-6 border-t pt-6'>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-semibold'>Значения</h3>
-						<RadioGroup
-							value={unit}
-							onValueChange={v => setUnit(v as 'px' | 'rem')}
+						<h3 className='text-base font-semibold'>Пример в действии</h3>
+						<span className='text-xs text-muted-foreground'>
+							Ширина блока: {Math.round(demoWidth)}px
+						</span>
+					</div>
+					<p className='mb-3 text-xs text-muted-foreground'>
+						Потяните за правый нижний угол, чтобы сузить или расширить блок —
+						размер текста посчитан от его ширины, как будто это viewport.
+					</p>
+					<div
+						ref={demoContainerRef}
+						className='min-w-[240px] max-w-full resize-x overflow-auto rounded-lg border-2 border-dashed border-border bg-muted/30 p-6'
+						style={{ width: '100%' }}
+					>
+						<p
+							className='leading-relaxed'
+							style={{ [property]: `${demoComputedPx}px` }}
 						>
-							<div className='flex items-center space-x-4'>
-								<div className='flex items-center space-x-2'>
-									<RadioGroupItem value='px' id='px' />
-									<Label htmlFor='px'>px</Label>
-								</div>
-								<div className='flex items-center space-x-2'>
-									<RadioGroupItem value='rem' id='rem' />
-									<Label htmlFor='rem'>rem</Label>
-								</div>
-							</div>
-						</RadioGroup>
-					</div>
-
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<div className='flex items-center gap-1 mb-2'>
-								<Label htmlFor='min-value'>Минимум</Label>
-								<TooltipProvider>
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<HelpCircle className='h-3.5 w-3.5 text-muted-foreground' />
-										</TooltipTrigger>
-										<TooltipContent className='max-w-[200px]'>
-											<p className='text-xs'>Может быть отрицательным</p>
-										</TooltipContent>
-									</Tooltip>
-								</TooltipProvider>
-							</div>
-							<div className='relative'>
-								<Input
-									id='min-value'
-									type='number'
-									step='any'
-									value={
-										minValue === ''
-											? ''
-											: unit === 'px'
-												? minValue
-												: toRem(minValue as number)
-									}
-									onChange={e => handleValueChange(e.target.value, setMinValue)}
-									className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-								/>
-								<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-									{unit}
-								</span>
-							</div>
-						</div>
-
-						<div>
-							<Label htmlFor='max-value'>Максимум</Label>
-							<div className='relative'>
-								<Input
-									id='max-value'
-									type='number'
-									step='any'
-									value={
-										maxValue === ''
-											? ''
-											: unit === 'px'
-												? maxValue
-												: toRem(maxValue as number)
-									}
-									onChange={e => handleValueChange(e.target.value, setMaxValue)}
-									className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-								/>
-								<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-									{unit}
-								</span>
-							</div>
-						</div>
-					</div>
-				</Card>
-
-				<Card className='p-6'>
-					<h3 className='text-base font-semibold mb-4'>Viewport</h3>
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<Label htmlFor='min-viewport'>Минимум</Label>
-							<div className='relative'>
-								<Input
-									id='min-viewport'
-									type='number'
-									step='any'
-									min='0'
-									value={minViewport}
-									onChange={e =>
-										setMinViewport(
-											e.target.value === '' ? '' : parseFloat(e.target.value)
-										)
-									}
-									className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-								/>
-								<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-									px
-								</span>
-							</div>
-						</div>
-
-						<div>
-							<Label htmlFor='max-viewport'>Максимум</Label>
-							<div className='relative'>
-								<Input
-									id='max-viewport'
-									type='number'
-									step='any'
-									min='0'
-									value={maxViewport}
-									onChange={e =>
-										setMaxViewport(
-											e.target.value === '' ? '' : parseFloat(e.target.value)
-										)
-									}
-									className='pr-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-								/>
-								<span className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-									px
-								</span>
-							</div>
-						</div>
-					</div>
-				</Card>
-			</div>
-
-			{errors.length > 0 && (
-				<Alert variant='destructive' className='mt-6'>
-					<AlertCircle className='h-4 w-4' />
-					<AlertDescription>
-						<strong>Ошибки</strong>
-						<ul className='list-disc list-inside mt-2'>
-							{errors.map((error, index) => (
-								<li key={index}>{error}</li>
-							))}
-						</ul>
-					</AlertDescription>
-				</Alert>
-			)}
-
-			<Card className='mt-6 p-6'>
-				<div className='flex flex-col lg:flex-row items-start justify-between mb-4'>
-					<h3 className='text-base font-semibold'>Результат</h3>
-					<div>
-						<RadioGroup
-							value={property}
-							onValueChange={v =>
-								setProperty(v as 'font-size' | 'margin' | 'padding')
-							}
-							className='flex items-center space-x-3'
-						>
-							<div className='flex items-center space-x-2'>
-								<RadioGroupItem value='font-size' id='font-size' />
-								<Label htmlFor='font-size' className='text-sm cursor-pointer'>
-									font-size
-								</Label>
-							</div>
-							<div className='flex items-center space-x-2'>
-								<RadioGroupItem value='margin' id='margin' />
-								<Label htmlFor='margin' className='text-sm cursor-pointer'>
-									margin
-								</Label>
-							</div>
-							<div className='flex items-center space-x-2'>
-								<RadioGroupItem value='padding' id='padding' />
-								<Label htmlFor='padding' className='text-sm cursor-pointer'>
-									padding
-								</Label>
-							</div>
-						</RadioGroup>
-					</div>
-				</div>
-
-				<div className='grid md:grid-cols-2 gap-4'>
-					{/* CSS Result */}
-					<div>
-						<div className='flex items-center justify-between mb-2'>
-							<Label className='text-sm text-muted-foreground'>CSS</Label>
-							<Button
-								size='sm'
-								variant='ghost'
-								onClick={copyToClipboard}
-								className='h-8 px-2 hover:bg-accent hover:text-white'
-							>
-								{copied ? (
-									<Check className='h-3 w-3 text-green-500' />
-								) : (
-									<Copy className='h-3 w-3' />
-								)}
-							</Button>
-						</div>
-						<div className='bg-secondary rounded-lg p-4'>
-							<span className='text-secondary-foreground break-all font-mono text-xs'>
-								{result}
-							</span>
-						</div>
-					</div>
-
-					{/* Tailwind Result */}
-					<div>
-						<div className='flex items-center justify-between mb-2'>
-							<Label className='text-sm text-muted-foreground'>
-								Tailwind CSS
-							</Label>
-							<Button
-								size='sm'
-								variant='ghost'
-								onClick={copyTailwindToClipboard}
-								className='h-8 px-2 hover:bg-accent hover:text-white'
-							>
-								{copiedTailwind ? (
-									<Check className='h-3 w-3 text-green-500' />
-								) : (
-									<Copy className='h-3 w-3' />
-								)}
-							</Button>
-						</div>
-						<div className='bg-secondary rounded-lg p-4'>
-							<span className='text-secondary-foreground break-all font-mono text-xs'>
-								{tailwindResult}
-							</span>
-						</div>
+							Этот текст демонстрирует динамическое изменение размера
+						</p>
 					</div>
 				</div>
 			</Card>
-
-			<Card className='mt-6 p-6'>
-				<h3 className='text-base font-semibold mb-4'>Пример в действии</h3>
-				<p
-					className='text-lg leading-relaxed'
-					style={{ [property]: clampValue }}
-					contentEditable
-					suppressContentEditableWarning
-				>
-					Этот текст демонстрирует динамическое изменение размера
-				</p>
-			</Card>
+			<ClampGuide />
 		</>
 	)
 }

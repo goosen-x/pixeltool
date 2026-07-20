@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 const SIZES = [
 	{ size: '16×16', where: 'Вкладка браузера, закладки', need: 'Обязательно' },
@@ -53,11 +54,13 @@ export function FaviconGuide() {
 			<p className='mt-3 leading-relaxed'>
 				Положите файлы в корень сайта и добавьте три строки в {code('<head>')}:
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`<link rel="icon" href="/favicon.ico" sizes="any">
+			<GuideCodeBlock
+				className='mt-4'
+				language='html'
+				code={`<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32x32.png" type="image/png">
-<link rel="apple-touch-icon" href="/favicon-180x180.png">`}</code>
-			</pre>
+<link rel="apple-touch-icon" href="/favicon-180x180.png">`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Первая строка закрывает вкладки и старые браузеры. Вторая даёт чёткую
 				иконку на экранах с высокой плотностью: PNG там выглядит лучше, чем

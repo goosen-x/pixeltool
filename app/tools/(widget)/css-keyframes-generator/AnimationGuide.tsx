@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
 
 interface AnimationExample {
 	title: string
@@ -220,8 +221,9 @@ export function AnimationGuide() {
 				Потом подключаете их к элементу свойством <Code>animation</Code> — имя и
 				длительность обязательны, остальное по необходимости.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`/* 1. описываем кадры */
+			<GuideCodeBlock
+				className='mt-4'
+				code={`/* 1. описываем кадры */
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -230,8 +232,8 @@ export function AnimationGuide() {
 /* 2. подключаем к элементу */
 .card {
   animation: fadeIn 0.5s ease both;
-}`}</code>
-			</pre>
+}`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Кадров может быть сколько угодно — вместо <Code>from</Code> и{' '}
 				<Code>to</Code> пишите проценты: <Code>0%</Code>, <Code>50%</Code>,{' '}
@@ -256,11 +258,7 @@ export function AnimationGuide() {
 						<h3 className='font-semibold'>{ex.title}</h3>
 						<p className='mt-1 text-sm text-foreground'>{ex.desc}</p>
 						<Demo example={ex} />
-						<pre className='mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-							<code className='font-mono text-secondary-foreground'>
-								{ex.code}
-							</code>
-						</pre>
+						<GuideCodeBlock className='mt-3' code={ex.code} />
 					</div>
 				))}
 			</div>
@@ -278,16 +276,17 @@ export function AnimationGuide() {
 					Наведите на меня
 				</div>
 			</div>
-			<pre className='mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`.card {
+			<GuideCodeBlock
+				className='mt-3'
+				code={`.card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}`}</code>
-			</pre>
+}`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Тень для такой карточки удобно подобрать в{' '}
 				<Link
@@ -370,14 +369,15 @@ export function AnimationGuide() {
 				отключает анимации в настройках системы. Уважьте эту настройку —
 				достаточно одного медиазапроса.
 			</p>
-			<pre className='mt-4 overflow-x-auto rounded-lg bg-secondary p-4 text-sm'>
-				<code className='font-mono text-secondary-foreground'>{`@media (prefers-reduced-motion: reduce) {
+			<GuideCodeBlock
+				className='mt-4'
+				code={`@media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-}`}</code>
-			</pre>
+}`}
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Больше приёмов и разбор сложных случаев — в{' '}
 				<Link

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -522,6 +523,17 @@ div.container > p::first-line
 						!important
 					</code>
 					, и так рождается война, из которой нет выхода.
+				</p>
+				<p className='mt-3 leading-relaxed'>
+					Когда конфликт разобран и лишние переопределения убраны, готовый CSS
+					удобно сжать{' '}
+					<Link
+						href='/tools/css-minifier'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						минификатором
+					</Link>{' '}
+					перед тем как отправить в продакшен.
 				</p>
 			</section>
 		</div>
