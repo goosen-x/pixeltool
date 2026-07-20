@@ -47,7 +47,7 @@ export default function ClampCalculatorPage() {
 	const clampValue = `clamp(${toRem(numMinValue)}rem,${constant ? ` ${constant}rem +` : ''} ${parseFloat((100 * variablePart).toFixed(2))}vw, ${toRem(numMaxValue)}rem)`
 
 	// Когда минимум/максимум растут строго пропорционально ширине viewport,
-	// свободный член формулы — ровно 0, и rem-слагаемое пропадает из вывода:
+	// базовое значение формулы — ровно 0, и rem-слагаемое пропадает из вывода:
 	// получается чистый vw. Добавить «0rem +» косметически ничего не даст —
 	// роста от rem в этой точке действительно нет, значит нет и реакции на
 	// зум браузера (см. ClampGuide, «Почему нельзя писать только vw»).
