@@ -90,7 +90,7 @@ export default async function Post(props: Params) {
 
 					<div className='hidden lg:block'>
 						<div className='sticky top-6'>
-							<ProjectsRightSidebar />
+							<ProjectsRightSidebar boundedHeight={false} />
 						</div>
 					</div>
 				</div>
@@ -123,6 +123,11 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 	const imageUrl = post.coverImage
 		? `${baseUrl}${post.coverImage}`
 		: `${baseUrl}/og-image.png`
+	// Обложки статей — 16:9, а не 1.91:1 как og-image.png. Врать в width/height
+	// нельзя: соцсети, которые доверяют мета-тегам, а не реальным пропорциям
+	// файла (не все перепроверяют), обрежут картинку под неверное соотношение.
+	const imageWidth = post.coverImage ? 1600 : 1200
+	const imageHeight = post.coverImage ? 900 : 630
 
 	return {
 		title,
@@ -145,8 +150,8 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 			images: [
 				{
 					url: imageUrl,
-					width: 1200,
-					height: 630,
+					width: imageWidth,
+					height: imageHeight,
 					alt: post.title
 				}
 			],
