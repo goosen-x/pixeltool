@@ -1,69 +1,81 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Header } from '@/components/global/Header'
+import Header from '@/components/layout/Header/Header'
 
 // Mock next/link
 vi.mock('next/link', () => ({
-	default: ({ children, href }: any) => <a href={href}>{children}</a>
+	default: ({ children, href, ...rest }: any) => (
+		<a href={href} {...rest}>
+			{children}
+		</a>
+	)
 }))
 
-describe('Navigation', () => {
+const mockPush = vi.fn()
+let mockPathname = '/'
+
+vi.mock('next/navigation', () => ({
+	usePathname: () => mockPathname,
+	useRouter: () => ({ push: mockPush })
+}))
+
+describe('Header navigation', () => {
+	beforeEach(() => {
+		mockPathname = '/'
+		mockPush.mockClear()
+	})
+
 	it('renders main navigation links', () => {
 		render(<Header />)
 
-		// Check for main navigation links
-		expect(screen.getByRole('link', { name: /Main/i })).toHaveAttribute(
+		expect(screen.getByRole('link', { name: 'Главная' })).toHaveAttribute(
 			'href',
-			'/en'
+			'/'
 		)
-		expect(screen.getByRole('link', { name: /Tools/i })).toHaveAttribute(
+		expect(screen.getByRole('link', { name: 'Инструменты' })).toHaveAttribute(
 			'href',
-			'/en/tools'
+			'/tools'
 		)
-		expect(screen.getByRole('link', { name: /Blog/i })).toHaveAttribute(
+		expect(screen.getByRole('link', { name: 'Блог' })).toHaveAttribute(
 			'href',
-			'/en/blog'
+			'/blog'
 		)
-		expect(screen.getByRole('link', { name: /Contact/i })).toHaveAttribute(
+		expect(screen.getByRole('link', { name: 'Контакты' })).toHaveAttribute(
 			'href',
-			'/en/contact'
+			'/contact'
 		)
 	})
 
 	it('highlights active navigation item', () => {
-		// Mock current path
-		vi.mock('next/navigation', () => ({
-			...vi.importActual('next/navigation'),
-			usePathname: () => '/en/tools'
-		}))
+		mockPathname = '/tools'
 
 		render(<Header />)
 
-		const toolsLink = screen.getByRole('link', { name: /Tools/i })
-		expect(toolsLink).toHaveClass('bg-primary', 'text-white')
+		const toolsLink = screen.getByRole('link', { name: 'Инструменты' })
+		expect(toolsLink).toHaveClass('bg-primary', 'text-primary-foreground')
+		expect(toolsLink).toHaveAttribute('aria-current', 'page')
 	})
 
-	it('shows mobile menu on small screens', async () => {
+	it('shows mobile menu with the same nav items when the burger button is clicked', async () => {
 		const user = userEvent.setup()
-
 		render(<Header />)
 
-		// Mobile menu button should be present
-		const menuButton = screen.getAllByRole('button')[0] // Assuming first button is menu
-		expect(menuButton).toBeInTheDocument()
-
-		// Click menu button
+		const menuButton = screen.getByRole('button', { name: 'Открыть меню' })
 		await user.click(menuButton)
 
-		// Navigation should be visible
-		// Note: This would require more complex testing with viewport size mocking
+		const mobileNav = screen.getByRole('navigation', {
+			name: 'Основная навигация'
+		})
+		expect(
+			within(mobileNav).getByRole('link', { name: /Инструменты/ })
+		).toHaveAttribute('href', '/tools')
 	})
 
-	it('renders logo with correct link', () => {
+	it('renders logo with a link to the homepage', () => {
 		render(<Header />)
 
 		const logoLink = screen.getByRole('link', { name: /PixelTool/i })
-		expect(logoLink).toHaveAttribute('href', '/en')
+		expect(logoLink).toHaveAttribute('href', '/')
 	})
 })

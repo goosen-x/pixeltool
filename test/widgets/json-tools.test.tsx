@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import JSONToolsPage from '@/app/tools/(widgets)/json-tools/page'
+import JSONToolsPage from '@/app/tools/(widget)/json-tools/page'
 
 /**
  * YAML переехал сюда из удалённого json-yaml-formatter, поэтому проверяем оба

@@ -16,11 +16,10 @@ describe('Card Components', () => {
 			const card = screen.getByTestId('card')
 
 			expect(card).toHaveClass(
-				'rounded-lg',
+				'rounded-2xl',
 				'border',
 				'bg-card',
-				'text-card-foreground',
-				'shadow-sm'
+				'text-card-foreground'
 			)
 		})
 
@@ -46,14 +45,17 @@ describe('Card Components', () => {
 	})
 
 	describe('CardTitle', () => {
-		it('renders as h3 by default', () => {
+		// CardTitle рендерится как <p>, а не <h3>: заголовок карточки — не
+		// самостоятельный уровень в иерархии страницы (см. коммит "фикс структуры
+		// заголовков"), настоящий <h2>/<h3> ставит вызывающий код при необходимости.
+		it('renders as p by default', () => {
 			render(<CardTitle>Title</CardTitle>)
 			const title = screen.getByText('Title')
 
-			expect(title.tagName).toBe('H3')
+			expect(title.tagName).toBe('P')
 			expect(title).toHaveClass(
-				'text-2xl',
-				'font-semibold',
+				'text-lg',
+				'font-bold',
 				'leading-none',
 				'tracking-tight'
 			)

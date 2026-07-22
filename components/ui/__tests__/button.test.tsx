@@ -11,10 +11,10 @@ describe('Button', () => {
 
 	it('applies variant classes correctly', () => {
 		const { rerender } = render(<Button variant='default'>Default</Button>)
-		expect(screen.getByRole('button')).toHaveClass('bg-primary')
+		expect(screen.getByRole('button')).toHaveClass('from-primary')
 
 		rerender(<Button variant='destructive'>Destructive</Button>)
-		expect(screen.getByRole('button')).toHaveClass('bg-destructive')
+		expect(screen.getByRole('button')).toHaveClass('from-destructive')
 
 		rerender(<Button variant='outline'>Outline</Button>)
 		expect(screen.getByRole('button')).toHaveClass('border')
@@ -28,10 +28,10 @@ describe('Button', () => {
 		expect(screen.getByRole('button')).toHaveClass('h-10')
 
 		rerender(<Button size='sm'>Small</Button>)
-		expect(screen.getByRole('button')).toHaveClass('h-9')
+		expect(screen.getByRole('button')).toHaveClass('h-8')
 
 		rerender(<Button size='lg'>Large</Button>)
-		expect(screen.getByRole('button')).toHaveClass('h-11')
+		expect(screen.getByRole('button')).toHaveClass('h-12')
 
 		rerender(<Button size='icon'>Icon</Button>)
 		expect(screen.getByRole('button')).toHaveClass('h-10', 'w-10')

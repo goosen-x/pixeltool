@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { GlobalWidgetSearch } from '../GlobalWidgetSearch'
@@ -9,11 +9,6 @@ vi.mock('next/navigation', () => ({
 	useRouter: () => ({
 		push: mockPush
 	})
-}))
-
-// Mock next-intl
-vi.mock('next-intl', () => ({
-	useTranslations: () => (key: string) => key
 }))
 
 // Mock hooks
@@ -36,7 +31,7 @@ describe('GlobalWidgetSearch', () => {
 	})
 
 	it('renders floating search button', () => {
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		expect(searchButton).toBeInTheDocument()
@@ -45,55 +40,58 @@ describe('GlobalWidgetSearch', () => {
 
 	it('opens search dialog when button is clicked', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
 
-		expect(screen.getByPlaceholderText('placeholder')).toBeInTheDocument()
+		expect(
+			screen.getByPlaceholderText('Поиск инструментов...')
+		).toBeInTheDocument()
 		expect(screen.getByText('K')).toBeInTheDocument()
 	})
 
 	it('opens search dialog with Cmd/Ctrl + K shortcut', async () => {
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
-		// Simulate Cmd+K
-		const event = new KeyboardEvent('keydown', {
-			key: 'k',
-			metaKey: true
+		act(() => {
+			window.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'k', metaKey: true })
+			)
 		})
-		window.dispatchEvent(event)
 
 		await waitFor(() => {
-			expect(screen.getByPlaceholderText('placeholder')).toBeInTheDocument()
+			expect(
+				screen.getByPlaceholderText('Поиск инструментов...')
+			).toBeInTheDocument()
 		})
 	})
 
 	it('shows favorites and recent widgets when search is empty', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
 
-		expect(screen.getByText('suggestedAndFavorites')).toBeInTheDocument()
+		expect(screen.getByText('Рекомендуемые и избранные')).toBeInTheDocument()
 	})
 
 	it('filters widgets based on search query', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
 
-		const searchInput = screen.getByPlaceholderText('placeholder')
-		await user.type(searchInput, 'password')
+		const searchInput = screen.getByPlaceholderText('Поиск инструментов...')
+		await user.type(searchInput, 'парол')
 
 		// Should show password-related widgets
 		await waitFor(() => {
 			const buttons = screen.getAllByRole('button')
 			const passwordWidgetButton = buttons.find(btn =>
-				btn.textContent?.toLowerCase().includes('password')
+				btn.textContent?.toLowerCase().includes('парол')
 			)
 			expect(passwordWidgetButton).toBeInTheDocument()
 		})
@@ -101,7 +99,7 @@ describe('GlobalWidgetSearch', () => {
 
 	it('navigates to widget when selected', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
@@ -114,15 +112,13 @@ describe('GlobalWidgetSearch', () => {
 		if (widgetButtons[0]) {
 			await user.click(widgetButtons[0])
 
-			expect(mockPush).toHaveBeenCalledWith(
-				expect.stringContaining('/en/tools/')
-			)
+			expect(mockPush).toHaveBeenCalledWith(expect.stringContaining('/tools/'))
 		}
 	})
 
 	it('supports keyboard navigation', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
@@ -142,34 +138,36 @@ describe('GlobalWidgetSearch', () => {
 
 	it('closes dialog with Escape key', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
 
-		expect(screen.getByPlaceholderText('placeholder')).toBeInTheDocument()
+		expect(
+			screen.getByPlaceholderText('Поиск инструментов...')
+		).toBeInTheDocument()
 
 		await user.keyboard('{Escape}')
 
 		await waitFor(() => {
 			expect(
-				screen.queryByPlaceholderText('placeholder')
+				screen.queryByPlaceholderText('Поиск инструментов...')
 			).not.toBeInTheDocument()
 		})
 	})
 
 	it('shows no results message when no widgets match', async () => {
 		const user = userEvent.setup()
-		render(<GlobalWidgetSearch locale='en' />)
+		render(<GlobalWidgetSearch />)
 
 		const searchButton = screen.getByRole('button')
 		await user.click(searchButton)
 
-		const searchInput = screen.getByPlaceholderText('placeholder')
+		const searchInput = screen.getByPlaceholderText('Поиск инструментов...')
 		await user.type(searchInput, 'xyznonexistent')
 
 		await waitFor(() => {
-			expect(screen.getByText('noResults')).toBeInTheDocument()
+			expect(screen.getByText('Ничего не найдено')).toBeInTheDocument()
 		})
 	})
 })
