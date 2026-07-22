@@ -77,5 +77,12 @@ describe('Posts collection', () => {
 		const found = await payload.findByID({ collection: 'posts', id: post.id })
 		expect(found.slug).toBe('test-post')
 		expect(found.author).toBeTruthy()
+
+		const toolLinkNode = (found.content.root.children as any[]).find(
+			node => node.type === 'block' && node.fields?.blockType === 'toolLink'
+		)
+		expect(toolLinkNode).toBeTruthy()
+		expect(toolLinkNode.fields.toolPath).toBe('password-generator')
+		expect(toolLinkNode.fields.subtitle).toBeNull()
 	})
 })
