@@ -15,7 +15,8 @@ describe('Posts collection', () => {
 		// payload.config.mts reads PAYLOAD_SECRET at module-evaluation time;
 		// tests don't load .env.local, so provide a throwaway test secret if
 		// one isn't already present in the environment.
-		process.env.PAYLOAD_SECRET = process.env.PAYLOAD_SECRET || 'test-secret-for-integration-tests'
+		process.env.PAYLOAD_SECRET =
+			process.env.PAYLOAD_SECRET || 'test-secret-for-integration-tests'
 
 		// Dynamic import so payload.config only evaluates (and reads
 		// DATABASE_URI) after we've set the env var above — a static
