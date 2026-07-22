@@ -55,3 +55,9 @@ docs/
 
 # Brainstorming visual companion
 .superpowers/
+
+# Payload CMS — local SQLite database
+payload.db
+payload.db-journal
+payload.db-wal
+payload.db-shm

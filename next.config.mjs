@@ -1,3 +1,4 @@
+import { withPayload } from '@payloadcms/next/withPayload'
 import { SEO_REDIRECTS } from './lib/seo/seo-redirects.mjs'
 
 /** @type {import('next').NextConfig} */
@@ -11,6 +12,7 @@ const nextConfig = {
 			{ protocol: 'https', hostname: 'images.unsplash.com' },
 			{ protocol: 'https', hostname: 'img.youtube.com' },
 			{ protocol: 'https', hostname: 'www.codewars.com' },
+			{ protocol: 'https', hostname: 's3.regru.cloud' },
 		],
 	},
 	// SEO Redirects - захват 5.7M поисковых запросов/месяц
@@ -28,4 +30,4 @@ const nextConfig = {
 	}
 }
 
-export default nextConfig
+export default withPayload(nextConfig)
