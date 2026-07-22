@@ -17,6 +17,8 @@
 	"scripts": {
 		"dev": "next dev",
 		"dev:clean": "rm -rf .next && pnpm dev",
+		"payload:migrate": "PAYLOAD_CONFIG_PATH=payload.config.mts payload migrate",
+		"payload:generate-types": "PAYLOAD_CONFIG_PATH=payload.config.mts payload generate:types",
 		"dev:no-cache": "npx tsx scripts/dev-no-cache.ts",
 		"build": "next build",
 		"start": "next start",
