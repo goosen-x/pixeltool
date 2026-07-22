@@ -8,6 +8,8 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Authors } from './collections/Authors'
+import { Posts } from './collections/Posts.mts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -17,7 +19,7 @@ export default buildConfig({
 	admin: {
 		user: Users.slug
 	},
-	collections: [Users, Media],
+	collections: [Users, Media, Authors, Posts],
 	editor: lexicalEditor({}),
 	db: sqliteAdapter({
 		client: {
