@@ -1,13 +1,6 @@
 'use client'
 
-import {
-	Grid3X3,
-	List,
-	X,
-	SignalLow,
-	SignalMedium,
-	SignalHigh
-} from 'lucide-react'
+import { Grid3X3, List, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	Select,
@@ -17,25 +10,19 @@ import {
 	SelectValue
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
+import { DifficultyBars } from './DifficultyBars'
+import { FavoritesToolsSection } from './FavoritesToolsSection'
 import type { Widget } from '@/lib/constants/widgets'
 
 export type SortOption = 'default' | 'alpha' | 'difficulty' | 'popularity'
 
-const DIFFICULTY_LABELS: Record<NonNullable<Widget['difficulty']>, string> = {
+export const DIFFICULTY_LABELS: Record<
+	NonNullable<Widget['difficulty']>,
+	string
+> = {
 	beginner: 'Простой',
 	intermediate: 'Средний',
 	advanced: 'Сложный'
-}
-
-// Иконка растущего сигнала вместо простого текста — уровень сложности
-// читается по силуэту, не нужно вчитываться в подпись.
-const DIFFICULTY_ICONS: Record<
-	NonNullable<Widget['difficulty']>,
-	typeof SignalLow
-> = {
-	beginner: SignalLow,
-	intermediate: SignalMedium,
-	advanced: SignalHigh
 }
 
 const SORT_LABELS: Record<SortOption, string> = {
@@ -78,6 +65,8 @@ export function ToolsFilterBar({
 
 	return (
 		<aside className='w-full shrink-0 space-y-6 rounded-2xl border border-border/50 bg-muted/40 p-4 lg:sticky lg:top-24 lg:w-44'>
+			<FavoritesToolsSection />
+
 			<div>
 				<div className='flex items-center justify-between gap-2'>
 					<span className='text-sm text-muted-foreground'>
@@ -129,9 +118,9 @@ export function ToolsFilterBar({
 			</div>
 
 			<div>
-				<h3 className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+				<p className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 					Сложность
-				</h3>
+				</p>
 				<div className='flex items-center gap-1.5'>
 					{(
 						Object.keys(DIFFICULTY_LABELS) as Array<
@@ -139,7 +128,6 @@ export function ToolsFilterBar({
 						>
 					).map(key => {
 						const active = selectedDifficulty.includes(key)
-						const Icon = DIFFICULTY_ICONS[key]
 						return (
 							<button
 								key={key}
@@ -155,7 +143,7 @@ export function ToolsFilterBar({
 										: 'border-border bg-background text-foreground hover:border-primary/50'
 								)}
 							>
-								<Icon className='h-4 w-4' />
+								<DifficultyBars level={key} className='h-4 w-4' />
 							</button>
 						)
 					})}
@@ -163,9 +151,9 @@ export function ToolsFilterBar({
 			</div>
 
 			<div>
-				<h3 className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+				<p className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 					Сортировка
-				</h3>
+				</p>
 				<Select
 					value={sort}
 					onValueChange={value => onSortChange(value as SortOption)}

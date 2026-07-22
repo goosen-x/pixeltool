@@ -37,16 +37,19 @@ export function ToolCard({
 			    дыру не нужно, он и так закрывает всё под собой */}
 			<span className='pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
 				<span className='absolute inset-0 text-foreground opacity-[0.02] transition-opacity duration-500 group-hover:opacity-[0.04] dark:opacity-[0.03]'>
-					<CardPattern variant={patternIndexForCategory(widget.category)} />
+					<CardPattern
+						variant={patternIndexForCategory(widget.category)}
+						uid={widget.path}
+					/>
 				</span>
 			</span>
 
 			<CornerBadge icon={Icon} gradient={widget.gradient} />
 
 			<div className='relative flex flex-1 flex-col'>
-				<h3 className='pr-14 text-balance text-lg font-bold tracking-tight text-foreground'>
+				<h2 className='pr-14 text-balance text-lg font-bold tracking-tight text-foreground'>
 					{searchQuery ? highlightText(title, searchQuery) : title}
-				</h3>
+				</h2>
 				<p className='mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground'>
 					{searchQuery ? highlightText(description, searchQuery) : description}
 				</p>

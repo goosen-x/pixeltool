@@ -67,7 +67,7 @@ export function WhyChooseSection() {
 						>
 							<span className='pointer-events-none absolute inset-0 overflow-hidden rounded-3xl bg-muted dark:bg-card'>
 								<span className='absolute inset-0 text-foreground opacity-[0.02] transition-opacity duration-500 group-hover:opacity-[0.04] dark:opacity-[0.03]'>
-									<CardPattern variant={feature.pattern} />
+									<CardPattern variant={feature.pattern} uid={feature.title} />
 								</span>
 							</span>
 

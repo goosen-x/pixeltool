@@ -101,6 +101,7 @@ export function getToolSpecificSchema(
 			'@id': `${url}#image-tool`,
 			name: `Images processed with ${title}`,
 			description: `Image manipulation and processing using ${title}`,
+			contentUrl: `${baseUrl}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&locale=${locale}`,
 			creator: {
 				'@type': 'Organization',
 				name: 'PixelTool'

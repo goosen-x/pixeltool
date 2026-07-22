@@ -8,8 +8,15 @@
 interface Props {
 	/** Любое число (например индекс или хеш id) — приводится к 0..6. */
 	variant: number
+	/** Уникальный идентификатор карточки — нужен, чтобы SVG-паттерны на
+	 *  странице не получали одинаковый id (несколько карточек одной
+	 *  категории = несколько копий одного узора). */
+	uid: string
 	className?: string
 }
+
+/** id должен быть валиден и без пробелов — обрезаем всё, кроме буквенно-числовых. */
+const toIdSafe = (s: string) => s.replace(/[^a-zA-Z0-9-]/g, '')
 
 const wrap = (children: React.ReactNode) => (
 	<svg
@@ -25,114 +32,111 @@ const wrap = (children: React.ReactNode) => (
 )
 
 // 0 — плавные волны (контурные линии)
-const waves = wrap(
-	<g strokeWidth={1.2}>
-		{[0, 22, 44, 66, 88, 110, 132].map((o, i) => (
-			<path
-				key={i}
-				d={`M-20 ${60 + o} C 40 ${20 + o}, 90 ${120 + o}, 150 ${70 + o} S 240 ${10 + o}, 300 ${60 + o}`}
-			/>
-		))}
-	</g>
-)
+const waves = () =>
+	wrap(
+		<g strokeWidth={1.2}>
+			{[0, 22, 44, 66, 88, 110, 132].map((o, i) => (
+				<path
+					key={i}
+					d={`M-20 ${60 + o} C 40 ${20 + o}, 90 ${120 + o}, 150 ${70 + o} S 240 ${10 + o}, 300 ${60 + o}`}
+				/>
+			))}
+		</g>
+	)
 
 // 1 — точечная сетка
-const dots = wrap(
-	<>
-		<defs>
-			<pattern
-				id='cp-dots'
-				width='18'
-				height='18'
-				patternUnits='userSpaceOnUse'
-			>
-				<circle cx='2' cy='2' r='1.6' fill='currentColor' stroke='none' />
-			</pattern>
-		</defs>
-		<rect width='240' height='240' fill='url(#cp-dots)' stroke='none' />
-	</>
-)
+const dots = (uid: string) => {
+	const id = `cp-dots-${uid}`
+	return wrap(
+		<>
+			<defs>
+				<pattern id={id} width='18' height='18' patternUnits='userSpaceOnUse'>
+					<circle cx='2' cy='2' r='1.6' fill='currentColor' stroke='none' />
+				</pattern>
+			</defs>
+			<rect width='240' height='240' fill={`url(#${id})`} stroke='none' />
+		</>
+	)
+}
 
 // 2 — диагональные линии
-const diagonals = wrap(
-	<>
-		<defs>
-			<pattern
-				id='cp-diag'
-				width='16'
-				height='16'
-				patternUnits='userSpaceOnUse'
-				patternTransform='rotate(0)'
-			>
-				<path d='M-4 20 L 20 -4' strokeWidth={1.2} />
-				<path d='M4 28 L 28 4' strokeWidth={1.2} />
-			</pattern>
-		</defs>
-		<rect width='240' height='240' fill='url(#cp-diag)' stroke='none' />
-	</>
-)
+const diagonals = (uid: string) => {
+	const id = `cp-diag-${uid}`
+	return wrap(
+		<>
+			<defs>
+				<pattern
+					id={id}
+					width='16'
+					height='16'
+					patternUnits='userSpaceOnUse'
+					patternTransform='rotate(0)'
+				>
+					<path d='M-4 20 L 20 -4' strokeWidth={1.2} />
+					<path d='M4 28 L 28 4' strokeWidth={1.2} />
+				</pattern>
+			</defs>
+			<rect width='240' height='240' fill={`url(#${id})`} stroke='none' />
+		</>
+	)
+}
 
 // 3 — концентрические круги
-const rings = wrap(
-	<g strokeWidth={1.2}>
-		{[26, 52, 78, 104, 130, 156, 182].map(r => (
-			<circle key={r} cx='170' cy='120' r={r} />
-		))}
-	</g>
-)
+const rings = () =>
+	wrap(
+		<g strokeWidth={1.2}>
+			{[26, 52, 78, 104, 130, 156, 182].map(r => (
+				<circle key={r} cx='170' cy='120' r={r} />
+			))}
+		</g>
+	)
 
 // 4 — квадратная сетка
-const grid = wrap(
-	<>
-		<defs>
-			<pattern
-				id='cp-grid'
-				width='22'
-				height='22'
-				patternUnits='userSpaceOnUse'
-			>
-				<path d='M22 0 L 0 0 0 22' strokeWidth={1} />
-			</pattern>
-		</defs>
-		<rect width='240' height='240' fill='url(#cp-grid)' stroke='none' />
-	</>
-)
+const grid = (uid: string) => {
+	const id = `cp-grid-${uid}`
+	return wrap(
+		<>
+			<defs>
+				<pattern id={id} width='22' height='22' patternUnits='userSpaceOnUse'>
+					<path d='M22 0 L 0 0 0 22' strokeWidth={1} />
+				</pattern>
+			</defs>
+			<rect width='240' height='240' fill={`url(#${id})`} stroke='none' />
+		</>
+	)
+}
 
 // 5 — шевроны (зигзаг)
-const chevrons = wrap(
-	<>
-		<defs>
-			<pattern
-				id='cp-chevron'
-				width='24'
-				height='16'
-				patternUnits='userSpaceOnUse'
-			>
-				<path d='M0 14 L 12 2 L 24 14' strokeWidth={1.2} />
-			</pattern>
-		</defs>
-		<rect width='240' height='240' fill='url(#cp-chevron)' stroke='none' />
-	</>
-)
+const chevrons = (uid: string) => {
+	const id = `cp-chevron-${uid}`
+	return wrap(
+		<>
+			<defs>
+				<pattern id={id} width='24' height='16' patternUnits='userSpaceOnUse'>
+					<path d='M0 14 L 12 2 L 24 14' strokeWidth={1.2} />
+				</pattern>
+			</defs>
+			<rect width='240' height='240' fill={`url(#${id})`} stroke='none' />
+		</>
+	)
+}
 
 // 6 — чешуя (пересекающиеся дуги)
-const scales = wrap(
-	<>
-		<defs>
-			<pattern
-				id='cp-scales'
-				width='28'
-				height='16'
-				patternUnits='userSpaceOnUse'
-			>
-				<path d='M0 16 A 14 14 0 0 1 28 16' strokeWidth={1.1} />
-				<path d='M-14 16 A 14 14 0 0 1 14 16' strokeWidth={1.1} />
-				<path d='M14 16 A 14 14 0 0 1 42 16' strokeWidth={1.1} />
-			</pattern>
-		</defs>
-		<rect width='240' height='240' fill='url(#cp-scales)' stroke='none' />
-	</>
-)
+const scales = (uid: string) => {
+	const id = `cp-scales-${uid}`
+	return wrap(
+		<>
+			<defs>
+				<pattern id={id} width='28' height='16' patternUnits='userSpaceOnUse'>
+					<path d='M0 16 A 14 14 0 0 1 28 16' strokeWidth={1.1} />
+					<path d='M-14 16 A 14 14 0 0 1 14 16' strokeWidth={1.1} />
+					<path d='M14 16 A 14 14 0 0 1 42 16' strokeWidth={1.1} />
+				</pattern>
+			</defs>
+			<rect width='240' height='240' fill={`url(#${id})`} stroke='none' />
+		</>
+	)
+}
 
 const PATTERNS = [waves, dots, diagonals, rings, grid, chevrons, scales]
 
@@ -159,7 +163,7 @@ export function patternIndexForCategory(category: string): number {
 	return CATEGORY_PATTERN[category] ?? hashIndex(category)
 }
 
-export function CardPattern({ variant }: Props) {
+export function CardPattern({ variant, uid }: Props) {
 	const v = ((variant % PATTERNS.length) + PATTERNS.length) % PATTERNS.length
-	return PATTERNS[v]
+	return PATTERNS[v](toIdSafe(uid))
 }

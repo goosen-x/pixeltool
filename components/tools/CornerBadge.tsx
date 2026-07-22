@@ -1,22 +1,24 @@
 import type { CSSProperties, ComponentType } from 'react'
 import { cn } from '@/lib/utils'
 
-// Размеры бейджа-уголка и его вырезов. Фиксированные (не адаптивные): все
-// три куска (бейдж + два выреза) должны договориться об одном общем холсте
-// градиента (см. ниже), поэтому упрощаем до одного набора чисел.
-const BADGE_SIZE = 60
-const NOTCH_SIZE = 22
-const CANVAS = BADGE_SIZE + NOTCH_SIZE
+// Размеры по умолчанию — как на карточках-плитках. Строчные карточки
+// передают меньший size/notchSize через пропсы (см. EnhancedWidgetSearch).
+const DEFAULT_BADGE_SIZE = 60
+const DEFAULT_NOTCH_SIZE = 22
 
 // Бейдж и оба выреза красятся ОДНИМ и тем же градиентом, но рисуют его каждый
-// как часть общего холста CANVAS×CANVAS (background-size + свой отрицательный
+// как часть общего холста canvas×canvas (background-size + свой отрицательный
 // background-position) — иначе каждый кусок считает свой маленький градиент
 // независимо от 0 до 100% внутри собственных границ, и на резких градиентах
 // (например from-black to-white) на стыке виден шов. Общий холст гарантирует
 // непрерывность при любых цветах.
-function sharedGradientStyle(x: number, y: number): CSSProperties {
+function sharedGradientStyle(
+	x: number,
+	y: number,
+	canvas: number
+): CSSProperties {
 	return {
-		backgroundSize: `${CANVAS}px ${CANVAS}px`,
+		backgroundSize: `${canvas}px ${canvas}px`,
 		backgroundPosition: `${-x}px ${-y}px`
 	}
 }
@@ -29,6 +31,8 @@ function CornerNotch({
 	gradient,
 	x,
 	y,
+	canvas,
+	notchSize,
 	className,
 	transform
 }: {
@@ -36,10 +40,12 @@ function CornerNotch({
 	gradient: string
 	x: number
 	y: number
+	canvas: number
+	notchSize: number
 	className: string
 	transform: string
 }) {
-	const mask = `radial-gradient(circle at ${focal}, transparent calc(${NOTCH_SIZE}px - 0.5px), #000 ${NOTCH_SIZE}px)`
+	const mask = `radial-gradient(circle at ${focal}, transparent calc(${notchSize}px - 0.5px), #000 ${notchSize}px)`
 	return (
 		<span
 			aria-hidden
@@ -49,12 +55,12 @@ function CornerNotch({
 				className
 			)}
 			style={{
-				width: NOTCH_SIZE,
-				height: NOTCH_SIZE,
+				width: notchSize,
+				height: notchSize,
 				WebkitMask: mask,
 				mask,
 				transform,
-				...sharedGradientStyle(x, y)
+				...sharedGradientStyle(x, y, canvas)
 			}}
 		/>
 	)
@@ -63,13 +69,27 @@ function CornerNotch({
 interface CornerBadgeProps {
 	icon: ComponentType<{ className?: string }>
 	gradient: string
+	/** Сторона квадрата бейджа в px. По умолчанию — размер с карточек-плиток. */
+	size?: number
+	/** Радиус вогнутых вырезов в px. */
+	notchSize?: number
+	/** Классы иконки внутри бейджа — меняются вместе с size на мелких вариантах. */
+	iconClassName?: string
 }
 
 // Квадратный бейдж-уголок с вогнутыми вырезами, сидящий вплотную в правом
 // верхнем углу карточки (родитель должен быть rounded-3xl + overflow-hidden +
 // position: relative). Общий приём для ToolCard и любых других карточек,
 // которым нужен тот же визуальный язык.
-export function CornerBadge({ icon: Icon, gradient }: CornerBadgeProps) {
+export function CornerBadge({
+	icon: Icon,
+	gradient,
+	size = DEFAULT_BADGE_SIZE,
+	notchSize = DEFAULT_NOTCH_SIZE,
+	iconClassName = 'h-6 w-6 sm:h-7 sm:w-7'
+}: CornerBadgeProps) {
+	const canvas = size + notchSize
+
 	return (
 		<div
 			className={cn(
@@ -77,16 +97,18 @@ export function CornerBadge({ icon: Icon, gradient }: CornerBadgeProps) {
 				gradient
 			)}
 			style={{
-				width: BADGE_SIZE,
-				height: BADGE_SIZE,
-				...sharedGradientStyle(CANVAS - BADGE_SIZE, 0)
+				width: size,
+				height: size,
+				...sharedGradientStyle(canvas - size, 0, canvas)
 			}}
 		>
 			<CornerNotch
 				focal='bottom left'
 				gradient={gradient}
-				x={CANVAS - NOTCH_SIZE}
-				y={BADGE_SIZE}
+				x={canvas - notchSize}
+				y={size}
+				canvas={canvas}
+				notchSize={notchSize}
 				className='bottom-0 right-0'
 				transform='translateY(100%)'
 			/>
@@ -95,10 +117,12 @@ export function CornerBadge({ icon: Icon, gradient }: CornerBadgeProps) {
 				gradient={gradient}
 				x={0}
 				y={0}
+				canvas={canvas}
+				notchSize={notchSize}
 				className='left-0 top-0'
 				transform='translateX(-100%)'
 			/>
-			<Icon className='relative z-10 h-6 w-6 sm:h-7 sm:w-7' />
+			<Icon className={cn('relative z-10', iconClassName)} />
 		</div>
 	)
 }

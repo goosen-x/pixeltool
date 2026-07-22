@@ -186,7 +186,10 @@ export async function generateMetadata(): Promise<Metadata> {
 			}
 		],
 		alternates: {
-			canonical: siteUrl
+			canonical: siteUrl,
+			types: {
+				'application/rss+xml': `${siteUrl}/rss.xml`
+			}
 		},
 		robots: {
 			index: true,
@@ -226,6 +229,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 	return (
 		<html
 			lang='ru'
+			prefix='og: http://ogp.me/ns# article: http://ogp.me/ns/article#'
 			data-scroll-behavior='smooth'
 			className={cn(
 				'scroll-smooth scroll-pt-24',

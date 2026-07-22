@@ -101,9 +101,9 @@ export const Footer = () => {
 					<div className='lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-8'>
 						{/* Tools */}
 						<div>
-							<h3 className='text-sm font-semibold mb-4 text-foreground'>
+							<p className='text-sm font-semibold mb-4 text-foreground'>
 								{footerLinks.tools.title}
-							</h3>
+							</p>
 							<ul className='space-y-3'>
 								{footerLinks.tools.links.map((link, idx) => (
 									<li key={idx}>
@@ -120,9 +120,9 @@ export const Footer = () => {
 
 						{/* Company */}
 						<div>
-							<h3 className='text-sm font-semibold mb-4 text-foreground'>
+							<p className='text-sm font-semibold mb-4 text-foreground'>
 								{footerLinks.company.title}
-							</h3>
+							</p>
 							<ul className='space-y-3'>
 								{footerLinks.company.links.map((link, idx) => (
 									<li key={idx}>
@@ -139,9 +139,9 @@ export const Footer = () => {
 
 						{/* Legal */}
 						<div>
-							<h3 className='text-sm font-semibold mb-4 text-foreground'>
+							<p className='text-sm font-semibold mb-4 text-foreground'>
 								{footerLinks.legal.title}
-							</h3>
+							</p>
 							<ul className='space-y-3'>
 								{footerLinks.legal.links.map((link, idx) => (
 									<li key={idx}>

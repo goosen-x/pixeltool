@@ -38,6 +38,10 @@ next-env.d.ts
 # Local AI/agent config (keep out of public repo)
 CLAUDE.md
 .clinerules
+.claude/
+.agents/
+.codex/
+AGENTS.md
 
 # Dev docs & reports
 docs/
@@ -48,3 +52,6 @@ docs/
 
 # Wordstat cache
 .cache/
+
+# Brainstorming visual companion
+.superpowers/

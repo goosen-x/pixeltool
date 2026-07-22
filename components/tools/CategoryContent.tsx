@@ -24,7 +24,9 @@ export function CategoryContent({ category }: Props) {
 		<>
 			{/* Каждый пункт — своя карточка: два абзаца подряд читаются как стена
 			    текста, а разнесённые по карточкам — как два отдельных утверждения */}
-			<section className='mb-12 grid gap-6 md:grid-cols-2'>
+			{/* div, а не section: у самой группы нет отдельного заголовка —
+			    он есть у каждой карточки внутри (см. CategoryContent) */}
+			<div className='mb-12 grid gap-6 md:grid-cols-2'>
 				{meta.intro.map(item => (
 					<article
 						key={item.title}
@@ -36,7 +38,7 @@ export function CategoryContent({ category }: Props) {
 						</p>
 					</article>
 				))}
-			</section>
+			</div>
 
 			<section className='mx-auto mb-12 max-w-3xl'>
 				<h2 className='text-2xl font-bold tracking-tight'>Частые вопросы</h2>

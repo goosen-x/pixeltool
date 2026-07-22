@@ -7,12 +7,15 @@ import tseslint from 'typescript-eslint'
 export default tseslint.config(
 	{
 		ignores: [
-			'.next/**',
-			'node_modules/**',
+			'**/.next/**',
+			'**/node_modules/**',
 			'out/**',
 			'coverage/**',
 			'scripts/**/*.js',
 			'test/**/*.js',
+			'.claude/**',
+			'.agents/**',
+			'.codex/**',
 		],
 	},
 	...tseslint.configs.recommended,
