@@ -61,3 +61,7 @@ payload.db
 payload.db-journal
 payload.db-wal
 payload.db-shm
+
+# Payload CMS — generated types (regenerate via `payload generate:types`),
+# same convention as next-env.d.ts above
+payload-types.ts
