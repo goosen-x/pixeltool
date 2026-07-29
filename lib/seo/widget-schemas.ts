@@ -171,24 +171,22 @@ export function getWidgetFAQs(translationKey: string, locale: string): any[] {
 				{
 					question: 'What types of QR codes can I create?',
 					answer:
-						'You can create QR codes for URLs, WiFi credentials, plain text, phone numbers, SMS, and app store links.'
+						'You can create QR codes for URLs, WiFi credentials, and app store links.'
 				},
 				{
 					question: 'What file formats are supported for download?',
-					answer:
-						'Generated QR codes can be downloaded as PNG or SVG files in various sizes.'
+					answer: 'Generated QR codes can be downloaded as a PNG file.'
 				}
 			],
 			ru: [
 				{
 					question: 'Какие типы QR-кодов я могу создать?',
 					answer:
-						'Вы можете создавать QR-коды для URL, WiFi, текста, телефонных номеров, SMS и ссылок на магазины приложений.'
+						'Вы можете создавать QR-коды для ссылок (URL), Wi-Fi сетей и ссылок на магазины приложений.'
 				},
 				{
 					question: 'Какие форматы файлов поддерживаются для загрузки?',
-					answer:
-						'Сгенерированные QR-коды можно загрузить в форматах PNG или SVG различных размеров.'
+					answer: 'Сгенерированный QR-код можно скачать в формате PNG.'
 				}
 			]
 		}
