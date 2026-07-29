@@ -267,6 +267,17 @@ match.groups.day    // '15'`}
 			</p>
 
 			<p className='mt-8 leading-relaxed'>
+				Короткая версия этой шпаргалки с живым тестером — в статье{' '}
+				<Link
+					href='/blog/regulyarnye-vyrazheniya'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					«Регулярные выражения: как читать и составлять»
+				</Link>
+				.
+			</p>
+
+			<p className='mt-4 leading-relaxed'>
 				Проверить регулярное выражение прямо в рабочем коде поможет{' '}
 				<Link
 					href='/tools/javascript-syntax-checker'
