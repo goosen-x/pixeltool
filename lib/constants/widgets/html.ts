@@ -214,7 +214,7 @@ export const htmlWidgets: Widget[] = [
 			{
 				question: 'Почему Facebook показывает старое превью?',
 				answer:
-					'Facebook тоже кэширует Open Graph. Откройте Facebook Sharing Debugger (developers.facebook.com/tools/debug), вставьте URL и нажмите «Scrape Again» — кэш обновится. Для Twitter/X используйте Card Validator, для ВКонтакте кэш обычно сбрасывается сам через некоторое время.'
+					'Facebook тоже кэширует Open Graph. Откройте Facebook Sharing Debugger (developers.facebook.com/tools/debug), вставьте URL и нажмите «Scrape Again» — кэш обновится. У X (Twitter) отдельного дебаггера больше нет — Card Validator фактически не работает, превью обновляется само при новой публикации ссылки. ВКонтакте кэш обычно сбрасывается сам через некоторое время.'
 			}
 		]
 	}

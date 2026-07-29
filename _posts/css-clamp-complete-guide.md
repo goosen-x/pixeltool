@@ -34,8 +34,6 @@ related:
 Используя `clamp()`, можно создавать плавную, адаптивную типографику без единого
 медиа-запроса.
 
-/tools/css-clamp-calculator
-
 ## Что такое clamp()?
 
 CSS функция `clamp()` позволяет установить значение, которое адаптируется в
@@ -113,9 +111,9 @@ font-size: clamp(1rem, 0.818rem + 0.909vw, 1.5rem);
 подставить одинаковые числа в оба слагаемых (частая опечатка), кривая уедет — на
 320px выйдет 17.5px вместо 16.
 
-Считать это руками необязательно:
-
-/tools/css-clamp-calculator
+Считать это руками необязательно — воспользуйтесь
+[калькулятором clamp()](/tools/css-clamp-calculator): он подставит числа сам и
+сразу покажет получившуюся кривую.
 
 ## Преимущества использования clamp()
 
@@ -194,10 +192,6 @@ h2 {
 	font-size: clamp(var(--min-size), var(--fluid-size), var(--max-size));
 }
 ```
-
-## Инструменты для работы с clamp()
-
-/tools/css-clamp-calculator
 
 ## Поддержка браузерами
 
@@ -363,15 +357,13 @@ CSS `clamp()` — это мощный инструмент для создани
 1. Используйте `clamp()` для типографики и отступов
 2. Комбинируйте с относительными единицами
 3. Тестируйте на разных размерах экрана
-4. Применяйте наш [калькулятор](/tools/css-clamp-calculator) для точных расчётов
+4. Не считайте коэффициенты в уме — держите под рукой калькулятор
 
 Начните использовать `clamp()` уже сегодня и сделайте ваш дизайн более гибким и
 современным!
 
 ## Полезные ресурсы
 
-- [CSS Clamp Calculator](/tools/css-clamp-calculator) — наш инструмент для
-  расчётов
 - [MDN: clamp()](https://developer.mozilla.org/ru/docs/Web/CSS/clamp)
 - [Fluid Typography Calculator](https://www.fluid-type-scale.com/)
 - [Modern Fluid Typography Using CSS Clamp](https://www.smashingmagazine.com/2022/01/modern-fluid-typography-css-clamp/)
