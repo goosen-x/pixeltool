@@ -189,6 +189,32 @@ export function getWidgetFAQs(translationKey: string, locale: string): any[] {
 					answer: 'Сгенерированный QR-код можно скачать в формате PNG.'
 				}
 			]
+		},
+		qrScanner: {
+			en: [
+				{
+					question: 'Do I need to install an app to scan a QR code?',
+					answer:
+						'No. The scanner works directly in your browser, using your camera or an uploaded image — no app required.'
+				},
+				{
+					question: 'Is it safe to scan a QR code through the website?',
+					answer:
+						'Yes. Camera frames and uploaded images are processed locally in your browser — nothing is uploaded to a server.'
+				}
+			],
+			ru: [
+				{
+					question: 'Нужно ли устанавливать приложение, чтобы отсканировать QR-код?',
+					answer:
+						'Нет. Сканер работает прямо в браузере — через камеру или загруженное изображение, без установки приложений.'
+				},
+				{
+					question: 'Безопасно ли сканировать QR-код через сайт?',
+					answer:
+						'Да. Кадры с камеры и загруженное изображение обрабатываются локально — ничего не отправляется на сервер.'
+				}
+			]
 		}
 	}
 

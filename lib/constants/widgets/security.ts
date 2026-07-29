@@ -1,5 +1,5 @@
 import { Widget } from './index'
-import { Fingerprint, Key, Lock, QrCode } from 'lucide-react'
+import { Fingerprint, Key, Lock, QrCode, ScanQrCode } from 'lucide-react'
 import { JWTIcon } from '@/components/icons/JWTIcon'
 
 export const securityWidgets: Widget[] = [
@@ -17,7 +17,7 @@ export const securityWidgets: Widget[] = [
 			'Бесплатный генератор QR кодов онлайн. Создайте QR код для URL, WiFi, App Store за секунды. Генератор qr работает без регистрации',
 		useCase:
 			'Бесплатный онлайн генератор qr кодов для URL, WiFi сетей и мобильных приложений',
-		recommendedTools: ['utm-builder', 'svg-encoder', 'youtube-thumbnail'],
+		recommendedTools: ['qr-scanner', 'utm-builder', 'svg-encoder'],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-29',
 		tags: ['qr', 'qrcode', 'generator', 'wifi', 'mobile'],
@@ -48,6 +48,54 @@ export const securityWidgets: Widget[] = [
 				question: 'Можно ли изменить цвет QR-кода?',
 				answer:
 					'Да, можно задать любой цвет для тёмных и светлых модулей. Сохраняйте высокий контраст между ними — иначе камере будет сложнее распознать код.'
+			}
+		]
+	},
+	{
+		id: 'qr-scanner',
+		searchVolume: 63151,
+		icon: ScanQrCode,
+		category: 'security',
+		translationKey: 'qrScanner',
+		path: 'qr-scanner',
+		gradient: 'from-violet-500 to-purple-500',
+		title: 'Сканер QR-кодов',
+		metaTitle: 'Сканер QR-кодов онлайн — через камеру или фото',
+		description:
+			'Наведите камеру на QR-код или загрузите изображение — сканер распознает ссылку или текст прямо в браузере.',
+		useCase:
+			'Онлайн-сканер QR-кодов через камеру ноутбука или загруженное фото, без установки приложений',
+		recommendedTools: ['qr-generator', 'password-generator', 'uuid-generator'],
+		difficulty: 'beginner',
+		updatedAt: '2026-07-29',
+		tags: ['qr', 'сканер', 'сканировать qr код', 'camera', 'scanner'],
+		metaDescription:
+			'Сканируйте QR-код через камеру или загрузите картинку — распознавание работает прямо в браузере, ничего не отправляется на сервер.',
+		faqs: [
+			{
+				question: 'Нужно ли устанавливать приложение, чтобы отсканировать QR-код?',
+				answer:
+					'Нет. Сканер работает прямо в браузере — на компьютере с веб-камерой или на телефоне. Отдельное приложение не требуется.'
+			},
+			{
+				question: 'Безопасно ли сканировать QR-код через сайт?',
+				answer:
+					'Да. Кадры с камеры и загруженное изображение обрабатываются локально, на вашем устройстве — ни картинка, ни распознанный текст никуда не отправляются.'
+			},
+			{
+				question: 'Камера не находит QR-код — что делать?',
+				answer:
+					'Поднесите код ближе, уберите блики и убедитесь, что в кадре достаточно света. Если камера всё равно не помогает — сфотографируйте код и загрузите картинку через вкладку «Изображение».'
+			},
+			{
+				question: 'Можно ли отсканировать QR-код с фотографии, а не с камеры?',
+				answer:
+					'Да, во вкладке «Изображение» — загрузите файл или перетащите его в область загрузки, и сканер распознает код на картинке.'
+			},
+			{
+				question: 'Какие QR-коды умеет распознавать сканер?',
+				answer:
+					'Любые стандартные QR-коды — со ссылкой, текстом, данными Wi-Fi и так далее. Сканер показывает то, что закодировано внутри, как есть; если это ссылка — рядом появится кнопка «Открыть».'
 			}
 		]
 	},
