@@ -221,6 +221,25 @@ export function ContrastGuide() {
 					навигация с клавиатуры превращается в угадайку.
 				</li>
 			</ul>
+
+			<p className='mt-8 leading-relaxed'>
+				Про то, что будет с этими порогами дальше — почему APCA не заменил WCAG
+				2.2 в WCAG 3 и как контраст влияет на балл{' '}
+				<Link
+					href='/blog/lighthouse-100'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					Lighthouse
+				</Link>
+				, — в статье{' '}
+				<Link
+					href='/blog/kontrast-teksta-i-fona'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					«Контраст текста и фона: пороги WCAG и что придёт им на смену»
+				</Link>
+				.
+			</p>
 		</section>
 	)
 }
