@@ -58,6 +58,7 @@ export function GlobalWidgetSearch({
 			// Hardcoded Russian titles and descriptions
 			const titles: Record<string, string> = {
 				qrGenerator: 'QR-код генератор',
+				qrScanner: 'Сканер QR-кодов',
 				passwordGenerator: 'Генератор паролей',
 				colorPalette: 'Палитра цветов',
 				textCounter: 'Счетчик символов',
@@ -120,6 +121,7 @@ export function GlobalWidgetSearch({
 
 			const descriptions: Record<string, string> = {
 				qrGenerator: 'Создавайте QR-коды для текста, ссылок и данных',
+				qrScanner: 'Сканируйте QR-коды через камеру или изображение',
 				passwordGenerator: 'Генерируйте безопасные пароли с настройками',
 				colorPalette: 'Создавайте и исследуйте цветовые палитры',
 				textCounter: 'Подсчитывайте символы, слова и строки в тексте',
