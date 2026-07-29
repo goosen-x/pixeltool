@@ -37,6 +37,7 @@ import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { TextRoll } from '@/components/core/text-roll'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { PasswordSeo } from './PasswordSeo'
 
 interface PasswordOptions {
 	length: number
@@ -843,6 +844,7 @@ export default function PasswordGeneratorPage() {
 					</Card>
 				</div>
 			</WidgetLayout>
+			<PasswordSeo />
 		</WidgetSEOWrapper>
 	)
 }
