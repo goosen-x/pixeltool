@@ -52,19 +52,28 @@ export function CategoryHero({
 	// bg-muted, а не bg-card: в светлой теме card — чистый белый, и карточка
 	// сливалась с фоном страницы
 	return (
-		<section className='relative overflow-hidden rounded-3xl border bg-muted px-6 py-10 dark:bg-card sm:px-10 sm:py-14'>
-			{/* Контурная подложка. Линии чёрные, поэтому в тёмной теме инвертируем —
-			    иначе они сливались бы с фоном. aria-hidden: это украшение,
-			    скринридеру рассказывать о нём нечего. */}
-			<Image
-				src='/images/tools-hero-bg.png'
-				alt=''
-				aria-hidden
-				width={1200}
-				height={1200}
-				priority
-				className='pointer-events-none absolute -right-24 -top-32 w-[38rem] max-w-none select-none opacity-[0.14] dark:opacity-[0.12] dark:invert'
-			/>
+		<section className='relative isolate overflow-hidden rounded-3xl border bg-background px-6 py-10 dark:bg-[#050816] sm:px-10 sm:py-14'>
+			<div aria-hidden className='pointer-events-none absolute inset-0'>
+				<Image
+					src='/images/tools-hero-bg-light.avif'
+					alt=''
+					aria-hidden
+					fill
+					priority
+					sizes='100vw'
+					className='select-none object-cover object-center dark:hidden'
+				/>
+				<Image
+					src='/images/tools-hero-bg-dark.avif'
+					alt=''
+					aria-hidden
+					fill
+					priority
+					sizes='100vw'
+					className='hidden select-none object-cover object-center dark:block'
+				/>
+				<div className='absolute inset-0 bg-gradient-to-r from-background/95 via-background/82 to-background/28 dark:from-background/92 dark:via-background/78 dark:to-background/12' />
+			</div>
 
 			<div className='relative grid items-center gap-8 lg:grid-cols-[1fr_auto]'>
 				<div className='max-w-2xl'>

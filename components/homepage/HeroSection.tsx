@@ -105,6 +105,40 @@ export function HeroSection() {
 					</div>
 				</div>
 
+				{/* Верхний правый блок категорий — перенесён сюда с каталога. */}
+				<div className='absolute right-0 top-0 z-20 hidden rounded-bl-3xl bg-background p-6 md:block lg:p-8'>
+					<Notch
+						focal='bottom left'
+						className='bottom-0 right-0'
+						transform='translateY(100%)'
+					/>
+					<Notch
+						focal='bottom left'
+						className='left-0 top-0'
+						transform='translateX(-100%)'
+					/>
+					<ul className='relative z-10 flex flex-col items-end gap-2.5'>
+						{navLinks.map(item => (
+							<li key={item.href} className='flex w-full justify-end'>
+								<Link
+									href={item.href}
+									className='group inline-flex cursor-pointer items-baseline gap-x-3 text-foreground'
+								>
+									<span className='font-mono text-[10px] leading-none tracking-[0.22em] text-neutral-400'>
+										{item.n}
+									</span>
+									<span className='select-none text-[0.65em] leading-none text-neutral-300'>
+										—
+									</span>
+									<span className='text-right font-medium tracking-tight text-muted-foreground transition-colors group-hover:text-primary'>
+										{item.label}
+									</span>
+								</Link>
+							</li>
+						))}
+					</ul>
+				</div>
+
 				{/* Основной контент — по центру всей высоты героя */}
 				<div className='relative z-10 flex flex-1 flex-col justify-center px-6 py-8 sm:px-8 lg:px-10'>
 					{/* top-20 (5rem), а не translate: transform на предке слоя с
@@ -199,40 +233,6 @@ export function HeroSection() {
 							</div>
 						</div>
 					</div>
-				</div>
-
-				{/* Нижний правый блок с вогнутыми углами — мини-навигация, оверлей */}
-				<div className='absolute bottom-0 right-0 z-20 hidden rounded-tl-3xl bg-background p-6 md:block lg:p-8'>
-					<Notch
-						focal='top left'
-						className='right-0 top-0'
-						transform='translateY(-100%)'
-					/>
-					<Notch
-						focal='top left'
-						className='bottom-0 left-0'
-						transform='translateX(-100%)'
-					/>
-					<ul className='relative z-10 flex flex-col items-end gap-2.5'>
-						{navLinks.map(item => (
-							<li key={item.href} className='flex w-full justify-end'>
-								<Link
-									href={item.href}
-									className='group inline-flex cursor-pointer items-baseline gap-x-3 text-foreground'
-								>
-									<span className='font-mono text-[10px] leading-none tracking-[0.22em] text-neutral-400'>
-										{item.n}
-									</span>
-									<span className='select-none text-[0.65em] leading-none text-neutral-300'>
-										—
-									</span>
-									<span className='text-right font-medium tracking-tight text-muted-foreground transition-colors group-hover:text-primary'>
-										{item.label}
-									</span>
-								</Link>
-							</li>
-						))}
-					</ul>
 				</div>
 			</div>
 		</section>
