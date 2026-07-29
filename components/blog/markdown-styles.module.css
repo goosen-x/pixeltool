@@ -1,6 +1,13 @@
 .markdown {
 	font-size: 1.125rem;
 	line-height: 1.75;
+	/* Длинные неразрывные токены (инлайн-код, ссылки) без этого выталкивают
+	   .markdown шире колонки статьи — на широких экранах это раздвигает общий
+	   flex-ряд (статья + sticky-сайдбар) за пределы вьюпорта, и сайдбар
+	   обрезается при горизонтальном скролле. min-w-0 на родителе тут не
+	   спасает: он снимает флор у flex-item, но сам контент внутри всё равно
+	   не переносится без overflow-wrap. */
+	overflow-wrap: break-word;
 }
 
 .markdown p,
@@ -94,6 +101,9 @@
 	padding: 0.125rem 0.375rem;
 	font-size: 0.875rem;
 	font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+	/* Самый частый источник длинных неразрывных токенов в статье — see
+	   .markdown комментарий выше про overflow-wrap на всём контейнере. */
+	overflow-wrap: anywhere;
 }
 
 /* Dark theme inline code */

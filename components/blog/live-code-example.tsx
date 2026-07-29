@@ -24,6 +24,9 @@ interface LiveCodeExampleProps {
 	js?: string
 	title?: string
 	className?: string
+	/** Скрывает вкладки HTML/CSS/JS и сразу показывает результат — для
+	 *  интерактивных виджетов (калькуляторов), а не обучающих примеров кода. */
+	resultOnly?: boolean
 }
 
 export function LiveCodeExample({
@@ -31,7 +34,8 @@ export function LiveCodeExample({
 	css = '',
 	js = '',
 	title,
-	className
+	className,
+	resultOnly = false
 }: LiveCodeExampleProps) {
 	const { resolvedTheme } = useTheme()
 	const [mounted, setMounted] = useState(false)
@@ -43,14 +47,17 @@ export function LiveCodeExample({
 
 	// Первой открываем вкладку с кодом, а не «Result»: srcDoc для iframe
 	// собирается в эффекте, поэтому результат до этого момента пустой — человек
-	// видел белый прямоугольник и думал, что пример сломан
-	const firstTab: 'html' | 'css' | 'js' | 'result' = hasHtml
-		? 'html'
-		: hasCss
-			? 'css'
-			: hasJs
-				? 'js'
-				: 'result'
+	// видел белый прямоугольник и думал, что пример сломан.
+	// Исключение — resultOnly: там вкладок нет вовсе, показываем сразу результат.
+	const firstTab: 'html' | 'css' | 'js' | 'result' = resultOnly
+		? 'result'
+		: hasHtml
+			? 'html'
+			: hasCss
+				? 'css'
+				: hasJs
+					? 'js'
+					: 'result'
 
 	const [activeTab, setActiveTab] = useState<'html' | 'css' | 'js' | 'result'>(
 		firstTab
@@ -83,8 +90,6 @@ export function LiveCodeExample({
 				return ''
 		}
 	}
-
-	const [srcDoc, setSrcDoc] = useState('')
 
 	const generateSrcDoc = () => {
 		const fullHtml = `
@@ -146,11 +151,23 @@ export function LiveCodeExample({
 		return fullHtml
 	}
 
+	// Ленивый инициализатор считает srcDoc прямо в первом рендере, а не после
+	// него — раньше iframe стартовал с srcDoc='' и заполнялся только в
+	// useEffect уже после маунта. На части браузеров эта промежуточная пустая
+	// навигация не перерисовывалась сама: превью оставалось пустым до
+	// следующего ре-рендера страницы (например, смены темы).
+	const [srcDoc, setSrcDoc] = useState(generateSrcDoc)
+	const isFirstRun = useRef(true)
+
 	const runCode = () => {
 		setSrcDoc(generateSrcDoc())
 	}
 
 	useEffect(() => {
+		if (isFirstRun.current) {
+			isFirstRun.current = false
+			return
+		}
 		runCode()
 	}, [html, css, js])
 
@@ -198,70 +215,77 @@ export function LiveCodeExample({
 				</div>
 			)}
 
-			<div className='flex items-center justify-between border-b border-neutral-200 bg-neutral-50 px-2 dark:border-neutral-800 dark:bg-neutral-900'>
-				<div className='flex'>
-					{tabs.map(tab => (
-						<button
-							key={tab.id}
-							onClick={() => setActiveTab(tab.id)}
-							className={cn(
-								'px-4 py-2 text-sm font-medium transition-colors',
-								activeTab === tab.id
-									? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-									: 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100'
-							)}
-						>
-							{tab.label}
-						</button>
-					))}
-				</div>
+			{!resultOnly && (
+				<div className='flex items-center justify-between border-b border-neutral-200 bg-neutral-50 px-2 dark:border-neutral-800 dark:bg-neutral-900'>
+					<div className='flex'>
+						{tabs.map(tab => (
+							<button
+								key={tab.id}
+								onClick={() => setActiveTab(tab.id)}
+								className={cn(
+									'px-4 py-2 text-sm font-medium transition-colors',
+									activeTab === tab.id
+										? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+										: 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100'
+								)}
+							>
+								{tab.label}
+							</button>
+						))}
+					</div>
 
-				<div className='flex items-center gap-1'>
-					{activeTab === 'result' && (
+					<div className='flex items-center gap-1'>
+						{activeTab === 'result' && (
+							<Button
+								variant='ghost'
+								size='icon'
+								onClick={runCode}
+								className='h-8 w-8'
+								title='Refresh preview'
+							>
+								<RotateCcw className='h-4 w-4' />
+							</Button>
+						)}
+						{activeTab !== 'result' && (
+							<Button
+								variant='ghost'
+								size='icon'
+								onClick={copyCode}
+								className='h-8 w-8'
+								title='Copy code'
+							>
+								{isCopied ? (
+									<Check className='h-4 w-4 text-green-500' />
+								) : (
+									<Copy className='h-4 w-4' />
+								)}
+							</Button>
+						)}
 						<Button
 							variant='ghost'
 							size='icon'
-							onClick={runCode}
+							onClick={toggleFullscreen}
 							className='h-8 w-8'
-							title='Refresh preview'
+							title='Toggle fullscreen'
 						>
-							<RotateCcw className='h-4 w-4' />
-						</Button>
-					)}
-					{activeTab !== 'result' && (
-						<Button
-							variant='ghost'
-							size='icon'
-							onClick={copyCode}
-							className='h-8 w-8'
-							title='Copy code'
-						>
-							{isCopied ? (
-								<Check className='h-4 w-4 text-green-500' />
+							{isFullscreen ? (
+								<Minimize2 className='h-4 w-4' />
 							) : (
-								<Copy className='h-4 w-4' />
+								<Maximize2 className='h-4 w-4' />
 							)}
 						</Button>
-					)}
-					<Button
-						variant='ghost'
-						size='icon'
-						onClick={toggleFullscreen}
-						className='h-8 w-8'
-						title='Toggle fullscreen'
-					>
-						{isFullscreen ? (
-							<Minimize2 className='h-4 w-4' />
-						) : (
-							<Maximize2 className='h-4 w-4' />
-						)}
-					</Button>
+					</div>
 				</div>
-			</div>
+			)}
 
 			<div className='relative'>
 				{activeTab === 'result' ? (
-					<div className='h-[400px] bg-white dark:bg-neutral-950'>
+					<div
+						className={cn(
+							resultOnly ? 'h-[340px]' : 'h-[400px]',
+							'bg-white dark:bg-neutral-950'
+						)}
+					>
 						<iframe
 							ref={iframeRef}
 							className='h-full w-full'

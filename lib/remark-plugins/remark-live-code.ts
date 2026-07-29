@@ -7,6 +7,7 @@ interface LiveCodeData {
 	css?: string
 	js?: string
 	title?: string
+	resultOnly?: boolean
 }
 
 const remarkLiveCode: Plugin<[], Root> = () => {
@@ -33,7 +34,7 @@ const remarkLiveCode: Plugin<[], Root> = () => {
 				}
 
 				// Add code to current block
-				currentLiveCode[lang as keyof LiveCodeData] = node.value
+				currentLiveCode[lang as 'html' | 'css' | 'js'] = node.value
 
 				// Check if this is followed by another live code block
 				const nextNode = parent.children[index + 1]
@@ -69,6 +70,22 @@ const remarkLiveCode: Plugin<[], Root> = () => {
 							currentLiveCode.js = currentLiveCode.js
 								.split('\n')
 								.slice(1)
+								.join('\n')
+						}
+					}
+
+					// Директива `// resultOnly` на отдельной строке скрывает вкладки
+					// HTML/CSS/JS и сразу показывает только результат — для интерактивных
+					// виджетов (калькуляторов), а не обучающих примеров кода.
+					const resultOnlyPattern = /^\/\/\s*resultOnly\s*$/
+					for (const key of ['html', 'css', 'js'] as const) {
+						const code = currentLiveCode[key]
+						if (!code) continue
+						if (code.split('\n').some(line => resultOnlyPattern.test(line))) {
+							currentLiveCode.resultOnly = true
+							currentLiveCode[key] = code
+								.split('\n')
+								.filter(line => !resultOnlyPattern.test(line))
 								.join('\n')
 						}
 					}

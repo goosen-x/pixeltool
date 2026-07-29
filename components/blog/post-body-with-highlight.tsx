@@ -94,6 +94,7 @@ export function PostBodyWithHighlight({ content }: Props) {
 							css={data.css}
 							js={data.js}
 							title={data.title}
+							resultOnly={data.resultOnly}
 						/>
 					)
 				} catch (error) {
