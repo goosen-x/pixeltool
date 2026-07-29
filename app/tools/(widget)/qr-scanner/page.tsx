@@ -163,7 +163,11 @@ export default function QRScannerPage() {
 								/>
 							</div>
 							{cameraActive ? (
-								<Button onClick={stopCamera} variant='outline' className='w-full'>
+								<Button
+									onClick={stopCamera}
+									variant='outline'
+									className='w-full'
+								>
 									Остановить камеру
 								</Button>
 							) : (
@@ -185,7 +189,9 @@ export default function QRScannerPage() {
 								className='flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-10 text-center text-muted-foreground hover:border-primary'
 							>
 								<Upload className='h-6 w-6' />
-								<span>Перетащите картинку сюда или нажмите, чтобы выбрать файл</span>
+								<span>
+									Перетащите картинку сюда или нажмите, чтобы выбрать файл
+								</span>
 								<input
 									id='qr-image-upload'
 									type='file'
@@ -201,7 +207,10 @@ export default function QRScannerPage() {
 					</Tabs>
 				</WidgetSection>
 
-				<WidgetSection icon={<ScanQrCode className='w-5 h-5' />} title='Результат'>
+				<WidgetSection
+					icon={<ScanQrCode className='w-5 h-5' />}
+					title='Результат'
+				>
 					{error && <p className='text-sm text-destructive'>{error}</p>}
 					{!error && !result && (
 						<p className='text-sm text-muted-foreground'>
