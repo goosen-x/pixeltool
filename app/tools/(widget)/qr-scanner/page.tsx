@@ -29,11 +29,13 @@ export default function QRScannerPage() {
 	const [result, setResult] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [cameraActive, setCameraActive] = useState(false)
+	const [starting, setStarting] = useState(false)
 
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const streamRef = useRef<MediaStream | null>(null)
 	const rafRef = useRef<number | null>(null)
+	const modeRef = useRef(mode)
 
 	const stopCamera = useCallback(() => {
 		if (rafRef.current !== null) {
@@ -71,11 +73,19 @@ export default function QRScannerPage() {
 	}, [])
 
 	const startCamera = async () => {
+		if (starting) return
+		setStarting(true)
 		setError(null)
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: { facingMode: 'environment' }
 			})
+			// Пользователь мог переключиться на вкладку загрузки, пока мы ждали
+			// разрешение на камеру — тогда просто останавливаем полученный поток.
+			if (modeRef.current !== 'camera') {
+				stream.getTracks().forEach(track => track.stop())
+				return
+			}
 			streamRef.current = stream
 			if (videoRef.current) {
 				videoRef.current.srcObject = stream
@@ -88,6 +98,8 @@ export default function QRScannerPage() {
 			setError(
 				'Не удалось получить доступ к камере. Разрешите доступ в настройках браузера или загрузите изображение во вкладке «Изображение».'
 			)
+		} finally {
+			setStarting(false)
 		}
 	}
 
@@ -95,6 +107,7 @@ export default function QRScannerPage() {
 	// загрузки — незачем держать поток открытым, когда он не используется.
 	useEffect(() => stopCamera, [stopCamera])
 	useEffect(() => {
+		modeRef.current = mode
 		if (mode !== 'camera') stopCamera()
 	}, [mode, stopCamera])
 
@@ -171,7 +184,11 @@ export default function QRScannerPage() {
 									Остановить камеру
 								</Button>
 							) : (
-								<Button onClick={startCamera} className='w-full'>
+								<Button
+									onClick={startCamera}
+									disabled={starting}
+									className='w-full'
+								>
 									Включить камеру
 								</Button>
 							)}
