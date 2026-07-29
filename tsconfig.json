@@ -19,8 +19,7 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./*"],
-			"@payload-config": ["./payload.config.mts"]
+			"@/*": ["./*"]
 		},
 		"target": "ES2017"
 	},
