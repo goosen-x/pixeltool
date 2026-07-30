@@ -164,9 +164,11 @@ export const securityWidgets: Widget[] = [
 		path: 'base64-encoder',
 		gradient: 'from-green-500 to-teal-600',
 		title: 'Base64 кодировщик',
+		metaTitle: 'Base64 онлайн — кодировать и декодировать',
 		description: 'Кодируйте и декодируйте данные в формате Base64',
 		recommendedTools: ['jwt-decoder', 'svg-encoder', 'json-tools'],
 		difficulty: 'beginner',
+		updatedAt: '2026-07-30',
 		tags: ['base64', 'encode', 'decode', 'converter', 'encryption'],
 		useCase:
 			'Кодирование изображений и файлов в Base64 для встраивания в CSS/HTML',
@@ -209,9 +211,11 @@ export const securityWidgets: Widget[] = [
 		path: 'jwt-decoder',
 		gradient: 'from-purple-500 to-pink-600',
 		title: 'JWT декодер',
+		metaTitle: 'JWT декодер онлайн — разобрать токен без ключа',
 		description: 'Декодируйте и анализируйте JSON Web Token без ключа',
 		recommendedTools: ['base64-encoder', 'json-tools', 'uuid-generator'],
 		difficulty: 'intermediate',
+		updatedAt: '2026-07-30',
 		tags: ['jwt', 'json', 'token', 'decoder', 'authentication'],
 		useCase: 'Анализ структуры JWT токенов для отладки авторизации',
 		metaDescription:
@@ -253,22 +257,24 @@ export const securityWidgets: Widget[] = [
 		path: 'uuid-generator',
 		gradient: 'from-indigo-500 to-blue-600',
 		title: 'Генератор UUID',
-		description: 'Создавайте уникальные идентификаторы UUID всех версий',
+		metaTitle: 'Генератор UUID онлайн — v4, v7 и v1',
+		description: 'Создавайте уникальные идентификаторы UUID — v4, v7 или v1',
 		recommendedTools: [
 			'random-number-generator',
 			'password-generator',
 			'jwt-decoder'
 		],
 		difficulty: 'beginner',
+		updatedAt: '2026-07-30',
 		tags: ['uuid', 'guid', 'generator', 'unique', 'identifier'],
 		useCase: 'Генерация уникальных идентификаторов для API и баз данных',
 		metaDescription:
-			'Генератор UUID всех версий. Создавайте уникальные идентификаторы UUID и GUID онлайн.',
+			'Генератор UUID v4, v7 и v1. Создавайте уникальные идентификаторы UUID и GUID онлайн, без регистрации.',
 		faqs: [
 			{
 				question: 'В чём разница между версиями UUID?',
 				answer:
-					'UUID v1 использует временную метку + MAC адрес, v3/v5 используют хеширование на основе имени (MD5/SHA-1), v4 использует случайные данные. v4 наиболее распространён для общего использования, v1 для временно упорядоченных ID.'
+					'Этот генератор поддерживает три версии и нулевой UUID. v4 — полностью случайный, самый распространённый вариант по умолчанию. v7 — новее (стандартизирован в 2024 году): начинается с метки времени, поэтому такие ID сортируются по порядку создания — удобно как первичный ключ в базе данных. v1 — тоже метка времени, но плюс MAC-адрес устройства, из-за чего сейчас используется редко (MAC-адрес — это утечка информации об источнике). NIL UUID — специальное значение из одних нулей, «пустой» ID-заглушка.'
 			},
 			{
 				question: 'Действительно ли UUID уникальны и защищены от коллизий?',
