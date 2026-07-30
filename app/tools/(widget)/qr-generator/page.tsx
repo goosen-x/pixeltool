@@ -31,6 +31,7 @@ import {
 import { toast } from 'sonner'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { QrGeneratorSeo } from './QrGeneratorSeo'
 type QRType = 'url' | 'appstore' | 'wifi'
 
 interface WifiConfig {
@@ -538,6 +539,7 @@ export default function QRGeneratorPage() {
 					</div>
 				</div>
 			</div>
+			<QrGeneratorSeo />
 		</WidgetSEOWrapper>
 	)
 }

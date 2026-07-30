@@ -10,6 +10,7 @@ import { Camera, Upload, Copy, ExternalLink, ScanQrCode } from 'lucide-react'
 import { toast } from 'sonner'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { decodeImageData } from '@/lib/qr-scanner/decode'
+import { QrScannerSeo } from './QrScannerSeo'
 
 type ScanMode = 'camera' | 'upload'
 
@@ -257,6 +258,7 @@ export default function QRScannerPage() {
 					<canvas ref={canvasRef} className='hidden' />
 				</WidgetSection>
 			</div>
+			<QrScannerSeo />
 		</WidgetSEOWrapper>
 	)
 }

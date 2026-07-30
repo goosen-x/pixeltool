@@ -30,6 +30,9 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { UuidGeneratorSeo } from './UuidGeneratorSeo'
 
 type UUIDVersion = 'v4' | 'v1' | 'v7' | 'nil'
 type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces'
@@ -42,6 +45,7 @@ interface GeneratedUUID {
 }
 
 export default function UUIDGeneratorPage() {
+	const widget = getWidgetById('uuid-generator')!
 	const [version, setVersion] = useState<UUIDVersion>('v4')
 	const [format, setFormat] = useState<UUIDFormat>('standard')
 	const [quantity, setQuantity] = useState('1')
@@ -311,279 +315,282 @@ export default function UUIDGeneratorPage() {
 	]
 
 	return (
-		<div className='space-y-6'>
-			{/* Main Generator Card */}
-			<Card>
-				<CardHeader>
-					<CardTitle>Генератор UUID</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-6'>
-					{/* Quick Settings */}
-					<div className='flex flex-wrap gap-4'>
-						<div className='flex-1 min-w-[200px]'>
-							<Label className='text-xs text-muted-foreground mb-2 block'>
-								{'Версия'}
-							</Label>
-							<div className='grid grid-cols-2 gap-2'>
-								{versionOptions.map(opt => (
-									<button
-										key={opt.value}
-										onClick={() => setVersion(opt.value)}
-										className={cn(
-											'flex items-center gap-2 p-3 rounded-lg border text-left transition-all',
-											version === opt.value
-												? 'border-primary bg-primary/5 text-primary'
-												: 'border-border hover:border-primary/50'
-										)}
-									>
-										{opt.icon}
-										<div className='flex-1'>
-											<div className='font-medium text-sm'>{opt.label}</div>
-											<div className='text-xs text-muted-foreground'>
-												{opt.description}
-											</div>
-										</div>
-									</button>
-								))}
-							</div>
-						</div>
-
-						<div className='space-y-4'>
-							<div>
-								<Label className='text-xs text-muted-foreground mb-2 block'>
-									{'Формат'}
-								</Label>
-								<Select
-									value={format}
-									onValueChange={(v: UUIDFormat) => setFormat(v)}
-								>
-									<SelectTrigger className='w-[200px]'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										{formatOptions.map(fmt => (
-											<SelectItem key={fmt.value} value={fmt.value}>
-												<div>
-													<div className='font-medium'>{fmt.label}</div>
-													<div className='text-xs text-muted-foreground font-mono'>
-														{fmt.example.slice(0, 20)}...
-													</div>
-												</div>
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-
-							<div>
-								<Label className='text-xs text-muted-foreground mb-2 block'>
-									{'Количество'}
-								</Label>
-								<div className='flex gap-2'>
-									<Input
-										type='number'
-										value={quantity}
-										onChange={e => setQuantity(e.target.value)}
-										min='1'
-										max='1000'
-										className='w-[100px]'
-									/>
-									<Button onClick={generateUUIDs} className='gap-2'>
-										<RefreshCw className='w-4 h-4' />
-										{'Генерировать'}
-									</Button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					{/* Generated UUIDs */}
-					<div className='space-y-3'>
-						<div className='flex items-center justify-between'>
-							<Label className='text-sm'>{'Результат'}</Label>
-							{uuids.length > 0 && (
-								<div className='flex gap-2'>
-									{uuids.length > 1 && (
-										<>
-											<Button
-												size='sm'
-												variant='outline'
-												onClick={copyAll}
-												className='gap-2'
-											>
-												<Copy className='w-4 h-4' />
-												{'Скопировать все'}
-											</Button>
-											<Button
-												size='sm'
-												variant='outline'
-												onClick={downloadUUIDs}
-												className='gap-2'
-											>
-												<Download className='w-4 h-4' />
-												{'Скачать'}
-											</Button>
-										</>
-									)}
-									<Button
-										size='sm'
-										variant='outline'
-										onClick={() => setUuids([])}
-										className='gap-2'
-									>
-										<Trash2 className='w-4 h-4' />
-										{'Очистить'}
-									</Button>
-								</div>
-							)}
-						</div>
-
-						{uuids.length === 1 ? (
-							<div className='relative group'>
-								<Input
-									value={uuids[0].value}
-									readOnly
-									className='font-mono text-lg h-14 pr-12'
-									onClick={e => (e.target as HTMLInputElement).select()}
-								/>
-								<Button
-									size='icon'
-									variant='ghost'
-									onClick={() => copyToClipboard(uuids[0].value, uuids[0].id)}
-									className='absolute right-2 top-1/2 -translate-y-1/2'
-								>
-									{copiedId === uuids[0].id ? (
-										<Check className='w-4 h-4 text-green-500' />
-									) : (
-										<Copy className='w-4 h-4' />
-									)}
-								</Button>
-							</div>
-						) : uuids.length > 1 ? (
-							<textarea
-								ref={textareaRef}
-								value={uuids.map(u => u.value).join('\n')}
-								readOnly
-								className='w-full h-48 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary'
-								onClick={e => (e.target as HTMLTextAreaElement).select()}
-							/>
-						) : (
-							<div className='h-14 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm'>
-								{'Нажмите "Генерировать" для создания UUID'}
-							</div>
-						)}
-					</div>
-				</CardContent>
-			</Card>
-
-			{/* Validator and Info */}
-			<div className='grid gap-6 lg:grid-cols-2'>
-				{/* Validator */}
+		<WidgetSEOWrapper widget={widget}>
+			<div className='space-y-6'>
+				{/* Main Generator Card */}
 				<Card>
 					<CardHeader>
-						<CardTitle className='flex items-center gap-2'>
-							<Shield className='w-5 h-5' />
-							{'Валидатор UUID'}
-						</CardTitle>
+						<CardTitle>Генератор UUID</CardTitle>
 					</CardHeader>
-					<CardContent className='space-y-4'>
-						<div className='space-y-2'>
-							<Label>{'UUID для проверки'}</Label>
-							<Input
-								value={validationInput}
-								onChange={e => setValidationInput(e.target.value)}
-								placeholder={'Введите UUID для валидации'}
-								className='font-mono'
-								onKeyDown={e =>
-									e.key === 'Enter' && validateUUID(validationInput)
-								}
-							/>
+					<CardContent className='space-y-6'>
+						{/* Quick Settings */}
+						<div className='flex flex-wrap gap-4'>
+							<div className='flex-1 min-w-[200px]'>
+								<Label className='text-xs text-muted-foreground mb-2 block'>
+									{'Версия'}
+								</Label>
+								<div className='grid grid-cols-2 gap-2'>
+									{versionOptions.map(opt => (
+										<button
+											key={opt.value}
+											onClick={() => setVersion(opt.value)}
+											className={cn(
+												'flex items-center gap-2 p-3 rounded-lg border text-left transition-all',
+												version === opt.value
+													? 'border-primary bg-primary/5 text-primary'
+													: 'border-border hover:border-primary/50'
+											)}
+										>
+											{opt.icon}
+											<div className='flex-1'>
+												<div className='font-medium text-sm'>{opt.label}</div>
+												<div className='text-xs text-muted-foreground'>
+													{opt.description}
+												</div>
+											</div>
+										</button>
+									))}
+								</div>
+							</div>
+
+							<div className='space-y-4'>
+								<div>
+									<Label className='text-xs text-muted-foreground mb-2 block'>
+										{'Формат'}
+									</Label>
+									<Select
+										value={format}
+										onValueChange={(v: UUIDFormat) => setFormat(v)}
+									>
+										<SelectTrigger className='w-[200px]'>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{formatOptions.map(fmt => (
+												<SelectItem key={fmt.value} value={fmt.value}>
+													<div>
+														<div className='font-medium'>{fmt.label}</div>
+														<div className='text-xs text-muted-foreground font-mono'>
+															{fmt.example.slice(0, 20)}...
+														</div>
+													</div>
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+
+								<div>
+									<Label className='text-xs text-muted-foreground mb-2 block'>
+										{'Количество'}
+									</Label>
+									<div className='flex gap-2'>
+										<Input
+											type='number'
+											value={quantity}
+											onChange={e => setQuantity(e.target.value)}
+											min='1'
+											max='1000'
+											className='w-[100px]'
+										/>
+										<Button onClick={generateUUIDs} className='gap-2'>
+											<RefreshCw className='w-4 h-4' />
+											{'Генерировать'}
+										</Button>
+									</div>
+								</div>
+							</div>
 						</div>
 
-						<Button
-							onClick={() => validateUUID(validationInput)}
-							disabled={!validationInput}
-							className='w-full'
-						>
-							{'Проверить'}
-						</Button>
-
-						{validationResult && (
-							<div
-								className={cn(
-									'p-4 rounded-lg border',
-									validationResult.valid
-										? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
-										: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
-								)}
-							>
-								<div className='flex items-center gap-2 mb-2'>
-									{validationResult.valid ? (
-										<Check className='w-5 h-5 text-green-600 dark:text-green-400' />
-									) : (
-										<AlertCircle className='w-5 h-5 text-red-600 dark:text-red-400' />
-									)}
-									<span className='font-medium'>{validationResult.info}</span>
-								</div>
-								{validationResult.valid && (
-									<div className='space-y-1 text-sm'>
-										{validationResult.version && (
-											<div>
-												{'Версия'}: {validationResult.version}
-											</div>
+						{/* Generated UUIDs */}
+						<div className='space-y-3'>
+							<div className='flex items-center justify-between'>
+								<Label className='text-sm'>{'Результат'}</Label>
+								{uuids.length > 0 && (
+									<div className='flex gap-2'>
+										{uuids.length > 1 && (
+											<>
+												<Button
+													size='sm'
+													variant='outline'
+													onClick={copyAll}
+													className='gap-2'
+												>
+													<Copy className='w-4 h-4' />
+													{'Скопировать все'}
+												</Button>
+												<Button
+													size='sm'
+													variant='outline'
+													onClick={downloadUUIDs}
+													className='gap-2'
+												>
+													<Download className='w-4 h-4' />
+													{'Скачать'}
+												</Button>
+											</>
 										)}
-										{validationResult.variant && (
-											<div>
-												{'Вариант'}: {validationResult.variant}
-											</div>
-										)}
+										<Button
+											size='sm'
+											variant='outline'
+											onClick={() => setUuids([])}
+											className='gap-2'
+										>
+											<Trash2 className='w-4 h-4' />
+											{'Очистить'}
+										</Button>
 									</div>
 								)}
 							</div>
-						)}
-					</CardContent>
-				</Card>
 
-				{/* Info */}
-				<Card>
-					<CardHeader>
-						<CardTitle className='flex items-center gap-2'>
-							<Info className='w-5 h-5' />
-							{'Информация'}
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='space-y-4 text-sm'>
-							<div>
-								<h4 className='font-medium mb-1'>{'Что такое UUID?'}</h4>
-								<p className='text-muted-foreground'>
-									{
-										'UUID (Universally Unique Identifier) — это 128-битный идентификатор, используемый для уникальной идентификации объектов в компьютерных системах.'
-									}
-								</p>
-							</div>
-							<div>
-								<h4 className='font-medium mb-1'>{'Структура'}</h4>
-								<code className='text-xs bg-muted px-2 py-1 rounded'>
-									xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
-								</code>
-								<p className='text-muted-foreground text-xs mt-1'>
-									M = {'цифра версии'}, N = {'цифра варианта'}
-								</p>
-							</div>
-							<div className='space-y-2'>
-								<h4 className='font-medium'>{'Применение'}</h4>
-								<ul className='text-muted-foreground space-y-1'>
-									<li>• {'Идентификаторы записей в базах данных'}</li>
-									<li>• {'Имена файлов и объектов'}</li>
-									<li>• {'API ключи и токены'}</li>
-									<li>• {'Уникальные идентификаторы пользователей'}</li>
-								</ul>
-							</div>
+							{uuids.length === 1 ? (
+								<div className='relative group'>
+									<Input
+										value={uuids[0].value}
+										readOnly
+										className='font-mono text-lg h-14 pr-12'
+										onClick={e => (e.target as HTMLInputElement).select()}
+									/>
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={() => copyToClipboard(uuids[0].value, uuids[0].id)}
+										className='absolute right-2 top-1/2 -translate-y-1/2'
+									>
+										{copiedId === uuids[0].id ? (
+											<Check className='w-4 h-4 text-green-500' />
+										) : (
+											<Copy className='w-4 h-4' />
+										)}
+									</Button>
+								</div>
+							) : uuids.length > 1 ? (
+								<textarea
+									ref={textareaRef}
+									value={uuids.map(u => u.value).join('\n')}
+									readOnly
+									className='w-full h-48 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary'
+									onClick={e => (e.target as HTMLTextAreaElement).select()}
+								/>
+							) : (
+								<div className='h-14 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm'>
+									{'Нажмите "Генерировать" для создания UUID'}
+								</div>
+							)}
 						</div>
 					</CardContent>
 				</Card>
+
+				{/* Validator and Info */}
+				<div className='grid gap-6 lg:grid-cols-2'>
+					{/* Validator */}
+					<Card>
+						<CardHeader>
+							<CardTitle className='flex items-center gap-2'>
+								<Shield className='w-5 h-5' />
+								{'Валидатор UUID'}
+							</CardTitle>
+						</CardHeader>
+						<CardContent className='space-y-4'>
+							<div className='space-y-2'>
+								<Label>{'UUID для проверки'}</Label>
+								<Input
+									value={validationInput}
+									onChange={e => setValidationInput(e.target.value)}
+									placeholder={'Введите UUID для валидации'}
+									className='font-mono'
+									onKeyDown={e =>
+										e.key === 'Enter' && validateUUID(validationInput)
+									}
+								/>
+							</div>
+
+							<Button
+								onClick={() => validateUUID(validationInput)}
+								disabled={!validationInput}
+								className='w-full'
+							>
+								{'Проверить'}
+							</Button>
+
+							{validationResult && (
+								<div
+									className={cn(
+										'p-4 rounded-lg border',
+										validationResult.valid
+											? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
+											: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800'
+									)}
+								>
+									<div className='flex items-center gap-2 mb-2'>
+										{validationResult.valid ? (
+											<Check className='w-5 h-5 text-green-600 dark:text-green-400' />
+										) : (
+											<AlertCircle className='w-5 h-5 text-red-600 dark:text-red-400' />
+										)}
+										<span className='font-medium'>{validationResult.info}</span>
+									</div>
+									{validationResult.valid && (
+										<div className='space-y-1 text-sm'>
+											{validationResult.version && (
+												<div>
+													{'Версия'}: {validationResult.version}
+												</div>
+											)}
+											{validationResult.variant && (
+												<div>
+													{'Вариант'}: {validationResult.variant}
+												</div>
+											)}
+										</div>
+									)}
+								</div>
+							)}
+						</CardContent>
+					</Card>
+
+					{/* Info */}
+					<Card>
+						<CardHeader>
+							<CardTitle className='flex items-center gap-2'>
+								<Info className='w-5 h-5' />
+								{'Информация'}
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className='space-y-4 text-sm'>
+								<div>
+									<h4 className='font-medium mb-1'>{'Что такое UUID?'}</h4>
+									<p className='text-muted-foreground'>
+										{
+											'UUID (Universally Unique Identifier) — это 128-битный идентификатор, используемый для уникальной идентификации объектов в компьютерных системах.'
+										}
+									</p>
+								</div>
+								<div>
+									<h4 className='font-medium mb-1'>{'Структура'}</h4>
+									<code className='text-xs bg-muted px-2 py-1 rounded'>
+										xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
+									</code>
+									<p className='text-muted-foreground text-xs mt-1'>
+										M = {'цифра версии'}, N = {'цифра варианта'}
+									</p>
+								</div>
+								<div className='space-y-2'>
+									<h4 className='font-medium'>{'Применение'}</h4>
+									<ul className='text-muted-foreground space-y-1'>
+										<li>• {'Идентификаторы записей в базах данных'}</li>
+										<li>• {'Имена файлов и объектов'}</li>
+										<li>• {'API ключи и токены'}</li>
+										<li>• {'Уникальные идентификаторы пользователей'}</li>
+									</ul>
+								</div>
+							</div>
+						</CardContent>
+					</Card>
+				</div>
 			</div>
-		</div>
+			<UuidGeneratorSeo />
+		</WidgetSEOWrapper>
 	)
 }

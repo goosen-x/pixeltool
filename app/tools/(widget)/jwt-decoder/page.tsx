@@ -29,6 +29,9 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { JwtDecoderSeo } from './JwtDecoderSeo'
 
 interface JWTHeader {
 	alg: string
@@ -65,6 +68,7 @@ interface JWTExample {
 }
 
 export default function JWTDecoderPage() {
+	const widget = getWidgetById('jwt-decoder')!
 	const [jwt, setJwt] = useState('')
 	const [decoded, setDecoded] = useState<DecodedJWT | null>(null)
 	const [activeTab, setActiveTab] = useState('header')
@@ -365,292 +369,295 @@ export default function JWTDecoderPage() {
 	}
 
 	return (
-		<div className='space-y-6'>
-			{/* Examples - Full Width at Top */}
-			<WidgetSection
-				icon={<Sparkles className='h-5 w-5' />}
-				title='Примеры JWT токенов'
-				className='mb-8'
-			>
-				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-					{JWT_EXAMPLES.map((example, index) => {
-						const Icon = example.icon || Key
-						return (
-							<div
-								key={index}
-								onClick={() => loadExample(example)}
-								className={cn(
-									'relative group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-lg',
-									'bg-card hover:-translate-y-0.5',
-									example.variant === 'success' &&
-										'border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600',
-									example.variant === 'warning' &&
-										'border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600',
-									example.variant === 'destructive' &&
-										'border-red-200 dark:border-red-800 hover:border-red-400 dark:hover:border-red-600',
-									(!example.variant || example.variant === 'default') &&
-										'border-border hover:border-primary/50'
-								)}
-							>
-								<div className='flex items-start gap-3'>
+		<WidgetSEOWrapper widget={widget}>
+			<div className='space-y-6'>
+				{/* Examples - Full Width at Top */}
+				<WidgetSection
+					icon={<Sparkles className='h-5 w-5' />}
+					title='Примеры JWT токенов'
+					className='mb-8'
+				>
+					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
+						{JWT_EXAMPLES.map((example, index) => {
+							const Icon = example.icon || Key
+							return (
+								<div
+									key={index}
+									onClick={() => loadExample(example)}
+									className={cn(
+										'relative group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-lg',
+										'bg-card hover:-translate-y-0.5',
+										example.variant === 'success' &&
+											'border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600',
+										example.variant === 'warning' &&
+											'border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600',
+										example.variant === 'destructive' &&
+											'border-red-200 dark:border-red-800 hover:border-red-400 dark:hover:border-red-600',
+										(!example.variant || example.variant === 'default') &&
+											'border-border hover:border-primary/50'
+									)}
+								>
+									<div className='flex items-start gap-3'>
+										<div
+											className={cn(
+												'w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110',
+												example.variant === 'success' &&
+													'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
+												example.variant === 'warning' &&
+													'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
+												example.variant === 'destructive' &&
+													'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
+												(!example.variant || example.variant === 'default') &&
+													'bg-primary/10 text-primary'
+											)}
+										>
+											<Icon className='w-5 h-5' />
+										</div>
+										<div className='flex-1 space-y-1'>
+											<div className='font-semibold text-foreground'>
+												{example.name}
+											</div>
+											<div className='text-sm text-muted-foreground'>
+												{example.description}
+											</div>
+										</div>
+									</div>
+									{/* Hover effect overlay */}
 									<div
 										className={cn(
-											'w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110',
+											'absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity',
 											example.variant === 'success' &&
-												'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
+												'bg-gradient-to-br from-green-500/5 to-green-500/10',
 											example.variant === 'warning' &&
-												'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
+												'bg-gradient-to-br from-yellow-500/5 to-yellow-500/10',
 											example.variant === 'destructive' &&
-												'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
+												'bg-gradient-to-br from-red-500/5 to-red-500/10',
 											(!example.variant || example.variant === 'default') &&
-												'bg-primary/10 text-primary'
+												'bg-gradient-to-br from-primary/5 to-primary/10'
 										)}
-									>
-										<Icon className='w-5 h-5' />
-									</div>
-									<div className='flex-1 space-y-1'>
-										<div className='font-semibold text-foreground'>
-											{example.name}
-										</div>
-										<div className='text-sm text-muted-foreground'>
-											{example.description}
-										</div>
-									</div>
+									/>
 								</div>
-								{/* Hover effect overlay */}
-								<div
-									className={cn(
-										'absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity',
-										example.variant === 'success' &&
-											'bg-gradient-to-br from-green-500/5 to-green-500/10',
-										example.variant === 'warning' &&
-											'bg-gradient-to-br from-yellow-500/5 to-yellow-500/10',
-										example.variant === 'destructive' &&
-											'bg-gradient-to-br from-red-500/5 to-red-500/10',
-										(!example.variant || example.variant === 'default') &&
-											'bg-gradient-to-br from-primary/5 to-primary/10'
+							)
+						})}
+					</div>
+				</WidgetSection>
+
+				<div className='grid lg:grid-cols-2 gap-6'>
+					{/* Input */}
+					<div className='space-y-4'>
+						<Card className='p-6'>
+							<div className='flex flex-wrap items-center justify-between mb-4'>
+								<Label className='text-base'>JWT токен</Label>
+								<div className='flex items-center gap-2'>
+									{jwt && (
+										<Button
+											onClick={reset}
+											variant='ghost'
+											size='sm'
+											className='gap-1'
+										>
+											<RefreshCw className='w-3 h-3' />
+											Очистить
+										</Button>
 									)}
-								/>
-							</div>
-						)
-					})}
-				</div>
-			</WidgetSection>
-
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Input */}
-				<div className='space-y-4'>
-					<Card className='p-6'>
-						<div className='flex flex-wrap items-center justify-between mb-4'>
-							<Label className='text-base'>JWT токен</Label>
-							<div className='flex items-center gap-2'>
-								{jwt && (
-									<Button
-										onClick={reset}
-										variant='ghost'
-										size='sm'
-										className='gap-1'
-									>
-										<RefreshCw className='w-3 h-3' />
-										Очистить
-									</Button>
-								)}
-								{decoded && (
-									<Badge
-										variant={decoded.isValid ? 'default' : 'destructive'}
-										className='gap-1'
-									>
-										{decoded.isValid ? (
-											<>
-												<CheckCircle className='w-3 h-3' /> Валидный формат
-											</>
-										) : (
-											<>
-												<XCircle className='w-3 h-3' /> Ошибки валидации
-											</>
-										)}
-									</Badge>
-								)}
-							</div>
-						</div>
-
-						<Textarea
-							value={jwt}
-							onChange={e => setJwt(e.target.value)}
-							placeholder='Вставьте JWT токен для декодирования...'
-							className='font-mono text-sm min-h-[300px]'
-							spellCheck={false}
-						/>
-
-						{decoded && !decoded.isValid && (
-							<div className='mt-4 space-y-2'>
-								{decoded.errors.map((error, index) => (
-									<div
-										key={index}
-										className='flex items-start gap-2 text-sm text-red-600 dark:text-red-400'
-									>
-										<AlertCircle className='w-4 h-4 mt-0.5' />
-										{error}
-									</div>
-								))}
-							</div>
-						)}
-					</Card>
-				</div>
-
-				{/* Output */}
-				<div className='space-y-4'>
-					{decoded ? (
-						<>
-							<Card className='p-6'>
-								<div className='flex flex-wrap items-center justify-between mb-4'>
-									<h3 className='font-semibold'>Результат декодирования</h3>
-									<div className='flex flex-wrap items-center gap-2'>
-										<Button
-											onClick={() =>
-												copyToClipboard(JSON.stringify(decoded, null, 2))
-											}
-											variant='ghost'
-											size='sm'
+									{decoded && (
+										<Badge
+											variant={decoded.isValid ? 'default' : 'destructive'}
 											className='gap-1'
 										>
-											<Copy className='w-3 h-3' />
-											Скопировать JSON
-										</Button>
-										<Button
-											onClick={() =>
-												copyToClipboard(
-													JSON.stringify(decoded.payload, null, 2)
-												)
-											}
-											variant='ghost'
-											size='sm'
-											className='gap-1'
-										>
-											<FileJson className='w-3 h-3' />
-											Скопировать Payload
-										</Button>
-									</div>
+											{decoded.isValid ? (
+												<>
+													<CheckCircle className='w-3 h-3' /> Валидный формат
+												</>
+											) : (
+												<>
+													<XCircle className='w-3 h-3' /> Ошибки валидации
+												</>
+											)}
+										</Badge>
+									)}
 								</div>
-								<Tabs value={activeTab} onValueChange={setActiveTab}>
-									<TabsList className='grid w-full grid-cols-3'>
-										<TabsTrigger value='header'>Заголовок</TabsTrigger>
-										<TabsTrigger value='payload'>Payload</TabsTrigger>
-										<TabsTrigger value='signature'>Подпись</TabsTrigger>
-									</TabsList>
-
-									<TabsContent value='header' className='mt-4 space-y-3'>
-										{Object.keys(decoded.header).length > 0 ? (
-											Object.entries(decoded.header).map(([key, value]) => (
-												<div
-													key={key}
-													className='flex items-start justify-between p-3 rounded-lg bg-muted/50'
-												>
-													<div className='flex items-start gap-2'>
-														<Lock className='w-4 h-4 text-muted-foreground mt-0.5' />
-														<div>
-															<div className='font-medium'>{key}</div>
-															{key === 'alg' && (
-																<div className='text-xs text-muted-foreground'>
-																	{value === 'HS256'
-																		? 'HMAC SHA-256'
-																		: value === 'RS256'
-																			? 'RSA SHA-256'
-																			: value === 'ES256'
-																				? 'ECDSA SHA-256'
-																				: 'Алгоритм подписи'}
-																</div>
-															)}
-														</div>
-													</div>
-													<div className='text-right'>
-														{renderValue(key, value)}
-													</div>
-												</div>
-											))
-										) : (
-											<div className='text-center text-muted-foreground py-8'>
-												Заголовок не найден
-											</div>
-										)}
-									</TabsContent>
-
-									<TabsContent value='payload' className='mt-4 space-y-3'>
-										{Object.keys(decoded.payload).length > 0 ? (
-											Object.entries(decoded.payload).map(([key, value]) => (
-												<div
-													key={key}
-													className='flex items-start justify-between p-3 rounded-lg bg-muted/50'
-												>
-													<div className='flex items-start gap-2'>
-														{getClaimIcon(key)}
-														<div>
-															<div className='font-medium'>{key}</div>
-															{getClaimDescription(key) && (
-																<div className='text-xs text-muted-foreground'>
-																	{getClaimDescription(key)}
-																</div>
-															)}
-														</div>
-													</div>
-													<div className='text-right'>
-														{renderValue(key, value)}
-														{key === 'exp' && typeof value === 'number' && (
-															<div className='text-xs text-muted-foreground mt-1'>
-																{getTimeLeft(value)}
-															</div>
-														)}
-													</div>
-												</div>
-											))
-										) : (
-											<div className='text-center text-muted-foreground py-8'>
-												Полезная нагрузка не найдена
-											</div>
-										)}
-									</TabsContent>
-
-									<TabsContent value='signature' className='mt-4'>
-										<div className='space-y-4'>
-											<div className='p-4 rounded-lg bg-muted/50'>
-												<Label className='text-sm mb-2 block'>
-													Подпись (Base64URL)
-												</Label>
-												<code className='text-xs block break-all'>
-													{decoded.signature || 'Подпись отсутствует'}
-												</code>
-											</div>
-
-											<div className='p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800'>
-												<div className='flex items-start gap-2'>
-													<AlertCircle className='w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5' />
-													<div className='text-sm'>
-														<p className='font-medium text-yellow-800 dark:text-yellow-200'>
-															Внимание: Проверка подписи
-														</p>
-														<p className='text-yellow-700 dark:text-yellow-300 mt-1'>
-															Данный декодер только отображает содержимое
-															токена. Для проверки подлинности подписи требуется
-															секретный ключ или публичный ключ.
-														</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</TabsContent>
-								</Tabs>
-							</Card>
-						</>
-					) : (
-						<Card className='p-12'>
-							<div className='text-center text-muted-foreground'>
-								<Key className='w-12 h-12 mx-auto mb-4 opacity-20' />
-								<p>Вставьте JWT токен для начала декодирования</p>
 							</div>
+
+							<Textarea
+								value={jwt}
+								onChange={e => setJwt(e.target.value)}
+								placeholder='Вставьте JWT токен для декодирования...'
+								className='font-mono text-sm min-h-[300px]'
+								spellCheck={false}
+							/>
+
+							{decoded && !decoded.isValid && (
+								<div className='mt-4 space-y-2'>
+									{decoded.errors.map((error, index) => (
+										<div
+											key={index}
+											className='flex items-start gap-2 text-sm text-red-600 dark:text-red-400'
+										>
+											<AlertCircle className='w-4 h-4 mt-0.5' />
+											{error}
+										</div>
+									))}
+								</div>
+							)}
 						</Card>
-					)}
+					</div>
+
+					{/* Output */}
+					<div className='space-y-4'>
+						{decoded ? (
+							<>
+								<Card className='p-6'>
+									<div className='flex flex-wrap items-center justify-between mb-4'>
+										<h3 className='font-semibold'>Результат декодирования</h3>
+										<div className='flex flex-wrap items-center gap-2'>
+											<Button
+												onClick={() =>
+													copyToClipboard(JSON.stringify(decoded, null, 2))
+												}
+												variant='ghost'
+												size='sm'
+												className='gap-1'
+											>
+												<Copy className='w-3 h-3' />
+												Скопировать JSON
+											</Button>
+											<Button
+												onClick={() =>
+													copyToClipboard(
+														JSON.stringify(decoded.payload, null, 2)
+													)
+												}
+												variant='ghost'
+												size='sm'
+												className='gap-1'
+											>
+												<FileJson className='w-3 h-3' />
+												Скопировать Payload
+											</Button>
+										</div>
+									</div>
+									<Tabs value={activeTab} onValueChange={setActiveTab}>
+										<TabsList className='grid w-full grid-cols-3'>
+											<TabsTrigger value='header'>Заголовок</TabsTrigger>
+											<TabsTrigger value='payload'>Payload</TabsTrigger>
+											<TabsTrigger value='signature'>Подпись</TabsTrigger>
+										</TabsList>
+
+										<TabsContent value='header' className='mt-4 space-y-3'>
+											{Object.keys(decoded.header).length > 0 ? (
+												Object.entries(decoded.header).map(([key, value]) => (
+													<div
+														key={key}
+														className='flex items-start justify-between p-3 rounded-lg bg-muted/50'
+													>
+														<div className='flex items-start gap-2'>
+															<Lock className='w-4 h-4 text-muted-foreground mt-0.5' />
+															<div>
+																<div className='font-medium'>{key}</div>
+																{key === 'alg' && (
+																	<div className='text-xs text-muted-foreground'>
+																		{value === 'HS256'
+																			? 'HMAC SHA-256'
+																			: value === 'RS256'
+																				? 'RSA SHA-256'
+																				: value === 'ES256'
+																					? 'ECDSA SHA-256'
+																					: 'Алгоритм подписи'}
+																	</div>
+																)}
+															</div>
+														</div>
+														<div className='text-right'>
+															{renderValue(key, value)}
+														</div>
+													</div>
+												))
+											) : (
+												<div className='text-center text-muted-foreground py-8'>
+													Заголовок не найден
+												</div>
+											)}
+										</TabsContent>
+
+										<TabsContent value='payload' className='mt-4 space-y-3'>
+											{Object.keys(decoded.payload).length > 0 ? (
+												Object.entries(decoded.payload).map(([key, value]) => (
+													<div
+														key={key}
+														className='flex items-start justify-between p-3 rounded-lg bg-muted/50'
+													>
+														<div className='flex items-start gap-2'>
+															{getClaimIcon(key)}
+															<div>
+																<div className='font-medium'>{key}</div>
+																{getClaimDescription(key) && (
+																	<div className='text-xs text-muted-foreground'>
+																		{getClaimDescription(key)}
+																	</div>
+																)}
+															</div>
+														</div>
+														<div className='text-right'>
+															{renderValue(key, value)}
+															{key === 'exp' && typeof value === 'number' && (
+																<div className='text-xs text-muted-foreground mt-1'>
+																	{getTimeLeft(value)}
+																</div>
+															)}
+														</div>
+													</div>
+												))
+											) : (
+												<div className='text-center text-muted-foreground py-8'>
+													Полезная нагрузка не найдена
+												</div>
+											)}
+										</TabsContent>
+
+										<TabsContent value='signature' className='mt-4'>
+											<div className='space-y-4'>
+												<div className='p-4 rounded-lg bg-muted/50'>
+													<Label className='text-sm mb-2 block'>
+														Подпись (Base64URL)
+													</Label>
+													<code className='text-xs block break-all'>
+														{decoded.signature || 'Подпись отсутствует'}
+													</code>
+												</div>
+
+												<div className='p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800'>
+													<div className='flex items-start gap-2'>
+														<AlertCircle className='w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5' />
+														<div className='text-sm'>
+															<p className='font-medium text-yellow-800 dark:text-yellow-200'>
+																Внимание: Проверка подписи
+															</p>
+															<p className='text-yellow-700 dark:text-yellow-300 mt-1'>
+																Данный декодер только отображает содержимое
+																токена. Для проверки подлинности подписи
+																требуется секретный ключ или публичный ключ.
+															</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</TabsContent>
+									</Tabs>
+								</Card>
+							</>
+						) : (
+							<Card className='p-12'>
+								<div className='text-center text-muted-foreground'>
+									<Key className='w-12 h-12 mx-auto mb-4 opacity-20' />
+									<p>Вставьте JWT токен для начала декодирования</p>
+								</div>
+							</Card>
+						)}
+					</div>
 				</div>
 			</div>
-		</div>
+			<JwtDecoderSeo />
+		</WidgetSEOWrapper>
 	)
 }
