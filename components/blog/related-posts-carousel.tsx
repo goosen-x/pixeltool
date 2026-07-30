@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import {
 	Carousel,
 	CarouselContent,
@@ -9,6 +8,7 @@ import {
 	CarouselNext,
 	CarouselPrevious
 } from '@/components/ui/carousel'
+import { PostCover } from './post-cover'
 import type { Post } from '@/lib/types/post'
 
 interface Props {
@@ -32,15 +32,12 @@ export function RelatedPostsCarousel({ posts }: Props) {
 							href={`/blog/${post.slug}`}
 							className='group block h-full cursor-pointer overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40'
 						>
-							<div className='relative aspect-[16/9] overflow-hidden bg-muted'>
-								<Image
-									src={post.coverImage}
-									alt={post.title}
-									fill
-									sizes='(max-width: 640px) 90vw, 320px'
-									className='object-cover transition-transform duration-300 group-hover:scale-[1.03]'
-								/>
-							</div>
+							<PostCover
+								title={post.title}
+								slug={post.slug}
+								coverImage={post.coverImage}
+								className='aspect-[16/9] transition-transform duration-300 group-hover:scale-[1.03]'
+							/>
 
 							<div className='p-4'>
 								<h3 className='line-clamp-2 text-sm font-semibold transition-colors group-hover:text-primary'>
