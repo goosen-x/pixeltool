@@ -118,6 +118,8 @@ export const generatorWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['random', 'number', 'generator', 'crypto', 'secure'],
 		title: 'Генератор случайных чисел',
+		metaTitle: 'Генератор случайных чисел онлайн — для розыгрыша и жеребьёвки',
+		updatedAt: '2026-07-30',
 		description:
 			'Бесплатный онлайн генератор случайных чисел. Генерируйте криптографически надёжные случайные числа с опцией без дубликатов для игр и розыгрышей',
 		useCase:

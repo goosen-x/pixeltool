@@ -40,6 +40,9 @@ import { cn } from '@/lib/utils'
 import { SlidingTimer } from '@/components/widgets/timer/SlidingTimer'
 import { SlidingCountdown } from '@/components/widgets/timer/SlidingCountdown'
 import { AnimatedProgressBar } from '@/components/widgets/timer/AnimatedProgressBar'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TimerCountdownSeo } from './TimerCountdownSeo'
 
 type TimerMode = 'countdown' | 'stopwatch' | 'pomodoro'
 type PomodoroPhase = 'work' | 'shortBreak' | 'longBreak'
@@ -75,6 +78,7 @@ const TIMER_PRESETS: TimerPreset[] = [
 ]
 
 export default function TimerCountdownPage() {
+	const widget = getWidgetById('timer-countdown')!
 	const [mode, setMode] = useState<TimerMode>('countdown')
 	const [isRunning, setIsRunning] = useState(false)
 	const [isPaused, setIsPaused] = useState(false)
@@ -447,304 +451,310 @@ export default function TimerCountdownPage() {
 	}
 
 	return (
-		<div className='w-full space-y-4'>
-			{/* Mode Tabs */}
-			<Tabs
-				value={mode}
-				onValueChange={value => handleModeChange(value as TimerMode)}
-				className='w-full'
-			>
-				<TabsList className='grid w-full grid-cols-3'>
-					<TabsTrigger value='countdown' className='gap-2'>
-						<Clock className='w-4 h-4' />
-						Таймер
-					</TabsTrigger>
-					<TabsTrigger value='stopwatch' className='gap-2'>
-						<Timer className='w-4 h-4' />
-						Stopwatch
-					</TabsTrigger>
-					<TabsTrigger value='pomodoro' className='gap-2'>
-						<Target className='w-4 h-4' />
-						Pomodoro
-					</TabsTrigger>
-				</TabsList>
+		<WidgetSEOWrapper widget={widget}>
+			<div className='w-full space-y-4'>
+				{/* Mode Tabs */}
+				<Tabs
+					value={mode}
+					onValueChange={value => handleModeChange(value as TimerMode)}
+					className='w-full'
+				>
+					<TabsList className='grid w-full grid-cols-3'>
+						<TabsTrigger value='countdown' className='gap-2'>
+							<Clock className='w-4 h-4' />
+							Таймер
+						</TabsTrigger>
+						<TabsTrigger value='stopwatch' className='gap-2'>
+							<Timer className='w-4 h-4' />
+							Stopwatch
+						</TabsTrigger>
+						<TabsTrigger value='pomodoro' className='gap-2'>
+							<Target className='w-4 h-4' />
+							Pomodoro
+						</TabsTrigger>
+					</TabsList>
 
-				<TabsContent value={mode} className='mt-4 space-y-4'>
-					{/* Timer Display Card */}
-					<Card className='p-6 relative'>
-						{/* Settings Dropdown - positioned in top right */}
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									variant='ghost'
-									size='icon'
-									className='absolute top-2 right-2 h-8 w-8'
-								>
-									<Settings2 className='h-4 w-4' />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align='end' className='w-56'>
-								<DropdownMenuLabel>Настройки</DropdownMenuLabel>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem
-									className='flex items-center justify-between'
-									onSelect={e => e.preventDefault()}
-								>
-									<Label
-										htmlFor='dropdown-sound'
-										className='flex items-center gap-2 cursor-pointer'
+					<TabsContent value={mode} className='mt-4 space-y-4'>
+						{/* Timer Display Card */}
+						<Card className='p-6 relative'>
+							{/* Settings Dropdown - positioned in top right */}
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant='ghost'
+										size='icon'
+										className='absolute top-2 right-2 h-8 w-8'
 									>
-										<Volume2 className='w-4 h-4' />
-										Звуковое уведомление
-									</Label>
-									<Switch
-										id='dropdown-sound'
-										checked={soundEnabled}
-										onCheckedChange={setSoundEnabled}
-									/>
-								</DropdownMenuItem>
-								{mode === 'stopwatch' && (
+										<Settings2 className='h-4 w-4' />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align='end' className='w-56'>
+									<DropdownMenuLabel>Настройки</DropdownMenuLabel>
+									<DropdownMenuSeparator />
 									<DropdownMenuItem
 										className='flex items-center justify-between'
 										onSelect={e => e.preventDefault()}
 									>
 										<Label
-											htmlFor='dropdown-milliseconds'
+											htmlFor='dropdown-sound'
 											className='flex items-center gap-2 cursor-pointer'
 										>
-											<Zap className='w-4 h-4' />
-											Показывать миллисекунды
+											<Volume2 className='w-4 h-4' />
+											Звуковое уведомление
 										</Label>
 										<Switch
-											id='dropdown-milliseconds'
-											checked={showMilliseconds}
-											onCheckedChange={setShowMilliseconds}
+											id='dropdown-sound'
+											checked={soundEnabled}
+											onCheckedChange={setSoundEnabled}
 										/>
 									</DropdownMenuItem>
-								)}
-								{mode === 'pomodoro' && !isRunning && (
-									<>
-										<DropdownMenuSeparator />
+									{mode === 'stopwatch' && (
 										<DropdownMenuItem
-											className='p-0'
+											className='flex items-center justify-between'
 											onSelect={e => e.preventDefault()}
 										>
-											<div className='px-2 py-1.5 w-full'>
-												<div className='space-y-2'>
-													<h4 className='text-sm font-medium'>
-														Настройки Помодоро
-													</h4>
-													<div className='grid grid-cols-2 gap-2 text-xs'>
-														<div>
-															<Label
-																htmlFor='dropdown-work'
-																className='text-xs'
-															>
-																Продолжительность работы
-															</Label>
-															<Input
-																id='dropdown-work'
-																type='number'
-																min='1'
-																max='60'
-																value={pomodoroSettings.workDuration}
-																onChange={e =>
-																	setPomodoroSettings(prev => ({
-																		...prev,
-																		workDuration: parseInt(e.target.value) || 25
-																	}))
-																}
-																className='h-6 text-xs mt-1'
-															/>
-														</div>
-														<div>
-															<Label
-																htmlFor='dropdown-short'
-																className='text-xs'
-															>
-																Короткий перерыв
-															</Label>
-															<Input
-																id='dropdown-short'
-																type='number'
-																min='1'
-																max='30'
-																value={pomodoroSettings.shortBreakDuration}
-																onChange={e =>
-																	setPomodoroSettings(prev => ({
-																		...prev,
-																		shortBreakDuration:
-																			parseInt(e.target.value) || 5
-																	}))
-																}
-																className='h-6 text-xs mt-1'
-															/>
-														</div>
-														<div>
-															<Label
-																htmlFor='dropdown-long'
-																className='text-xs'
-															>
-																Длинный перерыв
-															</Label>
-															<Input
-																id='dropdown-long'
-																type='number'
-																min='1'
-																max='60'
-																value={pomodoroSettings.longBreakDuration}
-																onChange={e =>
-																	setPomodoroSettings(prev => ({
-																		...prev,
-																		longBreakDuration:
-																			parseInt(e.target.value) || 15
-																	}))
-																}
-																className='h-6 text-xs mt-1'
-															/>
-														</div>
-														<div>
-															<Label
-																htmlFor='dropdown-sessions'
-																className='text-xs'
-															>
-																Сессии до длинного перерыва
-															</Label>
-															<Input
-																id='dropdown-sessions'
-																type='number'
-																min='2'
-																max='10'
-																value={pomodoroSettings.sessionsUntilLongBreak}
-																onChange={e =>
-																	setPomodoroSettings(prev => ({
-																		...prev,
-																		sessionsUntilLongBreak:
-																			parseInt(e.target.value) || 4
-																	}))
-																}
-																className='h-6 text-xs mt-1'
-															/>
+											<Label
+												htmlFor='dropdown-milliseconds'
+												className='flex items-center gap-2 cursor-pointer'
+											>
+												<Zap className='w-4 h-4' />
+												Показывать миллисекунды
+											</Label>
+											<Switch
+												id='dropdown-milliseconds'
+												checked={showMilliseconds}
+												onCheckedChange={setShowMilliseconds}
+											/>
+										</DropdownMenuItem>
+									)}
+									{mode === 'pomodoro' && !isRunning && (
+										<>
+											<DropdownMenuSeparator />
+											<DropdownMenuItem
+												className='p-0'
+												onSelect={e => e.preventDefault()}
+											>
+												<div className='px-2 py-1.5 w-full'>
+													<div className='space-y-2'>
+														<h4 className='text-sm font-medium'>
+															Настройки Помодоро
+														</h4>
+														<div className='grid grid-cols-2 gap-2 text-xs'>
+															<div>
+																<Label
+																	htmlFor='dropdown-work'
+																	className='text-xs'
+																>
+																	Продолжительность работы
+																</Label>
+																<Input
+																	id='dropdown-work'
+																	type='number'
+																	min='1'
+																	max='60'
+																	value={pomodoroSettings.workDuration}
+																	onChange={e =>
+																		setPomodoroSettings(prev => ({
+																			...prev,
+																			workDuration:
+																				parseInt(e.target.value) || 25
+																		}))
+																	}
+																	className='h-6 text-xs mt-1'
+																/>
+															</div>
+															<div>
+																<Label
+																	htmlFor='dropdown-short'
+																	className='text-xs'
+																>
+																	Короткий перерыв
+																</Label>
+																<Input
+																	id='dropdown-short'
+																	type='number'
+																	min='1'
+																	max='30'
+																	value={pomodoroSettings.shortBreakDuration}
+																	onChange={e =>
+																		setPomodoroSettings(prev => ({
+																			...prev,
+																			shortBreakDuration:
+																				parseInt(e.target.value) || 5
+																		}))
+																	}
+																	className='h-6 text-xs mt-1'
+																/>
+															</div>
+															<div>
+																<Label
+																	htmlFor='dropdown-long'
+																	className='text-xs'
+																>
+																	Длинный перерыв
+																</Label>
+																<Input
+																	id='dropdown-long'
+																	type='number'
+																	min='1'
+																	max='60'
+																	value={pomodoroSettings.longBreakDuration}
+																	onChange={e =>
+																		setPomodoroSettings(prev => ({
+																			...prev,
+																			longBreakDuration:
+																				parseInt(e.target.value) || 15
+																		}))
+																	}
+																	className='h-6 text-xs mt-1'
+																/>
+															</div>
+															<div>
+																<Label
+																	htmlFor='dropdown-sessions'
+																	className='text-xs'
+																>
+																	Сессии до длинного перерыва
+																</Label>
+																<Input
+																	id='dropdown-sessions'
+																	type='number'
+																	min='2'
+																	max='10'
+																	value={
+																		pomodoroSettings.sessionsUntilLongBreak
+																	}
+																	onChange={e =>
+																		setPomodoroSettings(prev => ({
+																			...prev,
+																			sessionsUntilLongBreak:
+																				parseInt(e.target.value) || 4
+																		}))
+																	}
+																	className='h-6 text-xs mt-1'
+																/>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</DropdownMenuItem>
-									</>
-								)}
-							</DropdownMenuContent>
-						</DropdownMenu>
-						{/* Pomodoro Phase Indicator */}
-						{mode === 'pomodoro' && (
-							<div
-								className={cn(
-									'mb-4 p-2 rounded-lg text-center border',
-									getPomodoroPhaseInfo().bgColor,
-									getPomodoroPhaseInfo().borderColor
-								)}
-							>
+											</DropdownMenuItem>
+										</>
+									)}
+								</DropdownMenuContent>
+							</DropdownMenu>
+							{/* Pomodoro Phase Indicator */}
+							{mode === 'pomodoro' && (
 								<div
 									className={cn(
-										'font-medium text-sm',
-										getPomodoroPhaseInfo().color
+										'mb-4 p-2 rounded-lg text-center border',
+										getPomodoroPhaseInfo().bgColor,
+										getPomodoroPhaseInfo().borderColor
 									)}
 								>
-									{getPomodoroPhaseInfo().label} • Сессия {pomodoroSession}
+									<div
+										className={cn(
+											'font-medium text-sm',
+											getPomodoroPhaseInfo().color
+										)}
+									>
+										{getPomodoroPhaseInfo().label} • Сессия {pomodoroSession}
+									</div>
 								</div>
-							</div>
-						)}
-
-						{/* Time Display */}
-						<div className='text-center mb-6 '>
-							{mode === 'countdown' && !isRunning ? (
-								<SlidingCountdown
-									hours={time.hours}
-									minutes={time.minutes}
-									seconds={time.seconds}
-									onTimeChange={adjustTime}
-									isEditable={true}
-								/>
-							) : mode === 'stopwatch' ? (
-								<SlidingTimer
-									hours={time.hours}
-									minutes={time.minutes}
-									seconds={time.seconds}
-									milliseconds={time.milliseconds}
-									showMilliseconds={showMilliseconds}
-								/>
-							) : (
-								<SlidingTimer
-									hours={time.hours}
-									minutes={time.minutes}
-									seconds={time.seconds}
-								/>
 							)}
-						</div>
 
-						{/* Progress Bar */}
-						{(mode === 'countdown' || mode === 'pomodoro') && (
-							<div className='w-full mb-6'>
-								<AnimatedProgressBar value={smoothProgress} className='h-3' />
+							{/* Time Display */}
+							<div className='text-center mb-6 '>
+								{mode === 'countdown' && !isRunning ? (
+									<SlidingCountdown
+										hours={time.hours}
+										minutes={time.minutes}
+										seconds={time.seconds}
+										onTimeChange={adjustTime}
+										isEditable={true}
+									/>
+								) : mode === 'stopwatch' ? (
+									<SlidingTimer
+										hours={time.hours}
+										minutes={time.minutes}
+										seconds={time.seconds}
+										milliseconds={time.milliseconds}
+										showMilliseconds={showMilliseconds}
+									/>
+								) : (
+									<SlidingTimer
+										hours={time.hours}
+										minutes={time.minutes}
+										seconds={time.seconds}
+									/>
+								)}
 							</div>
-						)}
 
-						{/* Control Buttons */}
-						<div className='flex justify-center gap-2'>
-							{!isRunning ? (
-								<Button onClick={startTimer} size='lg' className='gap-2'>
-									<Play className='w-5 h-5' />
-									Старт
-								</Button>
-							) : isPaused ? (
-								<Button onClick={resumeTimer} size='lg' className='gap-2'>
-									<Play className='w-5 h-5' />
-									Продолжить
-								</Button>
-							) : (
+							{/* Progress Bar */}
+							{(mode === 'countdown' || mode === 'pomodoro') && (
+								<div className='w-full mb-6'>
+									<AnimatedProgressBar value={smoothProgress} className='h-3' />
+								</div>
+							)}
+
+							{/* Control Buttons */}
+							<div className='flex justify-center gap-2'>
+								{!isRunning ? (
+									<Button onClick={startTimer} size='lg' className='gap-2'>
+										<Play className='w-5 h-5' />
+										Старт
+									</Button>
+								) : isPaused ? (
+									<Button onClick={resumeTimer} size='lg' className='gap-2'>
+										<Play className='w-5 h-5' />
+										Продолжить
+									</Button>
+								) : (
+									<Button
+										onClick={pauseTimer}
+										size='lg'
+										variant='secondary'
+										className='gap-2'
+									>
+										<Pause className='w-5 h-5' />
+										Пауза
+									</Button>
+								)}
+
 								<Button
-									onClick={pauseTimer}
+									onClick={resetTimer}
 									size='lg'
-									variant='secondary'
+									variant='outline'
 									className='gap-2'
 								>
-									<Pause className='w-5 h-5' />
-									Пауза
+									<RotateCcw className='w-5 h-5' />
+									Сброс
 								</Button>
-							)}
-
-							<Button
-								onClick={resetTimer}
-								size='lg'
-								variant='outline'
-								className='gap-2'
-							>
-								<RotateCcw className='w-5 h-5' />
-								Сброс
-							</Button>
-						</div>
-					</Card>
-
-					{/* Quick Presets for Countdown */}
-					{mode === 'countdown' && !isRunning && (
-						<Card className='p-4'>
-							<div className='grid grid-cols-6 gap-2'>
-								{TIMER_PRESETS.map((preset, index) => (
-									<Button
-										key={index}
-										onClick={() => loadPreset(preset)}
-										variant='outline'
-										size='sm'
-										className='flex flex-col items-center gap-1 h-auto py-2'
-									>
-										<preset.icon className={cn('w-4 h-4', preset.color)} />
-										<span className='text-xs'>{preset.name}</span>
-									</Button>
-								))}
 							</div>
 						</Card>
-					)}
-				</TabsContent>
-			</Tabs>
-		</div>
+
+						{/* Quick Presets for Countdown */}
+						{mode === 'countdown' && !isRunning && (
+							<Card className='p-4'>
+								<div className='grid grid-cols-6 gap-2'>
+									{TIMER_PRESETS.map((preset, index) => (
+										<Button
+											key={index}
+											onClick={() => loadPreset(preset)}
+											variant='outline'
+											size='sm'
+											className='flex flex-col items-center gap-1 h-auto py-2'
+										>
+											<preset.icon className={cn('w-4 h-4', preset.color)} />
+											<span className='text-xs'>{preset.name}</span>
+										</Button>
+									))}
+								</div>
+							</Card>
+						)}
+					</TabsContent>
+				</Tabs>
+			</div>
+			<TimerCountdownSeo />
+		</WidgetSEOWrapper>
 	)
 }
