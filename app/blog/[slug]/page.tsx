@@ -89,7 +89,9 @@ export default async function Post(props: Params) {
 					</article>
 
 					<div className='hidden lg:block'>
-						<div className='sticky top-6'>
+						{/* top-24 = высота хедера (h-20/5rem) + отступ — иначе сайдбар
+						    прилипает выше хедера и уезжает под него при скролле */}
+						<div className='sticky top-24'>
 							<ProjectsRightSidebar boundedHeight={false} />
 						</div>
 					</div>

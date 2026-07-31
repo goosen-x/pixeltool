@@ -12,12 +12,19 @@ const SHIKI_THEME = 'github-dark'
 
 // remark-html экранирует содержимое код-блоков в HTML-сущности. Shiki ждёт
 // сырой код (и экранирует сам), поэтому сущности разворачиваем обратно.
+// Числовые сущности (&#60; десятичные, &#x3C; шестнадцатеричные) идут первыми
+// и отдельно от именованных — remark-html кодирует ими символы вроде < и >
+// в некоторых случаях (напр. `<b>` внутри примера кода), и без этой ветки они
+// пролезали в Shiki необработанными и показывались на странице буквально.
 function decodeEntities(text: string): string {
 	return text
+		.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+			String.fromCodePoint(parseInt(hex, 16))
+		)
+		.replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
 		.replace(/&lt;/g, '<')
 		.replace(/&gt;/g, '>')
 		.replace(/&quot;/g, '"')
-		.replace(/&#39;/g, "'")
 		.replace(/&amp;/g, '&')
 }
 
