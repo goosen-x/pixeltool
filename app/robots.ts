@@ -7,7 +7,11 @@ export default function robots(): MetadataRoute.Robots {
 		rules: [
 			{
 				userAgent: '*',
-				allow: '/',
+				// /api/og — превью-картинки тулов (og:image), их отдельно
+				// разрешаем поверх общего запрета /api/: самое длинное совпадение
+				// побеждает, так что боты картинок (напр. YandexImages, которая не
+				// наследует правила от Yandexbot) всё равно их проиндексируют.
+				allow: ['/', '/api/og'],
 				disallow: [
 					'/api/',
 					'/_next/',

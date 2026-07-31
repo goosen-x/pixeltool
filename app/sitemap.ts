@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
 import { widgets } from '@/lib/constants/widgets'
 import { CATEGORY_KEYS } from '@/lib/constants/categories'
+import { buildWidgetOgImagePath } from '@/lib/seo/build-widget-metadata'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -52,22 +53,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Add widget routes — стабильная дата, с переопределением на уровне тула.
 	// changeFrequency: 'monthly' — инструменты меняются редко, «weekly» вводил бы
 	// в заблуждение.
+	// images — расширение sitemap для картиночного поиска (Google/Yandex Images):
+	// та же превьюшка /api/og, что отдаётся в og:image, здесь явно заявлена
+	// как изображение страницы, чтобы боты картинок её обязательно нашли.
 	widgets.forEach(widget => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/${widget.path}`,
 			lastModified: widget.updatedAt || CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
-			priority: 0.9
+			priority: 0.9,
+			images: [`${BASE_URL}${buildWidgetOgImagePath(widget)}`]
 		})
 	})
 
 	// Add blog post routes — реальная дата из фронтматтера поста
 	posts.forEach(post => {
+		const hasRealCover =
+			Boolean(post.coverImage) && post.coverImage !== '/images/avatar.jpeg'
+
 		sitemapEntries.push({
 			url: `${BASE_URL}/blog/${post.slug}`,
 			lastModified: post.date,
 			changeFrequency: 'monthly',
-			priority: 0.7
+			priority: 0.7,
+			...(hasRealCover && { images: [`${BASE_URL}${post.coverImage}`] })
 		})
 	})
 

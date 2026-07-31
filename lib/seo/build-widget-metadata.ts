@@ -1,7 +1,25 @@
 import type { Metadata } from 'next'
-import { getWidgetByPath } from '@/lib/constants/widgets'
+import { getWidgetByPath, type Widget } from '@/lib/constants/widgets'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
+
+/**
+ * Относительный путь до превью-картинки тула (/api/og), которую рендерит
+ * сам сайт. Вынесено отдельно, чтобы sitemap.ts мог сослаться на тот же URL
+ * для расширения sitemap `images` — без дублирования логики построения.
+ */
+export function buildWidgetOgImagePath(widget: Widget): string {
+	const title = widget.metaTitle || widget.title || widget.id
+	const description =
+		widget.metaDescription ||
+		widget.description ||
+		`Онлайн-инструмент «${title}» — бесплатно, без установки, работает прямо в браузере.`
+
+	return (
+		`/api/og?title=${encodeURIComponent(title)}` +
+		`&description=${encodeURIComponent(description.slice(0, 160))}&locale=ru`
+	)
+}
 
 /**
  * Единый источник уникальных метаданных для страницы инструмента.
@@ -20,9 +38,7 @@ export function buildWidgetMetadata(slug: string): Metadata {
 		`Онлайн-инструмент «${title}» — бесплатно, без установки, работает прямо в браузере.`
 
 	const url = `${BASE_URL}/tools/${slug}`
-	const ogImageUrl =
-		`/api/og?title=${encodeURIComponent(title)}` +
-		`&description=${encodeURIComponent(description.slice(0, 160))}&locale=ru`
+	const ogImageUrl = buildWidgetOgImagePath(widget)
 
 	return {
 		title,
