@@ -5,11 +5,14 @@ excerpt:
   чем версии v1, v4 и v7 отличаются друг от друга и какую выбрать для базы
   данных, а какую — для разового ID.'
 date: '2026-07-30T12:00:00.000Z'
+coverImage: '/images/blog/chto-takoe-uuid.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 related:
   - chto-takoe-json
+  - chto-takoe-base64
+  - nadezhnyy-parol
 ---
 
 `550e8400-e29b-41d4-a716-446655440000` — если вы работали с базами данных, API

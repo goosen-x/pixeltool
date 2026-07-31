@@ -10,6 +10,10 @@ coverImage: '/images/blog/nadezhnyy-parol.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
+related:
+  - kak-provesti-rozygrysh-sluchaynym-chislom
+  - chto-takoe-uuid
+  - kak-sozdat-qr-kod
 ---
 
 Больше половины утечек происходит не из-за хитрых атак, а из-за пароля вроде

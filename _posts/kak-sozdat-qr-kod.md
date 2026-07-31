@@ -5,9 +5,14 @@ excerpt:
   нюансы с размером, уровнем коррекции ошибок и типом кода, из-за которых
   готовый код потом не сканируется. Разбираем по шагам.'
 date: '2026-07-30T12:00:00.000Z'
+coverImage: '/images/blog/kak-sozdat-qr-kod.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
+related:
+  - nadezhnyy-parol
+  - chto-takoe-uuid
+  - kak-provesti-rozygrysh-sluchaynym-chislom
 ---
 
 QR-код — чёрно-белый квадрат из модулей, который камера телефона читает быстрее,

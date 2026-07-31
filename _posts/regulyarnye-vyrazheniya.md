@@ -5,12 +5,14 @@ excerpt:
   токенам, чем жадный квантификатор отличается от ленивого, и готовые паттерны
   для email, URL и телефона — с живым тестером прямо в статье.'
 date: '2026-07-29T12:00:00.000Z'
+coverImage: '/images/blog/regulyarnye-vyrazheniya.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 related:
   - proverka-javascript
   - chto-takoe-json
+  - html-xml-parser
 ---
 
 Регулярное выражение вроде `^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$` выглядит как

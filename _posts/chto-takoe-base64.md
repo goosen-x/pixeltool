@@ -5,11 +5,14 @@ excerpt:
   Разбираем, зачем это нужно, что такое загадочная строка data:image/png;base64
   и почему декодирование иногда падает с ошибкой.'
 date: '2026-07-30T12:00:00.000Z'
+coverImage: '/images/blog/chto-takoe-base64.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 related:
   - chto-takoe-json
+  - chto-takoe-uuid
+  - preview-ssylki-open-graph
 ---
 
 Открываете код страницы или ответ API — и вместо картинки видите длиннющую

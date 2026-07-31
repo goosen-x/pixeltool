@@ -6,12 +6,14 @@ excerpt:
   должен был заменить действующий стандарт в WCAG 3, но пока не заменил. С живым
   чекером прямо в статье.'
 date: '2026-07-29T14:00:00.000Z'
+coverImage: '/images/blog/kontrast-teksta-i-fona.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
 related:
   - lighthouse-100
   - css-shadows
+  - css-variables
 ---
 
 Контраст текста и фона — не про «выглядит достаточно ярко». Это конкретный
