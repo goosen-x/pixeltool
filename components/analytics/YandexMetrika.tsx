@@ -1,9 +1,10 @@
 'use client'
 
 import Script from 'next/script'
+import { YANDEX_METRIKA_ID } from '@/lib/analytics/metrika-id'
 
 const YandexMetrika = () => {
-	const metrikaId = '110360226'
+	const metrikaId = YANDEX_METRIKA_ID
 	const isDevelopment = process.env.NODE_ENV === 'development'
 
 	// Don't load Yandex Metrika in development mode

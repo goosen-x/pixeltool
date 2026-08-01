@@ -1,17 +1,16 @@
+import { YANDEX_METRIKA_ID } from '@/lib/analytics/metrika-id'
+
 // Track social link redirect
 export function trackSocialRedirect(social: string, source: string = 'direct') {
 	if (typeof window === 'undefined') return
 
 	// Track with Yandex Metrika if available
-	if (window.ym && process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID) {
-		const metrikaId = parseInt(process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID, 10)
-		if (!isNaN(metrikaId)) {
-			window.ym(metrikaId, 'reachGoal', 'social_redirect', {
-				social,
-				source,
-				timestamp: new Date().toISOString()
-			})
-		}
+	if (window.ym) {
+		window.ym(YANDEX_METRIKA_ID, 'reachGoal', 'social_redirect', {
+			social,
+			source,
+			timestamp: new Date().toISOString()
+		})
 	}
 
 	// Track with Google Analytics if available

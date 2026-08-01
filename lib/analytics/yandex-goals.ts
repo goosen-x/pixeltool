@@ -1,11 +1,13 @@
 // Yandex Metrika Goals
+import { YANDEX_METRIKA_ID } from './metrika-id'
+
 declare global {
 	interface Window {
 		ym?: (counterId: number, action: string, ...params: any[]) => void
 	}
 }
 
-const METRIKA_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID
+const METRIKA_ID = YANDEX_METRIKA_ID
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 export const YandexGoals = {
