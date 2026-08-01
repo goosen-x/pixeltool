@@ -18,14 +18,25 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
  * Обновляй руками при значимых изменениях набора инструментов/статики.
  * Дату отдельного инструмента можно переопределить через widget.updatedAt.
  */
-const CONTENT_LAST_UPDATED = '2026-07-04'
+const CONTENT_LAST_UPDATED = '2026-08-01'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Get all blog posts
 	const posts = getAllPostsFromFiles()
 
 	// Static routes
-	const staticRoutes = ['', '/contact', '/blog', '/tools', '/settings']
+	// /settings сюда сознательно не входит — у неё noindex (app/settings/layout.tsx),
+	// присутствие в sitemap.xml противоречило бы этому и путало Google (Ahrefs issue
+	// "Noindex page in sitemap", 01.08.2026).
+	const staticRoutes = [
+		'',
+		'/contact',
+		'/blog',
+		'/tools',
+		'/about',
+		'/privacy',
+		'/terms'
+	]
 
 	const sitemapEntries: MetadataRoute.Sitemap = []
 

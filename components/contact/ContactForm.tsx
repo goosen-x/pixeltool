@@ -11,10 +11,12 @@ import { Mail, Send } from 'lucide-react'
 export default function ContactForm() {
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isSubmitted, setIsSubmitted] = useState(false)
+	const [error, setError] = useState('')
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		setIsSubmitting(true)
+		setError('')
 
 		const formData = new FormData(e.currentTarget)
 		const data = {
@@ -25,12 +27,22 @@ export default function ContactForm() {
 		}
 
 		try {
-			// Simulate form submission
-			await new Promise(resolve => setTimeout(resolve, 1000))
-			console.log('Form data:', data)
+			const response = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			})
+
+			if (!response.ok) {
+				const responseData = await response.json().catch(() => ({}))
+				throw new Error(
+					responseData.error || 'Не удалось отправить. Попробуйте ещё раз.'
+				)
+			}
+
 			setIsSubmitted(true)
-		} catch (error) {
-			console.error('Form submission error:', error)
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Что-то пошло не так')
 		} finally {
 			setIsSubmitting(false)
 		}
@@ -103,9 +115,11 @@ export default function ContactForm() {
 				/>
 			</div>
 
+			{error && <p className='text-sm text-destructive'>{error}</p>}
+
 			<Button
 				type='submit'
-				className='w-full sm:w-auto'
+				className='w-full sm:w-auto cursor-pointer'
 				disabled={isSubmitting}
 			>
 				{isSubmitting ? (

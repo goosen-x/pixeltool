@@ -118,6 +118,15 @@ export default async function Blog(props: Props) {
 			/>
 			<main>
 				<div className='max-w-7xl mx-auto px-5 pt-12'>
+					<div className='text-center mb-12'>
+						<h1 className='text-4xl md:text-6xl font-bold text-foreground mb-4'>
+							Блог
+						</h1>
+						<p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
+							Статьи о веб-разработке, CSS, JavaScript и инструментах, которые
+							экономят время
+						</p>
+					</div>
 					<section>
 						{posts.length === 0 ? (
 							<div className='text-center py-16'>
