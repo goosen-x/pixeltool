@@ -55,7 +55,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'draw-lots',
-		searchVolume: 5470,
+		searchVolume: 6515,
 		icon: Shuffle,
 		category: 'generators',
 		translationKey: 'drawLots',
@@ -156,6 +156,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'random-list-generator',
+		searchVolume: 1331,
 		icon: List,
 		category: 'generators',
 		translationKey: 'randomListGenerator',
@@ -205,7 +206,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'coin-flip',
-		searchVolume: 7936,
+		searchVolume: 2366,
 		icon: Coins,
 		category: 'generators',
 		translationKey: 'coinFlip',
@@ -254,7 +255,7 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'dice-roller',
-		searchVolume: 22647,
+		searchVolume: 7171,
 		icon: Dices,
 		category: 'generators',
 		translationKey: 'diceRoller',

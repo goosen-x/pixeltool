@@ -838,34 +838,6 @@ export const widgetMetadata: Record<string, WidgetMetadata> = {
 			]
 		}
 	},
-	'php-syntax-checker': {
-		ru: {
-			title: 'Проверка Синтаксиса PHP - Валидатор Кода | Инструмент',
-			description:
-				'Проверяйте синтаксис PHP кода онлайн без выполнения. Находите синтаксические ошибки. Поддержка PHP 5.6 - 8.x.',
-			keywords: [
-				'проверка синтаксиса php',
-				'валидатор php',
-				'php линтер',
-				'проверка кода',
-				'проверка ошибок php'
-			]
-		}
-	},
-	'mysql-syntax-checker': {
-		ru: {
-			title: 'Проверка Синтаксиса MySQL - Валидатор SQL | Бесплатно',
-			description:
-				'Валидируйте MySQL запросы и SQL синтаксис онлайн. Проверяйте ошибки в SELECT, INSERT, UPDATE, DELETE. Форматирование SQL.',
-			keywords: [
-				'проверка синтаксиса mysql',
-				'валидатор sql',
-				'проверка запросов',
-				'mysql валидатор',
-				'sql синтаксис'
-			]
-		}
-	},
 	'javascript-syntax-checker': {
 		ru: {
 			title: 'Проверка Синтаксиса JavaScript - ES6+ Валидатор | Бесплатно',

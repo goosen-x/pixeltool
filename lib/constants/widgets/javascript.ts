@@ -74,11 +74,7 @@ export const javascriptWidgets: Widget[] = [
 		metaTitle: 'Регулярные выражения онлайн — regex тестер с подсветкой',
 		description:
 			'Проверяйте регулярные выражения онлайн для JavaScript, PHP и Python: подсветка совпадений и групп захвата сразу по мере ввода.',
-		recommendedTools: [
-			'javascript-syntax-checker',
-			'php-syntax-checker',
-			'text-diff'
-		],
+		recommendedTools: ['javascript-syntax-checker', 'text-diff'],
 		difficulty: 'advanced',
 		tags: [
 			'регулярные выражения',

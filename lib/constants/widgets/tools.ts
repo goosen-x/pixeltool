@@ -2,11 +2,9 @@ import { Widget } from './index'
 import {
 	Clock,
 	Database,
-	DatabaseZap,
 	ImageIcon,
 	LinkIcon,
 	Monitor,
-	SquareCode,
 	TerminalSquare,
 	Youtube
 } from 'lucide-react'
@@ -15,6 +13,7 @@ import { SVGIcon } from '@/components/icons/SVGIcon'
 export const toolWidgets: Widget[] = [
 	{
 		id: 'svg-encoder',
+		searchVolume: 39,
 		icon: SVGIcon,
 		// Собственный компонент, а не lucide: без явного имени карточка в блоге
 		// не могла подобрать иконку и рисовала запасной «гаечный ключ»
@@ -62,7 +61,7 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'youtube-thumbnail',
-		searchVolume: 553,
+		searchVolume: 67,
 		icon: Youtube,
 		category: 'utilities',
 		translationKey: 'youtubeThumbnail',
@@ -374,98 +373,8 @@ export const toolWidgets: Widget[] = [
 		]
 	},
 	{
-		id: 'php-syntax-checker',
-		icon: SquareCode,
-		category: 'utilities',
-		translationKey: 'phpSyntaxChecker',
-		path: 'php-syntax-checker',
-		gradient: 'from-indigo-500 to-blue-600',
-		title: 'PHP валидатор',
-		description: 'Проверка синтаксиса PHP для версий 5, 7 и 8',
-		recommendedTools: [
-			'mysql-syntax-checker',
-			'javascript-syntax-checker',
-			'regex-tester'
-		],
-		difficulty: 'intermediate',
-		tags: ['php', 'syntax', 'checker', 'validator', 'code'],
-		useCase: 'Валидация PHP кода перед размещением на сервере',
-		metaDescription:
-			'Проверка синтаксиса PHP для версий 5, 7 и 8. Валидируйте PHP-код и находите синтаксические ошибки.',
-		faqs: [
-			{
-				question: 'Какие версии PHP поддерживаются?',
-				answer:
-					'Проверка синтаксиса поддерживает PHP 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2 и 8.3, позволяя проверять код по правилам синтаксиса конкретной версии PHP.'
-			},
-			{
-				question: 'Какие типы ошибок он обнаруживает?',
-				answer:
-					'Проверяющий обнаруживает синтаксические ошибки, пропущенные точки с запятой, несоответствующие скобки, неправильные имена переменных, устаревшие функции и проблемы синтаксиса, специфичные для версии.'
-			},
-			{
-				question: 'Проверяет ли он логические ошибки или только синтаксис?',
-				answer:
-					'Этот инструмент фокусируется только на проверке синтаксиса. Он не обнаружит логические ошибки, неопределённые переменные во время выполнения или несоответствия типов - только ошибки парсинга PHP.'
-			},
-			{
-				question: 'Можно ли проверять частичные фрагменты PHP кода?',
-				answer:
-					'Да! Можно проверять фрагменты кода, функции, классы или полные PHP файлы. Инструмент обрабатывает как открывающие теги <?php, так и автономные блоки кода.'
-			},
-			{
-				question: 'Насколько точна отчётность об ошибках?',
-				answer:
-					'Проверяющий использует реальный парсер PHP, предоставляя те же сообщения об ошибках и номера строк, которые вы увидели бы при запуске php -l на своём сервере.'
-			}
-		]
-	},
-	{
-		id: 'mysql-syntax-checker',
-		icon: DatabaseZap,
-		category: 'utilities',
-		translationKey: 'mysqlSyntaxChecker',
-		path: 'mysql-syntax-checker',
-		gradient: 'from-blue-500 to-teal-600',
-		title: 'MySQL валидатор',
-		description: 'Проверка синтаксиса MySQL запросов на ошибки',
-		recommendedTools: ['php-syntax-checker', 'json-tools', 'regex-tester'],
-		difficulty: 'intermediate',
-		tags: ['mysql', 'sql', 'database', 'syntax', 'validator'],
-		useCase: 'Проверка SQL запросов перед выполнением в базе',
-		metaDescription:
-			'Валидатор и проверка синтаксиса MySQL. Проверяйте SQL-запросы на синтаксические ошибки онлайн.',
-		faqs: [
-			{
-				question: 'Какие диалекты SQL поддерживаются?',
-				answer:
-					'Проверяющий в основном поддерживает синтаксис MySQL 5.7 и 8.0, включая хранимые процедуры, триггеры, функции и продвинутые функции, такие как CTE, оконные функции и JSON операции.'
-			},
-			{
-				question: 'Можно ли проверять сложные многооператорные запросы?',
-				answer:
-					'Да! Инструмент обрабатывает множественные операторы, хранимые процедуры, триггеры, функции и сложные вложенные запросы. Каждый оператор проверяется индивидуально с детальной отчётностью об ошибках.'
-			},
-			{
-				question:
-					'Проверяет ли он логические ошибки или проблемы производительности?',
-				answer:
-					'Этот инструмент фокусируется только на проверке синтаксиса. Он не обнаружит логические ошибки, проблемы производительности или не проверит, существуют ли таблицы/колонки - только ошибки парсинга SQL.'
-			},
-			{
-				question: 'Какие типы SQL операторов можно проверять?',
-				answer:
-					'Все типы операторов MySQL: SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, хранимые процедуры, триггеры, функции и DDL операторы.'
-			},
-			{
-				question: 'Как он обрабатывает специфичные для MySQL функции?',
-				answer:
-					'Проверяющий распознаёт специфичный для MySQL синтаксис, включая идентификаторы в обратных кавычках, функции MySQL, спецификации движков и уникальные типы данных MySQL, такие как JSON и GEOMETRY.'
-			}
-		]
-	},
-	{
 		id: 'ascii-art-generator',
+		searchVolume: 155,
 		icon: TerminalSquare,
 		category: 'utilities',
 		translationKey: 'asciiArtGenerator',

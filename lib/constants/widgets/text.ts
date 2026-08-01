@@ -13,7 +13,7 @@ import {
 export const textWidgets: Widget[] = [
 	{
 		id: 'special-symbols-picker',
-		searchVolume: 22696,
+		searchVolume: 20,
 		icon: Asterisk,
 		category: 'text',
 		translationKey: 'specialSymbolsPicker',
@@ -64,6 +64,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'fancy-text-generator',
+		searchVolume: 1587,
 		icon: WandSparkles,
 		category: 'text',
 		translationKey: 'fancyTextGenerator',
@@ -109,6 +110,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-case-converter',
+		searchVolume: 700,
 		icon: CaseSensitive,
 		category: 'text',
 		translationKey: 'textCaseConverter',
@@ -165,7 +167,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'emoji-list',
-		searchVolume: 541434,
+		searchVolume: 881,
 		icon: Smile,
 		category: 'text',
 		translationKey: 'emojiList',
@@ -213,7 +215,7 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-emoticons',
-		searchVolume: 23568,
+		searchVolume: 7088,
 		icon: Laugh,
 		category: 'text',
 		translationKey: 'textEmoticons',

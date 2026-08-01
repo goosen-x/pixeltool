@@ -285,13 +285,6 @@ match.groups.day    // '15'`}
 				>
 					проверка синтаксиса JavaScript
 				</Link>
-				, а для PHP-скриптов — соответствующая{' '}
-				<Link
-					href='/tools/php-syntax-checker'
-					className='cursor-pointer font-medium text-primary hover:underline'
-				>
-					проверка синтаксиса PHP
-				</Link>
 				.
 			</p>
 		</section>
