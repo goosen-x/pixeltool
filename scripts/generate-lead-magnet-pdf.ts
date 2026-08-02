@@ -18,7 +18,7 @@ type Shortcut = [combo: string, action: string]
 
 const SECTIONS: { title: string; items: Shortcut[] }[] = [
 	{
-		title: 'Windows — система',
+		title: 'Горячие клавиши для Windows',
 		items: [
 			['Win + D', 'Свернуть все окна / показать рабочий стол'],
 			['Win + E', 'Открыть Проводник'],
@@ -46,7 +46,7 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 		]
 	},
 	{
-		title: 'macOS — система',
+		title: 'Горячие клавиши для macOS',
 		items: [
 			['Cmd + Space', 'Spotlight-поиск'],
 			['Cmd + Tab', 'Переключение между приложениями'],
@@ -176,6 +176,9 @@ function run() {
 	const appleIconBase64 = readFileSync(
 		join(process.cwd(), 'assets/pdf-icons/apple-icon.png')
 	).toString('base64')
+	const appleIconBlackBase64 = readFileSync(
+		join(process.cwd(), 'assets/pdf-icons/apple-icon-black.png')
+	).toString('base64')
 
 	const doc = new jsPDF({ unit: 'pt', format: 'a4' })
 	doc.addFileToVFS('Roboto-Regular.ttf', fontBase64)
@@ -287,11 +290,17 @@ function run() {
 	const ICON_TEXT_GAP = 4
 
 	// Иконка Windows — 4 квадрата 2x2, монохромная (в отличие от цветного
-	// логотипа PixelTool), чтобы просто читаться на тёмной клавише.
-	const drawWinIcon = (cx: number, cy: number, size: number) => {
+	// логотипа PixelTool). Белая — на тёмной клавише, чёрная — в заголовке
+	// секции на белом фоне страницы.
+	const drawWinIcon = (
+		cx: number,
+		cy: number,
+		size: number,
+		color: [number, number, number] = [255, 255, 255]
+	) => {
 		const gap = size * 0.16
 		const cell = (size - gap) / 2
-		doc.setFillColor(255, 255, 255)
+		doc.setFillColor(...color)
 		;[
 			[cx - cell - gap / 2, cy - cell - gap / 2],
 			[cx + gap / 2, cy - cell - gap / 2],
@@ -305,9 +314,14 @@ function run() {
 	const drawCmdIcon = (cx: number, cy: number, size: number) => {
 		doc.addImage(cmdIconBase64, 'PNG', cx - size / 2, cy - size / 2, size, size)
 	}
-	const drawAppleIcon = (cx: number, cy: number, size: number) => {
+	const drawAppleIcon = (
+		cx: number,
+		cy: number,
+		size: number,
+		black = false
+	) => {
 		doc.addImage(
-			appleIconBase64,
+			black ? appleIconBlackBase64 : appleIconBase64,
 			'PNG',
 			cx - size / 2,
 			cy - size / 2,
@@ -522,29 +536,22 @@ function run() {
 	const col2X = margin + col1Width + 14
 
 	const SECTION_ICONS: Record<string, 'win' | 'apple' | undefined> = {
-		'Windows — система': 'win',
-		'macOS — система': 'apple'
+		'Горячие клавиши для Windows': 'win',
+		'Горячие клавиши для macOS': 'apple'
 	}
 
 	SECTIONS.forEach(section => {
 		ensureSpace(36)
-		// Цветной акцент-бар слева от заголовка секции — фирменный штрих
-		// вместо голого чёрного текста.
-		doc.setFillColor(...PRIMARY)
-		doc.roundedRect(margin, y - 10, 4, 15, 2, 2, 'F')
 
-		let textX = margin + 12
+		let textX = margin
 		const iconKind = SECTION_ICONS[section.title]
 		if (iconKind) {
-			const badge = 18
-			const badgeY = y - 13
-			doc.setFillColor(...BASE_COLOR)
-			doc.roundedRect(margin + 12, badgeY, badge, badge, 4, 4, 'F')
-			const cx = margin + 12 + badge / 2
-			const cy = badgeY + badge / 2
-			if (iconKind === 'win') drawWinIcon(cx, cy, badge * 0.55)
-			else drawAppleIcon(cx, cy, badge * 0.62)
-			textX = margin + 12 + badge + 8
+			const iconSize = 16
+			const cx = margin + iconSize / 2
+			const cy = y - 5
+			if (iconKind === 'win') drawWinIcon(cx, cy, iconSize, INK)
+			else drawAppleIcon(cx, cy, iconSize, true)
+			textX = margin + iconSize + 8
 		}
 
 		doc.setFontSize(14)
