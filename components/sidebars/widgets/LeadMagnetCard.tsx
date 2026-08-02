@@ -2,23 +2,34 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Download } from 'lucide-react'
-import { toast } from 'sonner'
+import { Check, Loader2 } from 'lucide-react'
 
 export function LeadMagnetCard() {
 	const pathname = usePathname()
+	const [open, setOpen] = useState(false)
 	const [email, setEmail] = useState('')
 	const [company, setCompany] = useState('') // honeypot, должно оставаться пустым
-	const [status, setStatus] = useState<'idle' | 'loading' | 'sent'>('idle')
+	const [loading, setLoading] = useState(false)
+	const [sent, setSent] = useState(false)
+	const [error, setError] = useState('')
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		if (status === 'loading') return
-		setStatus('loading')
+		if (loading) return
+		setLoading(true)
+		setError('')
 
 		try {
 			const response = await fetch('/api/leads', {
@@ -28,74 +39,136 @@ export function LeadMagnetCard() {
 			})
 
 			if (!response.ok) throw new Error('request failed')
-
-			setStatus('sent')
-			toast.success('Проверьте почту — отправили PDF')
+			setSent(true)
 		} catch {
-			setStatus('idle')
-			toast.error('Не получилось отправить. Попробуйте ещё раз')
+			setError('Не получилось отправить. Попробуйте ещё раз')
+		} finally {
+			setLoading(false)
 		}
 	}
 
-	if (status === 'sent') {
-		return (
-			<Card className='w-full'>
-				<CardContent className='pt-6 text-center'>
-					<Download className='mx-auto mb-2 h-6 w-6 text-muted-foreground' />
-					<p className='text-sm text-muted-foreground'>
-						PDF с подборкой инструментов уже летит к вам на почту.
-					</p>
-				</CardContent>
-			</Card>
-		)
-	}
-
 	return (
-		<Card className='w-full'>
-			<CardHeader className='pb-2'>
-				<CardTitle className='text-sm'>10 полезных инструментов</CardTitle>
-			</CardHeader>
-			<CardContent className='space-y-3'>
-				<p className='text-xs text-muted-foreground'>
-					Короткая подборка PDF на почту — какие инструменты экономят больше
-					всего времени.
-				</p>
-				<form onSubmit={handleSubmit} className='space-y-2'>
-					<input
-						type='text'
-						name='company'
-						value={company}
-						onChange={e => setCompany(e.target.value)}
-						tabIndex={-1}
-						autoComplete='off'
-						className='absolute h-0 w-0 opacity-0'
-						aria-hidden='true'
-					/>
-					<Input
-						type='email'
-						required
-						placeholder='you@email.com'
-						value={email}
-						onChange={e => setEmail(e.target.value)}
-						className='h-9 text-sm'
-					/>
-					<Button
-						type='submit'
-						size='sm'
-						className='w-full cursor-pointer'
-						disabled={status === 'loading'}
-					>
-						{status === 'loading' ? 'Отправляем...' : 'Получить PDF'}
-					</Button>
-				</form>
-				<p className='text-[10px] text-muted-foreground'>
-					Отправляя email, вы соглашаетесь с{' '}
-					<Link href='/privacy' className='cursor-pointer underline'>
-						политикой конфиденциальности
-					</Link>
-					. Без спама.
-				</p>
-			</CardContent>
-		</Card>
+		<Dialog
+			open={open}
+			onOpenChange={next => {
+				setOpen(next)
+				if (!next) {
+					setTimeout(() => {
+						setSent(false)
+						setEmail('')
+						setError('')
+					}, 200)
+				}
+			}}
+		>
+			<DialogTrigger asChild>
+				<button type='button' className='group block w-full cursor-pointer text-left'>
+					<div className='overflow-hidden rounded-2xl border bg-card shadow-sm transition-colors hover:border-primary/40'>
+						<div className='relative aspect-[4/5] w-full'>
+							<Image
+								src='/images/lead-magnet/card-banner.webp'
+								alt=''
+								fill
+								priority
+								sizes='320px'
+								className='object-cover transition-opacity duration-500 group-hover:opacity-0'
+							/>
+							<Image
+								src='/images/lead-magnet/card-banner-hover.webp'
+								alt=''
+								fill
+								sizes='320px'
+								className='object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100'
+							/>
+							<div className='pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent' />
+							<p className='pointer-events-none absolute inset-x-3 bottom-3 text-base font-semibold leading-tight text-white'>
+								Шпаргалка горячих клавиш на почту →
+							</p>
+						</div>
+					</div>
+				</button>
+			</DialogTrigger>
+
+			<DialogContent className='sm:max-w-[420px]'>
+				{sent ? (
+					<div className='flex flex-col items-center gap-3 py-6 text-center'>
+						<div className='flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-950'>
+							<Check className='h-6 w-6 text-green-600 dark:text-green-400' />
+						</div>
+						<DialogTitle className='text-lg'>Проверьте почту</DialogTitle>
+						<DialogDescription className='max-w-xs'>
+							PDF со шпаргалкой горячих клавиш уже летит на {email}.
+						</DialogDescription>
+						<Button
+							onClick={() => setOpen(false)}
+							variant='outline'
+							className='mt-2 cursor-pointer'
+						>
+							Закрыть
+						</Button>
+					</div>
+				) : (
+					<>
+						<DialogHeader>
+							<DialogTitle>Шпаргалка горячих клавиш</DialogTitle>
+							<DialogDescription>
+								PDF с горячими клавишами для Windows, macOS, браузера, Excel,
+								видеозвонков и презентаций — на почту, бесплатно.
+							</DialogDescription>
+						</DialogHeader>
+
+						<form onSubmit={handleSubmit} className='space-y-3'>
+							<input
+								type='text'
+								name='company'
+								value={company}
+								onChange={e => setCompany(e.target.value)}
+								tabIndex={-1}
+								autoComplete='off'
+								className='absolute h-0 w-0 opacity-0'
+								aria-hidden='true'
+							/>
+							<Input
+								type='email'
+								required
+								autoFocus
+								placeholder='you@email.com'
+								value={email}
+								onChange={e => setEmail(e.target.value)}
+							/>
+
+							{error && (
+								<p className='text-sm text-destructive' role='alert'>
+									{error}
+								</p>
+							)}
+
+							<Button
+								type='submit'
+								className='w-full cursor-pointer'
+								disabled={loading}
+							>
+								{loading ? (
+									<>
+										<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+										Отправляем…
+									</>
+								) : (
+									'Получить PDF'
+								)}
+							</Button>
+
+							<p className='text-[11px] text-muted-foreground'>
+								Отправляя email, вы соглашаетесь с{' '}
+								<Link href='/privacy' className='cursor-pointer underline'>
+									политикой конфиденциальности
+								</Link>
+								. Без спама.
+							</p>
+						</form>
+					</>
+				)}
+			</DialogContent>
+		</Dialog>
 	)
 }

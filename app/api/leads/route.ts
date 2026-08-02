@@ -12,7 +12,10 @@ const leadSchema = z.object({
 	source: z.string().max(100).optional()
 })
 
-const PDF_PATH = join(process.cwd(), 'public/downloads/pixeltool-10-tools.pdf')
+const PDF_PATH = join(
+	process.cwd(),
+	'public/downloads/pixeltool-goryachie-klavishi.pdf'
+)
 
 export async function POST(request: NextRequest) {
 	let parsed: z.infer<typeof leadSchema>
@@ -56,13 +59,15 @@ export async function POST(request: NextRequest) {
 	try {
 		await sendMail({
 			to: email,
-			subject: 'Ваша подборка инструментов PixelTool',
+			subject: 'Шпаргалка горячих клавиш от PixelTool',
 			html: `
 				<p>Привет!</p>
-				<p>Как обещали — подборка из 10 полезных инструментов PixelTool во вложении.</p>
+				<p>Как обещали — горячие клавиши для Windows, macOS, браузера, Excel, видеозвонков и презентаций во вложении.</p>
 				<p>Все инструменты всегда под рукой: <a href="https://pixeltool.pro/tools">pixeltool.pro/tools</a></p>
 			`,
-			attachments: [{ filename: 'pixeltool-10-tools.pdf', path: PDF_PATH }]
+			attachments: [
+				{ filename: 'pixeltool-goryachie-klavishi.pdf', path: PDF_PATH }
+			]
 		})
 
 		const db = await getDb()
