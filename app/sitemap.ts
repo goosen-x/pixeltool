@@ -80,7 +80,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: widget.updatedAt || CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.9,
-			images: [escapeXmlAmpersand(`${BASE_URL}${buildWidgetOgImagePath(widget)}`)]
+			images: [
+				escapeXmlAmpersand(`${BASE_URL}${buildWidgetOgImagePath(widget)}`)
+			]
 		})
 	})
 
