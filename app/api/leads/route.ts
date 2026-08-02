@@ -20,7 +20,10 @@ export async function POST(request: NextRequest) {
 	try {
 		parsed = leadSchema.parse(await request.json())
 	} catch {
-		return NextResponse.json({ error: 'Введите корректный email' }, { status: 400 })
+		return NextResponse.json(
+			{ error: 'Введите корректный email' },
+			{ status: 400 }
+		)
 	}
 
 	if (parsed.company) {

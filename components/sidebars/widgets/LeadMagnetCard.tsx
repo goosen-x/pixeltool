@@ -57,8 +57,8 @@ export function LeadMagnetCard() {
 			</CardHeader>
 			<CardContent className='space-y-3'>
 				<p className='text-xs text-muted-foreground'>
-					Короткая подборка PDF на почту — какие инструменты экономят
-					больше всего времени.
+					Короткая подборка PDF на почту — какие инструменты экономят больше
+					всего времени.
 				</p>
 				<form onSubmit={handleSubmit} className='space-y-2'>
 					<input
