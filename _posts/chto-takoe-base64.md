@@ -12,6 +12,7 @@ author:
 related:
   - chto-takoe-json
   - chto-takoe-uuid
+  - chto-takoe-jwt
   - preview-ssylki-open-graph
 ---
 
