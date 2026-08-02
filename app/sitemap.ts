@@ -6,6 +6,13 @@ import { buildWidgetOgImagePath } from '@/lib/seo/build-widget-metadata'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
+// Next.js вставляет images[].url в <image:loc> сырым, без XML-экранирования
+// (node_modules/next/dist/build/webpack/loaders/metadata/resolve-route-data.js).
+// Наш /api/og содержит несколько query-параметров через "&", что ломает
+// парсинг sitemap.xml в Google Search Console ("Ошибка разбора"). Экранируем
+// сами перед передачей в sitemapEntries.
+const escapeXmlAmpersand = (url: string) => url.replace(/&/g, '&amp;')
+
 /**
  * Дата последнего значимого обновления статических страниц и инструментов.
  *
@@ -73,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: widget.updatedAt || CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.9,
-			images: [`${BASE_URL}${buildWidgetOgImagePath(widget)}`]
+			images: [escapeXmlAmpersand(`${BASE_URL}${buildWidgetOgImagePath(widget)}`)]
 		})
 	})
 
@@ -87,7 +94,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: post.date,
 			changeFrequency: 'monthly',
 			priority: 0.7,
-			...(hasRealCover && { images: [`${BASE_URL}${post.coverImage}`] })
+			...(hasRealCover && {
+				images: [escapeXmlAmpersand(`${BASE_URL}${post.coverImage}`)]
+			})
 		})
 	})
 
