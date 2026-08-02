@@ -68,6 +68,16 @@ export function LeadMagnetCard() {
 				>
 					<div className='overflow-hidden rounded-2xl border bg-card shadow-sm transition-colors hover:border-primary/40'>
 						<div className='relative aspect-[4/5] w-full'>
+							{/* Нижний слой всегда полностью виден — верхний плавно
+							    гаснет на hover, открывая его. Одна анимируемая
+							    прозрачность вместо двух встречных. */}
+							<Image
+								src='/images/lead-magnet/card-banner-hover-v2.png'
+								alt=''
+								fill
+								sizes='320px'
+								className='object-cover'
+							/>
 							<Image
 								src='/images/lead-magnet/card-banner-v2.png'
 								alt=''
@@ -75,13 +85,6 @@ export function LeadMagnetCard() {
 								priority
 								sizes='320px'
 								className='object-cover transition-opacity duration-500 group-hover:opacity-0'
-							/>
-							<Image
-								src='/images/lead-magnet/card-banner-hover-v2.png'
-								alt=''
-								fill
-								sizes='320px'
-								className='object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100'
 							/>
 							<div className='pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent' />
 							<p className='pointer-events-none absolute inset-x-3 bottom-3 text-base font-semibold leading-tight text-white'>
