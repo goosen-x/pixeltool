@@ -14,6 +14,9 @@ import { QrScannerSeo } from './QrScannerSeo'
 
 type ScanMode = 'camera' | 'upload'
 
+// Максимальная сторона кадра, который реально прогоняем через jsQR.
+const MAX_SCAN_DIMENSION = 800
+
 function isHttpUrl(text: string): boolean {
 	try {
 		const url = new URL(text)
@@ -59,9 +62,17 @@ export default function QRScannerPage() {
 			return
 		}
 
-		canvas.width = video.videoWidth
-		canvas.height = video.videoHeight
-		const ctx = canvas.getContext('2d')
+		// На телефоне видео с камеры может быть в разы больше MAX_SCAN_DIMENSION
+		// (даже с constraint'ами ниже — не все браузеры их точно соблюдают).
+		// jsQR на каждый кадр на таком разрешении вешает основной поток так,
+		// что сканирование выглядит как "не работает" — даунскейлим перед декодом.
+		const scale = Math.min(
+			1,
+			MAX_SCAN_DIMENSION / Math.max(video.videoWidth, video.videoHeight)
+		)
+		canvas.width = Math.round(video.videoWidth * scale)
+		canvas.height = Math.round(video.videoHeight * scale)
+		const ctx = canvas.getContext('2d', { willReadFrequently: true })
 
 		if (ctx) {
 			ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
@@ -79,7 +90,11 @@ export default function QRScannerPage() {
 		setError(null)
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
-				video: { facingMode: 'environment' }
+				video: {
+					facingMode: 'environment',
+					width: { ideal: 1280 },
+					height: { ideal: 720 }
+				}
 			})
 			// Пользователь мог переключиться на вкладку загрузки, пока мы ждали
 			// разрешение на камеру — тогда просто останавливаем полученный поток.
