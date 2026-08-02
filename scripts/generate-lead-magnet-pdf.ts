@@ -156,7 +156,7 @@ const LOGO_COLORS: [number, number, number][] = [
 	[34, 197, 94], // green
 	[59, 130, 246] // blue
 ]
-const PRIMARY: [number, number, number] = [124, 58, 237] // violet — как ссылки/кнопки на сайте
+const PRIMARY: [number, number, number] = [45, 45, 48] // тёмно-серый — как в референсе-кейкапе пользователя
 const INK: [number, number, number] = [17, 24, 39]
 const MUTED: [number, number, number] = [107, 114, 128]
 
@@ -212,91 +212,108 @@ function run() {
 		})
 	}
 
-	// Сочетание клавиш — фиолетовая "кнопка"-чип с белым текстом, а не голый
-	// текст. Поддерживает перенос на 2 строки для длинных комбинаций.
+	// Каждая клавиша — отдельный "кейкап"-чип (не вся комбинация одним чипом),
+	// между ними — обычный текст "+", как физические клавиши в ряд.
 	const CHIP_FONT_SIZE = 9.5
 	const CHIP_PAD_X = 7
 	const CHIP_PAD_Y = 4
-	const CHIP_LINE_HEIGHT = CHIP_FONT_SIZE * 1.25
+	const CHIP_HEIGHT = CHIP_FONT_SIZE * 1.25 + CHIP_PAD_Y * 2
+	const PLUS_GAP = 6 // отступ по обе стороны знака "+"
+	const ICON_SIZE = CHIP_FONT_SIZE * 0.95
 
-	const measureChip = (combo: string, colWidth: number) => {
+	// Цвета теней/блика — заранее просчитанные сплошные оттенки (alpha-blend
+	// вручную), а не GState-прозрачность: часть PDF-вьюверов (например,
+	// PDF.js в Chrome) рендерит полупрозрачные слои некорректно — серым
+	// поверх цвета вместо честного альфа-смешения. Сплошные цвета рендерятся
+	// одинаково везде.
+	const SHADOW_COLOR: [number, number, number] = [199, 199, 199] // ~22% чёрного по белому фону
+	const BASE_COLOR: [number, number, number] = [20, 20, 20] // тёмная "глубина" клавиши
+	const HIGHLIGHT_COLOR: [number, number, number] = [83, 83, 85] // ~18% белого поверх PRIMARY
+
+	const isWinKey = (token: string) => token.trim().toLowerCase() === 'win'
+
+	// Иконка Windows — 4 квадрата 2x2, монохромная (в отличие от цветного
+	// логотипа PixelTool), чтобы просто читаться на тёмной клавише.
+	const drawWinIcon = (cx: number, cy: number, size: number) => {
+		const gap = size * 0.16
+		const cell = (size - gap) / 2
+		doc.setFillColor(255, 255, 255)
+		;[
+			[cx - cell - gap / 2, cy - cell - gap / 2],
+			[cx + gap / 2, cy - cell - gap / 2],
+			[cx - cell - gap / 2, cy + gap / 2],
+			[cx + gap / 2, cy + gap / 2]
+		].forEach(([px, py]) => doc.rect(px, py, cell, cell, 'F'))
+	}
+
+	const keyChipWidth = (token: string) => {
+		if (isWinKey(token)) return ICON_SIZE + CHIP_PAD_X * 2
 		doc.setFontSize(CHIP_FONT_SIZE)
-		const lines = doc.splitTextToSize(combo, colWidth - CHIP_PAD_X * 2)
-		const height = lines.length * CHIP_LINE_HEIGHT + CHIP_PAD_Y * 2
-		return { lines, height }
+		return doc.getTextWidth(token) + CHIP_PAD_X * 2
 	}
 
 	// "Кейкап" — имитация физической клавиши через слои (без градиентов/blur,
 	// которых в jsPDF нет): тень → тёмная база (глубина) → светлая "грань"
-	// со сдвигом (bevel) → блик сверху → текст. Вдохновлено референсом
-	// пользователя (CSS-кейкап с Uiverse.io), адаптировано под наши цвета.
-	//
-	// Цвета теней/блика — заранее просчитанные сплошные оттенки (alpha-blend
-	// вручную), а не GState-прозрачность: часть PDF-вьюверов (например,
-	// PDF.js в Chrome) рендерит полупрозрачные слои некорректно — серым
-	// поверх цвета вместо честного альфа-смешения, из-за чего кнопки
-	// выглядели тускло-серыми вместо фиолетовых. Сплошные цвета рендерятся
-	// одинаково везде.
-	const SHADOW_COLOR: [number, number, number] = [214, 210, 224] // ~22% чёрного по белому фону
-	const HIGHLIGHT_COLOR: [number, number, number] = [161, 121, 246] // ~18% белого поверх PRIMARY
-
-	const drawChip = (
-		lines: string[],
-		x: number,
-		topY: number,
-		colWidth: number
-	) => {
-		doc.setFontSize(CHIP_FONT_SIZE)
-		const textWidth = Math.max(
-			...lines.map((l: string) => doc.getTextWidth(l)),
-			10
-		)
-		const chipWidth = Math.min(textWidth + CHIP_PAD_X * 2, colWidth)
-		const chipHeight = lines.length * CHIP_LINE_HEIGHT + CHIP_PAD_Y * 2
+	// со сдвигом (bevel) → блик сверху → контент. Вдохновлено референсом
+	// пользователя (CSS-кейкап с Uiverse.io).
+	const drawKeyChip = (token: string, x: number, topY: number) => {
+		const chipWidth = keyChipWidth(token)
 		const r = 3
 
-		// Тень
 		doc.setFillColor(...SHADOW_COLOR)
-		doc.roundedRect(x + 1, topY + 1.5, chipWidth, chipHeight, r, r, 'F')
+		doc.roundedRect(x + 1, topY + 1.5, chipWidth, CHIP_HEIGHT, r, r, 'F')
 
-		// Тёмная база — "глубина" клавиши
-		doc.setFillColor(76, 29, 149) // violet-900
-		doc.roundedRect(x, topY, chipWidth, chipHeight, r, r, 'F')
+		doc.setFillColor(...BASE_COLOR)
+		doc.roundedRect(x, topY, chipWidth, CHIP_HEIGHT, r, r, 'F')
 
-		// Светлая грань — сдвинута вверх-влево, как приподнятая крышка клавиши
 		const bevel = 1.4
 		doc.setFillColor(...PRIMARY)
 		doc.roundedRect(
 			x,
 			topY,
 			chipWidth - bevel,
-			chipHeight - bevel,
+			CHIP_HEIGHT - bevel,
 			r * 0.85,
 			r * 0.85,
 			'F'
 		)
 
-		// Блик — светлая полоса по верхней части грани
 		doc.setFillColor(...HIGHLIGHT_COLOR)
 		doc.roundedRect(
 			x + 1,
 			topY + 1,
 			chipWidth - bevel - 2,
-			(chipHeight - bevel) * 0.45,
+			(CHIP_HEIGHT - bevel) * 0.45,
 			r * 0.7,
 			r * 0.7,
 			'F'
 		)
 
-		doc.setTextColor(255, 255, 255)
-		lines.forEach((line, i) => {
-			doc.text(
-				line,
-				x + CHIP_PAD_X,
-				topY + CHIP_PAD_Y + CHIP_FONT_SIZE * 0.82 + i * CHIP_LINE_HEIGHT
-			)
+		if (isWinKey(token)) {
+			drawWinIcon(x + chipWidth / 2, topY + CHIP_HEIGHT / 2, ICON_SIZE)
+		} else {
+			doc.setFontSize(CHIP_FONT_SIZE)
+			doc.setTextColor(255, 255, 255)
+			doc.text(token, x + CHIP_PAD_X, topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35)
+		}
+		return chipWidth
+	}
+
+	// Ряд клавиш комбинации: каждая — свой кейкап, между ними — текстовый "+".
+	const drawComboRow = (combo: string, x: number, topY: number) => {
+		const tokens = combo.split(' + ')
+		let cursorX = x
+		doc.setFontSize(CHIP_FONT_SIZE)
+
+		tokens.forEach((token, i) => {
+			if (i > 0) {
+				doc.setTextColor(...MUTED)
+				doc.text('+', cursorX, topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35)
+				cursorX += doc.getTextWidth('+') + PLUS_GAP
+			}
+			cursorX += drawKeyChip(token, cursorX, topY) + PLUS_GAP
 		})
-		return chipHeight
+		return { width: cursorX - x - PLUS_GAP, height: CHIP_HEIGHT }
 	}
 
 	// ---- Шапка: логотип + название бренда ----
@@ -314,8 +331,9 @@ function run() {
 		{ color: MUTED, gap: 22 }
 	)
 
-	const col1Width = 175
-	const col2X = margin + col1Width + 12
+	// Шире, чем раньше: теперь тут не один чип, а ряд отдельных клавиш + "+".
+	const col1Width = 210
+	const col2X = margin + col1Width + 14
 
 	SECTIONS.forEach(section => {
 		ensureSpace(36)
@@ -329,18 +347,17 @@ function run() {
 		y += 18
 
 		section.items.forEach(([combo, action]) => {
-			const { lines: chipLines, height: chipHeight } = measureChip(
-				combo,
-				col1Width
-			)
 			doc.setFontSize(10.5)
-			const actionLines = doc.splitTextToSize(action, maxWidth - col1Width - 12)
+			const actionLines = doc.splitTextToSize(
+				action,
+				maxWidth - col1Width - 14
+			)
 			const actionHeight = actionLines.length * 10.5 * 1.3
-			const rowHeight = Math.max(chipHeight, actionHeight)
+			const rowHeight = Math.max(CHIP_HEIGHT, actionHeight)
 
 			ensureSpace(rowHeight + 6)
 
-			drawChip(chipLines, margin, y, col1Width)
+			drawComboRow(combo, margin, y)
 			doc.setFontSize(10.5)
 			doc.setTextColor(55, 65, 81)
 			doc.text(
