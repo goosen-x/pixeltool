@@ -39,7 +39,10 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 				'Переключение виртуальных рабочих столов'
 			],
 			['Ctrl + Shift + Esc', 'Диспетчер задач'],
-			['Alt + F4', 'Закрыть окно']
+			['Alt + F4', 'Закрыть окно'],
+			['Ctrl + Alt + Delete', 'Экран блокировки / смена пользователя'],
+			['Win + ,', 'Временно посмотреть рабочий стол (пока зажато)'],
+			['Win + G', 'Игровая панель Xbox Game Bar']
 		]
 	},
 	{
@@ -59,7 +62,10 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 			['Cmd + Delete', 'Удалить файл в корзину'],
 			['Control + Cmd + Q', 'Заблокировать экран'],
 			['Control + Up', 'Mission Control'],
-			['Cmd + Shift + N', 'Новая папка (Finder)']
+			['Cmd + Shift + N', 'Новая папка (Finder)'],
+			['Cmd + Shift + .', 'Показать скрытые файлы (Finder)'],
+			['Cmd + N', 'Новое окно Finder'],
+			['Cmd + I', 'Информация о файле (Get Info)']
 		]
 	},
 	{
@@ -80,7 +86,9 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 			['Ctrl/Cmd + 0', 'Сбросить масштаб'],
 			['Alt/Cmd + влево', 'Назад по истории'],
 			['Ctrl/Cmd + J', 'Открыть загрузки'],
-			['Ctrl/Cmd + Shift + Delete', 'Очистить историю и кэш']
+			['Ctrl/Cmd + Shift + Delete', 'Очистить историю и кэш'],
+			['F11', 'Полноэкранный режим'],
+			['Ctrl/Cmd + Shift + B', 'Показать / скрыть панель закладок']
 		]
 	},
 	{
@@ -102,7 +110,8 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 			['Ctrl + Backspace', 'Удалить слово целиком'],
 			['Ctrl/Option + влево / вправо', 'Перемещение по словам'],
 			['Home / End', 'В начало / конец строки'],
-			['Ctrl/Cmd + Home / End', 'В начало / конец документа']
+			['Ctrl/Cmd + Home / End', 'В начало / конец документа'],
+			['Ctrl/Cmd + Shift + V', 'Вставить без форматирования']
 		]
 	},
 	{
@@ -119,7 +128,9 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 			['Ctrl + 1 (Excel)', 'Формат ячеек'],
 			['Ctrl + D', 'Заполнить вниз значением сверху'],
 			['Ctrl + Shift + L (Sheets)', 'Включить фильтр'],
-			['Ctrl + Home / End', 'В начало / конец листа']
+			['Ctrl + Home / End', 'В начало / конец листа'],
+			['Alt + Enter', 'Новая строка внутри ячейки'],
+			['Ctrl + PageDown / PageUp', 'Переключение между листами']
 		]
 	},
 	{
@@ -163,6 +174,11 @@ const MUTED: [number, number, number] = [107, 114, 128]
 function run() {
 	const fontPath = join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')
 	const fontBase64 = readFileSync(fontPath).toString('base64')
+
+	// Реальная иконка ⌘ (SVG пользователя, растеризована в белый PNG заранее
+	// — generate-cmd-icon.ts — jsPDF не рендерит SVG в Node без DOM).
+	const cmdIconPath = join(process.cwd(), 'assets/pdf-icons/cmd-icon.png')
+	const cmdIconBase64 = readFileSync(cmdIconPath).toString('base64')
 
 	const doc = new jsPDF({ unit: 'pt', format: 'a4' })
 	doc.addFileToVFS('Roboto-Regular.ttf', fontBase64)
@@ -231,6 +247,30 @@ function run() {
 	const HIGHLIGHT_COLOR: [number, number, number] = [83, 83, 85] // ~18% белого поверх PRIMARY
 
 	const isWinKey = (token: string) => token.trim().toLowerCase() === 'win'
+	const isCmdKey = (token: string) => token.trim().toLowerCase() === 'cmd'
+
+	// Слова направлений в данных (напр. "вверх / вниз") — рисуются как
+	// стрелки-иконки, не текстом. ↑/↓ есть в Roboto (проверено через cmap),
+	// ←/→ в шрифте отсутствуют — для них векторный треугольник той же
+	// величины, чтобы визуально не отличались от ↑/↓.
+	const DIRECTION_WORDS: Record<string, 'up' | 'down' | 'left' | 'right'> = {
+		вверх: 'up',
+		вниз: 'down',
+		влево: 'left',
+		вправо: 'right'
+	}
+
+	const isDirectionPair = (token: string) => {
+		const parts = token.split(' / ').map(p => p.trim())
+		return parts.length === 2 && parts.every(p => p in DIRECTION_WORDS)
+	}
+
+	type ChipContent =
+		| { kind: 'text'; value: string }
+		| { kind: 'iconText'; icon: 'win' | 'cmd'; label: string }
+		| { kind: 'arrow'; dir: 'up' | 'down' | 'left' | 'right' }
+
+	const ICON_TEXT_GAP = 4
 
 	// Иконка Windows — 4 квадрата 2x2, монохромная (в отличие от цветного
 	// логотипа PixelTool), чтобы просто читаться на тёмной клавише.
@@ -246,18 +286,79 @@ function run() {
 		].forEach(([px, py]) => doc.rect(px, py, cell, cell, 'F'))
 	}
 
-	const keyChipWidth = (token: string) => {
-		if (isWinKey(token)) return ICON_SIZE + CHIP_PAD_X * 2
+	// Иконка Cmd (⌘) — растровая (см. cmdIconBase64 выше), не в Roboto
+	// (проверено через cmap), а рисовать точный символ вектором не стали —
+	// у пользователя уже был готовый SVG.
+	const drawCmdIcon = (cx: number, cy: number, size: number) => {
+		doc.addImage(
+			cmdIconBase64,
+			'PNG',
+			cx - size / 2,
+			cy - size / 2,
+			size,
+			size
+		)
+	}
+
+	const drawArrowIcon = (
+		cx: number,
+		cy: number,
+		size: number,
+		dir: 'up' | 'down' | 'left' | 'right'
+	) => {
+		if (dir === 'up' || dir === 'down') {
+			doc.setFontSize(size * 1.3)
+			doc.setTextColor(255, 255, 255)
+			const ch = dir === 'up' ? '↑' : '↓'
+			doc.text(ch, cx - doc.getTextWidth(ch) / 2, cy + size * 0.4)
+			return
+		}
+		doc.setFillColor(255, 255, 255)
+		const w = size * 0.55
+		const h = size * 0.6
+		if (dir === 'left') {
+			doc.triangle(
+				cx - w / 2,
+				cy,
+				cx + w / 2,
+				cy - h / 2,
+				cx + w / 2,
+				cy + h / 2,
+				'F'
+			)
+		} else {
+			doc.triangle(
+				cx + w / 2,
+				cy,
+				cx - w / 2,
+				cy - h / 2,
+				cx - w / 2,
+				cy + h / 2,
+				'F'
+			)
+		}
+	}
+
+	const chipContentWidth = (content: ChipContent) => {
+		if (content.kind === 'arrow') return ICON_SIZE + CHIP_PAD_X * 2
 		doc.setFontSize(CHIP_FONT_SIZE)
-		return doc.getTextWidth(token) + CHIP_PAD_X * 2
+		if (content.kind === 'iconText') {
+			return (
+				ICON_SIZE +
+				ICON_TEXT_GAP +
+				doc.getTextWidth(content.label) +
+				CHIP_PAD_X * 2
+			)
+		}
+		return doc.getTextWidth(content.value) + CHIP_PAD_X * 2
 	}
 
 	// "Кейкап" — имитация физической клавиши через слои (без градиентов/blur,
 	// которых в jsPDF нет): тень → тёмная база (глубина) → светлая "грань"
 	// со сдвигом (bevel) → блик сверху → контент. Вдохновлено референсом
 	// пользователя (CSS-кейкап с Uiverse.io).
-	const drawKeyChip = (token: string, x: number, topY: number) => {
-		const chipWidth = keyChipWidth(token)
+	const drawChip = (content: ChipContent, x: number, topY: number) => {
+		const chipWidth = chipContentWidth(content)
 		const r = 3
 
 		doc.setFillColor(...SHADOW_COLOR)
@@ -289,13 +390,25 @@ function run() {
 			'F'
 		)
 
-		if (isWinKey(token)) {
-			drawWinIcon(x + chipWidth / 2, topY + CHIP_HEIGHT / 2, ICON_SIZE)
+		const cy = topY + CHIP_HEIGHT / 2
+		if (content.kind === 'arrow') {
+			drawArrowIcon(x + chipWidth / 2, cy, ICON_SIZE, content.dir)
+		} else if (content.kind === 'iconText') {
+			const iconCx = x + CHIP_PAD_X + ICON_SIZE / 2
+			if (content.icon === 'win') drawWinIcon(iconCx, cy, ICON_SIZE)
+			else drawCmdIcon(iconCx, cy, ICON_SIZE)
+			doc.setFontSize(CHIP_FONT_SIZE)
+			doc.setTextColor(255, 255, 255)
+			doc.text(
+				content.label,
+				x + CHIP_PAD_X + ICON_SIZE + ICON_TEXT_GAP,
+				topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35
+			)
 		} else {
 			doc.setFontSize(CHIP_FONT_SIZE)
 			doc.setTextColor(255, 255, 255)
 			doc.text(
-				token,
+				content.value,
 				x + CHIP_PAD_X,
 				topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35
 			)
@@ -303,7 +416,8 @@ function run() {
 		return chipWidth
 	}
 
-	// Ряд клавиш комбинации: каждая — свой кейкап, между ними — текстовый "+".
+	// Ряд клавиш комбинации: каждая — свой кейкап, между ними — текстовый "+"
+	// (или "/" внутри пары направлений вроде "влево / вправо").
 	const drawComboRow = (combo: string, x: number, topY: number) => {
 		const tokens = combo.split(' + ')
 		let cursorX = x
@@ -315,7 +429,37 @@ function run() {
 				doc.text('+', cursorX, topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35)
 				cursorX += doc.getTextWidth('+') + PLUS_GAP
 			}
-			cursorX += drawKeyChip(token, cursorX, topY) + PLUS_GAP
+
+			if (isDirectionPair(token)) {
+				token
+					.split(' / ')
+					.map(p => p.trim())
+					.forEach((word, j) => {
+						if (j > 0) {
+							doc.setTextColor(...MUTED)
+							doc.text(
+								'/',
+								cursorX,
+								topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35
+							)
+							cursorX += doc.getTextWidth('/') + PLUS_GAP
+						}
+						cursorX +=
+							drawChip(
+								{ kind: 'arrow', dir: DIRECTION_WORDS[word] },
+								cursorX,
+								topY
+							) + PLUS_GAP
+					})
+				return
+			}
+
+			let content: ChipContent
+			if (isWinKey(token)) content = { kind: 'iconText', icon: 'win', label: 'Win' }
+			else if (isCmdKey(token))
+				content = { kind: 'iconText', icon: 'cmd', label: 'Cmd' }
+			else content = { kind: 'text', value: token }
+			cursorX += drawChip(content, cursorX, topY) + PLUS_GAP
 		})
 		return { width: cursorX - x - PLUS_GAP, height: CHIP_HEIGHT }
 	}
