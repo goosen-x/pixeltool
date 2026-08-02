@@ -6,6 +6,7 @@ import { AdSection } from '@/components/ads'
 import { cn } from '@/lib/utils'
 import { FeedbackCard } from './widgets/FeedbackCard'
 import { RecentToolsCard } from './widgets/RecentToolsCard'
+import { LeadMagnetCard } from './widgets/LeadMagnetCard'
 
 interface Props {
 	/**
@@ -39,6 +40,7 @@ export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 			)}
 		>
 			<RecentToolsCard widget={widget ?? undefined} />
+			<LeadMagnetCard />
 			<AdSection />
 			<FeedbackCard />
 		</aside>

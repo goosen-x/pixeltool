@@ -25,7 +25,7 @@ const escapeXmlAmpersand = (url: string) => url.replace(/&/g, '&amp;')
  * Обновляй руками при значимых изменениях набора инструментов/статики.
  * Дату отдельного инструмента можно переопределить через widget.updatedAt.
  */
-const CONTENT_LAST_UPDATED = '2026-08-01'
+const CONTENT_LAST_UPDATED = '2026-08-02'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Get all blog posts
