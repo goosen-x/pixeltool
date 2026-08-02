@@ -230,6 +230,16 @@ function run() {
 	// которых в jsPDF нет): тень → тёмная база (глубина) → светлая "грань"
 	// со сдвигом (bevel) → блик сверху → текст. Вдохновлено референсом
 	// пользователя (CSS-кейкап с Uiverse.io), адаптировано под наши цвета.
+	//
+	// Цвета теней/блика — заранее просчитанные сплошные оттенки (alpha-blend
+	// вручную), а не GState-прозрачность: часть PDF-вьюверов (например,
+	// PDF.js в Chrome) рендерит полупрозрачные слои некорректно — серым
+	// поверх цвета вместо честного альфа-смешения, из-за чего кнопки
+	// выглядели тускло-серыми вместо фиолетовых. Сплошные цвета рендерятся
+	// одинаково везде.
+	const SHADOW_COLOR: [number, number, number] = [214, 210, 224] // ~22% чёрного по белому фону
+	const HIGHLIGHT_COLOR: [number, number, number] = [161, 121, 246] // ~18% белого поверх PRIMARY
+
 	const drawChip = (
 		lines: string[],
 		x: number,
@@ -246,11 +256,8 @@ function run() {
 		const r = 3
 
 		// Тень
-		doc.saveGraphicsState()
-		doc.setGState(new (doc as any).GState({ opacity: 0.22 }))
-		doc.setFillColor(0, 0, 0)
+		doc.setFillColor(...SHADOW_COLOR)
 		doc.roundedRect(x + 1, topY + 1.5, chipWidth, chipHeight, r, r, 'F')
-		doc.restoreGraphicsState()
 
 		// Тёмная база — "глубина" клавиши
 		doc.setFillColor(76, 29, 149) // violet-900
@@ -269,10 +276,8 @@ function run() {
 			'F'
 		)
 
-		// Блик — полупрозрачная светлая полоса по верхней части грани
-		doc.saveGraphicsState()
-		doc.setGState(new (doc as any).GState({ opacity: 0.16 }))
-		doc.setFillColor(255, 255, 255)
+		// Блик — светлая полоса по верхней части грани
+		doc.setFillColor(...HIGHLIGHT_COLOR)
 		doc.roundedRect(
 			x + 1,
 			topY + 1,
@@ -282,7 +287,6 @@ function run() {
 			r * 0.7,
 			'F'
 		)
-		doc.restoreGraphicsState()
 
 		doc.setTextColor(255, 255, 255)
 		lines.forEach((line, i) => {
