@@ -69,7 +69,7 @@ export function LeadMagnetCard() {
 					<div className='overflow-hidden rounded-2xl border bg-card shadow-sm transition-colors hover:border-primary/40'>
 						<div className='relative aspect-[4/5] w-full'>
 							<Image
-								src='/images/lead-magnet/card-banner-v2.webp'
+								src='/images/lead-magnet/card-banner-v2.png'
 								alt=''
 								fill
 								priority
@@ -77,7 +77,7 @@ export function LeadMagnetCard() {
 								className='object-cover transition-opacity duration-500 group-hover:opacity-0'
 							/>
 							<Image
-								src='/images/lead-magnet/card-banner-hover-v2.webp'
+								src='/images/lead-magnet/card-banner-hover-v2.png'
 								alt=''
 								fill
 								sizes='320px'
