@@ -106,6 +106,10 @@ export function getToolSpecificSchema(
 				'@type': 'Organization',
 				name: 'PixelTool'
 			},
+			creditText: 'PixelTool',
+			copyrightNotice: '© PixelTool',
+			license: `${baseUrl}/terms`,
+			acquireLicensePage: `${baseUrl}/terms`,
 			encodingFormat: 'image/png,image/jpeg,image/svg+xml',
 			tool: {
 				'@id': url
