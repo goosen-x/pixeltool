@@ -226,6 +226,10 @@ function run() {
 		return { lines, height }
 	}
 
+	// "Кейкап" — имитация физической клавиши через слои (без градиентов/blur,
+	// которых в jsPDF нет): тень → тёмная база (глубина) → светлая "грань"
+	// со сдвигом (bevel) → блик сверху → текст. Вдохновлено референсом
+	// пользователя (CSS-кейкап с Uiverse.io), адаптировано под наши цвета.
 	const drawChip = (
 		lines: string[],
 		x: number,
@@ -239,8 +243,47 @@ function run() {
 		)
 		const chipWidth = Math.min(textWidth + CHIP_PAD_X * 2, colWidth)
 		const chipHeight = lines.length * CHIP_LINE_HEIGHT + CHIP_PAD_Y * 2
+		const r = 3
+
+		// Тень
+		doc.saveGraphicsState()
+		doc.setGState(new (doc as any).GState({ opacity: 0.22 }))
+		doc.setFillColor(0, 0, 0)
+		doc.roundedRect(x + 1, topY + 1.5, chipWidth, chipHeight, r, r, 'F')
+		doc.restoreGraphicsState()
+
+		// Тёмная база — "глубина" клавиши
+		doc.setFillColor(76, 29, 149) // violet-900
+		doc.roundedRect(x, topY, chipWidth, chipHeight, r, r, 'F')
+
+		// Светлая грань — сдвинута вверх-влево, как приподнятая крышка клавиши
+		const bevel = 1.4
 		doc.setFillColor(...PRIMARY)
-		doc.roundedRect(x, topY, chipWidth, chipHeight, 4, 4, 'F')
+		doc.roundedRect(
+			x,
+			topY,
+			chipWidth - bevel,
+			chipHeight - bevel,
+			r * 0.85,
+			r * 0.85,
+			'F'
+		)
+
+		// Блик — полупрозрачная светлая полоса по верхней части грани
+		doc.saveGraphicsState()
+		doc.setGState(new (doc as any).GState({ opacity: 0.16 }))
+		doc.setFillColor(255, 255, 255)
+		doc.roundedRect(
+			x + 1,
+			topY + 1,
+			chipWidth - bevel - 2,
+			(chipHeight - bevel) * 0.45,
+			r * 0.7,
+			r * 0.7,
+			'F'
+		)
+		doc.restoreGraphicsState()
+
 		doc.setTextColor(255, 255, 255)
 		lines.forEach((line, i) => {
 			doc.text(
