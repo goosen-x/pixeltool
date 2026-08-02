@@ -55,8 +55,6 @@ jobs:
       env:
         REGISTRY: ${{ env.REGISTRY }}
         IMAGE_NAME: ${{ env.IMAGE_NAME }}
-        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         NEXT_PUBLIC_YANDEX_METRIKA_ID: ${{ secrets.NEXT_PUBLIC_YANDEX_METRIKA_ID }}
       with:
@@ -64,19 +62,19 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22
-        envs: REGISTRY,IMAGE_NAME,NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,DATABASE_URL,NEXT_PUBLIC_YANDEX_METRIKA_ID
+        envs: REGISTRY,IMAGE_NAME,DATABASE_URL,NEXT_PUBLIC_YANDEX_METRIKA_ID
         script: |
-          # Create app directory if it doesn't exist
           mkdir -p ~/pixeltool
           cd ~/pixeltool
-          
-          # Create .env.production if it doesn't exist
-          if [ ! -f .env.production ]; then
-            echo "Creating .env.production file..."
-            cat > .env.production << 'ENVEOF'
+
+          # .env.production перезаписывается на КАЖДОМ деплое — раньше файл
+          # создавался только "если не существует", поэтому один раз записанные
+          # (сломанные) значения оставались навсегда даже после исправления
+          # секретов. Heredoc-делимитер БЕЗ кавычек (не 'ENVEOF') — только так
+          # bash подставляет ${DATABASE_URL} и остальные переменные вместо того,
+          # чтобы записать их в файл буквально как текст "${DATABASE_URL}".
+          cat > .env.production << ENVEOF
           # Production environment variables
-          NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
           DATABASE_URL=${DATABASE_URL}
           NEXT_PUBLIC_YANDEX_METRIKA_ID=${NEXT_PUBLIC_YANDEX_METRIKA_ID}
           NEXT_PUBLIC_SITE_URL=https://pixeltool.pro
@@ -84,20 +82,23 @@ jobs:
           PORT=3000
           HOSTNAME=0.0.0.0
           ENVEOF
-            echo "Created .env.production file"
-          fi
-          
+
+          # Сеть с БД (pixeltool-net) создана вручную на сервере — держим
+          # создание идемпотентным здесь на случай пересоздания сервера.
+          docker network create pixeltool-net 2>/dev/null || true
+
           # Pull latest image
           docker pull ${REGISTRY}/${IMAGE_NAME}:latest
-          
+
           # Stop existing container
           docker stop pixeltool || true
           docker rm pixeltool || true
-          
+
           # Start new container
           docker run -d \
             --name pixeltool \
             --restart unless-stopped \
+            --network pixeltool-net \
             --env-file ~/pixeltool/.env.production \
             -p 3000:3000 \
             ${REGISTRY}/${IMAGE_NAME}:latest
