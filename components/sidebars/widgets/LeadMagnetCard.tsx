@@ -62,7 +62,10 @@ export function LeadMagnetCard() {
 			}}
 		>
 			<DialogTrigger asChild>
-				<button type='button' className='group block w-full cursor-pointer text-left'>
+				<button
+					type='button'
+					className='group block w-full cursor-pointer text-left'
+				>
 					<div className='overflow-hidden rounded-2xl border bg-card shadow-sm transition-colors hover:border-primary/40'>
 						<div className='relative aspect-[4/5] w-full'>
 							<Image

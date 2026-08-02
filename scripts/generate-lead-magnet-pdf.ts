@@ -34,7 +34,10 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 			['Win + V', 'История буфера обмена'],
 			['Win + X', 'Меню быстрых ссылок (опытный пользователь)'],
 			['Win + Ctrl + D', 'Новый виртуальный рабочий стол'],
-			['Win + Ctrl + влево / вправо', 'Переключение виртуальных рабочих столов'],
+			[
+				'Win + Ctrl + влево / вправо',
+				'Переключение виртуальных рабочих столов'
+			],
 			['Ctrl + Shift + Esc', 'Диспетчер задач'],
 			['Alt + F4', 'Закрыть окно']
 		]
@@ -284,10 +287,7 @@ function run() {
 				col1Width
 			)
 			doc.setFontSize(10.5)
-			const actionLines = doc.splitTextToSize(
-				action,
-				maxWidth - col1Width - 12
-			)
+			const actionLines = doc.splitTextToSize(action, maxWidth - col1Width - 12)
 			const actionHeight = actionLines.length * 10.5 * 1.3
 			const rowHeight = Math.max(chipHeight, actionHeight)
 
@@ -308,11 +308,9 @@ function run() {
 	})
 
 	ensureSpace(40)
-	text(
-		`Больше инструментов: ${BASE_URL}/tools — «Всё нужное под рукой».`,
-		11,
-		{ color: MUTED }
-	)
+	text(`Больше инструментов: ${BASE_URL}/tools — «Всё нужное под рукой».`, 11, {
+		color: MUTED
+	})
 
 	const outDir = join(process.cwd(), 'public/downloads')
 	mkdirSync(outDir, { recursive: true })
