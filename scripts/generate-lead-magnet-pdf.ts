@@ -7,9 +7,9 @@
 // проверено 02.08.2026 — см. память lead-magnet-feature). Число сочетаний
 // в заголовке считается от реального размера SECTIONS, не захардкожено.
 //
-// Стиль — под бренд: логотип из 4 цветных квадратов (как в шапке сайта),
-// сочетания клавиш нарисованы как фиолетовые "кнопки"-чипы, а не голым
-// текстом — визуально ближе к тому, как выглядят клавиши на сайте/в UI.
+// Стиль: логотип из 4 цветных квадратов (как в шапке сайта), каждая клавиша
+// комбинации — отдельный тёмно-серый 3D-кейкап (по референсу пользователя,
+// CSS-кейкап с Uiverse.io), между ними — обычный текст "+".
 import { jsPDF } from 'jspdf'
 import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { join } from 'path'
@@ -294,7 +294,11 @@ function run() {
 		} else {
 			doc.setFontSize(CHIP_FONT_SIZE)
 			doc.setTextColor(255, 255, 255)
-			doc.text(token, x + CHIP_PAD_X, topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35)
+			doc.text(
+				token,
+				x + CHIP_PAD_X,
+				topY + CHIP_HEIGHT / 2 + CHIP_FONT_SIZE * 0.35
+			)
 		}
 		return chipWidth
 	}
@@ -348,10 +352,7 @@ function run() {
 
 		section.items.forEach(([combo, action]) => {
 			doc.setFontSize(10.5)
-			const actionLines = doc.splitTextToSize(
-				action,
-				maxWidth - col1Width - 14
-			)
+			const actionLines = doc.splitTextToSize(action, maxWidth - col1Width - 14)
 			const actionHeight = actionLines.length * 10.5 * 1.3
 			const rowHeight = Math.max(CHIP_HEIGHT, actionHeight)
 
