@@ -183,13 +183,10 @@ export default function QRGeneratorPage() {
 	// Keyboard shortcuts
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Settings */}
-				<div className='lg:col-span-2'>
-					<WidgetSection
-						icon={<Settings className='w-5 h-5' />}
-						title='Настройки'
-					>
+			<WidgetSection icon={<Settings className='w-5 h-5' />} title='Настройки'>
+				<div className='grid lg:grid-cols-3 gap-6'>
+					{/* Settings */}
+					<div className='lg:col-span-2'>
 						<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
 							<TabsList className='grid w-full grid-cols-3'>
 								<TabsTrigger value='url'>
@@ -468,77 +465,77 @@ export default function QRGeneratorPage() {
 								</div>
 							</div>
 						</div>
-					</WidgetSection>
-				</div>
-
-				{/* Preview */}
-				<div className='relative'>
-					<div className='absolute top-0 right-2 flex gap-2 z-10'>
-						<Button variant='outline' size='icon' onClick={downloadQR}>
-							<Download className='w-4 h-4' />
-						</Button>
-						<Button variant='outline' size='icon' onClick={copyQRAsImage}>
-							<Copy className='w-4 h-4' />
-						</Button>
 					</div>
-					<div className='flex items-center justify-center p-6 pt-16 bg-white dark:bg-white rounded-lg'>
-						{!hasGeneratedOnce && (
-							<div
-								className='absolute grid grid-cols-8 gap-[2px] p-2 bg-white rounded'
+
+					{/* Preview */}
+					<div className='relative lg:col-span-1 lg:border-l lg:pl-6'>
+						<div className='absolute top-0 right-2 flex gap-2 z-10'>
+							<Button variant='outline' size='icon' onClick={downloadQR}>
+								<Download className='w-4 h-4' />
+							</Button>
+							<Button variant='outline' size='icon' onClick={copyQRAsImage}>
+								<Copy className='w-4 h-4' />
+							</Button>
+						</div>
+						<div className='flex items-center justify-center p-6 pt-16 bg-white dark:bg-white rounded-lg'>
+							{!hasGeneratedOnce && (
+								<div
+									className='absolute grid grid-cols-8 gap-[2px] p-2 bg-white rounded'
+									style={{
+										width: `${qrSize}px`,
+										height: `${qrSize}px`
+									}}
+								>
+									{[...Array(64)].map((_, index) => {
+										// Deterministic pattern based on index
+										const row = Math.floor(index / 8)
+										const col = index % 8
+										const isCornerPattern =
+											// Top-left corner
+											(row < 3 && col < 3) ||
+											// Top-right corner
+											(row < 3 && col >= 5) ||
+											// Bottom-left corner
+											(row >= 5 && col < 3)
+
+										// Create a checkered pattern for the middle
+										const isCheckerPattern = (row + col) % 2 === 0
+
+										const shouldBeDark =
+											isCornerPattern ||
+											(row >= 3 &&
+												row < 5 &&
+												col >= 3 &&
+												col < 5 &&
+												isCheckerPattern)
+
+										return (
+											<Skeleton
+												key={index}
+												className={`rounded-sm ${
+													shouldBeDark ? 'opacity-100' : 'opacity-30'
+												}`}
+											/>
+										)
+									})}
+								</div>
+							)}
+							<canvas
+								ref={canvasRef}
+								width={qrSize}
+								height={qrSize}
+								className='block'
 								style={{
+									imageRendering: 'pixelated',
 									width: `${qrSize}px`,
-									height: `${qrSize}px`
+									height: `${qrSize}px`,
+									visibility: hasGeneratedOnce ? 'visible' : 'hidden'
 								}}
-							>
-								{[...Array(64)].map((_, index) => {
-									// Deterministic pattern based on index
-									const row = Math.floor(index / 8)
-									const col = index % 8
-									const isCornerPattern =
-										// Top-left corner
-										(row < 3 && col < 3) ||
-										// Top-right corner
-										(row < 3 && col >= 5) ||
-										// Bottom-left corner
-										(row >= 5 && col < 3)
-
-									// Create a checkered pattern for the middle
-									const isCheckerPattern = (row + col) % 2 === 0
-
-									const shouldBeDark =
-										isCornerPattern ||
-										(row >= 3 &&
-											row < 5 &&
-											col >= 3 &&
-											col < 5 &&
-											isCheckerPattern)
-
-									return (
-										<Skeleton
-											key={index}
-											className={`rounded-sm ${
-												shouldBeDark ? 'opacity-100' : 'opacity-30'
-											}`}
-										/>
-									)
-								})}
-							</div>
-						)}
-						<canvas
-							ref={canvasRef}
-							width={qrSize}
-							height={qrSize}
-							className='block'
-							style={{
-								imageRendering: 'pixelated',
-								width: `${qrSize}px`,
-								height: `${qrSize}px`,
-								visibility: hasGeneratedOnce ? 'visible' : 'hidden'
-							}}
-						/>
+							/>
+						</div>
 					</div>
 				</div>
-			</div>
+			</WidgetSection>
 			<QrGeneratorSeo />
 		</WidgetSEOWrapper>
 	)
