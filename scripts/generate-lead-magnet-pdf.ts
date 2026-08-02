@@ -160,13 +160,6 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 const TOTAL_SHORTCUTS = SECTIONS.reduce((sum, s) => sum + s.items.length, 0)
 const BASE_URL = 'https://pixeltool.pro'
 
-// Брендовые цвета — как в шапке сайта (4 квадрата логотипа) и primary-кнопки.
-const LOGO_COLORS: [number, number, number][] = [
-	[239, 68, 68], // red
-	[234, 179, 8], // yellow
-	[34, 197, 94], // green
-	[59, 130, 246] // blue
-]
 const PRIMARY: [number, number, number] = [45, 45, 48] // тёмно-серый — как в референсе-кейкапе пользователя
 const INK: [number, number, number] = [17, 24, 39]
 const MUTED: [number, number, number] = [107, 114, 128]
@@ -175,10 +168,14 @@ function run() {
 	const fontPath = join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')
 	const fontBase64 = readFileSync(fontPath).toString('base64')
 
-	// Реальная иконка ⌘ (SVG пользователя, растеризована в белый PNG заранее
-	// — generate-cmd-icon.ts — jsPDF не рендерит SVG в Node без DOM).
-	const cmdIconPath = join(process.cwd(), 'assets/pdf-icons/cmd-icon.png')
-	const cmdIconBase64 = readFileSync(cmdIconPath).toString('base64')
+	// Реальные иконки (SVG пользователя, растеризованы в белый PNG заранее —
+	// jsPDF не рендерит SVG в Node без DOM, addSvgAsImage требует document/canvas).
+	const cmdIconBase64 = readFileSync(
+		join(process.cwd(), 'assets/pdf-icons/cmd-icon.png')
+	).toString('base64')
+	const appleIconBase64 = readFileSync(
+		join(process.cwd(), 'assets/pdf-icons/apple-icon.png')
+	).toString('base64')
 
 	const doc = new jsPDF({ unit: 'pt', format: 'a4' })
 	doc.addFileToVFS('Roboto-Regular.ttf', fontBase64)
@@ -211,20 +208,37 @@ function run() {
 		y += lines.length * size * 1.3 + (opts.gap ?? 0)
 	}
 
-	// Логотип: 2x2 цветных квадрата со скруглением, как в шапке сайта.
-	const drawLogo = (x: number, top: number, size: number) => {
-		const gap = size * 0.14
-		const cell = (size - gap) / 2
-		const r = cell * 0.3
-		const positions: [number, number][] = [
-			[x, top],
-			[x + cell + gap, top],
-			[x, top + cell + gap],
-			[x + cell + gap, top + cell + gap]
+	// Настоящий логотип — 3x3 диагональная мозаика на белом скруглённом
+	// фоне, точные цвета из components/layout/Header/widgets/LogoLink.tsx
+	// (не приблизительная реконструкция).
+	const LOGO_GRID: [number, number, number][][] = [
+		[
+			[232, 67, 48],
+			[253, 133, 15],
+			[255, 205, 0]
+		],
+		[
+			[253, 133, 15],
+			[255, 205, 0],
+			[112, 199, 39]
+		],
+		[
+			[255, 205, 0],
+			[112, 199, 39],
+			[45, 150, 215]
 		]
-		positions.forEach(([px, py], i) => {
-			doc.setFillColor(...LOGO_COLORS[i])
-			doc.roundedRect(px, py, cell, cell, r, r, 'F')
+	]
+
+	const drawLogo = (x: number, top: number, size: number) => {
+		doc.setFillColor(255, 255, 255)
+		doc.roundedRect(x, top, size, size, size * 0.195, size * 0.195, 'F')
+		const pad = size * 0.207
+		const cell = (size - pad * 2) / 3
+		LOGO_GRID.forEach((row, r) => {
+			row.forEach((color, c) => {
+				doc.setFillColor(...color)
+				doc.rect(x + pad + c * cell, top + pad + r * cell, cell, cell, 'F')
+			})
 		})
 	}
 
@@ -286,12 +300,14 @@ function run() {
 		].forEach(([px, py]) => doc.rect(px, py, cell, cell, 'F'))
 	}
 
-	// Иконка Cmd (⌘) — растровая (см. cmdIconBase64 выше), не в Roboto
-	// (проверено через cmap), а рисовать точный символ вектором не стали —
-	// у пользователя уже был готовый SVG.
+	// Иконки Cmd (⌘) и Apple — растровые (SVG пользователя, jsPDF не рендерит
+	// SVG в Node без DOM — addSvgAsImage требует document/canvas).
 	const drawCmdIcon = (cx: number, cy: number, size: number) => {
+		doc.addImage(cmdIconBase64, 'PNG', cx - size / 2, cy - size / 2, size, size)
+	}
+	const drawAppleIcon = (cx: number, cy: number, size: number) => {
 		doc.addImage(
-			cmdIconBase64,
+			appleIconBase64,
 			'PNG',
 			cx - size / 2,
 			cy - size / 2,
@@ -300,42 +316,63 @@ function run() {
 		)
 	}
 
+	// Все 4 стрелки — векторные треугольники одного стиля (раньше ↑/↓ были
+	// текстовым глифом шрифта, а ←/→ — залитым треугольником: визуально не
+	// совпадали по толщине/форме).
 	const drawArrowIcon = (
 		cx: number,
 		cy: number,
 		size: number,
 		dir: 'up' | 'down' | 'left' | 'right'
 	) => {
-		if (dir === 'up' || dir === 'down') {
-			doc.setFontSize(size * 1.3)
-			doc.setTextColor(255, 255, 255)
-			const ch = dir === 'up' ? '↑' : '↓'
-			doc.text(ch, cx - doc.getTextWidth(ch) / 2, cy + size * 0.4)
-			return
-		}
 		doc.setFillColor(255, 255, 255)
-		const w = size * 0.55
-		const h = size * 0.6
-		if (dir === 'left') {
-			doc.triangle(
-				cx - w / 2,
-				cy,
-				cx + w / 2,
-				cy - h / 2,
-				cx + w / 2,
-				cy + h / 2,
-				'F'
-			)
-		} else {
-			doc.triangle(
-				cx + w / 2,
-				cy,
-				cx - w / 2,
-				cy - h / 2,
-				cx - w / 2,
-				cy + h / 2,
-				'F'
-			)
+		const w = size * 0.6
+		const h = size * 0.55
+		switch (dir) {
+			case 'up':
+				doc.triangle(
+					cx,
+					cy - h / 2,
+					cx - w / 2,
+					cy + h / 2,
+					cx + w / 2,
+					cy + h / 2,
+					'F'
+				)
+				break
+			case 'down':
+				doc.triangle(
+					cx,
+					cy + h / 2,
+					cx - w / 2,
+					cy - h / 2,
+					cx + w / 2,
+					cy - h / 2,
+					'F'
+				)
+				break
+			case 'left':
+				doc.triangle(
+					cx - w / 2,
+					cy,
+					cx + w / 2,
+					cy - h / 2,
+					cx + w / 2,
+					cy + h / 2,
+					'F'
+				)
+				break
+			case 'right':
+				doc.triangle(
+					cx + w / 2,
+					cy,
+					cx - w / 2,
+					cy - h / 2,
+					cx - w / 2,
+					cy + h / 2,
+					'F'
+				)
+				break
 		}
 	}
 
@@ -455,7 +492,8 @@ function run() {
 			}
 
 			let content: ChipContent
-			if (isWinKey(token)) content = { kind: 'iconText', icon: 'win', label: 'Win' }
+			if (isWinKey(token))
+				content = { kind: 'iconText', icon: 'win', label: 'Win' }
 			else if (isCmdKey(token))
 				content = { kind: 'iconText', icon: 'cmd', label: 'Cmd' }
 			else content = { kind: 'text', value: token }
@@ -483,15 +521,35 @@ function run() {
 	const col1Width = 210
 	const col2X = margin + col1Width + 14
 
+	const SECTION_ICONS: Record<string, 'win' | 'apple' | undefined> = {
+		'Windows — система': 'win',
+		'macOS — система': 'apple'
+	}
+
 	SECTIONS.forEach(section => {
 		ensureSpace(36)
 		// Цветной акцент-бар слева от заголовка секции — фирменный штрих
 		// вместо голого чёрного текста.
 		doc.setFillColor(...PRIMARY)
 		doc.roundedRect(margin, y - 10, 4, 15, 2, 2, 'F')
+
+		let textX = margin + 12
+		const iconKind = SECTION_ICONS[section.title]
+		if (iconKind) {
+			const badge = 18
+			const badgeY = y - 13
+			doc.setFillColor(...BASE_COLOR)
+			doc.roundedRect(margin + 12, badgeY, badge, badge, 4, 4, 'F')
+			const cx = margin + 12 + badge / 2
+			const cy = badgeY + badge / 2
+			if (iconKind === 'win') drawWinIcon(cx, cy, badge * 0.55)
+			else drawAppleIcon(cx, cy, badge * 0.62)
+			textX = margin + 12 + badge + 8
+		}
+
 		doc.setFontSize(14)
 		doc.setTextColor(...INK)
-		doc.text(section.title, margin + 12, y)
+		doc.text(section.title, textX, y)
 		y += 18
 
 		section.items.forEach(([combo, action]) => {
