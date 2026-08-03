@@ -1,29 +1,21 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { GridGuide } from './GridGuide'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
-import { Copy, RotateCcw, Plus, Minus, HelpCircle, Check } from 'lucide-react'
+import { Copy, RotateCcw, Plus, Minus, Check } from 'lucide-react'
 import { toast } from 'sonner'
-
+import { cn } from '@/lib/utils'
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger
-} from '@/components/ui/tooltip'
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 interface GridProps {
 	columns: string
 	rows: string
@@ -52,6 +44,7 @@ const defaultProps: GridProps = {
 
 export default function GridGeneratorPage() {
 	const locale = 'ru'
+	const widget = getWidgetById('grid-generator')!
 	const [props, setProps] = useState<GridProps>(defaultProps)
 	const [itemCount, setItemCount] = useState(6)
 	const [showItemNumbers, setShowItemNumbers] = useState(true)
@@ -211,29 +204,10 @@ export default function GridGeneratorPage() {
 		toast.success('Настройки сброшены')
 	}, [locale])
 
-	const renderLabel = (key: string, englishLabel: string) => {
-		return (
-			<div className='flex items-center gap-1'>
-				<Label className='text-xs'>{englishLabel}</Label>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<HelpCircle className='h-3 w-3 text-muted-foreground' />
-						</TooltipTrigger>
-						<TooltipContent>
-							<p className='text-xs'>Описание свойства CSS Grid</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
-		)
-	}
-
 	const addColumn = useCallback(() => {
 		const columns = props.columns.split(' ')
 		columns.push('1fr')
 		updateProp('columns', columns.join(' '))
-		toast.info('Колонка добавлена')
 	}, [props.columns, updateProp])
 
 	const removeColumn = useCallback(() => {
@@ -241,7 +215,6 @@ export default function GridGeneratorPage() {
 		if (columns.length > 1) {
 			columns.pop()
 			updateProp('columns', columns.join(' '))
-			toast.info('Колонка удалена')
 		}
 	}, [props.columns, updateProp])
 
@@ -249,7 +222,6 @@ export default function GridGeneratorPage() {
 		const rows = props.rows.split(' ')
 		rows.push('1fr')
 		updateProp('rows', rows.join(' '))
-		toast.info('Ряд добавлен')
 	}, [props.rows, updateProp])
 
 	const removeRow = useCallback(() => {
@@ -257,7 +229,6 @@ export default function GridGeneratorPage() {
 		if (rows.length > 1) {
 			rows.pop()
 			updateProp('rows', rows.join(' '))
-			toast.info('Ряд удален')
 		}
 	}, [props.rows, updateProp])
 
@@ -278,330 +249,278 @@ export default function GridGeneratorPage() {
 		borderRadius: '8px',
 		padding: '20px',
 		border: '2px dashed hsl(var(--border))',
-		width: 'fit-content'
+		// Как и во флексбокс-генераторе: при fit-content сетка обжималась по
+		// содержимому, и колонки в `1fr` теряли смысл — делить было нечего.
+		width: '100%'
 	}
 
 	// Keyboard shortcuts - matching widgetShortcuts.ts configuration
+	const SELECTS: {
+		key: keyof GridProps
+		label: string
+		options: string[]
+	}[] = [
+		{
+			key: 'justifyItems',
+			label: 'justify-items',
+			options: ['start', 'end', 'center', 'stretch']
+		},
+		{
+			key: 'alignItems',
+			label: 'align-items',
+			options: ['start', 'end', 'center', 'stretch']
+		},
+		{
+			key: 'autoFlow',
+			label: 'grid-auto-flow',
+			options: ['row', 'column', 'dense', 'row dense', 'column dense']
+		}
+	]
+
 	return (
-		<>
-			<div className='grid gap-6 lg:grid-cols-3'>
-				{/* Controls */}
-				<Card className='lg:col-span-1'>
-					<CardHeader>
-						<CardTitle className='flex items-center justify-between'>
-							<span>Свойства</span>
-							<Button
-								variant='ghost'
-								size='sm'
-								onClick={resetProps}
-								className='h-8 hover:bg-accent hover:text-white'
+		<WidgetSEOWrapper widget={widget}>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: сколько ячеек показывать. К самому CSS это
+				    отношения не имеет, поэтому и вынесено из полосы свойств. */}
+				<div className={toolBar}>
+					<div className='flex items-center gap-3'>
+						<span className='text-sm text-muted-foreground'>Элементов</span>
+						<Slider
+							value={[itemCount]}
+							onValueChange={([value]) => setItemCount(value)}
+							min={1}
+							max={20}
+							step={1}
+							className='w-28 cursor-pointer'
+							aria-label='Количество элементов'
+						/>
+						<span className='w-6 font-mono text-sm tabular-nums'>
+							{itemCount}
+						</span>
+					</div>
+
+					<button
+						type='button'
+						onClick={() => setShowItemNumbers(value => !value)}
+						aria-pressed={showItemNumbers}
+						className={toolPill(showItemNumbers)}
+					>
+						Номера
+					</button>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={resetProps}
+							title='Сбросить свойства'
+							className={toolIconButton}
+						>
+							<RotateCcw className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				<div className='overflow-x-auto px-5 py-8 sm:px-6'>
+					<div style={containerStyle}>
+						{Array.from({ length: itemCount }).map((_, i) => (
+							<div
+								key={i}
+								className='flex min-h-[3.75rem] items-center justify-center rounded-md bg-primary p-4 font-semibold text-primary-foreground'
 							>
-								<RotateCcw className='w-4 h-4 mr-1' />
-								Сброс
-							</Button>
-						</CardTitle>
-					</CardHeader>
-					<CardContent className='space-y-3'>
-						<div className='grid gap-3'>
-							<div className='space-y-1'>
-								{renderLabel('columns', 'grid-template-columns')}
-								<div className='flex gap-1'>
-									<Input
-										value={props.columns}
-										onChange={e => updateProp('columns', e.target.value)}
-										placeholder='1fr 1fr 1fr'
-										className='h-9 text-base md:text-sm'
-									/>
-									<Button
-										size='icon'
-										variant='outline'
-										onClick={addColumn}
-										className='h-9 w-9'
-										aria-label='Добавить колонку'
-									>
-										<Plus className='w-3 h-3' />
-									</Button>
-									<Button
-										size='icon'
-										variant='outline'
-										onClick={removeColumn}
-										className='h-9 w-9'
-										aria-label='Удалить колонку'
-									>
-										<Minus className='w-3 h-3' />
-									</Button>
-								</div>
+								{showItemNumbers && i + 1}
 							</div>
+						))}
+					</div>
+				</div>
 
-							<div className='space-y-1'>
-								{renderLabel('rows', 'grid-template-rows')}
-								<div className='flex gap-1'>
-									<Input
-										value={props.rows}
-										onChange={e => updateProp('rows', e.target.value)}
-										placeholder='1fr 1fr'
-										className='h-9 text-base md:text-sm'
-									/>
-									<Button
-										size='icon'
-										variant='outline'
-										onClick={addRow}
-										className='h-9 w-9'
-										aria-label='Добавить ряд'
-									>
-										<Plus className='w-3 h-3' />
-									</Button>
-									<Button
-										size='icon'
-										variant='outline'
-										onClick={removeRow}
-										className='h-9 w-9'
-										aria-label='Удалить ряд'
-									>
-										<Minus className='w-3 h-3' />
-									</Button>
-								</div>
-							</div>
-						</div>
-
-						<div className='space-y-1'>
-							<div className='flex items-center justify-between'>
-								<div className='flex items-center gap-1'>
-									<Label className='text-xs'>gap</Label>
-									<TooltipProvider>
-										<Tooltip>
-											<TooltipTrigger asChild>
-												<HelpCircle className='h-3 w-3 text-muted-foreground' />
-											</TooltipTrigger>
-											<TooltipContent>
-												<p className='text-xs'>Отступ между элементами</p>
-											</TooltipContent>
-										</Tooltip>
-									</TooltipProvider>
-								</div>
-
-								<Switch
-									checked={useUniformGap}
-									onCheckedChange={setUseUniformGap}
-								/>
-							</div>
-							{useUniformGap ? (
-								<div className='space-y-1'>
-									<Label className='text-xs text-muted-foreground'>
-										gap: {props.gap}px
-									</Label>
-									<Slider
-										value={[props.gap]}
-										onValueChange={([value]) => updateProp('gap', value)}
-										min={0}
-										max={50}
-										step={1}
-										className='h-8'
-										aria-label='Отступ между элементами (gap)'
-									/>
-								</div>
-							) : (
-								<div className='grid grid-cols-2 gap-3'>
-									<div className='space-y-1'>
-										<Label className='text-xs text-muted-foreground'>
-											row-gap: {props.rowGap}px
-										</Label>
-										<Slider
-											value={[props.rowGap]}
-											onValueChange={([value]) => updateProp('rowGap', value)}
-											min={0}
-											max={50}
-											step={1}
-											className='h-8'
-											aria-label='Вертикальный отступ (row-gap)'
-										/>
-									</div>
-									<div className='space-y-1'>
-										<Label className='text-xs text-muted-foreground'>
-											column-gap: {props.columnGap}px
-										</Label>
-										<Slider
-											value={[props.columnGap]}
-											onValueChange={([value]) =>
-												updateProp('columnGap', value)
-											}
-											min={0}
-											max={50}
-											step={1}
-											className='h-8'
-											aria-label='Горизонтальный отступ (column-gap)'
-										/>
-									</div>
-								</div>
-							)}
-						</div>
-
-						<div className='grid grid-cols-2 gap-3'>
-							<div className='space-y-1'>
-								{renderLabel('justifyItems', 'justify-items')}
-								<Select
-									value={props.justifyItems}
-									onValueChange={value => updateProp('justifyItems', value)}
+				{/* Полоса разметки сетки: колонки и ряды — главное, что здесь
+				    настраивают, поэтому они первыми и с кнопками «плюс/минус». */}
+				<div className={toolFooterBar}>
+					{[
+						{
+							label: 'columns',
+							value: props.columns,
+							onChange: (value: string) => updateProp('columns', value),
+							onAdd: addColumn,
+							onRemove: removeColumn,
+							placeholder: '1fr 1fr 1fr'
+						},
+						{
+							label: 'rows',
+							value: props.rows,
+							onChange: (value: string) => updateProp('rows', value),
+							onAdd: addRow,
+							onRemove: removeRow,
+							placeholder: '1fr 1fr'
+						}
+					].map(track => (
+						<label
+							key={track.label}
+							className='flex items-center gap-2 text-sm text-muted-foreground'
+						>
+							<span className='font-mono text-xs'>{track.label}</span>
+							<input
+								value={track.value}
+								onChange={event => track.onChange(event.target.value)}
+								placeholder={track.placeholder}
+								spellCheck={false}
+								className='w-40 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+							<span className='flex items-center gap-0.5'>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={track.onRemove}
+									title='Убрать'
+									className={cn(toolIconButton, 'h-7 w-7')}
 								>
-									<SelectTrigger className='h-9'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='start'>start</SelectItem>
-										<SelectItem value='end'>end</SelectItem>
-										<SelectItem value='center'>center</SelectItem>
-										<SelectItem value='stretch'>stretch</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-
-							<div className='space-y-1'>
-								{renderLabel('alignItems', 'align-items')}
-								<Select
-									value={props.alignItems}
-									onValueChange={value => updateProp('alignItems', value)}
+									<Minus className='h-3.5 w-3.5' />
+								</Button>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={track.onAdd}
+									title='Добавить'
+									className={cn(toolIconButton, 'h-7 w-7')}
 								>
-									<SelectTrigger className='h-9'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='start'>start</SelectItem>
-										<SelectItem value='end'>end</SelectItem>
-										<SelectItem value='center'>center</SelectItem>
-										<SelectItem value='stretch'>stretch</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
+									<Plus className='h-3.5 w-3.5' />
+								</Button>
+							</span>
+						</label>
+					))}
+				</div>
 
-						<div className='space-y-1'>
-							{renderLabel('autoFlow', 'grid-auto-flow')}
-							<Select
-								value={props.autoFlow}
-								onValueChange={value => updateProp('autoFlow', value)}
+				<div className={toolFooterBar}>
+					{SELECTS.map(select => (
+						<label
+							key={select.key}
+							className='flex items-center gap-2 text-sm text-muted-foreground'
+						>
+							<span className='font-mono text-xs'>{select.label}</span>
+							<select
+								value={props[select.key] as string}
+								onChange={event => updateProp(select.key, event.target.value)}
+								className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 							>
-								<SelectTrigger className='h-9'>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='row'>row</SelectItem>
-									<SelectItem value='column'>column</SelectItem>
-									<SelectItem value='dense'>dense</SelectItem>
-									<SelectItem value='row dense'>row dense</SelectItem>
-									<SelectItem value='column dense'>column dense</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
+								{select.options.map(option => (
+									<option key={option} value={option}>
+										{option}
+									</option>
+								))}
+							</select>
+						</label>
+					))}
 
-						<div className='grid grid-cols-2 gap-3'>
-							<div className='space-y-1'>
-								<Label className='text-xs'>Элементы: {itemCount}</Label>
+					<button
+						type='button'
+						onClick={() => setUseUniformGap(value => !value)}
+						aria-pressed={!useUniformGap}
+						title='Разные отступы по вертикали и горизонтали'
+						className={toolPill(!useUniformGap)}
+					>
+						Отступы врозь
+					</button>
+
+					{useUniformGap ? (
+						<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+							<span className='font-mono text-xs'>gap</span>
+							<Slider
+								value={[props.gap]}
+								onValueChange={([value]) => updateProp('gap', value)}
+								min={0}
+								max={50}
+								step={1}
+								className='w-24 cursor-pointer'
+								aria-label='Отступ между элементами'
+							/>
+							<span className='w-10 font-mono text-sm tabular-nums text-foreground'>
+								{props.gap}px
+							</span>
+						</label>
+					) : (
+						[
+							{
+								label: 'row-gap',
+								value: props.rowGap,
+								key: 'rowGap' as const
+							},
+							{
+								label: 'column-gap',
+								value: props.columnGap,
+								key: 'columnGap' as const
+							}
+						].map(item => (
+							<label
+								key={item.key}
+								className='flex items-center gap-2 text-sm text-muted-foreground'
+							>
+								<span className='font-mono text-xs'>{item.label}</span>
 								<Slider
-									value={[itemCount]}
-									onValueChange={([value]) => setItemCount(value)}
-									min={1}
-									max={20}
+									value={[item.value]}
+									onValueChange={([value]) => updateProp(item.key, value)}
+									min={0}
+									max={50}
 									step={1}
-									className='h-8'
-									aria-label='Количество элементов'
+									className='w-20 cursor-pointer'
+									aria-label={item.label}
 								/>
-							</div>
+								<span className='w-10 font-mono text-sm tabular-nums text-foreground'>
+									{item.value}px
+								</span>
+							</label>
+						))
+					)}
+				</div>
 
-							<div className='space-y-1'>
-								<Label className='text-xs'>Показать номера</Label>
-								<div className='h-8 flex items-center'>
-									<Switch
-										checked={showItemNumbers}
-										onCheckedChange={setShowItemNumbers}
-									/>
-								</div>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-
-				{/* Preview */}
-				<Card className='overflow-hidden lg:col-span-2'>
-					<CardHeader>
-						<CardTitle>Предпросмотр</CardTitle>
-					</CardHeader>
-					<CardContent className='overflow-scroll'>
-						<div style={containerStyle}>
-							{Array.from({ length: itemCount }).map((_, i) => (
-								<div
-									key={i}
-									className='bg-primary text-primary-foreground rounded-md p-4 min-h-[60px] flex items-center justify-center font-semibold'
+				<div className='grid border-t md:grid-cols-2'>
+					{[
+						{
+							title: 'CSS',
+							value: generateCSS(),
+							copied: copiedCSS,
+							onCopy: copyToClipboard
+						},
+						{
+							title: 'Tailwind',
+							value: generateTailwind(),
+							copied: copiedTailwind,
+							onCopy: copyTailwindToClipboard
+						}
+					].map((pane, index) => (
+						<div
+							key={pane.title}
+							className={cn(
+								'flex min-w-0 flex-col',
+								index === 0 && 'md:border-r',
+								index === 1 && 'border-t md:border-t-0'
+							)}
+						>
+							<div className='flex items-center justify-between gap-2 px-5 pt-4 sm:px-6'>
+								<span className='text-sm font-medium'>{pane.title}</span>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={pane.onCopy}
+									title='Скопировать'
+									className={toolIconButton}
 								>
-									{showItemNumbers && i + 1}
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-
-				{/* Generated CSS */}
-				<Card className='lg:col-span-3 overflow-scroll'>
-					<CardHeader>
-						<CardTitle>Сгенерированный CSS</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='grid md:grid-cols-2 gap-4'>
-							{/* CSS Result */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-sm text-muted-foreground'>CSS</Label>
-									<Button
-										size='sm'
-										variant='ghost'
-										onClick={copyToClipboard}
-										className='h-8 px-2 hover:bg-accent hover:text-white'
-										aria-label='Скопировать CSS'
-									>
-										{copiedCSS ? (
-											<Check className='h-3 w-3 text-green-500' />
-										) : (
-											<Copy className='h-3 w-3' />
-										)}
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-4'>
-									<pre className='text-secondary-foreground font-mono text-xs overflow-x-auto'>
-										{generateCSS()}
-									</pre>
-								</div>
+									{pane.copied ? (
+										<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+									) : (
+										<Copy className='h-4 w-4' />
+									)}
+								</Button>
 							</div>
-
-							{/* Tailwind Result */}
-							<div>
-								<div className='flex items-center justify-between mb-2'>
-									<Label className='text-sm text-muted-foreground'>
-										Tailwind CSS
-									</Label>
-									<Button
-										size='sm'
-										variant='ghost'
-										onClick={copyTailwindToClipboard}
-										className='h-8 px-2 hover:bg-accent hover:text-white'
-										aria-label='Скопировать Tailwind CSS'
-									>
-										{copiedTailwind ? (
-											<Check className='h-3 w-3 text-green-500' />
-										) : (
-											<Copy className='h-3 w-3' />
-										)}
-									</Button>
-								</div>
-								<div className='bg-secondary rounded-lg p-4'>
-									<span className='text-secondary-foreground font-mono text-xs break-words'>
-										{generateTailwind()}
-									</span>
-								</div>
-							</div>
+							<pre className='overflow-x-auto px-5 pt-2 pb-5 font-mono text-xs leading-relaxed whitespace-pre-wrap sm:px-6'>
+								{pane.value}
+							</pre>
 						</div>
-					</CardContent>
-				</Card>
-			</div>
+					))}
+				</div>
+			</Card>
+
 			<GridGuide />
-		</>
+		</WidgetSEOWrapper>
 	)
 }
