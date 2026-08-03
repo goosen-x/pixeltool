@@ -7793,5 +7793,5 @@ export const EFF_WORDLIST: readonly string[] = [
 	'zookeeper',
 	'zoologist',
 	'zoology',
-	'zoom',
+	'zoom'
 ]
