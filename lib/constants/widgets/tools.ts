@@ -23,6 +23,12 @@ export const toolWidgets: Widget[] = [
 		path: 'svg-to-base64-encoder',
 		gradient: 'from-teal-500 to-cyan-500',
 		title: 'SVG URL кодировщик',
+		// Ведущая формулировка спроса — «svg в css» 138/мес (внутри «вставить svg
+		// в css», «css добавить svg в псевдоэлемент»), а не «кодировщик», которого
+		// почти не ищут. «svg в base64» — всего 39 и вдобавок вводит в
+		// заблуждение: тул кодирует URL-экранированием, а не в Base64.
+		metaTitle: 'SVG в CSS: кодировщик для background-image',
+		updatedAt: '2026-08-03',
 		description:
 			'Кодируйте SVG для использования в CSS свойстве background-image',
 		useCase: 'Кодирование SVG изображений для CSS фонов без внешних файлов',

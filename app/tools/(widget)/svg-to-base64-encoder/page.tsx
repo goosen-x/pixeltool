@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SvgEncoderSeo } from './SvgEncoderSeo'
 
 export default function SVGEncoderPage() {
 	const [svgInput, setSvgInput] = useState('')
@@ -442,6 +443,8 @@ export default function SVGEncoderPage() {
 					</CardContent>
 				</Card>
 			)}
+
+			<SvgEncoderSeo />
 		</div>
 	)
 }
