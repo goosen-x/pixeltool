@@ -38,15 +38,20 @@ function ToolRow({
 			<Button
 				variant='ghost'
 				size='icon'
-				className='h-6 w-6 shrink-0 cursor-pointer'
+				className='group h-6 w-6 shrink-0 cursor-pointer'
 				onClick={() => onToggle(id)}
 				aria-label={starred ? 'Убрать из избранного' : 'Добавить в избранное'}
 				aria-pressed={starred}
 			>
+				{/* Собственный цвет иконки перебивает hover:text-accent-foreground
+				    кнопки, поэтому на ховере красим её явно — иначе неотмеченная
+				    звёздочка сливалась с залитым фоном в пустой квадрат */}
 				<Star
 					className={cn(
 						'h-3 w-3',
-						starred ? 'fill-current text-amber-500' : 'text-muted-foreground'
+						starred
+							? 'fill-current text-amber-500'
+							: 'text-muted-foreground group-hover:text-accent-foreground'
 					)}
 				/>
 			</Button>
