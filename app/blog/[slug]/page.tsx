@@ -205,3 +205,10 @@ export async function generateStaticParams() {
 
 // Enable ISR with 1 hour revalidation
 export const revalidate = 3600
+
+// Только слаги из generateStaticParams. Без этого любой несуществующий слаг
+// попадал в рендер страницы, notFound() внутри ISR-маршрута кэшировался как
+// обычный ответ и отдавался с кодом 200 (soft-404: Google видит «страницу»
+// вместо ошибки). Статьи лежат файлами в репозитории и появляются только
+// вместе с новым билдом, так что закрытый список ничего не ломает.
+export const dynamicParams = false
