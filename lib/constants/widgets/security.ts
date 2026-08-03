@@ -257,13 +257,24 @@ export const securityWidgets: Widget[] = [
 	},
 	{
 		id: 'uuid-generator',
-		searchVolume: 34872,
+		// Не сырое «uuid» (35662): оно на две трети не генераторное — «yandex uuid»
+		// 4571, «uuid did» 2498, «www uuid» 2538, «uuid com» 2280, «uuid xiaomi»
+		// 1855, «autoteka ru report web uuid» 1234 — люди выясняют, что значит
+		// КОНКРЕТНЫЙ увиденный ими ID, а не как сгенерировать новый. Здесь сумма
+		// собственно генераторного кластера: «uuid generator» 881 + «генератор
+		// uuid» 682 + «guid generator» 594 + «generate uuid» 491 + «генератор
+		// guid» 423. По searchVolume сортируется внутренний поиск по сайту, и с
+		// 34872 тул задирался в топ мимо инструментов с реально большим спросом.
+		searchVolume: 3071,
 		icon: Fingerprint,
 		category: 'security',
 		translationKey: 'uuidGenerator',
 		path: 'uuid-generator',
 		gradient: 'from-indigo-500 to-blue-600',
-		title: 'Генератор UUID',
+		// В H1 вынесены версии: «uuid version» — 4611/мес, самый крупный чистый
+		// подкластер после самого «генератор uuid» (702). Раньше H1 был просто
+		// «Генератор UUID» и этот спрос не нёс, хотя metaTitle его уже закрывал.
+		title: 'Генератор UUID: v4, v7 и v1',
 		metaTitle: 'Генератор UUID онлайн — v4, v7 и v1',
 		description: 'Создавайте уникальные идентификаторы UUID — v4, v7 или v1',
 		recommendedTools: [
@@ -272,7 +283,7 @@ export const securityWidgets: Widget[] = [
 			'jwt-decoder'
 		],
 		difficulty: 'beginner',
-		updatedAt: '2026-07-30',
+		updatedAt: '2026-08-03',
 		tags: ['uuid', 'guid', 'generator', 'unique', 'identifier'],
 		useCase: 'Генерация уникальных идентификаторов для API и баз данных',
 		metaDescription:
