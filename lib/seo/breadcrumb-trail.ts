@@ -11,7 +11,8 @@ const STATIC_LABELS: Record<string, string> = {
 	'/settings': 'Настройки',
 	'/about': 'О нас',
 	'/privacy': 'Политика конфиденциальности',
-	'/terms': 'Условия использования'
+	'/terms': 'Условия использования',
+	'/legal': 'Правовые документы'
 }
 
 const humanize = (segment: string) =>

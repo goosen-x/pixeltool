@@ -134,13 +134,18 @@ const SECTIONS: { title: string; items: Shortcut[] }[] = [
 		]
 	},
 	{
-		title: 'Видеозвонки (Zoom / Google Meet)',
+		title: 'Видеозвонки: Zoom',
 		items: [
-			['Alt + A (Zoom)', 'Вкл/выкл микрофон'],
-			['Ctrl/Cmd + Shift + V (Zoom)', 'Вкл/выкл камеру'],
-			['Ctrl + D (Meet)', 'Вкл/выкл микрофон'],
-			['Ctrl + E (Meet)', 'Вкл/выкл камеру'],
-			['Пробел (удерживать, Zoom)', 'Временно включить микрофон']
+			['Alt + A', 'Вкл/выкл микрофон'],
+			['Ctrl/Cmd + Shift + V', 'Вкл/выкл камеру'],
+			['Пробел (удерживать)', 'Временно включить микрофон']
+		]
+	},
+	{
+		title: 'Видеозвонки: Google Meet',
+		items: [
+			['Ctrl + D', 'Вкл/выкл микрофон'],
+			['Ctrl + E', 'Вкл/выкл камеру']
 		]
 	},
 	{
@@ -265,6 +270,9 @@ function run() {
 
 	const isWinKey = (token: string) => token.trim().toLowerCase() === 'win'
 	const isCmdKey = (token: string) => token.trim().toLowerCase() === 'cmd'
+	// "Ctrl/Cmd" и подобные составные метки — тоже получают иконку ⌘, но с
+	// полным текстом токена (не заменяем "Ctrl/" на иконку).
+	const containsCmd = (token: string) => /\bcmd\b/i.test(token)
 
 	// Слова направлений в данных (напр. "вверх / вниз") — рисуются как
 	// стрелки-иконки, не текстом. ↑/↓ есть в Roboto (проверено через cmap),
@@ -510,6 +518,8 @@ function run() {
 				content = { kind: 'iconText', icon: 'win', label: 'Win' }
 			else if (isCmdKey(token))
 				content = { kind: 'iconText', icon: 'cmd', label: 'Cmd' }
+			else if (containsCmd(token))
+				content = { kind: 'iconText', icon: 'cmd', label: token }
 			else content = { kind: 'text', value: token }
 			cursorX += drawChip(content, cursorX, topY) + PLUS_GAP
 		})
@@ -540,7 +550,10 @@ function run() {
 		'Горячие клавиши для macOS': 'apple'
 	}
 
-	SECTIONS.forEach(section => {
+	SECTIONS.forEach((section, sectionIndex) => {
+		// Отступ в 2 строки перед каждой секцией (кроме первой — она и так
+		// начинается сразу под подзаголовком шпаргалки).
+		if (sectionIndex > 0) y += 11 * 1.3 * 2
 		ensureSpace(36)
 
 		let textX = margin

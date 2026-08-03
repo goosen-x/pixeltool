@@ -34,7 +34,8 @@ export const Footer = () => {
 			title: 'Юридическое',
 			links: [
 				{ label: 'Политика конфиденциальности', href: '/privacy' },
-				{ label: 'Условия использования', href: '/terms' }
+				{ label: 'Условия использования', href: '/terms' },
+				{ label: 'Правовые документы (PDF)', href: '/legal' }
 			]
 		}
 	}
