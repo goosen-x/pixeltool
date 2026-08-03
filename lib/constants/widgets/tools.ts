@@ -226,11 +226,7 @@ export const toolWidgets: Widget[] = [
 			'Узнайте размеры в пикселях, вес, формат и соотношение сторон — сразу у нескольких картинок',
 		useCase:
 			'Проверить, подходит ли картинка под требования площадки или макета: размеры, соотношение сторон и вес',
-		recommendedTools: [
-			'favicon-generator',
-			'svg-encoder',
-			'youtube-thumbnail'
-		],
+		recommendedTools: ['favicon-generator', 'svg-encoder', 'youtube-thumbnail'],
 		difficulty: 'beginner',
 		tags: [
 			'image',
