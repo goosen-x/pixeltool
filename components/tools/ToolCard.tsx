@@ -47,9 +47,15 @@ export function ToolCard({
 			<CornerBadge icon={Icon} gradient={widget.gradient} />
 
 			<div className='relative flex flex-1 flex-col'>
-				<h2 className='pr-14 text-balance text-lg font-bold tracking-tight text-foreground'>
+				{/* Намеренно не заголовок. Карточка целиком обёрнута в <Link>, поэтому
+				    название и так уходит в анкор-текст ссылки. Как <h2> оно только
+				    ломало структуру страницы тула: девять чужих названий из блока
+				    «Похожие инструменты» вставали в один уровень с содержательными
+				    разделами. Переводить их в <h3> смысла нет — это навигация, а не
+				    рубрикация контента. */}
+				<span className='block pr-14 text-balance text-lg font-bold tracking-tight text-foreground'>
 					{searchQuery ? highlightText(title, searchQuery) : title}
-				</h2>
+				</span>
 				<p className='mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground'>
 					{searchQuery ? highlightText(description, searchQuery) : description}
 				</p>
