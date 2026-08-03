@@ -25,7 +25,7 @@ import {
 	Settings,
 	History,
 	Trash2,
-	Download,
+	FileDown,
 	Copy,
 	Upload,
 	FastForward,
@@ -374,9 +374,12 @@ export default function TextToSpeechPage() {
 										size='icon'
 										disabled={!text.trim()}
 										className='w-8 h-8'
-										title='Экспортировать'
+										/* Иконка загрузки рядом с озвучкой читается как
+										   «скачать аудио», а кнопка сохраняет .txt —
+										   говорим об этом прямо в подсказке */
+										title='Сохранить текст в файл .txt'
 									>
-										<Download className='w-4 h-4' />
+										<FileDown className='w-4 h-4' />
 									</Button>
 								</div>
 							</div>

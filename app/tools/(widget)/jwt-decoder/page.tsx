@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import {
 	Copy,
 	RefreshCw,
@@ -445,14 +446,11 @@ export default function JWTDecoderPage() {
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			{/* Без карточки: рамка вокруг единственного поля ничего не отделяла —
-			    инструмент на странице и так один. Ритм задают отступы между блоками. */}
-			<div className='space-y-6'>
-				{/* Одна строка управления: примеры слева, действия справа. Заголовка
-				    «JWT токен» нет намеренно — ровно это написано в плейсхолдере. */}
-				<div className='flex flex-wrap items-center justify-between gap-x-4 gap-y-3'>
-					<div className='flex flex-wrap items-center gap-2'>
-						<span className='text-sm text-muted-foreground'>Примеры:</span>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: примеры слева, действия справа — единый порядок
+				    на все инструменты раздела «Безопасность». */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
 						{JWT_EXAMPLES.map(example => {
 							// Подсветка «выбран» зависит от того, что в поле, а не от фокуса:
 							// иначе чип остаётся залитым после клика и врёт про состояние.
@@ -463,14 +461,8 @@ export default function JWTDecoderPage() {
 									type='button'
 									onClick={() => loadExample(example)}
 									title={example.description}
-									className={cn(
-										'cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors',
-										// bg-accent в этой теме — насыщенный синий (--accent 217 91% 60%),
-										// на маленьком чипе он забивает текст. Нужен нейтральный фон.
-										'hover:border-primary/50 hover:bg-muted',
-										'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-										isActive && 'border-primary bg-primary/10 text-primary'
-									)}
+									aria-pressed={isActive}
+									className={toolPill(isActive)}
 								>
 									{example.name}
 								</button>
@@ -478,41 +470,41 @@ export default function JWTDecoderPage() {
 						})}
 					</div>
 
-					<div className='flex items-center gap-1'>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
+							size='icon'
+							variant='ghost'
 							onClick={pasteFromClipboard}
-							variant='outline'
-							size='sm'
-							className='cursor-pointer gap-1'
+							title='Вставить из буфера'
+							className={toolIconButton}
 						>
-							<ClipboardPaste className='h-3.5 w-3.5' />
-							Вставить
+							<ClipboardPaste className='h-4 w-4' />
 						</Button>
 						{jwt && (
 							<Button
-								onClick={reset}
+								size='icon'
 								variant='ghost'
-								size='sm'
-								className='cursor-pointer gap-1'
+								onClick={reset}
+								title='Очистить'
+								className={toolIconButton}
 							>
-								<RefreshCw className='h-3.5 w-3.5' />
-								Очистить
+								<RefreshCw className='h-4 w-4' />
 							</Button>
 						)}
 					</div>
 				</div>
 
-				<div className='space-y-3'>
-					<Textarea
+				<div className='space-y-3 px-5 py-6 sm:px-6'>
+					<textarea
 						value={jwt}
 						onChange={e => setJwt(e.target.value)}
 						placeholder='Вставьте JWT токен'
-						className='min-h-[9rem] rounded-xl p-4 font-mono text-base leading-relaxed md:text-sm'
+						className='min-h-[9rem] w-full resize-none bg-transparent font-mono text-sm leading-relaxed break-all placeholder:font-sans placeholder:text-base placeholder:text-muted-foreground/60 focus:outline-none'
 						spellCheck={false}
 					/>
 
 					{showSegments && (
-						<div className='break-all rounded-xl bg-muted/50 p-4 font-mono text-xs leading-relaxed'>
+						<div className='rounded-xl bg-muted/50 p-4 font-mono text-xs leading-relaxed break-all'>
 							{segments.map((segment, index) => (
 								<span key={index}>
 									<span className={SEGMENT_COLORS[index]}>{segment}</span>
@@ -540,7 +532,7 @@ export default function JWTDecoderPage() {
 				{hasContent && decoded && (
 					// Всё три части сразу, без вкладок: их и так всего три, а
 					// переключение прятало ровно то, ради чего сюда пришли.
-					<div className='space-y-5 border-t pt-6'>
+					<div className='space-y-5 border-t px-5 py-6 sm:px-6'>
 						<div className='flex flex-wrap items-center justify-between gap-2'>
 							{decoded.header?.alg ? (
 								<Badge variant='secondary' className='gap-1 font-mono'>
@@ -613,7 +605,7 @@ export default function JWTDecoderPage() {
 						</div>
 					</div>
 				)}
-			</div>
+			</Card>
 			<JwtDecoderSeo />
 		</WidgetSEOWrapper>
 	)

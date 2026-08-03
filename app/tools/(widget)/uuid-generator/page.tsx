@@ -3,17 +3,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
 import { Copy, RefreshCw, Download, Check, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { UuidGeneratorSeo } from './UuidGeneratorSeo'
@@ -231,58 +228,34 @@ export default function UUIDGeneratorPage() {
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<Card className='space-y-5 p-5 sm:p-6'>
-				<div className='flex flex-wrap items-center gap-2'>
-					<span className='text-sm text-muted-foreground'>Версия:</span>
-					{VERSIONS.map(item => (
-						<button
-							key={item.value}
-							type='button'
-							onClick={() => setVersion(item.value)}
-							className={cn(
-								'cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors',
-								'hover:border-primary/50 hover:bg-muted',
-								'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-								version === item.value &&
-									'border-primary bg-primary/10 text-primary'
-							)}
-						>
-							<span className='font-mono'>{item.label}</span>
-							<span className='ml-1.5 text-xs opacity-70'>{item.hint}</span>
-						</button>
-					))}
-				</div>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: версия слева, действия справа — тот же порядок,
+				    что у остальных инструментов раздела «Безопасность». */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{VERSIONS.map(item => (
+							<button
+								key={item.value}
+								type='button'
+								onClick={() => setVersion(item.value)}
+								aria-pressed={version === item.value}
+								title={item.hint}
+								className={toolPill(version === item.value)}
+							>
+								<span className='font-mono'>{item.label}</span>
+								<span className='ml-1.5 text-xs opacity-70'>{item.hint}</span>
+							</button>
+						))}
+					</div>
 
-				{/* Поле одно и то же на генерацию и на разбор — оно редактируемое,
-				    поэтому вставленный чужой UUID разбирается там же, где появился
-				    свой. Отдельный блок «Валидатор» с кнопкой «Проверить» из-за
-				    этого стал не нужен. */}
-				<div className='relative'>
-					{isSingle ? (
-						<Input
-							value={value}
-							onChange={event => setValue(event.target.value)}
-							spellCheck={false}
-							placeholder='UUID появится здесь — или вставьте свой для разбора'
-							className='h-14 rounded-xl pr-12 font-mono text-base sm:text-lg'
-						/>
-					) : (
-						<textarea
-							value={value}
-							onChange={event => setValue(event.target.value)}
-							spellCheck={false}
-							className='h-56 w-full resize-none rounded-xl border border-input bg-background p-4 pr-12 font-mono text-base leading-relaxed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-sm'
-						/>
-					)}
-
-					<div className='absolute right-2 top-2 flex gap-1'>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						{!isSingle && (
 							<Button
 								size='icon'
 								variant='ghost'
 								onClick={download}
 								title='Скачать файлом'
-								className='cursor-pointer'
+								className={toolIconButton}
 							>
 								<Download className='h-4 w-4' />
 							</Button>
@@ -292,7 +265,7 @@ export default function UUIDGeneratorPage() {
 							variant='ghost'
 							onClick={copy}
 							title='Скопировать'
-							className={cn('cursor-pointer', isSingle && 'top-1/2')}
+							className={toolIconButton}
 						>
 							{copied ? (
 								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
@@ -300,81 +273,106 @@ export default function UUIDGeneratorPage() {
 								<Copy className='h-4 w-4' />
 							)}
 						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={generate}
+							title='Сгенерировать заново'
+							className={toolIconButton}
+						>
+							<RefreshCw className='h-4 w-4' />
+						</Button>
 					</div>
 				</div>
 
-				{analysis && (
-					<div className='flex items-start gap-2 text-sm'>
-						{analysis.valid ? (
-							<>
-								<Check className='mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400' />
-								<span className='text-muted-foreground'>
-									{analysis.isNil ? (
-										'Нулевой UUID (nil) — все биты равны нулю'
-									) : (
-										<>
-											Версия {analysis.version} · вариант {analysis.variant}
-											{analysis.createdAt && (
-												<>
-													{' '}
-													· создан {analysis.createdAt.toLocaleString('ru-RU')}
-												</>
-											)}
-										</>
-									)}
-								</span>
-							</>
-						) : (
-							<>
-								<AlertCircle className='mt-0.5 h-4 w-4 shrink-0 text-destructive' />
-								<span className='text-destructive'>
-									Это не похоже на UUID — нужно 32 шестнадцатеричных символа
-								</span>
-							</>
-						)}
-					</div>
-				)}
+				{/* Поле одно и то же на генерацию и на разбор — оно редактируемое,
+				    поэтому вставленный чужой UUID разбирается там же, где появился
+				    свой. Рамки у поля нет: инструмент на странице один, отделять
+				    его от самого себя нечем. */}
+				<div className='px-5 py-6 sm:px-6 sm:py-8'>
+					{isSingle ? (
+						<input
+							value={value}
+							onChange={event => setValue(event.target.value)}
+							spellCheck={false}
+							placeholder='UUID появится здесь — или вставьте свой для разбора'
+							className='w-full bg-transparent text-center font-mono text-lg break-all select-all placeholder:font-sans placeholder:text-base placeholder:text-muted-foreground/60 focus:outline-none sm:text-2xl'
+						/>
+					) : (
+						<textarea
+							value={value}
+							onChange={event => setValue(event.target.value)}
+							spellCheck={false}
+							className='h-56 w-full resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none'
+						/>
+					)}
 
-				<div className='flex flex-wrap items-center gap-x-4 gap-y-3 border-t pt-5'>
-					<Button onClick={generate} className='cursor-pointer gap-2'>
-						<RefreshCw className='h-4 w-4' />
-						Новый
-					</Button>
+					{analysis && (
+						<div className='mt-6 flex items-start justify-center gap-2 text-sm'>
+							{analysis.valid ? (
+								<>
+									<Check className='mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400' />
+									<span className='text-muted-foreground'>
+										{analysis.isNil ? (
+											'Нулевой UUID (nil) — все биты равны нулю'
+										) : (
+											<>
+												Версия {analysis.version} · вариант {analysis.variant}
+												{analysis.createdAt && (
+													<>
+														{' '}
+														· создан{' '}
+														{analysis.createdAt.toLocaleString('ru-RU')}
+													</>
+												)}
+											</>
+										)}
+									</span>
+								</>
+							) : (
+								<>
+									<AlertCircle className='mt-0.5 h-4 w-4 shrink-0 text-destructive' />
+									<span className='text-destructive'>
+										Это не похоже на UUID — нужно 32 шестнадцатеричных символа
+									</span>
+								</>
+							)}
+						</div>
+					)}
+				</div>
 
-					<div className='flex flex-wrap items-center gap-1'>
-						<span className='mr-1 text-sm text-muted-foreground'>Сколько:</span>
+				{/* Полоса параметров: сколько штук и в каком формате. Выпадающий
+				    список формата заменён на такие же «таблетки» — четыре варианта
+				    не стоят того, чтобы прятать их за кликом. */}
+				<div className={toolFooterBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<span className='mr-1 text-sm text-muted-foreground'>Сколько</span>
 						{COUNTS.map(item => (
 							<button
 								key={item}
 								type='button'
 								onClick={() => setCount(item)}
-								className={cn(
-									'min-w-9 cursor-pointer rounded-md border px-2 py-1 text-sm transition-colors',
-									'hover:border-primary/50 hover:bg-muted',
-									'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-									count === item && 'border-primary bg-primary/10 text-primary'
-								)}
+								aria-pressed={count === item}
+								className={toolPill(count === item, 'min-w-10 text-center')}
 							>
 								{item}
 							</button>
 						))}
 					</div>
 
-					<Select
-						value={format}
-						onValueChange={(next: UUIDFormat) => setFormat(next)}
-					>
-						<SelectTrigger className='w-[13rem] cursor-pointer sm:ml-auto'>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							{FORMATS.map(item => (
-								<SelectItem key={item.value} value={item.value}>
-									{item.label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
+					<div className='flex flex-wrap items-center gap-1.5 sm:ml-auto'>
+						{FORMATS.map(item => (
+							<button
+								key={item.value}
+								type='button'
+								onClick={() => setFormat(item.value)}
+								aria-pressed={format === item.value}
+								className={toolPill(format === item.value)}
+							>
+								{item.label}
+							</button>
+						))}
+					</div>
 				</div>
 			</Card>
 			<UuidGeneratorSeo />

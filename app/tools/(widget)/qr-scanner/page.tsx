@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Camera, Upload, Copy, ExternalLink, ScanQrCode } from 'lucide-react'
+import { toolBar, toolPill } from '@/lib/ui/tool-pill'
+import { Upload, Copy, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { decodeImageData } from '@/lib/qr-scanner/decode'
@@ -167,35 +166,37 @@ export default function QRScannerPage() {
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<div className='grid gap-6 lg:grid-cols-2'>
-				<WidgetSection icon={<ScanQrCode className='w-5 h-5' />} title='Сканер'>
-					<Tabs value={mode} onValueChange={v => setMode(v as ScanMode)}>
-						<TabsList className='grid w-full grid-cols-2'>
-							<TabsTrigger value='camera'>
-								<Camera className='w-4 h-4 mr-2' />
-								Камера
-							</TabsTrigger>
-							<TabsTrigger value='upload'>
-								<Upload className='w-4 h-4 mr-2' />
-								Изображение
-							</TabsTrigger>
-						</TabsList>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: откуда читаем код. Вкладками это быть перестало —
+				    два варианта не стоят полноразмерного переключателя во всю ширину. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								{ key: 'camera', label: 'С камеры' },
+								{ key: 'upload', label: 'Из картинки' }
+							] as { key: ScanMode; label: string }[]
+						).map(item => (
+							<button
+								key={item.key}
+								type='button'
+								onClick={() => setMode(item.key)}
+								aria-pressed={mode === item.key}
+								className={toolPill(mode === item.key)}
+							>
+								{item.label}
+							</button>
+						))}
+					</div>
 
-						<TabsContent value='camera' className='space-y-4'>
-							<div className='relative aspect-video overflow-hidden rounded-lg bg-black'>
-								{/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-								<video
-									ref={videoRef}
-									className='h-full w-full object-cover'
-									muted
-									playsInline
-								/>
-							</div>
+					{mode === 'camera' && (
+						<div className='sm:ml-auto'>
 							{cameraActive ? (
 								<Button
 									onClick={stopCamera}
-									variant='outline'
-									className='w-full'
+									variant='ghost'
+									size='sm'
+									className='cursor-pointer text-muted-foreground hover:text-foreground'
 								>
 									Остановить камеру
 								</Button>
@@ -203,76 +204,101 @@ export default function QRScannerPage() {
 								<Button
 									onClick={startCamera}
 									disabled={starting}
-									className='w-full'
+									size='sm'
+									className='cursor-pointer'
 								>
 									Включить камеру
 								</Button>
 							)}
-						</TabsContent>
+						</div>
+					)}
+				</div>
 
-						<TabsContent value='upload' className='space-y-4'>
-							<label
-								htmlFor='qr-image-upload'
-								onDragOver={e => e.preventDefault()}
-								onDrop={e => {
-									e.preventDefault()
-									const file = e.dataTransfer.files?.[0]
+				<div className='px-5 py-6 sm:px-6'>
+					{mode === 'camera' ? (
+						<div className='relative aspect-video overflow-hidden rounded-xl bg-black'>
+							<video
+								ref={videoRef}
+								className='h-full w-full object-cover'
+								muted
+								playsInline
+							/>
+							{!cameraActive && (
+								<div className='absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-white/70'>
+									Нажмите «Включить камеру» и наведите её на QR-код
+								</div>
+							)}
+						</div>
+					) : (
+						<label
+							htmlFor='qr-image-upload'
+							onDragOver={e => e.preventDefault()}
+							onDrop={e => {
+								e.preventDefault()
+								const file = e.dataTransfer.files?.[0]
+								if (file) handleFileUpload(file)
+							}}
+							className='flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-10 text-center text-muted-foreground transition-colors hover:border-primary hover:bg-muted/30'
+						>
+							<Upload className='h-6 w-6' />
+							<span>
+								Перетащите картинку сюда или нажмите, чтобы выбрать файл
+							</span>
+							<input
+								id='qr-image-upload'
+								type='file'
+								accept='image/*'
+								className='hidden'
+								onChange={e => {
+									const file = e.target.files?.[0]
 									if (file) handleFileUpload(file)
 								}}
-								className='flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-10 text-center text-muted-foreground hover:border-primary'
-							>
-								<Upload className='h-6 w-6' />
-								<span>
-									Перетащите картинку сюда или нажмите, чтобы выбрать файл
-								</span>
-								<input
-									id='qr-image-upload'
-									type='file'
-									accept='image/*'
-									className='hidden'
-									onChange={e => {
-										const file = e.target.files?.[0]
-										if (file) handleFileUpload(file)
-									}}
-								/>
-							</label>
-						</TabsContent>
-					</Tabs>
-				</WidgetSection>
-
-				<WidgetSection
-					icon={<ScanQrCode className='w-5 h-5' />}
-					title='Результат'
-				>
-					{error && <p className='text-sm text-destructive'>{error}</p>}
-					{!error && !result && (
-						<p className='text-sm text-muted-foreground'>
-							Наведите камеру на QR-код или загрузите изображение — результат
-							появится здесь.
-						</p>
+							/>
+						</label>
 					)}
-					{result && (
-						<WidgetOutput>
-							<p className='break-all font-mono text-sm'>{result}</p>
-							<div className='mt-4 flex gap-2'>
-								<Button onClick={copyResult} variant='outline' size='sm'>
-									<Copy className='mr-2 h-4 w-4' />
+
+					<canvas ref={canvasRef} className='hidden' />
+				</div>
+
+				{/* Результат — нижняя полоса той же карточки, а не вторая колонка:
+				    на телефоне вторая колонка всё равно уезжала под сканер, и её
+				    приходилось искать скроллом. */}
+				<div className='border-t px-5 py-4 sm:px-6'>
+					{error ? (
+						<p className='text-sm text-destructive'>{error}</p>
+					) : result ? (
+						<div className='flex flex-wrap items-center gap-x-4 gap-y-3'>
+							<p className='min-w-0 flex-1 font-mono text-sm break-all'>
+								{result}
+							</p>
+							<div className='flex items-center gap-1'>
+								<Button
+									onClick={copyResult}
+									variant='ghost'
+									size='sm'
+									className='cursor-pointer gap-1.5'
+								>
+									<Copy className='h-3.5 w-3.5' />
 									Копировать
 								</Button>
 								{isHttpUrl(result) && (
-									<Button asChild size='sm'>
+									<Button asChild size='sm' className='cursor-pointer gap-1.5'>
 										<a href={result} target='_blank' rel='noopener noreferrer'>
-											<ExternalLink className='mr-2 h-4 w-4' />
-											Открыть ссылку
+											<ExternalLink className='h-3.5 w-3.5' />
+											Открыть
 										</a>
 									</Button>
 								)}
 							</div>
-						</WidgetOutput>
+						</div>
+					) : (
+						<p className='text-sm text-muted-foreground'>
+							Наведите камеру на QR-код или загрузите изображение — распознанный
+							текст появится здесь.
+						</p>
 					)}
-					<canvas ref={canvasRef} className='hidden' />
-				</WidgetSection>
-			</div>
+				</div>
+			</Card>
 			<QrScannerSeo />
 		</WidgetSEOWrapper>
 	)

@@ -2,13 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react'
 import QRCode from 'qrcode'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Label } from '@/components/ui/label'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
 	Select,
 	SelectContent,
@@ -17,18 +14,15 @@ import {
 	SelectValue
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { Slider } from '@/components/ui/slider'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-	Download,
-	Copy,
-	Link,
-	Wifi,
-	Smartphone,
-	QrCode,
-	Settings
-} from 'lucide-react'
+import { Download, Copy, Smartphone } from 'lucide-react'
 import { toast } from 'sonner'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { QrGeneratorSeo } from './QrGeneratorSeo'
@@ -183,40 +177,72 @@ export default function QRGeneratorPage() {
 	// Keyboard shortcuts
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<WidgetSection icon={<Settings className='w-5 h-5' />} title='Настройки'>
-				<div className='grid lg:grid-cols-3 gap-6'>
-					{/* Settings */}
-					<div className='lg:col-span-2'>
-						<Tabs value={qrType} onValueChange={v => setQrType(v as QRType)}>
-							<TabsList className='grid w-full grid-cols-3'>
-								<TabsTrigger value='url'>
-									<Link className='w-4 h-4 mr-2 hidden md:inline' />
-									URL
-								</TabsTrigger>
-								<TabsTrigger value='appstore'>
-									<Smartphone className='w-4 h-4 mr-2 hidden md:inline' />
-									Mobile app
-								</TabsTrigger>
-								<TabsTrigger value='wifi'>
-									<Wifi className='w-4 h-4 mr-2 hidden md:inline' />
-									Wi-Fi
-								</TabsTrigger>
-							</TabsList>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: что кодируем — слева, что делаем с готовым
+				    кодом — справа. Вкладки во всю ширину убраны: три варианта
+				    помещаются «таблетками» и не занимают отдельную строку. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								{ key: 'url', label: 'Ссылка' },
+								{ key: 'appstore', label: 'Приложение' },
+								{ key: 'wifi', label: 'Wi-Fi' }
+							] as { key: QRType; label: string }[]
+						).map(item => (
+							<button
+								key={item.key}
+								type='button'
+								onClick={() => setQrType(item.key)}
+								aria-pressed={qrType === item.key}
+								className={toolPill(qrType === item.key)}
+							>
+								{item.label}
+							</button>
+						))}
+					</div>
 
-							<TabsContent value='url' className='space-y-4'>
-								<div>
-									<Label htmlFor='url'>URL-адрес</Label>
-									<Input
-										id='url'
-										type='url'
-										placeholder='https://example.com'
-										value={url}
-										onChange={e => setUrl(e.target.value)}
-									/>
-								</div>
-							</TabsContent>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyQRAsImage}
+							title='Скопировать картинку'
+							className={toolIconButton}
+						>
+							<Copy className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadQR}
+							title='Скачать PNG'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
 
-							<TabsContent value='appstore' className='space-y-4'>
+				<div className='grid md:grid-cols-2'>
+					{/* Поля слева, готовый код справа — как две панели base64:
+					    одна карточка, разделённая линией, а не два острова. */}
+					<div className='space-y-4 px-5 py-6 sm:px-6 md:border-r'>
+						{qrType === 'url' && (
+							<div>
+								<Label htmlFor='url'>Ссылка</Label>
+								<Input
+									id='url'
+									type='url'
+									placeholder='https://example.com'
+									value={url}
+									onChange={e => setUrl(e.target.value)}
+								/>
+							</div>
+						)}
+
+						{qrType === 'appstore' && (
+							<div className='space-y-4'>
 								<div>
 									<Label>Платформа</Label>
 									<Select
@@ -335,9 +361,11 @@ export default function QRGeneratorPage() {
 										</p>
 									</div>
 								)}
-							</TabsContent>
+							</div>
+						)}
 
-							<TabsContent value='wifi' className='space-y-4'>
+						{qrType === 'wifi' && (
+							<div className='space-y-4'>
 								<div className='grid grid-cols-2 gap-4'>
 									<div>
 										<Label htmlFor='ssid'>Название сети</Label>
@@ -389,10 +417,10 @@ export default function QRGeneratorPage() {
 										</Select>
 									</div>
 									<div>
-										<Label htmlFor='hidden' className='block mb-2'>
+										<Label htmlFor='hidden' className='mb-2 block'>
 											Скрытая сеть
 										</Label>
-										<div className='flex items-center h-10'>
+										<div className='flex h-10 items-center'>
 											<Switch
 												id='hidden'
 												checked={wifiConfig.hidden}
@@ -403,139 +431,144 @@ export default function QRGeneratorPage() {
 										</div>
 									</div>
 								</div>
-							</TabsContent>
-						</Tabs>
-
-						<div className='mt-6 space-y-4'>
-							<h3 className='text-lg font-semibold'>Настройки QR-кода</h3>
-
-							<div className='grid md:grid-cols-3 gap-4'>
-								<div>
-									<Label htmlFor='darkColor'>Темный цвет</Label>
-									<div className='flex gap-2'>
-										<Input
-											id='darkColor'
-											type='color'
-											value={darkColor}
-											onChange={e => setDarkColor(e.target.value)}
-											className='w-16 h-10 p-1'
-										/>
-										<Input
-											value={darkColor}
-											onChange={e => setDarkColor(e.target.value)}
-											placeholder='#000000'
-										/>
-									</div>
-								</div>
-								<div>
-									<Label htmlFor='lightColor'>Светлый цвет</Label>
-									<div className='flex gap-2'>
-										<Input
-											id='lightColor'
-											type='color'
-											value={lightColor}
-											onChange={e => setLightColor(e.target.value)}
-											className='w-16 h-10 p-1'
-										/>
-										<Input
-											value={lightColor}
-											onChange={e => setLightColor(e.target.value)}
-											placeholder='#FFFFFF'
-										/>
-									</div>
-								</div>
-								<div>
-									<Label>Коррекция ошибок</Label>
-									<Select
-										value={errorCorrection}
-										onValueChange={v =>
-											setErrorCorrection(v as 'L' | 'M' | 'Q' | 'H')
-										}
-									>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='L'>Низкий (7%)</SelectItem>
-											<SelectItem value='M'>Средний (15%)</SelectItem>
-											<SelectItem value='Q'>Высокий (25%)</SelectItem>
-											<SelectItem value='H'>Очень высокий (30%)</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
 							</div>
-						</div>
+						)}
 					</div>
 
-					{/* Preview */}
-					<div className='relative lg:col-span-1 lg:border-l lg:pl-6'>
-						<div className='absolute top-0 right-2 flex gap-2 z-10'>
-							<Button variant='outline' size='icon' onClick={downloadQR}>
-								<Download className='w-4 h-4' />
-							</Button>
-							<Button variant='outline' size='icon' onClick={copyQRAsImage}>
-								<Copy className='w-4 h-4' />
-							</Button>
-						</div>
-						<div className='flex items-center justify-center p-6 pt-16 bg-white dark:bg-white rounded-lg'>
-							{!hasGeneratedOnce && (
-								<div
-									className='absolute grid grid-cols-8 gap-[2px] p-2 bg-white rounded'
-									style={{
-										width: `${qrSize}px`,
-										height: `${qrSize}px`
-									}}
-								>
-									{[...Array(64)].map((_, index) => {
-										// Deterministic pattern based on index
-										const row = Math.floor(index / 8)
-										const col = index % 8
-										const isCornerPattern =
-											// Top-left corner
-											(row < 3 && col < 3) ||
-											// Top-right corner
-											(row < 3 && col >= 5) ||
-											// Bottom-left corner
-											(row >= 5 && col < 3)
-
-										// Create a checkered pattern for the middle
-										const isCheckerPattern = (row + col) % 2 === 0
-
-										const shouldBeDark =
-											isCornerPattern ||
-											(row >= 3 &&
-												row < 5 &&
-												col >= 3 &&
-												col < 5 &&
-												isCheckerPattern)
-
-										return (
-											<Skeleton
-												key={index}
-												className={`rounded-sm ${
-													shouldBeDark ? 'opacity-100' : 'opacity-30'
-												}`}
-											/>
-										)
-									})}
-								</div>
-							)}
-							<canvas
-								ref={canvasRef}
-								width={qrSize}
-								height={qrSize}
-								className='block'
+					{/* Готовый код. Белая подложка обязательна и в тёмной теме:
+					    сканеры ждут тёмный рисунок на светлом фоне. */}
+					<div className='relative flex items-center justify-center bg-white p-6 dark:bg-white'>
+						{!hasGeneratedOnce && (
+							<div
+								className='absolute grid grid-cols-8 gap-[2px] rounded bg-white p-2'
 								style={{
-									imageRendering: 'pixelated',
 									width: `${qrSize}px`,
-									height: `${qrSize}px`,
-									visibility: hasGeneratedOnce ? 'visible' : 'hidden'
+									height: `${qrSize}px`
 								}}
-							/>
-						</div>
+							>
+								{[...Array(64)].map((_, index) => {
+									// Deterministic pattern based on index
+									const row = Math.floor(index / 8)
+									const col = index % 8
+									const isCornerPattern =
+										// Top-left corner
+										(row < 3 && col < 3) ||
+										// Top-right corner
+										(row < 3 && col >= 5) ||
+										// Bottom-left corner
+										(row >= 5 && col < 3)
+
+									// Create a checkered pattern for the middle
+									const isCheckerPattern = (row + col) % 2 === 0
+
+									const shouldBeDark =
+										isCornerPattern ||
+										(row >= 3 &&
+											row < 5 &&
+											col >= 3 &&
+											col < 5 &&
+											isCheckerPattern)
+
+									return (
+										<Skeleton
+											key={index}
+											className={`rounded-sm ${
+												shouldBeDark ? 'opacity-100' : 'opacity-30'
+											}`}
+										/>
+									)
+								})}
+							</div>
+						)}
+						<canvas
+							ref={canvasRef}
+							width={qrSize}
+							height={qrSize}
+							className='block'
+							style={{
+								imageRendering: 'pixelated',
+								width: `${qrSize}px`,
+								height: `${qrSize}px`,
+								visibility: hasGeneratedOnce ? 'visible' : 'hidden'
+							}}
+						/>
 					</div>
 				</div>
-			</WidgetSection>
+
+				{/* Полоса оформления. Раньше это был блок с заголовком «Настройки
+				    QR-кода» и тремя выпадающими списками — половина экрана на то,
+				    что трогают редко. */}
+				<div className={toolFooterBar}>
+					<div className='flex items-center gap-2'>
+						<Label
+							htmlFor='darkColor'
+							className='text-sm text-muted-foreground'
+						>
+							Цвет кода
+						</Label>
+						<Input
+							id='darkColor'
+							type='color'
+							value={darkColor}
+							onChange={e => setDarkColor(e.target.value)}
+							className='h-8 w-10 cursor-pointer p-1'
+						/>
+						<Input
+							value={darkColor}
+							onChange={e => setDarkColor(e.target.value)}
+							placeholder='#000000'
+							className='h-8 w-24 font-mono text-xs'
+						/>
+					</div>
+
+					<div className='flex items-center gap-2'>
+						<Label
+							htmlFor='lightColor'
+							className='text-sm text-muted-foreground'
+						>
+							Фон
+						</Label>
+						<Input
+							id='lightColor'
+							type='color'
+							value={lightColor}
+							onChange={e => setLightColor(e.target.value)}
+							className='h-8 w-10 cursor-pointer p-1'
+						/>
+						<Input
+							value={lightColor}
+							onChange={e => setLightColor(e.target.value)}
+							placeholder='#FFFFFF'
+							className='h-8 w-24 font-mono text-xs'
+						/>
+					</div>
+
+					<div className='flex flex-wrap items-center gap-1.5 sm:ml-auto'>
+						<span className='mr-1 text-sm text-muted-foreground'>
+							Запас на повреждения
+						</span>
+						{(
+							[
+								{ value: 'L', label: '7%' },
+								{ value: 'M', label: '15%' },
+								{ value: 'Q', label: '25%' },
+								{ value: 'H', label: '30%' }
+							] as { value: 'L' | 'M' | 'Q' | 'H'; label: string }[]
+						).map(item => (
+							<button
+								key={item.value}
+								type='button'
+								onClick={() => setErrorCorrection(item.value)}
+								aria-pressed={errorCorrection === item.value}
+								title={`Уровень ${item.value}: код читается, даже если повреждено до ${item.label} площади`}
+								className={toolPill(errorCorrection === item.value)}
+							>
+								{item.label}
+							</button>
+						))}
+					</div>
+				</div>
+			</Card>
 			<QrGeneratorSeo />
 		</WidgetSEOWrapper>
 	)
