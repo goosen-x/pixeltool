@@ -364,7 +364,7 @@ export default function JSONToolsPage() {
 								value={input}
 								onChange={e => setInput(e.target.value)}
 								placeholder='Вставьте JSON сюда…'
-								className='min-h-[300px] font-mono text-sm'
+								className='min-h-[300px] font-mono text-base md:text-sm'
 								spellCheck={false}
 							/>
 

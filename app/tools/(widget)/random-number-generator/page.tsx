@@ -174,7 +174,7 @@ export default function RandomNumberGeneratorPage() {
 									onChange={e => setMin(parseInt(e.target.value) || 0)}
 									min={0}
 									max={999999}
-									className='w-20 h-8 text-sm'
+									className='w-20 h-8 text-base md:text-sm'
 									placeholder='1'
 								/>
 							</div>
@@ -189,7 +189,7 @@ export default function RandomNumberGeneratorPage() {
 									onChange={e => setMax(parseInt(e.target.value) || 0)}
 									min={0}
 									max={999999}
-									className='w-20 h-8 text-sm'
+									className='w-20 h-8 text-base md:text-sm'
 									placeholder='10'
 								/>
 							</div>
@@ -204,7 +204,7 @@ export default function RandomNumberGeneratorPage() {
 									onChange={e => setCount(parseInt(e.target.value) || 1)}
 									min={1}
 									max={1000}
-									className='w-20 h-8 text-sm'
+									className='w-20 h-8 text-base md:text-sm'
 									placeholder='5'
 								/>
 							</div>

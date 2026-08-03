@@ -310,7 +310,7 @@ export default function GridGeneratorPage() {
 										value={props.columns}
 										onChange={e => updateProp('columns', e.target.value)}
 										placeholder='1fr 1fr 1fr'
-										className='h-9 text-sm'
+										className='h-9 text-base md:text-sm'
 									/>
 									<Button
 										size='icon'
@@ -340,7 +340,7 @@ export default function GridGeneratorPage() {
 										value={props.rows}
 										onChange={e => updateProp('rows', e.target.value)}
 										placeholder='1fr 1fr'
-										className='h-9 text-sm'
+										className='h-9 text-base md:text-sm'
 									/>
 									<Button
 										size='icon'

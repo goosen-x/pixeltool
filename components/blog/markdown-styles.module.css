@@ -17,6 +17,29 @@
 	margin: 1.5rem 0;
 }
 
+/* Tailwind preflight гасит у списков list-style и padding. Для интерфейса это
+   правильно, но внутри статьи маркеры обязательны: без них нумерованный список
+   шагов рендерится как несколько абзацев подряд, и порядок действий теряется. */
+.markdown ul {
+	list-style: disc;
+	padding-left: 1.5rem;
+}
+
+.markdown ol {
+	list-style: decimal;
+	padding-left: 1.5rem;
+}
+
+.markdown li {
+	margin: 0.5rem 0;
+}
+
+/* У вложенных списков внешние 1.5rem съедают связь с родительским пунктом. */
+.markdown li > ul,
+.markdown li > ol {
+	margin: 0.5rem 0;
+}
+
 /* Tables */
 .markdown table {
 	width: 100%;

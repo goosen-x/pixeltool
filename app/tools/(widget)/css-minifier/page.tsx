@@ -393,7 +393,7 @@ export default function CSSMinifierPage() {
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							placeholder='Вставьте CSS код сюда...'
-							className='min-h-[320px] resize-none font-mono text-sm'
+							className='min-h-[320px] resize-none font-mono text-base md:text-sm'
 						/>
 
 						<div className='space-y-4'>
@@ -531,7 +531,7 @@ export default function CSSMinifierPage() {
 							<Textarea
 								value={output}
 								readOnly
-								className='min-h-[320px] resize-none bg-muted/50 font-mono text-sm'
+								className='min-h-[320px] resize-none bg-muted/50 font-mono text-base md:text-sm'
 							/>
 						)}
 

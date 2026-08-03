@@ -599,7 +599,7 @@ export default function HTMLTreePage() {
 								placeholder='Вставьте HTML код страницы...'
 								value={htmlInput}
 								onChange={e => handleInputChange(e.target.value)}
-								className='h-full resize-none font-mono text-sm'
+								className='h-full resize-none font-mono text-base md:text-sm'
 								spellCheck={false}
 							/>
 						</TabsContent>

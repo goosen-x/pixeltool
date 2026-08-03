@@ -288,7 +288,7 @@ export default function HtmlXmlParserPage() {
 								value={input}
 								onChange={e => setInput(e.target.value)}
 								placeholder='Вставьте HTML или XML код здесь...'
-								className='min-h-[420px] resize-none font-mono text-sm'
+								className='min-h-[420px] resize-none font-mono text-base md:text-sm'
 								spellCheck={false}
 							/>
 						</div>
@@ -363,7 +363,7 @@ export default function HtmlXmlParserPage() {
 									value={result?.output || ''}
 									readOnly
 									placeholder='Результат появится здесь автоматически'
-									className='min-h-[420px] resize-none bg-muted/30 font-mono text-sm'
+									className='min-h-[420px] resize-none bg-muted/30 font-mono text-base md:text-sm'
 									spellCheck={false}
 								/>
 							)}

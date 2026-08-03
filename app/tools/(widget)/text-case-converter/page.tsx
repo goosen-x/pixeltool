@@ -202,7 +202,7 @@ export default function TextCaseConverterPage() {
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							placeholder={'Введите текст для преобразования...'}
-							className='min-h-[120px] font-mono text-sm resize-none'
+							className='min-h-[120px] font-mono text-base md:text-sm resize-none'
 							autoFocus
 						/>
 

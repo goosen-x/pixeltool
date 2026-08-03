@@ -199,7 +199,7 @@ export default function RandomListGeneratorPage() {
 								updateItemCount(e.target.value)
 							}}
 							placeholder='Введите элементы для перемешивания...'
-							className='min-h-[400px] font-mono text-sm'
+							className='min-h-[400px] font-mono text-base md:text-sm'
 							spellCheck={false}
 						/>
 
@@ -271,7 +271,7 @@ export default function RandomListGeneratorPage() {
 							value={outputText}
 							onChange={e => setOutputText(e.target.value)}
 							placeholder='Здесь появятся перемешанные элементы...'
-							className='min-h-[400px] font-mono text-sm'
+							className='min-h-[400px] font-mono text-base md:text-sm'
 							spellCheck={false}
 						/>
 

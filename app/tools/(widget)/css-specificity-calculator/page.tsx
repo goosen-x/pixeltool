@@ -341,7 +341,7 @@ div.container > p::first-line
 							value={input}
 							onChange={e => setInput(e.target.value)}
 							rows={14}
-							className='resize-none font-mono text-sm'
+							className='resize-none font-mono text-base md:text-sm'
 						/>
 						<p className='text-xs text-muted-foreground'>
 							По одному селектору на строку. Вес считается на лету.

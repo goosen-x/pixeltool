@@ -19,6 +19,7 @@ import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregi
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import {
 	antonFont,
+	geistMonoFont,
 	interFont,
 	onestFont,
 	openSansFont
@@ -236,7 +237,8 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 				interFont.variable,
 				openSansFont.variable,
 				antonFont.variable,
-				onestFont.variable
+				onestFont.variable,
+				geistMonoFont.variable
 			)}
 			suppressHydrationWarning
 		>

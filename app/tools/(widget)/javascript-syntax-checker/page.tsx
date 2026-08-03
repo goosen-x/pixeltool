@@ -584,7 +584,7 @@ export default function JavaScriptSyntaxCheckerPage() {
 							value={code}
 							onChange={e => setCode(e.target.value)}
 							placeholder='Вставьте JavaScript код для проверки…'
-							className='min-h-[320px] font-mono text-sm'
+							className='min-h-[320px] font-mono text-base md:text-sm'
 							spellCheck={false}
 						/>
 					</div>
