@@ -3,7 +3,7 @@ import Link from 'next/link'
 import markdownStyles from '@/components/blog/markdown-styles.module.css'
 
 export const metadata: Metadata = {
-	title: 'Политика конфиденциальности — PixelTool',
+	title: 'Политика конфиденциальности',
 	description:
 		'Как PixelTool обрабатывает данные пользователей: локальные вычисления в браузере, аналитика, cookie-файлы и контактная форма.',
 	alternates: { canonical: '/privacy' },

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import markdownStyles from '@/components/blog/markdown-styles.module.css'
 
 export const metadata: Metadata = {
-	title: 'Условия использования — PixelTool',
+	title: 'Условия использования',
 	description:
 		'Условия использования сайта PixelTool: как можно пользоваться инструментами, ответственность и интеллектуальная собственность.',
 	alternates: { canonical: '/terms' },

@@ -4,7 +4,9 @@ import { LEGAL_DOCUMENTS } from '@/lib/legal/documents'
 import { LEGAL_VERSION_DATE } from '@/lib/legal/operator'
 
 export const metadata: Metadata = {
-	title: 'Правовые документы — PixelTool',
+	// Без «— PixelTool»: в app/layout.tsx задан template '%s | PixelTool',
+	// который допишет бренд сам — иначе в выдаче получается «… | PixelTool».
+	title: 'Правовые документы',
 	description:
 		'Политика конфиденциальности, политика обработки персональных данных и согласия на обработку данных для сайта pixeltool.pro.',
 	// Реестр документов индексировать незачем: он не отвечает ни на один

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import markdownStyles from '@/components/blog/markdown-styles.module.css'
 
 export const metadata: Metadata = {
-	title: 'О нас — PixelTool',
+	title: 'О нас',
 	description:
 		'PixelTool — бесплатные онлайн-инструменты для работы с CSS, HTML, JSON, текстом и изображениями. Всё нужное под рукой, прямо в браузере.',
 	alternates: { canonical: '/about' },
