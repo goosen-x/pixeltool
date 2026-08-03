@@ -1,4 +1,3 @@
-import { HomePageTracker } from '@/components/analytics/HomePageTracker'
 import { SectionWidgetsCarousel } from '@/components/homepage/SectionWidgetsCarousel'
 import { HeroSection } from '@/components/homepage/HeroSection'
 import { WhyChooseSection } from '@/components/homepage/WhyChooseSection'
@@ -80,7 +79,6 @@ export default async function HomePage({ params }: Props) {
 
 	return (
 		<>
-			<HomePageTracker />
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
 				<HeroSection />
 

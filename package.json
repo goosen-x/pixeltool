@@ -85,7 +85,6 @@
 		"gsap": "^3.14.2",
 		"highlight.js": "^11.11.1",
 		"htmlhint": "^1.9.2",
-		"ioredis": "^5.8.2",
 		"js-yaml": "^5.2.1",
 		"jspdf": "^4.2.1",
 		"jsqr": "^1.4.0",
@@ -127,7 +126,6 @@
 		"three-globe": "^2.31.0",
 		"unified": "^11.0.5",
 		"unist-util-visit": "^5.0.0",
-		"uuid": "^13.0.0",
 		"vaul": "^1.1.2",
 		"zod": "^3.22.4"
 	},
@@ -149,7 +147,6 @@
 		"@types/react-dom": "^19.2.3",
 		"@types/react-syntax-highlighter": "^15.5.13",
 		"@types/three": "^0.164.0",
-		"@types/uuid": "^11.0.0",
 		"@vitejs/plugin-react": "^5.1.2",
 		"@vitest/ui": "^3.2.4",
 		"eslint": "^9",

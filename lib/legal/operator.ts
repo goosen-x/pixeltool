@@ -28,7 +28,7 @@ export const OPERATOR = {
 } as const
 
 /** Дата последней редакции документов — попадает в колонтитул PDF. */
-export const LEGAL_VERSION_DATE = '2 августа 2026 г.'
+export const LEGAL_VERSION_DATE = '3 августа 2026 г.'
 
 export function unfilledFields(): string[] {
 	return Object.entries(OPERATOR)
