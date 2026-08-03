@@ -1,703 +1,447 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger
-} from '@/components/ui/tooltip'
-import {
-	ArrowRightLeft,
-	Binary,
+	ArrowLeftRight,
+	Check,
 	Copy,
 	Download,
-	FileText,
-	Link,
-	Loader2,
-	RotateCcw,
-	Shield,
-	Upload,
-	FileUp,
-	FileDown,
-	Sparkles,
-	History,
-	Settings2,
-	Eye,
-	EyeOff,
-	Trash2,
-	FileImage,
-	Code2,
-	Hash,
-	Braces,
 	AlertCircle,
-	Check
+	RotateCcw
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { Base64EncoderSeo } from './Base64EncoderSeo'
 
-type InputMethod = 'text' | 'file' | 'dataurl'
+type Field = 'plain' | 'base64'
 
 interface HistoryItem {
 	id: string
 	plainText: string
 	base64Text: string
-	timestamp: Date
+	timestamp: number
 }
 
-interface EncodingStats {
-	inputSize: number
-	outputSize: number
-	ratio: number
-	processingTime: number
+const EXAMPLES = [
+	{ label: 'Текст', value: 'Hello, World!' },
+	{ label: 'JSON', value: '{"name": "John", "age": 30}' },
+	{ label: 'HTML', value: '<h1>Hello World</h1>' },
+	{ label: 'Эмодзи', value: '🚀 Ready to launch!' }
+]
+
+const HISTORY_KEY = 'base64-history'
+const HISTORY_LIMIT = 8
+
+const formatBytes = (bytes: number) => {
+	if (bytes === 0) return '0 B'
+	const units = ['B', 'KB', 'MB']
+	const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), 2)
+	return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(1))} ${units[i]}`
 }
 
-const FILE_SIZE_LIMIT = 10 * 1024 * 1024 // 10MB
+const sizeOf = (text: string) => new Blob([text]).size
 
 export default function Base64EncoderPage() {
 	const widget = getWidgetById('base64-encoder')!
+
 	const [plainText, setPlainText] = useState('')
 	const [base64Text, setBase64Text] = useState('')
-	const [isProcessing, setIsProcessing] = useState(false)
 	const [urlSafe, setUrlSafe] = useState(false)
 	const [lineBreaks, setLineBreaks] = useState(false)
-	const [stats, setStats] = useState<EncodingStats | null>(null)
+	const [error, setError] = useState<string | null>(null)
+	const [copied, setCopied] = useState<Field | null>(null)
 	const [history, setHistory] = useState<HistoryItem[]>([])
-	const [dragActive, setDragActive] = useState(false)
-	const [file, setFile] = useState<File | null>(null)
-	const [showPreview, setShowPreview] = useState(false)
-	const [imagePreview, setImagePreview] = useState<string | null>(null)
-	const fileInputRef = useRef<HTMLInputElement>(null)
-	const [lastEditedField, setLastEditedField] = useState<'plain' | 'base64'>(
-		'plain'
-	)
-	const [base64Error, setBase64Error] = useState<string | null>(null)
+	const [lastEdited, setLastEdited] = useState<Field>('plain')
 
-	// Load history from localStorage
-	useEffect(() => {
-		const savedHistory = localStorage.getItem('base64-history')
-		if (savedHistory) {
-			try {
-				const parsed = JSON.parse(savedHistory)
-				setHistory(
-					parsed.map((item: any) => ({
-						...item,
-						timestamp: new Date(item.timestamp)
-					}))
-				)
-			} catch (error) {
-				console.error('Failed to load history:', error)
-			}
-		}
-	}, [])
-
-	// Save history to localStorage
-	useEffect(() => {
-		if (history.length > 0) {
-			localStorage.setItem('base64-history', JSON.stringify(history))
-		}
-	}, [history])
-
-	const encodeToBase64 = useCallback(
+	const encode = useCallback(
 		(text: string) => {
-			if (!text || text.trim().length === 0) return ''
-
+			if (!text) return ''
 			try {
 				let result = btoa(unescape(encodeURIComponent(text)))
-
-				// Apply URL-safe encoding if needed
 				if (urlSafe) {
 					result = result
 						.replace(/\+/g, '-')
 						.replace(/\//g, '_')
 						.replace(/=+$/, '')
 				}
-
-				// Add line breaks if needed
 				if (lineBreaks) {
 					result = result.match(/.{1,76}/g)?.join('\n') || result
 				}
-
 				return result
-			} catch (error) {
+			} catch {
 				return ''
 			}
 		},
 		[urlSafe, lineBreaks]
 	)
 
-	const decodeFromBase64 = useCallback(
-		(base64: string) => {
-			if (!base64 || base64.trim().length === 0)
-				return { result: '', error: null }
+	const decode = useCallback(
+		(value: string): { result: string; error: string | null } => {
+			if (!value.trim()) return { result: '', error: null }
+
+			let text = value.replace(/\s/g, '')
+			if (urlSafe) {
+				text = text.replace(/-/g, '+').replace(/_/g, '/')
+				const padding = text.length % 4
+				if (padding) text += '='.repeat(4 - padding)
+			}
+
+			if (!/^[A-Za-z0-9+/]*={0,2}$/.test(text)) {
+				return {
+					result: '',
+					error: 'В строке есть символы не из алфавита Base64'
+				}
+			}
 
 			try {
-				let toDecode = base64.trim()
-
-				// Convert URL-safe base64 back to standard
-				if (urlSafe) {
-					toDecode = toDecode.replace(/-/g, '+').replace(/_/g, '/')
-					const padding = toDecode.length % 4
-					if (padding) {
-						toDecode += '='.repeat(4 - padding)
-					}
-				}
-
-				// Remove all whitespace
-				toDecode = toDecode.replace(/\s/g, '')
-
-				// Check for valid Base64 characters
-				const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
-				if (!base64Regex.test(toDecode)) {
-					return { result: '', error: 'Неверные символы Base64' }
-				}
-
-				// Decode
+				return { result: decodeURIComponent(escape(atob(text))), error: null }
+			} catch {
 				try {
-					const decoded = atob(toDecode)
-					const result = decodeURIComponent(escape(decoded))
-					return { result, error: null }
-				} catch (e) {
-					// If decoding fails, try without URI decoding
-					try {
-						const result = atob(toDecode)
-						return { result, error: null }
-					} catch (e2) {
-						return { result: '', error: 'Неверный формат Base64' }
-					}
+					return { result: atob(text), error: null }
+				} catch {
+					return { result: '', error: 'Строка обрывается — длина не кратна 4' }
 				}
-			} catch (error) {
-				return { result: '', error: 'Ошибка декодирования' }
 			}
 		},
 		[urlSafe]
 	)
 
-	// Handle plain text changes
+	// Пересчёт в ту сторону, куда пользователь печатал последней
 	useEffect(() => {
-		if (lastEditedField === 'plain') {
-			const timer = setTimeout(() => {
-				const encoded = encodeToBase64(plainText)
-				setBase64Text(encoded)
-				setBase64Error(null)
-
-				// Calculate stats
-				if (plainText && encoded) {
-					const inputSize = new Blob([plainText]).size
-					const outputSize = new Blob([encoded]).size
-					const ratio = ((outputSize / inputSize - 1) * 100).toFixed(0)
-					setStats({
-						inputSize,
-						outputSize,
-						ratio: parseFloat(ratio),
-						processingTime: 0
-					})
-				} else {
-					setStats(null)
-				}
-			}, 300)
-			return () => clearTimeout(timer)
-		}
-	}, [plainText, lastEditedField, encodeToBase64])
-
-	// Handle base64 text changes
-	useEffect(() => {
-		if (lastEditedField === 'base64') {
-			const timer = setTimeout(() => {
-				const { result, error } = decodeFromBase64(base64Text)
+		const timer = setTimeout(() => {
+			if (lastEdited === 'plain') {
+				setBase64Text(encode(plainText))
+				setError(null)
+			} else {
+				const { result, error: decodeError } = decode(base64Text)
 				setPlainText(result)
-				setBase64Error(error)
+				setError(decodeError)
+			}
+		}, 250)
+		return () => clearTimeout(timer)
+	}, [plainText, base64Text, lastEdited, encode, decode])
 
-				// Calculate stats
-				if (base64Text && result && !error) {
-					const inputSize = new Blob([base64Text]).size
-					const outputSize = new Blob([result]).size
-					const ratio = ((1 - outputSize / inputSize) * 100).toFixed(0)
-					setStats({
-						inputSize,
-						outputSize,
-						ratio: parseFloat(ratio),
-						processingTime: 0
-					})
-				} else {
-					setStats(null)
-				}
-			}, 300)
-			return () => clearTimeout(timer)
-		}
-	}, [base64Text, lastEditedField, decodeFromBase64])
-
-	const handleDrag = useCallback((e: React.DragEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-		if (e.type === 'dragenter' || e.type === 'dragover') {
-			setDragActive(true)
-		} else if (e.type === 'dragleave') {
-			setDragActive(false)
-		}
-	}, [])
-
-	const handleDrop = useCallback((e: React.DragEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-		setDragActive(false)
-
-		if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-			handleFileSelect(e.dataTransfer.files[0])
-		}
-	}, [])
-
-	const handleFileSelect = (selectedFile: File) => {
-		if (selectedFile.size > FILE_SIZE_LIMIT) {
-			toast.error('Файл слишком большой. Максимальный размер: 10MB')
-			return
-		}
-
-		setFile(selectedFile)
-	}
-
-	const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files[0]) {
-			handleFileSelect(e.target.files[0])
-		}
-	}
-
-	const copyToClipboard = async (text: string, type: 'plain' | 'base64') => {
+	useEffect(() => {
+		const saved = localStorage.getItem(HISTORY_KEY)
+		if (!saved) return
 		try {
-			await navigator.clipboard.writeText(text)
-			toast.success(
-				type === 'plain'
-					? 'Обычный текст скопирован!'
-					: 'Base64 текст скопирован!'
-			)
-		} catch (error) {
-			toast.error('Ошибка копирования')
+			setHistory(JSON.parse(saved))
+		} catch {
+			localStorage.removeItem(HISTORY_KEY)
 		}
+	}, [])
+
+	// История пишется по паузе в наборе, а не по кнопке: раньше в неё попадали
+	// только клики по готовым примерам, и собственные преобразования
+	// пользователя не сохранялись вообще.
+	const lastSaved = useRef('')
+	useEffect(() => {
+		if (!plainText || !base64Text || error) return
+		if (lastSaved.current === base64Text) return
+
+		const timer = setTimeout(() => {
+			lastSaved.current = base64Text
+			setHistory(prev => {
+				const next = [
+					{
+						id: `${Date.now()}`,
+						plainText,
+						base64Text,
+						timestamp: Date.now()
+					},
+					...prev.filter(item => item.base64Text !== base64Text)
+				].slice(0, HISTORY_LIMIT)
+				localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
+				return next
+			})
+		}, 1200)
+		return () => clearTimeout(timer)
+	}, [plainText, base64Text, error])
+
+	const copy = async (field: Field) => {
+		const text = field === 'plain' ? plainText : base64Text
+		if (!text) return
+		await navigator.clipboard.writeText(text)
+		setCopied(field)
+		setTimeout(() => setCopied(null), 1600)
 	}
 
-	const downloadFile = (text: string, type: 'plain' | 'base64') => {
-		const blob = new Blob([text], { type: 'text/plain' })
-		const url = URL.createObjectURL(blob)
-		const a = document.createElement('a')
-		a.href = url
-		a.download = `${type === 'base64' ? 'base64-encoded' : 'plain-text'}-${Date.now()}.txt`
-		a.click()
+	const download = (field: Field) => {
+		const text = field === 'plain' ? plainText : base64Text
+		if (!text) return
+		const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }))
+		const link = document.createElement('a')
+		link.href = url
+		link.download = `${field === 'plain' ? 'text' : 'base64'}-${Date.now()}.txt`
+		link.click()
 		URL.revokeObjectURL(url)
-		toast.success('Файл загружен!')
 	}
 
 	const reset = () => {
 		setPlainText('')
 		setBase64Text('')
-		setFile(null)
-		setStats(null)
-		setImagePreview(null)
-		setBase64Error(null)
-		setLastEditedField('plain')
-		toast.success('Поля очищены!')
+		setError(null)
+		lastSaved.current = ''
 	}
 
 	const clearHistory = () => {
 		setHistory([])
-		localStorage.removeItem('base64-history')
-		toast.success('История очищена!')
+		localStorage.removeItem(HISTORY_KEY)
+		toast.success('История очищена')
 	}
 
-	const loadFromHistory = (item: HistoryItem) => {
-		setPlainText(item.plainText)
-		setBase64Text(item.base64Text)
-		setLastEditedField('plain')
-		setBase64Error(null)
-		toast.success('Данные загружены из истории!')
-	}
+	const plainSize = sizeOf(plainText)
+	const base64Size = sizeOf(base64Text)
+	const delta =
+		plainSize && base64Size
+			? Math.round((base64Size / plainSize - 1) * 100)
+			: null
 
-	const addToHistory = useCallback(() => {
-		if (!plainText && !base64Text) return
-
-		const historyItem: HistoryItem = {
-			id: Date.now().toString(),
-			plainText,
-			base64Text,
-			timestamp: new Date()
-		}
-
-		setHistory(prev => [historyItem, ...prev].slice(0, 10))
-	}, [plainText, base64Text])
-
-	const formatBytes = (bytes: number): string => {
-		if (bytes === 0) return '0 B'
-		const k = 1024
-		const sizes = ['B', 'KB', 'MB', 'GB']
-		const i = Math.floor(Math.log(bytes) / Math.log(k))
-		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
-	}
-
-	const formatTime = (ms: number): string => {
-		if (ms < 1) return '<1ms'
-		if (ms < 1000) return `${Math.round(ms)}ms`
-		return `${(ms / 1000).toFixed(2)}s`
-	}
+	// Оба поля редактируемые: печатаете слева — получаете Base64 справа, вставили
+	// Base64 справа — слева появится расшифровка. Отдельных кнопок «Кодировать» и
+	// «Декодировать» поэтому нет.
+	const panes: { field: Field; title: string; hint: string }[] = [
+		{ field: 'plain', title: 'Текст', hint: 'Введите или вставьте текст' },
+		{ field: 'base64', title: 'Base64', hint: 'Или вставьте Base64 сюда' }
+	]
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<div className='max-w-7xl mx-auto space-y-6'>
-				{/* Quick Examples & Options */}
-				<Card>
-					<CardContent className='p-4'>
-						<div className='flex gap-4'>
-							<div className='flex-1'>
-								<div className='flex items-center gap-2 mb-3'>
-									<Sparkles className='w-4 h-4 text-muted-foreground' />
-									<span className='text-sm font-medium text-muted-foreground'>
-										Быстрые примеры
-									</span>
-								</div>
-								<div className='flex flex-wrap gap-2'>
-									{[
-										{
-											title: 'Текст',
-											icon: <FileText className='w-3 h-3' />,
-											plainValue: 'Hello, World!',
-											base64Value: 'SGVsbG8sIFdvcmxkIQ=='
-										},
-										{
-											title: 'JSON',
-											icon: <Braces className='w-3 h-3' />,
-											plainValue: '{"name": "John", "age": 30}',
-											base64Value: 'eyJuYW1lIjogIkpvaG4iLCAiYWdlIjogMzB9'
-										},
-										{
-											title: 'HTML',
-											icon: <Code2 className='w-3 h-3' />,
-											plainValue: '<h1>Hello World</h1>',
-											base64Value: 'PGgxPkhlbGxvIFdvcmxkPC9oMT4='
-										},
-										{
-											title: 'Эмодзи',
-											icon: <Hash className='w-3 h-3' />,
-											plainValue: '🚀 Ready to launch!',
-											base64Value: '8J+agCBSZWFkeSB0byBsYXVuY2gh'
-										}
-									].map((example, index) => (
-										<Button
-											key={index}
-											variant='outline'
-											size='sm'
-											className='h-8 px-3 gap-1.5'
-											onClick={() => {
-												setPlainText(example.plainValue)
-												setBase64Text(example.base64Value)
-												setLastEditedField('plain')
-												setBase64Error(null)
-												// Add to history after a short delay to allow state to update
-												setTimeout(() => {
-													const historyItem: HistoryItem = {
-														id: Date.now().toString(),
-														plainText: example.plainValue,
-														base64Text: example.base64Value,
-														timestamp: new Date()
-													}
-													setHistory(prev =>
-														[historyItem, ...prev].slice(0, 10)
-													)
-												}, 100)
-											}}
-										>
-											{example.icon}
-											<span className='text-xs'>{example.title}</span>
-										</Button>
-									))}
-								</div>
-							</div>
-							<div className='border-l pl-4 space-y-3'>
-								<div className='flex items-center justify-between gap-4'>
-									<Label
-										htmlFor='url-safe'
-										className='text-xs cursor-pointer whitespace-nowrap'
-									>
-										URL-безопасный
-									</Label>
-									<Switch
-										id='url-safe'
-										checked={urlSafe}
-										onCheckedChange={setUrlSafe}
-									/>
-								</div>
-								<div className='flex items-center justify-between gap-4'>
-									<Label
-										htmlFor='line-breaks'
-										className='text-xs cursor-pointer whitespace-nowrap'
-									>
-										Разбить на строки
-									</Label>
-									<Switch
-										id='line-breaks'
-										checked={lineBreaks}
-										onCheckedChange={setLineBreaks}
-									/>
-								</div>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: примеры и два переключателя формата. Раньше это
+				    была отдельная карточка со своим заголовком «Быстрые примеры» —
+				    полстраницы уходило на подпись к четырём кнопкам. */}
+				<div className='flex flex-wrap items-center gap-x-6 gap-y-3 border-b bg-muted/30 px-5 py-3 sm:px-6'>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{EXAMPLES.map(example => (
+							<button
+								key={example.label}
+								type='button'
+								onClick={() => {
+									setPlainText(example.value)
+									setLastEdited('plain')
+								}}
+								className='cursor-pointer rounded-full px-2.5 py-1 text-sm text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							>
+								{example.label}
+							</button>
+						))}
+					</div>
 
-				{/* Bidirectional Interface */}
-				<div className='grid lg:grid-cols-2 gap-6'>
-					{/* Plain Text Section */}
-					<Card>
-						<CardHeader className='pb-4'>
-							<div className='flex flex-wrap gap-2 items-center justify-between'>
-								<CardTitle className='text-lg flex items-center gap-2'>
-									<FileText className='w-5 h-5' />
-									Обычный текст
-								</CardTitle>
-								{plainText && (
-									<div className='flex items-center gap-2'>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => copyToClipboard(plainText, 'plain')}
-											className='h-8'
-										>
-											<Copy className='w-3.5 h-3.5 mr-1.5' />
-											Копировать
-										</Button>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => downloadFile(plainText, 'plain')}
-											className='h-8'
-										>
-											<Download className='w-3.5 h-3.5 mr-1.5' />
-											Скачать
-										</Button>
-									</div>
-								)}
-							</div>
-						</CardHeader>
-						<CardContent>
-							<div className='relative'>
-								<Textarea
-									value={plainText}
-									onChange={e => {
-										setPlainText(e.target.value)
-										setLastEditedField('plain')
-									}}
-									placeholder='Введите текст для кодирования...'
-									className='min-h-[300px] font-mono text-sm resize-none'
-									spellCheck={false}
-								/>
-								{plainText && (
-									<Badge variant='secondary' className='absolute top-2 right-2'>
-										{formatBytes(new Blob([plainText]).size)}
-									</Badge>
-								)}
-							</div>
-						</CardContent>
-					</Card>
-
-					{/* Base64 Section */}
-					<Card>
-						<CardHeader className='pb-4'>
-							<div className='flex flex-wrap gap-2 items-center justify-between'>
-								<CardTitle
-									className={cn(
-										'text-lg flex items-center gap-2',
-										base64Error && 'text-destructive'
-									)}
-								>
-									<Binary className='w-5 h-5' />
-									Base64 текст
-									{base64Error && <AlertCircle className='w-4 h-4' />}
-								</CardTitle>
-								{base64Text && !base64Error && (
-									<div className='flex items-center gap-2'>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => copyToClipboard(base64Text, 'base64')}
-											className='h-8'
-										>
-											<Copy className='w-3.5 h-3.5 mr-1.5' />
-											Копировать
-										</Button>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => downloadFile(base64Text, 'base64')}
-											className='h-8'
-										>
-											<Download className='w-3.5 h-3.5 mr-1.5' />
-											Скачать
-										</Button>
-									</div>
-								)}
-							</div>
-							{base64Error && (
-								<div className='mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded-md flex items-center gap-2 text-sm text-destructive'>
-									<AlertCircle className='w-4 h-4' />
-									{base64Error}
-								</div>
-							)}
-						</CardHeader>
-						<CardContent>
-							<div className='relative'>
-								<Textarea
-									value={base64Text}
-									onChange={e => {
-										setBase64Text(e.target.value)
-										setLastEditedField('base64')
-									}}
-									placeholder='Введите Base64 текст для декодирования...'
-									className={cn(
-										'min-h-[300px] font-mono text-sm resize-none',
-										base64Error && 'border-destructive focus:border-destructive'
-									)}
-									spellCheck={false}
-								/>
-								{base64Text && !base64Error && (
-									<Badge variant='secondary' className='absolute top-2 right-2'>
-										{formatBytes(new Blob([base64Text]).size)}
-									</Badge>
-								)}
-								{!base64Error && base64Text && (
-									<div className='absolute bottom-2 right-2'>
-										<Check className='w-4 h-4 text-green-600' />
-									</div>
-								)}
-							</div>
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Size stats */}
-				{stats && (
-					<div className='flex justify-center'>
-						<div className='inline-flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg text-sm'>
-							<span className='text-muted-foreground'>Изменение размера:</span>
-							<span
+					<div className='flex flex-wrap items-center gap-1.5 sm:ml-auto'>
+						{[
+							{
+								active: urlSafe,
+								toggle: () => setUrlSafe(v => !v),
+								label: 'URL-безопасный',
+								title: 'Заменяет + и / на - и _, убирает = на конце'
+							},
+							{
+								active: lineBreaks,
+								toggle: () => setLineBreaks(v => !v),
+								label: 'Перенос строк',
+								title: 'Разбивает результат по 76 символов'
+							}
+						].map(option => (
+							<button
+								key={option.label}
+								type='button'
+								onClick={option.toggle}
+								title={option.title}
+								aria-pressed={option.active}
 								className={cn(
-									'font-semibold',
-									stats.ratio > 0 ? 'text-orange-600' : 'text-green-600'
+									'cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors',
+									'hover:border-primary/50 hover:bg-background',
+									'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									option.active
+										? 'border-primary bg-primary/10 text-primary'
+										: 'border-transparent text-muted-foreground'
 								)}
 							>
-								{stats.ratio > 0 ? '+' : ''}
-								{stats.ratio}%
-							</span>
-							<span className='text-muted-foreground text-xs'>
-								({formatBytes(stats.inputSize)} →{' '}
-								{formatBytes(stats.outputSize)})
-							</span>
-						</div>
+								{option.label}
+							</button>
+						))}
 					</div>
-				)}
+				</div>
 
-				{/* Clear All button when no history */}
-				{history.length === 0 && (plainText || base64Text) && (
-					<div className='flex justify-center'>
-						<Button variant='outline' size='sm' onClick={reset}>
-							<RotateCcw className='w-4 h-4 mr-2' />
-							Очистить
-						</Button>
-					</div>
-				)}
+				{/* Две панели в одной карточке, разделённые линией: раньше это были
+				    две самостоятельные карточки, и между ними висел зазор, из-за
+				    которого пара читалась как два несвязанных инструмента. */}
+				<div className='relative grid md:grid-cols-2'>
+					{panes.map((pane, index) => {
+						const isPlain = pane.field === 'plain'
+						const value = isPlain ? plainText : base64Text
+						const size = isPlain ? plainSize : base64Size
+						const hasError = !isPlain && Boolean(error)
 
-				{/* History */}
-				{history.length > 0 && (
-					<Card>
-						<CardHeader>
-							<div className='flex flex-wrap gap-2 items-center justify-between'>
-								<CardTitle className='text-lg flex items-center gap-2'>
-									<History className='w-5 h-5' />
-									История
-								</CardTitle>
-								<div className='flex items-center gap-2'>
-									<Button variant='outline' size='sm' onClick={reset}>
-										<RotateCcw className='w-3 h-3 mr-1.5' />
-										Очистить
-									</Button>
-									<Button variant='ghost' size='sm' onClick={clearHistory}>
-										Очистить историю
-									</Button>
+						return (
+							<div
+								key={pane.field}
+								className={cn(
+									'group/pane flex min-w-0 flex-col',
+									index === 0 && 'md:border-r',
+									index === 1 && 'border-t md:border-t-0'
+								)}
+							>
+								<div className='flex items-center justify-between gap-2 px-5 pt-5 sm:px-6'>
+									<span
+										className={cn(
+											'text-sm font-medium',
+											hasError && 'text-destructive'
+										)}
+									>
+										{pane.title}
+									</span>
+
+									<div
+										className={cn(
+											'flex items-center gap-0.5 transition-opacity',
+											value ? 'opacity-100' : 'pointer-events-none opacity-0'
+										)}
+									>
+										<Button
+											size='icon'
+											variant='ghost'
+											onClick={() => copy(pane.field)}
+											title='Скопировать'
+											className='h-8 w-8 cursor-pointer text-muted-foreground hover:text-foreground'
+										>
+											{copied === pane.field ? (
+												<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+											) : (
+												<Copy className='h-4 w-4' />
+											)}
+										</Button>
+										<Button
+											size='icon'
+											variant='ghost'
+											onClick={() => download(pane.field)}
+											title='Скачать файлом'
+											className='h-8 w-8 cursor-pointer text-muted-foreground hover:text-foreground'
+										>
+											<Download className='h-4 w-4' />
+										</Button>
+									</div>
+								</div>
+
+								<textarea
+									value={value}
+									onChange={event => {
+										if (isPlain) setPlainText(event.target.value)
+										else setBase64Text(event.target.value)
+										setLastEdited(pane.field)
+									}}
+									spellCheck={false}
+									placeholder={pane.hint}
+									className={cn(
+										'min-h-[16rem] w-full flex-1 resize-none bg-transparent px-5 py-4 font-mono text-sm leading-relaxed sm:px-6',
+										'placeholder:font-sans placeholder:text-muted-foreground/60',
+										'focus:outline-none'
+									)}
+								/>
+
+								<div className='flex min-h-[2.75rem] items-center gap-2 px-5 pb-4 text-xs text-muted-foreground sm:px-6'>
+									{hasError ? (
+										<span className='flex items-center gap-1.5 text-destructive'>
+											<AlertCircle className='h-3.5 w-3.5 shrink-0' />
+											{error}
+										</span>
+									) : (
+										value && (
+											<>
+												<span>{formatBytes(size)}</span>
+												{!isPlain && delta !== null && (
+													<span className='text-muted-foreground/70'>
+														{delta > 0 ? '+' : ''}
+														{delta}% к исходному
+													</span>
+												)}
+											</>
+										)
+									)}
 								</div>
 							</div>
-						</CardHeader>
-						<CardContent>
-							<div className='space-y-3'>
-								{history.map(item => (
-									<div
-										key={item.id}
-										className='p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer'
-										onClick={() => loadFromHistory(item)}
-									>
-										<div className='flex items-start justify-between gap-4'>
-											<div className='flex-1 min-w-0'>
-												<div className='flex items-center gap-2 mb-2'>
-													<ArrowRightLeft className='w-4 h-4' />
-													<span className='text-sm font-medium'>
-														Преобразование
-													</span>
-													<Badge variant='outline' className='text-xs'>
-														{new Date(item.timestamp).toLocaleTimeString()}
-													</Badge>
-												</div>
-												<div className='grid md:grid-cols-2 gap-3'>
-													<div>
-														<Label className='text-xs text-muted-foreground'>
-															Обычный текст
-														</Label>
-														<div className='text-xs font-mono bg-background rounded p-2 mt-1 truncate'>
-															{item.plainText
-																? item.plainText.substring(0, 50)
-																: ''}
-															{item.plainText &&
-																item.plainText.length > 50 &&
-																'...'}
-														</div>
-													</div>
-													<div>
-														<Label className='text-xs text-muted-foreground'>
-															Base64 текст
-														</Label>
-														<div className='text-xs font-mono bg-background rounded p-2 mt-1 truncate'>
-															{item.base64Text
-																? item.base64Text.substring(0, 50)
-																: ''}
-															{item.base64Text &&
-																item.base64Text.length > 50 &&
-																'...'}
-														</div>
-													</div>
-												</div>
-											</div>
-											<Button
-												size='sm'
-												variant='ghost'
-												onClick={e => {
-													e.stopPropagation()
-													loadFromHistory(item)
-												}}
-											>
-												<Copy className='w-4 h-4' />
-											</Button>
-										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
+						)
+					})}
+
+					{/* Значок на стыке панелей — не кнопка, а подсказка: показывает, что
+					    поля связаны и работают в обе стороны. Кликабельным его делать
+					    нельзя, иначе он читается как «поменять местами», а менять тут
+					    нечего — печатать можно в любом поле. */}
+					<span
+						aria-hidden
+						className='pointer-events-none absolute left-1/2 top-1/2 hidden h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border bg-background text-muted-foreground/70 shadow-sm md:flex'
+					>
+						<ArrowLeftRight className='h-4 w-4' />
+					</span>
+				</div>
+
+				{(plainText || base64Text || history.length > 0) && (
+					<div className='flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-5 py-3 sm:px-6'>
+						{(plainText || base64Text) && (
+							<button
+								type='button'
+								onClick={reset}
+								className='flex cursor-pointer items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							>
+								<RotateCcw className='h-3.5 w-3.5' />
+								Очистить поля
+							</button>
+						)}
+
+						{history.length > 0 && (
+							<button
+								type='button'
+								onClick={clearHistory}
+								className='cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:ml-auto'
+							>
+								Забыть историю ({history.length})
+							</button>
+						)}
+					</div>
 				)}
-			</div>
+			</Card>
+
+			{/* История — тихий список под инструментом, а не вторая карточка с
+			    заголовком и таблицей на два столбца */}
+			{history.length > 0 && (
+				<div className='mt-6'>
+					<p className='px-1 text-sm text-muted-foreground'>Недавнее</p>
+					<div className='mt-2 divide-y rounded-xl border'>
+						{history.map(item => (
+							<button
+								key={item.id}
+								type='button'
+								onClick={() => {
+									setPlainText(item.plainText)
+									setBase64Text(item.base64Text)
+									setLastEdited('plain')
+									setError(null)
+								}}
+								className='flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
+							>
+								<span className='min-w-0 flex-1 truncate font-mono text-sm'>
+									{item.plainText}
+								</span>
+								<span className='hidden min-w-0 flex-1 truncate font-mono text-sm text-muted-foreground sm:block'>
+									{item.base64Text}
+								</span>
+								<span className='shrink-0 text-xs text-muted-foreground/70'>
+									{new Date(item.timestamp).toLocaleTimeString('ru-RU', {
+										hour: '2-digit',
+										minute: '2-digit'
+									})}
+								</span>
+							</button>
+						))}
+					</div>
+				</div>
+			)}
+
 			<Base64EncoderSeo />
 		</WidgetSEOWrapper>
 	)
