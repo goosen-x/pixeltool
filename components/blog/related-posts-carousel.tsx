@@ -52,10 +52,15 @@ export function RelatedPostsCarousel({ posts }: Props) {
 				))}
 			</CarouselContent>
 
+			{/* По умолчанию стрелки вынесены наружу на -12 (3rem). В статье справа
+			    от колонки сразу начинается sticky-сайдбар, и правая стрелка липнет
+			    к нему вплотную, а на промежуточной ширине окна наезжает. Поэтому
+			    здесь они внутри контейнера, поверх края карточек — с подложкой,
+			    чтобы читались на обложках. */}
 			{posts.length > 1 && (
 				<>
-					<CarouselPrevious className='hidden cursor-pointer sm:flex' />
-					<CarouselNext className='hidden cursor-pointer sm:flex' />
+					<CarouselPrevious className='left-2 hidden cursor-pointer bg-background/80 backdrop-blur sm:flex' />
+					<CarouselNext className='right-2 hidden cursor-pointer bg-background/80 backdrop-blur sm:flex' />
 				</>
 			)}
 		</Carousel>
