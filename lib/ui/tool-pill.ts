@@ -31,6 +31,13 @@ export const toolBar =
 export const toolFooterBar =
 	'flex flex-wrap items-center gap-x-6 gap-y-3 border-t bg-muted/30 px-5 py-3 sm:px-6'
 
-/** Иконка-действие в полосе: тихая, проявляется цветом на наведении. */
+/**
+ * Иконка-действие в полосе: тихая, проявляется цветом на наведении.
+ *
+ * `hover:bg-muted` перекрывает `hover:bg-accent` из ghost-варианта кнопки
+ * намеренно: accent в этой теме — насыщенный синий (--accent 217 91% 60%), и
+ * на кнопке 32×32 он превращается в синий квадрат, который кричит громче
+ * содержимого страницы. Тот же дефект был у звёздочки избранного в сайдбаре.
+ */
 export const toolIconButton =
-	'h-8 w-8 cursor-pointer text-muted-foreground hover:text-foreground'
+	'h-8 w-8 cursor-pointer text-muted-foreground hover:bg-muted hover:text-foreground'

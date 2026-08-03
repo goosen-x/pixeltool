@@ -46,9 +46,12 @@ interface Generated extends Strength {
 	value: string
 }
 
-interface MemorablePattern {
-	pattern: string
-	example: string
+/** Как склеиваем слова во фразу. Число добавляется только там, где сказано. */
+interface PhraseFormat {
+	key: string
+	label: string
+	withNumber: boolean
+	join: (words: string[], number: number) => string
 }
 
 const DEFAULT_OPTIONS: PasswordOptions = {
@@ -61,94 +64,58 @@ const DEFAULT_OPTIONS: PasswordOptions = {
 	excludeAmbiguous: false
 }
 
-const MEMORABLE_PATTERNS: MemorablePattern[] = [
-	{ pattern: 'word-word-number', example: 'sunset-ocean-42' },
-	{ pattern: 'Word@Word#Num', example: 'Forest@River#99' },
-	{ pattern: 'word.word.word', example: 'coffee.mountain.thunder' },
-	{ pattern: 'WordWordNumber!', example: 'BlueSkyFire7!' }
-]
+const capitalize = (word: string) =>
+	word.charAt(0).toUpperCase() + word.slice(1)
 
-const WORD_THEMES: { key: string; label: string; words: string }[] = [
+const PHRASE_FORMATS: PhraseFormat[] = [
 	{
-		key: 'nature',
-		label: 'Природа',
-		words: 'ocean mountain forest river sunset thunder'
+		key: 'dash',
+		label: 'через дефис',
+		withNumber: false,
+		join: words => words.join('-')
 	},
 	{
-		key: 'tech',
-		label: 'Технологии',
-		words: 'quantum neural cyber digital matrix protocol'
+		key: 'dot',
+		label: 'через точку',
+		withNumber: false,
+		join: words => words.join('.')
 	},
 	{
-		key: 'fantasy',
-		label: 'Фэнтези',
-		words: 'dragon phoenix crystal magic sword shield'
+		key: 'camel',
+		label: 'СлитноСЗаглавных',
+		withNumber: false,
+		join: words => words.map(capitalize).join('')
 	},
 	{
-		key: 'space',
-		label: 'Космос',
-		words: 'galaxy nebula asteroid comet stellar nova'
+		key: 'dash-number',
+		label: 'дефис и число',
+		withNumber: true,
+		join: (words, number) => `${words.join('-')}-${number}`
 	}
 ]
 
-const COMMON_WORDS = [
-	'sun',
-	'moon',
-	'star',
-	'sky',
-	'cloud',
-	'rain',
-	'snow',
-	'wind',
-	'fire',
-	'water',
-	'earth',
-	'air',
-	'ice',
-	'storm',
-	'thunder',
-	'lightning',
-	'tree',
-	'forest',
-	'mountain',
-	'river',
-	'ocean',
-	'lake',
-	'desert',
-	'island',
-	'wolf',
-	'eagle',
-	'lion',
-	'dragon',
-	'phoenix',
-	'tiger',
-	'bear',
-	'hawk',
-	'blue',
-	'red',
-	'green',
-	'gold',
-	'silver',
-	'black',
-	'white',
-	'purple',
-	'sword',
-	'shield',
-	'crown',
-	'crystal',
-	'diamond',
-	'stone',
-	'steel',
-	'iron',
-	'light',
-	'dark',
-	'shadow',
-	'bright',
-	'spark',
-	'flame',
-	'frost',
-	'mist'
-]
+/** Сколько слов в фразе. Пять — 65 бит, разумный минимум для важного аккаунта. */
+const WORD_COUNTS = [4, 5, 6, 7]
+
+/**
+ * Случайное число от 0 до max-1 на криптостойком источнике.
+ *
+ * Math.random() здесь не годится: он не криптостойкий, а из этих чисел
+ * выбираются слова пароля. Хвост диапазона, который не делится на max нацело,
+ * отбрасываем — иначе первые значения выпадали бы чаще (смещение остатка).
+ */
+const randomInt = (max: number): number => {
+	const limit = Math.floor(0x100000000 / max) * max
+	const buffer = new Uint32Array(1)
+	let value = 0
+
+	do {
+		crypto.getRandomValues(buffer)
+		value = buffer[0]
+	} while (value >= limit)
+
+	return value % max
+}
 
 const HISTORY_KEY = 'password-history'
 
@@ -234,7 +201,9 @@ export default function PasswordGeneratorPage() {
 	const [showPassword, setShowPassword] = useState(true)
 	const [history, setHistory] = useState<PasswordHistory[]>([])
 	const [mode, setMode] = useState<GeneratorMode>('random')
-	const [selectedPattern, setSelectedPattern] = useState(0)
+	const [formatKey, setFormatKey] = useState(PHRASE_FORMATS[0].key)
+	const [wordCount, setWordCount] = useState(5)
+	const [wordlist, setWordlist] = useState<readonly string[] | null>(null)
 	const [customWords, setCustomWords] = useState('')
 	const [copied, setCopied] = useState(false)
 
@@ -332,98 +301,60 @@ export default function PasswordGeneratorPage() {
 		}
 	}, [options, AMBIGUOUS])
 
-	const generateMemorablePassword = useCallback((): Generated => {
-		const words = []
+	// Одна механика на оба словесных режима: выбрать N слов из словаря
+	// НЕЗАВИСИМО (с возвращением) и склеить выбранным форматом.
+	//
+	// Раньше режим «Из слов» брал четыре слова и просто перемешивал их между
+	// собой — это 4! = 24 варианта, около 8 бит, пароль ломался мгновенно.
+	// Перестановка фиксированного набора не создаёт энтропию, её создаёт только
+	// независимый выбор каждого слова из большого словаря.
+	const buildPhrase = useCallback(
+		(dictionary: readonly string[]): Generated => {
+			const format =
+				PHRASE_FORMATS.find(item => item.key === formatKey) ?? PHRASE_FORMATS[0]
 
-		// Select random words
-		for (let i = 0; i < 3; i++) {
-			words.push(COMMON_WORDS[Math.floor(Math.random() * COMMON_WORDS.length)])
-		}
+			const words = Array.from(
+				{ length: wordCount },
+				() => dictionary[randomInt(dictionary.length)]
+			)
+			const number = randomInt(100)
 
-		const capitalize = (word: string) =>
-			word.charAt(0).toUpperCase() + word.slice(1)
+			const bits =
+				wordCount * Math.log2(dictionary.length) +
+				(format.withNumber ? Math.log2(100) : 0)
 
-		// Для фразы из слов атакующий перебирает не символы, а слова словаря:
-		// пространство — размер словаря в степени числа слов, плюс диапазон числа.
-		// Считать её как случайную строку значило бы завышать стойкость в разы.
-		const wordBits = Math.log2(COMMON_WORDS.length)
-
-		switch (selectedPattern) {
-			case 1:
-				return {
-					value: `${capitalize(words[0])}@${capitalize(words[1])}#${Math.floor(Math.random() * 100)}`,
-					bits: wordBits * 2 + Math.log2(100),
-					caption: '2 слова из словаря и число'
-				}
-			case 2:
-				return {
-					value: `${words[0]}.${words[1]}.${words[2]}`,
-					bits: wordBits * 3,
-					caption: '3 слова из словаря'
-				}
-			case 3:
-				return {
-					value: `${capitalize(words[0])}${capitalize(words[1])}${Math.floor(Math.random() * 10)}!`,
-					bits: wordBits * 2 + Math.log2(10),
-					caption: '2 слова из словаря и цифра'
-				}
-			default:
-				return {
-					value: `${words[0]}-${words[1]}-${Math.floor(Math.random() * 100)}`,
-					bits: wordBits * 2 + Math.log2(100),
-					caption: '2 слова из словаря и число'
-				}
-		}
-	}, [selectedPattern])
-
-	const generatePassphrase = useCallback((): Generated => {
-		const words = customWords
-			.trim()
-			.split(/\s+/)
-			.filter(w => w.length > 0)
-
-		if (words.length < 4) {
-			// Use default words if not enough custom words
-			const defaultWords = [...COMMON_WORDS]
-				.sort(() => Math.random() - 0.5)
-				.slice(0, 4)
-			words.push(...defaultWords)
-		}
-
-		// Shuffle and select words
-		const shuffled = [...words].sort(() => Math.random() - 0.5)
-		const selectedWords = shuffled.slice(0, Math.min(5, shuffled.length))
-
-		// Create passphrase with random formatting
-		const formats = [
-			(list: string[]) => list.join('-'),
-			(list: string[]) => list.join(' '),
-			(list: string[]) =>
-				list.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(''),
-			(list: string[]) => list.join('.') + Math.floor(Math.random() * 100)
-		]
-
-		const format = formats[Math.floor(Math.random() * formats.length)]
-
-		// Словарь здесь — то, что человек ввёл сам (или наш набор, если он ввёл
-		// меньше четырёх слов). Маленький словарь честно даёт маленькую энтропию:
-		// фраза из трёх своих слов слабее, чем кажется по её длине.
-		const dictionarySize = new Set(words).size
-
-		return {
-			value: format(selectedWords),
-			bits: selectedWords.length * Math.log2(dictionarySize),
-			caption: `${selectedWords.length} ${plural(selectedWords.length, 'слово', 'слова', 'слов')} из словаря в ${dictionarySize}`
-		}
-	}, [customWords])
+			return {
+				value: format.join(words, number),
+				bits,
+				caption: `${wordCount} ${plural(wordCount, 'слово', 'слова', 'слов')} из словаря в ${dictionary.length.toLocaleString('ru-RU')}${format.withNumber ? ' и число' : ''}`
+			}
+		},
+		[formatKey, wordCount]
+	)
 
 	const generate = useCallback(() => {
-		const next =
-			mode === 'memorable'
-				? generateMemorablePassword()
-				: mode === 'phrase'
-					? generatePassphrase()
-					: generatePassword()
+		// Пока словарь не подгрузился, собирать фразу не из чего — показываем
+		// пустое состояние, а не пароль из четырёх слов-заглушек.
+		if (mode !== 'random') {
+			if (!wordlist) return
+
+			const custom = customWords
+				.trim()
+				.split(/\s+/)
+				.filter(word => word.length > 0)
+
+			const dictionary =
+				mode === 'phrase' && custom.length >= 2
+					? Array.from(new Set(custom))
+					: wordlist
+
+			const built = buildPhrase(dictionary)
+			setPassword(built.value)
+			setStrength({ bits: built.bits, caption: built.caption })
+			return
+		}
+
+		const next = generatePassword()
 
 		if (next === null) {
 			// Все наборы символов сняты — пароль собирать не из чего. Пустое поле
@@ -435,7 +366,23 @@ export default function PasswordGeneratorPage() {
 
 		setPassword(next.value)
 		setStrength({ bits: next.bits, caption: next.caption })
-	}, [mode, generatePassword, generateMemorablePassword, generatePassphrase])
+	}, [mode, wordlist, customWords, buildPhrase, generatePassword])
+
+	// Словарь на 7776 слов весит около 90 КБ — тем, кто пришёл за случайным
+	// паролем, он не нужен, поэтому грузим его только при первом заходе в
+	// словесный режим.
+	useEffect(() => {
+		if (mode === 'random' || wordlist) return
+
+		let cancelled = false
+		import('@/lib/constants/eff-wordlist').then(module => {
+			if (!cancelled) setWordlist(module.EFF_WORDLIST)
+		})
+
+		return () => {
+			cancelled = true
+		}
+	}, [mode, wordlist])
 
 	// Пароль пересобирается сам при любой смене параметров — раньше человек
 	// двигал ползунок длины и ничего не происходило, пока он не нажмёт кнопку.
@@ -547,6 +494,20 @@ export default function PasswordGeneratorPage() {
 						<Button
 							size='icon'
 							variant='ghost'
+							onClick={() => copyToClipboard()}
+							disabled={!password}
+							title='Скопировать пароль'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
 							onClick={() => setShowPassword(v => !v)}
 							title={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
 							className={toolIconButton}
@@ -621,26 +582,6 @@ export default function PasswordGeneratorPage() {
 							</p>
 						</div>
 					)}
-
-					<div className='mt-8 flex justify-center'>
-						<Button
-							onClick={() => copyToClipboard()}
-							disabled={!password}
-							className='h-10 cursor-pointer px-6'
-						>
-							{copied ? (
-								<>
-									<Check className='mr-2 h-4 w-4' />
-									Скопировано
-								</>
-							) : (
-								<>
-									<Copy className='mr-2 h-4 w-4' />
-									Скопировать
-								</>
-							)}
-						</Button>
-					</div>
 				</div>
 
 				{/* Полоса параметров. Всё видно сразу: раньше половина настроек
@@ -705,50 +646,58 @@ export default function PasswordGeneratorPage() {
 					)}
 
 					{mode === 'memorable' && (
-						<div className='flex w-full flex-wrap items-center gap-1.5'>
-							{MEMORABLE_PATTERNS.map((pattern, index) => (
-								<button
-									key={pattern.pattern}
-									type='button'
-									title={`Например: ${pattern.example}`}
-									aria-pressed={selectedPattern === index}
-									onClick={() => setSelectedPattern(index)}
-									className={toolPill(
-										selectedPattern === index,
-										'font-mono text-xs sm:text-sm'
-									)}
-								>
-									{pattern.pattern}
-								</button>
-							))}
+						<div className='flex w-full flex-wrap items-center gap-x-6 gap-y-3'>
+							<div className='flex flex-wrap items-center gap-1.5'>
+								<span className='mr-1 text-sm text-muted-foreground'>Слов</span>
+								{WORD_COUNTS.map(count => (
+									<button
+										key={count}
+										type='button'
+										onClick={() => setWordCount(count)}
+										aria-pressed={wordCount === count}
+										title={`${count} слова — около ${Math.round(count * Math.log2(7776))} бит`}
+										className={toolPill(
+											wordCount === count,
+											'min-w-10 text-center'
+										)}
+									>
+										{count}
+									</button>
+								))}
+							</div>
+
+							<div className='flex flex-wrap items-center gap-1.5'>
+								{PHRASE_FORMATS.map(format => (
+									<button
+										key={format.key}
+										type='button'
+										onClick={() => setFormatKey(format.key)}
+										aria-pressed={formatKey === format.key}
+										className={toolPill(formatKey === format.key)}
+									>
+										{format.label}
+									</button>
+								))}
+							</div>
 						</div>
 					)}
 
 					{mode === 'phrase' && (
-						<div className='w-full space-y-3'>
-							<div className='flex flex-wrap items-center gap-1.5'>
-								<span className='mr-1 text-sm text-muted-foreground'>
-									Словарь
-								</span>
-								{WORD_THEMES.map(theme => (
-									<button
-										key={theme.key}
-										type='button'
-										onClick={() => setCustomWords(theme.words)}
-										aria-pressed={customWords === theme.words}
-										className={toolPill(customWords === theme.words)}
-									>
-										{theme.label}
-									</button>
-								))}
-							</div>
+						<div className='w-full space-y-2'>
 							<textarea
 								value={customWords}
 								onChange={event => setCustomWords(event.target.value)}
-								placeholder='Свои слова через пробел — из них соберётся фраза'
+								placeholder='Свои слова через пробел — фраза соберётся из них'
 								spellCheck={false}
 								className='min-h-[3.5rem] w-full resize-none rounded-lg border bg-background px-3 py-2 font-mono text-sm placeholder:font-sans placeholder:text-muted-foreground/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 							/>
+							{/* Прямо говорим, чем расплачивается свой словарь: десять своих
+							    слов дают заметно меньше вариантов, чем 7776 из готового. */}
+							<p className='text-xs text-muted-foreground'>
+								{customWords.trim().split(/\s+/).filter(Boolean).length >= 2
+									? 'Слова берутся из вашего списка — чем он короче, тем меньше вариантов у пароля.'
+									: 'Пока поле пустое, слова берутся из словаря на 7776 слов.'}
+							</p>
 						</div>
 					)}
 				</div>

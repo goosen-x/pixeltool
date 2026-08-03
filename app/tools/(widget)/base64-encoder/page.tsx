@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { Base64EncoderSeo } from './Base64EncoderSeo'
@@ -308,7 +309,7 @@ export default function Base64EncoderPage() {
 											variant='ghost'
 											onClick={() => copy(pane.field)}
 											title='Скопировать'
-											className='h-8 w-8 cursor-pointer text-muted-foreground hover:text-foreground'
+											className={toolIconButton}
 										>
 											{copied === pane.field ? (
 												<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
@@ -321,7 +322,7 @@ export default function Base64EncoderPage() {
 											variant='ghost'
 											onClick={() => download(pane.field)}
 											title='Скачать файлом'
-											className='h-8 w-8 cursor-pointer text-muted-foreground hover:text-foreground'
+											className={toolIconButton}
 										>
 											<Download className='h-4 w-4' />
 										</Button>
