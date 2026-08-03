@@ -5,7 +5,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { toolBar, toolPill } from '@/lib/ui/tool-pill'
-import { Upload, Copy, ExternalLink } from 'lucide-react'
+import { Camera, Upload, Copy, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { decodeImageData } from '@/lib/qr-scanner/decode'
@@ -188,30 +188,6 @@ export default function QRScannerPage() {
 							</button>
 						))}
 					</div>
-
-					{mode === 'camera' && (
-						<div className='sm:ml-auto'>
-							{cameraActive ? (
-								<Button
-									onClick={stopCamera}
-									variant='ghost'
-									size='sm'
-									className='cursor-pointer text-muted-foreground hover:text-foreground'
-								>
-									Остановить камеру
-								</Button>
-							) : (
-								<Button
-									onClick={startCamera}
-									disabled={starting}
-									size='sm'
-									className='cursor-pointer'
-								>
-									Включить камеру
-								</Button>
-							)}
-						</div>
-					)}
 				</div>
 
 				<div className='px-5 py-6 sm:px-6'>
@@ -223,10 +199,36 @@ export default function QRScannerPage() {
 								muted
 								playsInline
 							/>
-							{!cameraActive && (
-								<div className='absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-white/70'>
-									Нажмите «Включить камеру» и наведите её на QR-код
+
+							{/* Кнопка живёт по центру самого кадра, а не в верхней полосе:
+							    там она была единственным залитым элементом и спорила с
+							    переключателями режима. Пока камера выключена, центр всё
+							    равно пустой — действие стоит ровно там, куда смотрят. */}
+							{!cameraActive ? (
+								<div className='absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center'>
+									<Button
+										onClick={startCamera}
+										disabled={starting}
+										className='h-10 cursor-pointer px-6'
+									>
+										<Camera className='mr-2 h-4 w-4' />
+										{starting ? 'Запрашиваем доступ…' : 'Включить камеру'}
+									</Button>
+									<p className='text-sm text-white/60'>
+										Наведите камеру на QR-код — он распознается сам
+									</p>
 								</div>
+							) : (
+								// Поверх работающего кадра — приглушённая кнопка внизу, чтобы
+								// не перекрывать то, что человек наводит на код.
+								<Button
+									onClick={stopCamera}
+									variant='secondary'
+									size='sm'
+									className='absolute bottom-3 left-1/2 h-8 -translate-x-1/2 cursor-pointer'
+								>
+									Остановить
+								</Button>
 							)}
 						</div>
 					) : (

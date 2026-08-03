@@ -105,6 +105,17 @@ export function ImageSizeCheckerSeo() {
 					проверять стоит не только «сколько пикселей», но и во что эти пиксели
 					складываются.
 				</p>
+				<p className='mt-3 text-muted-foreground'>
+					Размеры для YouTube и Telegram, безопасные зоны и разбор, почему
+					картинка мылится после загрузки, — в статье{' '}
+					<Link
+						href='/blog/razmer-kartinki-dlya-socsetey'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						Какой размер картинки нужен: ВКонтакте, Telegram и YouTube
+					</Link>
+					.
+				</p>
 			</section>
 
 			<section>
