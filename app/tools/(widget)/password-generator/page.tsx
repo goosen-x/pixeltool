@@ -31,11 +31,20 @@ interface PasswordOptions {
 
 interface PasswordHistory {
 	password: string
-	strength: number
 	timestamp: number
 }
 
 type GeneratorMode = 'random' | 'memorable' | 'phrase'
+
+/** Стойкость в битах энтропии плюс подпись, из чего эти биты набраны. */
+interface Strength {
+	bits: number
+	caption: string
+}
+
+interface Generated extends Strength {
+	value: string
+}
 
 interface MemorablePattern {
 	pattern: string
@@ -143,11 +152,85 @@ const COMMON_WORDS = [
 
 const HISTORY_KEY = 'password-history'
 
+// Паролей в секунду. Оценка для быстрого хэша (MD5/SHA-1 на GPU) — ровно та же,
+// по которой считает калькулятор в статье /blog/nadezhnyy-parol. Держать их
+// одинаковыми обязательно: иначе сайт сам себе противоречит в цифрах.
+const BRUTE_FORCE_SPEED = 1e10
+
+const plural = (n: number, one: string, few: string, many: string): string => {
+	const mod10 = n % 10
+	const mod100 = n % 100
+	if (mod10 === 1 && mod100 !== 11) return one
+	if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few
+	return many
+}
+
+/**
+ * Среднее время полного перебора: половина пространства вариантов, делённая на
+ * скорость атаки. Считается из энтропии в битах, а не из внешнего вида строки —
+ * для парольной фразы атакующий перебирает слова из словаря, а не символы, и
+ * это на порядки меньше комбинаций.
+ */
+const formatCrackTime = (bits: number): string => {
+	const seconds = Math.pow(2, bits) / 2 / BRUTE_FORCE_SPEED
+
+	if (seconds < 1) return 'мгновенно'
+	if (seconds < 60) {
+		const value = Math.round(seconds)
+		return `${value} ${plural(value, 'секунду', 'секунды', 'секунд')}`
+	}
+
+	const minutes = seconds / 60
+	if (minutes < 60) {
+		const value = Math.round(minutes)
+		return `${value} ${plural(value, 'минуту', 'минуты', 'минут')}`
+	}
+
+	const hours = minutes / 60
+	if (hours < 24) {
+		const value = Math.round(hours)
+		return `${value} ${plural(value, 'час', 'часа', 'часов')}`
+	}
+
+	const days = hours / 24
+	if (days < 31) {
+		const value = Math.round(days)
+		return `${value} ${plural(value, 'день', 'дня', 'дней')}`
+	}
+
+	const months = days / 30.4
+	if (months < 12) {
+		const value = Math.round(months)
+		return `${value} ${plural(value, 'месяц', 'месяца', 'месяцев')}`
+	}
+
+	const years = days / 365
+	// Возраст Вселенной — 13,8 млрд лет. Дальше цифра перестаёт что-либо значить
+	// для человека, и честнее сказать это словами, чем печатать 10^24 лет.
+	if (years > 1.4e10) return 'дольше, чем существует Вселенная'
+
+	const scales: [number, string, string, string][] = [
+		[1e9, 'миллиард', 'миллиарда', 'миллиардов'],
+		[1e6, 'миллион', 'миллиона', 'миллионов'],
+		[1e3, 'тысяча', 'тысячи', 'тысяч']
+	]
+
+	for (const [size, one, few, many] of scales) {
+		if (years >= size) {
+			const value = Math.round(years / size)
+			return `${value} ${plural(value, one, few, many)} лет`
+		}
+	}
+
+	const value = Math.round(years)
+	return `${value} ${plural(value, 'год', 'года', 'лет')}`
+}
+
 export default function PasswordGeneratorPage() {
 	const widget = getWidgetById('password-generator')!
 	const [password, setPassword] = useState('')
 	const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS)
-	const [strength, setStrength] = useState(0)
+	const [strength, setStrength] = useState<Strength | null>(null)
 	const [showPassword, setShowPassword] = useState(true)
 	const [history, setHistory] = useState<PasswordHistory[]>([])
 	const [mode, setMode] = useState<GeneratorMode>('random')
@@ -186,36 +269,7 @@ export default function PasswordGeneratorPage() {
 		}
 	}, [])
 
-	const calculateStrength = useCallback((pass: string): number => {
-		if (!pass) return 0
-
-		let score = 0
-
-		// Length score
-		if (pass.length >= 8) score += 20
-		if (pass.length >= 12) score += 20
-		if (pass.length >= 16) score += 20
-
-		// Character diversity
-		if (/[a-z]/.test(pass)) score += 10
-		if (/[A-Z]/.test(pass)) score += 10
-		if (/[0-9]/.test(pass)) score += 10
-		if (/[^A-Za-z0-9]/.test(pass)) score += 10
-
-		// No repeated characters
-		if (!/(.)\1{2,}/.test(pass)) score += 10
-
-		// No common patterns
-		const commonPatterns = ['123', 'abc', 'password', 'qwerty', '111']
-		const hasCommonPattern = commonPatterns.some(pattern =>
-			pass.toLowerCase().includes(pattern)
-		)
-		if (!hasCommonPattern) score += 10
-
-		return Math.min(score, 100)
-	}, [])
-
-	const generatePassword = useCallback((): string | null => {
+	const generatePassword = useCallback((): Generated | null => {
 		let charset = ''
 
 		if (options.lowercase) charset += LOWERCASE
@@ -269,10 +323,16 @@ export default function PasswordGeneratorPage() {
 			})
 		}
 
-		return newPassword
+		// Энтропия честная: длина × log2(размер алфавита) уже после исключений.
+		// Снятая галочка «без похожих» реально уменьшает алфавит, и это видно.
+		return {
+			value: newPassword,
+			bits: options.length * Math.log2(charset.length),
+			caption: `${options.length} ${plural(options.length, 'символ', 'символа', 'символов')} · алфавит ${charset.length}`
+		}
 	}, [options, AMBIGUOUS])
 
-	const generateMemorablePassword = useCallback((): string => {
+	const generateMemorablePassword = useCallback((): Generated => {
 		const words = []
 
 		// Select random words
@@ -283,19 +343,40 @@ export default function PasswordGeneratorPage() {
 		const capitalize = (word: string) =>
 			word.charAt(0).toUpperCase() + word.slice(1)
 
+		// Для фразы из слов атакующий перебирает не символы, а слова словаря:
+		// пространство — размер словаря в степени числа слов, плюс диапазон числа.
+		// Считать её как случайную строку значило бы завышать стойкость в разы.
+		const wordBits = Math.log2(COMMON_WORDS.length)
+
 		switch (selectedPattern) {
 			case 1:
-				return `${capitalize(words[0])}@${capitalize(words[1])}#${Math.floor(Math.random() * 100)}`
+				return {
+					value: `${capitalize(words[0])}@${capitalize(words[1])}#${Math.floor(Math.random() * 100)}`,
+					bits: wordBits * 2 + Math.log2(100),
+					caption: '2 слова из словаря и число'
+				}
 			case 2:
-				return `${words[0]}.${words[1]}.${words[2]}`
+				return {
+					value: `${words[0]}.${words[1]}.${words[2]}`,
+					bits: wordBits * 3,
+					caption: '3 слова из словаря'
+				}
 			case 3:
-				return `${capitalize(words[0])}${capitalize(words[1])}${Math.floor(Math.random() * 10)}!`
+				return {
+					value: `${capitalize(words[0])}${capitalize(words[1])}${Math.floor(Math.random() * 10)}!`,
+					bits: wordBits * 2 + Math.log2(10),
+					caption: '2 слова из словаря и цифра'
+				}
 			default:
-				return `${words[0]}-${words[1]}-${Math.floor(Math.random() * 100)}`
+				return {
+					value: `${words[0]}-${words[1]}-${Math.floor(Math.random() * 100)}`,
+					bits: wordBits * 2 + Math.log2(100),
+					caption: '2 слова из словаря и число'
+				}
 		}
 	}, [selectedPattern])
 
-	const generatePassphrase = useCallback((): string => {
+	const generatePassphrase = useCallback((): Generated => {
 		const words = customWords
 			.trim()
 			.split(/\s+/)
@@ -323,7 +404,17 @@ export default function PasswordGeneratorPage() {
 		]
 
 		const format = formats[Math.floor(Math.random() * formats.length)]
-		return format(selectedWords)
+
+		// Словарь здесь — то, что человек ввёл сам (или наш набор, если он ввёл
+		// меньше четырёх слов). Маленький словарь честно даёт маленькую энтропию:
+		// фраза из трёх своих слов слабее, чем кажется по её длине.
+		const dictionarySize = new Set(words).size
+
+		return {
+			value: format(selectedWords),
+			bits: selectedWords.length * Math.log2(dictionarySize),
+			caption: `${selectedWords.length} ${plural(selectedWords.length, 'слово', 'слова', 'слов')} из словаря в ${dictionarySize}`
+		}
 	}, [customWords])
 
 	const generate = useCallback(() => {
@@ -338,19 +429,13 @@ export default function PasswordGeneratorPage() {
 			// Все наборы символов сняты — пароль собирать не из чего. Пустое поле
 			// с подсказкой честнее тоста, который исчезнет через секунду.
 			setPassword('')
-			setStrength(0)
+			setStrength(null)
 			return
 		}
 
-		setPassword(next)
-		setStrength(calculateStrength(next))
-	}, [
-		mode,
-		generatePassword,
-		generateMemorablePassword,
-		generatePassphrase,
-		calculateStrength
-	])
+		setPassword(next.value)
+		setStrength({ bits: next.bits, caption: next.caption })
+	}, [mode, generatePassword, generateMemorablePassword, generatePassphrase])
 
 	// Пароль пересобирается сам при любой смене параметров — раньше человек
 	// двигал ползунок длины и ничего не происходило, пока он не нажмёт кнопку.
@@ -358,10 +443,10 @@ export default function PasswordGeneratorPage() {
 		generate()
 	}, [generate])
 
-	const rememberPassword = useCallback((value: string, score: number) => {
+	const rememberPassword = useCallback((value: string) => {
 		setHistory(previous => {
 			const next = [
-				{ password: value, strength: score, timestamp: Date.now() },
+				{ password: value, timestamp: Date.now() },
 				...previous.filter(item => item.password !== value)
 			].slice(0, 20)
 			localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
@@ -370,19 +455,19 @@ export default function PasswordGeneratorPage() {
 	}, [])
 
 	const copyToClipboard = useCallback(
-		async (value = password, score = strength) => {
+		async (value = password) => {
 			if (!value) return
 
 			try {
 				await navigator.clipboard.writeText(value)
 				setCopied(true)
-				rememberPassword(value, score)
+				rememberPassword(value)
 				setTimeout(() => setCopied(false), 2000)
 			} catch {
 				toast.error('Не удалось скопировать — сохраните пароль вручную')
 			}
 		},
-		[password, strength, rememberPassword]
+		[password, rememberPassword]
 	)
 
 	const clearHistory = useCallback(() => {
@@ -390,25 +475,18 @@ export default function PasswordGeneratorPage() {
 		localStorage.removeItem(HISTORY_KEY)
 	}, [])
 
-	const strengthLabel =
-		strength >= 80
-			? 'Очень сильный'
-			: strength >= 60
-				? 'Сильный'
-				: strength >= 40
-					? 'Средний'
-					: strength >= 20
-						? 'Слабый'
-						: 'Очень слабый'
-
-	const strengthTone =
-		strength >= 80
-			? 'bg-emerald-500'
-			: strength >= 60
-				? 'bg-lime-500'
-				: strength >= 40
-					? 'bg-amber-500'
-					: 'bg-red-500'
+	// Цвет по битам энтропии, а не по баллам эвристики: меньше 40 бит пароль
+	// ломается за обозримое время, 60+ — уже серьёзно, 80+ перебором
+	// практически недостижим.
+	const strengthTone = !strength
+		? 'text-muted-foreground'
+		: strength.bits >= 80
+			? 'text-emerald-600 dark:text-emerald-400'
+			: strength.bits >= 60
+				? 'text-foreground'
+				: strength.bits >= 40
+					? 'text-amber-600 dark:text-amber-400'
+					: 'text-red-600 dark:text-red-500'
 
 	const charSets: {
 		key: keyof PasswordOptions
@@ -527,20 +605,20 @@ export default function PasswordGeneratorPage() {
 						)}
 					</div>
 
-					{password && (
-						<div className='mt-8 flex items-center justify-center gap-3'>
-							<div className='h-1 w-32 overflow-hidden rounded-full bg-muted'>
-								<div
-									className={cn(
-										'h-full rounded-full transition-all duration-500',
-										strengthTone
-									)}
-									style={{ width: `${strength}%` }}
-								/>
-							</div>
-							<span className='text-sm text-muted-foreground'>
-								{strengthLabel}
-							</span>
+					{/* Вместо абстрактной шкалы «сильный/слабый» — сколько займёт
+					    перебор. Оценка «сильный» ничего не говорит о том, по чьей она
+					    шкале, и врала на парольных фразах: четыре словарных слова
+					    набирали максимум баллов за длину, хотя по словарю ломаются
+					    несопоставимо быстрее случайной строки той же длины. */}
+					{password && strength && (
+						<div className='mt-6 text-center'>
+							<p className={cn('text-sm font-medium', strengthTone)}>
+								Перебор займёт {formatCrackTime(strength.bits)}
+							</p>
+							<p className='mt-1 text-xs text-muted-foreground'>
+								{strength.caption} · {Math.round(strength.bits)}{' '}
+								{plural(Math.round(strength.bits), 'бит', 'бита', 'бит')}
+							</p>
 						</div>
 					)}
 
@@ -548,8 +626,7 @@ export default function PasswordGeneratorPage() {
 						<Button
 							onClick={() => copyToClipboard()}
 							disabled={!password}
-							size='lg'
-							className='h-11 w-full max-w-xs cursor-pointer'
+							className='h-10 cursor-pointer px-6'
 						>
 							{copied ? (
 								<>
@@ -559,7 +636,7 @@ export default function PasswordGeneratorPage() {
 							) : (
 								<>
 									<Copy className='mr-2 h-4 w-4' />
-									Скопировать пароль
+									Скопировать
 								</>
 							)}
 						</Button>
@@ -704,7 +781,7 @@ export default function PasswordGeneratorPage() {
 							<button
 								key={item.timestamp}
 								type='button'
-								onClick={() => copyToClipboard(item.password, item.strength)}
+								onClick={() => copyToClipboard(item.password)}
 								title='Скопировать снова'
 								className='flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
 							>

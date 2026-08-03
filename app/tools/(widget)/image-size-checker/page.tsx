@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Upload, Download, X, ImageIcon, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { ImageSizeCheckerSeo } from './ImageSizeCheckerSeo'
 import { cn } from '@/lib/utils'
 
 interface ImageInfo {
@@ -23,6 +26,7 @@ interface ImageInfo {
 }
 
 export default function ImageSizeCheckerPage() {
+	const widget = getWidgetById('image-size-checker')!
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
 
@@ -171,184 +175,194 @@ export default function ImageSizeCheckerPage() {
 
 	return (
 		<WidgetWrapper>
-			<Card>
-				<CardHeader>
-					<CardTitle>Загрузка изображений</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div
-						onDrop={handleDrop}
-						onDragOver={handleDragOver}
-						onDragLeave={handleDragLeave}
-						className={cn(
-							'relative border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-							isDragging
-								? 'border-primary bg-primary/5'
-								: 'border-muted-foreground/25'
-						)}
-					>
-						<input
-							type='file'
-							multiple
-							accept='image/*'
-							onChange={handleInputChange}
-							aria-label='Загрузить изображения'
-							className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
-						/>
+			<WidgetSEOWrapper widget={widget}>
+				<Card>
+					<CardHeader>
+						<CardTitle>Загрузка изображений</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div
+							onDrop={handleDrop}
+							onDragOver={handleDragOver}
+							onDragLeave={handleDragLeave}
+							className={cn(
+								'relative border-2 border-dashed rounded-lg p-8 text-center transition-colors',
+								isDragging
+									? 'border-primary bg-primary/5'
+									: 'border-muted-foreground/25'
+							)}
+						>
+							<input
+								type='file'
+								multiple
+								accept='image/*'
+								onChange={handleInputChange}
+								aria-label='Загрузить изображения'
+								className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
+							/>
 
-						<ImageIcon className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
-						<p className='text-lg font-semibold mb-2'>
-							Перетащите изображения сюда
-						</p>
-						<p className='text-sm text-muted-foreground mb-4'>или</p>
-						<Button>
-							<Upload className='w-4 h-4 mr-2' />
-							Выберите файлы
-						</Button>
-						<p className='text-xs text-muted-foreground mt-4'>
-							Поддерживаются JPG, PNG, GIF, WebP, SVG
-						</p>
-					</div>
-				</CardContent>
-			</Card>
-
-			{images.length > 0 && (
-				<>
-					<div className='flex flex-wrap justify-between items-center my-6'>
-						<h2 className='text-2xl font-bold'>Результаты ({images.length})</h2>
-						<div className='flex gap-2'>
-							<Button onClick={exportData} variant='outline'>
-								<Download className='w-4 h-4 mr-2' />
-								Экспорт CSV
+							<ImageIcon className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
+							<p className='text-lg font-semibold mb-2'>
+								Перетащите изображения сюда
+							</p>
+							<p className='text-sm text-muted-foreground mb-4'>или</p>
+							<Button>
+								<Upload className='w-4 h-4 mr-2' />
+								Выберите файлы
 							</Button>
-							<Button onClick={clearAll} variant='outline'>
-								<X className='w-4 h-4 mr-2' />
-								Очистить все
-							</Button>
+							<p className='text-xs text-muted-foreground mt-4'>
+								Поддерживаются JPG, PNG, GIF, WebP, SVG
+							</p>
 						</div>
-					</div>
+					</CardContent>
+				</Card>
 
-					<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-						{images.map((image, index) => (
-							<Card key={index} className='overflow-hidden'>
-								<div className='relative aspect-video bg-muted'>
-									<Image
-										src={image.url}
-										alt={image.name}
-										fill
-										className='object-contain'
-									/>
-									<Button
-										onClick={() => removeImage(index)}
-										size='icon'
-										variant='destructive'
-										className='absolute top-2 right-2'
-									>
-										<X className='w-4 h-4' />
-									</Button>
-								</div>
-								<CardContent className='p-4'>
-									<h3
-										className='font-semibold text-sm mb-2 truncate'
-										title={image.name}
-									>
-										{image.name}
-									</h3>
-									<div className='space-y-1 text-sm'>
-										<div className='flex justify-between'>
-											<span className='text-muted-foreground'>Размеры:</span>
-											<span className='font-mono'>
-												{image.width} × {image.height}px
-											</span>
-										</div>
-										<div className='flex justify-between'>
-											<span className='text-muted-foreground'>
-												Соотношение сторон:
-											</span>
-											<span className='font-mono'>{image.aspectRatio}</span>
-										</div>
-										<div className='flex justify-between'>
-											<span className='text-muted-foreground'>
-												Размер файла:
-											</span>
-											<span className='font-mono'>
-												{image.fileSizeFormatted}
-											</span>
-										</div>
-										<div className='flex justify-between'>
-											<span className='text-muted-foreground'>Формат:</span>
-											<span className='font-mono'>
-												{image.format.split('/')[1]?.toUpperCase() || 'Unknown'}
-											</span>
-										</div>
+				{images.length > 0 && (
+					<>
+						<div className='flex flex-wrap justify-between items-center my-6'>
+							<h2 className='text-2xl font-bold'>
+								Результаты ({images.length})
+							</h2>
+							<div className='flex gap-2'>
+								<Button onClick={exportData} variant='outline'>
+									<Download className='w-4 h-4 mr-2' />
+									Экспорт CSV
+								</Button>
+								<Button onClick={clearAll} variant='outline'>
+									<X className='w-4 h-4 mr-2' />
+									Очистить все
+								</Button>
+							</div>
+						</div>
+
+						<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+							{images.map((image, index) => (
+								<Card key={index} className='overflow-hidden'>
+									<div className='relative aspect-video bg-muted'>
+										<Image
+											src={image.url}
+											alt={image.name}
+											fill
+											className='object-contain'
+										/>
+										<Button
+											onClick={() => removeImage(index)}
+											size='icon'
+											variant='destructive'
+											className='absolute top-2 right-2'
+										>
+											<X className='w-4 h-4' />
+										</Button>
 									</div>
-								</CardContent>
-							</Card>
-						))}
-					</div>
-				</>
-			)}
+									<CardContent className='p-4'>
+										<h3
+											className='font-semibold text-sm mb-2 truncate'
+											title={image.name}
+										>
+											{image.name}
+										</h3>
+										<div className='space-y-1 text-sm'>
+											<div className='flex justify-between'>
+												<span className='text-muted-foreground'>Размеры:</span>
+												<span className='font-mono'>
+													{image.width} × {image.height}px
+												</span>
+											</div>
+											<div className='flex justify-between'>
+												<span className='text-muted-foreground'>
+													Соотношение сторон:
+												</span>
+												<span className='font-mono'>{image.aspectRatio}</span>
+											</div>
+											<div className='flex justify-between'>
+												<span className='text-muted-foreground'>
+													Размер файла:
+												</span>
+												<span className='font-mono'>
+													{image.fileSizeFormatted}
+												</span>
+											</div>
+											<div className='flex justify-between'>
+												<span className='text-muted-foreground'>Формат:</span>
+												<span className='font-mono'>
+													{image.format.split('/')[1]?.toUpperCase() ||
+														'Unknown'}
+												</span>
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+							))}
+						</div>
+					</>
+				)}
 
-			<Card className='mt-6'>
-				<CardHeader>
-					<CardTitle className='flex items-center gap-2'>
-						<Info className='w-5 h-5' />
-						Распространенные соотношения сторон
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='grid gap-4 md:grid-cols-2'>
-						<div>
-							<h4 className='font-semibold mb-2'>Фотография</h4>
-							<div className='space-y-1 text-sm'>
-								<div className='flex justify-between'>
-									<span>1:1</span>
-									<span className='text-muted-foreground'>Квадрат</span>
+				<Card className='mt-6'>
+					<CardHeader>
+						<CardTitle className='flex items-center gap-2'>
+							<Info className='w-5 h-5' />
+							Распространенные соотношения сторон
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className='grid gap-4 md:grid-cols-2'>
+							<div>
+								<h4 className='font-semibold mb-2'>Фотография</h4>
+								<div className='space-y-1 text-sm'>
+									<div className='flex justify-between'>
+										<span>1:1</span>
+										<span className='text-muted-foreground'>Квадрат</span>
+									</div>
+									<div className='flex justify-between'>
+										<span>4:3</span>
+										<span className='text-muted-foreground'>Традиционный</span>
+									</div>
+									<div className='flex justify-between'>
+										<span>3:2</span>
+										<span className='text-muted-foreground'>
+											Классический 35мм
+										</span>
+									</div>
+									<div className='flex justify-between'>
+										<span>16:9</span>
+										<span className='text-muted-foreground'>
+											Широкоэкранный
+										</span>
+									</div>
 								</div>
-								<div className='flex justify-between'>
-									<span>4:3</span>
-									<span className='text-muted-foreground'>Традиционный</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>3:2</span>
-									<span className='text-muted-foreground'>
-										Классический 35мм
-									</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>16:9</span>
-									<span className='text-muted-foreground'>Широкоэкранный</span>
+							</div>
+							<div>
+								<h4 className='font-semibold mb-2'>Социальные сети</h4>
+								<div className='space-y-1 text-sm'>
+									<div className='flex justify-between'>
+										<span>1:1</span>
+										<span className='text-muted-foreground'>
+											Instagram пост
+										</span>
+									</div>
+									<div className='flex justify-between'>
+										<span>9:16</span>
+										<span className='text-muted-foreground'>
+											Instagram сторис
+										</span>
+									</div>
+									<div className='flex justify-between'>
+										<span>16:9</span>
+										<span className='text-muted-foreground'>
+											YouTube миниатюра
+										</span>
+									</div>
+									<div className='flex justify-between'>
+										<span>2:1</span>
+										<span className='text-muted-foreground'>Twitter шапка</span>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div>
-							<h4 className='font-semibold mb-2'>Социальные сети</h4>
-							<div className='space-y-1 text-sm'>
-								<div className='flex justify-between'>
-									<span>1:1</span>
-									<span className='text-muted-foreground'>Instagram пост</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>9:16</span>
-									<span className='text-muted-foreground'>
-										Instagram сторис
-									</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>16:9</span>
-									<span className='text-muted-foreground'>
-										YouTube миниатюра
-									</span>
-								</div>
-								<div className='flex justify-between'>
-									<span>2:1</span>
-									<span className='text-muted-foreground'>Twitter шапка</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+					</CardContent>
+				</Card>
+				<ImageSizeCheckerSeo />
+			</WidgetSEOWrapper>
 		</WidgetWrapper>
 	)
 }
