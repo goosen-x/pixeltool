@@ -73,17 +73,13 @@ export function UuidGeneratorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
 			<section>
-				<h2 className='text-2xl font-bold tracking-tight'>UUID и GUID</h2>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Нужен GUID — подойдёт этот же генератор
+				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					Это один и тот же формат — 128-битный уникальный идентификатор. GUID —
-					более старое название, которое закрепилось в мире Microsoft (реестр
-					Windows, .NET, COM); в остальном вебе и в базах данных прижилось UUID.
-					Разницы в самом значении нет — этот генератор одинаково подходит для
-					обеих задач, в любом из четырёх форматов записи.
-				</p>
-				<p className='mt-3 text-muted-foreground'>
-					Единственное, что отличается на практике, — запись. В реестре Windows
-					и в коде на C# тот же идентификатор часто носят в фигурных скобках:{' '}
+					UUID и GUID — одно и то же, разное только название: второе прижилось в
+					экосистеме Microsoft. Отличается на практике лишь запись — в реестре
+					Windows и в коде на C# идентификатор часто носят в фигурных скобках:{' '}
 					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 						{'{6f9619ff-8b86-d011-b42d-00cf4fc964ff}'}
 					</code>
@@ -132,17 +128,18 @@ export function UuidGeneratorSeo() {
 
 			<section>
 				<h2 className='text-2xl font-bold tracking-tight'>
-					Какую версию выбрать для первичного ключа базы данных
+					Какую кнопку версии нажать
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					Version 4 (случайный) неудобен как первичный ключ таблицы: значения
-					ложатся в случайные места индекса, и вставка новых строк получается
-					медленнее, чем с последовательным ID. Version 7 решает это —
-					начинается с временной метки, поэтому новые записи растут в конец
-					индекса почти как автоинкремент, но остаются такими же
-					непредсказуемыми для внешнего наблюдателя. Version 1 умеет то же
-					самое, но старым способом и с меньшими гарантиями — для новых проектов
-					вместо него сейчас обычно берут v7.
+					Короткая шпаргалка по переключателю выше — почему версии устроены
+					именно так и чем v7 лучше v1, разобрано в{' '}
+					<Link
+						href='/blog/chto-takoe-uuid'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						статье про версии UUID
+					</Link>
+					.
 				</p>
 				<div className='mt-4 overflow-x-auto'>
 					<table className='w-full border-collapse text-sm'>
@@ -170,16 +167,6 @@ export function UuidGeneratorSeo() {
 						</tbody>
 					</table>
 				</div>
-				<p className='mt-4 text-muted-foreground'>
-					Ещё одно соображение против v4 в роли ключа — размер. UUID занимает 16
-					байт против 4 у обычного{' '}
-					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
-						int
-					</code>
-					, и эти байты повторяются в каждом внешнем ключе и в каждом индексе,
-					который на них ссылается. На таблице в сотню строк разницы нет, на
-					десятках миллионов она уже заметна на диске и в памяти под индексы.
-				</p>
 			</section>
 
 			<section>
@@ -314,6 +301,18 @@ export function UuidGeneratorSeo() {
 						Два вызова генератора для одной и той же сущности дадут две разные
 						строки. Уникальность идентификатора и уникальность данных — разные
 						вещи, и вторую по-прежнему обеспечивает ограничение в базе.
+					</li>
+					<li>
+						<strong className='text-foreground'>
+							Он не бесплатный по месту.
+						</strong>{' '}
+						UUID занимает 16 байт против 4 у обычного{' '}
+						<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-xs'>
+							int
+						</code>
+						, и эти байты повторяются в каждом внешнем ключе и в каждом индексе,
+						который на них ссылается. На сотне строк разницы нет, на десятках
+						миллионов она заметна на диске и в памяти под индексы.
 					</li>
 				</ul>
 			</section>
