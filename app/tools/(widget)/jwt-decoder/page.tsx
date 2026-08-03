@@ -1,31 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-	Key,
 	Copy,
 	RefreshCw,
-	CheckCircle,
-	XCircle,
 	AlertCircle,
-	FileJson,
 	Shield,
 	Clock,
 	User,
 	Globe,
 	Hash,
 	Calendar,
-	Info,
-	Sparkles,
-	Lock,
-	Unlock
+	ClipboardPaste,
+	Lock
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -63,64 +53,60 @@ interface JWTExample {
 	name: string
 	token: string
 	description: string
-	icon?: React.ElementType
-	variant?: 'default' | 'success' | 'warning' | 'destructive'
 }
+
+/* Цвета трёх частей токена — те же, к которым все привыкли по jwt.io.
+   Это главный обучающий элемент инструмента: видно, где заканчивается
+   заголовок и начинается payload, без чтения документации. Теми же цветами
+   покрашены заголовки секций результата — так связь «кусок строки → эти
+   данные» читается сразу, без кликов по вкладкам. */
+const HEADER_COLOR = 'text-rose-600 dark:text-rose-400'
+const PAYLOAD_COLOR = 'text-violet-600 dark:text-violet-400'
+const SIGNATURE_COLOR = 'text-sky-600 dark:text-sky-400'
+const SEGMENT_COLORS = [HEADER_COLOR, PAYLOAD_COLOR, SIGNATURE_COLOR]
 
 export default function JWTDecoderPage() {
 	const widget = getWidgetById('jwt-decoder')!
 	const [jwt, setJwt] = useState('')
 	const [decoded, setDecoded] = useState<DecodedJWT | null>(null)
-	const [activeTab, setActiveTab] = useState('header')
-	const [showRaw, setShowRaw] = useState(false)
 
+	// «Простой» первым: с него начинают знакомство с инструментом, остальные —
+	// когда нужен разбор конкретного провайдера или проверка крайнего случая.
 	const JWT_EXAMPLES: JWTExample[] = [
 		{
-			name: 'Auth0 токен',
-			token:
-				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzAwMDAwMDAwLCJpc3MiOiJodHRwczovL2F1dGgwLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tIn0.W-cABe4b9voSYZhGoF4sqM3PlV00mP1rHsxvQHnKfkY',
-			description: 'Стандартный токен от Auth0 с расширенными claims',
-			icon: Shield,
-			variant: 'default'
-		},
-		{
-			name: 'Firebase токен',
-			token:
-				'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbXktcHJvamVjdCIsImF1ZCI6Im15LXByb2plY3QiLCJhdXRoX3RpbWUiOjE1MTYyMzkwMjIsInVzZXJfaWQiOiJ1c2VyMTIzIiwic3ViIjoidXNlcjEyMyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzAwMDAwMDAwLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ1c2VyQGV4YW1wbGUuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.mock_signature',
-			description: 'Токен аутентификации от Firebase с метаданными',
-			icon: Key,
-			variant: 'default'
-		},
-		{
-			name: 'AWS Cognito токен',
-			token:
-				'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFiY2RlZiJ9.eyJzdWIiOiJhYWFhYWFhYS1iYmJiLWNjY2MtZGRkZC1lZWVlZWVlZWVlZWUiLCJkZXZpY2Vfa2V5IjoiYWFhYWFhYWEtYmJiYi1jY2NjLWRkZGQtZWVlZWVlZWVlZWVlIiwiY29nbml0bzpncm91cHMiOlsiYWRtaW4iXSwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbS91cy1lYXN0LTFfRXhhbXBsZSIsImV4cCI6MTcwMDAwMDAwMCwiaWF0IjoxNTE2MjM5MDIyLCJqdGkiOiJhYWFhYWFhYS1iYmJiLWNjY2MtZGRkZC1lZWVlZWVlZWVlZWUiLCJjbGllbnRfaWQiOiJhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsInVzZXJuYW1lIjoiamFuZWRvZUBleGFtcGxlLmNvbSJ9.mock_signature',
-			description: 'Access токен от AWS Cognito User Pool',
-			icon: Globe,
-			variant: 'default'
-		},
-		{
-			name: 'Простой токен',
+			name: 'Простой',
 			token:
 				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-			description: 'Минимальный JWT с базовыми claims',
-			icon: FileJson,
-			variant: 'success'
+			description: 'Минимальный JWT с базовыми claims'
 		},
 		{
-			name: 'Истёкший токен',
+			name: 'Auth0',
+			token:
+				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzAwMDAwMDAwLCJpc3MiOiJodHRwczovL2F1dGgwLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tIn0.W-cABe4b9voSYZhGoF4sqM3PlV00mP1rHsxvQHnKfkY',
+			description: 'Стандартный токен от Auth0 с расширенными claims'
+		},
+		{
+			name: 'Firebase',
+			token:
+				'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEyMzQ1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbXktcHJvamVjdCIsImF1ZCI6Im15LXByb2plY3QiLCJhdXRoX3RpbWUiOjE1MTYyMzkwMjIsInVzZXJfaWQiOiJ1c2VyMTIzIiwic3ViIjoidXNlcjEyMyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzAwMDAwMDAwLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ1c2VyQGV4YW1wbGUuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.mock_signature',
+			description: 'Токен аутентификации от Firebase с метаданными'
+		},
+		{
+			name: 'AWS Cognito',
+			token:
+				'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImFiY2RlZiJ9.eyJzdWIiOiJhYWFhYWFhYS1iYmJiLWNjY2MtZGRkZC1lZWVlZWVlZWVlZWUiLCJkZXZpY2Vfa2V5IjoiYWFhYWFhYWEtYmJiYi1jY2NjLWRkZGQtZWVlZWVlZWVlZWVlIiwiY29nbml0bzpncm91cHMiOlsiYWRtaW4iXSwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTUxNjIzOTAyMiwiaXNzIjoiaHR0cHM6Ly9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbS91cy1lYXN0LTFfRXhhbXBsZSIsImV4cCI6MTcwMDAwMDAwMCwiaWF0IjoxNTE2MjM5MDIyLCJqdGkiOiJhYWFhYWFhYS1iYmJiLWNjY2MtZGRkZC1lZWVlZWVlZWVlZWUiLCJjbGllbnRfaWQiOiJhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsInVzZXJuYW1lIjoiamFuZWRvZUBleGFtcGxlLmNvbSJ9.mock_signature',
+			description: 'Access токен от AWS Cognito User Pool'
+		},
+		{
+			name: 'Истёкший',
 			token:
 				'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkV4cGlyZWQgVXNlciIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjM5MDIzfQ.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ',
-			description: 'Токен с истёкшим сроком действия',
-			icon: Clock,
-			variant: 'warning'
+			description: 'Токен с истёкшим сроком действия'
 		},
 		{
-			name: 'Невалидный токен',
+			name: 'Невалидный',
 			token: 'это.не.jwt.токен',
-			description: 'Некорректный формат, не является JWT',
-			icon: XCircle,
-			variant: 'destructive'
+			description: 'Некорректный формат, не является JWT'
 		}
 	]
 
@@ -246,17 +232,28 @@ export default function JWTDecoderPage() {
 		toast.success('Скопировано в буфер обмена')
 	}
 
+	// Главное действие инструмента — вставить токен, поэтому у него отдельная
+	// кнопка: попадание в неё быстрее, чем клик в поле плюс Cmd+V.
+	const pasteFromClipboard = async () => {
+		try {
+			const text = await navigator.clipboard.readText()
+			if (!text.trim()) {
+				toast.error('Буфер обмена пуст')
+				return
+			}
+			setJwt(text.trim())
+		} catch {
+			toast.error('Браузер не дал доступ к буферу — вставьте вручную')
+		}
+	}
+
 	const loadExample = (example: JWTExample) => {
 		setJwt(example.token)
-		setActiveTab('header')
-		toast.success(`Загружен пример: ${example.name}`)
 	}
 
 	const reset = () => {
 		setJwt('')
 		setDecoded(null)
-		setActiveTab('header')
-		toast.success('Поля очищены')
 	}
 
 	const getTimeLeft = (exp: number): string => {
@@ -278,7 +275,8 @@ export default function JWTDecoderPage() {
 		if (value === null || value === undefined)
 			return <span className='text-muted-foreground'>null</span>
 
-		// Format timestamps
+		// Метка времени: дата обычным кеглем, unix-значение и остаток срока —
+		// одной приглушённой строкой под ней. Раньше это были три строки.
 		if (
 			['exp', 'iat', 'nbf', 'auth_time'].includes(key) &&
 			typeof value === 'number'
@@ -287,18 +285,18 @@ export default function JWTDecoderPage() {
 				<div>
 					<div>{formatDate(value)}</div>
 					<div className='text-xs text-muted-foreground'>
-						Timestamp: {value}
+						{value}
+						{key === 'exp' && ` · ${getTimeLeft(value)}`}
 					</div>
 				</div>
 			)
 		}
 
-		// Format arrays
 		if (Array.isArray(value)) {
 			return (
-				<div className='space-y-1'>
+				<div className='flex flex-wrap justify-end gap-1'>
 					{value.map((item, index) => (
-						<Badge key={index} variant='secondary' className='mr-1'>
+						<Badge key={index} variant='secondary'>
 							{JSON.stringify(item)}
 						</Badge>
 					))}
@@ -306,16 +304,14 @@ export default function JWTDecoderPage() {
 			)
 		}
 
-		// Format objects
 		if (typeof value === 'object') {
 			return (
-				<pre className='text-xs bg-muted p-2 rounded overflow-x-auto'>
+				<pre className='overflow-x-auto rounded bg-muted p-2 text-left text-xs'>
 					{JSON.stringify(value, null, 2)}
 				</pre>
 			)
 		}
 
-		// Format booleans
 		if (typeof value === 'boolean') {
 			return (
 				<Badge variant={value ? 'default' : 'secondary'}>
@@ -345,18 +341,18 @@ export default function JWTDecoderPage() {
 		}
 
 		const Icon = icons[key]
-		return Icon ? <Icon className='w-4 h-4' /> : null
+		return Icon ? <Icon className='h-4 w-4' /> : null
 	}
 
 	const getClaimDescription = (key: string): string => {
 		const descriptions: { [key: string]: string } = {
-			iss: 'Issuer - кто выпустил токен',
-			sub: 'Subject - идентификатор пользователя',
-			aud: 'Audience - для кого предназначен токен',
-			exp: 'Expiration Time - время истечения',
-			nbf: 'Not Before - токен не действителен до',
-			iat: 'Issued At - время выпуска',
-			jti: 'JWT ID - уникальный идентификатор токена',
+			iss: 'Issuer — кто выпустил токен',
+			sub: 'Subject — идентификатор пользователя',
+			aud: 'Audience — для кого предназначен токен',
+			exp: 'Expiration Time — время истечения',
+			nbf: 'Not Before — токен не действителен до',
+			iat: 'Issued At — время выпуска',
+			jti: 'JWT ID — уникальный идентификатор токена',
 			email: 'Email адрес пользователя',
 			name: 'Имя пользователя',
 			role: 'Роль пользователя',
@@ -368,294 +364,255 @@ export default function JWTDecoderPage() {
 		return descriptions[key] || ''
 	}
 
+	const getHeaderDescription = (key: string, value: any): string => {
+		if (key === 'alg') {
+			const algorithms: { [key: string]: string } = {
+				HS256: 'HMAC SHA-256',
+				RS256: 'RSA SHA-256',
+				ES256: 'ECDSA SHA-256'
+			}
+			return algorithms[String(value)] || 'Алгоритм подписи'
+		}
+		if (key === 'typ') return 'Тип токена'
+		if (key === 'kid') return 'Идентификатор ключа'
+		return ''
+	}
+
+	const segments = jwt.trim().split('.')
+	const showSegments = segments.length === 3 && segments.every(Boolean)
+
+	// Вкладок больше нет, выбирать формат нечего — кнопка одна и копирует весь
+	// разобранный токен целиком.
+	const copyAll = () => {
+		if (!decoded) return
+		copyToClipboard(
+			JSON.stringify(
+				{
+					header: decoded.header,
+					payload: decoded.payload,
+					signature: decoded.signature
+				},
+				null,
+				2
+			)
+		)
+	}
+
+	// Из «это.не.jwt.токен» разбирать нечего: показывать под ним три пустые
+	// секции — значит делать вид, что результат есть. Достаточно ошибки.
+	const hasContent =
+		!!decoded &&
+		(Object.keys(decoded.header).length > 0 ||
+			Object.keys(decoded.payload).length > 0)
+
+	const claimRow = (
+		key: string,
+		value: any,
+		icon: React.ReactNode,
+		hint: string
+	) => (
+		<div
+			key={key}
+			className='flex items-start justify-between gap-4 border-b border-border/60 py-2 last:border-0'
+		>
+			<div className='flex min-w-0 items-start gap-2'>
+				{/* Слот под иконку держим всегда: без него ключи, для которых иконки
+				    нет (auth_time, user_id), уезжали влево и ломали колонку. */}
+				<span className='mt-0.5 w-4 shrink-0 text-muted-foreground'>
+					{icon}
+				</span>
+				<div className='min-w-0'>
+					<div className='font-mono text-sm font-medium'>{key}</div>
+					{hint && <div className='text-xs text-muted-foreground'>{hint}</div>}
+				</div>
+			</div>
+			<div className='min-w-0 text-right text-sm'>
+				{renderValue(key, value)}
+			</div>
+		</div>
+	)
+
+	const sectionTitle = (label: string, color: string) => (
+		<h3
+			className={cn(
+				'mb-1 text-xs font-semibold uppercase tracking-wide',
+				color
+			)}
+		>
+			{label}
+		</h3>
+	)
+
 	return (
 		<WidgetSEOWrapper widget={widget}>
+			{/* Без карточки: рамка вокруг единственного поля ничего не отделяла —
+			    инструмент на странице и так один. Ритм задают отступы между блоками. */}
 			<div className='space-y-6'>
-				{/* Examples - Full Width at Top */}
-				<WidgetSection
-					icon={<Sparkles className='h-5 w-5' />}
-					title='Примеры JWT токенов'
-					className='mb-8'
-				>
-					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-						{JWT_EXAMPLES.map((example, index) => {
-							const Icon = example.icon || Key
+				{/* Одна строка управления: примеры слева, действия справа. Заголовка
+				    «JWT токен» нет намеренно — ровно это написано в плейсхолдере. */}
+				<div className='flex flex-wrap items-center justify-between gap-x-4 gap-y-3'>
+					<div className='flex flex-wrap items-center gap-2'>
+						<span className='text-sm text-muted-foreground'>Примеры:</span>
+						{JWT_EXAMPLES.map(example => {
+							// Подсветка «выбран» зависит от того, что в поле, а не от фокуса:
+							// иначе чип остаётся залитым после клика и врёт про состояние.
+							const isActive = jwt.trim() === example.token
 							return (
-								<div
-									key={index}
+								<button
+									key={example.name}
+									type='button'
 									onClick={() => loadExample(example)}
+									title={example.description}
 									className={cn(
-										'relative group cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-lg',
-										'bg-card hover:-translate-y-0.5',
-										example.variant === 'success' &&
-											'border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600',
-										example.variant === 'warning' &&
-											'border-yellow-200 dark:border-yellow-800 hover:border-yellow-400 dark:hover:border-yellow-600',
-										example.variant === 'destructive' &&
-											'border-red-200 dark:border-red-800 hover:border-red-400 dark:hover:border-red-600',
-										(!example.variant || example.variant === 'default') &&
-											'border-border hover:border-primary/50'
+										'cursor-pointer rounded-full border px-3 py-1 text-sm transition-colors',
+										// bg-accent в этой теме — насыщенный синий (--accent 217 91% 60%),
+										// на маленьком чипе он забивает текст. Нужен нейтральный фон.
+										'hover:border-primary/50 hover:bg-muted',
+										'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+										isActive && 'border-primary bg-primary/10 text-primary'
 									)}
 								>
-									<div className='flex items-start gap-3'>
-										<div
-											className={cn(
-												'w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110',
-												example.variant === 'success' &&
-													'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
-												example.variant === 'warning' &&
-													'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
-												example.variant === 'destructive' &&
-													'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
-												(!example.variant || example.variant === 'default') &&
-													'bg-primary/10 text-primary'
-											)}
-										>
-											<Icon className='w-5 h-5' />
-										</div>
-										<div className='flex-1 space-y-1'>
-											<div className='font-semibold text-foreground'>
-												{example.name}
-											</div>
-											<div className='text-sm text-muted-foreground'>
-												{example.description}
-											</div>
-										</div>
-									</div>
-									{/* Hover effect overlay */}
-									<div
-										className={cn(
-											'absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity',
-											example.variant === 'success' &&
-												'bg-gradient-to-br from-green-500/5 to-green-500/10',
-											example.variant === 'warning' &&
-												'bg-gradient-to-br from-yellow-500/5 to-yellow-500/10',
-											example.variant === 'destructive' &&
-												'bg-gradient-to-br from-red-500/5 to-red-500/10',
-											(!example.variant || example.variant === 'default') &&
-												'bg-gradient-to-br from-primary/5 to-primary/10'
-										)}
-									/>
-								</div>
+									{example.name}
+								</button>
 							)
 						})}
 					</div>
-				</WidgetSection>
 
-				<div className='grid lg:grid-cols-2 gap-6'>
-					{/* Input */}
-					<div className='space-y-4'>
-						<Card className='p-6'>
-							<div className='flex flex-wrap items-center justify-between mb-4'>
-								<Label className='text-base'>JWT токен</Label>
-								<div className='flex items-center gap-2'>
-									{jwt && (
-										<Button
-											onClick={reset}
-											variant='ghost'
-											size='sm'
-											className='gap-1'
-										>
-											<RefreshCw className='w-3 h-3' />
-											Очистить
-										</Button>
-									)}
-									{decoded && (
-										<Badge
-											variant={decoded.isValid ? 'default' : 'destructive'}
-											className='gap-1'
-										>
-											{decoded.isValid ? (
-												<>
-													<CheckCircle className='w-3 h-3' /> Валидный формат
-												</>
-											) : (
-												<>
-													<XCircle className='w-3 h-3' /> Ошибки валидации
-												</>
-											)}
-										</Badge>
-									)}
-								</div>
-							</div>
-
-							<Textarea
-								value={jwt}
-								onChange={e => setJwt(e.target.value)}
-								placeholder='Вставьте JWT токен для декодирования...'
-								className='font-mono text-sm min-h-[300px]'
-								spellCheck={false}
-							/>
-
-							{decoded && !decoded.isValid && (
-								<div className='mt-4 space-y-2'>
-									{decoded.errors.map((error, index) => (
-										<div
-											key={index}
-											className='flex items-start gap-2 text-sm text-red-600 dark:text-red-400'
-										>
-											<AlertCircle className='w-4 h-4 mt-0.5' />
-											{error}
-										</div>
-									))}
-								</div>
-							)}
-						</Card>
-					</div>
-
-					{/* Output */}
-					<div className='space-y-4'>
-						{decoded ? (
-							<>
-								<Card className='p-6'>
-									<div className='flex flex-wrap items-center justify-between mb-4'>
-										<h3 className='font-semibold'>Результат декодирования</h3>
-										<div className='flex flex-wrap items-center gap-2'>
-											<Button
-												onClick={() =>
-													copyToClipboard(JSON.stringify(decoded, null, 2))
-												}
-												variant='ghost'
-												size='sm'
-												className='gap-1'
-											>
-												<Copy className='w-3 h-3' />
-												Скопировать JSON
-											</Button>
-											<Button
-												onClick={() =>
-													copyToClipboard(
-														JSON.stringify(decoded.payload, null, 2)
-													)
-												}
-												variant='ghost'
-												size='sm'
-												className='gap-1'
-											>
-												<FileJson className='w-3 h-3' />
-												Скопировать Payload
-											</Button>
-										</div>
-									</div>
-									<Tabs value={activeTab} onValueChange={setActiveTab}>
-										<TabsList className='grid w-full grid-cols-3'>
-											<TabsTrigger value='header'>Заголовок</TabsTrigger>
-											<TabsTrigger value='payload'>Payload</TabsTrigger>
-											<TabsTrigger value='signature'>Подпись</TabsTrigger>
-										</TabsList>
-
-										<TabsContent value='header' className='mt-4 space-y-3'>
-											{Object.keys(decoded.header).length > 0 ? (
-												Object.entries(decoded.header).map(([key, value]) => (
-													<div
-														key={key}
-														className='flex items-start justify-between p-3 rounded-lg bg-muted/50'
-													>
-														<div className='flex items-start gap-2'>
-															<Lock className='w-4 h-4 text-muted-foreground mt-0.5' />
-															<div>
-																<div className='font-medium'>{key}</div>
-																{key === 'alg' && (
-																	<div className='text-xs text-muted-foreground'>
-																		{value === 'HS256'
-																			? 'HMAC SHA-256'
-																			: value === 'RS256'
-																				? 'RSA SHA-256'
-																				: value === 'ES256'
-																					? 'ECDSA SHA-256'
-																					: 'Алгоритм подписи'}
-																	</div>
-																)}
-															</div>
-														</div>
-														<div className='text-right'>
-															{renderValue(key, value)}
-														</div>
-													</div>
-												))
-											) : (
-												<div className='text-center text-muted-foreground py-8'>
-													Заголовок не найден
-												</div>
-											)}
-										</TabsContent>
-
-										<TabsContent value='payload' className='mt-4 space-y-3'>
-											{Object.keys(decoded.payload).length > 0 ? (
-												Object.entries(decoded.payload).map(([key, value]) => (
-													<div
-														key={key}
-														className='flex items-start justify-between p-3 rounded-lg bg-muted/50'
-													>
-														<div className='flex items-start gap-2'>
-															{getClaimIcon(key)}
-															<div>
-																<div className='font-medium'>{key}</div>
-																{getClaimDescription(key) && (
-																	<div className='text-xs text-muted-foreground'>
-																		{getClaimDescription(key)}
-																	</div>
-																)}
-															</div>
-														</div>
-														<div className='text-right'>
-															{renderValue(key, value)}
-															{key === 'exp' && typeof value === 'number' && (
-																<div className='text-xs text-muted-foreground mt-1'>
-																	{getTimeLeft(value)}
-																</div>
-															)}
-														</div>
-													</div>
-												))
-											) : (
-												<div className='text-center text-muted-foreground py-8'>
-													Полезная нагрузка не найдена
-												</div>
-											)}
-										</TabsContent>
-
-										<TabsContent value='signature' className='mt-4'>
-											<div className='space-y-4'>
-												<div className='p-4 rounded-lg bg-muted/50'>
-													<Label className='text-sm mb-2 block'>
-														Подпись (Base64URL)
-													</Label>
-													<code className='text-xs block break-all'>
-														{decoded.signature || 'Подпись отсутствует'}
-													</code>
-												</div>
-
-												<div className='p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800'>
-													<div className='flex items-start gap-2'>
-														<AlertCircle className='w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5' />
-														<div className='text-sm'>
-															<p className='font-medium text-yellow-800 dark:text-yellow-200'>
-																Внимание: Проверка подписи
-															</p>
-															<p className='text-yellow-700 dark:text-yellow-300 mt-1'>
-																Данный декодер только отображает содержимое
-																токена. Для проверки подлинности подписи
-																требуется секретный ключ или публичный ключ.
-															</p>
-														</div>
-													</div>
-												</div>
-											</div>
-										</TabsContent>
-									</Tabs>
-								</Card>
-							</>
-						) : (
-							<Card className='p-12'>
-								<div className='text-center text-muted-foreground'>
-									<Key className='w-12 h-12 mx-auto mb-4 opacity-20' />
-									<p>Вставьте JWT токен для начала декодирования</p>
-								</div>
-							</Card>
+					<div className='flex items-center gap-1'>
+						<Button
+							onClick={pasteFromClipboard}
+							variant='outline'
+							size='sm'
+							className='cursor-pointer gap-1'
+						>
+							<ClipboardPaste className='h-3.5 w-3.5' />
+							Вставить
+						</Button>
+						{jwt && (
+							<Button
+								onClick={reset}
+								variant='ghost'
+								size='sm'
+								className='cursor-pointer gap-1'
+							>
+								<RefreshCw className='h-3.5 w-3.5' />
+								Очистить
+							</Button>
 						)}
 					</div>
 				</div>
+
+				<div className='space-y-3'>
+					<Textarea
+						value={jwt}
+						onChange={e => setJwt(e.target.value)}
+						placeholder='Вставьте JWT токен'
+						className='min-h-[9rem] rounded-xl p-4 font-mono text-base leading-relaxed md:text-sm'
+						spellCheck={false}
+					/>
+
+					{showSegments && (
+						<div className='break-all rounded-xl bg-muted/50 p-4 font-mono text-xs leading-relaxed'>
+							{segments.map((segment, index) => (
+								<span key={index}>
+									<span className={SEGMENT_COLORS[index]}>{segment}</span>
+									{index < 2 && <span className='text-foreground'>.</span>}
+								</span>
+							))}
+						</div>
+					)}
+
+					{decoded && !decoded.isValid && (
+						<div className='space-y-1.5'>
+							{decoded.errors.map((error, index) => (
+								<div
+									key={index}
+									className='flex items-start gap-2 text-sm text-destructive'
+								>
+									<AlertCircle className='mt-0.5 h-4 w-4 shrink-0' />
+									{error}
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+
+				{hasContent && decoded && (
+					// Всё три части сразу, без вкладок: их и так всего три, а
+					// переключение прятало ровно то, ради чего сюда пришли.
+					<div className='space-y-5 border-t pt-6'>
+						<div className='flex flex-wrap items-center justify-between gap-2'>
+							{decoded.header?.alg ? (
+								<Badge variant='secondary' className='gap-1 font-mono'>
+									<Lock className='h-3 w-3' />
+									{decoded.header.alg}
+								</Badge>
+							) : (
+								<span />
+							)}
+							<Button
+								onClick={copyAll}
+								variant='ghost'
+								size='sm'
+								className='cursor-pointer gap-1'
+							>
+								<Copy className='h-3.5 w-3.5' />
+								Копировать JSON
+							</Button>
+						</div>
+
+						{/* Payload первым: за ним приходят в 9 случаях из 10, а заголовок
+						    смотрят только когда что-то сломалось. */}
+						<div>
+							{sectionTitle('Payload', PAYLOAD_COLOR)}
+							{Object.keys(decoded.payload).length > 0 ? (
+								Object.entries(decoded.payload).map(([key, value]) =>
+									claimRow(
+										key,
+										value,
+										getClaimIcon(key),
+										getClaimDescription(key)
+									)
+								)
+							) : (
+								<p className='py-2 text-sm text-muted-foreground'>
+									Полезная нагрузка не найдена
+								</p>
+							)}
+						</div>
+
+						<div>
+							{sectionTitle('Заголовок', HEADER_COLOR)}
+							{Object.keys(decoded.header).length > 0 ? (
+								Object.entries(decoded.header).map(([key, value]) =>
+									claimRow(
+										key,
+										value,
+										<Lock className='h-4 w-4' />,
+										getHeaderDescription(key, value)
+									)
+								)
+							) : (
+								<p className='py-2 text-sm text-muted-foreground'>
+									Заголовок не найден
+								</p>
+							)}
+						</div>
+
+						<div>
+							{sectionTitle('Подпись', SIGNATURE_COLOR)}
+							<code className='block break-all rounded-lg bg-muted/50 p-3 font-mono text-xs'>
+								{decoded.signature || 'Подпись отсутствует'}
+							</code>
+							{/* Раньше это был жёлтый блок в половину экрана. Смысл тот же,
+							    но предупреждение не должно кричать громче данных. */}
+							<p className='mt-2 text-xs text-muted-foreground'>
+								Подпись здесь не проверяется — для этого нужен секретный или
+								публичный ключ.
+							</p>
+						</div>
+					</div>
+				)}
 			</div>
 			<JwtDecoderSeo />
 		</WidgetSEOWrapper>

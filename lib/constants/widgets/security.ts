@@ -204,22 +204,29 @@ export const securityWidgets: Widget[] = [
 	},
 	{
 		id: 'jwt-decoder',
+		// Вордстат 03.08.2026: «jwt» 8949 — головной, но внутри есть шум
+		// (tongou jwt 189 — китайские автоматы TOGNOU, jwt secret/keys — чужой
+		// интент). Инструментальный срез: jwt decode 458 + jwt decoder 294 +
+		// jwt online 178 на латинице против «jwt декодер» всего 43. Ведущая
+		// русская форма — глагол: «расшифровка jwt» 115 + «расшифровать jwt» 75.
+		// Поэтому в заголовках «расшифровать», а не «декодер».
 		searchVolume: 10391,
 		icon: JWTIcon,
 		category: 'security',
 		translationKey: 'jwtDecoder',
 		path: 'jwt-decoder',
 		gradient: 'from-purple-500 to-pink-600',
-		title: 'JWT декодер',
-		metaTitle: 'JWT декодер онлайн — разобрать токен без ключа',
-		description: 'Декодируйте и анализируйте JSON Web Token без ключа',
+		title: 'JWT: расшифровать токен',
+		metaTitle: 'Расшифровать JWT токен онлайн — JWT decoder',
+		description:
+			'Покажет payload, claims, алгоритм и срок действия. Токен не уходит с вашего устройства',
 		recommendedTools: ['base64-encoder', 'json-tools', 'uuid-generator'],
 		difficulty: 'intermediate',
-		updatedAt: '2026-07-30',
+		updatedAt: '2026-08-03',
 		tags: ['jwt', 'json', 'token', 'decoder', 'authentication'],
 		useCase: 'Анализ структуры JWT токенов для отладки авторизации',
 		metaDescription:
-			'Декодер и анализатор JWT. Декодируйте JSON Web Token и просматривайте payload без ключа.',
+			'Расшифруйте JWT токен онлайн: payload, claims, алгоритм подписи и срок действия. Работает прямо в браузере — токен никуда не отправляется.',
 		faqs: [
 			{
 				question: 'Что такое JWT и как он структурирован?',
