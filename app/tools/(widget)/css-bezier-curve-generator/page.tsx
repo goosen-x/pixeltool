@@ -3,14 +3,16 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import { Copy, Play, Pause, RotateCcw } from 'lucide-react'
-import { toast } from 'sonner'
+import { Copy, Check, Play, Pause, RotateCcw } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import {
 	createBezierEasing,
 	generateCurvePoints,
@@ -20,6 +22,9 @@ import {
 	updateCurveFromHandle,
 	type BezierCurve
 } from '@/lib/utils/bezier-easing'
+
+/** Пять кривых, у которых в CSS есть собственные ключевые слова. */
+const BASE_PRESETS = ['linear', 'ease', 'easeIn', 'easeOut', 'easeInOut']
 
 export default function BezierCurvePage() {
 	// State
@@ -34,6 +39,7 @@ export default function BezierCurvePage() {
 	// Состояние, а не ref: от ref-а React не перерисовывается, и подсказка
 	// «Редактирование P1/P2» появлялась не тогда, когда надо
 	const [dragging, setDragging] = useState<'p1' | 'p2' | null>(null)
+	const [copied, setCopied] = useState<'css' | 'tailwind' | null>(null)
 
 	// Refs
 	const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -55,9 +61,10 @@ export default function BezierCurvePage() {
 	)
 
 	// Copy to clipboard
-	const copyToClipboard = (text: string) => {
+	const copyToClipboard = (text: string, pane: 'css' | 'tailwind') => {
 		navigator.clipboard.writeText(text)
-		toast.success('CSS значение скопировано в буфер обмена')
+		setCopied(pane)
+		setTimeout(() => setCopied(null), 2000)
 	}
 
 	// Draw grid on canvas
@@ -382,284 +389,277 @@ export default function BezierCurvePage() {
 	const tailwindClass = `transition-all duration-[${duration * 1000}ms] ease-[${cssOutput.replace(/\s+/g, '_')}]`
 
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			<Card className='space-y-8 p-6 sm:p-8'>
-				{/* Пресеты — ряд наверху, как в остальных CSS-тулах */}
-				<div className='flex flex-wrap items-center gap-2'>
-					{Object.entries(EASING_PRESETS).map(([key, preset]) => (
-						<Button
-							key={key}
-							onClick={() => handlePresetChange(key)}
-							variant={selectedPreset === key ? 'default' : 'outline'}
-							size='sm'
-							className='cursor-pointer'
-						>
-							{preset.name}
-						</Button>
-					))}
-					{selectedPreset === 'custom' && (
-						<Badge variant='secondary'>Своя кривая</Badge>
-					)}
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: пять кривых из спецификации CSS. Остальные три
+				    десятка (easeInQuad, easeOutBack и компания) — на полке под
+				    инструментом: списком в шесть строк они забивали всю шапку. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{BASE_PRESETS.map(key => (
+							<button
+								key={key}
+								type='button'
+								onClick={() => handlePresetChange(key)}
+								aria-pressed={selectedPreset === key}
+								className={toolPill(selectedPreset === key, 'font-mono')}
+							>
+								{EASING_PRESETS[key as keyof typeof EASING_PRESETS].name}
+							</button>
+						))}
+						{!BASE_PRESETS.includes(selectedPreset) && (
+							<span className={toolPill(true, 'font-mono')}>
+								{selectedPreset === 'custom'
+									? 'своя кривая'
+									: EASING_PRESETS[
+											selectedPreset as keyof typeof EASING_PRESETS
+										]?.name}
+							</span>
+						)}
+					</div>
 
-					<div className='ml-auto flex items-center gap-2'>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
+							size='icon'
+							variant='ghost'
 							onClick={toggleAnimation}
-							variant={isPlaying ? 'secondary' : 'default'}
-							size='sm'
-							className='cursor-pointer gap-2'
+							title={isPlaying ? 'Остановить' : 'Проиграть'}
+							className={toolIconButton}
 						>
 							{isPlaying ? (
-								<>
-									<Pause className='h-4 w-4' />
-									Пауза
-								</>
+								<Pause className='h-4 w-4' />
 							) : (
-								<>
-									<Play className='h-4 w-4' />
-									Воспроизвести
-								</>
+								<Play className='h-4 w-4' />
 							)}
 						</Button>
 						<Button
-							onClick={resetCurve}
+							size='icon'
 							variant='ghost'
-							size='sm'
-							className='cursor-pointer gap-2'
+							onClick={resetCurve}
+							title='Вернуть кривую ease'
+							className={toolIconButton}
 						>
 							<RotateCcw className='h-4 w-4' />
-							Сброс
 						</Button>
 					</div>
 				</div>
 
-				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
-					{/* Кривая */}
-					<div className='space-y-4'>
-						<div className='relative'>
-							<canvas
-								ref={canvasRef}
-								style={{
-									width: `${canvasSize.width}px`,
-									height: `${canvasSize.height}px`,
-									maxWidth: '100%',
-									aspectRatio: '1 / 1'
-								}}
-								className='w-full cursor-grab touch-none rounded-xl border bg-white active:cursor-grabbing dark:bg-gray-950'
-								onPointerDown={handlePointerDown}
-								onPointerMove={handlePointerMove}
-								onPointerUp={handlePointerUp}
-								onPointerCancel={handlePointerUp}
-							/>
-							{dragging && (
-								<div className='absolute top-3 left-3 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground'>
-									Перетаскивание {dragging.toUpperCase()}
-								</div>
-							)}
-						</div>
-						<p className='text-xs text-muted-foreground'>
-							Тяните точки P1 и P2 мышью — или задайте координаты вручную
-							справа.
+				{/* Рабочая область: слева кривая, справа то, как она ощущается в
+				    движении. Раньше предпросмотр жил под контрольными точками —
+				    ниже графика на полтора экрана. */}
+				<div className='grid gap-8 px-5 py-8 sm:px-6 lg:grid-cols-2'>
+					<div className='relative'>
+						<canvas
+							ref={canvasRef}
+							style={{
+								width: `${canvasSize.width}px`,
+								height: `${canvasSize.height}px`,
+								maxWidth: '100%',
+								aspectRatio: '1 / 1'
+							}}
+							className='w-full cursor-grab touch-none rounded-xl border bg-white active:cursor-grabbing dark:bg-gray-950'
+							onPointerDown={handlePointerDown}
+							onPointerMove={handlePointerMove}
+							onPointerUp={handlePointerUp}
+							onPointerCancel={handlePointerUp}
+						/>
+						<p className='mt-2 text-sm text-muted-foreground'>
+							{dragging
+								? `Тянете точку ${dragging.toUpperCase()}`
+								: 'Тяните точки P1 и P2 мышью — или впишите координаты ниже'}
 						</p>
 					</div>
 
-					{/* Параметры */}
-					<div className='space-y-6'>
-						<div>
-							<div className='flex items-center justify-between'>
-								<Label className='text-sm'>Длительность анимации</Label>
-								<span className='font-mono text-sm'>
-									{duration.toFixed(1)}s
-								</span>
-							</div>
-							<Slider
-								value={[duration]}
-								onValueChange={([v]) => setDuration(v)}
-								min={0.1}
-								max={5}
-								step={0.1}
-								className='mt-2'
+					<div className='space-y-3'>
+						{/* Движению нужна вся ширина — оно едет на 200px */}
+						<div className='flex h-16 items-center rounded-xl bg-muted/30 px-3'>
+							<div
+								className='h-8 w-8 shrink-0 rounded-lg bg-primary'
+								style={{
+									transform: isPlaying ? 'translateX(200px)' : 'none',
+									transition: isPlaying
+										? `transform ${duration}s ${cssOutput}`
+										: 'none'
+								}}
 							/>
 						</div>
 
-						<div className='space-y-3'>
-							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
-								Контрольные точки
-							</h3>
-							<div className='grid grid-cols-2 gap-4'>
-								{(
-									[
-										{ key: 'p1', label: 'Точка P1' },
-										{ key: 'p2', label: 'Точка P2' }
-									] as const
-								).map(({ key, label }) => (
+						{/* Масштаб и вращение меняются на месте — им хватает узкой ячейки */}
+						<div className='grid grid-cols-2 gap-3'>
+							{[
+								{
+									label: 'Масштаб',
+									from: 'scale(0.5)',
+									to: 'scale(1)'
+								},
+								{
+									label: 'Вращение',
+									from: 'rotate(0deg)',
+									to: 'rotate(360deg)'
+								}
+							].map(demo => (
+								<div
+									key={demo.label}
+									className='flex h-16 items-center justify-center rounded-xl bg-muted/30'
+								>
 									<div
-										key={key}
-										className={cn(
-											'space-y-3 rounded-lg border p-4 transition-colors',
-											dragging === key ? 'border-primary bg-primary/5' : ''
-										)}
-									>
-										<Label className='text-sm font-medium'>{label}</Label>
-										<div className='grid grid-cols-2 gap-2'>
-											<div className='space-y-1.5'>
-												<Label className='text-xs text-muted-foreground'>
-													X
-												</Label>
-												<Input
-													type='number'
-													value={curve[key].x.toFixed(2)}
-													onChange={e =>
-														handleManualInput(
-															`${key}x` as 'p1x' | 'p2x',
-															e.target.value
-														)
-													}
-													min='0'
-													max='1'
-													step='0.01'
-													className='h-9 font-mono text-sm'
-												/>
-											</div>
-											<div className='space-y-1.5'>
-												<Label className='text-xs text-muted-foreground'>
-													Y
-												</Label>
-												<Input
-													type='number'
-													value={curve[key].y.toFixed(2)}
-													onChange={e =>
-														handleManualInput(
-															`${key}y` as 'p1y' | 'p2y',
-															e.target.value
-														)
-													}
-													min='-2'
-													max='2'
-													step='0.01'
-													className='h-9 font-mono text-sm'
-												/>
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-
-						{/* Предпросмотр: как кривая ощущается в движении.
-						    Анимацию ведёт CSS — одно переключение значения и переход
-						    с нужной кривой; rAF остался только для точки на графике */}
-						<div className='space-y-3'>
-							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
-								Предпросмотр
-							</h3>
-
-							{/* Движению нужна вся ширина — оно едет на 200px */}
-							<div className='space-y-1.5'>
-								<div className='flex items-center justify-between text-sm'>
-									<span>Движение</span>
-									<span className='text-xs text-muted-foreground'>
-										0 → 200px
-									</span>
-								</div>
-								<div className='flex h-14 items-center rounded-lg bg-muted/40 px-3'>
-									<div
-										className='h-8 w-8 shrink-0 rounded-lg bg-primary'
+										className='h-8 w-8 rounded-lg bg-primary'
 										style={{
-											transform: isPlaying ? 'translateX(200px)' : 'none',
+											transform: isPlaying ? demo.to : demo.from,
 											transition: isPlaying
 												? `transform ${duration}s ${cssOutput}`
 												: 'none'
 										}}
 									/>
 								</div>
-							</div>
-
-							{/* Масштаб и вращение меняются на месте — им хватает узкой ячейки */}
-							<div className='grid grid-cols-2 gap-3'>
-								{[
-									{
-										label: 'Масштаб',
-										hint: '0.5 → 1',
-										from: 'scale(0.5)',
-										to: 'scale(1)'
-									},
-									{
-										label: 'Вращение',
-										hint: '0 → 360°',
-										from: 'rotate(0deg)',
-										to: 'rotate(360deg)'
-									}
-								].map(demo => (
-									<div key={demo.label} className='space-y-1.5'>
-										<div className='flex items-center justify-between text-sm'>
-											<span>{demo.label}</span>
-											<span className='text-xs text-muted-foreground'>
-												{demo.hint}
-											</span>
-										</div>
-										<div className='flex h-14 items-center justify-center rounded-lg bg-muted/40'>
-											<div
-												className='h-8 w-8 rounded-lg bg-primary'
-												style={{
-													transform: isPlaying ? demo.to : demo.from,
-													transition: isPlaying
-														? `transform ${duration}s ${cssOutput}`
-														: 'none'
-												}}
-											/>
-										</div>
-									</div>
-								))}
-							</div>
+							))}
 						</div>
+
+						<p className='text-sm text-muted-foreground'>
+							Движение, масштаб и вращение с этой кривой — нажмите «играть» в
+							шапке инструмента
+						</p>
 					</div>
 				</div>
 
-				{/* Готовый код — во всю ширину: длинным значениям нужен простор */}
-				<div className='grid gap-4 border-t pt-8 md:grid-cols-2'>
-					<div>
-						<div className='mb-2 flex items-center justify-between'>
-							<Label className='text-sm text-muted-foreground'>CSS</Label>
-							<Button
-								onClick={() => copyToClipboard(cssTransition)}
-								variant='ghost'
-								size='sm'
-								className='h-8 cursor-pointer px-2'
-								aria-label='Скопировать CSS'
-							>
-								<Copy className='h-3 w-3' />
-							</Button>
+				{/* Полоса координат: те же точки, что и на графике, но числами. */}
+				<div className={toolFooterBar}>
+					{(
+						[
+							{ key: 'p1', label: 'P1' },
+							{ key: 'p2', label: 'P2' }
+						] as const
+					).map(({ key, label }) => (
+						<div
+							key={key}
+							className={cn(
+								'flex items-center gap-2 text-sm',
+								dragging === key ? 'text-primary' : 'text-muted-foreground'
+							)}
+						>
+							<span className='font-mono text-xs'>{label}</span>
+							<input
+								type='number'
+								value={curve[key].x.toFixed(2)}
+								onChange={event =>
+									handleManualInput(
+										`${key}x` as 'p1x' | 'p2x',
+										event.target.value
+									)
+								}
+								min={0}
+								max={1}
+								step={0.01}
+								aria-label={`${label} по оси X`}
+								className='w-20 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+							<input
+								type='number'
+								value={curve[key].y.toFixed(2)}
+								onChange={event =>
+									handleManualInput(
+										`${key}y` as 'p1y' | 'p2y',
+										event.target.value
+									)
+								}
+								min={-2}
+								max={2}
+								step={0.01}
+								aria-label={`${label} по оси Y`}
+								className='w-20 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
 						</div>
-						<div className='rounded-lg bg-secondary p-4'>
-							<code className='font-mono text-xs break-all text-secondary-foreground'>
-								{cssTransition};
-							</code>
-						</div>
-					</div>
+					))}
 
-					<div>
-						<div className='mb-2 flex items-center justify-between'>
-							<Label className='text-sm text-muted-foreground'>
-								Tailwind CSS
-							</Label>
-							<Button
-								onClick={() => copyToClipboard(tailwindClass)}
-								variant='ghost'
-								size='sm'
-								className='h-8 cursor-pointer px-2'
-								aria-label='Скопировать Tailwind CSS'
-							>
-								<Copy className='h-3 w-3' />
-							</Button>
+					{/* Длительность на форму кривой не влияет — она только про то,
+					    за сколько секунд её проходят. */}
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span className='font-mono text-xs'>duration</span>
+						<Slider
+							value={[duration]}
+							onValueChange={([value]) => setDuration(value)}
+							min={0.1}
+							max={5}
+							step={0.1}
+							className='w-24 cursor-pointer'
+							aria-label='Длительность анимации'
+						/>
+						<span className='w-10 font-mono text-sm text-foreground tabular-nums'>
+							{duration.toFixed(1)}s
+						</span>
+					</label>
+				</div>
+
+				<div className='grid border-t md:grid-cols-2'>
+					{[
+						{
+							title: 'CSS',
+							value: `${cssTransition};`,
+							copied: copied === 'css',
+							onCopy: () => copyToClipboard(`${cssTransition};`, 'css')
+						},
+						{
+							title: 'Tailwind',
+							value: tailwindClass,
+							copied: copied === 'tailwind',
+							onCopy: () => copyToClipboard(tailwindClass, 'tailwind')
+						}
+					].map((pane, index) => (
+						<div
+							key={pane.title}
+							className={cn(
+								'flex min-w-0 flex-col',
+								index === 0 && 'md:border-r',
+								index === 1 && 'border-t md:border-t-0'
+							)}
+						>
+							<div className='flex items-center justify-between gap-2 px-5 pt-4 sm:px-6'>
+								<span className='text-sm font-medium'>{pane.title}</span>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={pane.onCopy}
+									title='Скопировать'
+									className={toolIconButton}
+								>
+									{pane.copied ? (
+										<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+									) : (
+										<Copy className='h-4 w-4' />
+									)}
+								</Button>
+							</div>
+							<pre className='overflow-x-auto px-5 pt-2 pb-5 font-mono text-xs leading-relaxed break-all whitespace-pre-wrap sm:px-6'>
+								{pane.value}
+							</pre>
 						</div>
-						<div className='rounded-lg bg-secondary p-4'>
-							<code className='font-mono text-xs break-all text-secondary-foreground'>
-								{tailwindClass}
-							</code>
-						</div>
-					</div>
+					))}
 				</div>
 			</Card>
+
+			{/* Библиотека кривых — тихая полка под инструментом. Названия вроде
+			    easeOutBack ничего не значат, пока кривую не увидишь в движении,
+			    поэтому клик грузит её в график, а не просто копирует числа. */}
+			<div className='mt-6'>
+				<p className='px-1 text-sm text-muted-foreground'>
+					Библиотека кривых — кликните, чтобы загрузить в график
+				</p>
+				<div className='mt-2 flex flex-wrap gap-1.5'>
+					{Object.entries(EASING_PRESETS)
+						.filter(([key]) => !BASE_PRESETS.includes(key))
+						.map(([key, preset]) => (
+							<button
+								key={key}
+								type='button'
+								onClick={() => handlePresetChange(key)}
+								aria-pressed={selectedPreset === key}
+								className={toolPill(selectedPreset === key, 'font-mono')}
+							>
+								{preset.name}
+							</button>
+						))}
+				</div>
+			</div>
 
 			{/* Справка — секцией под карточкой, как обучающие блоки в других тулах */}
 			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
@@ -801,6 +801,6 @@ export default function BezierCurvePage() {
 					.
 				</p>
 			</section>
-		</div>
+		</>
 	)
 }

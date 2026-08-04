@@ -2,19 +2,16 @@
 
 import { useState } from 'react'
 import { ColorGuide } from './ColorGuide'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Copy, Check, RefreshCw } from 'lucide-react'
-import { toast } from 'sonner'
+import { Slider } from '@/components/ui/slider'
+import { Copy, Check, Shuffle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import {
 	hexToRgb,
 	rgbToHex,
 	rgbToHsl,
-	hslToRgb,
 	rgbToHsb,
 	rgbToCmyk,
 	formatRgb,
@@ -30,65 +27,6 @@ import {
 	type RGBA,
 	type HSL
 } from '@/lib/utils/color-converter'
-
-// Вынесен из тела ColorConverterPage: компонент, объявленный внутри другого
-// компонента, пересоздаётся при каждом рендере — React видит новый тип и
-// полностью размонтирует/монтирует все карточки заново вместо обновления.
-// При перетаскивании ползунка onChange стреляет десятки раз в секунду, и это
-// пересоздание на каждый тик и было причиной подвисания UI.
-function FormatCard({
-	title,
-	value,
-	formatKey,
-	description,
-	copiedFormat,
-	onCopy
-}: {
-	title: string
-	value: string
-	formatKey: string
-	description?: string
-	copiedFormat: string | null
-	onCopy: (text: string, format: string) => void
-}) {
-	const isCopied = copiedFormat === formatKey
-	return (
-		<div className='group relative p-4 rounded-xl border-2 border-border/50 bg-gradient-to-br from-background to-muted/20 hover:border-primary/50 transition-all hover:shadow-md'>
-			<div className='flex items-start justify-between gap-3'>
-				<div className='flex-1 min-w-0'>
-					<div className='flex items-center gap-2 mb-1'>
-						<h4 className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
-							{title}
-						</h4>
-						{description && (
-							<span className='text-[10px] text-muted-foreground/60'>
-								{description}
-							</span>
-						)}
-					</div>
-					<code className='block font-mono text-sm font-medium break-all'>
-						{value}
-					</code>
-				</div>
-				<Button
-					size='sm'
-					variant='ghost'
-					onClick={() => onCopy(value, title)}
-					className={cn(
-						'h-8 w-8 p-0 flex-shrink-0 transition-all',
-						isCopied && 'bg-green-500/10 text-green-600'
-					)}
-				>
-					{isCopied ? (
-						<Check className='h-3.5 w-3.5' />
-					) : (
-						<Copy className='h-3.5 w-3.5' />
-					)}
-				</Button>
-			</div>
-		</div>
-	)
-}
 
 export default function ColorConverterPage() {
 	const [hexValue, setHexValue] = useState('#FF6B9D')
@@ -120,7 +58,6 @@ export default function ColorConverterPage() {
 		navigator.clipboard.writeText(text)
 		setCopiedFormat(format)
 		setTimeout(() => setCopiedFormat(null), 2000)
-		toast.success(`${format} скопировано`)
 	}
 
 	const generateRandomColor = () => {
@@ -133,364 +70,170 @@ export default function ColorConverterPage() {
 		updateFromRgb(randomRgb)
 	}
 
+	// Все форматы сразу: раньше они были разложены по трём вкладкам
+	// («Основные», «Продвинутые», «Web»), и человек, пришедший за CMYK, сначала
+	// видел экран без CMYK. Форматов всего десяток — они помещаются целиком.
+	const FORMATS: { title: string; value: string; hint?: string }[] = [
+		{ title: 'HEX', value: hexValue.toUpperCase() },
+		{ title: 'RGB', value: formatRgb(rgbValue) },
+		{ title: 'RGBA', value: formatRgba(rgba, 2), hint: 'с прозрачностью' },
+		{ title: 'HSL', value: formatHsl(hslValue) },
+		{ title: 'HSLA', value: formatHsla({ ...hslValue, a: alpha }, 2) },
+		{ title: 'HSB / HSV', value: formatHsb(hsbValue) },
+		{ title: 'CMYK', value: formatCmyk(cmykValue), hint: 'печать' },
+		{ title: 'LAB', value: formatLab(labValue, 2), hint: 'перцептуальная' },
+		{ title: 'Websafe', value: websafe.toUpperCase() },
+		{ title: 'Tailwind', value: `[${hexValue.toLowerCase()}]` }
+	]
+
+	const CHANNELS: { key: keyof RGB; label: string; color: string }[] = [
+		{ key: 'r', label: 'R', color: 'text-red-600 dark:text-red-400' },
+		{ key: 'g', label: 'G', color: 'text-green-600 dark:text-green-400' },
+		{ key: 'b', label: 'B', color: 'text-blue-600 dark:text-blue-400' }
+	]
+
 	return (
-		<div className='space-y-6'>
-			<Card className='overflow-hidden'>
-				<div className='grid md:grid-cols-[300px_1fr] gap-0'>
-					<div className='relative h-[300px] md:h-auto'>
-						<div
-							className='absolute inset-0 transition-all duration-300'
-							style={{ backgroundColor: hexValue }}
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: сам цвет. Ввести его можно как угодно — вписать
+				    hex или выбрать пипеткой. */}
+				<div className={toolBar}>
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span>HEX</span>
+						<span className='flex items-center rounded-md border bg-background pl-2'>
+							<span className='font-mono text-sm text-muted-foreground'>#</span>
+							<input
+								value={hexValue.replace('#', '')}
+								onChange={event => {
+									const hex = '#' + event.target.value
+									setHexValue(hex)
+									updateFromHex(hex)
+								}}
+								maxLength={6}
+								spellCheck={false}
+								placeholder='FF6B9D'
+								aria-label='Цвет в HEX'
+								className='w-24 bg-transparent px-1 py-1 font-mono text-sm text-foreground focus:outline-none'
+							/>
+						</span>
+						<input
+							type='color'
+							value={/^#[0-9a-f]{6}$/i.test(hexValue) ? hexValue : '#000000'}
+							onChange={event => {
+								setHexValue(event.target.value)
+								updateFromHex(event.target.value)
+							}}
+							aria-label='Выбрать цвет'
+							className='h-7 w-9 cursor-pointer rounded-md border bg-background p-0.5'
 						/>
-						{alpha < 1 && (
-							<div className='absolute inset-0 bg-checkered'>
-								<div
-									className='absolute inset-0'
-									style={{
-										backgroundColor: `rgba(${rgbValue.r}, ${rgbValue.g}, ${rgbValue.b}, ${alpha})`
-									}}
-								/>
-							</div>
-						)}
-						<div className='absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent'>
-							<div className='text-white'>
-								<div className='text-3xl font-bold font-mono mb-1'>
-									{hexValue.toUpperCase()}
-								</div>
-								<div className='text-sm opacity-80'>
-									RGB({rgbValue.r}, {rgbValue.g}, {rgbValue.b})
-								</div>
-							</div>
-						</div>
+					</label>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={generateRandomColor}
+							title='Случайный цвет'
+							className={toolIconButton}
+						>
+							<Shuffle className='h-4 w-4' />
+						</Button>
 					</div>
+				</div>
 
-					<CardContent className='p-6 space-y-6'>
-						<div className='flex items-center gap-2'>
-							<Button
-								onClick={generateRandomColor}
-								variant='outline'
-								size='sm'
-								className='gap-2'
+				{/* Сам цвет во всю ширину — это и есть результат. Клетчатая
+				    подложка появляется только при прозрачности, иначе она врёт. */}
+				<div
+					className={cn('relative h-40 w-full', alpha < 1 && 'bg-checkered')}
+				>
+					<div
+						className='absolute inset-0'
+						style={{
+							backgroundColor: `rgba(${rgbValue.r}, ${rgbValue.g}, ${rgbValue.b}, ${alpha})`
+						}}
+					/>
+				</div>
+
+				{/* Полоса каналов: те же значения, что и в списке форматов, но
+				    здесь их крутят, а не читают. */}
+				<div className={toolFooterBar}>
+					{CHANNELS.map(channel => (
+						<label
+							key={channel.key}
+							className='flex items-center gap-2 text-sm text-muted-foreground'
+						>
+							<span
+								className={cn('font-mono text-xs font-bold', channel.color)}
 							>
-								<RefreshCw className='h-4 w-4' />
-								Случайный цвет
-							</Button>
-							<Button
-								onClick={() => copyToClipboard(hexValue.toUpperCase(), 'HEX')}
-								variant='outline'
-								size='sm'
-								className='gap-2'
-							>
-								<Copy className='h-4 w-4' />
-								Копировать HEX
-							</Button>
-						</div>
+								{channel.label}
+							</span>
+							<Slider
+								value={[rgbValue[channel.key]]}
+								onValueChange={([value]) => {
+									const newRgb = { ...rgbValue, [channel.key]: value }
+									setRgbValue(newRgb)
+									updateFromRgb(newRgb)
+								}}
+								min={0}
+								max={255}
+								step={1}
+								className='w-28 cursor-pointer'
+								aria-label={`Канал ${channel.label}`}
+							/>
+							<span className='w-8 font-mono text-sm text-foreground tabular-nums'>
+								{rgbValue[channel.key]}
+							</span>
+						</label>
+					))}
 
-						<div className='grid gap-4'>
-							<div className='space-y-2'>
-								<Label className='text-sm font-semibold'>HEX</Label>
-								<div className='flex items-center gap-2'>
-									<div className='relative flex-1'>
-										<span className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-lg'>
-											#
-										</span>
-										<Input
-											value={hexValue.replace('#', '')}
-											onChange={e => {
-												const hex = '#' + e.target.value
-												setHexValue(hex)
-												updateFromHex(hex)
-											}}
-											placeholder='FF6B9D'
-											maxLength={6}
-											className='pl-8 font-mono text-lg h-12'
-										/>
-									</div>
-									<div
-										className='w-12 h-12 rounded-lg border-2 border-border cursor-pointer flex-shrink-0 transition-transform hover:scale-105'
-										style={{ backgroundColor: hexValue }}
-										title='Color preview'
-									/>
-								</div>
-							</div>
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span className='font-mono text-xs'>alpha</span>
+						<Slider
+							value={[Math.round(alpha * 100)]}
+							onValueChange={([value]) => setAlpha(value / 100)}
+							min={0}
+							max={100}
+							step={1}
+							className='w-24 cursor-pointer'
+							aria-label='Прозрачность'
+						/>
+						<span className='w-10 font-mono text-sm text-foreground tabular-nums'>
+							{Math.round(alpha * 100)}%
+						</span>
+					</label>
+				</div>
 
-							<div className='space-y-4'>
-								<Label className='text-sm font-semibold'>RGB</Label>
-
-								<div className='space-y-2'>
-									<div className='flex items-center justify-between'>
-										<span className='text-xs font-semibold text-red-500'>
-											R
-										</span>
-										<span className='text-sm font-mono font-bold px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400'>
-											{rgbValue.r}
-										</span>
-									</div>
-									<div className='relative h-8 rounded-lg overflow-hidden border-2 border-border/50 shadow-inner'>
-										<div className='absolute inset-0 bg-gradient-to-r from-black via-red-500/50 to-red-500' />
-										<input
-											type='range'
-											min='0'
-											max='255'
-											value={rgbValue.r}
-											onChange={e => {
-												const newRgb = {
-													...rgbValue,
-													r: parseInt(e.target.value)
-												}
-												setRgbValue(newRgb)
-												updateFromRgb(newRgb)
-											}}
-											className='absolute inset-0 w-full opacity-0 cursor-pointer z-10'
-										/>
-										<div
-											className='absolute top-1/2 -translate-y-1/2 w-4 h-10 bg-white dark:bg-gray-100 border-3 border-gray-900 dark:border-gray-800 rounded-md shadow-xl pointer-events-none transition-all'
-											style={{
-												left: `calc(${(rgbValue.r / 255) * 100}% - 8px)`,
-												boxShadow:
-													'0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.3)'
-											}}
-										/>
-									</div>
-								</div>
-
-								<div className='space-y-2'>
-									<div className='flex items-center justify-between'>
-										<span className='text-xs font-semibold text-green-500'>
-											G
-										</span>
-										<span className='text-sm font-mono font-bold px-2 py-0.5 rounded bg-green-500/10 text-green-600 dark:text-green-400'>
-											{rgbValue.g}
-										</span>
-									</div>
-									<div className='relative h-8 rounded-lg overflow-hidden border-2 border-border/50 shadow-inner'>
-										<div className='absolute inset-0 bg-gradient-to-r from-black via-green-500/50 to-green-500' />
-										<input
-											type='range'
-											min='0'
-											max='255'
-											value={rgbValue.g}
-											onChange={e => {
-												const newRgb = {
-													...rgbValue,
-													g: parseInt(e.target.value)
-												}
-												setRgbValue(newRgb)
-												updateFromRgb(newRgb)
-											}}
-											className='absolute inset-0 w-full opacity-0 cursor-pointer z-10'
-										/>
-										<div
-											className='absolute top-1/2 -translate-y-1/2 w-4 h-10 bg-white dark:bg-gray-100 border-3 border-gray-900 dark:border-gray-800 rounded-md shadow-xl pointer-events-none transition-all'
-											style={{
-												left: `calc(${(rgbValue.g / 255) * 100}% - 8px)`,
-												boxShadow:
-													'0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.3)'
-											}}
-										/>
-									</div>
-								</div>
-
-								<div className='space-y-2'>
-									<div className='flex items-center justify-between'>
-										<span className='text-xs font-semibold text-blue-500'>
-											B
-										</span>
-										<span className='text-sm font-mono font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400'>
-											{rgbValue.b}
-										</span>
-									</div>
-									<div className='relative h-8 rounded-lg overflow-hidden border-2 border-border/50 shadow-inner'>
-										<div className='absolute inset-0 bg-gradient-to-r from-black via-blue-500/50 to-blue-500' />
-										<input
-											type='range'
-											min='0'
-											max='255'
-											value={rgbValue.b}
-											onChange={e => {
-												const newRgb = {
-													...rgbValue,
-													b: parseInt(e.target.value)
-												}
-												setRgbValue(newRgb)
-												updateFromRgb(newRgb)
-											}}
-											className='absolute inset-0 w-full opacity-0 cursor-pointer z-10'
-										/>
-										<div
-											className='absolute top-1/2 -translate-y-1/2 w-4 h-10 bg-white dark:bg-gray-100 border-3 border-gray-900 dark:border-gray-800 rounded-md shadow-xl pointer-events-none transition-all'
-											style={{
-												left: `calc(${(rgbValue.b / 255) * 100}% - 8px)`,
-												boxShadow:
-													'0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.3)'
-											}}
-										/>
-									</div>
-								</div>
-							</div>
-
-							<div className='space-y-2'>
-								<div className='flex items-center justify-between'>
-									<Label className='text-sm font-semibold'>Прозрачность</Label>
-									<span className='text-sm font-mono font-semibold'>
-										{Math.round(alpha * 100)}%
-									</span>
-								</div>
-								<div className='relative h-8 rounded-lg overflow-hidden border-2 border-border/50 shadow-inner bg-checkered'>
-									<input
-										type='range'
-										min='0'
-										max='100'
-										value={alpha * 100}
-										onChange={e => setAlpha(parseInt(e.target.value) / 100)}
-										className='absolute inset-0 w-full opacity-0 cursor-pointer z-10'
-									/>
-									<div
-										className='absolute top-1/2 -translate-y-1/2 w-4 h-10 bg-white dark:bg-gray-100 border-3 border-gray-900 dark:border-gray-800 rounded-md shadow-xl pointer-events-none transition-all'
-										style={{
-											left: `calc(${alpha * 100}% - 8px)`,
-											boxShadow:
-												'0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.3)'
-										}}
-									/>
-								</div>
-							</div>
-						</div>
-					</CardContent>
+				<div className='grid gap-px border-t bg-border sm:grid-cols-2'>
+					{FORMATS.map(format => (
+						<button
+							key={format.title}
+							type='button'
+							onClick={() => copyToClipboard(format.value, format.title)}
+							title='Скопировать'
+							className='group flex cursor-pointer items-center justify-between gap-3 bg-background px-5 py-3 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6'
+						>
+							<span className='min-w-0'>
+								<span className='block font-mono text-xs tracking-wide text-muted-foreground uppercase'>
+									{format.title}
+									{format.hint && (
+										<span className='ml-2 normal-case'>{format.hint}</span>
+									)}
+								</span>
+								<span className='mt-0.5 block font-mono text-sm break-all'>
+									{format.value}
+								</span>
+							</span>
+							{copiedFormat === format.title ? (
+								<Check className='h-4 w-4 shrink-0 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100' />
+							)}
+						</button>
+					))}
 				</div>
 			</Card>
 
-			<Card>
-				<CardContent className='p-6'>
-					<Tabs defaultValue='basic' className='w-full'>
-						<TabsList className='grid w-full grid-cols-3 mb-6'>
-							<TabsTrigger value='basic'>Основные</TabsTrigger>
-							<TabsTrigger value='advanced'>Продвинутые</TabsTrigger>
-							<TabsTrigger value='web'>Web</TabsTrigger>
-						</TabsList>
-
-						<TabsContent value='basic' className='space-y-4'>
-							<div className='grid gap-3 sm:grid-cols-2'>
-								<FormatCard
-									title='HEX'
-									value={hexValue.toUpperCase()}
-									formatKey='hex'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='RGB'
-									value={formatRgb(rgbValue)}
-									formatKey='rgb'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='RGBA'
-									value={formatRgba(rgba, 2)}
-									formatKey='rgba'
-									description='с альфа'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='HSL'
-									value={formatHsl(hslValue)}
-									formatKey='hsl'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='HSLA'
-									value={formatHsla({ ...hslValue, a: alpha }, 2)}
-									formatKey='hsla'
-									description='с альфа'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='HSB/HSV'
-									value={formatHsb(hsbValue)}
-									formatKey='hsb'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-							</div>
-						</TabsContent>
-
-						<TabsContent value='advanced' className='space-y-4'>
-							<div className='grid gap-3 sm:grid-cols-2'>
-								<FormatCard
-									title='CMYK'
-									value={formatCmyk(cmykValue)}
-									formatKey='cmyk'
-									description='печать'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='LAB'
-									value={formatLab(labValue, 2)}
-									formatKey='lab'
-									description='перцептуальная'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-							</div>
-						</TabsContent>
-
-						<TabsContent value='web' className='space-y-4'>
-							<div className='grid gap-3 sm:grid-cols-2'>
-								<FormatCard
-									title='CSS HEX'
-									value={`color: ${hexValue.toUpperCase()};`}
-									formatKey='css-hex'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='CSS RGB'
-									value={`color: ${formatRgb(rgbValue)};`}
-									formatKey='css-rgb'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='CSS RGBA'
-									value={`color: ${formatRgba(rgba, 2)};`}
-									formatKey='css-rgba'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='CSS HSL'
-									value={`color: ${formatHsl(hslValue)};`}
-									formatKey='css-hsl'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='Websafe'
-									value={websafe.toUpperCase()}
-									formatKey='websafe'
-									description='безопасный'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-								<FormatCard
-									title='Tailwind'
-									value={`[${hexValue}]`}
-									formatKey='tailwind'
-									description='arbitrary value'
-									copiedFormat={copiedFormat}
-									onCopy={copyToClipboard}
-								/>
-							</div>
-						</TabsContent>
-					</Tabs>
-				</CardContent>
-			</Card>
 			<ColorGuide />
-		</div>
+		</>
 	)
 }

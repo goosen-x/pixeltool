@@ -4,22 +4,13 @@ import { useState, useEffect, useMemo } from 'react'
 import { AnimationGuide } from './AnimationGuide'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
 import {
 	Play,
 	Pause,
 	Copy,
-	RefreshCw,
+	Check,
+	RotateCcw,
 	Plus,
 	Trash2,
 	Zap,
@@ -29,7 +20,13 @@ import {
 	Activity,
 	ArrowRight
 } from 'lucide-react'
-import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
 type AnimationType = 'transform' | 'opacity' | 'color' | 'position' | 'custom'
 type EasingType =
@@ -200,6 +197,15 @@ const CSS_PROPERTIES = [
 	{ category: 'Border', properties: ['border-width', 'border-radius'] }
 ]
 
+const DIRECTIONS = [
+	'normal',
+	'reverse',
+	'alternate',
+	'alternate-reverse'
+] as const
+
+const FILL_MODES = ['none', 'forwards', 'backwards', 'both'] as const
+
 export default function CSSKeyframesGeneratorPage() {
 	const [animationName, setAnimationName] = useState('myAnimation')
 	const [duration, setDuration] = useState(1)
@@ -215,10 +221,15 @@ export default function CSSKeyframesGeneratorPage() {
 		{ id: '2', percentage: 50, properties: { transform: 'scale(1.2)' } },
 		{ id: '3', percentage: 100, properties: { transform: 'scale(1)' } }
 	])
-	const [isPlaying, setIsPlaying] = useState(false)
+	const [selectedKeyframeId, setSelectedKeyframeId] = useState('1')
+	const [isPlaying, setIsPlaying] = useState(true)
 	const [playCount, setPlayCount] = useState(0)
 	const [selectedProperty, setSelectedProperty] = useState('transform')
 	const [propertyValue, setPropertyValue] = useState('')
+	const [copied, setCopied] = useState(false)
+
+	const selectedKeyframe =
+		keyframes.find(kf => kf.id === selectedKeyframeId) ?? keyframes[0]
 
 	useEffect(() => {
 		if (infinite) {
@@ -237,6 +248,7 @@ export default function CSSKeyframesGeneratorPage() {
 		setKeyframes(
 			[...keyframes, newKeyframe].sort((a, b) => a.percentage - b.percentage)
 		)
+		setSelectedKeyframeId(newKeyframe.id)
 	}
 
 	const updateKeyframe = (
@@ -261,11 +273,13 @@ export default function CSSKeyframesGeneratorPage() {
 	}
 
 	const deleteKeyframe = (id: string) => {
-		if (keyframes.length > 2) {
-			setKeyframes(keyframes.filter(kf => kf.id !== id))
-		} else {
-			toast.error('Минимум 2 ключевых кадра необходимо')
-		}
+		// Меньше двух кадров анимации не бывает: кнопка заблокирована, но и
+		// здесь на всякий случай.
+		if (keyframes.length <= 2) return
+
+		const rest = keyframes.filter(kf => kf.id !== id)
+		setKeyframes(rest)
+		if (selectedKeyframeId === id) setSelectedKeyframeId(rest[0].id)
 	}
 
 	const addPropertyToKeyframe = (
@@ -294,17 +308,21 @@ export default function CSSKeyframesGeneratorPage() {
 		setDuration(preset.duration)
 		setEasing(preset.easing)
 		setInfinite(preset.infinite)
-		setKeyframes(
-			preset.keyframes.map(kf => ({ ...kf, id: Date.now().toString() + kf.id }))
-		)
-		toast.success(`Загружен пресет: ${preset.name}`)
+		const loaded = preset.keyframes.map(kf => ({
+			...kf,
+			id: Date.now().toString() + kf.id
+		}))
+		setKeyframes(loaded)
+		setSelectedKeyframeId(loaded[0].id)
+		setPlayCount(count => count + 1)
+		setIsPlaying(true)
 	}
 
 	const generateCSS = (): string => {
 		const easingValue =
 			easing === 'cubic-bezier' ? `cubic-bezier(${cubicBezier})` : easing
 
-		let css = `@keyframes ${animationName} {\n`
+		let css = `@keyframes ${safeAnimationName} {\n`
 
 		keyframes.forEach(keyframe => {
 			css += `  ${keyframe.percentage}% {\n`
@@ -316,7 +334,7 @@ export default function CSSKeyframesGeneratorPage() {
 
 		css += `}\n\n`
 		css += `.animated-element {\n`
-		css += `  animation-name: ${animationName};\n`
+		css += `  animation-name: ${safeAnimationName};\n`
 		css += `  animation-duration: ${duration}s;\n`
 		css += `  animation-timing-function: ${easingValue};\n`
 		if (delay > 0) css += `  animation-delay: ${delay}s;\n`
@@ -326,7 +344,7 @@ export default function CSSKeyframesGeneratorPage() {
 		css += `}\n\n`
 		css += `/* Сокращенная запись */\n`
 		css += `.animated-element {\n`
-		css += `  animation: ${animationName} ${duration}s ${easingValue}`
+		css += `  animation: ${safeAnimationName} ${duration}s ${easingValue}`
 		if (delay > 0) css += ` ${delay}s`
 		css += ` ${iterationCount}`
 		if (direction !== 'normal') css += ` ${direction}`
@@ -338,7 +356,8 @@ export default function CSSKeyframesGeneratorPage() {
 
 	const copyCSS = () => {
 		navigator.clipboard.writeText(generateCSS())
-		toast.success('CSS скопирован!')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}
 
 	// Имя анимации попадает в CSS-идентификатор: пустое или с пробелами оно
@@ -383,8 +402,9 @@ export default function CSSKeyframesGeneratorPage() {
 			{ id: '2', percentage: 50, properties: { transform: 'scale(1.2)' } },
 			{ id: '3', percentage: 100, properties: { transform: 'scale(1)' } }
 		])
-		setIsPlaying(false)
-		toast.success('Генератор сброшен')
+		setSelectedKeyframeId('1')
+		setIsPlaying(true)
+		setPlayCount(count => count + 1)
 	}
 
 	const getAnimationStyle = () => {
@@ -404,390 +424,374 @@ export default function CSSKeyframesGeneratorPage() {
 		}
 	}
 
+	/** Ползунок с подписью — общий вид на все полосы параметров. */
+	const sliderControl = (
+		label: string,
+		value: number,
+		onChange: (value: number) => void,
+		options: { min: number; max: number; step: number; suffix: string }
+	) => (
+		<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+			<span className='font-mono text-xs'>{label}</span>
+			<Slider
+				value={[value]}
+				onValueChange={([next]) => onChange(next)}
+				min={options.min}
+				max={options.max}
+				step={options.step}
+				className='w-24 cursor-pointer'
+				aria-label={label}
+			/>
+			<span className='w-10 font-mono text-sm text-foreground tabular-nums'>
+				{value}
+				{options.suffix}
+			</span>
+		</label>
+	)
+
+	/** Выпадающий список в полосе — тот же вид, что в grid-генераторе. */
+	const selectControl = (
+		label: string,
+		value: string,
+		onChange: (value: string) => void,
+		options: readonly string[]
+	) => (
+		<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+			<span className='font-mono text-xs'>{label}</span>
+			<select
+				value={value}
+				onChange={event => onChange(event.target.value)}
+				className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+			>
+				{options.map(option => (
+					<option key={option} value={option}>
+						{option}
+					</option>
+				))}
+			</select>
+		</label>
+	)
+
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			{/* Пресеты — ряд наверху: с них начинается работа с тулом */}
-			<Card className='p-4'>
-				<div className='flex flex-wrap items-center gap-2'>
-					<span className='mr-1 text-sm font-medium text-muted-foreground'>
-						Готовые анимации:
-					</span>
-					{ANIMATION_PRESETS.map((preset, index) => {
-						const Icon = preset.icon
-						return (
-							<Button
-								key={index}
-								onClick={() => loadPreset(preset)}
-								variant='outline'
-								size='sm'
-								className='cursor-pointer gap-2'
-							>
-								<Icon className='w-4 h-4' />
-								{preset.name}
-							</Button>
-						)
-					})}
-				</div>
-			</Card>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: имя анимации попадает в @keyframes, поэтому оно
+				    здесь, а не в общей куче параметров. */}
+				<div className={toolBar}>
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span>Название</span>
+						<input
+							value={animationName}
+							onChange={event => setAnimationName(event.target.value)}
+							spellCheck={false}
+							placeholder='myAnimation'
+							className='w-44 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						/>
+					</label>
 
-			<div className='grid lg:grid-cols-3 gap-6'>
-				{/* Конструктор: параметры и кадры в одной карточке */}
-				<Card className='lg:col-span-2 p-6 space-y-6'>
-					<section>
-						<h3 className='text-base mb-4 font-semibold'>Параметры</h3>
-
-						<div className='grid gap-4 md:grid-cols-2'>
-							<div>
-								<Label htmlFor='name'>Название анимации</Label>
-								<Input
-									id='name'
-									value={animationName}
-									onChange={e => setAnimationName(e.target.value)}
-									placeholder='myAnimation'
-									className='mt-1'
-								/>
-							</div>
-
-							<div>
-								<Label htmlFor='easing'>Функция плавности</Label>
-								<Select
-									value={easing}
-									onValueChange={(value: EasingType) => setEasing(value)}
-								>
-									<SelectTrigger className='mt-1 cursor-pointer'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										{EASING_FUNCTIONS.map(func => (
-											<SelectItem
-												key={func.value}
-												value={func.value}
-												className='cursor-pointer'
-											>
-												{func.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-								{easing === 'cubic-bezier' && (
-									<Input
-										value={cubicBezier}
-										onChange={e => setCubicBezier(e.target.value)}
-										placeholder='0.25, 0.1, 0.25, 1'
-										className='mt-2'
-									/>
-								)}
-							</div>
-
-							<div>
-								<Label htmlFor='duration'>Длительность (сек)</Label>
-								<div className='mt-1 flex items-center gap-2'>
-									<Slider
-										value={[duration]}
-										onValueChange={([value]) => setDuration(value)}
-										min={0.1}
-										max={10}
-										step={0.1}
-										className='flex-1'
-									/>
-									<span className='w-12 font-mono text-sm'>{duration}s</span>
-								</div>
-							</div>
-
-							<div>
-								<Label htmlFor='delay'>Задержка (сек)</Label>
-								<div className='mt-1 flex items-center gap-2'>
-									<Slider
-										value={[delay]}
-										onValueChange={([value]) => setDelay(value)}
-										min={0}
-										max={5}
-										step={0.1}
-										className='flex-1'
-									/>
-									<span className='w-12 font-mono text-sm'>{delay}s</span>
-								</div>
-							</div>
-
-							<div>
-								<Label htmlFor='iterations'>Количество повторов</Label>
-								<div className='mt-1 flex items-center gap-3'>
-									<Input
-										id='iterations'
-										type='number'
-										value={iterationCount === 'infinite' ? '' : iterationCount}
-										onChange={e => setIterationCount(e.target.value)}
-										disabled={infinite}
-										min='1'
-										className='flex-1'
-									/>
-									<div className='flex items-center gap-2'>
-										<Switch
-											id='infinite'
-											checked={infinite}
-											onCheckedChange={setInfinite}
-											className='cursor-pointer'
-										/>
-										<Label htmlFor='infinite' className='cursor-pointer'>
-											Бесконечно
-										</Label>
-									</div>
-								</div>
-							</div>
-
-							<div className='grid grid-cols-2 gap-4'>
-								<div>
-									<Label htmlFor='direction'>Направление</Label>
-									<Select value={direction} onValueChange={setDirection}>
-										<SelectTrigger className='mt-1 cursor-pointer'>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='normal' className='cursor-pointer'>
-												Normal
-											</SelectItem>
-											<SelectItem value='reverse' className='cursor-pointer'>
-												Reverse
-											</SelectItem>
-											<SelectItem value='alternate' className='cursor-pointer'>
-												Alternate
-											</SelectItem>
-											<SelectItem
-												value='alternate-reverse'
-												className='cursor-pointer'
-											>
-												Alternate Reverse
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-
-								<div>
-									<Label htmlFor='fill-mode'>Fill Mode</Label>
-									<Select value={fillMode} onValueChange={setFillMode}>
-										<SelectTrigger className='mt-1 cursor-pointer'>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='none' className='cursor-pointer'>
-												None
-											</SelectItem>
-											<SelectItem value='forwards' className='cursor-pointer'>
-												Forwards
-											</SelectItem>
-											<SelectItem value='backwards' className='cursor-pointer'>
-												Backwards
-											</SelectItem>
-											<SelectItem value='both' className='cursor-pointer'>
-												Both
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-							</div>
-						</div>
-					</section>
-
-					<section className='border-t pt-6'>
-						<div className='mb-4 flex items-center justify-between'>
-							<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
-								Ключевые кадры
-							</h3>
-							<Button
-								onClick={addKeyframe}
-								size='sm'
-								className='cursor-pointer gap-2'
-							>
-								<Plus className='w-4 h-4' />
-								Добавить кадр
-							</Button>
-						</div>
-
-						<div className='space-y-3'>
-							{keyframes.map(keyframe => (
-								<div
-									key={keyframe.id}
-									className='rounded-lg border bg-muted/20 p-4'
-								>
-									<div className='mb-3 flex items-center justify-between'>
-										<div className='flex items-center gap-2'>
-											<Label>Позиция:</Label>
-											<Input
-												type='number'
-												value={keyframe.percentage}
-												onChange={e =>
-													updateKeyframe(
-														keyframe.id,
-														'percentage',
-														parseInt(e.target.value) || 0
-													)
-												}
-												min='0'
-												max='100'
-												className='w-20'
-											/>
-											<span className='text-sm'>%</span>
-										</div>
-										<Button
-											onClick={() => deleteKeyframe(keyframe.id)}
-											size='sm'
-											variant='ghost'
-											className='cursor-pointer text-red-600 hover:text-red-700'
-											aria-label='Удалить кадр'
-										>
-											<Trash2 className='w-4 h-4' />
-										</Button>
-									</div>
-
-									<div className='space-y-2'>
-										{Object.entries(keyframe.properties).map(
-											([prop, value]) => (
-												<div key={prop} className='flex items-center gap-2'>
-													<code className='inline-code'>{prop}:</code>
-													<Input
-														value={value}
-														onChange={e =>
-															addPropertyToKeyframe(
-																keyframe.id,
-																prop,
-																e.target.value
-															)
-														}
-														className='flex-1'
-													/>
-													<Button
-														onClick={() =>
-															removePropertyFromKeyframe(keyframe.id, prop)
-														}
-														size='sm'
-														variant='ghost'
-														className='cursor-pointer'
-														aria-label={`Удалить свойство ${prop}`}
-													>
-														<Trash2 className='w-4 h-4' />
-													</Button>
-												</div>
-											)
-										)}
-
-										<div className='flex items-center gap-2 pt-2'>
-											<Select
-												value={selectedProperty}
-												onValueChange={setSelectedProperty}
-											>
-												<SelectTrigger className='w-[180px] cursor-pointer'>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													{CSS_PROPERTIES.map(category => (
-														<div key={category.category}>
-															<div className='px-2 py-1 text-xs font-semibold text-muted-foreground'>
-																{category.category}
-															</div>
-															{category.properties.map(prop => (
-																<SelectItem
-																	key={prop}
-																	value={prop}
-																	className='cursor-pointer'
-																>
-																	{prop}
-																</SelectItem>
-															))}
-														</div>
-													))}
-												</SelectContent>
-											</Select>
-											<Input
-												value={propertyValue}
-												onChange={e => setPropertyValue(e.target.value)}
-												placeholder='Значение'
-												className='flex-1'
-											/>
-											<Button
-												onClick={() => {
-													if (propertyValue) {
-														addPropertyToKeyframe(
-															keyframe.id,
-															selectedProperty,
-															propertyValue
-														)
-														setPropertyValue('')
-													}
-												}}
-												size='sm'
-												className='cursor-pointer'
-												aria-label='Добавить свойство'
-											>
-												<Plus className='w-4 h-4' />
-											</Button>
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-					</section>
-				</Card>
-
-				{/* Предпросмотр едет вместе со скроллом: кадры правятся слева */}
-				<Card className='h-fit p-6 lg:sticky lg:top-6'>
-					<h3 className='text-base mb-4 font-semibold'>Предпросмотр</h3>
-
-					<style>{keyframesRule}</style>
-					<div className='mb-4 flex h-48 items-center justify-center rounded-lg bg-muted/20'>
-						<div
-							key={playCount}
-							className='flex h-24 w-24 items-center justify-center rounded-lg bg-primary font-bold text-primary-foreground'
-							style={getAnimationStyle()}
-						>
-							DEMO
-						</div>
-					</div>
-
-					<div className='flex justify-center gap-2'>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
+							size='icon'
+							variant='ghost'
 							onClick={togglePlayPause}
-							variant={isPlaying ? 'secondary' : 'default'}
-							className='cursor-pointer gap-2'
+							title={isPlaying ? 'Пауза' : 'Проиграть'}
+							className={toolIconButton}
 						>
 							{isPlaying ? (
-								<>
-									<Pause className='w-4 h-4' /> Пауза
-								</>
+								<Pause className='h-4 w-4' />
 							) : (
-								<>
-									<Play className='w-4 h-4' /> Играть
-								</>
+								<Play className='h-4 w-4' />
 							)}
 						</Button>
 						<Button
+							size='icon'
+							variant='ghost'
 							onClick={reset}
-							variant='outline'
-							className='cursor-pointer gap-2'
+							title='Сбросить генератор'
+							className={toolIconButton}
 						>
-							<RefreshCw className='w-4 h-4' />
-							Сброс
+							<RotateCcw className='h-4 w-4' />
 						</Button>
 					</div>
-				</Card>
-			</div>
-
-			<Card className='p-6'>
-				<div className='mb-4 flex flex-wrap items-center justify-between gap-2'>
-					<h3 className='text-sm font-semibold uppercase tracking-wide text-muted-foreground'>
-						Сгенерированный CSS
-					</h3>
-					<Button onClick={copyCSS} size='sm' className='cursor-pointer gap-2'>
-						<Copy className='w-4 h-4' />
-						Копировать
-					</Button>
 				</div>
 
-				<pre className='overflow-x-auto rounded-lg bg-muted p-4'>
-					<code className='text-xs sm:text-sm'>{generateCSS()}</code>
-				</pre>
+				<style>{keyframesRule}</style>
+				<div className='flex h-56 items-center justify-center overflow-hidden px-5 sm:px-6'>
+					<div
+						key={playCount}
+						className='flex h-24 w-24 items-center justify-center rounded-lg bg-primary font-bold text-primary-foreground'
+						style={getAnimationStyle()}
+					>
+						DEMO
+					</div>
+				</div>
+
+				{/* Полоса кадров: проценты — это и есть шкала анимации. */}
+				<div className={toolFooterBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<span className='mr-1 text-sm text-muted-foreground'>Кадры</span>
+						{keyframes.map(keyframe => (
+							<button
+								key={keyframe.id}
+								type='button'
+								onClick={() => setSelectedKeyframeId(keyframe.id)}
+								aria-pressed={selectedKeyframe?.id === keyframe.id}
+								className={toolPill(
+									selectedKeyframe?.id === keyframe.id,
+									'font-mono'
+								)}
+							>
+								{keyframe.percentage}%
+							</button>
+						))}
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={addKeyframe}
+							title='Добавить кадр'
+							className={cn(toolIconButton, 'h-7 w-7')}
+						>
+							<Plus className='h-3.5 w-3.5' />
+						</Button>
+					</div>
+
+					{selectedKeyframe && (
+						<>
+							<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+								<span className='font-mono text-xs'>позиция</span>
+								<input
+									type='number'
+									min={0}
+									max={100}
+									value={selectedKeyframe.percentage}
+									onChange={event =>
+										updateKeyframe(
+											selectedKeyframe.id,
+											'percentage',
+											parseInt(event.target.value) || 0
+										)
+									}
+									className='w-16 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								/>
+								<span className='font-mono text-xs'>%</span>
+							</label>
+
+							<div className='flex items-center gap-0.5 sm:ml-auto'>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() => deleteKeyframe(selectedKeyframe.id)}
+									disabled={keyframes.length <= 2}
+									title={
+										keyframes.length <= 2
+											? 'В анимации должно остаться минимум два кадра'
+											: 'Удалить кадр'
+									}
+									className={toolIconButton}
+								>
+									<Trash2 className='h-4 w-4' />
+								</Button>
+							</div>
+						</>
+					)}
+				</div>
+
+				{/* Полоса свойств выбранного кадра. */}
+				{selectedKeyframe && (
+					<div className={toolFooterBar}>
+						{Object.entries(selectedKeyframe.properties).map(
+							([prop, value]) => (
+								<label
+									key={prop}
+									className='flex items-center gap-2 text-sm text-muted-foreground'
+								>
+									<span className='font-mono text-xs'>{prop}</span>
+									<input
+										value={value}
+										onChange={event =>
+											addPropertyToKeyframe(
+												selectedKeyframe.id,
+												prop,
+												event.target.value
+											)
+										}
+										spellCheck={false}
+										className='w-40 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+									/>
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={() =>
+											removePropertyFromKeyframe(selectedKeyframe.id, prop)
+										}
+										title={`Убрать ${prop}`}
+										className={cn(toolIconButton, 'h-7 w-7')}
+									>
+										<Trash2 className='h-3.5 w-3.5' />
+									</Button>
+								</label>
+							)
+						)}
+
+						<div className='flex items-center gap-2 sm:ml-auto'>
+							<select
+								value={selectedProperty}
+								onChange={event => setSelectedProperty(event.target.value)}
+								aria-label='Свойство для добавления'
+								className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							>
+								{CSS_PROPERTIES.map(category => (
+									<optgroup key={category.category} label={category.category}>
+										{category.properties.map(prop => (
+											<option key={prop} value={prop}>
+												{prop}
+											</option>
+										))}
+									</optgroup>
+								))}
+							</select>
+							<input
+								value={propertyValue}
+								onChange={event => setPropertyValue(event.target.value)}
+								onKeyDown={event => {
+									if (event.key === 'Enter' && propertyValue) {
+										addPropertyToKeyframe(
+											selectedKeyframe.id,
+											selectedProperty,
+											propertyValue
+										)
+										setPropertyValue('')
+									}
+								}}
+								placeholder='значение'
+								spellCheck={false}
+								aria-label='Значение свойства'
+								className='w-36 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={() => {
+									if (propertyValue) {
+										addPropertyToKeyframe(
+											selectedKeyframe.id,
+											selectedProperty,
+											propertyValue
+										)
+										setPropertyValue('')
+									}
+								}}
+								title='Добавить свойство в кадр'
+								className={cn(toolIconButton, 'h-7 w-7')}
+							>
+								<Plus className='h-3.5 w-3.5' />
+							</Button>
+						</div>
+					</div>
+				)}
+
+				{/* Полоса тайминга: как долго, с какой плавностью и сколько раз. */}
+				<div className={toolFooterBar}>
+					{sliderControl('duration', duration, setDuration, {
+						min: 0.1,
+						max: 10,
+						step: 0.1,
+						suffix: 's'
+					})}
+					{sliderControl('delay', delay, setDelay, {
+						min: 0,
+						max: 5,
+						step: 0.1,
+						suffix: 's'
+					})}
+					{selectControl(
+						'easing',
+						easing,
+						value => setEasing(value as EasingType),
+						EASING_FUNCTIONS.map(func => func.value)
+					)}
+					{easing === 'cubic-bezier' && (
+						<input
+							value={cubicBezier}
+							onChange={event => setCubicBezier(event.target.value)}
+							placeholder='0.25, 0.1, 0.25, 1'
+							spellCheck={false}
+							aria-label='Значения cubic-bezier'
+							className='w-40 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						/>
+					)}
+
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span className='font-mono text-xs'>повторы</span>
+						<input
+							type='number'
+							min={1}
+							value={iterationCount === 'infinite' ? '' : iterationCount}
+							onChange={event => setIterationCount(event.target.value)}
+							disabled={infinite}
+							className='w-16 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50'
+						/>
+					</label>
+					<button
+						type='button'
+						onClick={() => setInfinite(!infinite)}
+						aria-pressed={infinite}
+						className={toolPill(infinite, 'font-mono')}
+					>
+						infinite
+					</button>
+
+					{selectControl('direction', direction, setDirection, DIRECTIONS)}
+					{selectControl('fill-mode', fillMode, setFillMode, FILL_MODES)}
+				</div>
+
+				<div className='border-t'>
+					<div className='flex items-center justify-between gap-2 px-5 pt-4 sm:px-6'>
+						<span className='text-sm font-medium'>CSS</span>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyCSS}
+							title='Скопировать'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+					</div>
+					<pre className='overflow-x-auto px-5 pt-2 pb-5 font-mono text-xs leading-relaxed sm:px-6'>
+						{generateCSS()}
+					</pre>
+				</div>
 			</Card>
 
+			{/* Готовые анимации — тихая полка под инструментом. */}
+			<div className='mt-6'>
+				<p className='px-1 text-sm text-muted-foreground'>
+					Готовые анимации — кликните, чтобы загрузить в конструктор
+				</p>
+				<div className='mt-2 flex flex-wrap gap-1.5'>
+					{ANIMATION_PRESETS.map((preset, index) => {
+						const Icon = preset.icon
+						return (
+							<button
+								key={index}
+								type='button'
+								onClick={() => loadPreset(preset)}
+								className={toolPill(false, 'flex items-center gap-2')}
+							>
+								<Icon className='h-3.5 w-3.5' />
+								{preset.name}
+							</button>
+						)
+					})}
+				</div>
+			</div>
+
 			<AnimationGuide />
-		</div>
+		</>
 	)
 }

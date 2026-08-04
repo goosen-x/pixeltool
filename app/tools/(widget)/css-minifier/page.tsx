@@ -5,20 +5,20 @@ import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
 import {
 	Copy,
+	Check,
 	Download,
 	Upload,
 	AlertCircle,
-	CheckCircle,
-	ChevronDown,
-	ChevronUp,
-	Settings,
-	X
+	Trash2
 } from 'lucide-react'
-import { toast } from 'sonner'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
 interface MinificationResult {
 	originalSize: number
@@ -106,7 +106,8 @@ export default function CSSMinifierPage() {
 	const [input, setInput] = useState('')
 	const [output, setOutput] = useState('')
 	const [result, setResult] = useState<MinificationResult | null>(null)
-	const [showOptions, setShowOptions] = useState(false)
+	const [copied, setCopied] = useState(false)
+	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	// Options
 	const [preserveLineBreaks, setPreserveLineBreaks] = useState(false)
@@ -282,7 +283,8 @@ export default function CSSMinifierPage() {
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text)
-		toast.success('Скопировано в буфер обмена!')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}
 
 	const downloadCode = () => {
@@ -295,12 +297,10 @@ export default function CSSMinifierPage() {
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-		toast.success('Файл minified.css скачан!')
 	}
 
 	const loadExample = (example: (typeof CSS_EXAMPLES)[0]) => {
 		setInput(example.code)
-		toast.success(`Пример загружен: ${example.name}`)
 	}
 
 	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -310,7 +310,6 @@ export default function CSSMinifierPage() {
 			reader.onload = e => {
 				const content = e.target?.result as string
 				setInput(content)
-				toast.success(`Файл ${file.name} загружен!`)
 			}
 			reader.readAsText(file)
 		}
@@ -324,39 +323,41 @@ export default function CSSMinifierPage() {
 		setOptimizeColors(true)
 		setOptimizeUnits(true)
 		setOptimizeShorthand(true)
-		toast.success('Сброшено')
 	}
 
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			<Card className='space-y-8 p-6 sm:p-8'>
-				{/* Примеры — ряд наверху, как в остальных CSS-тулах */}
-				<div className='flex flex-wrap items-center gap-2'>
-					<span className='mr-1 text-sm font-medium text-muted-foreground'>
-						Примеры:
-					</span>
-					{CSS_EXAMPLES.map(example => (
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: чем заполнить инструмент и что сделать с
+				    результатом. Кнопка «Минифицировать» не нужна — сжатие идёт на
+				    лету, поэтому её здесь и нет. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<span className='mr-1 text-sm text-muted-foreground'>Пример</span>
+						{CSS_EXAMPLES.map(example => (
+							<button
+								key={example.name}
+								type='button'
+								onClick={() => loadExample(example)}
+								className={toolPill(false)}
+							>
+								{example.name}
+							</button>
+						))}
+					</div>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
-							key={example.name}
-							onClick={() => loadExample(example)}
-							variant='outline'
-							size='sm'
-							className='cursor-pointer'
+							size='icon'
+							variant='ghost'
+							onClick={() => fileInputRef.current?.click()}
+							title='Загрузить .css файл'
+							className={toolIconButton}
 						>
-							{example.name}
+							<Upload className='h-4 w-4' />
 						</Button>
-					))}
-					<div className='ml-auto flex items-center gap-2'>
-						<Label htmlFor='file-upload'>
-							<Button variant='outline' size='sm' asChild>
-								<span className='cursor-pointer'>
-									<Upload className='mr-2 h-4 w-4' />
-									Загрузить файл
-								</span>
-							</Button>
-						</Label>
 						<input
-							id='file-upload'
+							ref={fileInputRef}
 							type='file'
 							accept='.css'
 							onChange={handleFileUpload}
@@ -364,225 +365,138 @@ export default function CSSMinifierPage() {
 							aria-label='Загрузить CSS-файл'
 						/>
 						<Button
+							size='icon'
 							variant='ghost'
-							size='sm'
+							onClick={() => copyToClipboard(output)}
+							disabled={!output}
+							title='Скопировать результат'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadCode}
+							disabled={!output}
+							title='Скачать minified.css'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
 							onClick={resetAll}
 							disabled={!input.trim()}
-							className='cursor-pointer'
+							title='Очистить'
+							className={toolIconButton}
 						>
-							Сбросить
+							<Trash2 className='h-4 w-4' />
 						</Button>
 					</div>
 				</div>
 
-				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
-					{/* Ввод */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<h3 className='text-sm font-semibold tracking-wide uppercase text-muted-foreground'>
-								Исходный код
-							</h3>
-							{input && (
-								<span className='font-mono text-xs text-muted-foreground'>
-									{formatBytes(new TextEncoder().encode(input).length)}
-								</span>
-							)}
-						</div>
+				<div className='grid md:grid-cols-2'>
+					<Textarea
+						value={input}
+						onChange={e => setInput(e.target.value)}
+						placeholder='Вставьте CSS сюда'
+						spellCheck={false}
+						aria-label='Исходный CSS'
+						className='min-h-[24rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 md:border-r md:text-sm'
+					/>
 
+					{output ? (
 						<Textarea
-							value={input}
-							onChange={e => setInput(e.target.value)}
-							placeholder='Вставьте CSS код сюда...'
-							className='min-h-[320px] resize-none font-mono text-base md:text-sm'
+							value={output}
+							readOnly
+							aria-label='Минифицированный CSS'
+							className='min-h-[24rem] resize-none rounded-none border-0 bg-muted/20 px-5 py-6 font-mono text-base focus-visible:ring-0 md:text-sm'
 						/>
-
-						<div className='space-y-4'>
-							<div className='flex flex-wrap items-center justify-between gap-2'>
-								<Button
-									variant='ghost'
-									size='sm'
-									className='cursor-pointer gap-2'
-									onClick={() => setShowOptions(!showOptions)}
-								>
-									<Settings className='h-4 w-4' />
-									Настройки минификации
-									{showOptions ? (
-										<ChevronUp className='h-4 w-4' />
-									) : (
-										<ChevronDown className='h-4 w-4' />
-									)}
-								</Button>
-							</div>
-
-							{showOptions && (
-								<div className='grid grid-cols-2 gap-4 rounded-lg bg-muted/50 p-4'>
-									<div className='flex items-center space-x-2'>
-										<Switch
-											id='preserve-lines'
-											checked={preserveLineBreaks}
-											onCheckedChange={setPreserveLineBreaks}
-											className='cursor-pointer'
-										/>
-										<Label
-											htmlFor='preserve-lines'
-											className='cursor-pointer text-sm'
-										>
-											Сохранить переносы строк
-										</Label>
-									</div>
-
-									<div className='flex items-center space-x-2'>
-										<Switch
-											id='optimize-colors'
-											checked={optimizeColors}
-											onCheckedChange={setOptimizeColors}
-											className='cursor-pointer'
-										/>
-										<Label
-											htmlFor='optimize-colors'
-											className='cursor-pointer text-sm'
-										>
-											Оптимизировать цвета
-										</Label>
-									</div>
-
-									<div className='flex items-center space-x-2'>
-										<Switch
-											id='optimize-units'
-											checked={optimizeUnits}
-											onCheckedChange={setOptimizeUnits}
-											className='cursor-pointer'
-										/>
-										<Label
-											htmlFor='optimize-units'
-											className='cursor-pointer text-sm'
-										>
-											Оптимизировать единицы
-										</Label>
-									</div>
-
-									<div className='flex items-center space-x-2'>
-										<Switch
-											id='optimize-shorthand'
-											checked={optimizeShorthand}
-											onCheckedChange={setOptimizeShorthand}
-											className='cursor-pointer'
-										/>
-										<Label
-											htmlFor='optimize-shorthand'
-											className='cursor-pointer text-sm'
-										>
-											Сокращённые свойства
-										</Label>
-									</div>
-								</div>
-							)}
-						</div>
-					</div>
-
-					{/* Вывод */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<h3 className='text-sm font-semibold tracking-wide uppercase text-muted-foreground'>
-								Минифицированный код
-							</h3>
-							{output && (
-								<div className='flex gap-1'>
-									<Button
-										onClick={() => copyToClipboard(output)}
-										variant='ghost'
-										size='sm'
-										className='h-8 cursor-pointer px-2'
-										aria-label='Скопировать результат'
-									>
-										<Copy className='h-3.5 w-3.5' />
-									</Button>
-									<Button
-										onClick={downloadCode}
-										variant='ghost'
-										size='sm'
-										className='h-8 cursor-pointer px-2'
-										aria-label='Скачать файл'
-									>
-										<Download className='h-3.5 w-3.5' />
-									</Button>
-								</div>
-							)}
-						</div>
-
-						{result && (
-							<div className='flex flex-wrap items-center gap-x-4 gap-y-1 border-b pb-3 text-xs text-muted-foreground'>
-								<span className='font-mono text-sm font-semibold text-foreground'>
-									−{result.savings}%
-								</span>
-								<span className='font-mono'>
-									{formatBytes(result.originalSize)} →{' '}
-									{formatBytes(result.minifiedSize)}
-								</span>
-								<span>сэкономлено {formatBytes(result.savingsBytes)}</span>
-							</div>
-						)}
-
-						{!output ? (
-							<div className='flex h-[320px] flex-col items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground'>
-								Минифицированный CSS появится здесь
-							</div>
-						) : (
-							<Textarea
-								value={output}
-								readOnly
-								className='min-h-[320px] resize-none bg-muted/50 font-mono text-base md:text-sm'
-							/>
-						)}
-
-						{result && (
-							<div className='space-y-3 text-sm'>
-								{result.errors && result.errors.length > 0 ? (
-									<div className='rounded-lg border border-destructive/30 bg-destructive/5 p-3'>
-										<p className='mb-1.5 flex items-center gap-2 font-medium text-destructive'>
-											<AlertCircle className='h-4 w-4' />
-											Обнаружены ошибки
-										</p>
-										<ul className='space-y-0.5 text-xs text-muted-foreground'>
-											{result.errors.map((error, index) => (
-												<li key={index}>• {error}</li>
-											))}
-										</ul>
-									</div>
-								) : (
-									<p className='flex items-center gap-2 text-sm text-muted-foreground'>
-										<CheckCircle className='h-4 w-4' />
-										CSS минифицирован без ошибок
-									</p>
-								)}
-
-								{result.warnings && result.warnings.length > 0 && (
-									<div className='rounded-lg bg-muted/50 p-3'>
-										<p className='mb-1.5 text-xs font-medium'>Важные заметки</p>
-										<ul className='space-y-0.5 text-xs text-muted-foreground'>
-											{result.warnings.map((warning, index) => (
-												<li key={index}>• {warning}</li>
-											))}
-										</ul>
-									</div>
-								)}
-
-								{result.optimizations && result.optimizations.length > 0 && (
-									<div className='rounded-lg bg-muted/50 p-3'>
-										<p className='mb-1.5 text-xs font-medium'>
-											Применённые оптимизации
-										</p>
-										<ul className='space-y-0.5 text-xs text-muted-foreground'>
-											{result.optimizations.map((opt, index) => (
-												<li key={index}>• {opt}</li>
-											))}
-										</ul>
-									</div>
-								)}
-							</div>
-						)}
-					</div>
+					) : (
+						<p className='flex min-h-[24rem] items-center justify-center px-5 text-center text-sm text-muted-foreground'>
+							Минифицированный CSS появится здесь
+						</p>
+					)}
 				</div>
+
+				{/* Полоса настроек: что именно оптимизировать. Раньше это пряталось
+				    за кнопкой «Настройки минификации» с шевроном. */}
+				<div className={toolFooterBar}>
+					{(
+						[
+							{
+								label: 'переносы строк',
+								value: preserveLineBreaks,
+								toggle: () => setPreserveLineBreaks(!preserveLineBreaks),
+								title: 'Оставить переносы строк — код останется читаемым'
+							},
+							{
+								label: 'цвета',
+								value: optimizeColors,
+								toggle: () => setOptimizeColors(!optimizeColors),
+								title: '#ffffff → #fff'
+							},
+							{
+								label: 'единицы',
+								value: optimizeUnits,
+								toggle: () => setOptimizeUnits(!optimizeUnits),
+								title: '0px → 0, 0.5em → .5em'
+							},
+							{
+								label: 'сокращения',
+								value: optimizeShorthand,
+								toggle: () => setOptimizeShorthand(!optimizeShorthand),
+								title: 'margin: 0 0 0 0 → margin: 0'
+							}
+						] as const
+					).map(option => (
+						<button
+							key={option.label}
+							type='button'
+							onClick={option.toggle}
+							aria-pressed={option.value}
+							title={option.title}
+							className={toolPill(option.value)}
+						>
+							{option.label}
+						</button>
+					))}
+
+					{result && (
+						<div className='flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground sm:ml-auto'>
+							<span className='font-mono font-semibold text-foreground'>
+								−{result.savings}%
+							</span>
+							<span className='font-mono'>
+								{formatBytes(result.originalSize)} →{' '}
+								{formatBytes(result.minifiedSize)}
+							</span>
+						</div>
+					)}
+				</div>
+
+				{result && result.errors && result.errors.length > 0 && (
+					<div className={toolFooterBar}>
+						<span className='flex items-center gap-2 text-sm text-destructive'>
+							<AlertCircle className='h-4 w-4' />
+							{result.errors.join('; ')}
+						</span>
+					</div>
+				)}
+
+				{result && result.warnings && result.warnings.length > 0 && (
+					<div className={toolFooterBar}>
+						<span className='text-sm text-muted-foreground'>
+							{result.warnings.join('; ')}
+						</span>
+					</div>
+				)}
 			</Card>
 
 			{/* Справка — секцией под карточкой, как обучающие блоки в других тулах */}
@@ -642,6 +556,6 @@ export default function CSSMinifierPage() {
 					файл в продакшен.
 				</p>
 			</section>
-		</div>
+		</>
 	)
 }

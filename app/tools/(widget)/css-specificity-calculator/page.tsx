@@ -5,9 +5,8 @@ import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
-import { Copy, Trash2 } from 'lucide-react'
-import { toast } from 'sonner'
+import { Copy, Check, Trash2 } from 'lucide-react'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 
 import { cn } from '@/lib/utils'
 
@@ -30,6 +29,7 @@ interface SpecificityResult {
 export default function CSSSpecificityPage() {
 	const [input, setInput] = useState('')
 	const [sortBy, setSortBy] = useState<'order' | 'weight'>('order')
+	const [copied, setCopied] = useState(false)
 
 	const calculateSpecificity = (selector: string): SpecificityResult => {
 		const parts = {
@@ -275,7 +275,8 @@ export default function CSSSpecificityPage() {
 			.join('\n')
 
 		navigator.clipboard.writeText(text)
-		toast.success('Скопировано в буфер обмена!')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}
 
 	const loadExample = () => {
@@ -294,7 +295,6 @@ div.container > p::first-line
 [data-theme="dark"] .header`
 
 		setInput(example)
-		toast.success('Пример загружен')
 	}
 
 	const getSpecificityColor = (weight: number) => {
@@ -305,122 +305,110 @@ div.container > p::first-line
 	}
 
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			<Card className='space-y-8 p-6 sm:p-8'>
-				<div className='grid gap-10 lg:grid-cols-2'>
-					{/* Ввод */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
-								Селекторы
-							</h3>
-							<div className='flex gap-1'>
-								<Button
-									variant='outline'
-									size='sm'
-									onClick={loadExample}
-									className='cursor-pointer'
-								>
-									Пример
-								</Button>
-								<Button
-									variant='ghost'
-									size='sm'
-									onClick={() => setInput('')}
-									disabled={!input}
-									className='cursor-pointer'
-									aria-label='Очистить'
-								>
-									<Trash2 className='h-4 w-4' />
-								</Button>
-							</div>
-						</div>
-
-						<Textarea
-							placeholder={`body\n.header#main-content\nnav ul li a\n.btn.btn-primary\ninput[type="text"]\na:hover`}
-							value={input}
-							onChange={e => setInput(e.target.value)}
-							rows={14}
-							className='resize-none font-mono text-base md:text-sm'
-						/>
-						<p className='text-xs text-muted-foreground'>
-							По одному селектору на строку. Вес считается на лету.
-						</p>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: порядок вывода и действия над списком. Заголовки
+				    «Селекторы» и «Вес селекторов» убраны — две колонки и так
+				    читаются без подписей. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<button
+							type='button'
+							onClick={() => setSortBy('order')}
+							aria-pressed={sortBy === 'order'}
+							className={toolPill(sortBy === 'order')}
+						>
+							По порядку
+						</button>
+						<button
+							type='button'
+							onClick={() => setSortBy('weight')}
+							aria-pressed={sortBy === 'weight'}
+							className={toolPill(sortBy === 'weight')}
+						>
+							По весу
+						</button>
+						{results.length > 0 && (
+							<span className='ml-2 text-sm text-muted-foreground'>
+								{results.length} шт.
+							</span>
+						)}
 					</div>
 
-					{/* Результат */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<h3 className='text-sm font-semibold tracking-wide text-muted-foreground uppercase'>
-								Вес селекторов
-								{results.length > 0 && (
-									<span className='ml-2 font-mono normal-case'>
-										{results.length}
-									</span>
-								)}
-							</h3>
-							{results.length > 0 && (
-								<div className='flex gap-1'>
-									<Button
-										variant='ghost'
-										size='sm'
-										className='cursor-pointer text-xs'
-										onClick={() =>
-											setSortBy(sortBy === 'order' ? 'weight' : 'order')
-										}
-									>
-										{sortBy === 'order' ? 'По весу' : 'По порядку'}
-									</Button>
-									<Button
-										variant='ghost'
-										size='sm'
-										onClick={copyResults}
-										className='cursor-pointer'
-										aria-label='Скопировать результаты'
-									>
-										<Copy className='h-4 w-4' />
-									</Button>
-								</div>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<button
+							type='button'
+							onClick={loadExample}
+							className={toolPill(false)}
+						>
+							Пример
+						</button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyResults}
+							disabled={results.length === 0}
+							title='Скопировать результаты'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
 							)}
-						</div>
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setInput('')}
+							disabled={!input}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
 
+				<div className='grid md:grid-cols-2'>
+					<Textarea
+						placeholder={`body\n.header#main-content\nnav ul li a\n.btn.btn-primary\ninput[type="text"]\na:hover`}
+						value={input}
+						onChange={e => setInput(e.target.value)}
+						rows={16}
+						spellCheck={false}
+						aria-label='Селекторы CSS'
+						className='min-h-[24rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 md:border-r md:text-sm'
+					/>
+
+					<div className='min-h-[24rem] overflow-y-auto px-5 py-6 sm:px-6 md:max-h-[32rem]'>
 						{results.length === 0 ? (
-							<div className='flex h-[320px] items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground'>
-								Вставьте селекторы — вес посчитается сам
-							</div>
+							<p className='py-16 text-center text-sm text-muted-foreground'>
+								Вставьте селекторы слева — вес посчитается сам
+							</p>
 						) : (
-							<div className='max-h-[320px] space-y-2 overflow-y-auto pr-1'>
+							<div className='space-y-4'>
 								{results.map((result, index) => (
-									<div
-										key={index}
-										className='space-y-2 rounded-lg border p-3 transition-colors hover:border-primary/50'
-									>
+									<div key={index} className='space-y-1.5'>
 										<div className='flex items-start justify-between gap-3'>
-											<code className='flex-1 font-mono text-sm break-all'>
+											<code className='min-w-0 flex-1 font-mono text-sm break-all'>
 												{result.selector}
 											</code>
-											<div className='flex shrink-0 items-center gap-2'>
-												<span
-													className={cn(
-														'font-mono text-sm font-semibold',
-														getSpecificityColor(result.weight)
-													)}
-												>
-													{result.specificityString}
-												</span>
-												<span className='text-xs text-muted-foreground'>
-													вес {result.weight}
-												</span>
-											</div>
+											<span
+												className={cn(
+													'shrink-0 font-mono text-sm font-semibold',
+													getSpecificityColor(result.weight)
+												)}
+											>
+												{result.specificityString}
+											</span>
 										</div>
 
 										{/* Разбор: раньше каждый тип части красился в свой цвет —
 										    шесть палитр в одном списке. Теперь нейтрально */}
-										<div className='flex flex-wrap gap-1.5'>
+										<div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground'>
 											{result.parts.inline > 0 && (
-												<Badge variant='secondary' className='text-xs'>
-													inline style
-												</Badge>
+												<span className='font-mono'>inline style</span>
 											)}
 											{[
 												...result.parts.ids,
@@ -430,14 +418,13 @@ div.container > p::first-line
 												...result.parts.elements,
 												...result.parts.pseudoElements
 											].map((part, i) => (
-												<Badge
-													key={i}
-													variant='secondary'
-													className='font-mono text-xs'
-												>
+												<span key={i} className='font-mono'>
 													{part}
-												</Badge>
+												</span>
 											))}
+											<span className='ml-auto shrink-0'>
+												вес {result.weight}
+											</span>
 										</div>
 									</div>
 								))}
@@ -536,6 +523,6 @@ div.container > p::first-line
 					перед тем как отправить в продакшен.
 				</p>
 			</section>
-		</div>
+		</>
 	)
 }

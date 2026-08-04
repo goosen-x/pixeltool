@@ -4,29 +4,15 @@ import { ContrastGuide } from './ContrastGuide'
 import { useState, useCallback, useMemo } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import {
-	Copy,
-	RefreshCw,
-	CheckCircle,
-	AlertCircle,
-	XCircle,
-	Palette,
-	Type,
-	Shuffle
-} from 'lucide-react'
-import { toast } from 'sonner'
+import { Copy, Check, RotateCcw, Shuffle, ArrowLeftRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
 interface ContrastResult {
 	ratio: number
@@ -88,6 +74,7 @@ export default function ColorContrastCheckerPage() {
 	const [background, setBackground] = useState('#ffffff')
 	const [fontSize, setFontSize] = useState(16)
 	const [fontWeight, setFontWeight] = useState<'normal' | 'bold'>('normal')
+	const [copied, setCopied] = useState(false)
 
 	// Helper functions
 	const hexToRgb = useCallback(
@@ -228,7 +215,6 @@ export default function ColorContrastCheckerPage() {
 		const temp = foreground
 		setForeground(background)
 		setBackground(temp)
-		toast.success('Цвета поменяны местами')
 	}
 
 	const randomColors = () => {
@@ -247,18 +233,14 @@ export default function ColorContrastCheckerPage() {
 
 		setForeground(fg)
 		setBackground(bg)
-		toast.success('Случайные цвета сгенерированы')
 	}
 
 	const loadColorPair = (pair: ColorPair) => {
 		setForeground(pair.foreground)
 		setBackground(pair.background)
-		toast.success(`Загружена пара: ${pair.name}`)
 	}
 
 	const copyResults = () => {
-		if (!result) return
-
 		const text = `
 Проверка контрастности цветов WCAG
 
@@ -275,7 +257,8 @@ export default function ColorContrastCheckerPage() {
     `.trim()
 
 		navigator.clipboard.writeText(text)
-		toast.success('Результаты скопированы!')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}
 
 	const reset = () => {
@@ -283,15 +266,6 @@ export default function ColorContrastCheckerPage() {
 		setBackground('#ffffff')
 		setFontSize(16)
 		setFontWeight('normal')
-		toast.success('Настройки сброшены')
-	}
-
-	const getStatusIcon = (passes: boolean) => {
-		return passes ? (
-			<CheckCircle className='w-4 h-4 text-green-500' />
-		) : (
-			<XCircle className='w-4 h-4 text-red-500' />
-		)
 	}
 
 	// Раньше сюда отдавался только цвет текста, и он навешивался на Badge поверх
@@ -359,24 +333,290 @@ export default function ColorContrastCheckerPage() {
 		}
 	]
 
+	/** Пара «пипетка + hex»: цвет берут то из макета, то подбирают на глаз. */
+	const colorControl = (
+		label: string,
+		value: string,
+		onChange: (value: string) => void
+	) => (
+		<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+			<span>{label}</span>
+			<input
+				type='color'
+				value={value}
+				onChange={event => onChange(event.target.value)}
+				aria-label={label}
+				className='h-7 w-9 cursor-pointer rounded-md border bg-background p-0.5'
+			/>
+			<input
+				value={value}
+				onChange={event => onChange(event.target.value)}
+				spellCheck={false}
+				className='w-24 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+			/>
+		</label>
+	)
+
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			<Card className='space-y-8 p-6 sm:p-8'>
-				{/* Готовые пары — ряд наверху: с них удобно начинать */}
-				<div className='flex flex-wrap items-center gap-2'>
-					<span className='mr-1 text-sm font-medium text-muted-foreground'>
-						Готовые пары:
-					</span>
-					{COLOR_PAIRS.map((pair, index) => (
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: два цвета — весь ввод этого инструмента. */}
+				<div className={toolBar}>
+					{colorControl('Текст', foreground, setForeground)}
+					{colorControl('Фон', background, setBackground)}
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
+							size='icon'
+							variant='ghost'
+							onClick={swapColors}
+							title='Поменять цвета местами'
+							className={toolIconButton}
+						>
+							<ArrowLeftRight className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={randomColors}
+							title='Случайная пара'
+							className={toolIconButton}
+						>
+							<Shuffle className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyResults}
+							title='Скопировать отчёт'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={reset}
+							title='Сбросить'
+							className={toolIconButton}
+						>
+							<RotateCcw className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				{/* Рабочая область: число и живой пример рядом. Раньше вердикт жил
+				    в правой колонке, а пример — в левой, и на телефоне они
+				    расходились на два экрана. */}
+				<div className='grid items-center gap-8 px-5 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]'>
+					<div className='flex flex-col items-center gap-2 text-center'>
+						<span
+							className={cn(
+								'font-mono text-6xl font-bold tabular-nums',
+								level.text
+							)}
+						>
+							{result.ratio.toFixed(2)}
+							<span className='text-2xl'>:1</span>
+						</span>
+						<span
+							className={cn(
+								'rounded-full px-3 py-1 text-sm font-semibold',
+								level.chip
+							)}
+						>
+							{level.label}
+						</span>
+						<span className='text-sm text-muted-foreground'>{level.hint}</span>
+					</div>
+
+					<div
+						className='rounded-xl border p-6'
+						style={{ backgroundColor: background }}
+					>
+						<p
+							style={{
+								color: foreground,
+								fontSize: `${fontSize}px`,
+								fontWeight: fontWeight
+							}}
+						>
+							Съешь ещё этих мягких французских булок, да выпей чаю.
+						</p>
+						<div className='mt-4 flex items-center gap-3'>
+							<span
+								className='rounded border px-3 py-1.5 text-sm'
+								style={{
+									color: foreground,
+									borderColor: foreground,
+									backgroundColor: 'transparent'
+								}}
+							>
+								Кнопка
+							</span>
+							<span
+								className='h-2 flex-1 rounded'
+								style={{ backgroundColor: foreground, opacity: 0.2 }}
+							/>
+						</div>
+					</div>
+				</div>
+
+				{/* Полоса критериев: пять порогов WCAG одной строкой вместо пяти
+				    отдельных плашек — глазами нужен ответ «что прошло», а не
+				    список из пяти карточек. */}
+				<div className={toolFooterBar}>
+					{CRITERIA.map((criterion, index) => (
+						<span
 							key={index}
-							onClick={() => loadColorPair(pair)}
-							variant='outline'
-							size='sm'
-							className='h-auto cursor-pointer gap-2 py-1.5'
+							className='flex items-center gap-2 text-sm text-muted-foreground'
 						>
 							<span
-								className='flex h-5 w-9 items-center justify-center rounded border text-[10px] font-bold'
+								aria-hidden
+								className={cn(
+									'flex h-4 w-4 items-center justify-center rounded-full text-[0.625rem] font-bold text-white',
+									criterion.passed ? 'bg-green-600' : 'bg-red-600'
+								)}
+							>
+								{criterion.passed ? '✓' : '✕'}
+							</span>
+							{criterion.label}
+							<span className='font-mono text-xs'>{criterion.threshold}</span>
+							<span className='sr-only'>
+								{criterion.passed ? 'пройдено' : 'не пройдено'}
+							</span>
+						</span>
+					))}
+				</div>
+
+				{/* Полоса текста: размер и начертание меняют не контраст, а порог,
+				    по которому его оценивают. */}
+				<div className={toolFooterBar}>
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span className='font-mono text-xs'>font-size</span>
+						<Slider
+							value={[fontSize]}
+							onValueChange={([value]) => setFontSize(value)}
+							min={10}
+							max={48}
+							step={1}
+							className='w-28 cursor-pointer'
+							aria-label='Размер шрифта'
+						/>
+						<span className='w-12 font-mono text-sm text-foreground tabular-nums'>
+							{fontSize}px
+						</span>
+					</label>
+
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								['normal', 'Обычный'],
+								['bold', 'Жирный']
+							] as ['normal' | 'bold', string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setFontWeight(value)}
+								aria-pressed={fontWeight === value}
+								className={toolPill(fontWeight === value)}
+							>
+								{label}
+							</button>
+						))}
+					</div>
+
+					<span className='text-sm text-muted-foreground'>
+						{isLargeText(fontSize, fontWeight)
+							? 'Считается крупным текстом — порог AA 3:1'
+							: 'Считается обычным текстом — порог AA 4.5:1'}
+					</span>
+				</div>
+
+				{/* Полоса подсказок появляется, только когда пара не проходит AA. */}
+				{(suggestions.foreground.length > 0 ||
+					suggestions.background.length > 0) && (
+					<div className={toolFooterBar}>
+						{suggestions.foreground.length > 0 && (
+							<div className='flex flex-wrap items-center gap-1.5'>
+								<span className='mr-1 text-sm text-muted-foreground'>
+									Затемнить текст
+								</span>
+								{suggestions.foreground.map((suggestion, index) => (
+									<button
+										key={index}
+										type='button'
+										onClick={() => setForeground(suggestion.color)}
+										className={toolPill(false, 'flex items-center gap-2')}
+									>
+										<span
+											className='h-3 w-3 rounded-full border'
+											style={{ backgroundColor: suggestion.color }}
+											aria-hidden
+										/>
+										<span className='font-mono text-xs'>
+											{suggestion.color}
+										</span>
+										<span className='font-mono text-xs'>
+											{suggestion.ratio.toFixed(1)}:1
+										</span>
+									</button>
+								))}
+							</div>
+						)}
+
+						{suggestions.background.length > 0 && (
+							<div className='flex flex-wrap items-center gap-1.5'>
+								<span className='mr-1 text-sm text-muted-foreground'>
+									Осветлить фон
+								</span>
+								{suggestions.background.map((suggestion, index) => (
+									<button
+										key={index}
+										type='button'
+										onClick={() => setBackground(suggestion.color)}
+										className={toolPill(false, 'flex items-center gap-2')}
+									>
+										<span
+											className='h-3 w-3 rounded-full border'
+											style={{ backgroundColor: suggestion.color }}
+											aria-hidden
+										/>
+										<span className='font-mono text-xs'>
+											{suggestion.color}
+										</span>
+										<span className='font-mono text-xs'>
+											{suggestion.ratio.toFixed(1)}:1
+										</span>
+									</button>
+								))}
+							</div>
+						)}
+					</div>
+				)}
+			</Card>
+
+			{/* Готовые пары — тихая полка под инструментом. */}
+			<div className='mt-6'>
+				<p className='px-1 text-sm text-muted-foreground'>
+					Готовые пары — кликните, чтобы проверить
+				</p>
+				<div className='mt-2 flex flex-wrap gap-2'>
+					{COLOR_PAIRS.map((pair, index) => (
+						<button
+							key={index}
+							type='button'
+							onClick={() => loadColorPair(pair)}
+							title={pair.name}
+							className='flex cursor-pointer items-center gap-2 rounded-full border px-2 py-1 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						>
+							<span
+								className='flex h-5 w-9 items-center justify-center rounded text-[0.625rem] font-bold'
 								style={{
 									backgroundColor: pair.background,
 									color: pair.foreground
@@ -385,302 +625,13 @@ export default function ColorContrastCheckerPage() {
 							>
 								Aa
 							</span>
-							<span className='text-xs'>{pair.name}</span>
-						</Button>
+							<span className='text-xs text-muted-foreground'>{pair.name}</span>
+						</button>
 					))}
 				</div>
-
-				<div className='grid gap-10 border-t pt-8 lg:grid-cols-2'>
-					{/* Слева: что задаём и как это выглядит */}
-					<div className='space-y-5'>
-						<div className='grid gap-4 sm:grid-cols-2'>
-							<div>
-								<Label htmlFor='foreground' className='flex items-center gap-2'>
-									<Type className='h-4 w-4' />
-									Цвет текста
-								</Label>
-								<div className='mt-2 flex gap-2'>
-									<Input
-										id='foreground'
-										type='color'
-										value={foreground}
-										onChange={e => setForeground(e.target.value)}
-										className='h-10 w-14 cursor-pointer p-1'
-									/>
-									<Input
-										type='text'
-										value={foreground}
-										onChange={e => setForeground(e.target.value)}
-										placeholder='#000000'
-										className='flex-1 font-mono'
-									/>
-								</div>
-							</div>
-
-							<div>
-								<Label htmlFor='background' className='flex items-center gap-2'>
-									<Palette className='h-4 w-4' />
-									Цвет фона
-								</Label>
-								<div className='mt-2 flex gap-2'>
-									<Input
-										id='background'
-										type='color'
-										value={background}
-										onChange={e => setBackground(e.target.value)}
-										className='h-10 w-14 cursor-pointer p-1'
-									/>
-									<Input
-										type='text'
-										value={background}
-										onChange={e => setBackground(e.target.value)}
-										placeholder='#ffffff'
-										className='flex-1 font-mono'
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div className='flex flex-wrap gap-2'>
-							<Button
-								onClick={swapColors}
-								variant='outline'
-								size='sm'
-								className='cursor-pointer'
-							>
-								<RefreshCw className='mr-2 h-4 w-4' />
-								Поменять местами
-							</Button>
-							<Button
-								onClick={randomColors}
-								variant='outline'
-								size='sm'
-								className='cursor-pointer'
-							>
-								<Shuffle className='mr-2 h-4 w-4' />
-								Случайные
-							</Button>
-							<Button
-								onClick={copyResults}
-								variant='outline'
-								size='sm'
-								className='cursor-pointer'
-							>
-								<Copy className='mr-2 h-4 w-4' />
-								Скопировать отчёт
-							</Button>
-							<Button
-								onClick={reset}
-								variant='ghost'
-								size='sm'
-								className='cursor-pointer'
-							>
-								Сбросить
-							</Button>
-						</div>
-
-						<div className='grid gap-4 sm:grid-cols-2'>
-							<div>
-								<Label htmlFor='font-size'>Размер шрифта</Label>
-								<div className='mt-1 flex items-center gap-2'>
-									<Slider
-										id='font-size'
-										value={[fontSize]}
-										onValueChange={value => setFontSize(value[0])}
-										min={10}
-										max={48}
-										step={1}
-										className='flex-1'
-									/>
-									<span className='w-12 text-right text-sm'>{fontSize}px</span>
-								</div>
-							</div>
-
-							<div>
-								<Label htmlFor='font-weight'>Начертание</Label>
-								<div className='mt-1 flex items-center gap-2'>
-									<Select
-										value={fontWeight}
-										onValueChange={(value: 'normal' | 'bold') =>
-											setFontWeight(value)
-										}
-									>
-										<SelectTrigger className='flex-1 cursor-pointer'>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='normal' className='cursor-pointer'>
-												Обычный
-											</SelectItem>
-											<SelectItem value='bold' className='cursor-pointer'>
-												Жирный
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<Badge
-										variant={
-											isLargeText(fontSize, fontWeight)
-												? 'secondary'
-												: 'outline'
-										}
-										className='shrink-0'
-									>
-										{isLargeText(fontSize, fontWeight) ? 'Крупный' : 'Обычный'}
-									</Badge>
-								</div>
-							</div>
-						</div>
-
-						{/* Предпросмотр — под своими же настройками */}
-						<div
-							className='rounded-lg border p-6'
-							style={{ backgroundColor: background }}
-						>
-							<p
-								style={{
-									color: foreground,
-									fontSize: `${fontSize}px`,
-									fontWeight: fontWeight
-								}}
-							>
-								Съешь ещё этих мягких французских булок, да выпей чаю.
-							</p>
-							<div className='mt-4 flex items-center gap-3'>
-								<button
-									className='cursor-pointer rounded border px-3 py-1.5 text-sm'
-									style={{
-										color: foreground,
-										borderColor: foreground,
-										backgroundColor: 'transparent'
-									}}
-								>
-									Кнопка
-								</button>
-								<div
-									className='h-2 flex-1 rounded'
-									style={{ backgroundColor: foreground, opacity: 0.2 }}
-								/>
-							</div>
-						</div>
-					</div>
-
-					{/* Справа: вердикт */}
-					<div className='space-y-5'>
-						<div className='flex flex-col items-center gap-2 text-center'>
-							<span className='text-sm text-muted-foreground'>
-								Коэффициент контрастности
-							</span>
-							<span
-								className={cn(
-									'font-mono text-5xl font-bold tabular-nums',
-									level.text
-								)}
-							>
-								{result.ratio.toFixed(2)}
-								<span className='text-2xl'>:1</span>
-							</span>
-							<span
-								className={cn(
-									'rounded-full px-3 py-1 text-sm font-semibold',
-									level.chip
-								)}
-							>
-								{level.label}
-							</span>
-							<span className='text-sm text-muted-foreground'>
-								{level.hint}
-							</span>
-						</div>
-
-						<div className='space-y-2'>
-							{CRITERIA.map((c, index) => (
-								<div
-									key={index}
-									className='flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2'
-								>
-									<div className='min-w-0'>
-										<span className='text-sm'>{c.label}</span>
-										<span className='ml-2 font-mono text-xs text-muted-foreground'>
-											{c.threshold}
-										</span>
-									</div>
-									{getStatusIcon(c.passed)}
-								</div>
-							))}
-						</div>
-
-						{(suggestions.foreground.length > 0 ||
-							suggestions.background.length > 0) && (
-							<div className='space-y-4 border-t pt-6'>
-								<h3 className='flex items-center gap-2 text-sm font-medium'>
-									<AlertCircle className='h-4 w-4 text-amber-600' />
-									Как починить
-								</h3>
-
-								{suggestions.foreground.length > 0 && (
-									<div>
-										<p className='mb-2 text-xs text-muted-foreground'>
-											Затемнить текст:
-										</p>
-										<div className='flex flex-wrap gap-2'>
-											{suggestions.foreground.map((s, index) => (
-												<Button
-													key={index}
-													onClick={() => setForeground(s.color)}
-													variant='outline'
-													size='sm'
-													className='cursor-pointer gap-2'
-												>
-													<span
-														className='h-4 w-4 rounded border'
-														style={{ backgroundColor: s.color }}
-														aria-hidden
-													/>
-													<span className='font-mono text-xs'>{s.color}</span>
-													<span className='font-mono text-xs text-muted-foreground'>
-														{s.ratio.toFixed(1)}:1
-													</span>
-												</Button>
-											))}
-										</div>
-									</div>
-								)}
-
-								{suggestions.background.length > 0 && (
-									<div>
-										<p className='mb-2 text-xs text-muted-foreground'>
-											Осветлить фон:
-										</p>
-										<div className='flex flex-wrap gap-2'>
-											{suggestions.background.map((s, index) => (
-												<Button
-													key={index}
-													onClick={() => setBackground(s.color)}
-													variant='outline'
-													size='sm'
-													className='cursor-pointer gap-2'
-												>
-													<span
-														className='h-4 w-4 rounded border'
-														style={{ backgroundColor: s.color }}
-														aria-hidden
-													/>
-													<span className='font-mono text-xs'>{s.color}</span>
-													<span className='font-mono text-xs text-muted-foreground'>
-														{s.ratio.toFixed(1)}:1
-													</span>
-												</Button>
-											))}
-										</div>
-									</div>
-								)}
-							</div>
-						)}
-					</div>
-				</div>
-			</Card>
+			</div>
 
 			<ContrastGuide />
-		</div>
+		</>
 	)
 }
