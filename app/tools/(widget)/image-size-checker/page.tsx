@@ -1,13 +1,11 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import Image from 'next/image'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-
-import { Upload, Download, X, ImageIcon, Info } from 'lucide-react'
-import { toast } from 'sonner'
-import { WidgetWrapper } from '@/components/tools/WidgetWrapper'
+import { Upload, Download, X, ImageIcon, Trash2 } from 'lucide-react'
+import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { ImageSizeCheckerSeo } from './ImageSizeCheckerSeo'
@@ -29,6 +27,10 @@ export default function ImageSizeCheckerPage() {
 	const widget = getWidgetById('image-size-checker')!
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
+	const fileInputRef = useRef<HTMLInputElement>(null)
+	// Сообщение о том, что не получилось: тост тут не годится — он исчезает
+	// раньше, чем человек успевает понять, какой файл не взяли.
+	const [problem, setProblem] = useState('')
 
 	const formatBytes = (bytes: number): string => {
 		if (bytes === 0) return '0 Bytes'
@@ -87,9 +89,11 @@ export default function ImageSizeCheckerPage() {
 		)
 
 		if (imageFiles.length === 0) {
-			toast.error('Выберите изображения')
+			setProblem('Это не изображения — нужны JPG, PNG, GIF, WebP или SVG')
 			return
 		}
+
+		setProblem('')
 
 		const newImages: ImageInfo[] = []
 
@@ -98,12 +102,11 @@ export default function ImageSizeCheckerPage() {
 				const imageInfo = await processImage(file)
 				newImages.push(imageInfo)
 			} catch (error) {
-				toast.error(`Ошибка обработки ${file.name}`)
+				setProblem(`Не удалось прочитать ${file.name}`)
 			}
 		}
 
 		setImages(prev => [...prev, ...newImages])
-		toast.success(`${newImages.length} изображений обработано`)
 	}, [])
 
 	const handleDrop = useCallback(
@@ -140,6 +143,7 @@ export default function ImageSizeCheckerPage() {
 
 	const clearAll = useCallback(() => {
 		setImages([])
+		setProblem('')
 	}, [])
 
 	const exportData = useCallback(() => {
@@ -169,76 +173,101 @@ export default function ImageSizeCheckerPage() {
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-
-		toast.success('Данные экспортированы')
 	}, [images])
 
 	return (
-		<WidgetWrapper>
-			<WidgetSEOWrapper widget={widget}>
-				<Card>
-					<CardHeader>
-						<CardTitle>Загрузка изображений</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div
-							onDrop={handleDrop}
-							onDragOver={handleDragOver}
-							onDragLeave={handleDragLeave}
-							className={cn(
-								'relative border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-								isDragging
-									? 'border-primary bg-primary/5'
-									: 'border-muted-foreground/25'
-							)}
+		<WidgetSEOWrapper widget={widget}>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: сколько картинок разобрано и что с ними делать.
+				    Раньше это был заголовок «Результаты (N)» с двумя кнопками
+				    между двумя карточками. */}
+				<div className={toolBar}>
+					<span
+						className={cn(
+							'text-sm',
+							problem ? 'text-destructive' : 'text-muted-foreground'
+						)}
+					>
+						{problem ||
+							(images.length > 0
+								? `${images.length} изображений`
+								: 'Изображения не выбраны')}
+					</span>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => fileInputRef.current?.click()}
+							title='Выбрать файлы'
+							className={toolIconButton}
 						>
-							<input
-								type='file'
-								multiple
-								accept='image/*'
-								onChange={handleInputChange}
-								aria-label='Загрузить изображения'
-								className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
-							/>
+							<Upload className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={exportData}
+							disabled={images.length === 0}
+							title='Скачать таблицу CSV'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={clearAll}
+							disabled={images.length === 0}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
 
-							<ImageIcon className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
-							<p className='text-lg font-semibold mb-2'>
-								Перетащите изображения сюда
-							</p>
-							<p className='text-sm text-muted-foreground mb-4'>или</p>
-							<Button>
-								<Upload className='w-4 h-4 mr-2' />
-								Выберите файлы
-							</Button>
-							<p className='text-xs text-muted-foreground mt-4'>
-								Поддерживаются JPG, PNG, GIF, WebP, SVG
-							</p>
-						</div>
-					</CardContent>
-				</Card>
+				{/* Рабочая область — она же зона перетаскивания: пока картинок нет,
+				    это приглашение, а как появились — сетка с результатами, и
+				    бросить файл можно прямо на неё. */}
+				<div
+					onDrop={handleDrop}
+					onDragOver={handleDragOver}
+					onDragLeave={handleDragLeave}
+					className={cn(
+						'relative px-5 py-6 transition-colors sm:px-6',
+						isDragging && 'bg-primary/5'
+					)}
+				>
+					<input
+						ref={fileInputRef}
+						type='file'
+						multiple
+						accept='image/*'
+						onChange={handleInputChange}
+						aria-label='Загрузить изображения'
+						className='hidden'
+					/>
 
-				{images.length > 0 && (
-					<>
-						<div className='flex flex-wrap justify-between items-center my-6'>
-							<h2 className='text-2xl font-bold'>
-								Результаты ({images.length})
-							</h2>
-							<div className='flex gap-2'>
-								<Button onClick={exportData} variant='outline'>
-									<Download className='w-4 h-4 mr-2' />
-									Экспорт CSV
-								</Button>
-								<Button onClick={clearAll} variant='outline'>
-									<X className='w-4 h-4 mr-2' />
-									Очистить все
-								</Button>
-							</div>
-						</div>
-
-						<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+					{images.length === 0 ? (
+						<button
+							type='button'
+							onClick={() => fileInputRef.current?.click()}
+							className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-14 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						>
+							<ImageIcon className='h-8 w-8 text-muted-foreground' />
+							<span className='text-sm'>
+								Перетащите изображения сюда или выберите файлы
+							</span>
+							<span className='text-xs text-muted-foreground'>
+								JPG, PNG, GIF, WebP, SVG — всё считается прямо в браузере
+							</span>
+						</button>
+					) : (
+						<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 							{images.map((image, index) => (
-								<Card key={index} className='overflow-hidden'>
-									<div className='relative aspect-video bg-muted'>
+								<div key={index} className='group'>
+									<div className='relative aspect-video overflow-hidden rounded-xl border bg-muted'>
 										<Image
 											src={image.url}
 											alt={image.name}
@@ -246,123 +275,65 @@ export default function ImageSizeCheckerPage() {
 											className='object-contain'
 										/>
 										<Button
-											onClick={() => removeImage(index)}
 											size='icon'
-											variant='destructive'
-											className='absolute top-2 right-2'
+											variant='ghost'
+											onClick={() => removeImage(index)}
+											title='Убрать'
+											className={cn(
+												toolIconButton,
+												'absolute top-2 right-2 bg-background/90 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
+											)}
 										>
-											<X className='w-4 h-4' />
+											<X className='h-4 w-4' />
 										</Button>
 									</div>
-									<CardContent className='p-4'>
-										<h3
-											className='font-semibold text-sm mb-2 truncate'
-											title={image.name}
-										>
-											{image.name}
-										</h3>
-										<div className='space-y-1 text-sm'>
-											<div className='flex justify-between'>
-												<span className='text-muted-foreground'>Размеры:</span>
-												<span className='font-mono'>
-													{image.width} × {image.height}px
-												</span>
-											</div>
-											<div className='flex justify-between'>
-												<span className='text-muted-foreground'>
-													Соотношение сторон:
-												</span>
-												<span className='font-mono'>{image.aspectRatio}</span>
-											</div>
-											<div className='flex justify-between'>
-												<span className='text-muted-foreground'>
-													Размер файла:
-												</span>
-												<span className='font-mono'>
-													{image.fileSizeFormatted}
-												</span>
-											</div>
-											<div className='flex justify-between'>
-												<span className='text-muted-foreground'>Формат:</span>
-												<span className='font-mono'>
-													{image.format.split('/')[1]?.toUpperCase() ||
-														'Unknown'}
-												</span>
-											</div>
-										</div>
-									</CardContent>
-								</Card>
+
+									<p className='mt-2 truncate px-1 text-sm' title={image.name}>
+										{image.name}
+									</p>
+									<p className='flex flex-wrap items-center gap-x-3 px-1 text-xs text-muted-foreground'>
+										<span className='font-mono text-foreground'>
+											{image.width} × {image.height}
+										</span>
+										<span className='font-mono'>{image.aspectRatio}</span>
+										<span className='font-mono'>{image.fileSizeFormatted}</span>
+										<span className='font-mono'>
+											{image.format.split('/')[1]?.toUpperCase() || '—'}
+										</span>
+									</p>
+								</div>
 							))}
 						</div>
-					</>
-				)}
+					)}
+				</div>
+			</Card>
 
-				<Card className='mt-6'>
-					<CardHeader>
-						<CardTitle className='flex items-center gap-2'>
-							<Info className='w-5 h-5' />
-							Распространенные соотношения сторон
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='grid gap-4 md:grid-cols-2'>
-							<div>
-								<h4 className='font-semibold mb-2'>Фотография</h4>
-								<div className='space-y-1 text-sm'>
-									<div className='flex justify-between'>
-										<span>1:1</span>
-										<span className='text-muted-foreground'>Квадрат</span>
-									</div>
-									<div className='flex justify-between'>
-										<span>4:3</span>
-										<span className='text-muted-foreground'>Традиционный</span>
-									</div>
-									<div className='flex justify-between'>
-										<span>3:2</span>
-										<span className='text-muted-foreground'>
-											Классический 35мм
-										</span>
-									</div>
-									<div className='flex justify-between'>
-										<span>16:9</span>
-										<span className='text-muted-foreground'>
-											Широкоэкранный
-										</span>
-									</div>
-								</div>
-							</div>
-							<div>
-								<h4 className='font-semibold mb-2'>Социальные сети</h4>
-								<div className='space-y-1 text-sm'>
-									<div className='flex justify-between'>
-										<span>1:1</span>
-										<span className='text-muted-foreground'>
-											Instagram пост
-										</span>
-									</div>
-									<div className='flex justify-between'>
-										<span>9:16</span>
-										<span className='text-muted-foreground'>
-											Instagram сторис
-										</span>
-									</div>
-									<div className='flex justify-between'>
-										<span>16:9</span>
-										<span className='text-muted-foreground'>
-											YouTube миниатюра
-										</span>
-									</div>
-									<div className='flex justify-between'>
-										<span>2:1</span>
-										<span className='text-muted-foreground'>Twitter шапка</span>
-									</div>
-								</div>
-							</div>
+			{/* Частые соотношения сторон — тихая полка под инструментом. */}
+			<div className='mt-6'>
+				<p className='px-1 text-sm text-muted-foreground'>
+					Частые соотношения сторон
+				</p>
+				<div className='mt-2 grid gap-x-8 gap-y-2 rounded-xl border p-4 sm:grid-cols-2'>
+					{[
+						['1:1', 'квадрат — пост в Instagram'],
+						['4:3', 'традиционное фото'],
+						['3:2', 'классический кадр 35 мм'],
+						['16:9', 'широкий экран, обложка YouTube'],
+						['9:16', 'вертикальное видео и сторис'],
+						['2:1', 'шапка профиля']
+					].map(([ratio, description]) => (
+						<div
+							key={ratio}
+							className='flex items-baseline justify-between gap-3 text-sm'
+						>
+							<span className='font-mono'>{ratio}</span>
+							<span className='text-muted-foreground'>{description}</span>
 						</div>
-					</CardContent>
-				</Card>
-				<ImageSizeCheckerSeo />
-			</WidgetSEOWrapper>
-		</WidgetWrapper>
+					))}
+				</div>
+			</div>
+
+			<ImageSizeCheckerSeo />
+		</WidgetSEOWrapper>
 	)
 }

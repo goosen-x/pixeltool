@@ -2,52 +2,34 @@
 
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Copy, Check, Download, Youtube } from 'lucide-react'
+import { Copy, Check, Download, Trash2 } from 'lucide-react'
 import Image from 'next/image'
-import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 
-interface ThumbnailType {
-	name: string
-	quality: string
-	width: number
-	height: number
-	getUrl: (videoId: string) => string
-}
-
-const thumbnailTypes = [
+/**
+ * Пять размеров, которые YouTube отдаёт по фиксированным адресам. Кроме них
+ * есть три кадра из самого видео (1.jpg, 2.jpg, 3.jpg) — они добавляются к
+ * списку ниже: формально это тоже обложки, только выбранные автоматически.
+ */
+const THUMBNAIL_TYPES = [
 	{
 		quality: 'maxresdefault',
+		label: 'Максимальное',
 		width: 1280,
-		height: 720,
-		getUrl: (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+		height: 720
 	},
-	{
-		quality: 'sddefault',
-		width: 640,
-		height: 480,
-		getUrl: (id: string) => `https://img.youtube.com/vi/${id}/sddefault.jpg`
-	},
-	{
-		quality: 'hqdefault',
-		width: 480,
-		height: 360,
-		getUrl: (id: string) => `https://img.youtube.com/vi/${id}/hqdefault.jpg`
-	},
-	{
-		quality: 'mqdefault',
-		width: 320,
-		height: 180,
-		getUrl: (id: string) => `https://img.youtube.com/vi/${id}/mqdefault.jpg`
-	},
-	{
-		quality: 'default',
-		width: 120,
-		height: 90,
-		getUrl: (id: string) => `https://img.youtube.com/vi/${id}/default.jpg`
-	}
+	{ quality: 'sddefault', label: 'Стандартное', width: 640, height: 480 },
+	{ quality: 'hqdefault', label: 'Высокое', width: 480, height: 360 },
+	{ quality: 'mqdefault', label: 'Среднее', width: 320, height: 180 },
+	{ quality: 'default', label: 'Миниатюра', width: 120, height: 90 }
+]
+
+const EXAMPLE_URLS = [
+	'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+	'https://youtu.be/dQw4w9WgXcQ',
+	'dQw4w9WgXcQ'
 ]
 
 export default function YouTubeThumbnailPage() {
@@ -85,7 +67,7 @@ export default function YouTubeThumbnailPage() {
 			}
 		}
 
-		setError('Неверная ссылка YouTube')
+		setError('Не похоже на ссылку YouTube')
 		setVideoId('')
 	}
 
@@ -95,14 +77,9 @@ export default function YouTubeThumbnailPage() {
 	}
 
 	const copyToClipboard = async (text: string) => {
-		try {
-			await navigator.clipboard.writeText(text)
-			setCopiedUrl(text)
-			setTimeout(() => setCopiedUrl(null), 2000)
-			toast.success('Скопировано в буфер обмена')
-		} catch (err) {
-			toast.error('Ошибка копирования')
-		}
+		await navigator.clipboard.writeText(text)
+		setCopiedUrl(text)
+		setTimeout(() => setCopiedUrl(null), 2000)
 	}
 
 	const downloadImage = async (imageUrl: string, filename: string) => {
@@ -117,240 +94,164 @@ export default function YouTubeThumbnailPage() {
 			a.click()
 			document.body.removeChild(a)
 			URL.revokeObjectURL(url)
-			toast.success('Изображение загружено')
 		} catch (error) {
 			console.error('Download failed:', error)
-			toast.error('Ошибка загрузки')
 		}
 	}
 
-	const exampleUrls = [
-		'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-		'https://youtu.be/dQw4w9WgXcQ',
-		'dQw4w9WgXcQ'
-	]
+	// Обложки и кадры из видео живут в одной сетке: для человека это всё
+	// «картинки с этого ролика», а не два разных списка с заголовками.
+	const thumbnails = videoId
+		? [
+				...THUMBNAIL_TYPES.map(type => ({
+					key: type.quality,
+					label: type.label,
+					hint: `${type.width} × ${type.height}`,
+					url: `https://img.youtube.com/vi/${videoId}/${type.quality}.jpg`,
+					filename: `${videoId}-${type.quality}.jpg`
+				})),
+				...[1, 2, 3].map(num => ({
+					key: `frame-${num}`,
+					label: `Кадр ${num}`,
+					hint: 'из видео',
+					url: `https://img.youtube.com/vi/${videoId}/${num}.jpg`,
+					filename: `${videoId}-alt${num}.jpg`
+				}))
+			]
+		: []
 
 	return (
-		<>
-			<Card className='p-6 mb-6'>
-				<div className='space-y-4'>
-					<div>
-						<Label
-							htmlFor='youtube-url'
-							className='text-base font-semibold mb-2 block'
-						>
-							Введите ссылку YouTube
-						</Label>
-						<Input
-							id='youtube-url'
-							type='text'
-							value={url}
-							onChange={e => handleUrlChange(e.target.value)}
-							placeholder='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-							className='flex-1'
-						/>
-						<div className='flex flex-wrap gap-2'>
-							<div className='flex-1 flex gap-2'>
-								{videoId && (
-									<div className='flex items-center gap-2 px-3 bg-muted/50 rounded-md'>
-										<Youtube className='w-4 h-4 text-red-500' />
-										<code className='text-sm font-mono'>{videoId}</code>
-										<Button
-											size='sm'
-											variant='ghost'
-											onClick={() => copyToClipboard(videoId)}
-											className='h-6 w-6 p-0'
-										>
-											{copiedUrl === videoId ? (
-												<Check className='h-3 w-3 text-green-500' />
-											) : (
-												<Copy className='h-3 w-3' />
-											)}
-										</Button>
-									</div>
-								)}
-							</div>
-							<Button
-								variant='outline'
-								onClick={() => handleUrlChange(exampleUrls[0])}
-							>
-								Пример
-							</Button>
-						</div>
-						{error && <p className='text-sm text-destructive mt-2'>{error}</p>}
-					</div>
+		<Card className='overflow-hidden p-0'>
+			{/* Верхняя полоса: сама ссылка и распознанный из неё id. Раньше поле
+			    ввода было в отдельной карточке над результатом. */}
+			<div className={toolBar}>
+				<input
+					value={url}
+					onChange={event => handleUrlChange(event.target.value)}
+					placeholder='Ссылка на видео или его id'
+					spellCheck={false}
+					aria-label='Ссылка на видео YouTube'
+					className='min-w-0 flex-1 rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-w-[20rem]'
+				/>
 
-					<div className='flex items-center gap-2 text-xs text-muted-foreground flex-wrap'>
-						<span>Поддерживаемые форматы:</span>
-						{exampleUrls.map((example, index) => (
-							<span key={index} className='flex items-center gap-2'>
-								{index > 0 && <span>•</span>}
-								<button
-									onClick={() => handleUrlChange(example)}
-									className='hover:text-foreground transition-colors'
-								>
-									<code className='font-mono'>{example}</code>
-								</button>
-							</span>
+				{videoId && (
+					<button
+						type='button'
+						onClick={() => copyToClipboard(videoId)}
+						title='Скопировать id видео'
+						className={toolPill(false, 'font-mono')}
+					>
+						{copiedUrl === videoId ? '✓ ' : ''}
+						{videoId}
+					</button>
+				)}
+
+				<div className='flex items-center gap-0.5 sm:ml-auto'>
+					<button
+						type='button'
+						onClick={() => handleUrlChange(EXAMPLE_URLS[0])}
+						className={toolPill(false)}
+					>
+						Пример
+					</button>
+					<Button
+						size='icon'
+						variant='ghost'
+						onClick={() => handleUrlChange('')}
+						disabled={!url}
+						title='Очистить'
+						className={toolIconButton}
+					>
+						<Trash2 className='h-4 w-4' />
+					</Button>
+				</div>
+			</div>
+
+			{videoId ? (
+				<div className='grid gap-4 px-5 py-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3'>
+					{thumbnails.map(thumbnail => (
+						<div key={thumbnail.key} className='group'>
+							<div className='relative aspect-video overflow-hidden rounded-xl border bg-muted'>
+								<Image
+									src={thumbnail.url}
+									alt={`Обложка видео — ${thumbnail.label}`}
+									fill
+									className='object-cover'
+									unoptimized
+									onError={event => {
+										// YouTube отдаёт заглушку вместо 404, если размера нет,
+										// поэтому картинку просто прячем и пишем прямо.
+										const target = event.target as HTMLImageElement
+										target.style.display = 'none'
+										const parent = target.parentElement
+										if (parent && !parent.dataset.failed) {
+											parent.dataset.failed = 'true'
+											const note = document.createElement('div')
+											note.className =
+												'absolute inset-0 flex items-center justify-center text-sm text-muted-foreground'
+											note.textContent = 'Нет такого размера'
+											parent.appendChild(note)
+										}
+									}}
+								/>
+
+								<div className='absolute top-2 right-2 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100'>
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={() => copyToClipboard(thumbnail.url)}
+										title='Скопировать ссылку'
+										className={cn(toolIconButton, 'bg-background/90')}
+									>
+										{copiedUrl === thumbnail.url ? (
+											<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+										) : (
+											<Copy className='h-4 w-4' />
+										)}
+									</Button>
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={() =>
+											downloadImage(thumbnail.url, thumbnail.filename)
+										}
+										title='Скачать'
+										className={cn(toolIconButton, 'bg-background/90')}
+									>
+										<Download className='h-4 w-4' />
+									</Button>
+								</div>
+							</div>
+
+							<p className='mt-2 flex items-center justify-between gap-2 px-1 text-sm'>
+								<span>{thumbnail.label}</span>
+								<span className='font-mono text-xs text-muted-foreground'>
+									{thumbnail.hint}
+								</span>
+							</p>
+						</div>
+					))}
+				</div>
+			) : (
+				<div className='px-5 py-12 text-center sm:px-6'>
+					<p className='text-sm text-muted-foreground'>
+						{error || 'Вставьте ссылку — обложки появятся здесь'}
+					</p>
+					<div className='mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+						<span>Понимает форматы:</span>
+						{EXAMPLE_URLS.map(example => (
+							<button
+								key={example}
+								type='button'
+								onClick={() => handleUrlChange(example)}
+								className='cursor-pointer font-mono transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							>
+								{example}
+							</button>
 						))}
 					</div>
 				</div>
-			</Card>
-
-			{videoId && (
-				<>
-					<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-						{thumbnailTypes.map(type => {
-							const imageUrl = type.getUrl(videoId)
-							const nameKey =
-								type.quality === 'maxresdefault'
-									? 'Максимальное качество'
-									: type.quality === 'sddefault'
-										? 'Стандартное качество'
-										: type.quality === 'hqdefault'
-											? 'Высокое качество'
-											: type.quality === 'mqdefault'
-												? 'Среднее качество'
-												: 'Миниатюрное качество'
-							return (
-								<Card key={type.quality} className='overflow-hidden group'>
-									<div className='relative aspect-video bg-muted'>
-										<Image
-											src={imageUrl}
-											alt={`${nameKey} миниатюра`}
-											fill
-											className='object-cover transition-transform group-hover:scale-105'
-											unoptimized
-											onError={e => {
-												const target = e.target as HTMLImageElement
-												target.style.display = 'none'
-												const parent = target.parentElement
-												if (parent) {
-													const errorDiv = document.createElement('div')
-													errorDiv.className =
-														'absolute inset-0 flex items-center justify-center text-muted-foreground text-sm'
-													errorDiv.textContent = 'Недоступно'
-													parent.appendChild(errorDiv)
-												}
-											}}
-										/>
-										<div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors' />
-										<div className='absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
-											<Button
-												size='icon'
-												variant='secondary'
-												className='h-8 w-8 bg-background/90 backdrop-blur-sm'
-												onClick={() => copyToClipboard(imageUrl)}
-												title='Копировать ссылку'
-											>
-												{copiedUrl === imageUrl ? (
-													<Check className='h-4 w-4 text-green-500' />
-												) : (
-													<Copy className='h-4 w-4' />
-												)}
-											</Button>
-											<Button
-												size='icon'
-												variant='secondary'
-												className='h-8 w-8 bg-background/90 backdrop-blur-sm'
-												onClick={() =>
-													downloadImage(
-														imageUrl,
-														`${videoId}-${type.quality}.jpg`
-													)
-												}
-												title='Скачать'
-											>
-												<Download className='h-4 w-4' />
-											</Button>
-										</div>
-									</div>
-									<div className='p-3'>
-										<div className='flex items-center justify-between'>
-											<h3 className='font-medium text-sm'>{nameKey}</h3>
-											<span className='text-xs text-muted-foreground'>
-												{type.width} × {type.height}
-											</span>
-										</div>
-									</div>
-								</Card>
-							)
-						})}
-					</div>
-
-					{/* Alternative thumbnails */}
-					<div className='mt-8'>
-						<h3 className='text-sm font-medium text-muted-foreground mb-4'>
-							Альтернативные миниатюры
-						</h3>
-						<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-							{[1, 2, 3].map(num => {
-								const imageUrl = `https://img.youtube.com/vi/${videoId}/${num}.jpg`
-								return (
-									<Card key={num} className='overflow-hidden group'>
-										<div className='relative aspect-video bg-muted'>
-											<Image
-												src={imageUrl}
-												alt={`Миниатюра ${num}`}
-												fill
-												className='object-cover transition-transform group-hover:scale-105'
-												unoptimized
-												onError={e => {
-													const target = e.target as HTMLImageElement
-													target.style.display = 'none'
-													const parent = target.parentElement
-													if (parent) {
-														const errorDiv = document.createElement('div')
-														errorDiv.className =
-															'absolute inset-0 flex items-center justify-center text-muted-foreground text-sm'
-														errorDiv.textContent = 'Недоступно'
-														parent.appendChild(errorDiv)
-													}
-												}}
-											/>
-											<div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors' />
-											<div className='absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
-												<Button
-													size='icon'
-													variant='secondary'
-													className='h-8 w-8 bg-background/90 backdrop-blur-sm'
-													onClick={() => copyToClipboard(imageUrl)}
-													title='Копировать ссылку'
-												>
-													{copiedUrl === imageUrl ? (
-														<Check className='h-4 w-4 text-green-500' />
-													) : (
-														<Copy className='h-4 w-4' />
-													)}
-												</Button>
-												<Button
-													size='icon'
-													variant='secondary'
-													className='h-8 w-8 bg-background/90 backdrop-blur-sm'
-													onClick={() =>
-														downloadImage(imageUrl, `${videoId}-alt${num}.jpg`)
-													}
-													title='Скачать'
-												>
-													<Download className='h-4 w-4' />
-												</Button>
-											</div>
-										</div>
-										<div className='p-3'>
-											<div className='flex items-center justify-between'>
-												<h3 className='font-medium text-sm'>Миниатюра {num}</h3>
-												<span className='text-xs text-muted-foreground'>
-													Alternative
-												</span>
-											</div>
-										</div>
-									</Card>
-								)
-							})}
-						</div>
-					</div>
-				</>
 			)}
-		</>
+		</Card>
 	)
 }
