@@ -1,36 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import {
-	Link as LinkIcon,
 	Copy,
-	Info,
+	Check,
 	History,
 	Download,
 	Trash2,
 	ExternalLink,
-	Check,
-	Sparkles,
-	Mail,
-	Share2,
-	Search,
-	MessageSquare,
-	Globe,
-	X,
-	ChevronRight,
-	Clock,
-	Plus,
-	ArrowRight,
-	Eye,
-	EyeOff,
-	Facebook,
-	Instagram
+	Plus
 } from 'lucide-react'
 import {
 	FaGoogle,
@@ -40,9 +20,13 @@ import {
 	FaInstagram,
 	FaEnvelope
 } from 'react-icons/fa'
-import { toast } from 'sonner'
-
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
 interface UTMParams {
 	url: string
@@ -132,7 +116,7 @@ const PRESETS: Preset[] = [
 ]
 
 // Dynamic parameters for different platforms
-const DYNAMIC_PARAMS = {
+const DYNAMIC_PARAMS: Record<string, { param: string; desc: string }[]> = {
 	google: [
 		{ param: '{keyword}', desc: 'Keyword that triggered the ad' },
 		{ param: '{placement}', desc: 'Website domain (Display Network only)' },
@@ -180,9 +164,7 @@ export default function UTMBuilderPage() {
 	const [generatedUrl, setGeneratedUrl] = useState('')
 	const [history, setHistory] = useState<SavedLink[]>([])
 	const [showHistory, setShowHistory] = useState(false)
-	const [showAdvanced, setShowAdvanced] = useState(false)
 	const [copied, setCopied] = useState(false)
-	const [showAllParams, setShowAllParams] = useState(false)
 	const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set())
 
 	// Load history from localStorage
@@ -251,10 +233,9 @@ export default function UTMBuilderPage() {
 		try {
 			await navigator.clipboard.writeText(generatedUrl)
 			setCopied(true)
-			toast.success('Ссылка скопирована в буфер обмена')
 			setTimeout(() => setCopied(false), 2000)
 		} catch (err) {
-			toast.error('Ошибка копирования')
+			console.error('Не удалось скопировать ссылку')
 		}
 	}
 
@@ -271,13 +252,11 @@ export default function UTMBuilderPage() {
 		const newHistory = [newLink, ...history].slice(0, 50)
 		setHistory(newHistory)
 		localStorage.setItem('utm-history', JSON.stringify(newHistory))
-		toast.success('Ссылка сохранена в историю')
 	}
 
 	const clearHistory = () => {
 		setHistory([])
 		localStorage.removeItem('utm-history')
-		toast.success('История очищена')
 	}
 
 	const downloadHistory = () => {
@@ -294,8 +273,6 @@ export default function UTMBuilderPage() {
 		a.download = `utm-links-${Date.now()}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-
-		toast.success('История загружена')
 	}
 
 	const isValidUrl = () => {
@@ -305,7 +282,6 @@ export default function UTMBuilderPage() {
 	const loadFromHistory = (link: SavedLink) => {
 		setParams(link.params)
 		setShowHistory(false)
-		toast.success('Ссылка загружена')
 	}
 
 	const handleFieldBlur = (fieldName: string) => {
@@ -316,387 +292,279 @@ export default function UTMBuilderPage() {
 		return touchedFields.has(fieldName) && !value
 	}
 
+	/** Поле параметра в нижней полосе: подпись, ввод и подсказка в title. */
+	const paramField = (
+		name: keyof typeof params,
+		label: string,
+		placeholder: string,
+		hint: string,
+		required = false
+	) => (
+		<label
+			className='flex items-center gap-2 text-sm text-muted-foreground'
+			title={hint}
+		>
+			<span className='font-mono text-xs'>
+				{label}
+				{required && <span className='ml-0.5 text-destructive'>*</span>}
+			</span>
+			<input
+				value={params[name] ?? ''}
+				onChange={event => setParams({ ...params, [name]: event.target.value })}
+				onBlur={() => handleFieldBlur(name)}
+				placeholder={placeholder}
+				spellCheck={false}
+				aria-label={hint}
+				className={cn(
+					'w-40 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+					isFieldInvalid(name, params[name] ?? '') && 'border-destructive'
+				)}
+			/>
+		</label>
+	)
+
 	return (
-		<div className='space-y-6'>
-			{/* Visual URL Constructor */}
-			<Card className='border-2'>
-				<CardHeader className='pb-3'>
-					<div className='flex items-center justify-between'>
-						<CardTitle className='text-xl flex items-center gap-2'>
-							<LinkIcon className='w-5 h-5' />
-							Конструктор UTM-ссылок
-						</CardTitle>
-						<div className='flex gap-2'>
-							<Button
-								variant='ghost'
-								size='sm'
-								onClick={() => setShowHistory(!showHistory)}
-								className='relative'
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: готовые источники. Раньше это были шесть карточек
+				    с градиентными плитками 48×48 — они весили больше, чем сама
+				    ссылка, ради которой сюда приходят. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{PRESETS.map(preset => (
+							<button
+								key={preset.id}
+								type='button'
+								onClick={() => handlePresetSelect(preset.id)}
+								aria-pressed={selectedPreset === preset.id}
+								title={`${preset.source} / ${preset.medium}`}
+								className={toolPill(
+									selectedPreset === preset.id,
+									'flex items-center gap-1.5'
+								)}
 							>
-								<History className='w-4 h-4' />
-								{history.length > 0 && (
-									<Badge
-										variant='secondary'
-										className='absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]'
-									>
-										{history.length}
-									</Badge>
-								)}
-							</Button>
-						</div>
-					</div>
-				</CardHeader>
-				<CardContent>
-					{/* URL Input */}
-					<div className='space-y-2 mb-4'>
-						<Label htmlFor='url'>
-							Целевая страница <span className='text-red-500'>*</span>
-						</Label>
-						<div className='flex'>
-							<span className='flex items-center px-3 text-sm text-muted-foreground bg-muted rounded-l-md border border-r-0'>
-								https://
-							</span>
-							<Input
-								id='url'
-								placeholder='example.com/page'
-								value={params.url.replace(/^https?:\/\//, '')}
-								onChange={e => setParams({ ...params, url: e.target.value })}
-								onBlur={() => handleFieldBlur('url')}
-								className={cn(
-									'rounded-l-none flex-1',
-									isFieldInvalid('url', params.url) &&
-										'border-red-500 focus:ring-red-500'
-								)}
-							/>
-						</div>
+								{preset.icon}
+								{preset.name}
+							</button>
+						))}
 					</div>
 
-					{/* Live URL Preview */}
-					{generatedUrl && (
-						<div className='space-y-4'>
-							<Separator />
-							<div className='space-y-2'>
-								<div className='flex flex-wrap gap-2 items-center justify-between'>
-									<Label className='text-sm text-muted-foreground'>
-										Готовая ссылка
-									</Label>
-									<div className='flex gap-2'>
-										<Button
-											size='sm'
-											variant={copied ? 'default' : 'outline'}
-											onClick={copyToClipboard}
-											className='h-8'
-										>
-											{copied ? (
-												<Check className='w-3 h-3 mr-2' />
-											) : (
-												<Copy className='w-3 h-3 mr-2' />
-											)}
-											Копировать
-										</Button>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={saveToHistory}
-											className='h-8'
-										>
-											<Plus className='w-3 h-3 mr-2' />
-											Сохранить
-										</Button>
-										<Button
-											size='sm'
-											variant='ghost'
-											onClick={() => window.open(generatedUrl, '_blank')}
-											className='h-8'
-										>
-											<ExternalLink className='w-3 h-3' />
-										</Button>
-									</div>
-								</div>
-								<div className='p-3 bg-muted rounded-lg'>
-									<p className='text-sm font-mono break-all text-foreground'>
-										{generatedUrl}
-									</p>
-								</div>
-							</div>
-						</div>
-					)}
-				</CardContent>
-			</Card>
-
-			{/* Traffic Source Cards */}
-			<div className='space-y-4'>
-				<h3 className='text-lg font-semibold flex items-center gap-2'>
-					<Sparkles className='w-5 h-5 text-primary' />
-					Популярные источники трафика
-				</h3>
-				<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
-					{PRESETS.map(preset => (
-						<Card
-							key={preset.id}
-							className={cn(
-								'cursor-pointer transition-all hover:shadow-lg hover:scale-105',
-								selectedPreset === preset.id && 'ring-2 ring-primary'
-							)}
-							onClick={() => handlePresetSelect(preset.id)}
-						>
-							<CardContent className='p-4 text-center space-y-2'>
-								<div
-									className={cn(
-										'w-12 h-12 rounded-lg flex items-center justify-center mx-auto bg-gradient-to-br',
-										preset.gradient,
-										'text-white'
-									)}
-								>
-									{preset.icon}
-								</div>
-								<h4 className='font-medium text-sm'>{preset.name}</h4>
-								<p className='text-xs text-muted-foreground'>
-									{preset.source} / {preset.medium}
-								</p>
-							</CardContent>
-						</Card>
-					))}
-				</div>
-			</div>
-
-			{/* UTM Parameters Form */}
-			<Card>
-				<CardHeader>
-					<CardTitle className='text-lg'>UTM-параметры</CardTitle>
-				</CardHeader>
-				<CardContent className='space-y-4'>
-					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-						{/* Source */}
-						<div className='space-y-2'>
-							<Label htmlFor='source'>
-								Источник (utm_source) <span className='text-red-500'>*</span>
-							</Label>
-							<Input
-								id='source'
-								placeholder='google, yandex, vk...'
-								value={params.source}
-								onChange={e => setParams({ ...params, source: e.target.value })}
-								onBlur={() => handleFieldBlur('source')}
-								className={cn(
-									isFieldInvalid('source', params.source) &&
-										'border-red-500 focus:ring-red-500'
-								)}
-							/>
-							<p className='text-xs text-muted-foreground'>
-								Откуда пришёл трафик
-							</p>
-						</div>
-
-						{/* Medium */}
-						<div className='space-y-2'>
-							<Label htmlFor='medium'>
-								Канал (utm_medium) <span className='text-red-500'>*</span>
-							</Label>
-							<Input
-								id='medium'
-								placeholder='cpc, email, social...'
-								value={params.medium}
-								onChange={e => setParams({ ...params, medium: e.target.value })}
-								onBlur={() => handleFieldBlur('medium')}
-								className={cn(
-									isFieldInvalid('medium', params.medium) &&
-										'border-red-500 focus:ring-red-500'
-								)}
-							/>
-							<p className='text-xs text-muted-foreground'>Тип трафика</p>
-						</div>
-
-						{/* Campaign */}
-						<div className='space-y-2'>
-							<Label htmlFor='campaign'>
-								Кампания (utm_campaign) <span className='text-red-500'>*</span>
-							</Label>
-							<Input
-								id='campaign'
-								placeholder='summer-sale-2024'
-								value={params.campaign}
-								onChange={e =>
-									setParams({ ...params, campaign: e.target.value })
-								}
-								onBlur={() => handleFieldBlur('campaign')}
-								className={cn(
-									isFieldInvalid('campaign', params.campaign) &&
-										'border-red-500 focus:ring-red-500'
-								)}
-							/>
-							<p className='text-xs text-muted-foreground'>
-								Название рекламной кампании
-							</p>
-						</div>
-					</div>
-
-					{/* Advanced Parameters */}
-					<div>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
+							size='icon'
 							variant='ghost'
-							size='sm'
-							onClick={() => setShowAdvanced(!showAdvanced)}
-							className='mb-3'
+							onClick={copyToClipboard}
+							disabled={!generatedUrl}
+							title='Скопировать ссылку'
+							className={toolIconButton}
 						>
-							{showAdvanced ? (
-								<EyeOff className='w-4 h-4 mr-2' />
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
 							) : (
-								<Eye className='w-4 h-4 mr-2' />
+								<Copy className='h-4 w-4' />
 							)}
-							Дополнительные параметры
 						</Button>
-
-						{showAdvanced && (
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-								{/* Content */}
-								<div className='space-y-2'>
-									<Label htmlFor='content'>Контент (utm_content)</Label>
-									<Input
-										id='content'
-										placeholder='banner-header'
-										value={params.content}
-										onChange={e =>
-											setParams({ ...params, content: e.target.value })
-										}
-									/>
-									<p className='text-xs text-muted-foreground'>
-										Для A/B тестирования
-									</p>
-								</div>
-
-								{/* Term */}
-								<div className='space-y-2'>
-									<Label htmlFor='term'>Ключевое слово (utm_term)</Label>
-									<Input
-										id='term'
-										placeholder='buy iphone'
-										value={params.term}
-										onChange={e =>
-											setParams({ ...params, term: e.target.value })
-										}
-									/>
-									<p className='text-xs text-muted-foreground'>
-										Поисковый запрос
-									</p>
-								</div>
-							</div>
-						)}
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={saveToHistory}
+							disabled={!generatedUrl}
+							title='Сохранить ссылку в историю'
+							className={toolIconButton}
+						>
+							<Plus className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => window.open(generatedUrl, '_blank')}
+							disabled={!generatedUrl}
+							title='Открыть в новой вкладке'
+							className={toolIconButton}
+						>
+							<ExternalLink className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setShowHistory(!showHistory)}
+							title={
+								history.length > 0
+									? `История (${history.length})`
+									: 'История пуста'
+							}
+							className={cn(toolIconButton, showHistory && 'text-foreground')}
+						>
+							<History className='h-4 w-4' />
+						</Button>
 					</div>
+				</div>
 
-					{/* Dynamic Parameters Info */}
-					{params.source &&
-						(params.source === 'google' ||
-							params.source === 'yandex' ||
-							params.source === 'vk') &&
-						DYNAMIC_PARAMS[params.source] && (
-							<div className='mt-4 p-3 bg-muted rounded-lg'>
-								<div className='flex items-center gap-2 mb-2'>
-									<Info className='w-4 h-4' />
-									<span className='text-sm font-medium'>
-										Динамические параметры
-									</span>
-								</div>
-								<div className='space-y-1'>
-									{DYNAMIC_PARAMS[params.source]
-										.slice(0, showAllParams ? undefined : 3)
-										.map((param, index) => (
-											<div key={index} className='text-xs'>
-												<code className='bg-background px-1 py-0.5 rounded'>
-													{param.param}
-												</code>
-												<span className='text-muted-foreground ml-2'>
-													{param.desc}
-												</span>
-											</div>
-										))}
-									{DYNAMIC_PARAMS[params.source].length > 3 && (
-										<Button
-											variant='link'
-											size='sm'
-											className='p-0 h-auto text-xs'
-											onClick={() => setShowAllParams(!showAllParams)}
-										>
-											{showAllParams ? (
-												<>
-													Скрыть{' '}
-													<ChevronRight className='w-3 h-3 ml-1 rotate-90' />
-												</>
-											) : (
-												<>
-													Показать все <ChevronRight className='w-3 h-3 ml-1' />
-												</>
-											)}
-										</Button>
-									)}
-								</div>
-							</div>
-						)}
-				</CardContent>
+				{/* Рабочая область: адрес страницы и то, что из него получилось. */}
+				<div className='px-5 py-6 sm:px-6'>
+					<label className='flex items-center rounded-md border bg-background focus-within:ring-2 focus-within:ring-ring'>
+						<span className='px-2 py-1.5 font-mono text-sm text-muted-foreground'>
+							https://
+						</span>
+						<input
+							value={params.url.replace(/^https?:\/\//, '')}
+							onChange={event =>
+								setParams({ ...params, url: event.target.value })
+							}
+							onBlur={() => handleFieldBlur('url')}
+							placeholder='example.com/page'
+							spellCheck={false}
+							aria-label='Адрес целевой страницы'
+							className={cn(
+								'min-w-0 flex-1 bg-transparent py-1.5 pr-2 font-mono text-sm text-foreground focus:outline-none',
+								isFieldInvalid('url', params.url) && 'text-destructive'
+							)}
+						/>
+					</label>
+
+					{generatedUrl ? (
+						<button
+							type='button'
+							onClick={copyToClipboard}
+							title='Скопировать'
+							className='group mt-6 flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border px-4 py-4 text-left transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						>
+							<span className='font-mono text-sm break-all'>
+								{generatedUrl}
+							</span>
+							{copied ? (
+								<Check className='h-4 w-4 shrink-0 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground' />
+							)}
+						</button>
+					) : (
+						<p className='mt-6 text-center text-sm text-muted-foreground'>
+							Заполните адрес, источник, канал и кампанию — ссылка соберётся
+							сама
+						</p>
+					)}
+				</div>
+
+				{/* Полоса обязательных меток. */}
+				<div className={toolFooterBar}>
+					{paramField(
+						'source',
+						'utm_source',
+						'yandex',
+						'Откуда пришёл трафик',
+						true
+					)}
+					{paramField('medium', 'utm_medium', 'cpc', 'Тип трафика', true)}
+					{paramField(
+						'campaign',
+						'utm_campaign',
+						'summer-sale',
+						'Название рекламной кампании',
+						true
+					)}
+				</div>
+
+				{/* Полоса необязательных: раньше пряталась за кнопкой
+				    «Дополнительные параметры» с глазом, хотя это два поля. */}
+				<div className={toolFooterBar}>
+					{paramField(
+						'content',
+						'utm_content',
+						'banner-header',
+						'Что именно нажали — для A/B-тестов'
+					)}
+					{paramField(
+						'term',
+						'utm_term',
+						'купить айфон',
+						'Ключевое слово для контекстной рекламы'
+					)}
+				</div>
+
+				{/* Динамические параметры площадки — показываются целиком, без
+				    «показать все»: их всего несколько строк. */}
+				{params.source && DYNAMIC_PARAMS[params.source] && (
+					<div className={toolFooterBar}>
+						<span className='text-sm text-muted-foreground'>
+							Динамические параметры {params.source}
+						</span>
+						<span className='flex flex-wrap items-center gap-x-4 gap-y-1'>
+							{DYNAMIC_PARAMS[params.source].map((param, index) => (
+								<span
+									key={index}
+									title={param.desc}
+									className='font-mono text-xs text-muted-foreground'
+								>
+									{param.param}
+								</span>
+							))}
+						</span>
+					</div>
+				)}
 			</Card>
 
-			{/* Compact History */}
+			{/* История — тихая полка под инструментом. */}
 			{showHistory && history.length > 0 && (
-				<Card>
-					<CardHeader>
-						<CardTitle className='text-lg flex items-center justify-between'>
-							<span className='flex items-center gap-2'>
-								<Clock className='w-5 h-5' />
-								История ссылок
-							</span>
-							<div className='flex gap-2'>
-								<Button variant='ghost' size='sm' onClick={downloadHistory}>
-									<Download className='w-4 h-4' />
-								</Button>
-								<Button variant='ghost' size='sm' onClick={clearHistory}>
-									<Trash2 className='w-4 h-4' />
+				<div className='mt-6'>
+					<div className='flex items-center justify-between gap-3 px-1'>
+						<p className='text-sm text-muted-foreground'>Сохранённые ссылки</p>
+						<span className='flex items-center gap-0.5'>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={downloadHistory}
+								title='Скачать список'
+								className={toolIconButton}
+							>
+								<Download className='h-4 w-4' />
+							</Button>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={clearHistory}
+								title='Очистить историю'
+								className={toolIconButton}
+							>
+								<Trash2 className='h-4 w-4' />
+							</Button>
+						</span>
+					</div>
+
+					<div className='mt-2 divide-y rounded-xl border'>
+						{history.slice(0, 10).map((item, index) => (
+							<div
+								key={index}
+								className='group flex items-center justify-between gap-3 px-4 py-3'
+							>
+								<button
+									type='button'
+									onClick={() => loadFromHistory(item)}
+									title='Вернуть в конструктор'
+									className='min-w-0 flex-1 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								>
+									<span className='block truncate text-sm'>{item.name}</span>
+									<span className='mt-0.5 block truncate font-mono text-xs text-muted-foreground'>
+										{item.url}
+									</span>
+								</button>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() => navigator.clipboard.writeText(item.url)}
+									title='Скопировать ссылку'
+									className={cn(
+										toolIconButton,
+										'h-7 w-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
+									)}
+								>
+									<Copy className='h-3.5 w-3.5' />
 								</Button>
 							</div>
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='space-y-2 max-h-64 overflow-y-auto'>
-							{history.slice(0, 10).map((item, index) => (
-								<div
-									key={index}
-									className='group p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors'
-									onClick={() => loadFromHistory(item)}
-								>
-									<div className='flex items-center justify-between'>
-										<div className='flex-1 min-w-0'>
-											<div className='flex items-center gap-2'>
-												<span className='font-medium text-sm truncate'>
-													{item.name}
-												</span>
-												<Badge variant='secondary' className='text-[10px]'>
-													{new Date(item.timestamp).toLocaleDateString()}
-												</Badge>
-											</div>
-											<p className='text-xs text-muted-foreground truncate'>
-												{item.url}
-											</p>
-										</div>
-										<div className='flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
-											<Button
-												size='icon'
-												variant='ghost'
-												className='h-7 w-7'
-												onClick={async e => {
-													e.stopPropagation()
-													await navigator.clipboard.writeText(item.url)
-													toast.success('Ссылка скопирована в буфер обмена')
-												}}
-											>
-												<Copy className='w-3 h-3' />
-											</Button>
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
+						))}
+					</div>
+				</div>
 			)}
-		</div>
+		</>
 	)
 }
