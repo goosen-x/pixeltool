@@ -2,14 +2,12 @@
 
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { Trash2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { useSpecialSymbols } from '@/lib/hooks/useSpecialSymbols'
-import {
-	SymbolGrid,
-	SymbolSearch,
-	SymbolInfo
-} from '@/components/tools/special-symbols'
+import { SymbolInfo } from '@/components/tools/special-symbols'
 
 export default function SpecialSymbolsPickerPage() {
 	const [selectedCategory, setSelectedCategory] = useState<
@@ -27,67 +25,98 @@ export default function SpecialSymbolsPickerPage() {
 		symbolCategories
 	} = useSpecialSymbols()
 
-	// Handle symbol copy with toast notification
-	const handleCopySymbol = async (symbol: string) => {
-		const success = await copySymbol(symbol)
-		if (success) {
-			toast.success(`Символ ${symbol} скопирован!`)
-		} else {
-			toast.error('Ошибка копирования')
-		}
-	}
-
-	// Get filtered symbols based on category
 	const filteredSymbols = getFilteredSymbols('', selectedCategory)
 
-	// Don't render until mounted (to avoid hydration issues)
+	// Недавние символы живут в localStorage: до гидратации их нет, и набор
+	// категорий на сервере и клиенте разошёлся бы.
 	if (!mounted) {
 		return (
-			<div className='min-h-screen bg-background'>
-				<div className='container mx-auto px-4 py-8'>
-					<div className='max-w-6xl mx-auto'>
-						<Card className='animate-pulse h-96' />
-					</div>
-				</div>
-			</div>
+			<Card className='overflow-hidden p-0'>
+				<div className='h-14 border-b bg-muted/30' />
+				<div className='h-96 animate-pulse bg-muted/20' />
+			</Card>
 		)
 	}
 
+	const categories: { id: string; name: string; icon: string }[] = [
+		{ id: 'all', name: 'Все', icon: '⭐' },
+		...(recentSymbols.length > 0
+			? [{ id: 'recent', name: 'Недавние', icon: '🕒' }]
+			: []),
+		...symbolCategories.map(category => ({
+			id: category.id,
+			name: category.name,
+			icon: getCategoryIcon(category.id)
+		}))
+	]
+
 	return (
-		<div className='min-h-screen bg-background'>
-			<div className='container mx-auto px-4 py-8'>
-				<div className='max-w-6xl mx-auto space-y-6'>
-					{/* Main Card */}
-					<Card className='overflow-hidden'>
-						<SymbolSearch
-							selectedCategory={selectedCategory}
-							onCategoryChange={setSelectedCategory}
-							hasRecentSymbols={recentSymbols.length > 0}
-							onClearRecentSymbols={clearRecentSymbols}
-							symbolCategories={symbolCategories}
-							getCategoryIcon={getCategoryIcon}
-						/>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: категории таблетками вместо сетки из восьми
+				    кнопок-плиток с тенями — плитки весили больше самих символов. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{categories.map(category => (
+							<button
+								key={category.id}
+								type='button'
+								onClick={() => setSelectedCategory(category.id)}
+								aria-pressed={selectedCategory === category.id}
+								className={toolPill(
+									selectedCategory === category.id,
+									'flex items-center gap-1.5'
+								)}
+							>
+								<span aria-hidden>{category.icon}</span>
+								{category.name}
+							</button>
+						))}
+					</div>
 
-						{/* Results Count */}
-						<div className='px-4 py-2 bg-muted/50 border-b'>
-							<p className='text-sm text-muted-foreground'>
-								{selectedCategory === 'recent'
-									? `Недавние символы: ${filteredSymbols.length}`
-									: `Всего символов: ${filteredSymbols.length}`}
-							</p>
-						</div>
-
-						<SymbolGrid
-							symbols={filteredSymbols}
-							onCopySymbol={handleCopySymbol}
-							copiedSymbol={copiedSymbol}
-						/>
-					</Card>
-
-					{/* Info Section */}
-					<SymbolInfo />
+					<div className='flex items-center gap-3 sm:ml-auto'>
+						<span className='text-sm text-muted-foreground'>
+							{filteredSymbols.length} шт.
+						</span>
+						{selectedCategory === 'recent' && recentSymbols.length > 0 && (
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={clearRecentSymbols}
+								title='Очистить недавние'
+								className={toolIconButton}
+							>
+								<Trash2 className='h-4 w-4' />
+							</Button>
+						)}
+					</div>
 				</div>
-			</div>
-		</div>
+
+				{filteredSymbols.length === 0 ? (
+					<p className='py-16 text-center text-sm text-muted-foreground'>
+						В этой категории пока пусто
+					</p>
+				) : (
+					<div className='grid grid-cols-6 gap-1 px-5 py-6 sm:grid-cols-8 sm:px-6 md:grid-cols-10 lg:grid-cols-12'>
+						{filteredSymbols.map((symbol, index) => (
+							<button
+								key={`${symbol}-${index}`}
+								type='button'
+								onClick={() => copySymbol(symbol)}
+								title='Скопировать'
+								className={cn(
+									'flex h-12 cursor-pointer items-center justify-center rounded-lg text-2xl transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									copiedSymbol === symbol && 'bg-primary/10 ring-1 ring-primary'
+								)}
+							>
+								{symbol}
+							</button>
+						))}
+					</div>
+				)}
+			</Card>
+
+			<SymbolInfo />
+		</>
 	)
 }
