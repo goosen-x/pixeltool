@@ -3,22 +3,67 @@
 import { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
 	Clock,
 	Smile,
 	Heart,
 	Frown,
-	Laugh,
 	Angry,
 	Sparkles,
-	Copy,
-	Check,
-	X
+	Trash2
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+
+/** Русские названия категорий: в данных лежат английские id. */
+const CATEGORY_LABELS: Record<string, string> = {
+	popular: 'Популярные',
+	happy: 'Радость',
+	sad: 'Грусть',
+	angry: 'Злость',
+	love: 'Любовь',
+	animals: 'Животные',
+	special: 'Особые',
+	japanese: 'Японские'
+}
+
+/**
+ * Русские подписи к смайликам. Раньше этот словарь был выписан прямо в
+ * разметке цепочкой из тридцати вложенных тернарников — правка одной подписи
+ * означала правку отступов на семьдесят уровней вложенности.
+ */
+const EMOTICON_LABELS: Record<string, string> = {
+	lennyFace: 'Ленни фейс',
+	shrug: 'Пожимание плечами',
+	tableFlip: 'Переворот стола',
+	disapproval: 'Неодобрение',
+	bear: 'Медведь',
+	confused: 'Смущение',
+	happy: 'Счастье',
+	crying: 'Плач',
+	cool: 'Крутой',
+	love: 'Любовь',
+	excited: 'Возбуждение',
+	sad: 'Грусть',
+	angry: 'Злость',
+	kiss: 'Поцелуй',
+	hug: 'Обнимашки',
+	cat: 'Кот',
+	dog: 'Собака',
+	surprised: 'Удивление',
+	fish: 'Рыба',
+	give: 'Дать',
+	pointing: 'Указание',
+	fighting: 'Борьба',
+	dancing: 'Танцы',
+	shocked: 'Шок',
+	singing: 'Пение',
+	goodbye: 'Прощание',
+	curious: 'Любопытство',
+	content: 'Довольство',
+	friends: 'Друзья',
+	embarrassed: 'Смущение'
+}
 
 interface EmoticonCategory {
 	id: string
@@ -281,7 +326,6 @@ export default function TextEmoticonsPage() {
 		try {
 			await navigator.clipboard.writeText(emoticon)
 			setCopiedEmoticon(emoticon)
-			toast.success(`Скопировано: ${emoticon}`)
 
 			// Add to recent emoticons
 			setRecentEmoticons(prev => {
@@ -292,7 +336,7 @@ export default function TextEmoticonsPage() {
 			// Reset copied state after 2 seconds
 			setTimeout(() => setCopiedEmoticon(null), 2000)
 		} catch (err) {
-			toast.error('Ошибка при копировании')
+			console.error('Не удалось скопировать смайлик:', err)
 		}
 	}
 
@@ -324,279 +368,117 @@ export default function TextEmoticonsPage() {
 
 	if (!mounted) {
 		return (
-			<div className='max-w-6xl mx-auto space-y-6'>
-				<Card className='p-6'>
-					<div className='animate-pulse space-y-4'>
-						<div className='h-10 bg-muted rounded' />
-						<div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-							{[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-								<div key={i} className='h-20 bg-muted rounded' />
-							))}
-						</div>
-					</div>
-				</Card>
-			</div>
+			<Card className='overflow-hidden p-0'>
+				<div className='h-14 border-b bg-muted/30' />
+				<div className='h-96 animate-pulse bg-muted/20' />
+			</Card>
 		)
 	}
 
+	const categories: { id: string; label: string; icon: React.ReactNode }[] = [
+		{ id: 'all', label: 'Все', icon: <Sparkles className='h-3.5 w-3.5' /> },
+		...(recentEmoticons.length > 0
+			? [
+					{
+						id: 'recent',
+						label: 'Недавние',
+						icon: <Clock className='h-3.5 w-3.5' />
+					}
+				]
+			: []),
+		...emoticonCategories.map(category => ({
+			id: category.id,
+			label: CATEGORY_LABELS[category.id] ?? category.id,
+			icon: category.icon
+		}))
+	]
+
 	return (
-		<div className='max-w-6xl mx-auto space-y-6'>
-			{/* Category Filter */}
-			<div className='space-y-4'>
-				<div className='flex justify-between items-center'>
-					<h2 className='text-lg font-semibold'>Категории</h2>
-					{recentEmoticons.length > 0 && selectedCategory === 'recent' && (
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={clearRecentEmoticons}
-							className='whitespace-nowrap'
-						>
-							<X className='w-4 h-4 mr-2' />
-							Очистить
-						</Button>
-					)}
-				</div>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: категории. Раньше они жили над карточкой
+				    отдельным блоком с заголовком «Категории» — подпись занимала
+				    строку, а сами кнопки повторяли заголовок карточки ниже. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{categories.map(category => (
+							<button
+								key={category.id}
+								type='button'
+								onClick={() => setSelectedCategory(category.id)}
+								aria-pressed={selectedCategory === category.id}
+								className={toolPill(
+									selectedCategory === category.id,
+									'flex items-center gap-1.5'
+								)}
+							>
+								{category.icon}
+								{category.label}
+							</button>
+						))}
+					</div>
 
-				{/* Category Pills */}
-				<div className='flex flex-wrap gap-2'>
-					<Button
-						variant={selectedCategory === 'all' ? 'default' : 'outline'}
-						size='sm'
-						onClick={() => setSelectedCategory('all')}
-						className={cn(
-							'h-9 px-4 rounded-full transition-all',
-							selectedCategory === 'all' && 'shadow-lg'
+					<div className='flex items-center gap-3 sm:ml-auto'>
+						<span className='text-sm text-muted-foreground'>
+							{filteredEmoticons.length} шт.
+						</span>
+						{selectedCategory === 'recent' && recentEmoticons.length > 0 && (
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={clearRecentEmoticons}
+								title='Очистить недавние'
+								className={toolIconButton}
+							>
+								<Trash2 className='h-4 w-4' />
+							</Button>
 						)}
-					>
-						<Sparkles className='w-4 h-4 mr-2' />
-						Все категории
-					</Button>
-
-					{recentEmoticons.length > 0 && (
-						<Button
-							variant={selectedCategory === 'recent' ? 'default' : 'outline'}
-							size='sm'
-							onClick={() => setSelectedCategory('recent')}
-							className={cn(
-								'h-9 px-4 rounded-full transition-all',
-								selectedCategory === 'recent' && 'shadow-lg'
-							)}
-						>
-							<Clock className='w-4 h-4 mr-2' />
-							Недавние
-						</Button>
-					)}
-
-					{emoticonCategories.map(category => (
-						<Button
-							key={category.id}
-							variant={selectedCategory === category.id ? 'default' : 'outline'}
-							size='sm'
-							onClick={() => setSelectedCategory(category.id)}
-							className={cn(
-								'h-9 px-4 rounded-full transition-all',
-								selectedCategory === category.id && 'shadow-lg'
-							)}
-						>
-							<span className='mr-2'>{category.icon}</span>
-							{category.id === 'popular'
-								? 'Популярные'
-								: category.id === 'happy'
-									? 'Радость'
-									: category.id === 'sad'
-										? 'Грусть'
-										: category.id === 'angry'
-											? 'Злость'
-											: category.id === 'love'
-												? 'Любовь'
-												: category.id === 'animals'
-													? 'Животные'
-													: category.id === 'special'
-														? 'Особые'
-														: category.id === 'japanese'
-															? 'Японские'
-															: category.id}
-						</Button>
-					))}
-				</div>
-			</div>
-
-			{/* Emoticons Grid */}
-			<Card className='p-6'>
-				<div className='flex items-center justify-between mb-4'>
-					<h2 className='text-lg font-semibold'>
-						{selectedCategory === 'all'
-							? 'Все категории'
-							: selectedCategory === 'recent'
-								? 'Недавние'
-								: selectedCategory === 'popular'
-									? 'Популярные'
-									: selectedCategory === 'happy'
-										? 'Радость'
-										: selectedCategory === 'sad'
-											? 'Грусть'
-											: selectedCategory === 'angry'
-												? 'Злость'
-												: selectedCategory === 'love'
-													? 'Любовь'
-													: selectedCategory === 'animals'
-														? 'Животные'
-														: selectedCategory === 'special'
-															? 'Особые'
-															: selectedCategory === 'japanese'
-																? 'Японские'
-																: selectedCategory}
-					</h2>
-					<Badge variant='secondary'>{filteredEmoticons.length} смайлов</Badge>
+					</div>
 				</div>
 
 				{filteredEmoticons.length > 0 ? (
-					<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3'>
+					<div className='grid grid-cols-2 gap-1 px-5 py-6 sm:grid-cols-3 sm:px-6 md:grid-cols-4 lg:grid-cols-5'>
 						{filteredEmoticons.map((emoticon, index) => (
-							<Button
+							<button
 								key={`${emoticon.text}-${index}`}
-								variant='outline'
-								className={cn(
-									'h-20 flex flex-col items-center justify-center gap-1 p-2 transition-all duration-200',
-									'group relative overflow-hidden',
-									'hover:border-primary hover:bg-muted/50 hover:shadow-md hover:scale-105',
-									copiedEmoticon === emoticon.text &&
-										'ring-2 ring-green-500 bg-green-50 dark:bg-green-950/20'
-								)}
+								type='button'
 								onClick={() => handleCopyEmoticon(emoticon.text)}
-								title='Нажмите для копирования'
+								title='Скопировать'
+								className={cn(
+									'flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg px-2 py-3 transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									copiedEmoticon === emoticon.text &&
+										'bg-primary/10 ring-1 ring-primary'
+								)}
 							>
-								<span className='text-lg font-mono relative z-10 group-hover:text-foreground transition-colors'>
+								<span className='font-mono text-base break-all'>
 									{emoticon.text}
 								</span>
 								{emoticon.name && (
-									<span className='text-xs text-muted-foreground relative z-10 group-hover:text-foreground/80 transition-colors'>
-										{emoticon.name === 'lennyFace'
-											? 'Ленни фейс'
-											: emoticon.name === 'shrug'
-												? 'Пожимание плечами'
-												: emoticon.name === 'tableFlip'
-													? 'Переворот стола'
-													: emoticon.name === 'disapproval'
-														? 'Неодобрение'
-														: emoticon.name === 'bear'
-															? 'Медведь'
-															: emoticon.name === 'confused'
-																? 'Смущение'
-																: emoticon.name === 'happy'
-																	? 'Счастье'
-																	: emoticon.name === 'crying'
-																		? 'Плач'
-																		: emoticon.name === 'cool'
-																			? 'Крутой'
-																			: emoticon.name === 'love'
-																				? 'Любовь'
-																				: emoticon.name === 'excited'
-																					? 'Возбуждение'
-																					: emoticon.name === 'sad'
-																						? 'Грусть'
-																						: emoticon.name === 'angry'
-																							? 'Злость'
-																							: emoticon.name === 'kiss'
-																								? 'Поцелуй'
-																								: emoticon.name === 'hug'
-																									? 'Обнимашки'
-																									: emoticon.name === 'cat'
-																										? 'Кот'
-																										: emoticon.name === 'dog'
-																											? 'Собака'
-																											: emoticon.name ===
-																												  'surprised'
-																												? 'Удивление'
-																												: emoticon.name ===
-																													  'fish'
-																													? 'Рыба'
-																													: emoticon.name ===
-																														  'give'
-																														? 'Дать'
-																														: emoticon.name ===
-																															  'pointing'
-																															? 'Указание'
-																															: emoticon.name ===
-																																  'fighting'
-																																? 'Борьба'
-																																: emoticon.name ===
-																																	  'dancing'
-																																	? 'Танцы'
-																																	: emoticon.name ===
-																																		  'shocked'
-																																		? 'Шок'
-																																		: emoticon.name ===
-																																			  'singing'
-																																			? 'Пение'
-																																			: emoticon.name ===
-																																				  'goodbye'
-																																				? 'Прощание'
-																																				: emoticon.name ===
-																																					  'curious'
-																																					? 'Любопытство'
-																																					: emoticon.name ===
-																																						  'content'
-																																						? 'Довольство'
-																																						: emoticon.name ===
-																																							  'friends'
-																																							? 'Друзья'
-																																							: emoticon.name ===
-																																								  'embarrassed'
-																																								? 'Смущение'
-																																								: emoticon.name}
+									<span className='text-xs text-muted-foreground'>
+										{EMOTICON_LABELS[emoticon.name] ?? emoticon.name}
 									</span>
 								)}
-
-								{copiedEmoticon === emoticon.text && (
-									<div className='absolute inset-0 flex items-center justify-center'>
-										<Check className='w-6 h-6 text-green-600 dark:text-green-400' />
-									</div>
-								)}
-
-								<Copy className='absolute bottom-1 right-1 w-3 h-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity z-10' />
-							</Button>
+							</button>
 						))}
 					</div>
 				) : (
-					<div className='text-center py-12 text-muted-foreground'>
-						<p>Нет результатов</p>
-					</div>
+					<p className='py-16 text-center text-sm text-muted-foreground'>
+						В этой категории пока пусто
+					</p>
 				)}
 			</Card>
 
-			{/* Info Card */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>О текстовых смайликах</h3>
-				<p className='text-sm text-muted-foreground mb-4'>
-					Текстовые смайлики (эмотиконы) - это способ выражения эмоций с помощью
-					текстовых символов. Кликните на любой смайлик, чтобы скопировать его в
-					буфер обмена.
+			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
+				<p>
+					Текстовые смайлики (каомодзи) собраны из обычных символов Unicode,
+					поэтому вставляются куда угодно — в ник, в сообщение, в комментарий —
+					и выглядят одинаково на любом устройстве, в отличие от эмодзи.
 				</p>
-
-				<div className='grid md:grid-cols-2 gap-4 mt-4'>
-					<div>
-						<h4 className='font-medium mb-2'>Возможности</h4>
-						<ul className='space-y-1 text-sm text-muted-foreground'>
-							<li>• Большая коллекция текстовых смайликов</li>
-							<li>• Категории по эмоциям и темам</li>
-							<li>• Копирование одним кликом</li>
-							<li>• История недавно используемых</li>
-							<li>• Удобная навигация</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Советы по использованию</h4>
-						<ul className='space-y-1 text-sm text-muted-foreground'>
-							<li>• Используйте в социальных сетях</li>
-							<li>• Добавляйте в сообщения</li>
-							<li>• Оживляйте форумы и чаты</li>
-							<li>• Украшайте электронную почту</li>
-						</ul>
-					</div>
-				</div>
-			</Card>
-		</div>
+				<p>
+					Клик по смайлику копирует его в буфер обмена, а сам смайлик попадает в
+					«Недавние» — там копятся последние двадцать.
+				</p>
+			</div>
+		</>
 	)
 }

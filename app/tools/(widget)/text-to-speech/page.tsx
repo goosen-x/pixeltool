@@ -1,42 +1,38 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
-import { Input } from '@/components/ui/input'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import {
-	Play,
-	Pause,
-	Square,
-	Volume2,
-	VolumeX,
-	Volume1,
-	Settings,
-	History,
-	Trash2,
-	FileDown,
-	Copy,
-	Upload,
-	FastForward,
-	AudioWaveform,
-	Music,
-	Sparkles,
-	Clock,
-	Mic
-} from 'lucide-react'
-import { toast } from 'sonner'
+import { Play, Pause, Square, Trash2, FileDown, Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
+
+/** Короткие фразы, на которых слышно разницу между голосами. */
+const EXAMPLE_PHRASES = [
+	{
+		label: 'Приветствие',
+		text: 'Привет! Добро пожаловать на наш сайт. Мы рады вас видеть!'
+	},
+	{
+		label: 'Объявление',
+		text: 'Внимание! Завтра состоится важное собрание в 14:00.'
+	},
+	{
+		label: 'Сказка',
+		text: 'Жил-был в лесу маленький ёжик, который очень любил собирать грибы.'
+	},
+	{
+		label: 'Стихи',
+		text: 'Белая берёза под моим окном принакрылась снегом, точно серебром.'
+	}
+]
 
 interface Voice {
 	voice: SpeechSynthesisVoice
@@ -195,18 +191,10 @@ export default function TextToSpeechPage() {
 	const clearHistory = useCallback(() => {
 		setHistory([])
 		localStorage.removeItem('tts-history')
-		toast.success('История очищена')
 	}, [])
-
-	const getVolumeIcon = () => {
-		if (volume[0] === 0) return VolumeX
-		if (volume[0] < 0.5) return Volume1
-		return Volume2
-	}
 
 	const speak = useCallback(() => {
 		if (!text.trim()) {
-			toast.error('Введите текст для озвучивания')
 			return
 		}
 
@@ -240,7 +228,7 @@ export default function TextToSpeechPage() {
 			setIsPlaying(false)
 			setIsPaused(false)
 			setCurrentUtterance(null)
-			toast.error('Ошибка при воспроизведении речи')
+			console.error('Ошибка при воспроизведении речи')
 		}
 
 		setCurrentUtterance(utterance)
@@ -279,13 +267,10 @@ export default function TextToSpeechPage() {
 		a.download = 'speech-text.txt'
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success('Текст экспортирован')
 	}, [text])
 
 	const copyToClipboard = useCallback(() => {
-		navigator.clipboard.writeText(text).then(() => {
-			toast.success('Текст скопирован')
-		})
+		navigator.clipboard.writeText(text).then(() => {})
 	}, [text])
 
 	if (!mounted) {
@@ -296,324 +281,246 @@ export default function TextToSpeechPage() {
 	const selectedVoiceObj = voices.find(v => v.name === selectedVoice)
 
 	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Main Interface */}
-			<Card className='overflow-hidden'>
-				<CardContent className='p-6 space-y-6'>
-					{/* Text Input Area with controls */}
-					<div className='space-y-3'>
-						<div className='flex items-center justify-between'>
-							<Label htmlFor='text-input' className='text-base font-medium'>
-								Введите текст
-							</Label>
-							<div className='flex items-center gap-2'>
-								<Badge variant='outline' className='text-xs'>
-									{text.length} символов
-								</Badge>
-							</div>
-						</div>
-
-						{/* Quick Examples */}
-						<div className='flex flex-wrap gap-2'>
-							{[
-								{
-									key: 'examples.greeting',
-									text: 'Привет! Добро пожаловать на наш сайт. Мы рады вас видеть!'
-								},
-								{
-									key: 'examples.announcement',
-									text: 'Внимание! Завтра состоится важное собрание в 14:00.'
-								},
-								{
-									key: 'examples.story',
-									text: 'Жил-был в лесу маленький ёжик, который очень любил собирать грибы.'
-								},
-								{
-									key: 'examples.poem',
-									text: 'Белая берёза под моим окном принакрылась снегом, точно серебром.'
-								}
-							].map((example, index) => (
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: воспроизведение и что сделать с текстом. Кнопка
+				    «играть» раньше была кругом 48×48 справа от поля ввода — она
+				    кричала громче самого текста. */}
+				<div className={toolBar}>
+					<div className='flex items-center gap-0.5'>
+						{!isPlaying ? (
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={speak}
+								disabled={!text.trim()}
+								title='Прочитать вслух'
+								className={toolIconButton}
+							>
+								<Play className='h-4 w-4' />
+							</Button>
+						) : (
+							<>
 								<Button
-									key={example.key}
-									variant='outline'
-									size='sm'
-									onClick={() => setText(example.text)}
-									className='text-xs h-7 px-2'
+									size='icon'
+									variant='ghost'
+									onClick={isPaused ? resume : pause}
+									title={isPaused ? 'Продолжить' : 'Пауза'}
+									className={toolIconButton}
 								>
-									{example.text.slice(0, 30)}...
+									{isPaused ? (
+										<Play className='h-4 w-4' />
+									) : (
+										<Pause className='h-4 w-4' />
+									)}
 								</Button>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={stop}
+									title='Остановить'
+									className={toolIconButton}
+								>
+									<Square className='h-4 w-4' />
+								</Button>
+							</>
+						)}
+					</div>
+
+					<span className='text-sm text-muted-foreground'>
+						{text.length} / 5000
+					</span>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyToClipboard}
+							disabled={!text.trim()}
+							title='Скопировать текст'
+							className={toolIconButton}
+						>
+							<Copy className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={exportText}
+							disabled={!text.trim()}
+							/* Иконка загрузки рядом с озвучкой читается как
+							   «скачать аудио», а кнопка сохраняет .txt —
+							   говорим об этом прямо в подсказке */
+							title='Сохранить текст в файл .txt'
+							className={toolIconButton}
+						>
+							<FileDown className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setText('')}
+							disabled={!text}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				<Textarea
+					id='text-input'
+					ref={textareaRef}
+					value={text}
+					onChange={e => setText(e.target.value)}
+					placeholder='Введите текст для озвучивания'
+					maxLength={5000}
+					aria-label='Текст для озвучивания'
+					className='min-h-[10rem] resize-none rounded-none border-0 px-5 py-6 text-base leading-relaxed focus-visible:ring-0 sm:px-6'
+				/>
+
+				{/* Полоса голоса и его настроек. */}
+				<div className={toolFooterBar}>
+					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+						<span>Голос</span>
+						<select
+							value={selectedVoice}
+							onChange={event => setSelectedVoice(event.target.value)}
+							className='max-w-[16rem] cursor-pointer rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						>
+							{Object.entries(voicesByLanguage).map(([lang, langVoices]) => (
+								<optgroup key={lang} label={lang.toUpperCase()}>
+									{langVoices.map(voice => (
+										<option key={voice.name} value={voice.name}>
+											{voice.name} ({voice.lang})
+											{voice.localService ? ' · локальный' : ''}
+										</option>
+									))}
+								</optgroup>
 							))}
-						</div>
+						</select>
+					</label>
 
-						<div className='flex gap-3'>
-							<div className='flex-1 relative'>
-								<Textarea
-									id='text-input'
-									ref={textareaRef}
-									value={text}
-									onChange={e => setText(e.target.value)}
-									placeholder='Введите текст для озвучивания...'
-									className='min-h-[120px] text-base leading-relaxed resize-none w-full pr-20'
-									maxLength={5000}
-								/>
-								{/* Export and Copy buttons in corner */}
-								<div className='absolute top-2 right-2 flex gap-1'>
-									<Button
-										onClick={copyToClipboard}
-										variant='ghost'
-										size='icon'
-										disabled={!text.trim()}
-										className='w-8 h-8'
-										title='Копировать'
-									>
-										<Copy className='w-4 h-4' />
-									</Button>
-									<Button
-										onClick={exportText}
-										variant='ghost'
-										size='icon'
-										disabled={!text.trim()}
-										className='w-8 h-8'
-										/* Иконка загрузки рядом с озвучкой читается как
-										   «скачать аудио», а кнопка сохраняет .txt —
-										   говорим об этом прямо в подсказке */
-										title='Сохранить текст в файл .txt'
-									>
-										<FileDown className='w-4 h-4' />
-									</Button>
-								</div>
-							</div>
-							<div className='flex flex-col gap-2'>
-								{/* Play/Pause/Stop buttons */}
-								{!isPlaying ? (
-									<Button
-										onClick={speak}
-										disabled={!text.trim()}
-										className='w-12 h-12 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center p-0'
-										size='lg'
-									>
-										<Play className='w-5 h-5 text-white' fill='currentColor' />
-									</Button>
-								) : (
-									<>
-										{isPaused ? (
-											<Button
-												onClick={resume}
-												className='w-12 h-12 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0'
-												size='lg'
-											>
-												<Play
-													className='w-5 h-5 text-white'
-													fill='currentColor'
-												/>
-											</Button>
-										) : (
-											<Button
-												onClick={pause}
-												className='w-12 h-12 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0'
-												size='lg'
-											>
-												<Pause
-													className='w-5 h-5 text-white'
-													fill='currentColor'
-												/>
-											</Button>
-										)}
-										<Button
-											onClick={stop}
-											variant='outline'
-											size='icon'
-											className='w-12 h-12'
-										>
-											<Square className='w-4 h-4' />
-										</Button>
-									</>
-								)}
-							</div>
-						</div>
-					</div>
+					{[
+						{
+							label: 'скорость',
+							value: rate,
+							onChange: setRate,
+							min: 0.25,
+							max: 3,
+							step: 0.25,
+							format: `${rate[0].toFixed(2)}x`
+						},
+						{
+							label: 'тон',
+							value: pitch,
+							onChange: setPitch,
+							min: 0.1,
+							max: 2,
+							step: 0.1,
+							format: pitch[0].toFixed(1)
+						},
+						{
+							label: 'громкость',
+							value: volume,
+							onChange: setVolume,
+							min: 0,
+							max: 1,
+							step: 0.1,
+							format: `${Math.round(volume[0] * 100)}%`
+						}
+					].map(control => (
+						<label
+							key={control.label}
+							className='flex items-center gap-2 text-sm text-muted-foreground'
+						>
+							<span>{control.label}</span>
+							<Slider
+								value={control.value}
+								onValueChange={control.onChange}
+								min={control.min}
+								max={control.max}
+								step={control.step}
+								className='w-24 cursor-pointer'
+								aria-label={control.label}
+							/>
+							<span className='w-12 font-mono text-sm text-foreground tabular-nums'>
+								{control.format}
+							</span>
+						</label>
+					))}
+				</div>
 
-					{/* All Settings in one row */}
-					<div className='grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg'>
-						{/* Voice Selection */}
-						<div className='flex items-center gap-3'>
-							<Mic className='w-4 h-4 text-muted-foreground flex-shrink-0' />
-							<div className='flex-1 space-y-1'>
-								<Label className='text-xs'>Голос</Label>
-								<Select value={selectedVoice} onValueChange={setSelectedVoice}>
-									<SelectTrigger className='h-8 text-xs'>
-										<SelectValue placeholder='Выберите голос' />
-									</SelectTrigger>
-									<SelectContent className='max-h-[300px]'>
-										{Object.entries(voicesByLanguage).map(
-											([lang, langVoices]) => (
-												<div key={lang}>
-													<div className='px-3 py-2 text-xs font-semibold text-primary border-b'>
-														{lang.toUpperCase()}
-													</div>
-													{langVoices.map(voice => (
-														<SelectItem key={voice.name} value={voice.name}>
-															<div className='flex items-center justify-between w-full'>
-																<span className='text-xs'>
-																	{voice.name.split(' ')[0]}
-																</span>
-																<div className='flex items-center gap-1'>
-																	<Badge
-																		variant='outline'
-																		className='text-[10px] h-4 px-1'
-																	>
-																		{voice.lang}
-																	</Badge>
-																	{voice.localService && (
-																		<Badge
-																			variant='secondary'
-																			className='text-[10px] h-4 px-1 bg-green-50 text-green-700'
-																		>
-																			Локальный
-																		</Badge>
-																	)}
-																</div>
-															</div>
-														</SelectItem>
-													))}
-												</div>
-											)
-										)}
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
-
-						{/* Speed */}
-						<div className='flex items-center gap-3'>
-							<FastForward className='w-4 h-4 text-muted-foreground flex-shrink-0' />
-							<div className='flex-1 space-y-1'>
-								<div className='flex items-center justify-between'>
-									<Label className='text-xs'>Скорость</Label>
-									<span className='text-xs font-mono text-muted-foreground'>
-										{rate[0].toFixed(1)}x
-									</span>
-								</div>
-								<Slider
-									value={rate}
-									onValueChange={setRate}
-									min={0.25}
-									max={3.0}
-									step={0.25}
-									className='h-1'
-								/>
-							</div>
-						</div>
-
-						{/* Pitch */}
-						<div className='flex items-center gap-3'>
-							<AudioWaveform className='w-4 h-4 text-muted-foreground flex-shrink-0' />
-							<div className='flex-1 space-y-1'>
-								<div className='flex items-center justify-between'>
-									<Label className='text-xs'>Тон</Label>
-									<span className='text-xs font-mono text-muted-foreground'>
-										{pitch[0].toFixed(1)}
-									</span>
-								</div>
-								<Slider
-									value={pitch}
-									onValueChange={setPitch}
-									min={0.1}
-									max={2.0}
-									step={0.1}
-									className='h-1'
-								/>
-							</div>
-						</div>
-
-						{/* Volume */}
-						<div className='flex items-center gap-3'>
-							{(() => {
-								const IconComponent = getVolumeIcon()
-								return (
-									<IconComponent className='w-4 h-4 text-muted-foreground flex-shrink-0' />
-								)
-							})()}
-							<div className='flex-1 space-y-1'>
-								<div className='flex items-center justify-between'>
-									<Label className='text-xs'>Громкость</Label>
-									<span className='text-xs font-mono text-muted-foreground'>
-										{Math.round(volume[0] * 100)}%
-									</span>
-								</div>
-								<Slider
-									value={volume}
-									onValueChange={setVolume}
-									min={0}
-									max={1.0}
-									step={0.1}
-									className='h-1'
-								/>
-							</div>
-						</div>
-					</div>
-				</CardContent>
+				{/* Быстрые примеры — короткие фразы, на которых слышно разницу
+				    между голосами и скоростями. */}
+				<div className={toolFooterBar}>
+					<span className='mr-1 text-sm text-muted-foreground'>Примеры</span>
+					{EXAMPLE_PHRASES.map(example => (
+						<button
+							key={example.label}
+							type='button'
+							onClick={() => setText(example.text)}
+							title={example.text}
+							className={toolPill(false)}
+						>
+							{example.label}
+						</button>
+					))}
+				</div>
 			</Card>
 
-			{/* History at the bottom */}
+			{/* История — тихая полка под инструментом. */}
 			{history.length > 0 && (
-				<Card>
-					<CardHeader>
-						<div className='flex items-center justify-between'>
-							<CardTitle className='flex items-center gap-2'>
-								<History className='w-5 h-5' />
-								История
-							</CardTitle>
-							<Button onClick={clearHistory} variant='outline' size='sm'>
-								Очистить всё
-							</Button>
-						</div>
-					</CardHeader>
-					<CardContent>
-						<div className='grid gap-3 max-h-[300px] overflow-y-auto'>
-							{history.slice(0, 5).map((item, index) => (
-								<div
-									key={item.id}
-									className='p-3 border rounded-lg hover:bg-muted/50 transition-colors group'
+				<div className='mt-6'>
+					<div className='flex items-center justify-between gap-3 px-1'>
+						<p className='text-sm text-muted-foreground'>
+							Что уже читали вслух
+						</p>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={clearHistory}
+							title='Очистить историю'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+					<div className='mt-2 divide-y rounded-xl border'>
+						{history.slice(0, 5).map(item => (
+							<div
+								key={item.id}
+								className='group flex items-start justify-between gap-3 px-4 py-3'
+							>
+								<button
+									type='button'
+									onClick={() => setText(item.text)}
+									title='Вернуть текст в поле'
+									className='min-w-0 flex-1 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 								>
-									<div className='flex items-start justify-between gap-3'>
-										<div className='flex-1 min-w-0'>
-											<p className='text-sm mb-2 break-words'>
-												{item.text.slice(0, 100)}...
-											</p>
-											<div className='flex items-center gap-3 text-xs text-muted-foreground'>
-												<span>
-													{new Date(item.timestamp).toLocaleDateString()}
-												</span>
-												<span>{item.voice}</span>
-												<span>{item.rate.toFixed(1)}x</span>
-											</div>
-										</div>
-										<div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity'>
-											<Button
-												onClick={() => setText(item.text)}
-												size='sm'
-												variant='ghost'
-												className='h-7 w-7 p-0'
-											>
-												<Copy className='w-3 h-3' />
-											</Button>
-											<Button
-												onClick={() => deleteHistoryItem(item.id)}
-												size='sm'
-												variant='ghost'
-												className='h-7 w-7 p-0 text-destructive'
-											>
-												<Trash2 className='w-3 h-3' />
-											</Button>
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
+									<span className='block truncate text-sm'>{item.text}</span>
+									<span className='mt-0.5 block text-xs text-muted-foreground'>
+										{new Date(item.timestamp).toLocaleDateString('ru-RU')} ·{' '}
+										{item.voice} · {item.rate.toFixed(2)}x
+									</span>
+								</button>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() => deleteHistoryItem(item.id)}
+									title='Удалить из истории'
+									className={cn(
+										toolIconButton,
+										'h-7 w-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
+									)}
+								>
+									<Trash2 className='h-3.5 w-3.5' />
+								</Button>
+							</div>
+						))}
+					</div>
+				</div>
 			)}
-		</div>
+		</>
 	)
 }

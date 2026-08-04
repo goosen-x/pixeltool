@@ -4,31 +4,25 @@ import { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import {
-	GitBranch,
 	Copy,
-	RefreshCw,
+	Check,
 	Download,
 	ArrowRightLeft,
-	FileText,
-	Eye,
-	EyeOff,
-	Settings,
-	Info
+	Lightbulb,
+	Trash2
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
-type DiffType = 'unified' | 'side-by-side' | 'inline'
+// Режим «встроенный» удалён: он рендерился той же функцией, что и
+// «унифицированный», то есть был третьим пунктом списка без своего вида.
+type DiffType = 'unified' | 'side-by-side'
 type ChangeType = 'add' | 'delete' | 'modify' | 'equal'
 
 interface DiffLine {
@@ -58,6 +52,7 @@ export default function TextDiffToolPage() {
 	const [ignoreCase, setIgnoreCase] = useState(false)
 	const [showLineNumbers, setShowLineNumbers] = useState(true)
 	const [isProcessing, setIsProcessing] = useState(false)
+	const [copied, setCopied] = useState(false)
 
 	// Auto-diff when text changes
 	useEffect(() => {
@@ -79,7 +74,6 @@ export default function TextDiffToolPage() {
 				const result = computeDiff(originalText, modifiedText)
 				setDiffResult(result)
 			} catch (error) {
-				toast.error('Ошибка при сравнении текстов')
 				console.error('Diff calculation error:', error)
 			} finally {
 				setIsProcessing(false)
@@ -170,7 +164,8 @@ export default function TextDiffToolPage() {
 
 		const unifiedDiff = generateUnifiedDiff(diffResult.lines)
 		navigator.clipboard.writeText(unifiedDiff)
-		toast.success('Diff скопирован в буфер обмена!')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}
 
 	const generateUnifiedDiff = (lines: DiffLine[]): string => {
@@ -207,22 +202,18 @@ export default function TextDiffToolPage() {
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-
-		toast.success('Diff сохранен как файл')
 	}
 
 	const swapTexts = () => {
 		const temp = originalText
 		setOriginalText(modifiedText)
 		setModifiedText(temp)
-		toast.success('Тексты поменяны местами')
 	}
 
 	const clearAll = () => {
 		setOriginalText('')
 		setModifiedText('')
 		setDiffResult(null)
-		toast.success('Все очищено')
 	}
 
 	const loadSampleTexts = () => {
@@ -239,7 +230,6 @@ export default function TextDiffToolPage() {
 
 		setOriginalText(sample1)
 		setModifiedText(sample2)
-		toast.success('Загружены примеры текстов')
 	}
 
 	const getDiffLineClass = (type: ChangeType): string => {
@@ -340,208 +330,179 @@ export default function TextDiffToolPage() {
 	}
 
 	return (
-		<div className='max-w-7xl mx-auto space-y-6'>
-			{/* Input Section */}
-			<Card className='p-6'>
-				<div className='grid lg:grid-cols-2 gap-6'>
-					<div>
-						<Label htmlFor='original-text' className='mb-2 block'>
-							Исходный текст
-						</Label>
-						<Textarea
-							id='original-text'
-							value={originalText}
-							onChange={e => setOriginalText(e.target.value)}
-							placeholder='Вставьте исходный текст здесь...'
-							className='min-h-64 font-mono'
-						/>
-					</div>
-
-					<div>
-						<Label htmlFor='modified-text' className='mb-2 block'>
-							Измененный текст
-						</Label>
-						<Textarea
-							id='modified-text'
-							value={modifiedText}
-							onChange={e => setModifiedText(e.target.value)}
-							placeholder='Вставьте измененный текст здесь...'
-							className='min-h-64 font-mono'
-						/>
-					</div>
-				</div>
-
-				{/* Controls */}
-				<div className='flex items-center gap-4 mt-6 flex-wrap'>
-					<div className='flex items-center gap-2'>
-						<Settings className='w-4 h-4' />
-						<span className='text-sm font-medium'>Настройки:</span>
-					</div>
-
-					<Button
-						onClick={() => setIgnoreWhitespace(!ignoreWhitespace)}
-						variant={ignoreWhitespace ? 'default' : 'outline'}
-						size='sm'
-					>
-						Игнорировать пробелы
-					</Button>
-
-					<Button
-						onClick={() => setIgnoreCase(!ignoreCase)}
-						variant={ignoreCase ? 'default' : 'outline'}
-						size='sm'
-					>
-						Игнорировать регистр
-					</Button>
-
-					<Button
-						onClick={() => setShowLineNumbers(!showLineNumbers)}
-						variant='outline'
-						size='sm'
-					>
-						{showLineNumbers ? (
-							<EyeOff className='w-4 h-4 mr-1' />
-						) : (
-							<Eye className='w-4 h-4 mr-1' />
-						)}
-						Номера строк
-					</Button>
-
-					<div className='flex flex-wrap items-center gap-2 ml-auto'>
-						<Button onClick={loadSampleTexts} variant='outline' size='sm'>
-							<FileText className='w-4 h-4 mr-2' />
-							Пример
-						</Button>
-						<Button onClick={swapTexts} variant='outline' size='sm'>
-							<ArrowRightLeft className='w-4 h-4 mr-2' />
-							Поменять
-						</Button>
-						<Button onClick={clearAll} variant='outline' size='sm'>
-							<RefreshCw className='w-4 h-4 mr-2' />
-							Очистить
-						</Button>
-					</div>
-				</div>
-			</Card>
-
-			{/* Stats */}
-			{diffResult && (
-				<Card className='p-4'>
-					<div className='flex flex-wrap gap-2 items-center justify-between'>
-						<div className='flex flex-wrap items-center gap-4'>
-							<Badge variant='outline' className='text-green-600'>
-								+{diffResult.stats.additions} добавлений
-							</Badge>
-							<Badge variant='outline' className='text-red-600'>
-								-{diffResult.stats.deletions} удалений
-							</Badge>
-							<Badge variant='outline' className='text-yellow-600'>
-								{diffResult.stats.modifications} изменений
-							</Badge>
-							<Badge variant='outline'>
-								Всего: {diffResult.stats.total} изменений
-							</Badge>
-						</div>
-
-						<div className='flex flex-wrap items-center gap-2'>
-							<Select
-								value={diffType}
-								onValueChange={(value: DiffType) => setDiffType(value)}
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: как показывать различия и что сделать с
+				    результатом. Режим раньше жил в выпадающем списке посреди
+				    статистики — рядом с числами, но управлял видом ниже. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								['unified', 'Одним потоком'],
+								['side-by-side', 'Бок о бок']
+							] as [DiffType, string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setDiffType(value)}
+								aria-pressed={diffType === value}
+								className={toolPill(diffType === value)}
 							>
-								<SelectTrigger className='w-48'>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='unified'>Унифицированный</SelectItem>
-									<SelectItem value='side-by-side'>Бок о бок</SelectItem>
-									<SelectItem value='inline'>Встроенный</SelectItem>
-								</SelectContent>
-							</Select>
-
-							<Button onClick={copyDiffToClipboard} variant='outline' size='sm'>
-								<Copy className='w-4 h-4 mr-2' />
-								Копировать
-							</Button>
-
-							<Button onClick={downloadDiff} variant='outline' size='sm'>
-								<Download className='w-4 h-4 mr-2' />
-								Скачать
-							</Button>
-						</div>
+								{label}
+							</button>
+						))}
 					</div>
-				</Card>
-			)}
 
-			{/* Results */}
-			{diffResult && (
-				<Card className='p-6'>
-					<h3 className='font-semibold mb-4 flex items-center gap-2'>
-						<GitBranch className='w-5 h-5' />
-						Результат сравнения ({diffType})
-					</h3>
-
-					<div className='max-h-96 overflow-auto border rounded-lg p-4'>
-						{diffType === 'side-by-side' && renderSideBySideDiff()}
-						{(diffType === 'unified' || diffType === 'inline') &&
-							renderUnifiedDiff()}
-					</div>
-				</Card>
-			)}
-
-			{!diffResult && !isProcessing && (
-				<Card className='p-6'>
-					<div className='flex items-center justify-center h-40 text-muted-foreground'>
-						<div className='text-center'>
-							<GitBranch className='w-12 h-12 mx-auto mb-3 opacity-50' />
-							<p>Введите тексты для сравнения</p>
-							<p className='text-sm mt-2'>
-								Результат будет показан автоматически
-							</p>
-						</div>
-					</div>
-				</Card>
-			)}
-
-			{/* Info */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-4 flex items-center gap-2'>
-					<Info className='w-4 h-4' />О инструменте сравнения
-				</h3>
-				<div className='grid md:grid-cols-3 gap-6 text-sm'>
-					<div>
-						<h4 className='font-medium mb-2'>Возможности</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Три режима отображения различий</li>
-							<li>• Игнорирование пробелов и регистра</li>
-							<li>• Статистика изменений</li>
-							<li>• Экспорт в формате patch</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Форматы вывода</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>
-								• <strong>Унифицированный</strong> - классический diff формат
-							</li>
-							<li>
-								• <strong>Бок о бок</strong> - параллельное сравнение
-							</li>
-							<li>
-								• <strong>Встроенный</strong> - изменения в одном потоке
-							</li>
-						</ul>
-					</div>
-					<div>
-						<h4 className='font-medium mb-2'>Применение</h4>
-						<ul className='text-muted-foreground space-y-1'>
-							<li>• Сравнение версий кода</li>
-							<li>• Проверка изменений в документах</li>
-							<li>• Анализ различий в конфигурациях</li>
-							<li>• Генерация патчей</li>
-						</ul>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={loadSampleTexts}
+							title='Подставить пример'
+							className={toolIconButton}
+						>
+							<Lightbulb className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={swapTexts}
+							title='Поменять тексты местами'
+							className={toolIconButton}
+						>
+							<ArrowRightLeft className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyDiffToClipboard}
+							disabled={!diffResult}
+							title='Скопировать патч'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadDiff}
+							disabled={!diffResult}
+							title='Скачать патч'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={clearAll}
+							disabled={!originalText && !modifiedText}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
 					</div>
 				</div>
+
+				<div className='grid lg:grid-cols-2'>
+					<Textarea
+						value={originalText}
+						onChange={e => setOriginalText(e.target.value)}
+						placeholder='Исходный текст'
+						spellCheck={false}
+						aria-label='Исходный текст'
+						className='min-h-[16rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm lg:border-r'
+					/>
+					<Textarea
+						value={modifiedText}
+						onChange={e => setModifiedText(e.target.value)}
+						placeholder='Изменённый текст'
+						spellCheck={false}
+						aria-label='Изменённый текст'
+						className='min-h-[16rem] resize-none rounded-none border-0 border-t px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm lg:border-t-0'
+					/>
+				</div>
+
+				{/* Полоса сравнения: чем пренебречь при сличении и что получилось. */}
+				<div className={toolFooterBar}>
+					<button
+						type='button'
+						onClick={() => setIgnoreWhitespace(!ignoreWhitespace)}
+						aria-pressed={ignoreWhitespace}
+						className={toolPill(ignoreWhitespace)}
+					>
+						без учёта пробелов
+					</button>
+					<button
+						type='button'
+						onClick={() => setIgnoreCase(!ignoreCase)}
+						aria-pressed={ignoreCase}
+						className={toolPill(ignoreCase)}
+					>
+						без учёта регистра
+					</button>
+					<button
+						type='button'
+						onClick={() => setShowLineNumbers(!showLineNumbers)}
+						aria-pressed={showLineNumbers}
+						className={toolPill(showLineNumbers)}
+					>
+						номера строк
+					</button>
+
+					{diffResult && (
+						<div className='flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground sm:ml-auto'>
+							<span className='font-mono text-green-600 dark:text-green-400'>
+								+{diffResult.stats.additions}
+							</span>
+							<span className='font-mono text-red-600 dark:text-red-400'>
+								−{diffResult.stats.deletions}
+							</span>
+							<span className='font-mono text-yellow-600 dark:text-yellow-500'>
+								~{diffResult.stats.modifications}
+							</span>
+							<span>всего {diffResult.stats.total}</span>
+						</div>
+					)}
+				</div>
+
+				<div className='max-h-[32rem] overflow-auto border-t px-5 py-6 sm:px-6'>
+					{diffResult ? (
+						diffType === 'side-by-side' ? (
+							renderSideBySideDiff()
+						) : (
+							renderUnifiedDiff()
+						)
+					) : (
+						<p className='py-10 text-center text-sm text-muted-foreground'>
+							{isProcessing
+								? 'Сравниваем…'
+								: 'Вставьте два текста — различия появятся здесь'}
+						</p>
+					)}
+				</div>
 			</Card>
-		</div>
+
+			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
+				<p>
+					Сравнение идёт по строкам: строка, которой нет во втором тексте,
+					считается удалённой, новая — добавленной, а изменённая подсвечивается
+					жёлтым. Всё считается прямо в браузере, тексты никуда не отправляются.
+				</p>
+				<p>
+					«Без учёта пробелов» полезно, когда отличается только форматирование
+					(отступы, переносы), а «без учёта регистра» — когда важен смысл, а не
+					то, с какой буквы написано слово. Результат можно забрать кнопкой
+					скачивания в виде патча.
+				</p>
+			</div>
+		</>
 	)
 }

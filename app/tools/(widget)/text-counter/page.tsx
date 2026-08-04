@@ -3,37 +3,24 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
-	Type,
 	Copy,
-	RefreshCw,
-	FileText,
-	Hash,
-	Clock,
+	Check,
 	BarChart3,
-	Zap,
-	AlertCircle,
-	CheckCircle,
+	Lightbulb,
+	Trash2,
 	MessageSquare,
 	Facebook,
 	Twitter,
 	Linkedin,
 	Instagram,
-	Globe,
-	Search,
-	Edit3,
-	ChevronDown,
-	ChevronUp,
-	BookOpen,
-	Mic
+	Search
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+
 interface TextStats {
 	characters: number
 	charactersNoSpaces: number
@@ -155,105 +142,6 @@ const COMMON_STOP_WORDS = [
 ]
 
 // Animated Number Component
-function AnimatedNumber({
-	value,
-	suffix = ''
-}: {
-	value: number
-	suffix?: string
-}) {
-	const [displayValue, setDisplayValue] = useState(0)
-
-	useEffect(() => {
-		const duration = 500
-		const startTime = Date.now()
-		const startValue = displayValue
-		const difference = value - startValue
-
-		const animate = () => {
-			const now = Date.now()
-			const progress = Math.min((now - startTime) / duration, 1)
-			const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-
-			setDisplayValue(Math.floor(startValue + difference * easeOutQuart))
-
-			if (progress < 1) {
-				requestAnimationFrame(animate)
-			} else {
-				setDisplayValue(value)
-			}
-		}
-
-		requestAnimationFrame(animate)
-	}, [value])
-
-	return (
-		<>
-			{displayValue}
-			{suffix}
-		</>
-	)
-}
-
-// Collapsible Section Component
-function CollapsibleSection({
-	title,
-	icon,
-	children,
-	defaultOpen = false
-}: {
-	title: string
-	icon: React.ReactNode
-	children: React.ReactNode
-	defaultOpen?: boolean
-}) {
-	const [isOpen, setIsOpen] = useState(defaultOpen)
-
-	return (
-		<Card className='overflow-hidden border-2 hover:border-muted-foreground/20 transition-all duration-200'>
-			<CardContent className='p-0'>
-				<button
-					onClick={() => setIsOpen(!isOpen)}
-					className='w-full p-5 flex items-center justify-between hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10 transition-all duration-200 rounded-t-lg group'
-				>
-					<div className='flex items-center gap-3'>
-						<motion.div
-							whileHover={{ scale: 1.1 }}
-							className='p-2 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-200'
-						>
-							{icon}
-						</motion.div>
-						<h3 className='font-semibold text-lg group-hover:text-primary transition-colors duration-200'>
-							{title}
-						</h3>
-					</div>
-					<motion.div
-						animate={{ rotate: isOpen ? 180 : 0 }}
-						transition={{ duration: 0.3, ease: 'easeInOut' }}
-						className='p-1 rounded-full hover:bg-muted/50 transition-colors'
-					>
-						<ChevronDown className='w-5 h-5 text-muted-foreground' />
-					</motion.div>
-				</button>
-
-				<AnimatePresence>
-					{isOpen && (
-						<motion.div
-							initial={{ height: 0, opacity: 0 }}
-							animate={{ height: 'auto', opacity: 1 }}
-							exit={{ height: 0, opacity: 0 }}
-							transition={{ duration: 0.3, ease: 'easeInOut' }}
-							className='overflow-hidden border-t bg-gradient-to-b from-muted/10 to-transparent'
-						>
-							<div className='p-6'>{children}</div>
-						</motion.div>
-					)}
-				</AnimatePresence>
-			</CardContent>
-		</Card>
-	)
-}
-
 export default function TextCounterPage() {
 	const [text, setText] = useState('')
 	const [stats, setStats] = useState<TextStats>({
@@ -269,8 +157,7 @@ export default function TextCounterPage() {
 		longestWord: '',
 		commonWords: []
 	})
-	const [selectedPlatform, setSelectedPlatform] =
-		useState<PlatformLimit | null>(null)
+	const [copied, setCopied] = useState<'text' | 'stats' | null>(null)
 
 	useEffect(() => {
 		analyzeText(text)
@@ -383,25 +270,24 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
     `.trim()
 
 		navigator.clipboard.writeText(statsText)
-		toast.success('Статистика скопирована в буфер обмена!')
+		setCopied('stats')
+		setTimeout(() => setCopied(null), 2000)
 	}
 
 	const copyText = () => {
 		navigator.clipboard.writeText(text)
-		toast.success('Текст скопирован в буфер обмена!')
+		setCopied('text')
+		setTimeout(() => setCopied(null), 2000)
 	}
 
 	const clearText = () => {
 		setText('')
-		setSelectedPlatform(null)
-		toast.success('Текст очищен!')
 	}
 
 	const loadExample = () => {
 		setText(
 			'Добро пожаловать в анализатор текста! Этот инструмент помогает вам анализировать ваш текст в реальном времени. Попробуйте ввести или вставить любой текст, и вы увидите мгновенную статистику.'
 		)
-		toast.success('Пример загружен!')
 	}
 
 	const getPlatformProgress = (platform: PlatformLimit): number => {
@@ -410,417 +296,186 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 		return Math.min((value / platform.limit) * 100, 100)
 	}
 
-	const getPlatformStatus = (platform: PlatformLimit) => {
-		const value =
-			platform.type === 'characters' ? stats.characters : stats.words
-		const percentage = (value / platform.limit) * 100
-
-		if (percentage <= 80) {
-			return {
-				color: 'text-green-600',
-				icon: CheckCircle,
-				status: 'Оптимально'
-			}
-		} else if (percentage <= 100) {
-			return {
-				color: 'text-yellow-600',
-				icon: AlertCircle,
-				status: 'Близко к лимиту'
-			}
-		} else {
-			return {
-				color: 'text-red-600',
-				icon: AlertCircle,
-				status: 'Превышен лимит'
-			}
-		}
-	}
-
-	const highlightKeywords = () => {
-		if (stats.commonWords.length === 0) return text
-
-		let highlightedText = text
-		stats.commonWords.forEach(({ word }) => {
-			const regex = new RegExp(`\\b${word}\\b`, 'gi')
-			highlightedText = highlightedText.replace(regex, `**${word}**`)
-		})
-		return highlightedText
-	}
-
-	// Keyboard shortcuts
 	return (
-		<WidgetLayout showShare={false}>
-			<div className='w-full space-y-6'>
-				{/* Hero Stats Section */}
-				<div className='grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4'>
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.3 }}
-					>
-						<Card className='relative overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 hover:border-primary/30 transition-all duration-200 hover:shadow-lg hover:shadow-primary/10'>
-							<CardContent className='p-4 sm:p-6'>
-								<div className='flex items-center justify-between'>
-									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											Символов
-										</p>
-										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent'>
-											<AnimatedNumber value={stats.characters} />
-										</p>
-									</div>
-									<div className='relative'>
-										<Hash className='w-6 h-6 sm:w-8 sm:h-8 text-primary/30' />
-										<div className='absolute inset-0 bg-primary/10 blur-xl rounded-full'></div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</motion.div>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: главные цифры. Раньше это были четыре карточки
+				    с градиентами, свечением и анимацией счётчика — четыре разных
+				    цвета ради четырёх чисел. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-x-6 gap-y-2'>
+						{[
+							['символов', stats.characters.toLocaleString('ru-RU')],
+							['слов', stats.words.toLocaleString('ru-RU')],
+							['предложений', stats.sentences.toLocaleString('ru-RU')],
+							['абзацев', stats.paragraphs.toLocaleString('ru-RU')]
+						].map(([label, value]) => (
+							<span key={label} className='flex items-baseline gap-2'>
+								<span className='font-mono text-xl text-foreground tabular-nums'>
+									{value}
+								</span>
+								<span className='text-sm text-muted-foreground'>{label}</span>
+							</span>
+						))}
+					</div>
 
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.3, delay: 0.1 }}
-					>
-						<Card className='relative overflow-hidden bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20 hover:border-blue-500/30 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10'>
-							<CardContent className='p-4 sm:p-6'>
-								<div className='flex items-center justify-between'>
-									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											Слов
-										</p>
-										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent'>
-											<AnimatedNumber value={stats.words} />
-										</p>
-									</div>
-									<div className='relative'>
-										<Type className='w-6 h-6 sm:w-8 sm:h-8 text-blue-500/30' />
-										<div className='absolute inset-0 bg-blue-500/10 blur-xl rounded-full'></div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</motion.div>
-
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.3, delay: 0.2 }}
-					>
-						<Card className='relative overflow-hidden bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent border-green-500/20 hover:border-green-500/30 transition-all duration-200 hover:shadow-lg hover:shadow-green-500/10'>
-							<CardContent className='p-4 sm:p-6'>
-								<div className='flex items-center justify-between'>
-									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											Предложений
-										</p>
-										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent'>
-											<AnimatedNumber value={stats.sentences} />
-										</p>
-									</div>
-									<div className='relative'>
-										<FileText className='w-6 h-6 sm:w-8 sm:h-8 text-green-500/30' />
-										<div className='absolute inset-0 bg-green-500/10 blur-xl rounded-full'></div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</motion.div>
-
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.3, delay: 0.3 }}
-					>
-						<Card className='relative overflow-hidden bg-gradient-to-br from-orange-500/10 via-orange-500/5 to-transparent border-orange-500/20 hover:border-orange-500/30 transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/10'>
-							<CardContent className='p-4 sm:p-6'>
-								<div className='flex items-center justify-between'>
-									<div>
-										<p className='text-xs sm:text-sm font-medium text-muted-foreground mb-1 sm:mb-2'>
-											Время чтения
-										</p>
-										<p className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent'>
-											<AnimatedNumber value={stats.readingTime} suffix=' min' />
-										</p>
-									</div>
-									<div className='relative'>
-										<Clock className='w-6 h-6 sm:w-8 sm:h-8 text-orange-500/30' />
-										<div className='absolute inset-0 bg-orange-500/10 blur-xl rounded-full'></div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</motion.div>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={loadExample}
+							title='Подставить пример'
+							className={toolIconButton}
+						>
+							<Lightbulb className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyText}
+							disabled={!text}
+							title='Скопировать текст'
+							className={toolIconButton}
+						>
+							{copied === 'text' ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyStats}
+							disabled={!text}
+							title='Скопировать статистику'
+							className={toolIconButton}
+						>
+							{copied === 'stats' ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<BarChart3 className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={clearText}
+							disabled={!text}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
 				</div>
 
-				{/* Text Input Section */}
-				<Card className='relative border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/30 transition-all duration-200'>
-					<CardContent className='p-4 sm:p-6'>
-						<div className='relative'>
-							<Textarea
-								id='text-input'
-								value={text}
-								onChange={e => setText(e.target.value)}
-								placeholder='Введите или вставьте текст для анализа...'
-								className='min-h-[250px] sm:min-h-[300px] resize-y pr-12 sm:pr-16 text-base border-0 focus:ring-0 bg-transparent placeholder:text-muted-foreground/60'
-							/>
-							{/* Floating Character Counter */}
-							<motion.div
-								className='absolute bottom-2 sm:bottom-4 right-2 sm:right-4 text-xs sm:text-sm font-mono bg-background/90 backdrop-blur border rounded-lg px-2 py-1 sm:px-3 sm:py-1.5 shadow-sm'
-								initial={{ opacity: 0 }}
-								animate={{ opacity: text ? 1 : 0.5 }}
-								transition={{ duration: 0.2 }}
-							>
-								<span className='text-muted-foreground'>
-									{stats.characters.toLocaleString()}
-								</span>
-							</motion.div>
-						</div>
+				<Textarea
+					id='text-input'
+					value={text}
+					onChange={e => setText(e.target.value)}
+					placeholder='Введите или вставьте текст — счёт идёт на лету'
+					aria-label='Текст для анализа'
+					className='min-h-[16rem] resize-y rounded-none border-0 px-5 py-6 text-base focus-visible:ring-0 sm:px-6'
+				/>
 
-						{/* Action Buttons */}
-						<div className='flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-0 mt-6 pt-4 border-t'>
-							<div className='flex gap-2'>
-								<Button
-									onClick={loadExample}
-									variant='outline'
-									size='sm'
-									className='flex-1 sm:flex-none hover:bg-primary/5 hover:border-primary/20'
-								>
-									<Zap className='w-4 h-4 mr-2' />
-									Пример
-								</Button>
-								<Button
-									onClick={clearText}
-									variant='outline'
-									size='sm'
-									className='flex-1 sm:flex-none hover:bg-destructive/5 hover:border-destructive/20'
-									disabled={!text}
-								>
-									<RefreshCw className='w-4 h-4 mr-2' />
-									Очистить
-								</Button>
-							</div>
-							<div className='flex flex-wrap gap-2'>
-								<Button
-									onClick={copyText}
-									variant='outline'
-									size='sm'
-									disabled={!text}
-									className='flex-1 sm:flex-none hover:bg-blue-500/5 hover:border-blue-500/20'
-								>
-									<Copy className='w-4 h-4 mr-2' />
-									Копировать текст
-								</Button>
-								<Button
-									onClick={copyStats}
-									variant='default'
-									size='sm'
-									disabled={!text}
-									className='flex-1 sm:flex-none bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 shadow-md hover:shadow-lg transition-all'
-								>
-									<BarChart3 className='w-4 h-4 mr-2' />
-									Копировать статистику
-								</Button>
-							</div>
-						</div>
+				{/* Полоса «сколько это на слух и на глаз»: время чтения и речи —
+				    производные от количества слов, поэтому они не в шапке. */}
+				<div className={toolFooterBar}>
+					{[
+						['мин чтения', `~${stats.readingTime}`],
+						['мин вслух', `~${stats.speakingTime}`],
+						['символов без пробелов', stats.charactersNoSpaces],
+						['букв в слове', stats.avgWordLength.toFixed(1)],
+						['слов в предложении', stats.avgSentenceLength.toFixed(1)]
+					].map(([label, value]) => (
+						<span
+							key={label as string}
+							className='flex items-center gap-2 text-sm text-muted-foreground'
+						>
+							<span className='font-mono text-foreground tabular-nums'>
+								{value}
+							</span>
+							{label}
+						</span>
+					))}
+				</div>
 
-						{/* Quick Info Bar */}
-						{text && (
-							<motion.div
-								initial={{ opacity: 0, height: 0 }}
-								animate={{ opacity: 1, height: 'auto' }}
-								className='mt-4 pt-4 border-t bg-gradient-to-r from-muted/30 via-muted/20 to-muted/30 rounded-lg'
-							>
-								<div className='flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-sm p-3'>
-									<motion.div
-										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
-										whileHover={{ scale: 1.02 }}
-									>
-										<BookOpen className='w-4 h-4 text-blue-500' />
-										<span className='font-medium'>
-											~{stats.readingTime} мин чтение
-										</span>
-									</motion.div>
-									<motion.div
-										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
-										whileHover={{ scale: 1.02 }}
-									>
-										<Mic className='w-4 h-4 text-green-500' />
-										<span className='font-medium'>
-											~{stats.speakingTime} мин речь
-										</span>
-									</motion.div>
-									<motion.div
-										className='flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors'
-										whileHover={{ scale: 1.02 }}
-									>
-										<Type className='w-4 h-4 text-purple-500' />
-										<span className='font-medium'>
-											{stats.avgWordLength.toFixed(1)} букв/слово
-										</span>
-									</motion.div>
-								</div>
-							</motion.div>
+				{stats.longestWord && (
+					<div className={toolFooterBar}>
+						<span className='flex items-center gap-2 text-sm text-muted-foreground'>
+							Самое длинное слово
+							<span className='font-mono text-foreground'>
+								{stats.longestWord}
+							</span>
+							<span>({stats.longestWord.length} симв.)</span>
+						</span>
+
+						{stats.commonWords.length > 0 && (
+							<span className='flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground sm:ml-auto'>
+								Частые слова
+								{stats.commonWords.map(({ word, count }) => (
+									<span key={word} className='font-mono text-foreground'>
+										{word}
+										<span className='ml-1 text-muted-foreground'>×{count}</span>
+									</span>
+								))}
+							</span>
 						)}
-					</CardContent>
-				</Card>
-
-				{/* Collapsible Platform Limits Section */}
-				<CollapsibleSection
-					title='Лимиты платформ'
-					icon={<Globe className='w-5 h-5' />}
-					defaultOpen={false}
-				>
-					<div className='space-y-3'>
-						{PLATFORM_LIMITS.slice(0, 5).map(platform => {
-							const progress = getPlatformProgress(platform)
-							const status = getPlatformStatus(platform)
-							const Icon = platform.icon
-							const remaining =
-								platform.limit -
-								(platform.type === 'characters'
-									? stats.characters
-									: stats.words)
-
-							return (
-								<div
-									key={`${platform.name}-${platform.description}`}
-									className='space-y-2'
-								>
-									<div className='flex items-center justify-between'>
-										<div className='flex items-center gap-2'>
-											<Icon className={cn('w-4 h-4', platform.color)} />
-											<span className='text-sm font-medium'>
-												{platform.name}
-											</span>
-											{platform.description && (
-												<span className='text-xs text-muted-foreground'>
-													({platform.description})
-												</span>
-											)}
-										</div>
-										<span
-											className={cn(
-												'text-sm font-medium',
-												remaining < 0
-													? 'text-red-600'
-													: remaining < platform.limit * 0.2
-														? 'text-yellow-600'
-														: 'text-green-600'
-											)}
-										>
-											{remaining >= 0
-												? `${remaining} осталось`
-												: `${Math.abs(remaining)} превышено`}
-										</span>
-									</div>
-									<Progress
-										value={progress}
-										className={cn(
-											'h-2 transition-all',
-											progress > 100 && 'bg-red-100'
-										)}
-									/>
-								</div>
-							)
-						})}
 					</div>
-				</CollapsibleSection>
-
-				{/* Collapsible Advanced Analysis Section */}
-				{stats.words > 0 && (
-					<CollapsibleSection
-						title='Расширенный анализ'
-						icon={<BarChart3 className='w-5 h-5' />}
-						defaultOpen={false}
-					>
-						<div className='grid md:grid-cols-2 gap-6'>
-							{/* Detailed Stats */}
-							<div className='space-y-4'>
-								<div>
-									<h4 className='text-sm font-medium mb-3'>Анализ символов</h4>
-									<div className='space-y-2'>
-										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>
-												Символов без пробелов
-											</span>
-											<span className='font-mono'>
-												{stats.charactersNoSpaces}
-											</span>
-										</div>
-										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Пробелов</span>
-											<span className='font-mono'>
-												{stats.characters - stats.charactersNoSpaces}
-											</span>
-										</div>
-										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>Абзацев</span>
-											<span className='font-mono'>{stats.paragraphs}</span>
-										</div>
-									</div>
-								</div>
-
-								<div>
-									<h4 className='text-sm font-medium mb-3'>Средние значения</h4>
-									<div className='space-y-2'>
-										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>
-												Слов в предложении
-											</span>
-											<span className='font-mono'>
-												{stats.avgSentenceLength.toFixed(1)}
-											</span>
-										</div>
-										<div className='flex justify-between text-sm'>
-											<span className='text-muted-foreground'>
-												Символов в слове
-											</span>
-											<span className='font-mono'>
-												{stats.avgWordLength.toFixed(1)}
-											</span>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							{/* Word Analysis */}
-							<div className='space-y-4'>
-								{stats.longestWord && (
-									<div>
-										<h4 className='text-sm font-medium mb-3'>
-											Самое длинное слово
-										</h4>
-										<Badge variant='secondary' className='font-mono'>
-											{stats.longestWord} ({stats.longestWord.length} символов)
-										</Badge>
-									</div>
-								)}
-
-								{stats.commonWords.length > 0 && (
-									<div>
-										<h4 className='text-sm font-medium mb-3'>Частые слова</h4>
-										<div className='space-y-2'>
-											{stats.commonWords.map(({ word, count }) => (
-												<div
-													key={word}
-													className='flex items-center justify-between'
-												>
-													<span className='font-mono text-sm'>{word}</span>
-													<Badge variant='outline' className='text-xs'>
-														{count}×
-													</Badge>
-												</div>
-											))}
-										</div>
-									</div>
-								)}
-							</div>
-						</div>
-					</CollapsibleSection>
 				)}
+			</Card>
+
+			{/* Лимиты площадок — тихая полка под инструментом: их смотрят, когда
+			    текст уже написан, и прятать их за раскрывашкой смысла не было. */}
+			<div className='mt-6'>
+				<p className='px-1 text-sm text-muted-foreground'>
+					Влезет ли текст: лимиты площадок
+				</p>
+				<div className='mt-2 space-y-3 rounded-xl border p-4'>
+					{PLATFORM_LIMITS.slice(0, 5).map(platform => {
+						const progress = getPlatformProgress(platform)
+						const Icon = platform.icon
+						const remaining =
+							platform.limit -
+							(platform.type === 'characters' ? stats.characters : stats.words)
+
+						return (
+							<div
+								key={`${platform.name}-${platform.description}`}
+								className='space-y-1.5'
+							>
+								<div className='flex items-center justify-between gap-3 text-sm'>
+									<span className='flex min-w-0 items-center gap-2'>
+										<Icon className='h-4 w-4 shrink-0 text-muted-foreground' />
+										<span>{platform.name}</span>
+										{platform.description && (
+											<span className='truncate text-xs text-muted-foreground'>
+												{platform.description}
+											</span>
+										)}
+									</span>
+									<span
+										className={cn(
+											'shrink-0 font-mono',
+											remaining < 0
+												? 'text-red-600 dark:text-red-400'
+												: remaining < platform.limit * 0.2
+													? 'text-yellow-600 dark:text-yellow-500'
+													: 'text-muted-foreground'
+										)}
+									>
+										{remaining >= 0
+											? `${remaining} осталось`
+											: `${Math.abs(remaining)} лишних`}
+									</span>
+								</div>
+								<Progress value={progress} className='h-1.5' />
+							</div>
+						)
+					})}
+				</div>
 			</div>
-		</WidgetLayout>
+		</>
 	)
 }
