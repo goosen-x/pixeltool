@@ -266,12 +266,14 @@ export default function AsciiArtGeneratorPage() {
 												<span className='block text-xs text-muted-foreground'>
 													{pattern.name}
 												</span>
-												<pre className='mt-1 overflow-hidden font-mono text-[0.625rem] leading-tight whitespace-pre'>
-													{pattern.pattern
-														.trim()
-														.split('\n')
-														.slice(0, 3)
-														.join('\n')}
+												{/* Рисунок показывается целиком: в шаблонах по 8–9
+												    строк, и обрезка до трёх превращала кота в набор
+												    палочек — выбрать по такой картинке нельзя.
+												    leading-none обязателен: при межстрочном
+												    интервале больше единицы ASCII-арт растягивается
+												    по вертикали и перестаёт читаться. */}
+												<pre className='mt-1 overflow-x-auto font-mono text-[0.625rem] leading-none whitespace-pre'>
+													{pattern.pattern.trim()}
 												</pre>
 											</button>
 										))}
@@ -354,7 +356,7 @@ export default function AsciiArtGeneratorPage() {
 								{asciiOutput.split('\n').length} строк
 							</span>
 						</div>
-						<pre className='max-h-[28rem] overflow-auto px-5 pt-2 pb-5 font-mono text-[0.625rem] leading-tight whitespace-pre sm:px-6'>
+						<pre className='max-h-[28rem] overflow-auto px-5 pt-2 pb-5 font-mono text-[0.625rem] leading-none whitespace-pre sm:px-6'>
 							{asciiOutput}
 						</pre>
 					</div>
