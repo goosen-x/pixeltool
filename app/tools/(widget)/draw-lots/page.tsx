@@ -5,12 +5,14 @@ import { Shuffle, RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
-import { Badge } from '@/components/ui/badge'
 interface Lot {
 	id: string
 	value: string
@@ -30,8 +32,9 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export default function DrawLotsPage() {
 	const [mounted, setMounted] = useState(false)
-	const defaultValues =
-		'Albert Einstein\nMarie Curie\nLeonardo da Vinci\nNikola Tesla'
+	// Пример по-русски: инструмент русскоязычный, а в списке лежали Einstein
+	// и da Vinci — на них и проверяли длину строк.
+	const defaultValues = 'Аня\nБорис\nВера\nГлеб'
 	const [inputText, setInputText] = useState(defaultValues)
 	const [lots, setLots] = useState<Lot[]>([])
 	const [isDrawing, setIsDrawing] = useState(false)
@@ -85,202 +88,136 @@ export default function DrawLotsPage() {
 		setError(null)
 	}, [])
 
-	// Keyboard shortcuts
-	if (!mounted) {
-		return null
-	}
+	const revealedLots = lots.filter(lot => lot.isRevealed)
 
 	return (
-		<div className='space-y-6'>
-			{!isDrawing ? (
-				<div className='grid gap-6 lg:grid-cols-[1fr_400px]'>
-					{/* Input Section */}
-					<Card className='p-6'>
-						<div className='flex items-center justify-between mb-2 h-9'>
-							<Label htmlFor='items' className='text-base font-semibold'>
-								Участники жребьевки
-							</Label>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: одно действие — начать или начать заново. */}
+				<div className={toolBar}>
+					<span className='text-sm text-muted-foreground'>
+						{isDrawing
+							? `Открыто ${revealedLots.length} из ${lots.length}`
+							: 'Один участник на строку'}
+					</span>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						{isDrawing ? (
 							<Button
+								size='icon'
 								variant='ghost'
-								size='sm'
-								onClick={() => setInputText(defaultValues)}
-								className={cn(
-									'text-xs transition-opacity',
-									inputText === defaultValues
-										? 'opacity-0 pointer-events-none'
-										: 'opacity-100'
-								)}
+								onClick={reset}
+								title='Вернуться к списку'
+								className={toolIconButton}
 							>
-								<RotateCcw className='w-3 h-3 mr-1' />
-								Вернуть пример
+								<RotateCcw className='h-4 w-4' />
 							</Button>
-						</div>
+						) : (
+							<>
+								<button
+									type='button'
+									onClick={() => setInputText(defaultValues)}
+									disabled={inputText === defaultValues}
+									className={cn(
+										toolPill(false),
+										inputText === defaultValues && 'invisible'
+									)}
+								>
+									Вернуть пример
+								</button>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={startDrawing}
+									title='Перемешать и разложить'
+									className={toolIconButton}
+								>
+									<Shuffle className='h-4 w-4' />
+								</Button>
+							</>
+						)}
+					</div>
+				</div>
+
+				{!isDrawing ? (
+					<>
 						<Textarea
 							id='items'
 							value={inputText}
 							onChange={e => setInputText(e.target.value)}
-							placeholder='Иван\nПетр\nМария\nАнна'
-							className='min-h-[200px] font-mono'
+							placeholder={'Иван\nПётр\nМария\nАнна'}
 							spellCheck={false}
+							aria-label='Участники жеребьёвки'
+							className='min-h-[14rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm'
 						/>
-						<p className='text-sm text-muted-foreground mt-2'>
-							Один участник на строку
-						</p>
 
-						{error && (
-							<Alert variant='destructive' className='mt-4'>
-								<AlertDescription>{error}</AlertDescription>
-							</Alert>
-						)}
-
-						<Button onClick={startDrawing} className='w-full mt-4' size='lg'>
-							<Shuffle className='w-4 h-4 mr-2' />
-							Начать жребьевку
-						</Button>
-					</Card>
-
-					{/* Instructions */}
-					<Card className='p-6 bg-muted/50 h-fit'>
-						<h3 className='font-semibold mb-3'>Как использовать</h3>
-						<ol className='space-y-2 text-sm text-muted-foreground'>
-							<li>1. Введите имена участников или варианты</li>
-							<li>2. Нажмите Начать жребьевку</li>
-							<li>3. Кликните на карточку для открытия</li>
-							<li>4. Повторите для следующего участника</li>
-						</ol>
-					</Card>
-				</div>
-			) : (
-				<>
-					{/* Drawing Area */}
-					<Card className='p-6'>
-						<div className='flex items-center justify-between mb-4'>
-							<h3 className='text-lg font-semibold'>Кликните для открытия</h3>
-							<Button onClick={reset} variant='outline' size='sm'>
-								<RotateCcw className='w-4 h-4 mr-2' />
-								Сброс
-							</Button>
+						<div className={toolFooterBar}>
+							{error ? (
+								<span className='text-sm text-destructive'>{error}</span>
+							) : (
+								<span className='text-sm text-muted-foreground'>
+									Порядок перемешивается алгоритмом Фишера — Йетса: карточки
+									ложатся вслепую, и открыть их можно в любом порядке
+								</span>
+							)}
+						</div>
+					</>
+				) : (
+					<>
+						<div className='grid grid-cols-2 gap-3 px-5 py-6 sm:grid-cols-3 sm:px-6 md:grid-cols-4'>
+							{lots.map(lot => (
+								<button
+									key={lot.id}
+									type='button'
+									onClick={() => revealLot(lot.id)}
+									disabled={lot.isRevealed}
+									title={lot.isRevealed ? undefined : 'Открыть'}
+									className={cn(
+										'flex aspect-[3/4] items-center justify-center rounded-xl border p-3 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+										lot.isRevealed
+											? 'cursor-default border-primary bg-primary/5'
+											: 'cursor-pointer bg-muted/30 hover:border-primary/50 hover:bg-muted'
+									)}
+								>
+									{lot.isRevealed ? (
+										<span className='font-medium break-words'>{lot.value}</span>
+									) : (
+										<span className='text-2xl text-muted-foreground'>?</span>
+									)}
+								</button>
+							))}
 						</div>
 
-						<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
-							<AnimatePresence>
-								{lots.map((lot, index) => (
-									<motion.div
-										key={lot.id}
-										initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
-										animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-										exit={{ opacity: 0, scale: 0.8 }}
-										transition={{
-											delay: index * 0.05,
-											duration: 0.3,
-											type: 'spring',
-											stiffness: 300
-										}}
-									>
-										<button
-											onClick={() => revealLot(lot.id)}
-											disabled={lot.isRevealed}
-											className={cn(
-												'relative w-full aspect-[3/4] rounded-lg transition-all duration-300 transform-gpu',
-												'hover:scale-105 hover:shadow-lg',
-												'focus:outline-none focus:ring-2 focus:ring-primary',
-												lot.isRevealed
-													? 'cursor-default'
-													: 'cursor-pointer hover:shadow-xl'
-											)}
-											style={{
-												transformStyle: 'preserve-3d',
-												perspective: '1000px'
-											}}
-										>
-											<div
-												className={cn(
-													'absolute inset-0 rounded-lg transition-transform duration-500',
-													'backface-hidden',
-													lot.isRevealed && 'rotate-y-180'
-												)}
-												style={{
-													transform: lot.isRevealed
-														? 'rotateY(180deg)'
-														: 'rotateY(0deg)',
-													backfaceVisibility: 'hidden'
-												}}
-											>
-												{/* Card Back */}
-												<div className='w-full h-full bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center'>
-													<div className='text-primary-foreground'>
-														<div className='text-4xl font-bold mb-2'>?</div>
-														<div className='text-sm opacity-80'>Кликните</div>
-													</div>
-												</div>
-											</div>
-
-											<div
-												className={cn(
-													'absolute inset-0 rounded-lg transition-transform duration-500',
-													'backface-hidden',
-													!lot.isRevealed && 'rotate-y-180'
-												)}
-												style={{
-													transform: lot.isRevealed
-														? 'rotateY(0deg)'
-														: 'rotateY(-180deg)',
-													backfaceVisibility: 'hidden'
-												}}
-											>
-												{/* Card Front */}
-												<div className='w-full h-full bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center p-4'>
-													<div className='text-center'>
-														<p className='text-white font-bold text-lg break-words'>
-															{lot.value}
-														</p>
-														<div className='mt-2 text-white/80 text-sm'>
-															Выбрано
-														</div>
-													</div>
-												</div>
-											</div>
-										</button>
-									</motion.div>
+						{revealedLots.length > 0 && (
+							<div className={toolFooterBar}>
+								<span className='mr-1 text-sm text-muted-foreground'>
+									Открыты по порядку
+								</span>
+								{revealedLots.map((lot, index) => (
+									<span key={lot.id} className='text-sm'>
+										<span className='mr-1 font-mono text-xs text-muted-foreground'>
+											{index + 1}.
+										</span>
+										{lot.value}
+									</span>
 								))}
-							</AnimatePresence>
-						</div>
-
-						{lots.filter(lot => lot.isRevealed).length > 0 && (
-							<div className='mt-6 p-4 bg-muted rounded-lg'>
-								<h4 className='font-medium mb-2'>Открытые</h4>
-								<div className='flex flex-wrap gap-2'>
-									{lots
-										.filter(lot => lot.isRevealed)
-										.map(lot => (
-											<Badge key={lot.id} variant='secondary'>
-												{lot.value}
-											</Badge>
-										))}
-								</div>
 							</div>
 						)}
-					</Card>
-				</>
-			)}
-
-			{/* About Section */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>О виджете</h3>
-				<div className='space-y-2 text-sm text-muted-foreground'>
-					<p>
-						Жребьевка для честного и случайного выбора. Используется
-						криптографически стойкий алгоритм перемешивания.
-					</p>
-					<p>
-						Используйте для: определения порядка, выбора победителей,
-						распределения задач, игр и конкурсов.
-					</p>
-					<p className='text-xs mt-4'>
-						Каждый выбор абсолютно случаен и непредсказуем.
-					</p>
-				</div>
+					</>
+				)}
 			</Card>
-		</div>
+
+			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
+				<p>
+					Жеребьёвка нужна там, где решение должно быть честным и его не должен
+					принимать человек: очерёдность выступлений, распределение задач,
+					победитель конкурса, кто идёт первым в игре.
+				</p>
+				<p>
+					Список перемешивается перед раскладкой, поэтому порядок карточек уже
+					не связан с порядком ввода — открывать их можно любым.
+				</p>
+			</div>
+		</>
 	)
 }
