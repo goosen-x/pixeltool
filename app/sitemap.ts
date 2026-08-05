@@ -2,16 +2,18 @@ import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
 import { widgets } from '@/lib/constants/widgets'
 import { CATEGORY_KEYS } from '@/lib/constants/categories'
-import { buildWidgetOgImagePath } from '@/lib/seo/build-widget-metadata'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
-// Next.js вставляет images[].url в <image:loc> сырым, без XML-экранирования
-// (node_modules/next/dist/build/webpack/loaders/metadata/resolve-route-data.js).
-// Наш /api/og содержит несколько query-параметров через "&", что ломает
-// парсинг sitemap.xml в Google Search Console ("Ошибка разбора"). Экранируем
-// сами перед передачей в sitemapEntries.
-const escapeXmlAmpersand = (url: string) => url.replace(/&/g, '&amp;')
+// Картинки (images[]) из sitemap убраны намеренно. Next.js сериализует их
+// как <image:image> сразу после <loc>, то есть ПЕРЕД <lastmod>, а схема
+// sitemaps.org требует обратного порядка: сначала базовые теги, расширения
+// в конце. Google такой файл принимал, Яндекс.Вебмастер сообщал «Обнаружены
+// ошибки в файлах Sitemap». Вернуть картинки можно только собственной
+// сериализацией XML в route-хендлере — но заявлять там было нечего:
+// у инструментов это автогенерённая OG-карточка из /api/og, в картиночном
+// поиске она бесполезна, а обложки статей и так объявлены в og:image
+// и в разметке самой страницы.
 
 /**
  * Дата последнего значимого обновления статических страниц и инструментов.
@@ -71,34 +73,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Add widget routes — стабильная дата, с переопределением на уровне тула.
 	// changeFrequency: 'monthly' — инструменты меняются редко, «weekly» вводил бы
 	// в заблуждение.
-	// images — расширение sitemap для картиночного поиска (Google/Yandex Images):
-	// та же превьюшка /api/og, что отдаётся в og:image, здесь явно заявлена
-	// как изображение страницы, чтобы боты картинок её обязательно нашли.
 	widgets.forEach(widget => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/${widget.path}`,
 			lastModified: widget.updatedAt || CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
-			priority: 0.9,
-			images: [
-				escapeXmlAmpersand(`${BASE_URL}${buildWidgetOgImagePath(widget)}`)
-			]
+			priority: 0.9
 		})
 	})
 
 	// Add blog post routes — реальная дата из фронтматтера поста
 	posts.forEach(post => {
-		const hasRealCover =
-			Boolean(post.coverImage) && post.coverImage !== '/images/avatar.jpeg'
-
 		sitemapEntries.push({
 			url: `${BASE_URL}/blog/${post.slug}`,
 			lastModified: post.date,
 			changeFrequency: 'monthly',
-			priority: 0.7,
-			...(hasRealCover && {
-				images: [escapeXmlAmpersand(`${BASE_URL}${post.coverImage}`)]
-			})
+			priority: 0.7
 		})
 	})
 
