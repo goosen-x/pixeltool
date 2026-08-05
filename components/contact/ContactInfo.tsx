@@ -11,8 +11,8 @@ export default function ContactInfo({ locale }: Props) {
 		{
 			icon: Mail,
 			label: 'Email',
-			value: 'mail@pixeltool.pro',
-			href: 'mailto:mail@pixeltool.pro'
+			value: 'pixeltool@gooselabs.ru',
+			href: 'mailto:pixeltool@gooselabs.ru'
 		},
 		{
 			icon: Phone,

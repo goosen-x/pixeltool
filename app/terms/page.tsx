@@ -79,8 +79,8 @@ export default function TermsPage() {
 					<h2>Связь</h2>
 					<p>
 						Вопросы по этим условиям — на{' '}
-						<a href='mailto:mail@pixeltool.pro' className='cursor-pointer'>
-							mail@pixeltool.pro
+						<a href='mailto:pixeltool@gooselabs.ru' className='cursor-pointer'>
+							pixeltool@gooselabs.ru
 						</a>{' '}
 						или через{' '}
 						<Link href='/contact' className='cursor-pointer'>
