@@ -1,37 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import {
-	Database,
-	Copy,
-	Check,
-	RefreshCw,
-	Download,
-	Loader2,
-	ExternalLink,
-	Code2,
-	FileJson,
-	Sparkles,
-	Zap
-} from 'lucide-react'
+import { Copy, Check, RefreshCw, Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Slider } from '@/components/ui/slider'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
 interface APIEndpoint {
 	id: string
@@ -343,10 +322,9 @@ export default function MockDataGeneratorPage() {
 		try {
 			await navigator.clipboard.writeText(JSON.stringify(data, null, 2))
 			setCopiedData(true)
-			toast.success('Данные скопированы в буфер обмена')
 			setTimeout(() => setCopiedData(false), 2000)
 		} catch (err) {
-			toast.error('Не удалось скопировать данные')
+			console.error('Не удалось скопировать данные:', err)
 		}
 	}
 
@@ -362,7 +340,6 @@ export default function MockDataGeneratorPage() {
 		a.download = `mock-data-${new Date().toISOString().split('T')[0]}.json`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success('Данные скачаны')
 	}
 
 	const formatBytes = (bytes: number) => {
@@ -393,12 +370,12 @@ export default function MockDataGeneratorPage() {
 			return (
 				<div className='space-y-2'>
 					{obj.map((item, index) => (
-						<Card key={index} className='p-3 bg-muted/50'>
-							<div className='text-xs text-muted-foreground mb-1'>
+						<div key={index} className='rounded-lg border p-3'>
+							<div className='mb-1 font-mono text-xs text-muted-foreground'>
 								[{index}]
 							</div>
 							{renderFormattedData(item, depth + 1)}
-						</Card>
+						</div>
 					))}
 				</div>
 			)
@@ -413,9 +390,9 @@ export default function MockDataGeneratorPage() {
 						</span>
 						<div className='flex-1'>
 							{typeof value === 'object' && value !== null ? (
-								<Card className='p-2 bg-muted/30'>
+								<div className='rounded-lg border p-2'>
 									{renderFormattedData(value, depth + 1)}
-								</Card>
+								</div>
 							) : (
 								renderFormattedData(value, depth + 1)
 							)}
@@ -428,328 +405,192 @@ export default function MockDataGeneratorPage() {
 
 	if (!mounted) {
 		return (
-			<div className='max-w-6xl mx-auto space-y-8'>
-				<div className='animate-pulse space-y-8'>
-					<div className='h-96 bg-muted rounded-lg'></div>
-				</div>
-			</div>
+			<Card className='overflow-hidden p-0'>
+				<div className='h-14 border-b bg-muted/30' />
+				<div className='h-96 animate-pulse bg-muted/20' />
+			</Card>
 		)
 	}
 
+	const selectedApiInfo = publicAPIs.find(api => api.id === selectedAPI)
+
 	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* API Selection */}
-			<div className='grid lg:grid-cols-3 gap-6'>
-				<div className='lg:col-span-1'>
-					<Card className='p-4 sticky top-4'>
-						<div className='flex items-center justify-between mb-4'>
-							<h3 className='font-semibold'>Обзор API</h3>
-							<Badge variant='secondary' className='text-xs'>
-								<Sparkles className='w-3 h-3 mr-1' />
-								{publicAPIs.length} APIs
-							</Badge>
-						</div>
-
-						{/* Search */}
-						<div className='relative mb-4'>
-							<Input
-								placeholder='Поиск по API...'
-								value={searchQuery}
-								onChange={e => setSearchQuery(e.target.value)}
-								className='pl-8'
-							/>
-							<Database className='absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-						</div>
-
-						<Tabs value={activeCategory} onValueChange={setActiveCategory}>
-							<TabsList className='grid grid-cols-2 gap-1 h-auto mb-4'>
-								{Object.entries(categories)
-									.slice(0, 4)
-									.map(([key, cat]) => (
-										<TabsTrigger key={key} value={key} className='text-xs'>
-											<span className='mr-1'>{cat.icon}</span>
-											<span className='hidden sm:inline'>
-												{cat.name.split(' ')[0]}
-											</span>
-										</TabsTrigger>
-									))}
-							</TabsList>
-
-							<TabsList className='grid grid-cols-2 gap-1 h-auto mb-4'>
-								{Object.entries(categories)
-									.slice(4)
-									.map(([key, cat]) => (
-										<TabsTrigger key={key} value={key} className='text-xs'>
-											<span className='mr-1'>{cat.icon}</span>
-											{cat.name.split(' ')[0]}
-										</TabsTrigger>
-									))}
-							</TabsList>
-
-							{Object.keys(categories).map(category => (
-								<TabsContent key={category} value={category} className='mt-0'>
-									<ScrollArea className='h-[450px] pr-3'>
-										<div className='space-y-2'>
-											{getAPIsByCategory(category).length === 0 ? (
-												<div className='text-center py-8 text-muted-foreground'>
-													<Database className='w-8 h-8 mx-auto mb-2 opacity-50' />
-													<p className='text-sm'>API не найдены</p>
-												</div>
-											) : (
-												getAPIsByCategory(category).map(api => (
-													<button
-														key={api.id}
-														onClick={() => {
-															setSelectedAPI(api.id)
-															fetchData(api.id)
-														}}
-														className={cn(
-															'w-full text-left p-3 rounded-lg border transition-all group',
-															'hover:bg-accent hover:border-accent-foreground/20',
-															selectedAPI === api.id
-																? 'bg-accent border-accent-foreground/20 ring-2 ring-primary/20'
-																: 'bg-card border-border'
-														)}
-													>
-														<div className='flex items-start justify-between'>
-															<div className='flex-1'>
-																<div className='font-medium text-sm'>
-																	{api.name}
-																</div>
-																<div className='text-xs text-muted-foreground mt-1'>
-																	{api.description}
-																</div>
-															</div>
-															{selectedAPI === api.id && (
-																<Zap className='w-4 h-4 text-primary animate-pulse' />
-															)}
-														</div>
-														<div className='flex items-center gap-2 mt-2'>
-															<Badge variant='secondary' className='text-xs'>
-																{api.method}
-															</Badge>
-															{api.rateLimit &&
-																api.rateLimit !== 'Unlimited' && (
-																	<Badge variant='outline' className='text-xs'>
-																		{api.rateLimit}
-																	</Badge>
-																)}
-														</div>
-													</button>
-												))
-											)}
-										</div>
-									</ScrollArea>
-								</TabsContent>
-							))}
-						</Tabs>
-					</Card>
+		<Card className='overflow-hidden p-0'>
+			{/* Верхняя полоса: категории источников. Раньше это были два ряда
+			    вкладок по четыре штуки внутри левой колонки — на телефоне от них
+			    оставались одни иконки без подписей. */}
+			<div className={toolBar}>
+				<div className='flex flex-wrap items-center gap-1.5'>
+					{Object.entries(categories).map(([key, category]) => (
+						<button
+							key={key}
+							type='button'
+							onClick={() => setActiveCategory(key)}
+							aria-pressed={activeCategory === key}
+							className={toolPill(
+								activeCategory === key,
+								'flex items-center gap-1.5'
+							)}
+						>
+							<span aria-hidden>{category.icon}</span>
+							{category.name.split(' ')[0]}
+						</button>
+					))}
 				</div>
 
-				{/* Data Display */}
-				<div className='lg:col-span-2'>
-					<Card className='p-6'>
-						<div className='flex items-center justify-between mb-4'>
-							<div>
-								<h3 className='font-semibold'>Данные ответа</h3>
-								{responseTime !== null && dataSize && (
-									<div className='flex items-center gap-4 mt-1'>
-										<Badge variant='outline' className='text-xs'>
-											<Zap className='w-3 h-3 mr-1' />
-											{responseTime}ms
-										</Badge>
-										<Badge variant='outline' className='text-xs'>
-											<FileJson className='w-3 h-3 mr-1' />
-											{dataSize}
-										</Badge>
-									</div>
-								)}
-							</div>
-							{data && (
-								<div className='flex items-center gap-2'>
-									<Button
-										variant='outline'
-										size='sm'
-										onClick={() => fetchData()}
-										disabled={loading || !selectedAPI}
-									>
-										<RefreshCw
-											className={cn('w-4 h-4 mr-1', loading && 'animate-spin')}
-										/>
-										Обновить
-									</Button>
-									<Button variant='outline' size='sm' onClick={copyToClipboard}>
-										{copiedData ? (
-											<>
-												<Check className='w-4 h-4 mr-1' />
-												Скопировано
-											</>
-										) : (
-											<>
-												<Copy className='w-4 h-4 mr-1' />
-												Копировать
-											</>
+				<div className='flex items-center gap-0.5 sm:ml-auto'>
+					<Button
+						size='icon'
+						variant='ghost'
+						onClick={() => fetchData()}
+						disabled={!selectedAPI || loading}
+						title='Загрузить заново'
+						className={toolIconButton}
+					>
+						<RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
+					</Button>
+					<Button
+						size='icon'
+						variant='ghost'
+						onClick={copyToClipboard}
+						disabled={!data}
+						title='Скопировать JSON'
+						className={toolIconButton}
+					>
+						{copiedData ? (
+							<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+						) : (
+							<Copy className='h-4 w-4' />
+						)}
+					</Button>
+					<Button
+						size='icon'
+						variant='ghost'
+						onClick={downloadJSON}
+						disabled={!data}
+						title='Скачать JSON'
+						className={toolIconButton}
+					>
+						<Download className='h-4 w-4' />
+					</Button>
+				</div>
+			</div>
+
+			<div className='grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]'>
+				{/* Слева — список эндпоинтов выбранной категории. */}
+				<div className='border-b lg:border-r lg:border-b-0'>
+					<div className='px-5 pt-4 sm:px-6'>
+						<input
+							value={searchQuery}
+							onChange={event => setSearchQuery(event.target.value)}
+							placeholder='Поиск по названию'
+							spellCheck={false}
+							aria-label='Поиск по API'
+							className='w-full rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						/>
+					</div>
+
+					<div className='max-h-[28rem] overflow-y-auto py-2'>
+						{getAPIsByCategory(activeCategory).length === 0 ? (
+							<p className='px-5 py-8 text-center text-sm text-muted-foreground sm:px-6'>
+								Ничего не найдено
+							</p>
+						) : (
+							getAPIsByCategory(activeCategory).map(api => (
+								<button
+									key={api.id}
+									type='button'
+									onClick={() => {
+										setSelectedAPI(api.id)
+										fetchData(api.id)
+									}}
+									aria-pressed={selectedAPI === api.id}
+									className={cn(
+										'block w-full cursor-pointer px-5 py-2 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6',
+										selectedAPI === api.id && 'bg-primary/5'
+									)}
+								>
+									<span
+										className={cn(
+											'block text-sm',
+											selectedAPI === api.id && 'text-primary'
 										)}
-									</Button>
-									<Button variant='outline' size='sm' onClick={downloadJSON}>
-										<Download className='w-4 h-4 mr-1' />
-										Скачать
-									</Button>
-								</div>
+									>
+										{api.name}
+									</span>
+									<span className='mt-0.5 block truncate text-xs text-muted-foreground'>
+										{api.description}
+									</span>
+								</button>
+							))
+						)}
+					</div>
+				</div>
+
+				{/* Справа — ответ выбранного эндпоинта. */}
+				<div className='min-w-0'>
+					{error ? (
+						<p className='px-5 py-16 text-center text-sm text-destructive sm:px-6'>
+							{error}
+						</p>
+					) : loading ? (
+						<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+							Загружаем…
+						</p>
+					) : data ? (
+						<div className='max-h-[30rem] overflow-auto px-5 py-4 sm:px-6'>
+							{viewMode === 'json' ? (
+								<pre className='font-mono text-xs leading-relaxed whitespace-pre-wrap'>
+									{JSON.stringify(data, null, 2)}
+								</pre>
+							) : (
+								renderFormattedData(data)
 							)}
 						</div>
-
-						{loading && (
-							<div className='flex items-center justify-center py-12'>
-								<Loader2 className='w-8 h-8 animate-spin text-muted-foreground' />
-							</div>
-						)}
-
-						{error && (
-							<Alert variant='destructive'>
-								<AlertDescription>{error}</AlertDescription>
-							</Alert>
-						)}
-
-						{data && !loading && (
-							<div className='space-y-4'>
-								{/* View Mode Tabs */}
-								<Tabs
-									value={viewMode}
-									onValueChange={v => setViewMode(v as 'json' | 'formatted')}
-								>
-									<TabsList>
-										<TabsTrigger value='json'>
-											<Code2 className='w-4 h-4 mr-2' />
-											JSON
-										</TabsTrigger>
-										<TabsTrigger value='formatted'>
-											<FileJson className='w-4 h-4 mr-2' />
-											Форматированный
-										</TabsTrigger>
-									</TabsList>
-
-									<TabsContent value='json' className='mt-4'>
-										<div className='relative'>
-											<pre className='bg-muted rounded-lg p-4 overflow-x-auto max-h-[600px] overflow-y-auto text-sm'>
-												<code>{JSON.stringify(data, null, 2)}</code>
-											</pre>
-										</div>
-									</TabsContent>
-
-									<TabsContent value='formatted' className='mt-4'>
-										<ScrollArea className='h-[600px] rounded-lg border p-4'>
-											<div className='space-y-4'>
-												{renderFormattedData(data)}
-											</div>
-										</ScrollArea>
-									</TabsContent>
-								</Tabs>
-							</div>
-						)}
-
-						{!data && !loading && !error && (
-							<div className='text-center py-12 text-muted-foreground'>
-								<Database className='w-12 h-12 mx-auto mb-4 opacity-50' />
-								<p>Выберите эндпоинт API, чтобы загрузить данные</p>
-							</div>
-						)}
-
-						{selectedAPI && (
-							<div className='mt-4 pt-4 border-t'>
-								<div className='flex items-center justify-between text-sm'>
-									<div className='text-muted-foreground'>
-										Эндпоинт:{' '}
-										<code className='inline-code'>
-											{publicAPIs.find(a => a.id === selectedAPI)?.endpoint}
-										</code>
-									</div>
-									{publicAPIs.find(a => a.id === selectedAPI)
-										?.documentation && (
-										<a
-											href={
-												publicAPIs.find(a => a.id === selectedAPI)
-													?.documentation
-											}
-											target='_blank'
-											rel='noopener noreferrer'
-											className='flex items-center gap-1 text-primary hover:underline'
-										>
-											<ExternalLink className='w-3 h-3' />
-											Документация
-										</a>
-									)}
-								</div>
-							</div>
-						)}
-					</Card>
+					) : (
+						<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+							Выберите эндпоинт слева — ответ появится здесь
+						</p>
+					)}
 				</div>
 			</div>
 
-			{/* Info Section */}
-			<div className='grid md:grid-cols-2 gap-6'>
-				<Card className='p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20'>
-					<div className='flex items-start gap-3'>
-						<div className='p-2 bg-primary/10 rounded-lg'>
-							<Sparkles className='w-5 h-5 text-primary' />
-						</div>
-						<div>
-							<h3 className='font-semibold mb-2'>Быстрый старт</h3>
-							<ol className='space-y-2 text-sm text-muted-foreground'>
-								<li className='flex items-start gap-2'>
-									<span className='font-medium text-primary'>1.</span>
-									<span>Выберите категорию во вкладках</span>
-								</li>
-								<li className='flex items-start gap-2'>
-									<span className='font-medium text-primary'>2.</span>
-									<span>Выберите эндпоинт API</span>
-								</li>
-								<li className='flex items-start gap-2'>
-									<span className='font-medium text-primary'>3.</span>
-									<span>Просмотрите ответ в JSON или форматированном виде</span>
-								</li>
-								<li className='flex items-start gap-2'>
-									<span className='font-medium text-primary'>4.</span>
-									<span>Скопируйте или скачайте данные</span>
-								</li>
-							</ol>
-						</div>
-					</div>
-				</Card>
+			{/* Полоса ответа: вид, адрес и что получилось по времени и весу. */}
+			<div className={toolFooterBar}>
+				<div className='flex flex-wrap items-center gap-1.5'>
+					{(
+						[
+							['json', 'JSON'],
+							['formatted', 'Списком']
+						] as ['json' | 'formatted', string][]
+					).map(([value, label]) => (
+						<button
+							key={value}
+							type='button'
+							onClick={() => setViewMode(value)}
+							aria-pressed={viewMode === value}
+							className={toolPill(viewMode === value)}
+						>
+							{label}
+						</button>
+					))}
+				</div>
 
-				<Card className='p-6 bg-muted/50'>
-					<h3 className='font-semibold mb-3 flex items-center gap-2'>
-						<Zap className='w-5 h-5 text-yellow-500' />
-						Полезные советы
-					</h3>
-					<div className='space-y-3 text-sm'>
-						<div className='flex items-start gap-2'>
-							<Badge variant='outline' className='mt-0.5'>
-								CORS
-							</Badge>
-							<p className='text-muted-foreground'>
-								Все API поддерживают CORS для запросов из браузера
-							</p>
-						</div>
-						<div className='flex items-start gap-2'>
-							<Badge variant='outline' className='mt-0.5'>
-								БЕСПЛАТНО
-							</Badge>
-							<p className='text-muted-foreground'>
-								Для базового использования ключи API не нужны
-							</p>
-						</div>
-						<div className='flex items-start gap-2'>
-							<Badge variant='outline' className='mt-0.5'>
-								БЫСТРО
-							</Badge>
-							<p className='text-muted-foreground'>
-								Для каждого запроса показывается время ответа
-							</p>
-						</div>
-					</div>
-				</Card>
+				{selectedApiInfo && (
+					<span className='min-w-0 truncate font-mono text-xs text-muted-foreground'>
+						{selectedApiInfo.endpoint}
+					</span>
+				)}
+
+				{(responseTime !== null || dataSize) && (
+					<span className='flex items-center gap-4 text-sm text-muted-foreground sm:ml-auto'>
+						{responseTime !== null && (
+							<span className='font-mono'>{responseTime} мс</span>
+						)}
+						{dataSize && <span className='font-mono'>{dataSize}</span>}
+					</span>
+				)}
 			</div>
-		</div>
+		</Card>
 	)
 }
