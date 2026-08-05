@@ -3,20 +3,23 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { HtmlXmlParserSeo } from './HtmlXmlParserSeo'
-import { Copy, Download, AlertCircle, CheckCircle2 } from 'lucide-react'
-import { toast } from 'sonner'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
+	Copy,
+	Check,
+	Download,
+	Trash2,
+	AlertCircle,
+	CheckCircle2
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 
 interface ParseResult {
 	output: string
@@ -40,6 +43,7 @@ export default function HtmlXmlParserPage() {
 	const [minify, setMinify] = useState(false)
 	const [indentSize, setIndentSize] = useState(2)
 	const [preserveComments, setPreserveComments] = useState(true)
+	const [copied, setCopied] = useState(false)
 
 	const detectType = (content: string): 'html' | 'xml' => {
 		const trimmed = content.trim()
@@ -191,7 +195,8 @@ export default function HtmlXmlParserPage() {
 	const handleCopy = useCallback(() => {
 		if (!result?.output) return
 		navigator.clipboard.writeText(result.output)
-		toast.success('Скопировано в буфер обмена')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}, [result])
 
 	const handleDownload = useCallback(() => {
@@ -205,193 +210,193 @@ export default function HtmlXmlParserPage() {
 		a.click()
 		document.body.removeChild(a)
 		URL.revokeObjectURL(url)
-		toast.success('Файл загружен')
 	}, [result, minify, input])
 
 	return (
 		<>
-			<Card>
-				<CardContent className='space-y-4 pt-6'>
-					{/* Форматтер: по умолчанию — читаемый вид с отступами, тумблер
-					    переключает на минификацию. Настройки отступа и комментариев
-					    нужны только в режиме форматирования. */}
-					<div className='flex flex-wrap items-center gap-x-6 gap-y-3'>
-						<div className='flex items-center gap-2'>
-							<Switch
-								id='minify'
-								checked={minify}
-								onCheckedChange={setMinify}
-								className='cursor-pointer'
-							/>
-							<Label htmlFor='minify' className='cursor-pointer text-sm'>
-								Минифицировать
-							</Label>
-						</div>
-
-						{!minify && (
-							<>
-								<div className='flex items-center gap-2'>
-									<Label
-										htmlFor='indent'
-										className='text-sm text-muted-foreground'
-									>
-										Отступ
-									</Label>
-									<Select
-										value={indentSize.toString()}
-										onValueChange={value => setIndentSize(parseInt(value))}
-									>
-										<SelectTrigger id='indent' className='w-32 cursor-pointer'>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='2'>2 пробела</SelectItem>
-											<SelectItem value='4'>4 пробела</SelectItem>
-											<SelectItem value='8'>8 пробелов</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-
-								<div className='flex items-center gap-2'>
-									<Switch
-										id='comments'
-										checked={preserveComments}
-										onCheckedChange={setPreserveComments}
-										className='cursor-pointer'
-									/>
-									<Label
-										htmlFor='comments'
-										className='cursor-pointer text-sm text-muted-foreground'
-									>
-										Сохранять комментарии
-									</Label>
-								</div>
-							</>
-						)}
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: режим и действия. Тумблеры-переключатели
+				    заменены таблетками, выпадающий список отступа — тремя
+				    значениями подряд. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<button
+							type='button'
+							onClick={() => setMinify(false)}
+							aria-pressed={!minify}
+							className={toolPill(!minify)}
+						>
+							Форматировать
+						</button>
+						<button
+							type='button'
+							onClick={() => setMinify(true)}
+							aria-pressed={minify}
+							className={toolPill(minify)}
+						>
+							Минифицировать
+						</button>
 					</div>
 
-					{/* Ввод и результат — рядом, в одной карточке */}
-					<div className='grid gap-4 lg:grid-cols-2'>
-						<div className='space-y-2'>
-							<div className='flex h-7 items-center justify-between gap-2'>
-								<span className='text-sm font-medium'>Ввод</span>
-								<Button
-									variant='ghost'
-									size='sm'
-									className='h-7 cursor-pointer px-2'
-									onClick={() => setInput(EXAMPLE_HTML)}
-								>
-									Пример
-								</Button>
-							</div>
-							<Textarea
-								value={input}
-								onChange={e => setInput(e.target.value)}
-								placeholder='Вставьте HTML или XML код здесь...'
-								className='min-h-[420px] resize-none font-mono text-base md:text-sm'
-								spellCheck={false}
-							/>
-						</div>
-
-						<div className='space-y-2'>
-							<div className='flex h-7 items-center justify-between gap-2'>
-								<div className='flex items-center gap-3'>
-									<span className='text-sm font-medium'>Результат</span>
-									{result && (
-										<span
-											className={cn(
-												'flex items-center gap-1 text-xs font-medium',
-												result.isValid ? 'text-green-600' : 'text-red-600'
-											)}
-										>
-											{result.isValid ? (
-												<>
-													<CheckCircle2 className='h-3.5 w-3.5' />
-													Валидный
-												</>
-											) : (
-												<>
-													<AlertCircle className='h-3.5 w-3.5' />
-													Невалидный
-												</>
-											)}
-										</span>
-									)}
-								</div>
-								<div className='flex items-center gap-1'>
-									<Button
-										onClick={handleCopy}
-										variant='ghost'
-										size='sm'
-										className='h-7 cursor-pointer px-2'
-										disabled={!result?.output}
-									>
-										<Copy className='mr-1.5 h-3.5 w-3.5' />
-										Копировать
-									</Button>
-									<Button
-										onClick={handleDownload}
-										variant='ghost'
-										size='sm'
-										className='h-7 cursor-pointer px-2'
-										disabled={!result?.output}
-									>
-										<Download className='mr-1.5 h-3.5 w-3.5' />
-										Скачать
-									</Button>
-								</div>
-							</div>
-
-							{result?.errors.length ? (
-								<div className='rounded-lg bg-red-50 p-4 dark:bg-red-900/20'>
-									<p className='mb-2 font-medium text-red-600 dark:text-red-400'>
-										Ошибки:
-									</p>
-									<ul className='list-inside list-disc space-y-1'>
-										{result.errors.map((error, index) => (
-											<li
-												key={index}
-												className='text-sm text-red-600 dark:text-red-400'
-											>
-												{error}
-											</li>
-										))}
-									</ul>
-								</div>
+					{result && (
+						<span
+							className={cn(
+								'flex items-center gap-1.5 text-sm',
+								result.isValid
+									? 'text-green-600 dark:text-green-400'
+									: 'text-destructive'
+							)}
+						>
+							{result.isValid ? (
+								<CheckCircle2 className='h-4 w-4' />
 							) : (
-								<Textarea
-									value={result?.output || ''}
-									readOnly
-									placeholder='Результат появится здесь автоматически'
-									className='min-h-[420px] resize-none bg-muted/30 font-mono text-base md:text-sm'
-									spellCheck={false}
-								/>
+								<AlertCircle className='h-4 w-4' />
 							)}
+							{result.isValid ? 'разметка валидна' : 'есть ошибки'}
+						</span>
+					)}
 
-							{result?.stats && (
-								<div className='grid grid-cols-2 gap-2 text-sm'>
-									<div className='flex justify-between rounded bg-muted p-2'>
-										<span className='text-muted-foreground'>Элементы</span>
-										<span className='font-mono'>{result.stats.elements}</span>
-									</div>
-									<div className='flex justify-between rounded bg-muted p-2'>
-										<span className='text-muted-foreground'>Атрибуты</span>
-										<span className='font-mono'>{result.stats.attributes}</span>
-									</div>
-									<div className='flex justify-between rounded bg-muted p-2'>
-										<span className='text-muted-foreground'>Текст. узлы</span>
-										<span className='font-mono'>{result.stats.textNodes}</span>
-									</div>
-									<div className='flex justify-between rounded bg-muted p-2'>
-										<span className='text-muted-foreground'>Комментарии</span>
-										<span className='font-mono'>{result.stats.comments}</span>
-									</div>
-								</div>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<button
+							type='button'
+							onClick={() => setInput(EXAMPLE_HTML)}
+							className={toolPill(false)}
+						>
+							Пример
+						</button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={handleCopy}
+							disabled={!result?.output}
+							title='Скопировать результат'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
 							)}
-						</div>
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={handleDownload}
+							disabled={!result?.output}
+							title='Скачать файлом'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setInput('')}
+							disabled={!input}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
 					</div>
-				</CardContent>
+				</div>
+
+				<div className='grid lg:grid-cols-2'>
+					<Textarea
+						value={input}
+						onChange={e => setInput(e.target.value)}
+						placeholder='Вставьте HTML или XML'
+						spellCheck={false}
+						aria-label='Исходный код'
+						className='min-h-[24rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm lg:border-r'
+					/>
+
+					{result?.errors.length ? (
+						<div className='min-h-[24rem] px-5 py-6 sm:px-6'>
+							<ul className='space-y-1'>
+								{result.errors.map((error, index) => (
+									<li key={index} className='text-sm text-destructive'>
+										{error}
+									</li>
+								))}
+							</ul>
+						</div>
+					) : (
+						<Textarea
+							value={result?.output || ''}
+							readOnly
+							placeholder='Результат появится здесь'
+							spellCheck={false}
+							aria-label='Результат'
+							className='min-h-[24rem] resize-none rounded-none border-0 bg-muted/20 px-5 py-6 font-mono text-base focus-visible:ring-0 md:text-sm'
+						/>
+					)}
+				</div>
+
+				{/* Полоса параметров форматирования: в режиме минификации отступ и
+				    комментарии ни на что не влияют, поэтому их там нет. */}
+				<div className={toolFooterBar}>
+					{!minify && (
+						<>
+							<div className='flex flex-wrap items-center gap-1.5'>
+								<span className='mr-1 text-sm text-muted-foreground'>
+									Отступ
+								</span>
+								{[2, 4, 8].map(size => (
+									<button
+										key={size}
+										type='button'
+										onClick={() => setIndentSize(size)}
+										aria-pressed={indentSize === size}
+										className={toolPill(indentSize === size, 'font-mono')}
+									>
+										{size}
+									</button>
+								))}
+							</div>
+
+							<button
+								type='button'
+								onClick={() => setPreserveComments(!preserveComments)}
+								aria-pressed={preserveComments}
+								className={toolPill(preserveComments)}
+							>
+								сохранять комментарии
+							</button>
+						</>
+					)}
+
+					{result?.stats && (
+						<span className='flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground sm:ml-auto'>
+							<span>
+								элементов{' '}
+								<span className='font-mono text-foreground'>
+									{result.stats.elements}
+								</span>
+							</span>
+							<span>
+								атрибутов{' '}
+								<span className='font-mono text-foreground'>
+									{result.stats.attributes}
+								</span>
+							</span>
+							<span>
+								текстовых узлов{' '}
+								<span className='font-mono text-foreground'>
+									{result.stats.textNodes}
+								</span>
+							</span>
+							<span>
+								комментариев{' '}
+								<span className='font-mono text-foreground'>
+									{result.stats.comments}
+								</span>
+							</span>
+						</span>
+					)}
+				</div>
 			</Card>
+
 			<HtmlXmlParserSeo />
 		</>
 	)
