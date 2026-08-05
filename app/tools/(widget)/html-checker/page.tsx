@@ -4,7 +4,7 @@ import { useState, useCallback, useRef } from 'react'
 import { HtmlAnalysis } from './HtmlAnalysis'
 import { HtmlCheckerSeo } from './HtmlCheckerSeo'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Trash2 } from 'lucide-react'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { Button } from '@/components/ui/button'
@@ -707,39 +707,37 @@ export default function HTMLTreePage() {
 					<HtmlAnalysis html={htmlInput} />
 
 					{/* Tree View */}
-					<section className='space-y-4 border-t pt-8'>
-						<Card className='border-0 bg-transparent shadow-none'>
-							<CardHeader>
-								<div className='flex items-center justify-between gap-4'>
-									<CardTitle>Дерево элементов</CardTitle>
-									<div className='flex items-center gap-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => {
-												if (expandAll) {
-													// Collapse all
-													setExpandAll(false)
-													setExpandedNodes(new Set())
-												} else {
-													// Expand all
-													setExpandAll(true)
-													const allPaths = new Set<string>()
-													const collectAllPaths = (node: TreeNode) => {
-														allPaths.add(node.path)
-														node.children.forEach(collectAllPaths)
-													}
-													if (treeData) collectAllPaths(treeData)
-													setExpandedNodes(allPaths)
+					<section className='border-t pt-6'>
+						<div>
+							<div className='flex items-center justify-between gap-4'>
+								<p className='text-sm font-medium'>Дерево элементов</p>
+								<div className='flex items-center gap-2'>
+									<Button
+										variant='outline'
+										size='sm'
+										onClick={() => {
+											if (expandAll) {
+												// Collapse all
+												setExpandAll(false)
+												setExpandedNodes(new Set())
+											} else {
+												// Expand all
+												setExpandAll(true)
+												const allPaths = new Set<string>()
+												const collectAllPaths = (node: TreeNode) => {
+													allPaths.add(node.path)
+													node.children.forEach(collectAllPaths)
 												}
-											}}
-										>
-											{expandAll ? 'Свернуть все' : 'Развернуть все'}
-										</Button>
-									</div>
+												if (treeData) collectAllPaths(treeData)
+												setExpandedNodes(allPaths)
+											}
+										}}
+									>
+										{expandAll ? 'Свернуть все' : 'Развернуть все'}
+									</Button>
 								</div>
-							</CardHeader>
-							<CardContent className='space-y-4'>
+							</div>
+							<div className='mt-3 space-y-4'>
 								{/* Search */}
 								<div className='relative'>
 									<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
@@ -800,17 +798,15 @@ export default function HTMLTreePage() {
 								<div className='border rounded-lg p-4 bg-muted/20 max-h-[600px] overflow-auto'>
 									{renderTree(treeData)}
 								</div>
-							</CardContent>
-						</Card>
+							</div>
+						</div>
 					</section>
 
 					{/* Headings Analysis */}
-					<section className='space-y-4 border-t pt-8'>
-						<Card className='border-0 bg-transparent shadow-none'>
-							<CardHeader>
-								<CardTitle>Анализ заголовков</CardTitle>
-							</CardHeader>
-							<CardContent className='space-y-4'>
+					<section className='border-t pt-6'>
+						<div>
+							<p className='text-sm font-medium'>Анализ заголовков</p>
+							<div className='mt-3 space-y-4'>
 								{/* Status */}
 								<div className='flex items-center gap-4'>
 									<div className='flex items-center gap-2'>
@@ -926,18 +922,16 @@ export default function HTMLTreePage() {
 											</div>
 										)
 									})()}
-							</CardContent>
-						</Card>
+							</div>
+						</div>
 					</section>
 
 					{/* Statistics */}
-					<section className='space-y-4 border-t pt-8'>
+					<section className='border-t pt-6'>
 						<div className='grid gap-4 md:grid-cols-2'>
-							<Card className='border-0 bg-transparent shadow-none'>
-								<CardHeader>
-									<CardTitle className='text-base'>Общая информация</CardTitle>
-								</CardHeader>
-								<CardContent className='space-y-3'>
+							<div>
+								<p className='text-sm font-medium'>Общая информация</p>
+								<div className='mt-3 space-y-3'>
 									<div className='flex justify-between items-center'>
 										<span className='text-sm text-muted-foreground'>
 											Всего элементов:
@@ -964,14 +958,12 @@ export default function HTMLTreePage() {
 										</span>
 										<Badge variant='secondary'>{statistics?.idCount}</Badge>
 									</div>
-								</CardContent>
-							</Card>
+								</div>
+							</div>
 
-							<Card className='border-0 bg-transparent shadow-none'>
-								<CardHeader>
-									<CardTitle className='text-base'>Элементы по типам</CardTitle>
-								</CardHeader>
-								<CardContent>
+							<div>
+								<p className='text-sm font-medium'>Элементы по типам</p>
+								<div className='mt-3'>
 									<div className='flex flex-wrap gap-2 max-h-[300px] overflow-auto'>
 										{statistics &&
 											(() => {
@@ -1004,8 +996,8 @@ export default function HTMLTreePage() {
 												})
 											})()}
 									</div>
-								</CardContent>
-							</Card>
+								</div>
+							</div>
 						</div>
 					</section>
 					{/* W3C Validation */}
