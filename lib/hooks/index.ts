@@ -9,7 +9,6 @@ export { useAnalytics } from './useAnalytics'
 export { useCookieConsent } from './useCookieConsent'
 export { useEmoji } from './useEmoji'
 export { useWidgetShare } from './useWidgetShare'
-export { useWidgetTips } from './useWidgetTips'
 
 // Widget hooks
 export * from './widgets'

@@ -1,4 +1,0 @@
-export { WidgetInfo } from './WidgetInfo'
-export { WidgetResult } from './WidgetResult'
-export { WidgetInput as WidgetFormLegacy } from './WidgetInput'
-export type { InputField as InputFieldLegacy } from './WidgetInput'
