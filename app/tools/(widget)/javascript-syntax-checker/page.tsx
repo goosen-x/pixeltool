@@ -4,11 +4,22 @@ import { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Code2, Copy, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
-import { toast } from 'sonner'
+import {
+	Copy,
+	Check,
+	Braces,
+	Trash2,
+	CheckCircle,
+	XCircle,
+	AlertCircle
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { JsSyntaxSeo } from './JsSyntaxSeo'
 // Simple JavaScript syntax checker without external dependencies
 
@@ -168,6 +179,7 @@ export default function JavaScriptSyntaxCheckerPage() {
 	const [allowJsx, setAllowJsx] = useState(false)
 	const [result, setResult] = useState<ParseResult | null>(null)
 	const [highlightedCode, setHighlightedCode] = useState('')
+	const [copied, setCopied] = useState(false)
 
 	useEffect(() => {
 		if (code) {
@@ -442,7 +454,6 @@ export default function JavaScriptSyntaxCheckerPage() {
 	const loadExample = (example: CodeExample) => {
 		setCode(example.code)
 		setMode(example.mode)
-		toast.success(`Загружен пример: ${example.name}`)
 	}
 
 	const copyResult = () => {
@@ -453,14 +464,14 @@ export default function JavaScriptSyntaxCheckerPage() {
 			: `❌ Ошибка синтаксиса\n\n${result.errors.map(e => `Ошибка в строке ${e.line}:${e.column}\n${e.message}${e.suggestion ? '\nПредложение: ' + e.suggestion : ''}`).join('\n\n')}`
 
 		navigator.clipboard.writeText(text)
-		toast.success('Результат скопирован!')
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
 	}
 
 	const reset = () => {
 		setCode('')
 		setResult(null)
 		setHighlightedCode('')
-		toast.success('Проверка сброшена')
 	}
 
 	const formatCode = () => {
@@ -489,219 +500,211 @@ export default function JavaScriptSyntaxCheckerPage() {
 				.join('\n')
 
 			setCode(formatted)
-			toast.success('Код отформатирован')
-		} catch {
-			toast.error('Ошибка форматирования')
+		} catch (error) {
+			console.error('Не удалось отформатировать код:', error)
 		}
 	}
 
 	return (
-		<div className='mx-auto max-w-5xl'>
-			<Card className='space-y-8 p-6 sm:p-8'>
-				{/* Быстрый старт: примеры кода + настройки проверки */}
-				<div className='space-y-5 border-b pb-7'>
-					<div className='space-y-2'>
-						<Label className='text-sm font-medium'>Примеры кода</Label>
-						<div className='flex flex-wrap gap-2'>
-							{CODE_EXAMPLES.map((example, index) => (
-								<Button
-									key={index}
-									onClick={() => loadExample(example)}
-									variant='outline'
-									size='sm'
-									className='text-xs'
-									title={example.description}
-								>
-									{example.name}
-								</Button>
-							))}
-						</div>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: по каким правилам разбирать код. Два тумблера
+				    («Модуль», «JSX») стали таблетками — это флаги режима, а не
+				    настройки с подписями. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								['es5', 'ES5'],
+								['es6', 'ES6'],
+								['es2020', 'ES2020'],
+								['latest', 'Latest']
+							] as [ParseMode, string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setMode(value)}
+								aria-pressed={mode === value}
+								className={toolPill(mode === value, 'font-mono')}
+							>
+								{label}
+							</button>
+						))}
 					</div>
 
-					<div className='flex flex-wrap items-center gap-x-6 gap-y-3'>
-						<div className='flex items-center gap-2'>
-							<span className='text-sm text-muted-foreground'>Версия</span>
-							{(
-								[
-									['es5', 'ES5'],
-									['es6', 'ES6'],
-									['es2020', 'ES2020'],
-									['latest', 'Latest']
-								] as [ParseMode, string][]
-							).map(([value, label]) => (
-								<Button
-									key={value}
-									variant={mode === value ? 'default' : 'outline'}
-									size='sm'
-									onClick={() => setMode(value)}
-								>
-									{label}
-								</Button>
-							))}
-						</div>
-						<div className='flex items-center gap-2'>
-							<Switch
-								id='source-type'
-								checked={sourceType === 'module'}
-								onCheckedChange={checked =>
-									setSourceType(checked ? 'module' : 'script')
-								}
-							/>
-							<Label htmlFor='source-type' className='text-sm'>
-								Модуль (import/export)
-							</Label>
-						</div>
-						<div className='flex items-center gap-2'>
-							<Switch
-								id='jsx'
-								checked={allowJsx}
-								onCheckedChange={setAllowJsx}
-							/>
-							<Label htmlFor='jsx' className='text-sm'>
-								JSX
-							</Label>
-						</div>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<button
+							type='button'
+							onClick={() =>
+								setSourceType(sourceType === 'module' ? 'script' : 'module')
+							}
+							aria-pressed={sourceType === 'module'}
+							title='Разрешить import и export'
+							className={toolPill(sourceType === 'module', 'font-mono')}
+						>
+							module
+						</button>
+						<button
+							type='button'
+							onClick={() => setAllowJsx(!allowJsx)}
+							aria-pressed={allowJsx}
+							className={toolPill(allowJsx, 'font-mono')}
+						>
+							jsx
+						</button>
+					</div>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={formatCode}
+							disabled={!code}
+							title='Расставить отступы'
+							className={toolIconButton}
+						>
+							<Braces className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyResult}
+							disabled={!result}
+							title='Скопировать отчёт'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={reset}
+							disabled={!code}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
 					</div>
 				</div>
 
-				{/* Две колонки: ввод кода и результат */}
-				<div className='grid gap-8 lg:grid-cols-2 lg:gap-10'>
-					{/* Ввод */}
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between gap-3'>
-							<h3 className='text-lg font-semibold'>JavaScript код</h3>
-							<div className='flex gap-2'>
-								<Button onClick={formatCode} variant='outline' size='sm'>
-									Форматировать
-								</Button>
-								<Button onClick={reset} variant='outline' size='sm'>
-									Очистить
-								</Button>
-							</div>
-						</div>
-						<Textarea
-							id='code-input'
-							value={code}
-							onChange={e => setCode(e.target.value)}
-							placeholder='Вставьте JavaScript код для проверки…'
-							className='min-h-[320px] font-mono text-base md:text-sm'
-							spellCheck={false}
-						/>
-					</div>
+				<div className='grid lg:grid-cols-2'>
+					<Textarea
+						id='code-input'
+						value={code}
+						onChange={e => setCode(e.target.value)}
+						placeholder='Вставьте JavaScript'
+						spellCheck={false}
+						aria-label='Код JavaScript'
+						className='min-h-[20rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm lg:border-r'
+					/>
 
-					{/* Результат */}
-					<div className='space-y-4'>
-						<h3 className='text-lg font-semibold'>Результат</h3>
+					<div className='min-h-[20rem] px-5 py-6 sm:px-6'>
 						{result ? (
-							<div
-								className={cn(
-									'rounded-xl border border-l-4 bg-muted/40 p-4',
-									result.valid ? 'border-l-green-500' : 'border-l-red-500'
-								)}
-							>
-								<div className='flex items-start gap-3'>
-									{result.valid ? (
-										<CheckCircle className='w-5 h-5 text-green-600 dark:text-green-400 mt-0.5' />
-									) : (
-										<XCircle className='w-5 h-5 text-red-600 dark:text-red-400 mt-0.5' />
+							<>
+								<p
+									className={cn(
+										'flex items-center gap-2 text-sm font-medium',
+										result.valid
+											? 'text-green-600 dark:text-green-400'
+											: 'text-destructive'
 									)}
-									<div className='flex-1'>
-										<h3 className='text-base font-semibold text-foreground'>
-											{result.valid
-												? 'Синтаксис корректен'
-												: 'Ошибка синтаксиса'}
-										</h3>
+								>
+									{result.valid ? (
+										<CheckCircle className='h-4 w-4' />
+									) : (
+										<XCircle className='h-4 w-4' />
+									)}
+									{result.valid ? 'Синтаксис корректен' : 'Ошибка синтаксиса'}
+								</p>
 
-										{result.errors.length > 0 && (
-											<div className='mt-2 space-y-2'>
-												{result.errors.map((error, index) => (
-													<div key={index} className='text-sm'>
-														<div className='font-medium text-red-800 dark:text-red-200'>
-															Строка {error.line}, столбец {error.column}
-														</div>
-														<div className='text-red-700 dark:text-red-300'>
-															{error.message}
-														</div>
-														{error.suggestion && (
-															<div className='text-red-600 dark:text-red-400 italic'>
-																Предложение: {error.suggestion}
-															</div>
-														)}
-													</div>
-												))}
+								{result.errors.length > 0 && (
+									<div className='mt-4 space-y-3'>
+										{result.errors.map((error, index) => (
+											<div key={index} className='text-sm'>
+												<span className='font-mono text-xs text-muted-foreground'>
+													строка {error.line}, столбец {error.column}
+												</span>
+												<p className='text-destructive'>{error.message}</p>
+												{error.suggestion && (
+													<p className='text-muted-foreground'>
+														{error.suggestion}
+													</p>
+												)}
 											</div>
-										)}
-
-										{result.warnings.length > 0 && (
-											<div className='mt-3 space-y-1'>
-												<p className='text-sm font-medium text-amber-600 dark:text-amber-400'>
-													Предупреждения
-												</p>
-												{result.warnings.map((warning, index) => (
-													<div
-														key={index}
-														className='flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400'
-													>
-														<AlertCircle className='w-4 h-4 mt-0.5' />
-														<span>{warning}</span>
-													</div>
-												))}
-											</div>
-										)}
-
-										{result.stats && result.valid && (
-											<div className='mt-3 grid grid-cols-3 gap-2 border-t pt-3'>
-												{(
-													[
-														['Функций', result.stats.functions],
-														['Переменных', result.stats.variables],
-														['Классов', result.stats.classes],
-														['Импортов', result.stats.imports],
-														['Экспортов', result.stats.exports]
-													] as [string, number][]
-												).map(([label, value]) => (
-													<div
-														key={label}
-														className='rounded bg-white/60 p-2 text-center dark:bg-black/20'
-													>
-														<div className='text-xl font-bold text-green-600'>
-															{value}
-														</div>
-														<div className='text-xs text-muted-foreground'>
-															{label}
-														</div>
-													</div>
-												))}
-											</div>
-										)}
-										{result.valid && (
-											<Button
-												onClick={copyResult}
-												variant='outline'
-												size='sm'
-												className='mt-4'
-											>
-												<Copy className='mr-2 h-4 w-4' />
-												Копировать результат
-											</Button>
-										)}
+										))}
 									</div>
-								</div>
-							</div>
+								)}
+
+								{result.warnings.length > 0 && (
+									<div className='mt-4 space-y-1'>
+										{result.warnings.map((warning, index) => (
+											<p
+												key={index}
+												className='flex items-start gap-2 text-sm text-amber-600 dark:text-amber-500'
+											>
+												<AlertCircle className='mt-0.5 h-4 w-4 shrink-0' />
+												{warning}
+											</p>
+										))}
+									</div>
+								)}
+
+								{result.stats && result.valid && (
+									<div className='mt-4 flex flex-wrap gap-x-5 gap-y-1'>
+										{(
+											[
+												['функций', result.stats.functions],
+												['переменных', result.stats.variables],
+												['классов', result.stats.classes],
+												['импортов', result.stats.imports],
+												['экспортов', result.stats.exports]
+											] as [string, number][]
+										).map(([label, value]) => (
+											<span
+												key={label}
+												className='text-sm text-muted-foreground'
+											>
+												<span className='font-mono text-foreground'>
+													{value}
+												</span>{' '}
+												{label}
+											</span>
+										))}
+									</div>
+								)}
+							</>
 						) : (
-							<div className='flex min-h-[320px] items-center justify-center rounded-xl border border-dashed text-muted-foreground'>
-								<div className='space-y-3 text-center'>
-									<Code2 className='mx-auto h-12 w-12 opacity-20' />
-									<p className='text-sm'>
-										Вставьте код — здесь появится результат проверки
-									</p>
-								</div>
-							</div>
+							<p className='flex h-full items-center justify-center text-center text-sm text-muted-foreground'>
+								Вставьте код — результат проверки появится здесь
+							</p>
 						)}
 					</div>
 				</div>
+
+				{/* Полоса примеров: на них видно, что именно ловит проверка. */}
+				<div className={toolFooterBar}>
+					<span className='mr-1 text-sm text-muted-foreground'>Примеры</span>
+					{CODE_EXAMPLES.map((example, index) => (
+						<button
+							key={index}
+							type='button'
+							onClick={() => loadExample(example)}
+							title={example.description}
+							className={toolPill(false)}
+						>
+							{example.name}
+						</button>
+					))}
+				</div>
 			</Card>
+
 			<JsSyntaxSeo />
-		</div>
+		</>
 	)
 }
