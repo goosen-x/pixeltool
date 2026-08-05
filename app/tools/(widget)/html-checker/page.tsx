@@ -709,91 +709,77 @@ export default function HTMLTreePage() {
 					{/* Tree View */}
 					<section className='border-t pt-6'>
 						<div>
-							<div className='flex items-center justify-between gap-4'>
+							{/* Полоса управления деревом: поиск, глубина и разворачивание —
+							    всё, что меняет вид дерева, в одну строку над ним. */}
+							<div className='flex flex-wrap items-center gap-x-6 gap-y-3'>
 								<p className='text-sm font-medium'>Дерево элементов</p>
-								<div className='flex items-center gap-2'>
-									<Button
-										variant='outline'
-										size='sm'
-										onClick={() => {
-											if (expandAll) {
-												// Collapse all
-												setExpandAll(false)
-												setExpandedNodes(new Set())
-											} else {
-												// Expand all
-												setExpandAll(true)
-												const allPaths = new Set<string>()
-												const collectAllPaths = (node: TreeNode) => {
-													allPaths.add(node.path)
-													node.children.forEach(collectAllPaths)
-												}
-												if (treeData) collectAllPaths(treeData)
-												setExpandedNodes(allPaths)
-											}
-										}}
-									>
-										{expandAll ? 'Свернуть все' : 'Развернуть все'}
-									</Button>
-								</div>
-							</div>
-							<div className='mt-3 space-y-4'>
-								{/* Search */}
-								<div className='relative'>
-									<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-									<Input
-										placeholder='Поиск по тегам, классам, ID...'
-										value={searchQuery}
-										onChange={e => setSearchQuery(e.target.value)}
-										className='pl-10'
-									/>
-								</div>
 
-								{/* Depth Control */}
-								<div className='space-y-2'>
-									<div className='flex items-center gap-4'>
-										<Layers className='w-4 h-4 text-muted-foreground' />
-										<span className='text-sm font-medium'>
-											Максимальная глубина: {maxVisibleDepth}
-										</span>
-									</div>
+								<input
+									value={searchQuery}
+									onChange={e => setSearchQuery(e.target.value)}
+									placeholder='Поиск по тегу, классу, id'
+									spellCheck={false}
+									aria-label='Поиск по дереву'
+									className='w-56 rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								/>
+
+								<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+									глубина
 									<Slider
 										value={[maxVisibleDepth]}
 										onValueChange={value => setMaxVisibleDepth(value[0])}
 										max={statistics?.maxDepth || 10}
 										min={1}
 										step={1}
-										className='w-full'
+										className='w-28 cursor-pointer'
+										aria-label='Максимальная глубина дерева'
 									/>
-								</div>
+									<span className='w-6 font-mono text-sm text-foreground tabular-nums'>
+										{maxVisibleDepth}
+									</span>
+								</label>
 
-								{/* Class Highlights */}
-								{classHighlights.size > 0 && (
-									<div className='space-y-2'>
-										<span className='text-sm font-medium'>
-											Выделенные классы:
-										</span>
-										<div className='flex flex-wrap gap-2'>
-											{Array.from(classHighlights.entries()).map(
-												([className, color]) => (
-													<Badge
-														key={className}
-														variant='outline'
-														className='cursor-pointer'
-														style={{
-															backgroundColor: color,
-															color: '#000'
-														}}
-														onClick={() => toggleClassHighlight(className)}
-													>
-														.{className} ×
-													</Badge>
-												)
-											)}
-										</div>
-									</div>
-								)}
+								<button
+									type='button'
+									onClick={() => {
+										if (expandAll) {
+											setExpandAll(false)
+											setExpandedNodes(new Set())
+										} else {
+											setExpandAll(true)
+											const allPaths = new Set<string>()
+											const collectAllPaths = (node: TreeNode) => {
+												allPaths.add(node.path)
+												node.children.forEach(collectAllPaths)
+											}
+											if (treeData) collectAllPaths(treeData)
+											setExpandedNodes(allPaths)
+										}
+									}}
+									aria-pressed={expandAll}
+									className={toolPill(expandAll)}
+								>
+									развернуть всё
+								</button>
 
+								{classHighlights.size > 0 &&
+									Array.from(classHighlights.entries()).map(
+										([className, color]) => (
+											<button
+												key={className}
+												type='button'
+												onClick={() => toggleClassHighlight(className)}
+												title='Убрать подсветку'
+												className={toolPill(true, 'font-mono')}
+												style={{ backgroundColor: color, color: '#000' }}
+											>
+												.{className} ×
+											</button>
+										)
+									)}
+							</div>
+
+							<div className='mt-3'>
 								{/* Tree */}
 								<div className='border rounded-lg p-4 bg-muted/20 max-h-[600px] overflow-auto'>
 									{renderTree(treeData)}
