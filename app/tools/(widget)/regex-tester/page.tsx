@@ -1,37 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { WidgetLayout } from '@/components/widgets/WidgetLayout'
 import { RegexGuide } from './RegexGuide'
-import { WidgetSection } from '@/components/widgets/WidgetSection'
-import { WidgetInput } from '@/components/widgets/WidgetInput'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Switch } from '@/components/ui/switch'
-import {
-	Regex,
-	Copy,
-	RefreshCw,
-	Code,
-	Search,
-	AlertCircle,
-	CheckCircle,
-	Info,
-	BookOpen,
-	Lightbulb,
-	FileCode,
-	Zap,
-	Globe,
-	Hash,
-	Type
-} from 'lucide-react'
-import { toast } from 'sonner'
+import { Copy, Code, RotateCcw, AlertCircle, CheckCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
 interface RegexMatch {
@@ -350,17 +331,10 @@ export default function RegexTesterPage() {
 		)
 	}
 
-	const loadPattern = (regexPattern: RegexPattern) => {
-		setPattern(regexPattern.pattern)
-		setTestText(regexPattern.example)
-		toast.success(`Загружен шаблон: ${regexPattern.name}`)
-	}
-
 	const copyPattern = () => {
 		const flagString = flags.join('')
 		const fullPattern = `/${pattern}/${flagString}`
 		navigator.clipboard.writeText(fullPattern)
-		toast.success('Регулярное выражение скопировано!')
 	}
 
 	const copyCode = () => {
@@ -396,7 +370,6 @@ export default function RegexTesterPage() {
 		}
 
 		navigator.clipboard.writeText(code)
-		toast.success('Код скопирован!')
 	}
 
 	const reset = () => {
@@ -408,363 +381,225 @@ export default function RegexTesterPage() {
 		setError('')
 		setHighlightedText('')
 		setFlags(['g'])
-		toast.success('Тестер сброшен')
-	}
-
-	const getFlavorIcon = (flavorType: RegexFlavor) => {
-		switch (flavorType) {
-			case 'javascript':
-				return FileCode
-			case 'php':
-				return Code
-			case 'python':
-				return Zap
-		}
 	}
 
 	return (
 		<>
-			<WidgetLayout>
-				{/* Flavor Selection */}
-				<WidgetSection
-					icon={<Globe className='h-5 w-5' />}
-					title='Выбор языка'
-					description='Выберите язык программирования для генерации кода'
-				>
-					<RadioGroup
-						value={flavor}
-						onValueChange={(value: RegexFlavor) => setFlavor(value)}
-					>
-						<div className='grid md:grid-cols-3 gap-4'>
-							{(['javascript', 'php', 'python'] as RegexFlavor[]).map(lang => {
-								const Icon = getFlavorIcon(lang)
-								return (
-									<div
-										key={lang}
-										className={cn(
-											'relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-colors',
-											flavor === lang
-												? 'bg-primary/10 border-primary'
-												: 'hover:bg-muted/50'
-										)}
-										onClick={() => setFlavor(lang)}
-									>
-										<RadioGroupItem value={lang} id={lang} />
-										<Label
-											htmlFor={lang}
-											className='cursor-pointer flex items-center gap-2'
-										>
-											<Icon className='w-4 h-4' />
-											<span className='capitalize'>{lang}</span>
-										</Label>
-									</div>
-								)
-							})}
-						</div>
-					</RadioGroup>
-				</WidgetSection>
-
-				<div className='grid lg:grid-cols-3 gap-6'>
-					{/* Main Editor */}
-					<div className='lg:col-span-2 space-y-6'>
-						<WidgetSection
-							icon={<Regex className='h-5 w-5' />}
-							title='Тестер регулярных выражений'
-						>
-							<div className='space-y-4'>
-								{/* Pattern Input */}
-								<WidgetInput label='Регулярное выражение'>
-									<div className='relative mt-1'>
-										<Input
-											id='pattern'
-											value={pattern}
-											onChange={e => setPattern(e.target.value)}
-											placeholder='Например: ^[a-zA-Z0-9]+$'
-											className={cn(
-												'font-mono pr-10',
-												error && 'border-red-500'
-											)}
-										/>
-										<div className='absolute right-2 top-1/2 -translate-y-1/2'>
-											{error ? (
-												<AlertCircle className='w-4 h-4 text-red-500' />
-											) : matches.length > 0 ? (
-												<CheckCircle className='w-4 h-4 text-green-500' />
-											) : null}
-										</div>
-									</div>
-									{error && (
-										<p className='text-sm text-red-500 mt-1'>{error}</p>
-									)}
-								</WidgetInput>
-
-								{/* Flags */}
-								<WidgetInput label='Флаги'>
-									<div className='flex flex-wrap gap-2 mt-2'>
-										{REGEX_FLAGS[flavor].map(({ flag, name, description }) => (
-											<Button
-												key={flag}
-												variant={
-													flags.includes(flag.split('.')[1] || flag)
-														? 'default'
-														: 'outline'
-												}
-												size='sm'
-												onClick={() => toggleFlag(flag.split('.')[1] || flag)}
-												title={description}
-											>
-												<code className='text-xs'>{flag}</code>
-												<span className='ml-2'>{name}</span>
-											</Button>
-										))}
-									</div>
-								</WidgetInput>
-
-								{/* Test Text */}
-								<WidgetInput label='Тестовый текст'>
-									<Textarea
-										id='test-text'
-										value={testText}
-										onChange={e => setTestText(e.target.value)}
-										placeholder='Введите текст для тестирования...'
-										className='font-mono mt-1'
-										rows={6}
-									/>
-								</WidgetInput>
-
-								{/* Results */}
-								{testText && (
-									<WidgetOutput
-										gradientFrom='from-green-500/10'
-										gradientTo='to-blue-500/10'
-									>
-										<div className='space-y-3'>
-											<div className='flex items-center justify-between'>
-												<span className='text-sm font-medium'>Результат</span>
-												<Badge variant='secondary'>
-													Совпадений: {matches.length}
-												</Badge>
-											</div>
-											<div
-												className='p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border'
-												dangerouslySetInnerHTML={{ __html: highlightedText }}
-											/>
-										</div>
-									</WidgetOutput>
-								)}
-
-								{/* Replace Mode */}
-								<WidgetInput label='Режим замены'>
-									<div className='flex items-center space-x-2'>
-										<Switch
-											id='replace-mode'
-											checked={showReplace}
-											onCheckedChange={setShowReplace}
-										/>
-										<Label htmlFor='replace-mode'>Включить режим замены</Label>
-									</div>
-								</WidgetInput>
-
-								{showReplace && (
-									<>
-										<WidgetInput label='Заменить на'>
-											<Input
-												id='replace-pattern'
-												value={replacePattern}
-												onChange={e => setReplacePattern(e.target.value)}
-												placeholder='Например: $1 или \1'
-												className='font-mono'
-											/>
-										</WidgetInput>
-
-										{replacedText && (
-											<WidgetOutput
-												gradientFrom='from-purple-500/10'
-												gradientTo='to-pink-500/10'
-											>
-												<div className='space-y-2'>
-													<span className='text-sm font-medium'>
-														Результат замены
-													</span>
-													<div className='p-4 rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all border'>
-														{replacedText}
-													</div>
-												</div>
-											</WidgetOutput>
-										)}
-									</>
-								)}
-
-								{/* Actions */}
-								<div className='flex flex-wrap gap-2 pt-4'>
-									<Button onClick={copyPattern} className='gap-2'>
-										<Copy className='w-4 h-4' />
-										Копировать Regex
-									</Button>
-									<Button
-										onClick={copyCode}
-										variant='outline'
-										className='gap-2'
-									>
-										<Code className='w-4 h-4' />
-										Копировать код
-									</Button>
-									<Button onClick={reset} variant='outline' className='gap-2'>
-										<RefreshCw className='w-4 h-4' />
-										Сброс
-									</Button>
-								</div>
-							</div>
-						</WidgetSection>
-
-						{/* Match Details */}
-						{matches.length > 0 && (
-							<WidgetSection
-								icon={<Search className='h-5 w-5' />}
-								title='Детали совпадений'
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: язык, под который генерируется код, и флаги. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(['javascript', 'php', 'python'] as RegexFlavor[]).map(lang => (
+							<button
+								key={lang}
+								type='button'
+								onClick={() => setFlavor(lang)}
+								aria-pressed={flavor === lang}
+								className={toolPill(flavor === lang, 'font-mono')}
 							>
-								<div className='space-y-2'>
-									{matches.map((match, index) => (
-										<div
-											key={index}
-											className='p-3 rounded-lg bg-muted/50 font-mono text-sm'
-										>
-											<div className='flex items-center justify-between mb-1'>
-												<span className='text-muted-foreground'>
-													Совпадение #{index + 1}
-												</span>
-												<Badge variant='secondary'>
-													Позиция: {match.index}
-												</Badge>
-											</div>
-											<div className='text-green-600 dark:text-green-400'>
-												&quot;{match.match}&quot;
-											</div>
-											{match.groups && Object.keys(match.groups).length > 0 && (
-												<div className='mt-2 pt-2 border-t'>
-													<div className='text-xs text-muted-foreground mb-1'>
-														Группы:
-													</div>
-													{Object.entries(match.groups).map(([key, value]) => (
-														<div key={key} className='text-xs'>
-															<span className='text-muted-foreground'>
-																{key}:
-															</span>{' '}
-															&quot;{value}&quot;
-														</div>
-													))}
-												</div>
-											)}
-										</div>
-									))}
-								</div>
-							</WidgetSection>
-						)}
+								{lang}
+							</button>
+						))}
 					</div>
 
-					{/* Sidebar */}
-					<div className='space-y-6'>
-						{/* Common Patterns */}
-						<WidgetSection
-							icon={<Lightbulb className='h-5 w-5' />}
-							title='Готовые шаблоны'
-						>
-							<div className='space-y-4'>
-								{['validation', 'numbers', 'text', 'html', 'code'].map(
-									category => (
-										<div key={category}>
-											<h4 className='text-sm font-medium text-muted-foreground mb-2 capitalize'>
-												{category === 'validation'
-													? 'Валидация'
-													: category === 'numbers'
-														? 'Числа'
-														: category === 'text'
-															? 'Текст'
-															: category === 'html'
-																? 'HTML/XML'
-																: 'Код'}
-											</h4>
-											<div className='space-y-1'>
-												{REGEX_PATTERNS.filter(
-													p => p.category === category
-												).map((regexPattern, index) => (
-													<Button
-														key={index}
-														onClick={() => loadPattern(regexPattern)}
-														variant='ghost'
-														size='sm'
-														className='w-full justify-start text-left'
-													>
-														<span className='truncate'>
-															{regexPattern.name}
-														</span>
-													</Button>
-												))}
-											</div>
-										</div>
-									)
-								)}
-							</div>
-						</WidgetSection>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<span className='mr-1 text-sm text-muted-foreground'>Флаги</span>
+						{REGEX_FLAGS[flavor].map(({ flag, name, description }) => {
+							const value = flag.split('.')[1] || flag
+							return (
+								<button
+									key={flag}
+									type='button'
+									onClick={() => toggleFlag(value)}
+									aria-pressed={flags.includes(value)}
+									title={`${name} — ${description}`}
+									className={toolPill(flags.includes(value), 'font-mono')}
+								>
+									{flag}
+								</button>
+							)
+						})}
+					</div>
 
-						{/* Quick Reference */}
-						<WidgetSection
-							icon={<BookOpen className='h-5 w-5' />}
-							title='Справочник'
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyPattern}
+							disabled={!pattern}
+							title='Скопировать выражение'
+							className={toolIconButton}
 						>
-							<div className='space-y-3 text-sm'>
-								<div>
-									<h4 className='font-medium mb-1'>Символьные классы</h4>
-									<div className='space-y-1 text-muted-foreground font-mono'>
-										<div>\d - цифра [0-9]</div>
-										<div>\w - буква/цифра/_ </div>
-										<div>\s - пробельный символ</div>
-										<div>. - любой символ</div>
-									</div>
-								</div>
-								<div>
-									<h4 className='font-medium mb-1'>Квантификаторы</h4>
-									<div className='space-y-1 text-muted-foreground font-mono'>
-										<div>* - 0 или более</div>
-										<div>+ - 1 или более</div>
-										<div>? - 0 или 1</div>
-										<div>{`{n}`} - ровно n раз</div>
-										<div>{`{n,}`} - n или более</div>
-										<div>{`{n,m}`} - от n до m</div>
-									</div>
-								</div>
-								<div>
-									<h4 className='font-medium mb-1'>Позиция</h4>
-									<div className='space-y-1 text-muted-foreground font-mono'>
-										<div>^ - начало строки</div>
-										<div>$ - конец строки</div>
-										<div>\b - граница слова</div>
-									</div>
-								</div>
-								<div>
-									<h4 className='font-medium mb-1'>Группы</h4>
-									<div className='space-y-1 text-muted-foreground font-mono'>
-										<div>(...) - захват группы</div>
-										<div>(?:...) - без захвата</div>
-										<div>(?&lt;name&gt;...) - именованная</div>
-									</div>
-								</div>
-							</div>
-						</WidgetSection>
-
-						{/* Tips */}
-						<WidgetSection icon={<Info className='h-5 w-5' />} title='Советы'>
-							<ul className='space-y-2 text-sm text-muted-foreground'>
-								<li>• Используйте группы для извлечения частей текста</li>
-								<li>• Флаг &apos;g&apos; для поиска всех совпадений</li>
-								<li>• Экранируйте спецсимволы: . * + ? [ ] ( ) {} ^ $ \ |</li>
-								<li>• Тестируйте на разных примерах текста</li>
-								<li>• Именованные группы упрощают работу с результатами</li>
-							</ul>
-						</WidgetSection>
+							<Copy className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyCode}
+							disabled={!pattern}
+							title={`Скопировать код для ${flavor}`}
+							className={toolIconButton}
+						>
+							<Code className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={reset}
+							title='Сбросить'
+							className={toolIconButton}
+						>
+							<RotateCcw className='h-4 w-4' />
+						</Button>
 					</div>
 				</div>
-			</WidgetLayout>
+
+				{/* Само выражение — главное поле инструмента, поэтому оно крупное
+				    и в привычной записи со слэшами и флагами. */}
+				<div className='flex items-center gap-2 px-5 py-6 font-mono sm:px-6'>
+					<span className='text-xl text-muted-foreground'>/</span>
+					<input
+						id='pattern'
+						value={pattern}
+						onChange={e => setPattern(e.target.value)}
+						placeholder='^[a-zA-Z0-9]+$'
+						spellCheck={false}
+						aria-label='Регулярное выражение'
+						className={cn(
+							'min-w-0 flex-1 bg-transparent text-xl focus:outline-none',
+							error && 'text-destructive'
+						)}
+					/>
+					<span className='text-xl text-muted-foreground'>
+						/{flags.join('')}
+					</span>
+					{error ? (
+						<AlertCircle className='h-5 w-5 shrink-0 text-destructive' />
+					) : matches.length > 0 ? (
+						<CheckCircle className='h-5 w-5 shrink-0 text-green-600 dark:text-green-400' />
+					) : null}
+				</div>
+
+				{error && (
+					<p className='px-5 pb-4 text-sm text-destructive sm:px-6'>{error}</p>
+				)}
+
+				<div className='grid border-t lg:grid-cols-2'>
+					<Textarea
+						id='test-text'
+						value={testText}
+						onChange={e => setTestText(e.target.value)}
+						placeholder='Текст, на котором проверяем'
+						spellCheck={false}
+						aria-label='Тестовый текст'
+						className='min-h-[16rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm lg:border-r'
+					/>
+
+					<div className='min-h-[16rem] px-5 py-6 sm:px-6'>
+						{testText ? (
+							<>
+								<p className='text-sm text-muted-foreground'>
+									совпадений{' '}
+									<span className='font-mono text-foreground'>
+										{matches.length}
+									</span>
+								</p>
+								<div
+									className='mt-3 font-mono text-sm break-all whitespace-pre-wrap'
+									dangerouslySetInnerHTML={{ __html: highlightedText }}
+								/>
+							</>
+						) : (
+							<p className='flex h-full items-center justify-center text-center text-sm text-muted-foreground'>
+								Вставьте текст — совпадения подсветятся здесь
+							</p>
+						)}
+					</div>
+				</div>
+
+				{/* Полоса замены: включается таблеткой, поле появляется рядом. */}
+				<div className={toolFooterBar}>
+					<button
+						type='button'
+						onClick={() => setShowReplace(!showReplace)}
+						aria-pressed={showReplace}
+						className={toolPill(showReplace)}
+					>
+						Замена
+					</button>
+
+					{showReplace && (
+						<label className='flex min-w-0 flex-1 items-center gap-2 text-sm text-muted-foreground'>
+							на
+							<input
+								id='replace-pattern'
+								value={replacePattern}
+								onChange={e => setReplacePattern(e.target.value)}
+								placeholder='$1'
+								spellCheck={false}
+								aria-label='Строка замены'
+								className='min-w-0 flex-1 rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+						</label>
+					)}
+				</div>
+
+				{showReplace && replacedText && (
+					<div className='border-t px-5 py-4 sm:px-6'>
+						<p className='text-sm text-muted-foreground'>После замены</p>
+						<pre className='mt-2 font-mono text-sm break-all whitespace-pre-wrap'>
+							{replacedText}
+						</pre>
+					</div>
+				)}
+
+				{matches.length > 0 && (
+					<div className='max-h-64 overflow-auto border-t px-5 py-4 sm:px-6'>
+						<p className='text-sm text-muted-foreground'>Совпадения</p>
+						<div className='mt-2 space-y-1'>
+							{matches.map((match, index) => (
+								<p key={index} className='font-mono text-sm'>
+									<span className='mr-2 text-xs text-muted-foreground'>
+										{index + 1} · поз. {match.index}
+									</span>
+									<span className='text-green-600 dark:text-green-400'>
+										{match.match}
+									</span>
+									{match.groups && Object.keys(match.groups).length > 0 && (
+										<span className='ml-2 text-xs text-muted-foreground'>
+											группы: {Object.values(match.groups).join(', ')}
+										</span>
+									)}
+								</p>
+							))}
+						</div>
+					</div>
+				)}
+			</Card>
+
+			{/* Готовые шаблоны — тихая полка под инструментом. */}
+			<div className='mt-6'>
+				<p className='px-1 text-sm text-muted-foreground'>
+					Готовые шаблоны — кликните, чтобы подставить
+				</p>
+				<div className='mt-2 flex flex-wrap gap-1.5'>
+					{REGEX_PATTERNS.map((item, index) => (
+						<button
+							key={index}
+							type='button'
+							onClick={() => {
+								setPattern(item.pattern)
+								if (item.example) setTestText(item.example)
+							}}
+							title={`${item.description} — ${item.pattern}`}
+							className={toolPill(false)}
+						>
+							{item.name}
+						</button>
+					))}
+				</div>
+			</div>
+
 			<RegexGuide />
 		</>
 	)
