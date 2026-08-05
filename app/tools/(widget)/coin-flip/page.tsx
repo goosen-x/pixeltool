@@ -33,18 +33,9 @@ interface CoinType {
 
 const coinTypes: CoinType[] = [
 	{
-		id: 'usd',
-		name: 'US Dollar',
-		headsText: 'Heads',
-		tailsText: 'Tails',
-		headsIcon: '👑',
-		tailsIcon: '🪙',
-		color: 'from-yellow-400 to-yellow-600'
-	},
-	{
 		id: 'ruble',
-		name: 'Russian Ruble',
-		headsText: 'Орел',
+		name: 'Рубль',
+		headsText: 'Орёл',
 		tailsText: 'Решка',
 		headsIcon: '🦅',
 		tailsIcon: '₽',
@@ -59,14 +50,14 @@ export default function CoinFlipPage() {
 		null
 	)
 	const [flipHistory, setFlipHistory] = useState<FlipResult[]>([])
-	const [selectedCoin, setSelectedCoin] = useState<CoinType>(coinTypes[0])
+	// Монета одна — рубль; состояние здесь ни к чему.
+	const selectedCoin = coinTypes[0]
 	const [animationSpeed, setAnimationSpeed] = useState<
 		'slow' | 'normal' | 'fast'
 	>('normal')
 	const [rotation, setRotation] = useState(0)
 	const [headsCount, setHeadsCount] = useState(0)
 	const [tailsCount, setTailsCount] = useState(0)
-	const [historyOpen, setHistoryOpen] = useState(false)
 
 	const updateCounts = useCallback((history: FlipResult[]) => {
 		const heads = history.filter(h => h.result === 'heads').length
@@ -190,24 +181,10 @@ export default function CoinFlipPage() {
 	return (
 		<>
 			<Card className='overflow-hidden p-0'>
-				{/* Верхняя полоса: какая монета и как быстро крутится. Скорость
-				    была ползунком на три деления с эмодзи-подписями 🐌 ⚡ 🚀 —
-				    три значения удобнее выбрать таблетками. */}
+				{/* Верхняя полоса: скорость вращения. Раньше она была ползунком на
+				    три деления с эмодзи-подписями 🐌 ⚡ 🚀 — три значения удобнее
+				    выбрать таблетками. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
-						{coinTypes.map(coin => (
-							<button
-								key={coin.id}
-								type='button'
-								onClick={() => setSelectedCoin(coin)}
-								aria-pressed={selectedCoin.id === coin.id}
-								className={toolPill(selectedCoin.id === coin.id)}
-							>
-								{coin.name}
-							</button>
-						))}
-					</div>
-
 					<div className='flex flex-wrap items-center gap-1.5'>
 						<span className='mr-1 text-sm text-muted-foreground'>Скорость</span>
 						{(
@@ -260,11 +237,7 @@ export default function CoinFlipPage() {
 								style={{ backfaceVisibility: 'hidden' }}
 							>
 								<Image
-									src={
-										selectedCoin.id === 'usd'
-											? '/images/coins/dollar-heads.png'
-											: '/images/coins/ruble-heads.png'
-									}
+									src='/images/coins/ruble-heads.png'
 									alt={`${selectedCoin.name}, орёл`}
 									width={224}
 									height={224}
@@ -280,11 +253,7 @@ export default function CoinFlipPage() {
 								}}
 							>
 								<Image
-									src={
-										selectedCoin.id === 'usd'
-											? '/images/coins/dollar-tails.png'
-											: '/images/coins/ruble-tails.png'
-									}
+									src='/images/coins/ruble-tails.png'
 									alt={`${selectedCoin.name}, решка`}
 									width={224}
 									height={224}
