@@ -11,8 +11,8 @@ export default function ContactInfo({ locale }: Props) {
 		{
 			icon: Mail,
 			label: 'Email',
-			value: 'dmitryborisenko.msk@gmail.com',
-			href: 'mailto:dmitryborisenko.msk@gmail.com'
+			value: 'mail@pixeltool.pro',
+			href: 'mailto:mail@pixeltool.pro'
 		},
 		{
 			icon: Phone,

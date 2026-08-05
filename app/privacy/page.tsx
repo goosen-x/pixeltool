@@ -89,11 +89,8 @@ export default function PrivacyPage() {
 						может ограничить сбор статистики. Чтобы задать вопрос об обработке
 						ваших данных или попросить удалить сообщение, отправленное через
 						форму обратной связи, напишите на{' '}
-						<a
-							href='mailto:dmitryborisenko.msk@gmail.com'
-							className='cursor-pointer'
-						>
-							dmitryborisenko.msk@gmail.com
+						<a href='mailto:mail@pixeltool.pro' className='cursor-pointer'>
+							mail@pixeltool.pro
 						</a>
 						.
 					</p>

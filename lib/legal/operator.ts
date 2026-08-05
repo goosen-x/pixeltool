@@ -19,7 +19,7 @@ export const OPERATOR = {
 	ogrn: PLACEHOLDER,
 	address: PLACEHOLDER,
 	/** Ящик для обращений субъектов ПД: отзыв согласия, удаление, уточнение */
-	email: PLACEHOLDER,
+	email: 'mail@pixeltool.pro',
 	/** Почтовый сервис, через который уходят письма со шпаргалкой */
 	mailProvider: PLACEHOLDER,
 
