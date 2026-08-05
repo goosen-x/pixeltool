@@ -19,7 +19,13 @@ const buttonVariants = cva(
 					'border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent',
 				secondary:
 					'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:shadow-md',
-				ghost: 'hover:bg-accent hover:text-accent-foreground',
+				// Ховер на muted, а не на accent: accent в этой теме — насыщенный
+				// синий (--accent 217 91% 60%), и на маленькой иконочной кнопке он
+				// превращался в синий квадрат, съедающий содержимое. Особенно
+				// заметно было на зелёной галочке «скопировано»: зелёное на синем
+				// не читается. Дефект повторялся по всему проекту и лечился
+				// точечно в каждом туле — теперь вылечен в самом варианте.
+				ghost: 'hover:bg-muted hover:text-foreground',
 				link: 'text-primary underline-offset-4 hover:underline font-medium'
 			},
 			size: {
