@@ -2,11 +2,11 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import Image from 'next/image'
-import { WidgetWrapper } from '@/components/widgets/WidgetWrapper'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, Download } from 'lucide-react'
+import { Upload, Download, FileDown, Copy, Check } from 'lucide-react'
 import { toast } from 'sonner'
+import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import JSZip from 'jszip'
 import { buildIco, buildIcoBuffer } from '@/lib/favicon/ico'
 import { FaviconGuide } from './FaviconGuide'
@@ -38,6 +38,7 @@ const FAVICON_SIZES = [
 export default function FaviconGeneratorPage() {
 	const [selectedImage, setSelectedImage] = useState<File | null>(null)
 	const [previewUrl, setPreviewUrl] = useState<string>('')
+	const [copied, setCopied] = useState(false)
 	const [generatedFavicons, setGeneratedFavicons] = useState<
 		Array<{
 			size: number
@@ -218,134 +219,161 @@ export default function FaviconGeneratorPage() {
 		toast.success('Скачан favicon.zip')
 	}
 
+	const copySnippet = () => {
+		navigator.clipboard.writeText(HEAD_SNIPPET)
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
+	}
+
 	return (
-		<WidgetWrapper>
-			<Card>
-				<CardContent className='space-y-6 pt-6'>
-					{/* Шаг 1 — картинка */}
-					<div className='grid gap-4 sm:grid-cols-[minmax(0,26rem)_auto] sm:items-center'>
-						<div
-							className='cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center transition-colors hover:border-muted-foreground/50'
-							onDrop={handleDrop}
-							onDragOver={e => e.preventDefault()}
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: что загружено и что с этим сделать. */}
+				<div className={toolBar}>
+					<span className='text-sm text-muted-foreground'>
+						{generatedFavicons.length > 0
+							? `${generatedFavicons.length} размеров готово`
+							: 'Картинка не выбрана'}
+					</span>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
 							onClick={() => fileInputRef.current?.click()}
+							title='Выбрать картинку'
+							className={toolIconButton}
 						>
-							<Upload className='mx-auto mb-2 h-8 w-8 text-muted-foreground' />
-							<p className='text-sm'>
+							<Upload className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadIco}
+							disabled={generatedFavicons.length === 0}
+							title='Скачать только favicon.ico'
+							className={toolIconButton}
+						>
+							<FileDown className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadAll}
+							disabled={generatedFavicons.length === 0}
+							title='Скачать всё архивом'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				{/* Рабочая область — она же зона перетаскивания. */}
+				<div
+					onDrop={handleDrop}
+					onDragOver={e => e.preventDefault()}
+					className='px-5 py-6 sm:px-6'
+				>
+					<input
+						ref={fileInputRef}
+						type='file'
+						accept='image/*'
+						onChange={handleFileSelect}
+						className='hidden'
+						aria-label='Загрузить изображение для генерации фавикона'
+					/>
+
+					{generatedFavicons.length === 0 ? (
+						<button
+							type='button'
+							onClick={() => fileInputRef.current?.click()}
+							className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-14 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						>
+							<Upload className='h-8 w-8 text-muted-foreground' />
+							<span className='text-sm'>
 								Перетащите картинку или нажмите, чтобы выбрать
-							</p>
-							<p className='mt-1 text-xs text-muted-foreground'>
-								PNG, JPG, SVG до 5 МБ. Лучше всего — квадрат от 512 пикселей:
-								мелкие детали при 16 пикселях всё равно не видны.
-							</p>
-							<input
-								ref={fileInputRef}
-								type='file'
-								accept='image/*'
-								onChange={handleFileSelect}
-								className='hidden'
-								aria-label='Загрузить изображение для генерации фавикона'
-							/>
-						</div>
-
-						{previewUrl && (
-							<div className='relative mx-auto h-24 w-24 overflow-hidden rounded-lg bg-muted'>
-								<Image
-									src={previewUrl}
-									alt='Предпросмотр загруженной картинки'
-									fill
-									className='object-contain p-2'
-								/>
-							</div>
-						)}
-					</div>
-
-					{/* Шаг 2 — результат */}
-					{generatedFavicons.length > 0 && (
-						<>
-							<div>
-								<h3 className='mb-3 text-sm font-medium'>
-									Размеры ({generatedFavicons.length})
-								</h3>
-								<div className='grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5'>
-									{generatedFavicons.map(favicon => (
-										<button
-											key={favicon.size}
-											type='button'
-											onClick={() => downloadFavicon(favicon)}
-											title={`${favicon.name} — скачать`}
-											className='flex cursor-pointer flex-col items-center gap-1 rounded-lg border bg-muted/30 p-3 transition-colors hover:bg-muted'
-										>
-											<div className='relative h-8 w-8'>
-												<Image
-													src={favicon.dataUrl}
-													alt={favicon.name}
-													fill
-													className='object-contain'
-												/>
-											</div>
-											<span className='text-xs font-medium'>
-												{favicon.size}×{favicon.size}
-											</span>
-											<span className='text-[0.625rem] text-muted-foreground'>
-												{favicon.name}
-											</span>
-										</button>
-									))}
+							</span>
+							<span className='text-xs text-muted-foreground'>
+								PNG, JPG, SVG до 5 МБ. Лучше квадрат от 512 пикселей — мелкие
+								детали при 16 пикселях всё равно не видны
+							</span>
+						</button>
+					) : (
+						<div className='flex flex-wrap items-start gap-4'>
+							{previewUrl && (
+								<div className='relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border'>
+									<Image
+										src={previewUrl}
+										alt='Исходная картинка'
+										fill
+										className='object-contain p-2'
+									/>
 								</div>
-								<p className='mt-2 text-xs text-muted-foreground'>
-									Нажмите на размер, чтобы скачать его отдельно.
-								</p>
-							</div>
+							)}
 
-							{/* Шаг 3 — скачивание */}
-							<div className='grid gap-2 sm:grid-cols-2'>
-								<Button onClick={downloadAll} className='cursor-pointer'>
-									<Download className='mr-2 h-4 w-4' />
-									Скачать всё архивом
-								</Button>
-								<Button
-									variant='outline'
-									onClick={downloadIco}
-									className='cursor-pointer'
-								>
-									<Download className='mr-2 h-4 w-4' />
-									Только favicon.ico
-								</Button>
+							<div className='grid min-w-0 flex-1 grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-7'>
+								{generatedFavicons.map(favicon => (
+									<button
+										key={favicon.size}
+										type='button'
+										onClick={() => downloadFavicon(favicon)}
+										title={`${favicon.name} — скачать`}
+										className='flex cursor-pointer flex-col items-center gap-1 rounded-lg border p-2 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+									>
+										<span className='relative h-8 w-8'>
+											<Image
+												src={favicon.dataUrl}
+												alt={favicon.name}
+												fill
+												className='object-contain'
+											/>
+										</span>
+										<span className='font-mono text-xs'>{favicon.size}</span>
+									</button>
+								))}
 							</div>
-
-							{/* Шаг 4 — как подключить */}
-							<div className='space-y-2 rounded-lg border bg-muted/30 p-4'>
-								<h3 className='text-sm font-medium'>Как подключить</h3>
-								<p className='text-xs text-muted-foreground'>
-									В архиве лежат PNG всех размеров и настоящий{' '}
-									<code className='font-mono'>favicon.ico</code> — внутри него
-									сразу 16, 32 и 48 пикселей, браузер сам возьмёт нужный.
-									Положите файлы в корень сайта и добавьте в{' '}
-									<code className='font-mono'>&lt;head&gt;</code>:
-								</p>
-								<pre className='overflow-x-auto rounded bg-background p-3 text-xs'>
-									<code className='font-mono'>{HEAD_SNIPPET}</code>
-								</pre>
-								<p className='text-xs text-muted-foreground'>
-									Первая строка — для вкладок и старых браузеров, вторая даёт
-									чёткую иконку на плотных экранах, третья нужна, когда сайт
-									сохраняют на домашний экран айфона.
-								</p>
-							</div>
-						</>
+						</div>
 					)}
+				</div>
 
-					<div className='border-t pt-6'>
-						<FaviconLookup />
+				{/* Полоса подключения: код в <head> — последний шаг, без него
+				    иконка не появится, поэтому он на виду, а не в инструкции. */}
+				{generatedFavicons.length > 0 && (
+					<div className='border-t'>
+						<div className='flex items-center justify-between gap-2 px-5 pt-4 sm:px-6'>
+							<span className='text-sm font-medium'>
+								Вставьте в <code className='font-mono'>&lt;head&gt;</code>
+							</span>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={copySnippet}
+								title='Скопировать'
+								className={toolIconButton}
+							>
+								{copied ? (
+									<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+								) : (
+									<Copy className='h-4 w-4' />
+								)}
+							</Button>
+						</div>
+						<pre className='overflow-x-auto px-5 pt-2 pb-5 font-mono text-xs leading-relaxed sm:px-6'>
+							{HEAD_SNIPPET}
+						</pre>
 					</div>
-				</CardContent>
+				)}
 			</Card>
+
+			<div className='mt-6'>
+				<FaviconLookup />
+			</div>
 
 			<FaviconGuide />
 
 			{/* Скрытый канвас для перерисовки картинки */}
 			<canvas ref={canvasRef} className='hidden' width={512} height={512} />
-		</WidgetWrapper>
+		</>
 	)
 }
