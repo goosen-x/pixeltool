@@ -187,6 +187,32 @@ export default function DiceRollerPage() {
 		)
 	}
 
+	const getDiceRotation = (value: number) => {
+		// Поворачиваем кубик так, чтобы нужная грань оказалась спереди
+		switch (value) {
+			case 1:
+				// Грань 1 уже спереди
+				return { x: 0, y: 0 }
+			case 2:
+				// Грань 2 справа, поворачиваем влево на 270°
+				return { x: 0, y: -90 }
+			case 3:
+				// Грань 3 сверху, поворачиваем вниз на 270°
+				return { x: -90, y: 0 }
+			case 4:
+				// Грань 4 снизу, поворачиваем вверх на 90°
+				return { x: 90, y: 0 }
+			case 5:
+				// Грань 5 слева, поворачиваем вправо на 90°
+				return { x: 0, y: 90 }
+			case 6:
+				// Грань 6 сзади, поворачиваем на 180°
+				return { x: 0, y: 180 }
+			default:
+				return { x: 0, y: 0 }
+		}
+	}
+
 	const currentTotal = currentRoll.reduce((sum, value) => sum + value, 0)
 
 	return (
@@ -238,24 +264,104 @@ export default function DiceRollerPage() {
 				</div>
 
 				<div className='flex flex-col items-center gap-6 px-5 py-8 sm:px-6'>
-					<div className='flex flex-wrap items-center justify-center gap-3'>
-						{Array.from({ length: diceCount }, (_, index) => (
-							<motion.div
-								key={index}
-								animate={
-									isRolling ? { rotate: [0, 12, -12, 0] } : { rotate: 0 }
-								}
-								transition={{
-									duration: 0.35,
-									repeat: isRolling ? Infinity : 0
-								}}
-								className='flex h-20 w-20 items-center justify-center rounded-xl border bg-background'
-							>
-								<DiceFace
-									value={currentRoll[index] || 1}
-									className='h-14 w-14'
-								/>
-							</motion.div>
+					{/* 3D Dice Container - Responsive grid */}
+					<div
+						className={cn(
+							'grid gap-3 mx-auto',
+							diceCount === 1 && 'grid-cols-1 max-w-[80px]',
+							diceCount === 2 && 'grid-cols-2 max-w-[172px]',
+							diceCount === 3 && 'grid-cols-3 max-w-[264px]',
+							diceCount === 4 &&
+								'grid-cols-2 md:grid-cols-4 max-w-[172px] md:max-w-[356px]',
+							diceCount === 5 &&
+								'grid-cols-3 md:grid-cols-5 max-w-[264px] md:max-w-[448px]',
+							diceCount === 6 &&
+								'grid-cols-3 md:grid-cols-6 max-w-[264px] md:max-w-[540px]'
+						)}
+					>
+						{Array.from({ length: diceCount }, (_, i) => (
+							<div key={i} className='relative'>
+								<div className='w-20 h-20 perspective-1000'>
+									<motion.div
+										className='relative w-full h-full transform-style-3d'
+										animate={
+											isRolling
+												? {
+														rotateX: [0, 720],
+														rotateY: [0, 720],
+														rotateZ: [0, 360]
+													}
+												: currentRoll[i]
+													? {
+															rotateX: getDiceRotation(currentRoll[i]).x,
+															rotateY: getDiceRotation(currentRoll[i]).y,
+															rotateZ: 0
+														}
+													: {}
+										}
+										transition={{
+											duration: isRolling ? 1 : 0.3,
+											repeat: isRolling ? Infinity : 0,
+											ease: isRolling ? 'linear' : 'easeOut'
+										}}
+										style={{ transformStyle: 'preserve-3d' }}
+									>
+										{/* Dice Faces - каждая грань показывает соответствующее число */}
+										{/* Face 1 - Front (1) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{ transform: 'translateZ(40px)' }}
+										>
+											<DiceFace value={1} />
+										</div>
+										{/* Face 2 - Right (2) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateY(90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={2} />
+										</div>
+										{/* Face 3 - Top (3) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateX(90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={3} />
+										</div>
+										{/* Face 4 - Bottom (4) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateX(-90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={4} />
+										</div>
+										{/* Face 5 - Left (5) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateY(-90deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={5} />
+										</div>
+										{/* Face 6 - Back (6) */}
+										<div
+											className='absolute w-full h-full bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg text-black dark:text-white'
+											style={{
+												transform: 'rotateY(180deg) translateZ(40px)'
+											}}
+										>
+											<DiceFace value={6} />
+										</div>
+									</motion.div>
+								</div>
+							</div>
 						))}
 					</div>
 
