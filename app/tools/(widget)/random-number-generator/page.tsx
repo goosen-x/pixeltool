@@ -73,7 +73,6 @@ export default function RandomNumberGeneratorPage() {
 	const [results, setResults] = useState<GeneratedResult[]>([])
 	const [error, setError] = useState<string | null>(null)
 	const [copiedId, setCopiedId] = useState<string | null>(null)
-	const [mounted, setMounted] = useState(false)
 
 	const validate = (): string | null => {
 		if (min < 0 || min > 999999) {
@@ -143,19 +142,9 @@ export default function RandomNumberGeneratorPage() {
 	}
 
 	useEffect(() => {
-		setMounted(true)
 		// Generate initial result
 		handleGenerate()
 	}, [])
-
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-48 animate-pulse bg-muted/20' />
-			</Card>
-		)
-	}
 
 	const latestResult = results[0]
 

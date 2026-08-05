@@ -259,7 +259,6 @@ const categories = {
 }
 
 export default function MockDataGeneratorPage() {
-	const [mounted, setMounted] = useState(false)
 	const [selectedAPI, setSelectedAPI] = useState<string>('')
 	const [loading, setLoading] = useState(false)
 	const [data, setData] = useState<any>(null)
@@ -271,9 +270,7 @@ export default function MockDataGeneratorPage() {
 	const [responseTime, setResponseTime] = useState<number | null>(null)
 	const [dataSize, setDataSize] = useState<string | null>(null)
 
-	useEffect(() => {
-		setMounted(true)
-	}, [])
+	useEffect(() => {}, [])
 
 	const fetchData = async (apiId?: string) => {
 		const targetApiId = apiId || selectedAPI
@@ -400,15 +397,6 @@ export default function MockDataGeneratorPage() {
 					</div>
 				))}
 			</div>
-		)
-	}
-
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-96 animate-pulse bg-muted/20' />
-			</Card>
 		)
 	}
 

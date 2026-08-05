@@ -30,11 +30,15 @@ export default function SystemInfoPage() {
 		}
 	})
 
+	// Данные о браузере известны только на клиенте, поэтому до монтирования
+	// показывать нечего. Пульсирующая заглушка тут врала бы: ничего не
+	// «загружается», значения появляются в тот же кадр после гидратации.
 	if (!mounted || !systemInfo || !deviceInfo) {
 		return (
 			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-96 animate-pulse bg-muted/20' />
+				<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+					Читаем параметры браузера…
+				</p>
 			</Card>
 		)
 	}

@@ -15,7 +15,6 @@ export default function SpecialSymbolsPickerPage() {
 	>('all')
 
 	const {
-		mounted,
 		recentSymbols,
 		copiedSymbol,
 		copySymbol,
@@ -26,17 +25,6 @@ export default function SpecialSymbolsPickerPage() {
 	} = useSpecialSymbols()
 
 	const filteredSymbols = getFilteredSymbols('', selectedCategory)
-
-	// Недавние символы живут в localStorage: до гидратации их нет, и набор
-	// категорий на сервере и клиенте разошёлся бы.
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-96 animate-pulse bg-muted/20' />
-			</Card>
-		)
-	}
 
 	const categories: { id: string; name: string; icon: string }[] = [
 		{ id: 'all', name: 'Все', icon: '⭐' },

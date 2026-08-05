@@ -44,7 +44,6 @@ const coinTypes: CoinType[] = [
 ]
 
 export default function CoinFlipPage() {
-	const [mounted, setMounted] = useState(false)
 	const [isFlipping, setIsFlipping] = useState(false)
 	const [currentResult, setCurrentResult] = useState<'heads' | 'tails' | null>(
 		null
@@ -67,7 +66,6 @@ export default function CoinFlipPage() {
 	}, [])
 
 	useEffect(() => {
-		setMounted(true)
 		// Load history from localStorage
 		const savedHistory = localStorage.getItem('coinFlipHistory')
 		if (savedHistory) {
@@ -158,15 +156,6 @@ export default function CoinFlipPage() {
 			default:
 				return 1.2
 		}
-	}
-
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-80 animate-pulse bg-muted/20' />
-			</Card>
-		)
 	}
 
 	const headsPercentage =

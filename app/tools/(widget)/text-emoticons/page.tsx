@@ -366,15 +366,6 @@ export default function TextEmoticonsPage() {
 
 	const filteredEmoticons = getFilteredEmoticons()
 
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-96 animate-pulse bg-muted/20' />
-			</Card>
-		)
-	}
-
 	const categories: { id: string; label: string; icon: React.ReactNode }[] = [
 		{ id: 'all', label: 'Все', icon: <Sparkles className='h-3.5 w-3.5' /> },
 		...(recentEmoticons.length > 0

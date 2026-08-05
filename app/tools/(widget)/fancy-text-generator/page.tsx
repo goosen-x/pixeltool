@@ -22,7 +22,6 @@ export default function FancyTextGeneratorPage() {
 	const {
 		inputText,
 		copiedStyle,
-		mounted,
 		zalgoIntensity,
 		zalgoText,
 		generatedTexts,
@@ -39,15 +38,6 @@ export default function FancyTextGeneratorPage() {
 			copyError: 'Не удалось скопировать'
 		}
 	})
-
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-72 animate-pulse bg-muted/20' />
-			</Card>
-		)
-	}
 
 	return (
 		<>

@@ -42,10 +42,8 @@ export default function TextCaseConverterPage() {
 	const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())
 	const [copiedCase, setCopiedCase] = useState<string | null>(null)
 	const [copiedAll, setCopiedAll] = useState(false)
-	const [mounted, setMounted] = useState(false)
 
 	useEffect(() => {
-		setMounted(true)
 		// Load favorites from localStorage
 		const savedFavorites = localStorage.getItem('textCaseConverterFavorites')
 		if (savedFavorites) {
@@ -153,17 +151,6 @@ export default function TextCaseConverterPage() {
 		navigator.clipboard.writeText(value)
 		setCopiedCase(caseType)
 		setTimeout(() => setCopiedCase(null), 2000)
-	}
-
-	// Избранное лежит в localStorage: до гидратации порядок регистров на
-	// сервере и клиенте разный, поэтому список ждёт монтирования.
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-40 animate-pulse bg-muted/20' />
-			</Card>
-		)
 	}
 
 	return (

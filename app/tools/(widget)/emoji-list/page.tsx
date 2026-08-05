@@ -29,7 +29,6 @@ export default function EmojiListPage() {
 	>('all')
 
 	const {
-		mounted,
 		recentEmojis,
 		copiedEmoji,
 		downloadingEmoji,
@@ -40,17 +39,6 @@ export default function EmojiListPage() {
 	} = useEmoji()
 
 	const filteredEmojis = getFilteredEmojis('', selectedCategory)
-
-	// Недавние лежат в localStorage — до гидратации их нет, и набор вкладок
-	// на сервере и клиенте разошёлся бы.
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-96 animate-pulse bg-muted/20' />
-			</Card>
-		)
-	}
 
 	const categories: { id: CategoryId | 'all' | 'recent'; name: string }[] = [
 		{ id: 'all', name: 'Все' },

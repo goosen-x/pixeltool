@@ -35,7 +35,6 @@ interface Statistics {
 // Dice symbols removed - using DiceFace component instead
 
 export default function DiceRollerPage() {
-	const [mounted, setMounted] = useState(false)
 	const [diceCount, setDiceCount] = useState(2)
 	const [isRolling, setIsRolling] = useState(false)
 	const [currentRoll, setCurrentRoll] = useState<number[]>([])
@@ -90,7 +89,6 @@ export default function DiceRollerPage() {
 	}, [])
 
 	useEffect(() => {
-		setMounted(true)
 		// Load history from localStorage
 		const savedHistory = localStorage.getItem('diceRollHistory')
 		if (savedHistory) {
@@ -176,15 +174,6 @@ export default function DiceRollerPage() {
 		navigator.clipboard.writeText(`${currentRoll.join(', ')} = ${total}`)
 		setCopiedText(true)
 		setTimeout(() => setCopiedText(false), 2000)
-	}
-
-	if (!mounted) {
-		return (
-			<Card className='overflow-hidden p-0'>
-				<div className='h-14 border-b bg-muted/30' />
-				<div className='h-72 animate-pulse bg-muted/20' />
-			</Card>
-		)
 	}
 
 	const getDiceRotation = (value: number) => {
