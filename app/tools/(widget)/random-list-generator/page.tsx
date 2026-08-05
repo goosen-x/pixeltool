@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
 	Shuffle,
 	Copy,
@@ -13,11 +13,7 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 
 // Fisher-Yates shuffle algorithm using crypto.getRandomValues for better randomness
 function cryptoShuffle<T>(array: T[]): T[] {
@@ -43,6 +39,10 @@ export default function RandomListGeneratorPage() {
 	const [copiedOutput, setCopiedOutput] = useState(false)
 	const [itemCount, setItemCount] = useState(5)
 	const [shuffleCount, setShuffleCount] = useState(0)
+	// Ошибка показывается строкой под полями: тост про «максимум 10 000
+	// элементов» исчезал раньше, чем человек успевал понять, что не так.
+	const [error, setError] = useState('')
+	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
 		setMounted(true)
@@ -64,14 +64,16 @@ export default function RandomListGeneratorPage() {
 			.filter(line => line.trim() !== '')
 
 		if (items.length === 0) {
-			toast.error('Введите хотя бы один элемент')
+			setError('Введите хотя бы одну строку')
 			return
 		}
 
 		if (items.length > 10000) {
-			toast.error('Максимум 10 000 элементов')
+			setError('Максимум 10 000 строк')
 			return
 		}
+
+		setError('')
 
 		setIsShuffling(true)
 
@@ -81,23 +83,18 @@ export default function RandomListGeneratorPage() {
 			setOutputText(shuffledItems.join('\n'))
 			setShuffleCount(prev => prev + 1)
 			setIsShuffling(false)
-			toast.success('Список успешно перемешан!')
 		}, 300)
 	}
 
 	const copyToClipboard = async () => {
-		if (!outputText) {
-			toast.error('Нечего копировать')
-			return
-		}
+		if (!outputText) return
 
 		try {
 			await navigator.clipboard.writeText(outputText)
 			setCopiedOutput(true)
-			toast.success('Скопировано в буфер обмена')
 			setTimeout(() => setCopiedOutput(false), 2000)
 		} catch (err) {
-			toast.error('Не удалось скопировать')
+			console.error('Не удалось скопировать:', err)
 		}
 	}
 
@@ -106,20 +103,16 @@ export default function RandomListGeneratorPage() {
 		setOutputText('')
 		setItemCount(0)
 		setShuffleCount(0)
-		toast.success('Все данные очищены')
+		setError('')
 	}
 
 	const resetToOriginal = () => {
 		setOutputText('')
 		setShuffleCount(0)
-		toast.success('Восстановлен исходный порядок')
 	}
 
 	const downloadList = () => {
-		if (!outputText) {
-			toast.error('Нечего скачивать')
-			return
-		}
+		if (!outputText) return
 
 		const blob = new Blob([outputText], { type: 'text/plain' })
 		const url = URL.createObjectURL(blob)
@@ -128,7 +121,6 @@ export default function RandomListGeneratorPage() {
 		a.download = `shuffled-list-${new Date().toISOString().split('T')[0]}.txt`
 		a.click()
 		URL.revokeObjectURL(url)
-		toast.success('Список скачан')
 	}
 
 	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,226 +134,144 @@ export default function RandomListGeneratorPage() {
 			updateItemCount(text)
 			setOutputText('')
 			setShuffleCount(0)
-			toast.success('Файл успешно загружен')
 		}
 		reader.readAsText(file)
 	}
 
-	if (!mounted) {
-		return (
-			<div className='max-w-6xl mx-auto space-y-8'>
-				<div className='animate-pulse space-y-8'>
-					<div className='h-96 bg-muted rounded-lg'></div>
-				</div>
-			</div>
-		)
-	}
-
 	return (
-		<div className='max-w-6xl mx-auto space-y-8'>
-			{/* Main Content */}
-			<div className='grid lg:grid-cols-2 gap-6'>
-				{/* Input Section */}
-				<Card className='p-6'>
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<Label htmlFor='input' className='text-base font-semibold'>
-								Исходный список (по одному элементу в строке)
-							</Label>
-							<div className='flex items-center gap-2'>
-								<Badge variant='secondary'>
-									{itemCount} {itemCount === 1 ? 'элемент' : 'элементов'}
-								</Badge>
-								<label htmlFor='file-upload' className='cursor-pointer'>
-									<Button variant='outline' size='sm' asChild>
-										<span>
-											<Upload className='w-4 h-4 mr-1' />
-											Загрузить
-										</span>
-									</Button>
-									<input
-										id='file-upload'
-										type='file'
-										accept='.txt'
-										onChange={handleFileUpload}
-										className='hidden'
-										aria-label='Загрузить текстовый файл со списком элементов'
-									/>
-								</label>
-							</div>
-						</div>
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: сколько строк на входе и что сделать с
+				    результатом. */}
+				<div className={toolBar}>
+					<span className='text-sm text-muted-foreground'>
+						{itemCount} строк
+						{shuffleCount > 0 && (
+							<span className='ml-3'>перемешано {shuffleCount} раз</span>
+						)}
+					</span>
 
-						<Textarea
-							id='input'
-							value={inputText}
-							onChange={e => {
-								setInputText(e.target.value)
-								updateItemCount(e.target.value)
-							}}
-							placeholder='Введите элементы для перемешивания...'
-							className='min-h-[400px] font-mono text-base md:text-sm'
-							spellCheck={false}
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => fileInputRef.current?.click()}
+							title='Загрузить список из файла'
+							className={toolIconButton}
+						>
+							<Upload className='h-4 w-4' />
+						</Button>
+						<input
+							ref={fileInputRef}
+							type='file'
+							accept='.txt,.csv'
+							onChange={handleFileUpload}
+							className='hidden'
+							aria-label='Загрузить файл со списком'
 						/>
-
-						<div className='flex gap-2'>
-							<Button
-								onClick={shuffleList}
-								className='flex-1'
-								disabled={isShuffling || itemCount === 0}
-							>
-								<Shuffle
-									className={cn('w-4 h-4 mr-2', isShuffling && 'animate-spin')}
-								/>
-								Перемешать список
-							</Button>
-							<Button
-								onClick={clearAll}
-								variant='outline'
-								size='icon'
-								disabled={!inputText}
-							>
-								<Trash2 className='w-4 h-4' />
-							</Button>
-						</div>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyToClipboard}
+							disabled={!outputText}
+							title='Скопировать результат'
+							className={toolIconButton}
+						>
+							{copiedOutput ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadList}
+							disabled={!outputText}
+							title='Скачать результат'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={resetToOriginal}
+							disabled={!outputText}
+							title='Вернуть исходный порядок'
+							className={toolIconButton}
+						>
+							<RotateCcw className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={clearAll}
+							disabled={!inputText && !outputText}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
 					</div>
-				</Card>
+				</div>
 
-				{/* Output Section */}
-				<Card className='p-6'>
-					<div className='space-y-4'>
-						<div className='flex items-center justify-between'>
-							<Label htmlFor='output' className='text-base font-semibold'>
-								Перемешанный результат
-							</Label>
-							<div className='flex items-center gap-2'>
-								{shuffleCount > 0 && (
-									<Badge variant='outline'>Перемешано {shuffleCount}x</Badge>
-								)}
-								<Button
-									onClick={copyToClipboard}
-									variant='outline'
-									size='sm'
-									disabled={!outputText}
-								>
-									{copiedOutput ? (
-										<>
-											<Check className='w-4 h-4 mr-1' />
-											Скопировано
-										</>
-									) : (
-										<>
-											<Copy className='w-4 h-4 mr-1' />
-											Копировать
-										</>
-									)}
-								</Button>
-								<Button
-									onClick={downloadList}
-									variant='outline'
-									size='sm'
-									disabled={!outputText}
-								>
-									<Download className='w-4 h-4' />
-								</Button>
-							</div>
-						</div>
+				<div className='grid md:grid-cols-2'>
+					<Textarea
+						value={inputText}
+						onChange={e => {
+							setInputText(e.target.value)
+							updateItemCount(e.target.value)
+						}}
+						placeholder={'Элемент 1\nЭлемент 2\nЭлемент 3'}
+						spellCheck={false}
+						aria-label='Исходный список'
+						className='min-h-[16rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:border-r md:text-sm'
+					/>
 
+					{outputText ? (
 						<Textarea
-							id='output'
 							value={outputText}
-							onChange={e => setOutputText(e.target.value)}
-							placeholder='Здесь появятся перемешанные элементы...'
-							className='min-h-[400px] font-mono text-base md:text-sm'
-							spellCheck={false}
+							readOnly
+							aria-label='Перемешанный список'
+							className='min-h-[16rem] resize-none rounded-none border-0 bg-muted/20 px-5 py-6 font-mono text-base focus-visible:ring-0 md:text-sm'
 						/>
+					) : (
+						<p className='flex min-h-[16rem] items-center justify-center px-5 text-center text-sm text-muted-foreground'>
+							Перемешанный список появится здесь
+						</p>
+					)}
+				</div>
 
-						<div className='flex gap-2'>
-							<Button
-								onClick={shuffleList}
-								className='flex-1'
-								variant='secondary'
-								disabled={!outputText || isShuffling}
-							>
-								<Shuffle
-									className={cn('w-4 h-4 mr-2', isShuffling && 'animate-spin')}
-								/>
-								Перемешать заново
-							</Button>
-							<Button
-								onClick={resetToOriginal}
-								variant='outline'
-								size='icon'
-								disabled={!outputText}
-							>
-								<RotateCcw className='w-4 h-4' />
-							</Button>
-						</div>
-					</div>
-				</Card>
-			</div>
+				<div className={toolFooterBar}>
+					{error ? (
+						<span className='text-sm text-destructive'>{error}</span>
+					) : (
+						<span className='text-sm text-muted-foreground'>
+							Порядок задаётся crypto.getRandomValues — предсказать результат
+							нельзя даже зная предыдущие
+						</span>
+					)}
 
-			{/* Features Section */}
-			<div className='grid md:grid-cols-3 gap-4'>
-				<Card className='p-4'>
-					<h3 className='font-semibold mb-2 text-sm'>
-						Криптографическая случайность
-					</h3>
-					<p className='text-xs text-muted-foreground'>
-						Использует crypto.getRandomValues() для по-настоящему случайного
-						перемешивания — надёжнее, чем Math.random()
-					</p>
-				</Card>
-				<Card className='p-4'>
-					<h3 className='font-semibold mb-2 text-sm'>
-						Редактируемый результат
-					</h3>
-					<p className='text-xs text-muted-foreground'>
-						Результат можно править прямо в поле вывода перед копированием или
-						скачиванием
-					</p>
-				</Card>
-				<Card className='p-4'>
-					<h3 className='font-semibold mb-2 text-sm'>
-						Обработка на устройстве
-					</h3>
-					<p className='text-xs text-muted-foreground'>
-						Все данные обрабатываются в вашем браузере. Ничего не отправляется
-						на сервер
-					</p>
-				</Card>
-			</div>
-
-			{/* Info Section */}
-			<Card className='p-6 bg-muted/50'>
-				<h3 className='font-semibold mb-3'>Об инструменте</h3>
-				<div className='space-y-3 text-sm text-muted-foreground'>
-					<p>
-						Это веб-приложение случайным образом сортирует элементы списка с
-						помощью алгоритма Fisher-Yates и криптографически стойких случайных
-						значений. Элементами могут быть имена, участники розыгрыша,
-						идентификаторы или числа.
-					</p>
-					<p>
-						Просто введите по одному элементу в строке и нажмите кнопку
-						перемешивания, чтобы изменить порядок. Вся обработка происходит в
-						вашем браузере — данные никуда не отправляются.
-					</p>
-					<p>
-						Идеально подходит для задач случайной сортировки, которые сложно
-						выполнить в Excel. Просто скопируйте и вставьте данные сюда, чтобы
-						мгновенно их перемешать.
-					</p>
-					<Alert className='mt-4'>
-						<AlertDescription className='text-xs'>
-							Приложение использует crypto.getRandomValues() для повышенной
-							случайности вместо Math.random(). Пожалуйста, соблюдайте местное
-							законодательство. Ответственность за любые нарушения несёт
-							пользователь. Сервис предоставляется «как есть», без каких-либо
-							гарантий, явных или подразумеваемых.
-						</AlertDescription>
-					</Alert>
+					<Button
+						onClick={shuffleList}
+						disabled={isShuffling || itemCount === 0}
+						className='cursor-pointer gap-2 sm:ml-auto'
+					>
+						<Shuffle className='h-4 w-4' />
+						{isShuffling ? 'Перемешиваем…' : 'Перемешать'}
+					</Button>
 				</div>
 			</Card>
-		</div>
+
+			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
+				<p>
+					Перемешивание списка нужно там, где важна честная очерёдность: порядок
+					выступлений, задачи по исполнителям, вопросы в тесте, плейлист. Каждая
+					перестановка равновероятна — это алгоритм Фишера — Йетса, а не
+					сортировка по случайному ключу.
+				</p>
+			</div>
+		</>
 	)
 }
