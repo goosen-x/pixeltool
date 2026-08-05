@@ -1,15 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState, useEffect, useRef } from 'react'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import { Copy, Check, Upload } from 'lucide-react'
+import { Copy, Check, Upload, Lightbulb, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { SvgEncoderSeo } from './SvgEncoderSeo'
 
 export default function SVGEncoderPage() {
@@ -21,7 +22,7 @@ export default function SVGEncoderPage() {
 	const [backgroundColor, setBackgroundColor] = useState('white')
 	const [copiedField, setCopiedField] = useState<string | null>(null)
 	const [isDragging, setIsDragging] = useState(false)
-	const [activeTab, setActiveTab] = useState('encoded')
+	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	const exampleSvg = `<svg>
   <circle r="50" cx="50" cy="50" fill="tomato"/>
@@ -113,21 +114,8 @@ export default function SVGEncoderPage() {
 			await navigator.clipboard.writeText(text)
 			setCopiedField(field)
 			setTimeout(() => setCopiedField(null), 2000)
-			const toastKey =
-				field === 'encoded'
-					? 'toast.encodedCopied'
-					: field === 'css'
-						? 'toast.cssCopied'
-						: 'toast.tailwindCopied'
-			toast.success(
-				field === 'encoded'
-					? 'Код скопирован'
-					: field === 'css'
-						? 'CSS скопирован'
-						: 'Tailwind скопирован'
-			)
 		} catch (err) {
-			toast.error('Ошибка копирования')
+			console.error('Не удалось скопировать:', err)
 		}
 	}
 
@@ -144,17 +132,25 @@ export default function SVGEncoderPage() {
 		e.preventDefault()
 		setIsDragging(false)
 
-		const file = e.dataTransfer.files[0]
-		if (file && file.type === 'image/svg+xml') {
-			const reader = new FileReader()
-			reader.onload = e => {
-				setSvgInput(e.target?.result as string)
-				toast.success('Файл загружен')
-			}
-			reader.readAsText(file)
-		} else if (file) {
-			toast.error('Неверный формат файла')
+		readSvgFile(e.dataTransfer.files[0])
+	}
+
+	/** Чтение .svg — общее для перетаскивания и выбора файла кнопкой. */
+	const readSvgFile = (file?: File) => {
+		if (!file) return
+
+		if (file.type !== 'image/svg+xml' && !file.name.endsWith('.svg')) {
+			setSvgInput('')
+			return
 		}
+
+		const reader = new FileReader()
+		reader.onload = event => setSvgInput(event.target?.result as string)
+		reader.readAsText(file)
+	}
+
+	const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+		readSvgFile(event.target.files?.[0])
 	}
 
 	useEffect(() => {
@@ -162,289 +158,221 @@ export default function SVGEncoderPage() {
 	}, [svgInput, quotes])
 
 	return (
-		<div className='space-y-6'>
-			{/* Input and Preview Section */}
-			<div className='grid gap-6 lg:grid-cols-2'>
-				{/* Input */}
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: чем заполнить инструмент. */}
+				<div className={toolBar}>
+					<span className='text-sm text-muted-foreground'>
+						{svgInput
+							? `${svgInput.length} символов`
+							: 'Вставьте SVG или перетащите файл'}
+					</span>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setSvgInput(exampleSvg)}
+							title='Подставить пример'
+							className={toolIconButton}
+						>
+							<Lightbulb className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => fileInputRef.current?.click()}
+							title='Выбрать .svg файл'
+							className={toolIconButton}
+						>
+							<Upload className='h-4 w-4' />
+						</Button>
+						<input
+							ref={fileInputRef}
+							type='file'
+							accept='.svg,image/svg+xml'
+							onChange={handleFileInput}
+							className='hidden'
+							aria-label='Загрузить SVG-файл'
+						/>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setSvgInput('')}
+							disabled={!svgInput}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				{/* Рабочая область: слева код, справа то, как он выглядит.
+				    Перетащить файл можно на всю область целиком. */}
 				<div
-					className={cn('relative', isDragging && 'opacity-75')}
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
 					onDrop={handleDrop}
+					className={cn(
+						'grid transition-colors lg:grid-cols-2',
+						isDragging && 'bg-primary/5'
+					)}
 				>
-					<Card className='h-full'>
-						<CardHeader>
-							<div className='flex items-center justify-between'>
-								<CardTitle>Вставить SVG</CardTitle>
-								<div className='flex gap-2'>
-									{svgInput && (
-										<Button
-											size='sm'
-											variant='ghost'
-											onClick={() => setSvgInput('')}
-										>
-											Очистить
-										</Button>
-									)}
-									<Button
-										size='sm'
-										variant='outline'
-										onClick={() => setSvgInput(exampleSvg)}
-									>
-										Пример
-									</Button>
-								</div>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<textarea
-								value={svgInput}
-								onChange={e => setSvgInput(e.target.value)}
-								aria-label='Вставьте ваш SVG код здесь'
-								className='w-full h-64 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all'
-								placeholder='Вставьте ваш SVG код здесь'
-								spellCheck={false}
+					<textarea
+						value={svgInput}
+						onChange={e => setSvgInput(e.target.value)}
+						aria-label='Код SVG'
+						placeholder='<svg>…</svg>'
+						spellCheck={false}
+						className='min-h-[16rem] resize-none bg-transparent px-5 py-6 font-mono text-sm focus:outline-none sm:px-6 lg:border-r'
+					/>
+
+					<div
+						className='flex min-h-[16rem] items-center justify-center border-t p-6 lg:border-t-0'
+						style={{ backgroundColor }}
+					>
+						{svgInput ? (
+							<div
+								className='h-40 w-40'
+								style={{
+									backgroundImage: cssResult
+										? cssResult
+												.replace('background-image: ', '')
+												.replace(';', '')
+										: '',
+									backgroundRepeat: 'no-repeat',
+									backgroundPosition: 'center',
+									backgroundSize: 'contain'
+								}}
 							/>
-							<div className='mt-3 flex items-center justify-between text-xs text-muted-foreground'>
-								<p>Перетащите SVG файл сюда или вставьте код</p>
-								{svgInput && <span>{svgInput.length} символов</span>}
-							</div>
-						</CardContent>
-						{isDragging && (
-							<div className='absolute inset-0 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-lg'>
-								<div className='text-center'>
-									<Upload className='w-12 h-12 mx-auto mb-3 text-primary animate-pulse' />
-									<p className='text-sm font-medium'>Отпустите файл здесь</p>
-								</div>
-							</div>
+						) : (
+							<p className='text-sm text-muted-foreground'>
+								Здесь появится картинка
+							</p>
 						)}
-					</Card>
+					</div>
 				</div>
 
-				{/* Preview */}
-				<Card>
-					<CardHeader className='pb-3'>
-						<div className='flex items-center justify-between'>
-							<CardTitle>Предварительный просмотр</CardTitle>
-							<div className='flex items-center gap-2'>
-								<Label className='text-xs text-muted-foreground'>Фон:</Label>
-								<div className='flex gap-1'>
-									{[
-										{
-											color: 'white',
-											label: 'Белый',
-											class: 'bg-white border'
-										},
-										{
-											color: '#f3f4f6',
-											label: 'Серебряный',
-											class: 'bg-gray-100'
-										},
-										{ color: 'black', label: 'Чёрный', class: 'bg-black' }
-									].map(bg => (
-										<button
-											key={bg.color}
-											onClick={() => setBackgroundColor(bg.color)}
-											className={cn(
-												'w-4 h-4 rounded-full transition-all',
-												bg.class,
-												backgroundColor === bg.color &&
-													'ring-2 ring-primary ring-offset-1'
-											)}
-											title={bg.label}
-										>
-											<span className='sr-only'>{bg.label}</span>
-										</button>
-									))}
-								</div>
+				{/* Полоса настроек: фон предпросмотра и кавычки в результате. */}
+				<div className={toolFooterBar}>
+					<div className='flex items-center gap-2'>
+						<span className='text-sm text-muted-foreground'>Фон</span>
+						{[
+							{ color: 'white', label: 'Белый', className: 'bg-white' },
+							{ color: '#f3f4f6', label: 'Серый', className: 'bg-gray-100' },
+							{ color: 'black', label: 'Чёрный', className: 'bg-black' }
+						].map(bg => (
+							<button
+								key={bg.color}
+								type='button'
+								onClick={() => setBackgroundColor(bg.color)}
+								title={bg.label}
+								aria-pressed={backgroundColor === bg.color}
+								className={cn(
+									'h-5 w-5 cursor-pointer rounded-full border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									bg.className,
+									backgroundColor === bg.color &&
+										'ring-2 ring-primary ring-offset-1 ring-offset-background'
+								)}
+							>
+								<span className='sr-only'>{bg.label}</span>
+							</button>
+						))}
+					</div>
+
+					{/* Кавычки влияют на CSS и «кодированный», но не на Tailwind:
+					    там значение всегда в одинарных, иначе класс развалится. */}
+					<div className='flex flex-wrap items-center gap-1.5'>
+						<span className='mr-1 text-sm text-muted-foreground'>Кавычки</span>
+						{(
+							[
+								['double', 'двойные "'],
+								['single', "одинарные '"]
+							] as ['double' | 'single', string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setQuotes(value)}
+								aria-pressed={quotes === value}
+								className={toolPill(quotes === value)}
+							>
+								{label}
+							</button>
+						))}
+					</div>
+				</div>
+
+				{/* Три результата сразу: раньше они лежали под вкладками, и
+				    человек, пришедший за Tailwind-классом, сначала видел
+				    «кодированный» вариант. */}
+				<div className='grid gap-px border-t bg-border'>
+					{[
+						{
+							key: 'encoded',
+							title: 'Кодированный SVG',
+							hint: 'можно править прямо здесь — пересоберётся вся строка',
+							value: encodedResult,
+							onChange: handleEncodedChange
+						},
+						{
+							key: 'css',
+							title: 'CSS',
+							hint: 'готово для background-image',
+							value: cssResult
+						},
+						{
+							key: 'tailwind',
+							title: 'Tailwind',
+							hint: 'произвольное значение в квадратных скобках',
+							value: tailwindResult
+						}
+					].map(pane => (
+						<div key={pane.key} className='bg-background px-5 py-4 sm:px-6'>
+							<div className='flex items-center justify-between gap-2'>
+								<span className='text-sm font-medium'>
+									{pane.title}
+									<span className='ml-2 text-xs font-normal text-muted-foreground'>
+										{pane.hint}
+									</span>
+								</span>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() => copyToClipboard(pane.value, pane.key)}
+									disabled={!pane.value}
+									title='Скопировать'
+									className={toolIconButton}
+								>
+									{copiedField === pane.key ? (
+										<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+									) : (
+										<Copy className='h-4 w-4' />
+									)}
+								</Button>
 							</div>
-						</div>
-					</CardHeader>
-					<CardContent>
-						<div
-							className='h-72 rounded-lg border flex items-center justify-center transition-colors'
-							style={{ backgroundColor }}
-						>
-							{svgInput ? (
-								<div
-									className='max-w-[200px] max-h-[200px] w-full h-full'
-									style={{
-										backgroundImage: cssResult
-											? cssResult
-													.replace('background-image: ', '')
-													.replace(';', '')
-											: '',
-										backgroundRepeat: 'no-repeat',
-										backgroundPosition: 'center',
-										backgroundSize: 'contain'
-									}}
+
+							{pane.onChange ? (
+								<textarea
+									value={pane.value}
+									onChange={e => pane.onChange(e.target.value)}
+									aria-label={pane.title}
+									placeholder='Появится здесь'
+									spellCheck={false}
+									className='mt-1 h-20 w-full resize-none bg-transparent font-mono text-xs focus:outline-none'
 								/>
 							) : (
-								<p className='text-muted-foreground text-sm'>
-									Предварительный просмотр появится здесь
-								</p>
+								<pre className='mt-1 max-h-20 overflow-auto font-mono text-xs break-all whitespace-pre-wrap text-muted-foreground'>
+									{pane.value || 'Появится здесь'}
+								</pre>
 							)}
 						</div>
-					</CardContent>
-				</Card>
-			</div>
-
-			{/* Output Section */}
-			{(encodedResult || cssResult || tailwindResult) && (
-				<Card>
-					<CardHeader>
-						<div className='flex flex-wrap gap-2 items-center justify-between'>
-							<CardTitle>Результат</CardTitle>
-							{activeTab !== 'tailwind' && (
-								<div className='flex flex-wrap items-center gap-4'>
-									<Label className='text-sm'>Кавычки:</Label>
-									<RadioGroup
-										value={quotes}
-										onValueChange={v => setQuotes(v as 'single' | 'double')}
-										className='flex gap-4'
-									>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='single' id='single' />
-											<Label
-												htmlFor='single'
-												className='text-sm cursor-pointer'
-											>
-												Одинарные (')
-											</Label>
-										</div>
-										<div className='flex items-center space-x-2'>
-											<RadioGroupItem value='double' id='double' />
-											<Label
-												htmlFor='double'
-												className='text-sm cursor-pointer'
-											>
-												Двойные (")
-											</Label>
-										</div>
-									</RadioGroup>
-								</div>
-							)}
-						</div>
-					</CardHeader>
-					<CardContent>
-						<Tabs
-							defaultValue='encoded'
-							value={activeTab}
-							onValueChange={setActiveTab}
-							className='w-full'
-						>
-							<TabsList className='grid w-full grid-cols-3'>
-								<TabsTrigger value='encoded'>Кодированный</TabsTrigger>
-								<TabsTrigger value='css'>CSS</TabsTrigger>
-								<TabsTrigger value='tailwind'>Tailwind</TabsTrigger>
-							</TabsList>
-
-							<TabsContent value='encoded' className='mt-4'>
-								<div className='space-y-3'>
-									<div className='flex items-center justify-between'>
-										<Label className='text-sm'>Кодированный результат</Label>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => copyToClipboard(encodedResult, 'encoded')}
-											disabled={!encodedResult}
-											className='gap-2'
-										>
-											{copiedField === 'encoded' ? (
-												<Check className='h-4 w-4' />
-											) : (
-												<Copy className='h-4 w-4' />
-											)}
-											Копировать
-										</Button>
-									</div>
-									<textarea
-										value={encodedResult}
-										onChange={e => handleEncodedChange(e.target.value)}
-										aria-label='Кодированный SVG появится здесь'
-										className='w-full h-32 p-4 font-mono text-sm border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary transition-all'
-										placeholder='Кодированный SVG появится здесь'
-										spellCheck={false}
-									/>
-									<p className='text-xs text-muted-foreground'>
-										Можно редактировать для отладки
-									</p>
-								</div>
-							</TabsContent>
-
-							<TabsContent value='css' className='mt-4'>
-								<div className='space-y-3'>
-									<div className='flex items-center justify-between'>
-										<Label className='text-sm'>CSS результат</Label>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() => copyToClipboard(cssResult, 'css')}
-											disabled={!cssResult}
-											className='gap-2'
-										>
-											{copiedField === 'css' ? (
-												<Check className='h-4 w-4' />
-											) : (
-												<Copy className='h-4 w-4' />
-											)}
-											Копировать
-										</Button>
-									</div>
-									<textarea
-										value={cssResult}
-										readOnly
-										aria-label='CSS код появится здесь'
-										className='w-full h-32 p-4 font-mono text-sm border rounded-lg bg-muted resize-none'
-										placeholder='CSS код появится здесь'
-										spellCheck={false}
-									/>
-									<p className='text-xs text-muted-foreground'>
-										Готово для использования в CSS
-									</p>
-								</div>
-							</TabsContent>
-
-							<TabsContent value='tailwind' className='mt-4'>
-								<div className='space-y-3'>
-									<div className='flex items-center justify-between'>
-										<Label className='text-sm'>Tailwind результат</Label>
-										<Button
-											size='sm'
-											variant='outline'
-											onClick={() =>
-												copyToClipboard(tailwindResult, 'tailwind')
-											}
-											disabled={!tailwindResult}
-											className='gap-2'
-										>
-											{copiedField === 'tailwind' ? (
-												<Check className='h-4 w-4' />
-											) : (
-												<Copy className='h-4 w-4' />
-											)}
-											Копировать
-										</Button>
-									</div>
-									<textarea
-										value={tailwindResult}
-										readOnly
-										aria-label='Tailwind класс появится здесь'
-										className='w-full h-32 p-4 font-mono text-sm border rounded-lg bg-muted resize-none'
-										placeholder='Tailwind класс появится здесь'
-										spellCheck={false}
-									/>
-									<p className='text-xs text-muted-foreground'>
-										Готово для использования в Tailwind CSS
-									</p>
-								</div>
-							</TabsContent>
-						</Tabs>
-					</CardContent>
-				</Card>
-			)}
+					))}
+				</div>
+			</Card>
 
 			<SvgEncoderSeo />
-		</div>
+		</>
 	)
 }
