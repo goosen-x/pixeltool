@@ -21,8 +21,10 @@ const Header = () => {
 				<div className='flex items-center justify-between h-20'>
 					<Breadcrumbs />
 					<Navigation />
+					{/* Разделитель слева от поиска убран: поиск и так отделён от
+					    навигации собственной рамкой, вертикальная палка рядом с ней
+					    читалась как обрезок таблицы. */}
 					<div className='hidden md:flex items-center gap-2'>
-						<div className='h-8 w-px bg-border/50' />
 						<SearchButton setIsSearchOpen={setIsSearchOpen} />
 						<div className='h-8 w-px bg-border/50' />
 						<ThemeToggle />

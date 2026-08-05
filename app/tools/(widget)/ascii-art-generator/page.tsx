@@ -28,12 +28,16 @@ import {
 
 type Mode = 'text' | 'image' | 'patterns'
 
-type AsciiFont = 'standard' | 'small' | 'big'
+type AsciiFont = 'standard' | 'small'
 
+/**
+ * Шрифтов ровно два. Третий, «Крупный», был заглушкой из двух букв (A и B)
+ * с комментарием «// ... more letters» — на любом другом символе конвертер
+ * падал. Обещать в интерфейсе то, чего нет, хуже, чем не обещать.
+ */
 const FONTS: [AsciiFont, string][] = [
 	['standard', 'Стандартный'],
-	['small', 'Мелкий'],
-	['big', 'Крупный']
+	['small', 'Мелкий']
 ]
 
 export default function AsciiArtGeneratorPage() {

@@ -262,7 +262,7 @@ export function LeadMagnetCard() {
 							</DialogTitle>
 							<DialogDescription>
 								Шпаргалка в PDF: Windows, macOS, браузер, Excel, Zoom,
-								презентации.
+								презентации. Придёт вам на почту.
 							</DialogDescription>
 						</DialogHeader>
 

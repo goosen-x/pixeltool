@@ -11,7 +11,7 @@ export interface AsciiOptions {
 
 export function textToAscii(
 	text: string,
-	font: 'standard' | 'small' | 'big' = 'standard'
+	font: 'standard' | 'small' = 'standard'
 ): string {
 	// Simple ASCII text generation
 	const fonts: Record<string, Record<string, string[]>> = {
@@ -84,12 +84,6 @@ export function textToAscii(
 			Y: ['`/', ' |'],
 			Z: ['2', '2'],
 			' ': ['  ', '  ']
-		},
-		big: {
-			// Simplified for space
-			A: ['    A    ', '   A A   ', '  AAAAA  ', ' A     A ', 'A       A'],
-			B: ['BBBBBB  ', 'B     B ', 'BBBBBB  ', 'B     B ', 'BBBBBB  ']
-			// ... more letters
 		}
 	}
 
@@ -101,8 +95,11 @@ export function textToAscii(
 	for (let i = 0; i < lineCount; i++) {
 		let line = ''
 		for (const char of upperText) {
-			const charPattern = selectedFont[char] || selectedFont[' ']
-			line += (charPattern[i] || '') + ' '
+			// Если глифа нет ни в выбранном шрифте, ни в наборе по умолчанию —
+			// подставляем пробелы нужной ширины, а не роняем конвертер.
+			const charPattern =
+				selectedFont[char] || selectedFont[' '] || fonts.standard[' ']
+			line += (charPattern?.[i] ?? '  ') + ' '
 		}
 		lines.push(line)
 	}
