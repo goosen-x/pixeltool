@@ -20,7 +20,6 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
-import { WidgetOutput } from '@/components/widgets/WidgetOutput'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { Card } from '@/components/ui/card'
 import { JsonToolsSeo } from './JsonToolsSeo'
