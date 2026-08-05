@@ -5,7 +5,8 @@ import { HtmlAnalysis } from './HtmlAnalysis'
 import { HtmlCheckerSeo } from './HtmlCheckerSeo'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Trash2 } from 'lucide-react'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -126,6 +127,8 @@ const HIGHLIGHT_COLORS = [
 	'#ff69b4'
 ]
 
+type SourceMode = 'paste' | 'url' | 'file'
+
 export default function HTMLTreePage() {
 	const [htmlInput, setHtmlInput] = useState('')
 	const [treeData, setTreeData] = useState<TreeNode | null>(null)
@@ -133,6 +136,7 @@ export default function HTMLTreePage() {
 	const [urlValue, setUrlValue] = useState('')
 	const [isFetchingUrl, setIsFetchingUrl] = useState(false)
 	const [isDragging, setIsDragging] = useState(false)
+	const [source, setSource] = useState<SourceMode>('paste')
 
 	const loadFromUrl = useCallback(async () => {
 		const address = urlValue.trim()
@@ -559,469 +563,456 @@ export default function HTMLTreePage() {
 	)
 
 	return (
-		<div className='space-y-6'>
-			{/* Ввод и результаты — в одной карточке: разрыв на три блока (ввод,
-			    полоса табов, дерево) выглядел раздробленно */}
-			<Card>
-				<CardContent className='space-y-6 pt-6'>
-					{/* Три источника HTML большими вкладками: вставить код, загрузить
-					    по адресу (через серверный роут — из браузера чужую страницу не
-					    забрать) или из файла. Все три наполняют одно поле ввода. */}
-					<Tabs defaultValue='paste' className='w-full'>
-						{/* Прижат к верху и бокам карточки: отрицательные отступы гасят
-						    padding CardContent, верхние углы скруглены под карточку */}
-						<TabsList className='-mx-6 -mt-6 mb-6 grid h-auto w-[calc(100%+3rem)] grid-cols-3 gap-0 overflow-hidden rounded-b-none rounded-t-2xl p-0'>
-							<TabsTrigger
-								value='paste'
-								className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'
+		<>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: откуда взять HTML. Раньше это были три вкладки
+				    во всю ширину карточки с иконками 20×20 — они занимали первый
+				    экран целиком, хотя выбирают источник один раз. */}
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								['paste', 'Вставить код'],
+								['url', 'По адресу'],
+								['file', 'Из файла']
+							] as [SourceMode, string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setSource(value)}
+								aria-pressed={source === value}
+								className={toolPill(source === value)}
 							>
-								<FileCode className='h-5 w-5' />
-								Вставить код
-							</TabsTrigger>
-							<TabsTrigger
-								value='url'
-								className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'
-							>
-								<Globe className='h-5 w-5' />
-								По адресу
-							</TabsTrigger>
-							<TabsTrigger
-								value='file'
-								className='h-full flex-col gap-1 rounded-none border-0 py-3 focus-visible:ring-0 data-[state=active]:bg-background data-[state=active]:shadow-none'
-							>
-								<Upload className='h-5 w-5' />
-								Из файла
-							</TabsTrigger>
-						</TabsList>
+								{label}
+							</button>
+						))}
+					</div>
 
-						<TabsContent value='paste' className='h-56 flex-none'>
-							<Textarea
-								placeholder='Вставьте HTML код страницы...'
-								value={htmlInput}
-								onChange={e => handleInputChange(e.target.value)}
-								className='h-full resize-none font-mono text-base md:text-sm'
-								spellCheck={false}
-							/>
-						</TabsContent>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<button
+							type='button'
+							onClick={() => handleInputChange(EXAMPLE_HTML)}
+							className={toolPill(false)}
+						>
+							Пример
+						</button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => handleInputChange('')}
+							disabled={!htmlInput}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
 
-						<TabsContent value='url' className='h-56 flex-none'>
-							<div className='flex h-full flex-col justify-center rounded-xl border bg-muted/20 p-8'>
-								<div className='flex flex-wrap items-center gap-2'>
-									<Input
-										value={urlValue}
-										onChange={e => setUrlValue(e.target.value)}
-										onKeyDown={e => e.key === 'Enter' && loadFromUrl()}
-										placeholder='example.com'
-										aria-label='Адрес страницы для загрузки HTML'
-										className='h-10 max-w-sm bg-background'
-									/>
-									<Button
-										onClick={loadFromUrl}
-										disabled={isFetchingUrl}
-										className='cursor-pointer'
-									>
-										{isFetchingUrl ? 'Загрузка…' : 'Загрузить'}
-									</Button>
-								</div>
-								<p className='mt-2 text-xs text-muted-foreground'>
-									Загрузим HTML страницы и построим по нему дерево. Данные
-									обрабатываются на нашем сервере только для скачивания.
-								</p>
-							</div>
-						</TabsContent>
+				{source === 'paste' && (
+					<Textarea
+						placeholder='Вставьте HTML страницы'
+						value={htmlInput}
+						onChange={e => handleInputChange(e.target.value)}
+						spellCheck={false}
+						aria-label='HTML-код'
+						className='min-h-[14rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm'
+					/>
+				)}
 
-						<TabsContent value='file' className='h-56 flex-none'>
-							{/* Объединённая зона: клик или перетаскивание файла */}
-							<div
-								role='button'
-								tabIndex={0}
-								onClick={() => fileInputRef.current?.click()}
-								onKeyDown={e => {
-									if (e.key === 'Enter' || e.key === ' ') {
-										e.preventDefault()
-										fileInputRef.current?.click()
-									}
-								}}
-								onDragOver={e => {
-									e.preventDefault()
-									setIsDragging(true)
-								}}
-								onDragLeave={() => setIsDragging(false)}
-								onDrop={e => {
-									e.preventDefault()
-									setIsDragging(false)
-									const file = e.dataTransfer.files?.[0]
-									if (file) loadFromFile(file)
-								}}
-								className={cn(
-									'flex h-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed text-center transition-colors',
-									isDragging
-										? 'border-primary bg-primary/5'
-										: 'hover:border-primary/40'
-								)}
-							>
-								<Upload className='h-8 w-8 text-muted-foreground' />
-								<span className='text-sm font-medium'>
-									Перетащите файл сюда или нажмите
-								</span>
-								<span className='text-xs text-muted-foreground'>
-									.html, .htm, .xml, .svg — читается в браузере
-								</span>
-							</div>
+				{source === 'url' && (
+					<div className='px-5 py-6 sm:px-6'>
+						<div className='flex flex-wrap items-center gap-2'>
 							<input
-								ref={fileInputRef}
-								type='file'
-								accept='.html,.htm,.xml,.svg,text/html'
-								className='hidden'
-								onChange={event => {
-									const file = event.target.files?.[0]
-									if (file) loadFromFile(file)
-									event.target.value = ''
-								}}
+								value={urlValue}
+								onChange={e => setUrlValue(e.target.value)}
+								onKeyDown={e => e.key === 'Enter' && loadFromUrl()}
+								placeholder='example.com'
+								spellCheck={false}
+								aria-label='Адрес страницы для загрузки HTML'
+								className='min-w-0 flex-1 rounded-md border bg-background px-2 py-1.5 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:max-w-md'
 							/>
-						</TabsContent>
-					</Tabs>
+							<Button
+								onClick={loadFromUrl}
+								disabled={isFetchingUrl}
+								className='cursor-pointer'
+							>
+								{isFetchingUrl ? 'Загружаем…' : 'Загрузить'}
+							</Button>
+						</div>
+						<p className='mt-3 text-sm text-muted-foreground'>
+							Страницу заберёт наш сервер — из браузера чужой домен не
+							прочитать. HTML нигде не сохраняется, разбор идёт у вас.
+						</p>
+					</div>
+				)}
 
-					{/* Пример — вне табов: полезен независимо от выбранного источника */}
-					<Button
-						variant='outline'
-						size='sm'
-						onClick={() => {
-							handleInputChange(EXAMPLE_HTML)
-							toast.success('Пример загружен')
-						}}
-						className='mt-3 w-fit cursor-pointer'
-					>
-						Загрузить пример
-					</Button>
+				{source === 'file' && (
+					<div className='px-5 py-6 sm:px-6'>
+						<div
+							role='button'
+							tabIndex={0}
+							onClick={() => fileInputRef.current?.click()}
+							onKeyDown={e => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault()
+									fileInputRef.current?.click()
+								}
+							}}
+							onDragOver={e => {
+								e.preventDefault()
+								setIsDragging(true)
+							}}
+							onDragLeave={() => setIsDragging(false)}
+							onDrop={e => {
+								e.preventDefault()
+								setIsDragging(false)
+								const file = e.dataTransfer.files?.[0]
+								if (file) loadFromFile(file)
+							}}
+							className={cn(
+								'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed py-12 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+								isDragging
+									? 'border-primary bg-primary/5'
+									: 'hover:border-primary/50'
+							)}
+						>
+							<Upload className='h-6 w-6 text-muted-foreground' />
+							<span className='text-sm'>
+								Перетащите файл сюда или нажмите, чтобы выбрать
+							</span>
+							<span className='text-xs text-muted-foreground'>
+								.html, .htm, .xml, .svg — читается прямо в браузере
+							</span>
+						</div>
+						<input
+							ref={fileInputRef}
+							type='file'
+							accept='.html,.htm,.xml,.svg,text/html'
+							className='hidden'
+							onChange={event => {
+								const file = event.target.files?.[0]
+								if (file) loadFromFile(file)
+								event.target.value = ''
+							}}
+						/>
+					</div>
+				)}
+			</Card>
 
-					{treeData && (
-						<div className='mt-6 space-y-8'>
-							{/* Единый отчёт: сводка анализа, затем дерево, заголовки и статистика */}
-							<HtmlAnalysis html={htmlInput} />
+			{treeData && (
+				<div className='mt-6 space-y-8'>
+					{/* Единый отчёт: сводка анализа, затем дерево, заголовки и статистика */}
+					<HtmlAnalysis html={htmlInput} />
 
-							{/* Tree View */}
-							<section className='space-y-4 border-t pt-8'>
-								<Card className='border-0 bg-transparent shadow-none'>
-									<CardHeader>
-										<div className='flex items-center justify-between gap-4'>
-											<CardTitle>Дерево элементов</CardTitle>
-											<div className='flex items-center gap-2'>
-												<Button
-													variant='outline'
-													size='sm'
-													onClick={() => {
-														if (expandAll) {
-															// Collapse all
-															setExpandAll(false)
-															setExpandedNodes(new Set())
-														} else {
-															// Expand all
-															setExpandAll(true)
-															const allPaths = new Set<string>()
-															const collectAllPaths = (node: TreeNode) => {
-																allPaths.add(node.path)
-																node.children.forEach(collectAllPaths)
-															}
-															if (treeData) collectAllPaths(treeData)
-															setExpandedNodes(allPaths)
-														}
-													}}
-												>
-													{expandAll ? 'Свернуть все' : 'Развернуть все'}
-												</Button>
-											</div>
+					{/* Tree View */}
+					<section className='space-y-4 border-t pt-8'>
+						<Card className='border-0 bg-transparent shadow-none'>
+							<CardHeader>
+								<div className='flex items-center justify-between gap-4'>
+									<CardTitle>Дерево элементов</CardTitle>
+									<div className='flex items-center gap-2'>
+										<Button
+											variant='outline'
+											size='sm'
+											onClick={() => {
+												if (expandAll) {
+													// Collapse all
+													setExpandAll(false)
+													setExpandedNodes(new Set())
+												} else {
+													// Expand all
+													setExpandAll(true)
+													const allPaths = new Set<string>()
+													const collectAllPaths = (node: TreeNode) => {
+														allPaths.add(node.path)
+														node.children.forEach(collectAllPaths)
+													}
+													if (treeData) collectAllPaths(treeData)
+													setExpandedNodes(allPaths)
+												}
+											}}
+										>
+											{expandAll ? 'Свернуть все' : 'Развернуть все'}
+										</Button>
+									</div>
+								</div>
+							</CardHeader>
+							<CardContent className='space-y-4'>
+								{/* Search */}
+								<div className='relative'>
+									<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+									<Input
+										placeholder='Поиск по тегам, классам, ID...'
+										value={searchQuery}
+										onChange={e => setSearchQuery(e.target.value)}
+										className='pl-10'
+									/>
+								</div>
+
+								{/* Depth Control */}
+								<div className='space-y-2'>
+									<div className='flex items-center gap-4'>
+										<Layers className='w-4 h-4 text-muted-foreground' />
+										<span className='text-sm font-medium'>
+											Максимальная глубина: {maxVisibleDepth}
+										</span>
+									</div>
+									<Slider
+										value={[maxVisibleDepth]}
+										onValueChange={value => setMaxVisibleDepth(value[0])}
+										max={statistics?.maxDepth || 10}
+										min={1}
+										step={1}
+										className='w-full'
+									/>
+								</div>
+
+								{/* Class Highlights */}
+								{classHighlights.size > 0 && (
+									<div className='space-y-2'>
+										<span className='text-sm font-medium'>
+											Выделенные классы:
+										</span>
+										<div className='flex flex-wrap gap-2'>
+											{Array.from(classHighlights.entries()).map(
+												([className, color]) => (
+													<Badge
+														key={className}
+														variant='outline'
+														className='cursor-pointer'
+														style={{
+															backgroundColor: color,
+															color: '#000'
+														}}
+														onClick={() => toggleClassHighlight(className)}
+													>
+														.{className} ×
+													</Badge>
+												)
+											)}
 										</div>
-									</CardHeader>
-									<CardContent className='space-y-4'>
-										{/* Search */}
-										<div className='relative'>
-											<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-											<Input
-												placeholder='Поиск по тегам, классам, ID...'
-												value={searchQuery}
-												onChange={e => setSearchQuery(e.target.value)}
-												className='pl-10'
-											/>
-										</div>
+									</div>
+								)}
 
-										{/* Depth Control */}
-										<div className='space-y-2'>
-											<div className='flex items-center gap-4'>
-												<Layers className='w-4 h-4 text-muted-foreground' />
-												<span className='text-sm font-medium'>
-													Максимальная глубина: {maxVisibleDepth}
-												</span>
-											</div>
-											<Slider
-												value={[maxVisibleDepth]}
-												onValueChange={value => setMaxVisibleDepth(value[0])}
-												max={statistics?.maxDepth || 10}
-												min={1}
-												step={1}
-												className='w-full'
-											/>
-										</div>
+								{/* Tree */}
+								<div className='border rounded-lg p-4 bg-muted/20 max-h-[600px] overflow-auto'>
+									{renderTree(treeData)}
+								</div>
+							</CardContent>
+						</Card>
+					</section>
 
-										{/* Class Highlights */}
-										{classHighlights.size > 0 && (
-											<div className='space-y-2'>
-												<span className='text-sm font-medium'>
-													Выделенные классы:
-												</span>
-												<div className='flex flex-wrap gap-2'>
-													{Array.from(classHighlights.entries()).map(
-														([className, color]) => (
-															<Badge
-																key={className}
-																variant='outline'
-																className='cursor-pointer'
-																style={{
-																	backgroundColor: color,
-																	color: '#000'
-																}}
-																onClick={() => toggleClassHighlight(className)}
-															>
-																.{className} ×
-															</Badge>
-														)
-													)}
-												</div>
-											</div>
+					{/* Headings Analysis */}
+					<section className='space-y-4 border-t pt-8'>
+						<Card className='border-0 bg-transparent shadow-none'>
+							<CardHeader>
+								<CardTitle>Анализ заголовков</CardTitle>
+							</CardHeader>
+							<CardContent className='space-y-4'>
+								{/* Status */}
+								<div className='flex items-center gap-4'>
+									<div className='flex items-center gap-2'>
+										{headingAnalysis?.hasH1 ? (
+											<CheckCircle2 className='w-5 h-5 text-green-600' />
+										) : (
+											<XCircle className='w-5 h-5 text-red-600' />
 										)}
+										<span className='text-sm font-medium'>
+											{headingAnalysis?.hasH1
+												? 'H1 присутствует'
+												: 'H1 отсутствует'}
+										</span>
+									</div>
+									<Badge variant='secondary'>
+										Всего заголовков: {headingAnalysis?.headings.length || 0}
+									</Badge>
+									{headingAnalysis?.isWholePage && (
+										<Badge variant='outline'>Полная страница</Badge>
+									)}
+								</div>
 
-										{/* Tree */}
-										<div className='border rounded-lg p-4 bg-muted/20 max-h-[600px] overflow-auto'>
-											{renderTree(treeData)}
-										</div>
-									</CardContent>
-								</Card>
-							</section>
+								{/* Issues */}
+								{headingAnalysis?.issues &&
+									headingAnalysis.issues.length > 0 && (
+										<Alert variant='destructive'>
+											<AlertTriangle className='h-4 w-4' />
+											<AlertTitle>Критические проблемы</AlertTitle>
+											<AlertDescription>
+												<ul className='list-disc list-inside space-y-1 mt-2'>
+													{headingAnalysis.issues.map((issue, index) => (
+														<li key={index} className='text-sm'>
+															{issue}
+														</li>
+													))}
+												</ul>
+											</AlertDescription>
+										</Alert>
+									)}
 
-							{/* Headings Analysis */}
-							<section className='space-y-4 border-t pt-8'>
-								<Card className='border-0 bg-transparent shadow-none'>
-									<CardHeader>
-										<CardTitle>Анализ заголовков</CardTitle>
-									</CardHeader>
-									<CardContent className='space-y-4'>
-										{/* Status */}
-										<div className='flex items-center gap-4'>
-											<div className='flex items-center gap-2'>
-												{headingAnalysis?.hasH1 ? (
-													<CheckCircle2 className='w-5 h-5 text-green-600' />
-												) : (
-													<XCircle className='w-5 h-5 text-red-600' />
-												)}
-												<span className='text-sm font-medium'>
-													{headingAnalysis?.hasH1
-														? 'H1 присутствует'
-														: 'H1 отсутствует'}
-												</span>
-											</div>
-											<Badge variant='secondary'>
-												Всего заголовков:{' '}
-												{headingAnalysis?.headings.length || 0}
-											</Badge>
-											{headingAnalysis?.isWholePage && (
-												<Badge variant='outline'>Полная страница</Badge>
-											)}
-										</div>
+								{/* Warnings */}
+								{headingAnalysis?.warnings &&
+									headingAnalysis.warnings.length > 0 && (
+										<Alert>
+											<Info className='h-4 w-4' />
+											<AlertTitle>Предупреждения</AlertTitle>
+											<AlertDescription>
+												<ul className='list-disc list-inside space-y-1 mt-2'>
+													{headingAnalysis.warnings.map((warning, index) => (
+														<li key={index} className='text-sm'>
+															{warning}
+														</li>
+													))}
+												</ul>
+											</AlertDescription>
+										</Alert>
+									)}
 
-										{/* Issues */}
-										{headingAnalysis?.issues &&
-											headingAnalysis.issues.length > 0 && (
-												<Alert variant='destructive'>
-													<AlertTriangle className='h-4 w-4' />
-													<AlertTitle>Критические проблемы</AlertTitle>
-													<AlertDescription>
-														<ul className='list-disc list-inside space-y-1 mt-2'>
-															{headingAnalysis.issues.map((issue, index) => (
-																<li key={index} className='text-sm'>
-																	{issue}
-																</li>
-															))}
-														</ul>
-													</AlertDescription>
-												</Alert>
-											)}
-
-										{/* Warnings */}
-										{headingAnalysis?.warnings &&
-											headingAnalysis.warnings.length > 0 && (
-												<Alert>
-													<Info className='h-4 w-4' />
-													<AlertTitle>Предупреждения</AlertTitle>
-													<AlertDescription>
-														<ul className='list-disc list-inside space-y-1 mt-2'>
-															{headingAnalysis.warnings.map(
-																(warning, index) => (
-																	<li key={index} className='text-sm'>
-																		{warning}
-																	</li>
-																)
-															)}
-														</ul>
-													</AlertDescription>
-												</Alert>
-											)}
-
-										{/* Heading Structure — отступ по реальной вложенности, а не по
+								{/* Heading Structure — отступ по реальной вложенности, а не по
 										    номеру тега: заголовок вкладывается под ближайший
 										    предыдущий более высокого уровня (стек уровней). Так
 										    пропуск h2→h4 не даёт ложной глубины. */}
-										{headingAnalysis?.headings &&
-											headingAnalysis.headings.length > 0 &&
-											(() => {
-												const stack: number[] = []
-												const withDepth = headingAnalysis.headings.map(h => {
-													while (
-														stack.length > 0 &&
-														stack[stack.length - 1] >= h.level
-													) {
-														stack.pop()
-													}
-													const depth = stack.length
-													stack.push(h.level)
-													return { ...h, depth }
-												})
+								{headingAnalysis?.headings &&
+									headingAnalysis.headings.length > 0 &&
+									(() => {
+										const stack: number[] = []
+										const withDepth = headingAnalysis.headings.map(h => {
+											while (
+												stack.length > 0 &&
+												stack[stack.length - 1] >= h.level
+											) {
+												stack.pop()
+											}
+											const depth = stack.length
+											stack.push(h.level)
+											return { ...h, depth }
+										})
 
-												return (
-													<div className='space-y-2'>
-														<h3 className='font-semibold text-sm'>
-															Структура заголовков:
-														</h3>
-														<div className='rounded-lg border bg-muted/30 p-4'>
-															{withDepth.map((heading, index) => (
-																<div
-																	key={index}
-																	className='flex items-start gap-3 py-1.5 font-mono text-sm'
-																	style={{
-																		paddingLeft: `${heading.depth * 24}px`
-																	}}
-																>
-																	{heading.depth > 0 && (
-																		<span
-																			aria-hidden
-																			className='-ml-3 self-stretch border-l border-border'
-																		/>
-																	)}
-																	<Badge
-																		variant={
-																			heading.level === 1
-																				? 'default'
-																				: 'secondary'
-																		}
-																		className='flex-shrink-0'
-																	>
-																		{heading.tag}
-																	</Badge>
-																	<span className='flex-1 truncate'>
-																		{heading.text || '(пустой заголовок)'}
-																	</span>
-																</div>
-															))}
+										return (
+											<div className='space-y-2'>
+												<h3 className='font-semibold text-sm'>
+													Структура заголовков:
+												</h3>
+												<div className='rounded-lg border bg-muted/30 p-4'>
+													{withDepth.map((heading, index) => (
+														<div
+															key={index}
+															className='flex items-start gap-3 py-1.5 font-mono text-sm'
+															style={{
+																paddingLeft: `${heading.depth * 24}px`
+															}}
+														>
+															{heading.depth > 0 && (
+																<span
+																	aria-hidden
+																	className='-ml-3 self-stretch border-l border-border'
+																/>
+															)}
+															<Badge
+																variant={
+																	heading.level === 1 ? 'default' : 'secondary'
+																}
+																className='flex-shrink-0'
+															>
+																{heading.tag}
+															</Badge>
+															<span className='flex-1 truncate'>
+																{heading.text || '(пустой заголовок)'}
+															</span>
 														</div>
-													</div>
-												)
+													))}
+												</div>
+											</div>
+										)
+									})()}
+							</CardContent>
+						</Card>
+					</section>
+
+					{/* Statistics */}
+					<section className='space-y-4 border-t pt-8'>
+						<div className='grid gap-4 md:grid-cols-2'>
+							<Card className='border-0 bg-transparent shadow-none'>
+								<CardHeader>
+									<CardTitle className='text-base'>Общая информация</CardTitle>
+								</CardHeader>
+								<CardContent className='space-y-3'>
+									<div className='flex justify-between items-center'>
+										<span className='text-sm text-muted-foreground'>
+											Всего элементов:
+										</span>
+										<Badge variant='secondary'>
+											{statistics?.totalElements}
+										</Badge>
+									</div>
+									<div className='flex justify-between items-center'>
+										<span className='text-sm text-muted-foreground'>
+											Максимальная глубина:
+										</span>
+										<Badge variant='secondary'>{statistics?.maxDepth}</Badge>
+									</div>
+									<div className='flex justify-between items-center'>
+										<span className='text-sm text-muted-foreground'>
+											Всего классов:
+										</span>
+										<Badge variant='secondary'>{statistics?.classCount}</Badge>
+									</div>
+									<div className='flex justify-between items-center'>
+										<span className='text-sm text-muted-foreground'>
+											Всего ID:
+										</span>
+										<Badge variant='secondary'>{statistics?.idCount}</Badge>
+									</div>
+								</CardContent>
+							</Card>
+
+							<Card className='border-0 bg-transparent shadow-none'>
+								<CardHeader>
+									<CardTitle className='text-base'>Элементы по типам</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<div className='flex flex-wrap gap-2 max-h-[300px] overflow-auto'>
+										{statistics &&
+											(() => {
+												const entries = Object.entries(
+													statistics.elementCounts
+												).sort((a, b) => b[1] - a[1])
+												// Корень сглаживает разрыв: частоты падают резко (356 → 1),
+												// без него тепло было бы только у первого тега.
+												const max = entries[0]?.[1] || 1
+												return entries.map(([tag, count]) => {
+													const t = Math.sqrt(count / max)
+													const bg = 6 + t * 46
+													const border = 25 + t * 45
+													return (
+														<Badge
+															key={tag}
+															variant='outline'
+															className='gap-1.5 font-mono font-normal'
+															style={{
+																backgroundColor: `color-mix(in oklab, hsl(var(--primary)) ${bg}%, hsl(var(--background)))`,
+																borderColor: `color-mix(in oklab, hsl(var(--primary)) ${border}%, hsl(var(--border)))`
+															}}
+														>
+															{tag}
+															<span className='font-semibold tabular-nums'>
+																{count}
+															</span>
+														</Badge>
+													)
+												})
 											})()}
-									</CardContent>
-								</Card>
-							</section>
-
-							{/* Statistics */}
-							<section className='space-y-4 border-t pt-8'>
-								<div className='grid gap-4 md:grid-cols-2'>
-									<Card className='border-0 bg-transparent shadow-none'>
-										<CardHeader>
-											<CardTitle className='text-base'>
-												Общая информация
-											</CardTitle>
-										</CardHeader>
-										<CardContent className='space-y-3'>
-											<div className='flex justify-between items-center'>
-												<span className='text-sm text-muted-foreground'>
-													Всего элементов:
-												</span>
-												<Badge variant='secondary'>
-													{statistics?.totalElements}
-												</Badge>
-											</div>
-											<div className='flex justify-between items-center'>
-												<span className='text-sm text-muted-foreground'>
-													Максимальная глубина:
-												</span>
-												<Badge variant='secondary'>
-													{statistics?.maxDepth}
-												</Badge>
-											</div>
-											<div className='flex justify-between items-center'>
-												<span className='text-sm text-muted-foreground'>
-													Всего классов:
-												</span>
-												<Badge variant='secondary'>
-													{statistics?.classCount}
-												</Badge>
-											</div>
-											<div className='flex justify-between items-center'>
-												<span className='text-sm text-muted-foreground'>
-													Всего ID:
-												</span>
-												<Badge variant='secondary'>{statistics?.idCount}</Badge>
-											</div>
-										</CardContent>
-									</Card>
-
-									<Card className='border-0 bg-transparent shadow-none'>
-										<CardHeader>
-											<CardTitle className='text-base'>
-												Элементы по типам
-											</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<div className='flex flex-wrap gap-2 max-h-[300px] overflow-auto'>
-												{statistics &&
-													(() => {
-														const entries = Object.entries(
-															statistics.elementCounts
-														).sort((a, b) => b[1] - a[1])
-														// Корень сглаживает разрыв: частоты падают резко (356 → 1),
-														// без него тепло было бы только у первого тега.
-														const max = entries[0]?.[1] || 1
-														return entries.map(([tag, count]) => {
-															const t = Math.sqrt(count / max)
-															const bg = 6 + t * 46
-															const border = 25 + t * 45
-															return (
-																<Badge
-																	key={tag}
-																	variant='outline'
-																	className='gap-1.5 font-mono font-normal'
-																	style={{
-																		backgroundColor: `color-mix(in oklab, hsl(var(--primary)) ${bg}%, hsl(var(--background)))`,
-																		borderColor: `color-mix(in oklab, hsl(var(--primary)) ${border}%, hsl(var(--border)))`
-																	}}
-																>
-																	{tag}
-																	<span className='font-semibold tabular-nums'>
-																		{count}
-																	</span>
-																</Badge>
-															)
-														})
-													})()}
-											</div>
-										</CardContent>
-									</Card>
-								</div>
-							</section>
-							{/* W3C Validation */}
+									</div>
+								</CardContent>
+							</Card>
 						</div>
-					)}
-				</CardContent>
-			</Card>
+					</section>
+					{/* W3C Validation */}
+				</div>
+			)}
 
 			<HtmlCheckerSeo />
-		</div>
+		</>
 	)
 }
