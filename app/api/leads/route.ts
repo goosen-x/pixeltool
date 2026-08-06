@@ -94,7 +94,19 @@ export async function POST(request: NextRequest) {
 				<p>Привет!</p>
 				<p>Как обещали — горячие клавиши для Windows, macOS, браузера, Excel, видеозвонков и презентаций во вложении.</p>
 				<p>Все инструменты всегда под рукой: <a href="https://pixeltool.pro/tools">pixeltool.pro/tools</a></p>
+				<p style="color:#666;font-size:12px">Вы получили это письмо, потому что запросили шпаргалку на pixeltool.pro. Чтобы отписаться, ответьте на письмо словом «отписаться».</p>
 			`,
+			text: [
+				'Привет!',
+				'',
+				'Как обещали — горячие клавиши для Windows, macOS, браузера, Excel,',
+				'видеозвонков и презентаций во вложении.',
+				'',
+				'Все инструменты всегда под рукой: https://pixeltool.pro/tools',
+				'',
+				'Вы получили это письмо, потому что запросили шпаргалку на pixeltool.pro.',
+				'Чтобы отписаться, ответьте на письмо словом «отписаться».'
+			].join('\n'),
 			attachments: [
 				{ filename: 'pixeltool-goryachie-klavishi.pdf', path: PDF_PATH }
 			]

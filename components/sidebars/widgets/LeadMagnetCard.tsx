@@ -130,7 +130,7 @@ export function LeadMagnetCard() {
 					className='keycap-scene group block w-full cursor-pointer text-left'
 				>
 					<div className='overflow-hidden rounded-2xl border bg-card shadow-sm transition-colors hover:border-primary/40'>
-						<div className='relative aspect-[4/5] w-full'>
+						<div className='relative aspect-[4/5] w-full bg-black'>
 							{/* Нижний слой всегда полностью виден — верхний плавно
 							    гаснет на hover, открывая его. Одна анимируемая
 							    прозрачность вместо двух встречных. */}
@@ -141,12 +141,16 @@ export function LeadMagnetCard() {
 								sizes='320px'
 								className='object-cover'
 							/>
+							{/* sizes намеренно совпадает с модалкой (480px): next/image
+							    просит у оптимизатора вариант под каждый sizes отдельно, и
+							    при 320 здесь модалка открывалась с пустым местом, пока
+							    качала ту же картинку заново под другую ширину. */}
 							<Image
 								src='/images/lead-magnet/card-banner-v2.png'
 								alt=''
 								fill
 								priority
-								sizes='320px'
+								sizes='480px'
 								className='object-cover transition-opacity duration-500 group-hover:opacity-0'
 							/>
 							{/* Текстовый блок занимает нижнюю треть, поэтому затемнение
@@ -232,7 +236,9 @@ export function LeadMagnetCard() {
 					<>
 						{/* Продолжение баннера, а не новый экран: та же картинка, те же
 						    клавиши. Текста минимум — визуал уже объяснил, что внутри. */}
-						<div className='relative -mx-6 -mt-6 h-60'>
+						{/* bg-black под картинкой: она тяжёлая и грузится заметно, а без
+						    подложки на её месте секунду светится белый фон модалки. */}
+						<div className='relative -mx-6 -mt-6 h-60 bg-black'>
 							<Image
 								src='/images/lead-magnet/card-banner-v2.png'
 								alt=''

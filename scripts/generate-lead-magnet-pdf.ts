@@ -185,7 +185,10 @@ function run() {
 		join(process.cwd(), 'assets/pdf-icons/apple-icon-black.png')
 	).toString('base64')
 
-	const doc = new jsPDF({ unit: 'pt', format: 'a4' })
+	// compress: true — Flate на потоки страниц и встроенный шрифт. Без него
+	// jsPDF пишет содержимое страниц открытым текстом: в шпаргалке из одного
+	// текста это давало 677 КБ на страницы и 93 КБ на шрифт (файл весил 1,3 МБ).
+	const doc = new jsPDF({ unit: 'pt', format: 'a4', compress: true })
 	doc.addFileToVFS('Roboto-Regular.ttf', fontBase64)
 	doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal')
 	doc.setFont('Roboto')
@@ -319,8 +322,20 @@ function run() {
 
 	// Иконки Cmd (⌘) и Apple — растровые (SVG пользователя, jsPDF не рендерит
 	// SVG в Node без DOM — addSvgAsImage требует document/canvas).
+	// alias — чтобы одна и та же иконка, нарисованная десятки раз, встраивалась
+	// в файл один раз. 'SLOW' — Flate на сам растр: jsPDF по умолчанию кладёт
+	// картинку сырыми пикселями (256×256 RGB = 196 КБ на иконку размером 8pt).
 	const drawCmdIcon = (cx: number, cy: number, size: number) => {
-		doc.addImage(cmdIconBase64, 'PNG', cx - size / 2, cy - size / 2, size, size)
+		doc.addImage(
+			cmdIconBase64,
+			'PNG',
+			cx - size / 2,
+			cy - size / 2,
+			size,
+			size,
+			'cmd-icon',
+			'SLOW'
+		)
 	}
 	const drawAppleIcon = (
 		cx: number,
@@ -334,7 +349,9 @@ function run() {
 			cx - size / 2,
 			cy - size / 2,
 			size,
-			size
+			size,
+			black ? 'apple-icon-black' : 'apple-icon',
+			'SLOW'
 		)
 	}
 
