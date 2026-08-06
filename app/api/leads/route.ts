@@ -3,6 +3,12 @@ import { join } from 'path'
 import { z } from 'zod'
 import { getDb } from '@/lib/db'
 import { isMailConfigured, sendMail } from '@/lib/mail'
+import {
+	LEAD_MAGNET_IMAGES,
+	leadMagnetHtml,
+	leadMagnetSubject,
+	leadMagnetText
+} from '@/lib/mail/lead-magnet-email'
 import { LEGAL_VERSION_DATE } from '@/lib/legal/operator'
 
 const leadSchema = z.object({
@@ -102,30 +108,18 @@ export async function POST(request: NextRequest) {
 	try {
 		await sendMail({
 			to: email,
-			subject: `Шпаргалка горячих клавиш для ${variant === 'macos' ? 'macOS' : 'Windows'}`,
-			html: `
-				<p>Привет!</p>
-				<p>Как обещали — 100 горячих клавиш для ${variant === 'macos' ? 'macOS' : 'Windows'}: система, браузер, работа с текстом, таблицы, видеозвонки и презентации. Всё во вложении.</p>
-				<p>Все инструменты всегда под рукой: <a href="https://pixeltool.pro/tools">pixeltool.pro/tools</a></p>
-				<p style="color:#666;font-size:12px">Вы получили это письмо, потому что запросили шпаргалку на pixeltool.pro. Чтобы отписаться, ответьте на письмо словом «отписаться».</p>
-			`,
-			text: [
-				'Привет!',
-				'',
-				`Как обещали — 100 горячих клавиш для ${variant === 'macos' ? 'macOS' : 'Windows'}:`,
-				'система, браузер, работа с текстом, таблицы, видеозвонки и',
-				'презентации. Всё во вложении.',
-				'',
-				'Все инструменты всегда под рукой: https://pixeltool.pro/tools',
-				'',
-				'Вы получили это письмо, потому что запросили шпаргалку на pixeltool.pro.',
-				'Чтобы отписаться, ответьте на письмо словом «отписаться».'
-			].join('\n'),
+			subject: leadMagnetSubject(variant),
+			html: leadMagnetHtml(
+				variant,
+				`mailto:${process.env.SMTP_USER}?subject=unsubscribe`
+			),
+			text: leadMagnetText(variant),
 			attachments: [
 				{
 					filename: PDF_FILES[variant],
 					path: join(process.cwd(), 'public/downloads', PDF_FILES[variant])
-				}
+				},
+				...LEAD_MAGNET_IMAGES
 			]
 		})
 

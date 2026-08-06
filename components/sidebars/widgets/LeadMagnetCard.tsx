@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import Image from 'next/image'
 import {
 	Dialog,
@@ -241,25 +242,60 @@ export function LeadMagnetCard() {
 				)}
 			>
 				{sent ? (
-					<div className='flex flex-col items-center gap-3 py-6 text-center'>
-						<div className='flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-950'>
-							<Check className='h-6 w-6 text-green-600 dark:text-green-400' />
+					<>
+						{/* Тот же баннер, что и на экране формы: без него успех
+						    схлопывается в безликий системный алерт и обрывает
+						    визуальную нить от карточки, по которой человек кликнул. */}
+						<div className='relative -mx-6 -mt-6 h-44 bg-black'>
+							<Image
+								src='/images/lead-magnet/card-banner-v2.png'
+								alt=''
+								fill
+								sizes='480px'
+								className='object-cover'
+							/>
+							<div className='absolute inset-0 bg-black/45' />
+							{/* Галочка сидит на стыке картинки и белого поля — приём
+							    «аватар на обложке»: связывает две половины экрана. */}
+							<div className='absolute inset-x-0 -bottom-7 flex justify-center'>
+								<div className='flex h-14 w-14 items-center justify-center rounded-full bg-green-500 shadow-lg ring-4 ring-background'>
+									<Check className='h-7 w-7 text-white' strokeWidth={3} />
+								</div>
+							</div>
 						</div>
-						<DialogTitle className='font-heading text-lg'>
-							Письмо уже в пути
-						</DialogTitle>
-						<DialogDescription className='max-w-xs'>
-							Шпаргалка со 100 клавишами летит на {email}. Если её нет через
-							пару минут — загляните в «Промоакции» и спам.
-						</DialogDescription>
-						<Button
-							onClick={() => setOpen(false)}
-							variant='outline'
-							className='mt-2 cursor-pointer'
-						>
-							Закрыть
-						</Button>
-					</div>
+
+						<div className='flex flex-col items-center gap-3 pb-1 pt-12 text-center'>
+							<DialogTitle className='font-heading text-xl'>
+								Письмо уже в пути
+							</DialogTitle>
+
+							<DialogDescription className='max-w-sm'>
+								Шпаргалка со 100 сочетаниями для{' '}
+								{os === 'macos' ? 'macOS' : 'Windows'} летит на{' '}
+								<span className='font-medium text-foreground'>{email}</span>.
+							</DialogDescription>
+
+							{/* Отдельной строкой и тише: это подсказка на случай сбоя,
+							    а не часть радостной новости. */}
+							<p className='mt-1 max-w-sm text-xs text-muted-foreground'>
+								Не пришло за пару минут? Загляните в «Промоакции» и спам —
+								письма с вложением часто оседают там.
+							</p>
+
+							<div className='mt-3 flex w-full flex-col gap-2 sm:flex-row sm:justify-center'>
+								<Button asChild className='cursor-pointer'>
+									<Link href='/tools'>Открыть инструменты</Link>
+								</Button>
+								<Button
+									onClick={() => setOpen(false)}
+									variant='ghost'
+									className='cursor-pointer'
+								>
+									Закрыть
+								</Button>
+							</div>
+						</div>
+					</>
 				) : (
 					<>
 						{/* Продолжение баннера, а не новый экран: та же картинка, те же

@@ -33,7 +33,9 @@ export async function sendMail(options: {
 	// Текстовая версия обязательна: письмо без text/plain части — заметный
 	// спам-сигнал у Gmail и Mail.ru, они ждут multipart/alternative.
 	text: string
-	attachments?: { filename: string; path: string }[]
+	// cid — для картинок, встроенных в вёрстку письма: клиенты блокируют
+	// внешние картинки по умолчанию, а inline-вложения показывают сразу.
+	attachments?: { filename: string; path: string; cid?: string }[]
 	headers?: Record<string, string>
 }) {
 	const from = process.env.SMTP_FROM || process.env.SMTP_USER
