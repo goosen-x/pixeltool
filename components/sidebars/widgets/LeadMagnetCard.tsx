@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import {
@@ -66,6 +66,33 @@ export function LeadMagnetCard() {
 	// признаётся — человек должен совершить активное действие.
 	const [consentData, setConsentData] = useState(false)
 	const [consentAds, setConsentAds] = useState(false)
+	// Версия шпаргалки. macOS по умолчанию: если ОС не определилась (телефон,
+	// нестандартный браузер) — лучше отдать mac-версию, чем угадывать, а
+	// переключатель всё равно на виду. То же значение по умолчанию в API.
+	const [os, setOs] = useState<'windows' | 'macos'>('macos')
+	const [osDetected, setOsDetected] = useState(false)
+
+	// Определение только на клиенте: на сервере navigator нет, а рендерить
+	// разное на сервере и клиенте нельзя — будет ошибка гидратации.
+	useEffect(() => {
+		const nav = navigator as Navigator & {
+			userAgentData?: { platform?: string }
+		}
+		const platform = (
+			nav.userAgentData?.platform ||
+			navigator.platform ||
+			navigator.userAgent ||
+			''
+		).toLowerCase()
+
+		if (platform.includes('win')) {
+			setOs('windows')
+			setOsDetected(true)
+		} else if (platform.includes('mac')) {
+			setOs('macos')
+			setOsDetected(true)
+		}
+	}, [])
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -95,7 +122,8 @@ export function LeadMagnetCard() {
 					company,
 					source: pathname,
 					consentData,
-					consentAds
+					consentAds,
+					os
 				})
 			})
 
@@ -285,6 +313,44 @@ export function LeadMagnetCard() {
 								className='absolute h-0 w-0 opacity-0'
 								aria-hidden='true'
 							/>
+							{/* Версия шпаргалки. Сочетания на Windows и macOS отличаются
+							    не только модификатором, поэтому это два разных файла и
+							    выбор обязан быть явным — но предзаполненным, чтобы не
+							    превращать форму в анкету. */}
+							<div className='flex flex-wrap items-center gap-2'>
+								<span className='text-sm text-muted-foreground'>
+									Версия для:
+								</span>
+								<div className='inline-flex rounded-lg border p-0.5'>
+									{(
+										[
+											['macos', 'macOS'],
+											['windows', 'Windows']
+										] as const
+									).map(([value, label]) => (
+										<button
+											key={value}
+											type='button'
+											onClick={() => setOs(value)}
+											aria-pressed={os === value}
+											className={cn(
+												'cursor-pointer rounded-md px-3 py-1 text-sm transition-colors',
+												os === value
+													? 'bg-primary text-primary-foreground'
+													: 'text-muted-foreground hover:text-foreground'
+											)}
+										>
+											{label}
+										</button>
+									))}
+								</div>
+								<span className='text-xs text-muted-foreground'>
+									{osDetected
+										? 'определили автоматически'
+										: 'не смогли определить систему'}
+								</span>
+							</div>
+
 							{/* Поле и кнопка в одну строку: так форма читается как один
 							    шаг, а не как анкета. Кнопка не сжимается, поле забирает
 							    остаток ширины. */}

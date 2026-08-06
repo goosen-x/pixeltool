@@ -17,13 +17,25 @@ const leadSchema = z.object({
 	consentData: z.literal(true),
 	// Согласие на рекламу добровольное: без него человек получает только
 	// запрошенную шпаргалку.
-	consentAds: z.boolean().optional()
+	consentAds: z.boolean().optional(),
+	// Какая версия шпаргалки нужна. Клиент определяет ОС сам и показывает
+	// человеку переключатель — здесь просто доверяем присланному значению,
+	// подделка ничем не грозит (обе версии лежат публично).
+	os: z.enum(['windows', 'macos']).optional()
 })
 
-const PDF_PATH = join(
-	process.cwd(),
-	'public/downloads/pixeltool-goryachie-klavishi.pdf'
-)
+// Две версии: сочетания на macOS отличаются не только модификатором
+// (Alt + = против Cmd + Shift + T в Excel), поэтому это разные файлы,
+// а не одна шпаргалка с колонкой «на Mac».
+const PDF_FILES = {
+	windows: 'pixeltool-goryachie-klavishi-windows.pdf',
+	macos: 'pixeltool-goryachie-klavishi-macos.pdf'
+} as const
+
+// macOS по умолчанию — так решено для случая, когда ОС не определилась
+// (телефон, нестандартный браузер): человек всё равно может переключить
+// вручную в форме.
+const DEFAULT_OS = 'macos'
 
 export async function POST(request: NextRequest) {
 	let parsed: z.infer<typeof leadSchema>
@@ -53,7 +65,8 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json({ ok: true })
 	}
 
-	const { email, source, consentAds } = parsed
+	const { email, source, consentAds, os } = parsed
+	const variant = os ?? DEFAULT_OS
 
 	try {
 		const db = await getDb()
@@ -89,18 +102,19 @@ export async function POST(request: NextRequest) {
 	try {
 		await sendMail({
 			to: email,
-			subject: 'Шпаргалка горячих клавиш от PixelTool',
+			subject: `Шпаргалка горячих клавиш для ${variant === 'macos' ? 'macOS' : 'Windows'}`,
 			html: `
 				<p>Привет!</p>
-				<p>Как обещали — горячие клавиши для Windows, macOS, браузера, Excel, видеозвонков и презентаций во вложении.</p>
+				<p>Как обещали — 100 горячих клавиш для ${variant === 'macos' ? 'macOS' : 'Windows'}: система, браузер, работа с текстом, таблицы, видеозвонки и презентации. Всё во вложении.</p>
 				<p>Все инструменты всегда под рукой: <a href="https://pixeltool.pro/tools">pixeltool.pro/tools</a></p>
 				<p style="color:#666;font-size:12px">Вы получили это письмо, потому что запросили шпаргалку на pixeltool.pro. Чтобы отписаться, ответьте на письмо словом «отписаться».</p>
 			`,
 			text: [
 				'Привет!',
 				'',
-				'Как обещали — горячие клавиши для Windows, macOS, браузера, Excel,',
-				'видеозвонков и презентаций во вложении.',
+				`Как обещали — 100 горячих клавиш для ${variant === 'macos' ? 'macOS' : 'Windows'}:`,
+				'система, браузер, работа с текстом, таблицы, видеозвонки и',
+				'презентации. Всё во вложении.',
 				'',
 				'Все инструменты всегда под рукой: https://pixeltool.pro/tools',
 				'',
@@ -108,7 +122,10 @@ export async function POST(request: NextRequest) {
 				'Чтобы отписаться, ответьте на письмо словом «отписаться».'
 			].join('\n'),
 			attachments: [
-				{ filename: 'pixeltool-goryachie-klavishi.pdf', path: PDF_PATH }
+				{
+					filename: PDF_FILES[variant],
+					path: join(process.cwd(), 'public/downloads', PDF_FILES[variant])
+				}
 			]
 		})
 

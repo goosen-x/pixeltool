@@ -156,6 +156,7 @@
 		"jsdom": "^26.1.0",
 		"postcss": "^8",
 		"prettier": "^3.7.4",
+		"sharp": "^0.35.3",
 		"tailwindcss": "^4.1.18",
 		"tsx": "^4.23.1",
 		"typescript": "^5.9.3",
