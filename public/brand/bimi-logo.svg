@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny-ps" viewBox="0 0 512 512">
+  <title>PixelTool</title>
+  <rect width="512" height="512" fill="#111827"/>
+  <rect x="112" y="112" width="96" height="96" fill="#E84330"/>
+  <rect x="208" y="112" width="96" height="96" fill="#FD850F"/>
+  <rect x="304" y="112" width="96" height="96" fill="#FFCD00"/>
+  <rect x="112" y="208" width="96" height="96" fill="#FD850F"/>
+  <rect x="208" y="208" width="96" height="96" fill="#FFCD00"/>
+  <rect x="304" y="208" width="96" height="96" fill="#70C727"/>
+  <rect x="112" y="304" width="96" height="96" fill="#FFCD00"/>
+  <rect x="208" y="304" width="96" height="96" fill="#70C727"/>
+  <rect x="304" y="304" width="96" height="96" fill="#2D96D7"/>
+</svg>
