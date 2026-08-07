@@ -8,8 +8,12 @@ import { cn } from '@/lib/utils'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { useSpecialSymbols } from '@/lib/hooks/useSpecialSymbols'
 import { SymbolInfo } from '@/components/tools/special-symbols'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { SpecialSymbolsPickerSeo } from './SpecialSymbolsPickerSeo'
 
 export default function SpecialSymbolsPickerPage() {
+	const widget = getWidgetById('special-symbols-picker')!
 	const [selectedCategory, setSelectedCategory] = useState<
 		string | 'all' | 'recent'
 	>('all')
@@ -39,7 +43,7 @@ export default function SpecialSymbolsPickerPage() {
 	]
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: категории таблетками вместо сетки из восьми
 				    кнопок-плиток с тенями — плитки весили больше самих символов. */}
@@ -105,6 +109,7 @@ export default function SpecialSymbolsPickerPage() {
 			</Card>
 
 			<SymbolInfo />
-		</>
+			<SpecialSymbolsPickerSeo />
+		</WidgetSEOWrapper>
 	)
 }

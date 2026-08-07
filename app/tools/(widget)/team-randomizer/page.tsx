@@ -7,6 +7,9 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Shuffle, Copy, Check, RotateCcw, Download } from 'lucide-react'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TeamRandomizerSeo } from './TeamRandomizerSeo'
 interface Team {
 	id: number
 	name: string
@@ -52,6 +55,7 @@ function distributeIntoTeams(
 }
 
 export default function TeamRandomizerPage() {
+	const widget = getWidgetById('team-randomizer')!
 	const [participantsInput, setParticipantsInput] = useState('')
 	const [numberOfTeams, setNumberOfTeams] = useState(2)
 	const [preferredTeamSize, setPreferredTeamSize] = useState('')
@@ -171,7 +175,7 @@ export default function TeamRandomizerPage() {
 	}
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: сколько команд собирать и что сделать с
 				    результатом. Раньше поля жили в левой колонке под подписями, а
@@ -311,6 +315,8 @@ export default function TeamRandomizerPage() {
 					одного человека.
 				</p>
 			</div>
-		</>
+
+			<TeamRandomizerSeo />
+		</WidgetSEOWrapper>
 	)
 }

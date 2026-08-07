@@ -9,6 +9,9 @@ import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { useEmoji } from '@/lib/hooks/useEmoji'
 import { EmojiInfo } from '@/components/tools/emoji'
 import { emojiCategories, type CategoryId } from '@/lib/data/emoji-data'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { EmojiListSeo } from './EmojiListSeo'
 
 /** Иконка категории — сама же эмодзи из неё, подпись рядом. */
 const CATEGORY_ICONS: Record<string, string> = {
@@ -24,6 +27,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 }
 
 export default function EmojiListPage() {
+	const widget = getWidgetById('emoji-list')!
 	const [selectedCategory, setSelectedCategory] = useState<
 		CategoryId | 'all' | 'recent'
 	>('all')
@@ -52,7 +56,7 @@ export default function EmojiListPage() {
 	]
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: категории таблетками. Раньше это были вкладки
 				    во всю ширину — девять штук, на телефоне они сжимались до
@@ -136,6 +140,7 @@ export default function EmojiListPage() {
 			</Card>
 
 			<EmojiInfo />
-		</>
+			<EmojiListSeo />
+		</WidgetSEOWrapper>
 	)
 }

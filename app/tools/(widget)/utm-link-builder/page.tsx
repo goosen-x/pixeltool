@@ -27,6 +27,9 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { UtmLinkBuilderSeo } from './UtmLinkBuilderSeo'
 
 interface UTMParams {
 	url: string
@@ -152,6 +155,7 @@ const DYNAMIC_PARAMS: Record<string, { param: string; desc: string }[]> = {
 }
 
 export default function UTMBuilderPage() {
+	const widget = getWidgetById('utm-builder')!
 	const [params, setParams] = useState<UTMParams>({
 		url: 'example.com/landing-page',
 		source: '',
@@ -324,7 +328,7 @@ export default function UTMBuilderPage() {
 	)
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: готовые источники. Раньше это были шесть карточек
 				    с градиентными плитками 48×48 — они весили больше, чем сама
@@ -565,6 +569,8 @@ export default function UTMBuilderPage() {
 					</div>
 				</div>
 			)}
-		</>
+
+			<UtmLinkBuilderSeo />
+		</WidgetSEOWrapper>
 	)
 }

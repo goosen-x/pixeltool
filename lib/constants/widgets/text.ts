@@ -32,8 +32,10 @@ export const textWidgets: Widget[] = [
 			'Кликните для копирования специальных символов и Unicode символов для любого текста',
 		useCase:
 			'Быстрое копирование специальных символов и Unicode символов для использования в тексте',
+		metaTitle: 'Специальные символы Unicode — копировать в один клик',
 		metaDescription:
 			'Подборка специальных символов Unicode с копированием в один клик. Стрелки, математические знаки, валюты, эмодзи и другие символы.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Что такое символы Unicode?',
@@ -75,11 +77,13 @@ export const textWidgets: Widget[] = [
 		tags: ['text', 'unicode', 'fonts', 'style', 'generator'],
 		title: 'Генератор стилизованного текста',
 		description:
-			'Бесплатный генератор текста онлайн. Создать красивый стилизованный текст в Unicode стилях для соцсетей и постов',
+			'Бесплатный генератор текста онлайн. Создайте красивый стилизованный текст в Unicode стилях для соцсетей и постов',
 		useCase:
 			'Бесплатный онлайн генератор стилизованного текста для соцсетей, постов, профилей и сообщений',
+		metaTitle: 'Генератор красивых шрифтов — стилизованный текст Unicode',
 		metaDescription:
 			'Генератор стилизованного текста с Unicode-шрифтами. Превращайте текст в жирный, курсив, рукописный и декоративные стили.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Как работают красивые шрифты?',
@@ -135,8 +139,10 @@ export const textWidgets: Widget[] = [
 			'camelCase',
 			'snake_case'
 		],
+		metaTitle: 'Поменять регистр текста онлайн — camelCase, snake_case',
 		metaDescription:
 			'Конвертер регистра текста: UPPERCASE, lowercase, camelCase, snake_case, kebab-case и другие форматы написания.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Что такое преобразование регистра текста?',
@@ -183,8 +189,10 @@ export const textWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['emoji', 'emoticons', 'unicode', 'copy', 'paste', 'symbols'],
 		useCase: 'Быстрый поиск и копирование эмодзи для соцсетей и чатов',
+		metaTitle: 'Список эмодзи по категориям — копировать одним кликом',
 		metaDescription:
 			'Полный список эмодзи с мгновенным копированием. Более 1800 эмодзи в 8 категориях для чатов и постов.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Сколько эмодзи доступно?',
@@ -221,7 +229,10 @@ export const textWidgets: Widget[] = [
 		translationKey: 'textEmoticons',
 		path: 'text-emoticons',
 		gradient: 'from-purple-500 to-pink-600',
-		title: 'ASCII текстовые эмотиконы',
+		// Wordstat: «смайлики текстом» 7088 — головной термин говорит
+		// «смайлики», а не «эмотиконы» (более техническое слово, которое
+		// массовая аудитория ищет реже). Title поправлен под язык запроса.
+		title: 'Смайлики текстом: эмотиконы и каомодзи',
 		description: 'ASCII смайлики и японские каомодзи для чатов',
 		recommendedTools: [
 			'emoji-list',
@@ -231,8 +242,10 @@ export const textWidgets: Widget[] = [
 		difficulty: 'beginner',
 		tags: ['emoticons', 'ascii', 'kaomoji', 'text', 'expressions', 'japanese'],
 		useCase: 'Коллекция текстовых смайликов для выражения эмоций',
+		metaTitle: 'Смайлики текстом и каомодзи — копировать без установки',
 		metaDescription:
 			'Коллекция текстовых эмотиконов и каомодзи. Копируйте ASCII-смайлики и японские эмотиконы в один клик.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Что такое эмотиконы и каомодзи?',
@@ -329,7 +342,11 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-counter',
-		searchVolume: 14182,
+		// Вордстат 07.08.2026 (прогнан с прод-сервера): «количество символов в
+		// тексте» 12405 (было 14182, близко), интент чистый — WebSearch топ-5
+		// весь про счётчики символов. Рядом сильный синоним-кластер «счетчик
+		// символов» 5981.
+		searchVolume: 12405,
 		icon: FileSearch,
 		category: 'text',
 		translationKey: 'textCounter',
@@ -345,8 +362,10 @@ export const textWidgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		tags: ['text', 'counter', 'seo', 'words', 'characters', 'social-media'],
+		metaTitle: 'Счётчик символов и слов онлайн — с пробелами и без',
 		metaDescription:
 			'Счётчик текста для SEO и соцсетей. Подсчёт символов, слов и предложений с учётом лимитов площадок.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Что считается словом в счётчике?',
@@ -377,7 +396,14 @@ export const textWidgets: Widget[] = [
 	},
 	{
 		id: 'text-diff',
-		searchVolume: 16768,
+		// Вордстат 07.08.2026 (прогнан с прод-сервера, см. память
+		// wordstat-vpn-blocker): «сравнить текст» 16003, почти совпадает со
+		// старым числом — интент чистый, ловушек нет (WebSearch топ-5 весь про
+		// инструменты сравнения текста). Рядом сильный смежный кластер
+		// «сравнение текстов онлайн» 6306 и «сравнение документов онлайн» 826
+		// (Word/PDF — не наш случай, тул сравнивает вставленный текст, а не
+		// файл; см. секцию в TextDiffToolSeo).
+		searchVolume: 16003,
 		icon: GitCompare,
 		category: 'text',
 		translationKey: 'textDiff',
@@ -393,8 +419,10 @@ export const textWidgets: Widget[] = [
 		difficulty: 'intermediate',
 		tags: ['diff', 'compare', 'text', 'code', 'changes'],
 		useCase: 'Анализ изменений в коде или документах',
+		metaTitle: 'Сравнить тексты онлайн — найти отличия построчно',
 		metaDescription:
 			'Инструмент сравнения текстов. Находите различия между двумя текстами с подсветкой изменений построчно.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Какие типы различий обнаруживает инструмент?',

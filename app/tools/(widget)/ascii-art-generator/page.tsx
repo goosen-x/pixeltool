@@ -25,6 +25,9 @@ import {
 	downloadAsciiAsImage,
 	downloadAsciiAsText
 } from '@/lib/utils/ascii-converter'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { AsciiArtGeneratorSeo } from './AsciiArtGeneratorSeo'
 
 type Mode = 'text' | 'image' | 'patterns'
 
@@ -41,6 +44,7 @@ const FONTS: [AsciiFont, string][] = [
 ]
 
 export default function AsciiArtGeneratorPage() {
+	const widget = getWidgetById('ascii-art-generator')!
 	const [mode, setMode] = useState<Mode>('text')
 	const [asciiOutput, setAsciiOutput] = useState('')
 	const [copied, setCopied] = useState(false)
@@ -115,7 +119,7 @@ export default function AsciiArtGeneratorPage() {
 	}
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: из чего делаем арт. Раньше это были вкладки во
 				    всю ширину, а над ними ещё две плашки — «советы» и «обучение». */}
@@ -380,6 +384,8 @@ export default function AsciiArtGeneratorPage() {
 					нужно моноширинным шрифтом — иначе строки разъедутся.
 				</p>
 			</div>
-		</>
+
+			<AsciiArtGeneratorSeo />
+		</WidgetSEOWrapper>
 	)
 }

@@ -6,7 +6,7 @@ type Props = {
 }
 
 /**
- * Дата публикации по-русски: «19 мая 2026» вместо «May 19, 2026».
+ * Дата публикации по-русски: «19 мая 2026 года» вместо «May 19, 2026».
  * Без locale date-fns форматирует по-английски, и на русскоязычном блоге
  * это выглядело как недоперевод.
  */
@@ -15,7 +15,7 @@ const DateFormatter = ({ dateString }: Props) => {
 
 	return (
 		<time dateTime={dateString}>
-			{format(date, 'd MMMM yyyy', { locale: ru })}
+			{format(date, 'd MMMM yyyy', { locale: ru })} года
 		</time>
 	)
 }

@@ -19,6 +19,9 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TextDiffToolSeo } from './TextDiffToolSeo'
 
 // Режим «встроенный» удалён: он рендерился той же функцией, что и
 // «унифицированный», то есть был третьим пунктом списка без своего вида.
@@ -44,6 +47,7 @@ interface DiffResult {
 }
 
 export default function TextDiffToolPage() {
+	const widget = getWidgetById('text-diff')!
 	const [originalText, setOriginalText] = useState('')
 	const [modifiedText, setModifiedText] = useState('')
 	const [diffType, setDiffType] = useState<DiffType>('side-by-side')
@@ -330,7 +334,7 @@ export default function TextDiffToolPage() {
 	}
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: как показывать различия и что сделать с
 				    результатом. Режим раньше жил в выпадающем списке посреди
@@ -503,6 +507,8 @@ export default function TextDiffToolPage() {
 					скачивания в виде патча.
 				</p>
 			</div>
-		</>
+
+			<TextDiffToolSeo />
+		</WidgetSEOWrapper>
 	)
 }

@@ -11,6 +11,9 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { MockDataGeneratorSeo } from './MockDataGeneratorSeo'
 
 interface APIEndpoint {
 	id: string
@@ -259,6 +262,7 @@ const categories = {
 }
 
 export default function MockDataGeneratorPage() {
+	const widget = getWidgetById('mock-data-generator')!
 	const [selectedAPI, setSelectedAPI] = useState<string>('')
 	const [loading, setLoading] = useState(false)
 	const [data, setData] = useState<any>(null)
@@ -403,182 +407,185 @@ export default function MockDataGeneratorPage() {
 	const selectedApiInfo = publicAPIs.find(api => api.id === selectedAPI)
 
 	return (
-		<Card className='overflow-hidden p-0'>
-			{/* Верхняя полоса: категории источников. Раньше это были два ряда
+		<WidgetSEOWrapper widget={widget}>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: категории источников. Раньше это были два ряда
 			    вкладок по четыре штуки внутри левой колонки — на телефоне от них
 			    оставались одни иконки без подписей. */}
-			<div className={toolBar}>
-				<div className='flex flex-wrap items-center gap-1.5'>
-					{Object.entries(categories).map(([key, category]) => (
-						<button
-							key={key}
-							type='button'
-							onClick={() => setActiveCategory(key)}
-							aria-pressed={activeCategory === key}
-							className={toolPill(
-								activeCategory === key,
-								'flex items-center gap-1.5'
-							)}
-						>
-							<span aria-hidden>{category.icon}</span>
-							{category.name.split(' ')[0]}
-						</button>
-					))}
-				</div>
-
-				<div className='flex items-center gap-0.5 sm:ml-auto'>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={() => fetchData()}
-						disabled={!selectedAPI || loading}
-						title='Загрузить заново'
-						className={toolIconButton}
-					>
-						<RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
-					</Button>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={copyToClipboard}
-						disabled={!data}
-						title='Скопировать JSON'
-						className={toolIconButton}
-					>
-						{copiedData ? (
-							<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
-						) : (
-							<Copy className='h-4 w-4' />
-						)}
-					</Button>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={downloadJSON}
-						disabled={!data}
-						title='Скачать JSON'
-						className={toolIconButton}
-					>
-						<Download className='h-4 w-4' />
-					</Button>
-				</div>
-			</div>
-
-			<div className='grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]'>
-				{/* Слева — список эндпоинтов выбранной категории. */}
-				<div className='border-b lg:border-r lg:border-b-0'>
-					<div className='px-5 pt-4 sm:px-6'>
-						<input
-							value={searchQuery}
-							onChange={event => setSearchQuery(event.target.value)}
-							placeholder='Поиск по названию'
-							spellCheck={false}
-							aria-label='Поиск по API'
-							className='w-full rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-						/>
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{Object.entries(categories).map(([key, category]) => (
+							<button
+								key={key}
+								type='button'
+								onClick={() => setActiveCategory(key)}
+								aria-pressed={activeCategory === key}
+								className={toolPill(
+									activeCategory === key,
+									'flex items-center gap-1.5'
+								)}
+							>
+								<span aria-hidden>{category.icon}</span>
+								{category.name.split(' ')[0]}
+							</button>
+						))}
 					</div>
 
-					<div className='max-h-[28rem] overflow-y-auto py-2'>
-						{getAPIsByCategory(activeCategory).length === 0 ? (
-							<p className='px-5 py-8 text-center text-sm text-muted-foreground sm:px-6'>
-								Ничего не найдено
-							</p>
-						) : (
-							getAPIsByCategory(activeCategory).map(api => (
-								<button
-									key={api.id}
-									type='button'
-									onClick={() => {
-										setSelectedAPI(api.id)
-										fetchData(api.id)
-									}}
-									aria-pressed={selectedAPI === api.id}
-									className={cn(
-										'block w-full cursor-pointer px-5 py-2 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6',
-										selectedAPI === api.id && 'bg-primary/5'
-									)}
-								>
-									<span
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => fetchData()}
+							disabled={!selectedAPI || loading}
+							title='Загрузить заново'
+							className={toolIconButton}
+						>
+							<RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyToClipboard}
+							disabled={!data}
+							title='Скопировать JSON'
+							className={toolIconButton}
+						>
+							{copiedData ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadJSON}
+							disabled={!data}
+							title='Скачать JSON'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				<div className='grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]'>
+					{/* Слева — список эндпоинтов выбранной категории. */}
+					<div className='border-b lg:border-r lg:border-b-0'>
+						<div className='px-5 pt-4 sm:px-6'>
+							<input
+								value={searchQuery}
+								onChange={event => setSearchQuery(event.target.value)}
+								placeholder='Поиск по названию'
+								spellCheck={false}
+								aria-label='Поиск по API'
+								className='w-full rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+						</div>
+
+						<div className='max-h-[28rem] overflow-y-auto py-2'>
+							{getAPIsByCategory(activeCategory).length === 0 ? (
+								<p className='px-5 py-8 text-center text-sm text-muted-foreground sm:px-6'>
+									Ничего не найдено
+								</p>
+							) : (
+								getAPIsByCategory(activeCategory).map(api => (
+									<button
+										key={api.id}
+										type='button'
+										onClick={() => {
+											setSelectedAPI(api.id)
+											fetchData(api.id)
+										}}
+										aria-pressed={selectedAPI === api.id}
 										className={cn(
-											'block text-sm',
-											selectedAPI === api.id && 'text-primary'
+											'block w-full cursor-pointer px-5 py-2 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6',
+											selectedAPI === api.id && 'bg-primary/5'
 										)}
 									>
-										{api.name}
-									</span>
-									<span className='mt-0.5 block truncate text-xs text-muted-foreground'>
-										{api.description}
-									</span>
-								</button>
-							))
+										<span
+											className={cn(
+												'block text-sm',
+												selectedAPI === api.id && 'text-primary'
+											)}
+										>
+											{api.name}
+										</span>
+										<span className='mt-0.5 block truncate text-xs text-muted-foreground'>
+											{api.description}
+										</span>
+									</button>
+								))
+							)}
+						</div>
+					</div>
+
+					{/* Справа — ответ выбранного эндпоинта. */}
+					<div className='min-w-0'>
+						{error ? (
+							<p className='px-5 py-16 text-center text-sm text-destructive sm:px-6'>
+								{error}
+							</p>
+						) : loading ? (
+							<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+								Загружаем…
+							</p>
+						) : data ? (
+							<div className='max-h-[30rem] overflow-auto px-5 py-4 sm:px-6'>
+								{viewMode === 'json' ? (
+									<pre className='font-mono text-xs leading-relaxed whitespace-pre-wrap'>
+										{JSON.stringify(data, null, 2)}
+									</pre>
+								) : (
+									renderFormattedData(data)
+								)}
+							</div>
+						) : (
+							<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+								Выберите эндпоинт слева — ответ появится здесь
+							</p>
 						)}
 					</div>
 				</div>
 
-				{/* Справа — ответ выбранного эндпоинта. */}
-				<div className='min-w-0'>
-					{error ? (
-						<p className='px-5 py-16 text-center text-sm text-destructive sm:px-6'>
-							{error}
-						</p>
-					) : loading ? (
-						<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
-							Загружаем…
-						</p>
-					) : data ? (
-						<div className='max-h-[30rem] overflow-auto px-5 py-4 sm:px-6'>
-							{viewMode === 'json' ? (
-								<pre className='font-mono text-xs leading-relaxed whitespace-pre-wrap'>
-									{JSON.stringify(data, null, 2)}
-								</pre>
-							) : (
-								renderFormattedData(data)
+				{/* Полоса ответа: вид, адрес и что получилось по времени и весу. */}
+				<div className={toolFooterBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								['json', 'JSON'],
+								['formatted', 'Списком']
+							] as ['json' | 'formatted', string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setViewMode(value)}
+								aria-pressed={viewMode === value}
+								className={toolPill(viewMode === value)}
+							>
+								{label}
+							</button>
+						))}
+					</div>
+
+					{selectedApiInfo && (
+						<span className='min-w-0 truncate font-mono text-xs text-muted-foreground'>
+							{selectedApiInfo.endpoint}
+						</span>
+					)}
+
+					{(responseTime !== null || dataSize) && (
+						<span className='flex items-center gap-4 text-sm text-muted-foreground sm:ml-auto'>
+							{responseTime !== null && (
+								<span className='font-mono'>{responseTime} мс</span>
 							)}
-						</div>
-					) : (
-						<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
-							Выберите эндпоинт слева — ответ появится здесь
-						</p>
+							{dataSize && <span className='font-mono'>{dataSize}</span>}
+						</span>
 					)}
 				</div>
-			</div>
-
-			{/* Полоса ответа: вид, адрес и что получилось по времени и весу. */}
-			<div className={toolFooterBar}>
-				<div className='flex flex-wrap items-center gap-1.5'>
-					{(
-						[
-							['json', 'JSON'],
-							['formatted', 'Списком']
-						] as ['json' | 'formatted', string][]
-					).map(([value, label]) => (
-						<button
-							key={value}
-							type='button'
-							onClick={() => setViewMode(value)}
-							aria-pressed={viewMode === value}
-							className={toolPill(viewMode === value)}
-						>
-							{label}
-						</button>
-					))}
-				</div>
-
-				{selectedApiInfo && (
-					<span className='min-w-0 truncate font-mono text-xs text-muted-foreground'>
-						{selectedApiInfo.endpoint}
-					</span>
-				)}
-
-				{(responseTime !== null || dataSize) && (
-					<span className='flex items-center gap-4 text-sm text-muted-foreground sm:ml-auto'>
-						{responseTime !== null && (
-							<span className='font-mono'>{responseTime} мс</span>
-						)}
-						{dataSize && <span className='font-mono'>{dataSize}</span>}
-					</span>
-				)}
-			</div>
-		</Card>
+			</Card>
+			<MockDataGeneratorSeo />
+		</WidgetSEOWrapper>
 	)
 }

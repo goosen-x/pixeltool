@@ -13,10 +13,14 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import { useFancyTextGenerator } from '@/lib/hooks/widgets'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { FancyTextGeneratorSeo } from './FancyTextGeneratorSeo'
 
 type Mode = 'styles' | 'zalgo'
 
 export default function FancyTextGeneratorPage() {
+	const widget = getWidgetById('fancy-text-generator')!
 	const [mode, setMode] = useState<Mode>('styles')
 
 	const {
@@ -40,7 +44,7 @@ export default function FancyTextGeneratorPage() {
 	})
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: шрифты и zalgo — два разных результата из одного
 				    текста, раньше они были вкладками во всю ширину. */}
@@ -194,6 +198,8 @@ export default function FancyTextGeneratorPage() {
 					Учтите: часть площадок такой текст режет или показывает как обычный.
 				</p>
 			</div>
-		</>
+
+			<FancyTextGeneratorSeo />
+		</WidgetSEOWrapper>
 	)
 }

@@ -12,8 +12,11 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import { SvgEncoderSeo } from './SvgEncoderSeo'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
 
 export default function SVGEncoderPage() {
+	const widget = getWidgetById('svg-encoder')!
 	const [svgInput, setSvgInput] = useState('')
 	const [encodedResult, setEncodedResult] = useState('')
 	const [cssResult, setCssResult] = useState('')
@@ -158,7 +161,7 @@ export default function SVGEncoderPage() {
 	}, [svgInput, quotes])
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: чем заполнить инструмент. */}
 				<div className={toolBar}>
@@ -373,6 +376,6 @@ export default function SVGEncoderPage() {
 			</Card>
 
 			<SvgEncoderSeo />
-		</>
+		</WidgetSEOWrapper>
 	)
 }

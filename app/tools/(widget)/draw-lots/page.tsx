@@ -12,6 +12,9 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { DrawLotsSeo } from './DrawLotsSeo'
 
 interface Lot {
 	id: string
@@ -31,6 +34,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function DrawLotsPage() {
+	const widget = getWidgetById('draw-lots')!
 	const [mounted, setMounted] = useState(false)
 	// Пример по-русски: инструмент русскоязычный, а в списке лежали Einstein
 	// и da Vinci — на них и проверяли длину строк.
@@ -91,7 +95,7 @@ export default function DrawLotsPage() {
 	const revealedLots = lots.filter(lot => lot.isRevealed)
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: одно действие — начать или начать заново. */}
 				<div className={toolBar}>
@@ -218,6 +222,8 @@ export default function DrawLotsPage() {
 					не связан с порядком ввода — открывать их можно любым.
 				</p>
 			</div>
-		</>
+
+			<DrawLotsSeo />
+		</WidgetSEOWrapper>
 	)
 }

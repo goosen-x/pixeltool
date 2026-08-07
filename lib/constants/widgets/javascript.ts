@@ -70,7 +70,9 @@ export const javascriptWidgets: Widget[] = [
 		translationKey: 'regexTester',
 		path: 'regex-tester',
 		gradient: 'from-green-500 to-teal-600',
-		title: 'Regex тестер регулярных выражений',
+		// Было 'Regex тестер регулярных выражений' — тавтология: «regex» и
+		// «регулярные выражения» это одно и то же на двух языках подряд.
+		title: 'Тестер регулярных выражений (Regex)',
 		metaTitle: 'Регулярные выражения онлайн — regex тестер с подсветкой',
 		description:
 			'Проверяйте регулярные выражения онлайн для JavaScript, PHP и Python: подсветка совпадений и групп захвата сразу по мере ввода.',

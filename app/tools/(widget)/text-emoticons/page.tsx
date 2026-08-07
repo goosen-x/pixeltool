@@ -13,6 +13,9 @@ import {
 	Trash2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TextEmoticonsSeo } from './TextEmoticonsSeo'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 
 /** Русские названия категорий: в данных лежат английские id. */
@@ -301,6 +304,7 @@ const emoticonCategories: EmoticonCategory[] = [
 ]
 
 export default function TextEmoticonsPage() {
+	const widget = getWidgetById('text-emoticons')!
 	const [selectedCategory, setSelectedCategory] = useState<string>('all')
 	const [recentEmoticons, setRecentEmoticons] = useState<string[]>([])
 	const [copiedEmoticon, setCopiedEmoticon] = useState<string | null>(null)
@@ -385,7 +389,7 @@ export default function TextEmoticonsPage() {
 	]
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: категории. Раньше они жили над карточкой
 				    отдельным блоком с заголовком «Категории» — подпись занимала
@@ -470,6 +474,8 @@ export default function TextEmoticonsPage() {
 					«Недавние» — там копятся последние двадцать.
 				</p>
 			</div>
-		</>
+
+			<TextEmoticonsSeo />
+		</WidgetSEOWrapper>
 	)
 }

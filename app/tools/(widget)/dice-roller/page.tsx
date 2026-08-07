@@ -13,6 +13,9 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import { DiceFace } from '@/components/tools/DiceFace'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { DiceRollerSeo } from './DiceRollerSeo'
 
 interface DiceResult {
 	id: string
@@ -35,6 +38,7 @@ interface Statistics {
 // Dice symbols removed - using DiceFace component instead
 
 export default function DiceRollerPage() {
+	const widget = getWidgetById('dice-roller')!
 	const [diceCount, setDiceCount] = useState(2)
 	const [isRolling, setIsRolling] = useState(false)
 	const [currentRoll, setCurrentRoll] = useState<number[]>([])
@@ -205,7 +209,7 @@ export default function DiceRollerPage() {
 	const currentTotal = currentRoll.reduce((sum, value) => sum + value, 0)
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: сколько костей бросаем. */}
 				<div className={toolBar}>
@@ -430,6 +434,8 @@ export default function DiceRollerPage() {
 					каждой грани появляются на сотнях бросков.
 				</p>
 			</div>
-		</>
+
+			<DiceRollerSeo />
+		</WidgetSEOWrapper>
 	)
 }

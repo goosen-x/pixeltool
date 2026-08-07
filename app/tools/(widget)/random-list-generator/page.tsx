@@ -14,6 +14,9 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { RandomListGeneratorSeo } from './RandomListGeneratorSeo'
 
 // Fisher-Yates shuffle algorithm using crypto.getRandomValues for better randomness
 function cryptoShuffle<T>(array: T[]): T[] {
@@ -30,6 +33,7 @@ function cryptoShuffle<T>(array: T[]): T[] {
 }
 
 export default function RandomListGeneratorPage() {
+	const widget = getWidgetById('random-list-generator')!
 	const [mounted, setMounted] = useState(false)
 	const [inputText, setInputText] = useState(
 		'Элемент 1\nЭлемент 2\nЭлемент 3\nЭлемент 4\nЭлемент 5'
@@ -139,7 +143,7 @@ export default function RandomListGeneratorPage() {
 	}
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: сколько строк на входе и что сделать с
 				    результатом. */}
@@ -272,6 +276,8 @@ export default function RandomListGeneratorPage() {
 					сортировка по случайному ключу.
 				</p>
 			</div>
-		</>
+
+			<RandomListGeneratorSeo />
+		</WidgetSEOWrapper>
 	)
 }

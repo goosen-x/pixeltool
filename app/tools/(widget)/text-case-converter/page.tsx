@@ -28,6 +28,9 @@ import {
 	getTextStats,
 	type CaseType
 } from '@/components/tools/text-case-converter'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TextCaseConverterSeo } from './TextCaseConverterSeo'
 
 /** Русские подписи к группам: в constants они на английском. */
 const CATEGORY_LABELS: Record<keyof typeof categories, string> = {
@@ -37,6 +40,7 @@ const CATEGORY_LABELS: Record<keyof typeof categories, string> = {
 }
 
 export default function TextCaseConverterPage() {
+	const widget = getWidgetById('text-case-converter')!
 	const [input, setInput] = useState('')
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 	const [favorites, setFavorites] = useState<Set<CaseType>>(new Set())
@@ -154,178 +158,182 @@ export default function TextCaseConverterPage() {
 	}
 
 	return (
-		<Card className='overflow-hidden p-0'>
-			{/* Верхняя полоса: группы регистров. Раньше это был ряд бейджей под
+		<WidgetSEOWrapper widget={widget}>
+			<Card className='overflow-hidden p-0'>
+				{/* Верхняя полоса: группы регистров. Раньше это был ряд бейджей под
 			    карточкой ввода — выглядел как подпись, а был фильтром. */}
-			<div className={toolBar}>
-				<div className='flex flex-wrap items-center gap-1.5'>
-					<button
-						type='button'
-						onClick={() => setSelectedCategory(null)}
-						aria-pressed={selectedCategory === null}
-						className={toolPill(selectedCategory === null)}
-					>
-						Все
-					</button>
-					{Object.keys(categories).map(key => (
+				<div className={toolBar}>
+					<div className='flex flex-wrap items-center gap-1.5'>
 						<button
-							key={key}
 							type='button'
-							onClick={() => setSelectedCategory(key)}
-							aria-pressed={selectedCategory === key}
-							className={toolPill(selectedCategory === key)}
+							onClick={() => setSelectedCategory(null)}
+							aria-pressed={selectedCategory === null}
+							className={toolPill(selectedCategory === null)}
 						>
-							{CATEGORY_LABELS[key as keyof typeof categories]}
+							Все
 						</button>
+						{Object.keys(categories).map(key => (
+							<button
+								key={key}
+								type='button'
+								onClick={() => setSelectedCategory(key)}
+								aria-pressed={selectedCategory === key}
+								className={toolPill(selectedCategory === key)}
+							>
+								{CATEGORY_LABELS[key as keyof typeof categories]}
+							</button>
+						))}
+					</div>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={loadExample}
+							title='Подставить пример'
+							className={toolIconButton}
+						>
+							<Lightbulb className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyAllResults}
+							disabled={!input}
+							title='Скопировать все варианты'
+							className={toolIconButton}
+						>
+							{copiedAll ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={exportAsJSON}
+							disabled={!input}
+							title='Скачать JSON'
+							className={toolIconButton}
+						>
+							<FileJson className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={exportAsCSV}
+							disabled={!input}
+							title='Скачать CSV'
+							className={toolIconButton}
+						>
+							<FileText className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => setInput('')}
+							disabled={!input}
+							title='Очистить'
+							className={toolIconButton}
+						>
+							<Trash2 className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
+				<Textarea
+					value={input}
+					onChange={e => setInput(e.target.value)}
+					placeholder='Введите текст — все регистры пересчитаются сразу'
+					autoFocus
+					spellCheck={false}
+					aria-label='Текст для преобразования'
+					className='min-h-[7.5rem] resize-none rounded-none border-0 px-5 py-6 text-base focus-visible:ring-0 sm:px-6 md:text-sm'
+				/>
+
+				{/* Полоса статистики: те же цифры, что и в счётчике текста, но здесь
+			    они попутные — за ними в этот тул не приходят. */}
+				<div className={toolFooterBar}>
+					{[
+						['символов', textStats.characters],
+						['без пробелов', textStats.charactersNoSpaces],
+						['слов', textStats.words],
+						['строк', textStats.lines],
+						['предложений', textStats.sentences]
+					].map(([label, value]) => (
+						<span
+							key={label as string}
+							className='flex items-center gap-2 text-sm text-muted-foreground'
+						>
+							<span className='font-mono text-foreground tabular-nums'>
+								{value}
+							</span>
+							{label}
+						</span>
 					))}
 				</div>
 
-				<div className='flex items-center gap-0.5 sm:ml-auto'>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={loadExample}
-						title='Подставить пример'
-						className={toolIconButton}
-					>
-						<Lightbulb className='h-4 w-4' />
-					</Button>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={copyAllResults}
-						disabled={!input}
-						title='Скопировать все варианты'
-						className={toolIconButton}
-					>
-						{copiedAll ? (
-							<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
-						) : (
-							<Copy className='h-4 w-4' />
-						)}
-					</Button>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={exportAsJSON}
-						disabled={!input}
-						title='Скачать JSON'
-						className={toolIconButton}
-					>
-						<FileJson className='h-4 w-4' />
-					</Button>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={exportAsCSV}
-						disabled={!input}
-						title='Скачать CSV'
-						className={toolIconButton}
-					>
-						<FileText className='h-4 w-4' />
-					</Button>
-					<Button
-						size='icon'
-						variant='ghost'
-						onClick={() => setInput('')}
-						disabled={!input}
-						title='Очистить'
-						className={toolIconButton}
-					>
-						<Trash2 className='h-4 w-4' />
-					</Button>
-				</div>
-			</div>
+				<div className='grid gap-px bg-border sm:grid-cols-2'>
+					{sortedCases.map(([caseType]) => {
+						const result = convertCase(input, caseType as CaseType)
+						const isFavorite = favorites.has(caseType as CaseType)
 
-			<Textarea
-				value={input}
-				onChange={e => setInput(e.target.value)}
-				placeholder='Введите текст — все регистры пересчитаются сразу'
-				autoFocus
-				spellCheck={false}
-				aria-label='Текст для преобразования'
-				className='min-h-[7.5rem] resize-none rounded-none border-0 px-5 py-6 text-base focus-visible:ring-0 sm:px-6 md:text-sm'
-			/>
-
-			{/* Полоса статистики: те же цифры, что и в счётчике текста, но здесь
-			    они попутные — за ними в этот тул не приходят. */}
-			<div className={toolFooterBar}>
-				{[
-					['символов', textStats.characters],
-					['без пробелов', textStats.charactersNoSpaces],
-					['слов', textStats.words],
-					['строк', textStats.lines],
-					['предложений', textStats.sentences]
-				].map(([label, value]) => (
-					<span
-						key={label as string}
-						className='flex items-center gap-2 text-sm text-muted-foreground'
-					>
-						<span className='font-mono text-foreground tabular-nums'>
-							{value}
-						</span>
-						{label}
-					</span>
-				))}
-			</div>
-
-			<div className='grid gap-px bg-border sm:grid-cols-2'>
-				{sortedCases.map(([caseType]) => {
-					const result = convertCase(input, caseType as CaseType)
-					const isFavorite = favorites.has(caseType as CaseType)
-
-					return (
-						<div
-							key={caseType}
-							className='group flex items-start justify-between gap-3 bg-background px-5 py-3 sm:px-6'
-						>
-							<button
-								type='button'
-								onClick={() => copyOne(caseType, result)}
-								disabled={!result}
-								title='Скопировать'
-								className='min-w-0 flex-1 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						return (
+							<div
+								key={caseType}
+								className='group flex items-start justify-between gap-3 bg-background px-5 py-3 sm:px-6'
 							>
-								<span className='block font-mono text-xs text-muted-foreground'>
-									{caseType}
-								</span>
-								<span className='mt-0.5 block font-mono text-sm break-all'>
-									{result || (
-										<span className='text-muted-foreground/60'>—</span>
-									)}
-								</span>
-							</button>
-
-							<span className='flex shrink-0 items-center gap-0.5'>
-								<Button
-									size='icon'
-									variant='ghost'
-									onClick={() => toggleFavorite(caseType as CaseType)}
-									title={isFavorite ? 'Убрать из избранного' : 'В избранное'}
-									className={cn(
-										toolIconButton,
-										'h-7 w-7',
-										!isFavorite &&
-											'opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
-									)}
+								<button
+									type='button'
+									onClick={() => copyOne(caseType, result)}
+									disabled={!result}
+									title='Скопировать'
+									className='min-w-0 flex-1 cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 								>
-									<Star
-										className={cn(
-											'h-3.5 w-3.5',
-											isFavorite && 'fill-current text-primary'
+									<span className='block font-mono text-xs text-muted-foreground'>
+										{caseType}
+									</span>
+									<span className='mt-0.5 block font-mono text-sm break-all'>
+										{result || (
+											<span className='text-muted-foreground/60'>—</span>
 										)}
-									/>
-								</Button>
-								{copiedCase === caseType ? (
-									<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
-								) : (
-									<Copy className='h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
-								)}
-							</span>
-						</div>
-					)
-				})}
-			</div>
-		</Card>
+									</span>
+								</button>
+
+								<span className='flex shrink-0 items-center gap-0.5'>
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={() => toggleFavorite(caseType as CaseType)}
+										title={isFavorite ? 'Убрать из избранного' : 'В избранное'}
+										className={cn(
+											toolIconButton,
+											'h-7 w-7',
+											!isFavorite &&
+												'opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
+										)}
+									>
+										<Star
+											className={cn(
+												'h-3.5 w-3.5',
+												isFavorite && 'fill-current text-primary'
+											)}
+										/>
+									</Button>
+									{copiedCase === caseType ? (
+										<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+									) : (
+										<Copy className='h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
+									)}
+								</span>
+							</div>
+						)
+					})}
+				</div>
+			</Card>
+
+			<TextCaseConverterSeo />
+		</WidgetSEOWrapper>
 	)
 }

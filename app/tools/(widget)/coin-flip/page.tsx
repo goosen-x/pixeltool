@@ -13,6 +13,9 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import Image from 'next/image'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { CoinFlipSeo } from './CoinFlipSeo'
 
 interface FlipResult {
 	id: string
@@ -44,6 +47,7 @@ const coinTypes: CoinType[] = [
 ]
 
 export default function CoinFlipPage() {
+	const widget = getWidgetById('coin-flip')!
 	const [isFlipping, setIsFlipping] = useState(false)
 	const [currentResult, setCurrentResult] = useState<'heads' | 'tails' | null>(
 		null
@@ -168,7 +172,7 @@ export default function CoinFlipPage() {
 			: 50
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: скорость вращения. Раньше она была ползунком на
 				    три деления с эмодзи-подписями 🐌 ⚡ 🚀 — три значения удобнее
@@ -319,6 +323,8 @@ export default function CoinFlipPage() {
 					это ошибка игрока.
 				</p>
 			</div>
-		</>
+
+			<CoinFlipSeo />
+		</WidgetSEOWrapper>
 	)
 }

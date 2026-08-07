@@ -73,16 +73,18 @@ export const toolWidgets: Widget[] = [
 		translationKey: 'youtubeThumbnail',
 		path: 'youtube-thumbnail-downloader',
 		gradient: 'from-red-500 to-pink-500',
-		title: 'YouTube превью граббер',
+		title: 'Скачать превью YouTube',
 		description:
-			'Извлекайте изображения превью из любого видео YouTube в различных разрешениях',
+			'Скачивайте превью (обложку) любого видео YouTube по ссылке — во всех доступных разрешениях',
 		useCase:
-			'Извлечение превью YouTube видео в разных разрешениях для создания контента',
+			'Скачать превью YouTube видео в разных разрешениях для создания контента',
 		recommendedTools: ['qr-generator', 'svg-encoder', 'utm-builder'],
 		difficulty: 'beginner',
 		tags: ['youtube', 'thumbnail', 'download', 'media', 'video'],
+		metaTitle: 'Скачать превью YouTube по ссылке — все разрешения',
 		metaDescription:
-			'Граббер превью YouTube. Скачивайте обложки видео во всех разрешениях по ссылке на ролик.',
+			'Скачивайте обложки видео YouTube по ссылке во всех разрешениях — от миниатюры до maxres 1280×720.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Какие разрешения доступны?',
@@ -113,27 +115,44 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'mock-data-generator',
-		searchVolume: 18438,
+		// Было 18438 — цифра ничем не подтверждалась. Вордстат 07.08.2026 (прогнан
+		// с прод-сервера, см. память wordstat-vpn-blocker): головной термин
+		// «тестовые данные» 6025, но это ловушка — WebSearch топ-5 весь про
+		// методологию QA (Хабр, глоссарии), ни одного инструмента. Уточнение
+		// «генератор тестовых данных онлайн» тоже не подходит: рынок там —
+		// конфигурируемые генераторы полей (Mockaroo, hitak.ru) с экспортом в
+		// CSV/SQL, а наш тул — витрина готовых бесплатных API без настройки
+		// полей. Ближайший реально совпадающий кластер — «публичные api» 516,
+		// рядом «api для разработчиков» 445, «fake api» 133, «mock api» 129.
+		// Разница с генераторами явно объяснена в MockDataGeneratorSeo.
+		searchVolume: 516,
 		icon: Database,
 		category: 'utilities',
 		translationKey: 'mockDataGenerator',
 		path: 'mock-data-generator',
 		gradient: 'from-emerald-500 to-teal-600',
-		title: 'Генератор тестовых данных API',
+		title: 'Бесплатные публичные API для тестов',
 		description:
-			'Бесплатный онлайн генератор тестовых данных. Получайте примеры данных из бесплатных API для тестирования',
+			'Более 20 бесплатных публичных API — пользователи, товары, погода, цитаты. Смотрите живой JSON-ответ без регистрации и ключей',
 		useCase:
-			'Бесплатный генератор реалистичных тестовых данных для разработки и прототипирования',
+			'Быстро получить пример реального JSON-ответа с бесплатного публичного API для теста или прототипа фронтенда — без регистрации и ключей',
 		recommendedTools: ['html-tree', 'css-specificity', 'qr-generator'],
 		difficulty: 'beginner',
 		tags: ['api', 'mock', 'data', 'json', 'testing', 'development'],
+		metaTitle: 'Бесплатные публичные API — примеры JSON-ответов для тестов',
 		metaDescription:
-			'Генератор тестовых данных через бесплатные публичные API. Получайте примеры пользователей, постов, товаров и не только.',
+			'Каталог бесплатных публичных API: пользователи, товары, погода, цитаты. Живой просмотр JSON-ответа без регистрации и ключей — для тестов и прототипов.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Какие API включены?',
 				answer:
 					'Популярные бесплатные API, такие как JSONPlaceholder, RandomUser, FakeStore API, PokeAPI и другие. Все поддерживают CORS и не требуют аутентификации.'
+			},
+			{
+				question: 'Чем это отличается от генератора тестовых данных?',
+				answer:
+					'Генераторы вроде Mockaroo создают произвольные данные под вашу схему полей и позволяют экспортировать в CSV/SQL. Здесь — готовые бесплатные API: вы получаете реальный ответ настоящего сервиса с его собственной структурой, без настройки полей.'
 			},
 			{
 				question: 'Можно ли использовать эти данные в продакшене?',
@@ -146,11 +165,6 @@ export const toolWidgets: Widget[] = [
 					'Большинство API имеют щедрые или неограниченные лимиты для базового использования. Конкретные лимиты показаны для каждой конечной точки API.'
 			},
 			{
-				question: 'Какие типы данных можно сгенерировать?',
-				answer:
-					'Пользователи с фото и адресами, посты блогов, товары с ценами, изображения, данные геолокации, JSON структуры любой сложности. Идеально для тестирования UI компонентов, таблиц, карточек товаров.'
-			},
-			{
 				question: 'Как интегрировать с фреймворками?',
 				answer:
 					'Используйте fetch/axios в React/Vue/Angular. API возвращают JSON, готовый для useState/reactive data. Идеально для прототипирования перед подключением реального бэкенда.'
@@ -159,7 +173,11 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'utm-builder',
-		searchVolume: 10613,
+		// Вордстат 07.08.2026 (прогнан с прод-сервера): «utm метки» 10311 (было
+		// 10613, близко), интент чистый — WebSearch топ-6 весь про генераторы
+		// UTM-меток. Рядом «utm метки тильда» 816 и «utm метки директ» 777 —
+		// закрыто пресетами платформ и секцией в UtmLinkBuilderSeo.
+		searchVolume: 10311,
 		icon: LinkIcon,
 		category: 'utilities',
 		translationKey: 'utmBuilder',
@@ -172,8 +190,10 @@ export const toolWidgets: Widget[] = [
 		useCase: 'Создание UTM-меток для отслеживания маркетинговых кампаний',
 		difficulty: 'beginner',
 		tags: ['utm', 'marketing', 'analytics', 'tracking', 'campaign'],
+		metaTitle: 'Генератор UTM-меток — конструктор ссылок для кампаний',
 		metaDescription:
 			'UTM-конструктор ссылок для маркетинговых кампаний. Отслеживайте источники трафика в Google Analytics и Яндекс.Метрике.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Что такое UTM параметры и зачем их использовать?',
@@ -388,6 +408,11 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'ascii-art-generator',
+		// Вордстат: «ascii арт генератор» 155 (старое «ascii art» 3815 было
+		// слишком широким, залавливало «ai art»). SERP 07.08.2026 весь про
+		// image-to-ASCII конвертеры (textstudio, rakko.tools, asciiart.eu) — тул
+		// это умеет (режим `image` в page.tsx), просто короткое description ниже
+		// упоминало только текст. Поправлено.
 		searchVolume: 155,
 		icon: TerminalSquare,
 		category: 'utilities',
@@ -395,7 +420,7 @@ export const toolWidgets: Widget[] = [
 		path: 'ascii-art-generator',
 		gradient: 'from-green-500 to-emerald-600',
 		title: 'ASCII-арт генератор',
-		description: 'Превращайте текст в ASCII искусство',
+		description: 'Превращайте текст и картинки в ASCII-арт',
 		recommendedTools: [
 			'text-case-converter',
 			'emoji-list',
@@ -412,8 +437,10 @@ export const toolWidgets: Widget[] = [
 			'creative'
 		],
 		useCase: 'Создание ASCII арта для терминалов или подписей',
+		metaTitle: 'ASCII-арт генератор — из текста и изображений',
 		metaDescription:
 			'Генератор ASCII-арта из текста и изображений. Создавайте текстовые баннеры, преобразуйте картинки и просматривайте паттерны ASCII.',
+		updatedAt: '2026-08-07',
 		faqs: [
 			{
 				question: 'Какие типы ASCII-арта можно создавать?',

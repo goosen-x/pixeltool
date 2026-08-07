@@ -20,6 +20,9 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TextCounterSeo } from './TextCounterSeo'
 
 interface TextStats {
 	characters: number
@@ -143,6 +146,7 @@ const COMMON_STOP_WORDS = [
 
 // Animated Number Component
 export default function TextCounterPage() {
+	const widget = getWidgetById('text-counter')!
 	const [text, setText] = useState('')
 	const [stats, setStats] = useState<TextStats>({
 		characters: 0,
@@ -297,7 +301,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 	}
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: главные цифры. Раньше это были четыре карточки
 				    с градиентами, свечением и анимацией счётчика — четыре разных
@@ -476,6 +480,8 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 					})}
 				</div>
 			</div>
-		</>
+
+			<TextCounterSeo />
+		</WidgetSEOWrapper>
 	)
 }
