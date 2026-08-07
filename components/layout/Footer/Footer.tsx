@@ -67,9 +67,7 @@ export const Footer = () => {
 							className='inline-flex items-center gap-3 text-xl font-bold hover:opacity-80 transition-opacity mb-4'
 						>
 							<Logo size={32} />
-							<span className='font-heading bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-								PixelTool
-							</span>
+							<span className='font-heading'>PixelTool</span>
 						</Link>
 						<p className='text-sm text-muted-foreground mb-6 leading-relaxed max-w-sm'>
 							Всё нужное под рукой: от QR-кода и случайного числа до генераторов

@@ -72,12 +72,13 @@ export function HeroSection() {
 		<section className='p-4 sm:p-6 lg:px-8'>
 			{/* Скругление через clip-path, а не overflow-hidden + rounded-*: в Chrome
 			    предок со СКРУГЛЁННОЙ обрезкой и асимметричным радиусом (здесь
-			    bl+tr) отключает маскирование backdrop-filter у потомков — feathering
-			    у блюра под заголовком переставал работать. clip-path даёт ту же
-			    форму без этого побочного эффекта. */}
+			    tr+br+bl — tl остаётся острым, его скруглённость иллюзорна,
+			    даёт вырезка-бейдж сверху) отключает маскирование backdrop-filter
+			    у потомков — feathering у блюра под заголовком переставал
+			    работать. clip-path даёт ту же форму без этого побочного эффекта. */}
 			<div
 				className='relative flex min-h-[580px] flex-col overflow-hidden bg-[#060912] md:min-h-[calc(100dvh-8rem)]'
-				style={{ clipPath: 'inset(0 round 0 1.5rem 0 1.5rem)' }}
+				style={{ clipPath: 'inset(0 round 0 1.5rem 1.5rem 1.5rem)' }}
 			>
 				{/* Дизеринг-фон — живой шейдер Dithering (Paper Shaders, оптимизирован) */}
 				<DitherHeroBackground />

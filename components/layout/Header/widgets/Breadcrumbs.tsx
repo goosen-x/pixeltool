@@ -17,9 +17,7 @@ export const Breadcrumbs = () => {
 					/>
 					<div className='absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity' />
 				</div>
-				<span className='font-heading font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent'>
-					PixelTool
-				</span>
+				<span className='font-heading font-bold'>PixelTool</span>
 			</Link>
 		</div>
 	)
