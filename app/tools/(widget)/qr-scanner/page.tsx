@@ -39,6 +39,14 @@ export default function QRScannerPage() {
 	const streamRef = useRef<MediaStream | null>(null)
 	const rafRef = useRef<number | null>(null)
 	const modeRef = useRef(mode)
+	// Гейт «уже нашли код в этом сеансе камеры» — без него setResult дёргался
+	// бы на каждый кадр, пока код в кадре, а тост и вибрация повторялись бы
+	// десятки раз в секунду.
+	const foundRef = useRef(false)
+	// Результат может оказаться ниже сгиба (особенно на телефоне, когда
+	// видео с камеры занимает весь экран) — без автопрокрутки человек не
+	// узнаёт, что код распознан, пока не долистает сам.
+	const resultRef = useRef<HTMLDivElement>(null)
 
 	const stopCamera = useCallback(() => {
 		if (rafRef.current !== null) {
@@ -77,16 +85,28 @@ export default function QRScannerPage() {
 			ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 			const decoded = decodeImageData(imageData)
-			if (decoded) setResult(decoded)
+			// Найденный код — сигнал остановиться, а не повод продолжать
+			// перебирать кадры: без этого человек видит, что видео как ни
+			// в чём не бывало идёт дальше, и не понимает, что уже готово.
+			if (decoded && !foundRef.current) {
+				foundRef.current = true
+				setResult(decoded)
+				toast.success('QR-код распознан')
+				navigator.vibrate?.(200)
+				stopCamera()
+				return
+			}
 		}
 
 		rafRef.current = requestAnimationFrame(scanFrame)
-	}, [])
+	}, [stopCamera])
 
 	const startCamera = async () => {
 		if (starting) return
 		setStarting(true)
 		setError(null)
+		setResult(null)
+		foundRef.current = false
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: {
@@ -126,6 +146,19 @@ export default function QRScannerPage() {
 		if (mode !== 'camera') stopCamera()
 	}, [mode, stopCamera])
 
+	// Результат или ошибка появляются в полосе под сканером — на телефоне,
+	// где видео с камеры может занимать весь экран, это место легко
+	// оказывается ниже сгиба. Подскролливаем к нему, а не надеемся, что
+	// человек долистает сам.
+	useEffect(() => {
+		if (result || error) {
+			resultRef.current?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'center'
+			})
+		}
+	}, [result, error])
+
 	const handleFileUpload = (file: File) => {
 		setError(null)
 		const objectUrl = URL.createObjectURL(file)
@@ -145,6 +178,7 @@ export default function QRScannerPage() {
 
 			if (decoded) {
 				setResult(decoded)
+				toast.success('QR-код распознан')
 			} else {
 				setError('QR-код не найден на изображении.')
 			}
@@ -265,7 +299,7 @@ export default function QRScannerPage() {
 				{/* Результат — нижняя полоса той же карточки, а не вторая колонка:
 				    на телефоне вторая колонка всё равно уезжала под сканер, и её
 				    приходилось искать скроллом. */}
-				<div className='border-t px-5 py-4 sm:px-6'>
+				<div ref={resultRef} className='border-t px-5 py-4 sm:px-6'>
 					{error ? (
 						<p className='text-sm text-destructive'>{error}</p>
 					) : result ? (
