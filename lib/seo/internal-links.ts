@@ -4,6 +4,8 @@ import { visit } from 'unist-util-visit'
 import type { Root, Paragraph, Text, Link } from 'mdast'
 import matter from 'gray-matter'
 import path from 'node:path'
+import fs from 'node:fs'
+import { widgets } from '@/lib/constants/widgets'
 
 export interface ToolLinkOccurrence {
 	slug: string
@@ -115,4 +117,76 @@ export function findBlogLinksInSource(source: string): string[] {
 	}
 
 	return [...slugs]
+}
+
+export interface ToolInfo {
+	id: string
+	path: string
+	title: string
+}
+
+export interface LinkGraph {
+	tools: ToolInfo[]
+	articles: Article[]
+	toolBlogLinks: Map<string, string[]>
+}
+
+export function loadTools(): ToolInfo[] {
+	return widgets.map(w => ({ id: w.id, path: w.path, title: w.title || w.id }))
+}
+
+export function loadArticles(postsDir: string): Article[] {
+	if (!fs.existsSync(postsDir)) return []
+
+	return fs
+		.readdirSync(postsDir)
+		.filter(name => name.endsWith('.md'))
+		.map(name => {
+			const filePath = path.join(postsDir, name)
+			return parseArticle(filePath, fs.readFileSync(filePath, 'utf-8'))
+		})
+}
+
+function walkTsxFiles(dir: string): string[] {
+	const results: string[] = []
+	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+		const fullPath = path.join(dir, entry.name)
+		if (entry.isDirectory()) {
+			results.push(...walkTsxFiles(fullPath))
+		} else if (entry.name.endsWith('.tsx')) {
+			results.push(fullPath)
+		}
+	}
+	return results
+}
+
+export function loadToolBlogLinks(toolsRootDir: string): Map<string, string[]> {
+	const map = new Map<string, string[]>()
+	if (!fs.existsSync(toolsRootDir)) return map
+
+	for (const entry of fs.readdirSync(toolsRootDir, { withFileTypes: true })) {
+		if (!entry.isDirectory()) continue
+
+		const toolDir = path.join(toolsRootDir, entry.name)
+		const blogSlugs = new Set<string>()
+
+		for (const file of walkTsxFiles(toolDir)) {
+			const source = fs.readFileSync(file, 'utf-8')
+			findBlogLinksInSource(source).forEach(slug => blogSlugs.add(slug))
+		}
+
+		if (blogSlugs.size > 0) {
+			map.set(entry.name, [...blogSlugs])
+		}
+	}
+
+	return map
+}
+
+export function buildLinkGraph(repoRoot: string): LinkGraph {
+	return {
+		tools: loadTools(),
+		articles: loadArticles(path.join(repoRoot, '_posts')),
+		toolBlogLinks: loadToolBlogLinks(path.join(repoRoot, 'app/tools/(widget)'))
+	}
 }

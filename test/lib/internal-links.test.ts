@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { parseArticleMarkdown, parseArticle, findBlogLinksInSource } from '@/lib/seo/internal-links'
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import {
+	parseArticleMarkdown,
+	parseArticle,
+	findBlogLinksInSource,
+	buildLinkGraph
+} from '@/lib/seo/internal-links'
 
 describe('parseArticleMarkdown', () => {
 	it('считает bare-line ссылку на тул CTA-карточкой', () => {
@@ -98,6 +106,36 @@ describe('findBlogLinksInSource', () => {
 	})
 
 	it('возвращает пустой массив, если ссылок на /blog/ нет', () => {
-		expect(findBlogLinksInSource('export default function X() { return null }')).toEqual([])
+		expect(
+			findBlogLinksInSource('export default function X() { return null }')
+		).toEqual([])
+	})
+})
+
+describe('buildLinkGraph', () => {
+	it('собирает статьи и ссылки тул→статья из временной директории', () => {
+		const repoRoot = mkdtempSync(join(tmpdir(), 'link-graph-'))
+		const postsDir = join(repoRoot, '_posts')
+		const toolDir = join(repoRoot, 'app/tools/(widget)/fake-tool')
+		mkdirSync(postsDir, { recursive: true })
+		mkdirSync(toolDir, { recursive: true })
+
+		writeFileSync(
+			join(postsDir, 'fake-article.md'),
+			`---\ntitle: 'Фейковая статья'\n---\n\n/tools/fake-tool\n`
+		)
+		writeFileSync(
+			join(toolDir, 'FakeToolSeo.tsx'),
+			`export const x = <a href='/blog/fake-article'>статья</a>`
+		)
+
+		try {
+			const graph = buildLinkGraph(repoRoot)
+			expect(graph.articles).toHaveLength(1)
+			expect(graph.articles[0].slug).toBe('fake-article')
+			expect(graph.toolBlogLinks.get('fake-tool')).toEqual(['fake-article'])
+		} finally {
+			rmSync(repoRoot, { recursive: true, force: true })
+		}
 	})
 })
