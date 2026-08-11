@@ -8,6 +8,7 @@ import {
 	findBlogLinksInSource,
 	buildLinkGraph
 } from '@/lib/seo/internal-links'
+import { widgets } from '@/lib/constants/widgets'
 
 describe('parseArticleMarkdown', () => {
 	it('считает bare-line ссылку на тул CTA-карточкой', () => {
@@ -134,6 +135,49 @@ describe('buildLinkGraph', () => {
 			expect(graph.articles).toHaveLength(1)
 			expect(graph.articles[0].slug).toBe('fake-article')
 			expect(graph.toolBlogLinks.get('fake-tool')).toEqual(['fake-article'])
+		} finally {
+			rmSync(repoRoot, { recursive: true, force: true })
+		}
+	})
+
+	it('toolBlogLinks должна индексироваться по PATH, не по ID (демо на реальном виджете)', () => {
+		// svg-encoder — реальный виджет, где id !== path
+		const svgEncoderWidget = widgets.find(w => w.id === 'svg-encoder')
+		expect(svgEncoderWidget).toBeDefined()
+		expect(svgEncoderWidget!.id).toBe('svg-encoder')
+		expect(svgEncoderWidget!.path).toBe('svg-to-base64-encoder')
+		expect(svgEncoderWidget!.id).not.toBe(svgEncoderWidget!.path)
+
+		const repoRoot = mkdtempSync(join(tmpdir(), 'link-graph-id-path-'))
+		const postsDir = join(repoRoot, '_posts')
+		// Использираем PATH как имя директории, не ID
+		const toolDir = join(repoRoot, 'app/tools/(widget)/svg-to-base64-encoder')
+		mkdirSync(postsDir, { recursive: true })
+		mkdirSync(toolDir, { recursive: true })
+
+		writeFileSync(
+			join(postsDir, 'base64-article.md'),
+			`---\ntitle: 'О Base64'\n---\n\nСтатья про кодирование.\n`
+		)
+		writeFileSync(
+			join(toolDir, 'SvgEncoderSeo.tsx'),
+			`export const seo = href('/blog/base64-article')`
+		)
+
+		try {
+			const graph = buildLinkGraph(repoRoot)
+
+			// В tools.find должна быть запись с id='svg-encoder' и path='svg-to-base64-encoder'
+			const tool = graph.tools.find(t => t.id === 'svg-encoder')
+			expect(tool).toBeDefined()
+			expect(tool!.path).toBe('svg-to-base64-encoder')
+
+			// toolBlogLinks ДОЛЖНА быть заполнена по PATH, не по ID
+			// Если бы мы попробовали получить по ID, получили бы undefined
+			expect(graph.toolBlogLinks.get('svg-encoder')).toBeUndefined()
+			expect(graph.toolBlogLinks.get('svg-to-base64-encoder')).toEqual([
+				'base64-article'
+			])
 		} finally {
 			rmSync(repoRoot, { recursive: true, force: true })
 		}

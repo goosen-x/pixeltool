@@ -160,6 +160,19 @@ function walkTsxFiles(dir: string): string[] {
 	return results
 }
 
+/**
+ * Загружает карту ссылок на статьи блога из tsx-файлов каждого тула.
+ *
+ * ВАЖНО: Map ключи — это пути тулов (имена директорий под app/tools/(widget)/),
+ * совпадающие с ToolInfo.path — НЕ с ToolInfo.id.
+ *
+ * ToolInfo.id и ToolInfo.path различаются примерно для 11 тулов. Например:
+ * - id: 'svg-encoder' vs path: 'svg-to-base64-encoder'
+ * - id: 'css-specificity' vs path: 'css-specificity-calculator'
+ *
+ * Всегда смотрите карту по tool.path, не по tool.id. Использование id вместо
+ * path приведёт к молчаливому сбою поиска ссылок для ~23% инструментов.
+ */
 export function loadToolBlogLinks(toolsRootDir: string): Map<string, string[]> {
 	const map = new Map<string, string[]>()
 	if (!fs.existsSync(toolsRootDir)) return map
