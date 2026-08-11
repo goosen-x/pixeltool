@@ -29,7 +29,10 @@ describe('parseArticleMarkdown', () => {
 	it('собирает ссылки на другие статьи блога', () => {
 		const content = `См. также [статью](/blog/chto-takoe-json) и [эту](/blog/chto-takoe-jwt).\n`
 		const result = parseArticleMarkdown(content)
-		expect(result.blogSlugs.sort()).toEqual(['chto-takoe-json', 'chto-takoe-jwt'])
+		expect(result.blogSlugs.sort()).toEqual([
+			'chto-takoe-json',
+			'chto-takoe-jwt'
+		])
 	})
 
 	it('не путает inline и CTA в одной статье', () => {
@@ -40,6 +43,14 @@ describe('parseArticleMarkdown', () => {
 		expect(result.toolLinks).toEqual([
 			{ slug: 'qr-scanner', kind: 'cta' },
 			{ slug: 'qr-scanner', kind: 'inline' }
+		])
+	})
+
+	it('захватывает малформированные ссылки на тулы вместо того чтобы их игнорировать', () => {
+		const content = `Текст с [ссылкой на тул](/tools/foo/bar/baz) в нём.\n`
+		const result = parseArticleMarkdown(content)
+		expect(result.toolLinks).toEqual([
+			{ slug: 'foo/bar/baz', kind: 'inline' }
 		])
 	})
 })
