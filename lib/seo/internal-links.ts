@@ -2,6 +2,8 @@ import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import { visit } from 'unist-util-visit'
 import type { Root, Paragraph, Text, Link } from 'mdast'
+import matter from 'gray-matter'
+import path from 'node:path'
 
 export interface ToolLinkOccurrence {
 	slug: string
@@ -80,4 +82,25 @@ export function parseArticleMarkdown(content: string): ArticleLinks {
 	})
 
 	return { toolLinks, blogSlugs: [...blogSlugs] }
+}
+
+export interface Article {
+	slug: string
+	title: string
+	relatedSlugs: string[]
+	toolLinks: ToolLinkOccurrence[]
+	blogSlugs: string[]
+}
+
+export function parseArticle(filePath: string, rawContent: string): Article {
+	const { data, content } = matter(rawContent)
+	const { toolLinks, blogSlugs } = parseArticleMarkdown(content)
+
+	return {
+		slug: path.basename(filePath, '.md'),
+		title: typeof data.title === 'string' ? data.title : '',
+		relatedSlugs: Array.isArray(data.related) ? data.related : [],
+		toolLinks,
+		blogSlugs
+	}
 }

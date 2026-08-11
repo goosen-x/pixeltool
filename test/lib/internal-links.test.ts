@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseArticleMarkdown } from '@/lib/seo/internal-links'
+import { parseArticleMarkdown, parseArticle } from '@/lib/seo/internal-links'
 
 describe('parseArticleMarkdown', () => {
 	it('считает bare-line ссылку на тул CTA-карточкой', () => {
@@ -49,8 +49,33 @@ describe('parseArticleMarkdown', () => {
 	it('захватывает малформированные ссылки на тулы вместо того чтобы их игнорировать', () => {
 		const content = `Текст с [ссылкой на тул](/tools/foo/bar/baz) в нём.\n`
 		const result = parseArticleMarkdown(content)
-		expect(result.toolLinks).toEqual([
-			{ slug: 'foo/bar/baz', kind: 'inline' }
+		expect(result.toolLinks).toEqual([{ slug: 'foo/bar/baz', kind: 'inline' }])
+	})
+})
+
+describe('parseArticle', () => {
+	it('читает frontmatter и slug из имени файла', () => {
+		const raw = `---
+title: 'Тестовая статья'
+related:
+  - chto-takoe-json
+  - chto-takoe-jwt
+---
+
+/tools/random-number-generator
+`
+		const article = parseArticle('/repo/_posts/test-article.md', raw)
+		expect(article.slug).toBe('test-article')
+		expect(article.title).toBe('Тестовая статья')
+		expect(article.relatedSlugs).toEqual(['chto-takoe-json', 'chto-takoe-jwt'])
+		expect(article.toolLinks).toEqual([
+			{ slug: 'random-number-generator', kind: 'cta' }
 		])
+	})
+
+	it('related по умолчанию — пустой массив', () => {
+		const raw = `---\ntitle: 'Без related'\n---\n\nТекст.\n`
+		const article = parseArticle('/repo/_posts/no-related.md', raw)
+		expect(article.relatedSlugs).toEqual([])
 	})
 })
