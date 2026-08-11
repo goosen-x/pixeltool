@@ -33,12 +33,13 @@
 		"check:bundle": "npx tsx scripts/check-bundle-size.ts",
 		"check:performance": "npx tsx scripts/check-performance.ts",
 		"check:accessibility": "npx tsx scripts/check-accessibility.ts",
-		"check:all": "pnpm run check:security && pnpm run check:imports && pnpm run check:bundle && pnpm run check:performance && pnpm run check:accessibility",
+		"check:all": "pnpm run check:security && pnpm run check:imports && pnpm run check:bundle && pnpm run check:performance && pnpm run check:accessibility && pnpm run check:internal-links",
 		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
 		"typecheck": "tsc --noEmit",
 		"prepare": "husky",
-		"wordstat": "npx tsx scripts/wordstat.ts"
+		"wordstat": "npx tsx scripts/wordstat.ts",
+		"check:internal-links": "npx tsx scripts/check-internal-links.ts"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.10.0",
