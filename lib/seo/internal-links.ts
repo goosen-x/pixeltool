@@ -104,3 +104,15 @@ export function parseArticle(filePath: string, rawContent: string): Article {
 		blogSlugs
 	}
 }
+
+export function findBlogLinksInSource(source: string): string[] {
+	const slugs = new Set<string>()
+	const regex = /\/blog\/([\w-]+)/g
+	let match: RegExpExecArray | null
+
+	while ((match = regex.exec(source))) {
+		slugs.add(match[1])
+	}
+
+	return [...slugs]
+}

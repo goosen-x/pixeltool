@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseArticleMarkdown, parseArticle } from '@/lib/seo/internal-links'
+import { parseArticleMarkdown, parseArticle, findBlogLinksInSource } from '@/lib/seo/internal-links'
 
 describe('parseArticleMarkdown', () => {
 	it('считает bare-line ссылку на тул CTA-карточкой', () => {
@@ -77,5 +77,27 @@ related:
 		const raw = `---\ntitle: 'Без related'\n---\n\nТекст.\n`
 		const article = parseArticle('/repo/_posts/no-related.md', raw)
 		expect(article.relatedSlugs).toEqual([])
+	})
+})
+
+describe('findBlogLinksInSource', () => {
+	it('находит slug из href на /blog/', () => {
+		const source = `
+			<Link href='/blog/kak-provesti-rozygrysh-sluchaynym-chislom'>
+				Как провести розыгрыш
+			</Link>
+		`
+		expect(findBlogLinksInSource(source)).toEqual([
+			'kak-provesti-rozygrysh-sluchaynym-chislom'
+		])
+	})
+
+	it('дедуплицирует повторные упоминания одного slug', () => {
+		const source = `href='/blog/foo' ... href="/blog/foo"`
+		expect(findBlogLinksInSource(source)).toEqual(['foo'])
+	})
+
+	it('возвращает пустой массив, если ссылок на /blog/ нет', () => {
+		expect(findBlogLinksInSource('export default function X() { return null }')).toEqual([])
 	})
 })
