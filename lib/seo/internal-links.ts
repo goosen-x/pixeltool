@@ -203,3 +203,137 @@ export function buildLinkGraph(repoRoot: string): LinkGraph {
 		toolBlogLinks: loadToolBlogLinks(path.join(repoRoot, 'app/tools/(widget)'))
 	}
 }
+
+export type IssueSeverity = 'error' | 'warning'
+
+export interface Issue {
+	severity: IssueSeverity
+	message: string
+}
+
+export interface CheckReport {
+	issues: Issue[]
+	toolCount: number
+	articleCount: number
+}
+
+export function runChecks(graph: LinkGraph): CheckReport {
+	const issues: Issue[] = []
+	const toolPaths = new Set(graph.tools.map(t => t.path))
+	const articleSlugs = new Set(graph.articles.map(a => a.slug))
+
+	for (const article of graph.articles) {
+		for (const link of article.toolLinks) {
+			if (!toolPaths.has(link.slug)) {
+				issues.push({
+					severity: 'error',
+					message: `Битая ссылка: _posts/${article.slug}.md → /tools/${link.slug} (тула не существует)`
+				})
+			}
+		}
+
+		for (const slug of article.blogSlugs) {
+			if (!articleSlugs.has(slug)) {
+				issues.push({
+					severity: 'error',
+					message: `Битая ссылка: _posts/${article.slug}.md → /blog/${slug} (статьи не существует)`
+				})
+			}
+		}
+
+		for (const slug of article.relatedSlugs) {
+			if (!articleSlugs.has(slug)) {
+				issues.push({
+					severity: 'error',
+					message: `Битая ссылка: _posts/${article.slug}.md related: ${slug} (статьи не существует)`
+				})
+			}
+		}
+	}
+
+	for (const [toolPath, slugs] of graph.toolBlogLinks) {
+		for (const slug of slugs) {
+			if (!articleSlugs.has(slug)) {
+				issues.push({
+					severity: 'error',
+					message: `Битая ссылка: тул ${toolPath} → /blog/${slug} (статьи не существует)`
+				})
+			}
+		}
+	}
+
+	for (const article of graph.articles) {
+		const ctaCounts = new Map<string, number>()
+		for (const link of article.toolLinks) {
+			if (link.kind === 'cta') {
+				ctaCounts.set(link.slug, (ctaCounts.get(link.slug) ?? 0) + 1)
+			}
+		}
+		for (const [slug, count] of ctaCounts) {
+			if (count > 1) {
+				issues.push({
+					severity: 'error',
+					message: `Дубль CTA: _posts/${article.slug}.md — ${count} карточки на /tools/${slug}`
+				})
+			}
+		}
+	}
+
+	const linkedToolSlugs = new Set<string>()
+	for (const article of graph.articles) {
+		article.toolLinks.forEach(link => linkedToolSlugs.add(link.slug))
+	}
+	for (const tool of graph.tools) {
+		if (!linkedToolSlugs.has(tool.path)) {
+			issues.push({
+				severity: 'warning',
+				message: `Orphan-тул: ${tool.path} (${tool.title}) — ни одна статья не ссылается`
+			})
+		}
+	}
+
+	const linkedArticleSlugs = new Set<string>()
+	for (const slugs of graph.toolBlogLinks.values()) {
+		slugs.forEach(s => linkedArticleSlugs.add(s))
+	}
+	for (const article of graph.articles) {
+		article.relatedSlugs.forEach(s => linkedArticleSlugs.add(s))
+		article.blogSlugs.forEach(s => linkedArticleSlugs.add(s))
+	}
+	for (const article of graph.articles) {
+		if (!linkedArticleSlugs.has(article.slug)) {
+			issues.push({
+				severity: 'warning',
+				message: `Orphan-статья: ${article.slug}.md — на неё никто не ссылается`
+			})
+		}
+	}
+
+	const articlesBySlug = new Map(graph.articles.map(a => [a.slug, a]))
+	for (const article of graph.articles) {
+		for (const relatedSlug of article.relatedSlugs) {
+			const relatedArticle = articlesBySlug.get(relatedSlug)
+			if (relatedArticle && !relatedArticle.relatedSlugs.includes(article.slug)) {
+				issues.push({
+					severity: 'warning',
+					message: `Асимметричный related: ${article.slug}.md → ${relatedSlug}.md, обратной ссылки нет`
+				})
+			}
+		}
+	}
+
+	for (const article of graph.articles) {
+		if (article.toolLinks.length === 0) {
+			issues.push({
+				severity: 'warning',
+				message: `Статья без ссылки на тул: ${article.slug}.md`
+			})
+		}
+	}
+
+	return {
+		issues,
+		toolCount: graph.tools.length,
+		articleCount: graph.articles.length
+	}
+}

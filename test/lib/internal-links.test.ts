@@ -6,7 +6,9 @@ import {
 	parseArticleMarkdown,
 	parseArticle,
 	findBlogLinksInSource,
-	buildLinkGraph
+	buildLinkGraph,
+	runChecks,
+	type LinkGraph
 } from '@/lib/seo/internal-links'
 import { widgets } from '@/lib/constants/widgets'
 
@@ -181,5 +183,110 @@ describe('buildLinkGraph', () => {
 		} finally {
 			rmSync(repoRoot, { recursive: true, force: true })
 		}
+	})
+})
+
+function fakeGraph(overrides: Partial<LinkGraph> = {}): LinkGraph {
+	return {
+		tools: [{ id: 'a', path: 'tool-a', title: 'Tool A' }],
+		articles: [],
+		toolBlogLinks: new Map(),
+		...overrides
+	}
+}
+
+describe('runChecks', () => {
+	it('находит битую ссылку статья→тул', () => {
+		const graph = fakeGraph({
+			articles: [
+				{
+					slug: 'article-a',
+					title: 'A',
+					relatedSlugs: [],
+					toolLinks: [{ slug: 'no-such-tool', kind: 'cta' }],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(report.issues).toContainEqual({
+			severity: 'error',
+			message: 'Битая ссылка: _posts/article-a.md → /tools/no-such-tool (тула не существует)'
+		})
+	})
+
+	it('находит дубль CTA на один тул внутри статьи', () => {
+		const graph = fakeGraph({
+			articles: [
+				{
+					slug: 'article-a',
+					title: 'A',
+					relatedSlugs: [],
+					toolLinks: [
+						{ slug: 'tool-a', kind: 'cta' },
+						{ slug: 'tool-a', kind: 'cta' }
+					],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(report.issues).toContainEqual({
+			severity: 'error',
+			message: 'Дубль CTA: _posts/article-a.md — 2 карточки на /tools/tool-a'
+		})
+	})
+
+	it('находит orphan-тул как warning', () => {
+		const report = runChecks(fakeGraph())
+		expect(report.issues).toContainEqual({
+			severity: 'warning',
+			message: 'Orphan-тул: tool-a (Tool A) — ни одна статья не ссылается'
+		})
+	})
+
+	it('находит асимметричный related как warning', () => {
+		const graph = fakeGraph({
+			articles: [
+				{
+					slug: 'article-a',
+					title: 'A',
+					relatedSlugs: ['article-b'],
+					toolLinks: [{ slug: 'tool-a', kind: 'inline' }],
+					blogSlugs: []
+				},
+				{
+					slug: 'article-b',
+					title: 'B',
+					relatedSlugs: [],
+					toolLinks: [{ slug: 'tool-a', kind: 'inline' }],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(report.issues).toContainEqual({
+			severity: 'warning',
+			message: 'Асимметричный related: article-a.md → article-b.md, обратной ссылки нет'
+		})
+	})
+
+	it('не находит проблем в полностью согласованном графе', () => {
+		const graph = fakeGraph({
+			toolBlogLinks: new Map([
+				['tool-a', ['article-a']]
+			]),
+			articles: [
+				{
+					slug: 'article-a',
+					title: 'A',
+					relatedSlugs: [],
+					toolLinks: [{ slug: 'tool-a', kind: 'inline' }],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(report.issues).toEqual([])
 	})
 })
