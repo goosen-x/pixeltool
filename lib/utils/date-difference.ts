@@ -51,7 +51,8 @@ const SATURDAY = 6
 
 /** Количество будних дней (пн-пт), пройденных между двумя датами. */
 export function businessDaysBetween(a: Date, b: Date): number {
-	const [from, to] = a <= b ? [atMidnight(a), atMidnight(b)] : [atMidnight(b), atMidnight(a)]
+	const [from, to] =
+		a <= b ? [atMidnight(a), atMidnight(b)] : [atMidnight(b), atMidnight(a)]
 
 	const totalDays = Math.round((to.getTime() - from.getTime()) / DAY_MS)
 	const fullWeeks = Math.floor(totalDays / 7)

@@ -1,15 +1,23 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { Download, Loader2, Scissors, Trash2, Upload } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Check, Download, Loader2, Scissors, Trash2, Upload } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { RemoveBackgroundSeo } from './RemoveBackgroundSeo'
+import { BeforeAfterSlider } from './BeforeAfterSlider'
 
 type Status = 'idle' | 'processing' | 'done' | 'error'
+
+// Библиотека сама не пишет никуда, кроме HTTP-кэша браузера (см. её исходники
+// — ни Cache Storage, ни IndexedDB) — а он не гарантирован (например,
+// отключается чек-боксом «Disable cache» в открытых DevTools). Этот флаг —
+// наша отдельная, честная подсказка «на этом устройстве модель точно
+// скачивали хотя бы раз», не зависящая от того, сработал ли HTTP-кэш.
+const MODEL_READY_KEY = 'remove-background-model-ready'
 
 export default function RemoveBackgroundPage() {
 	const widget = getWidgetById('remove-background')!
@@ -23,6 +31,11 @@ export default function RemoveBackgroundPage() {
 		current: number
 		total: number
 	} | null>(null)
+	const [modelReady, setModelReady] = useState(false)
+
+	useEffect(() => {
+		setModelReady(localStorage.getItem(MODEL_READY_KEY) === 'true')
+	}, [])
 
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	// Прогресс складывается из нескольких файлов (модель + wasm) — сумма по
@@ -76,6 +89,8 @@ export default function RemoveBackgroundPage() {
 
 			setResultUrl(URL.createObjectURL(blob))
 			setStatus('done')
+			localStorage.setItem(MODEL_READY_KEY, 'true')
+			setModelReady(true)
 		} catch (error) {
 			console.error(error)
 			setErrorMessage(
@@ -112,9 +127,21 @@ export default function RemoveBackgroundPage() {
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				<div className={toolBar}>
-					<span className='text-sm text-muted-foreground'>
-						Обработка целиком в браузере — фото не отправляется на сервер
-					</span>
+					<div className='flex flex-wrap items-center gap-3'>
+						<span className='text-sm text-muted-foreground'>
+							Обработка целиком в браузере — фото не отправляется на сервер
+						</span>
+						{modelReady ? (
+							<span className='inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400'>
+								<Check className='h-3 w-3' />
+								Модель уже загружена
+							</span>
+						) : (
+							<span className='inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+								Модель ещё не скачана (~40 МБ)
+							</span>
+						)}
+					</div>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
@@ -140,25 +167,45 @@ export default function RemoveBackgroundPage() {
 					</div>
 				</div>
 
-				<div className='grid md:grid-cols-2'>
-					{/* Исходное фото */}
-					<div className='flex flex-col items-center gap-4 border-b px-5 py-6 sm:px-6 md:border-r md:border-b-0'>
-						<input
-							ref={fileInputRef}
-							type='file'
-							accept='image/*'
-							onChange={handleFileSelect}
-							aria-label='Загрузить фото'
-							className='hidden'
-						/>
+				<input
+					ref={fileInputRef}
+					type='file'
+					accept='image/*'
+					onChange={handleFileSelect}
+					aria-label='Загрузить фото'
+					className='hidden'
+				/>
 
+				{resultUrl && sourceUrl ? (
+					// Результат готов — слайдер «до/после» на всю ширину карточки.
+					<div className='space-y-3 px-5 py-6 sm:px-6'>
+						<BeforeAfterSlider beforeUrl={sourceUrl} afterUrl={resultUrl} />
+						<div className='text-center'>
+							<button
+								type='button'
+								onClick={() => fileInputRef.current?.click()}
+								className='cursor-pointer text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline'
+							>
+								Выбрать другое фото
+							</button>
+						</div>
+					</div>
+				) : (
+					<div className='flex flex-col items-center gap-4 px-5 py-6 sm:px-6'>
 						{sourceUrl ? (
-							// eslint-disable-next-line @next/next/no-img-element -- object URL, не оптимизируем через next/image
-							<img
-								src={sourceUrl}
-								alt='Исходное фото'
-								className='max-h-80 w-auto rounded-xl border object-contain'
-							/>
+							<button
+								type='button'
+								onClick={() => fileInputRef.current?.click()}
+								title='Выбрать другое фото'
+								className='cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							>
+								{/* eslint-disable-next-line @next/next/no-img-element -- object URL, не оптимизируем через next/image */}
+								<img
+									src={sourceUrl}
+									alt='Исходное фото'
+									className='max-h-80 w-auto rounded-xl border object-contain'
+								/>
+							</button>
 						) : (
 							<button
 								type='button'
@@ -171,7 +218,7 @@ export default function RemoveBackgroundPage() {
 						)}
 
 						{sourceUrl && status !== 'processing' && (
-							<div className='w-full space-y-2 text-center'>
+							<div className='w-full max-w-xs space-y-2 text-center'>
 								<Button
 									onClick={removeBackground}
 									className='w-full cursor-pointer gap-2'
@@ -180,22 +227,25 @@ export default function RemoveBackgroundPage() {
 									Убрать фон
 								</Button>
 								<p className='text-xs text-muted-foreground'>
-									При первом запуске на этом устройстве скачается модель ИИ (~40
-									МБ) — дальше она в кэше браузера, повторно скачивать не
-									придётся.
+									{modelReady
+										? 'Модель уже загружена на этом устройстве — обработка займёт пару секунд.'
+										: 'При первом запуске на этом устройстве скачается модель ИИ (~40 МБ) — дальше она в кэше браузера, повторно скачивать не придётся.'}
 								</p>
 							</div>
 						)}
 
 						{status === 'processing' && (
-							<div className='w-full space-y-2'>
+							<div className='w-full max-w-xs space-y-2'>
 								<div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
 									<Loader2 className='h-4 w-4 animate-spin' />
-									{progressPercent !== null
+									{/* modelReady — уже видели успешный прогон на этом устройстве:
+									    даже если колбэк progress ещё раз тикнет (читает из кэша),
+									    не пишем «загружаем модель» — это будет неправдой. */}
+									{!modelReady && progressPercent !== null
 										? `Загружаем модель… ${progressPercent}%`
 										: 'Убираем фон…'}
 								</div>
-								{progressPercent !== null && (
+								{!modelReady && progressPercent !== null && (
 									<div className='h-1.5 w-full overflow-hidden rounded-full bg-muted'>
 										<div
 											className='h-full bg-primary transition-all'
@@ -210,28 +260,7 @@ export default function RemoveBackgroundPage() {
 							<p className='text-sm text-destructive'>{errorMessage}</p>
 						)}
 					</div>
-
-					{/* Результат — на «шахматке», чтобы был виден альфа-канал */}
-					<div className='flex items-center justify-center px-5 py-6 sm:px-6'>
-						{resultUrl ? (
-							<div
-								className='max-h-80 w-auto rounded-xl border bg-[length:16px_16px] bg-[image:repeating-conic-gradient(#80808022_0%_25%,transparent_0%_50%)] p-2'
-								style={{ backgroundPosition: '0 0, 8px 8px' }}
-							>
-								{/* eslint-disable-next-line @next/next/no-img-element -- object URL, не оптимизируем через next/image */}
-								<img
-									src={resultUrl}
-									alt='Фото без фона'
-									className='max-h-72 w-auto rounded-lg object-contain'
-								/>
-							</div>
-						) : (
-							<p className='text-center text-sm text-muted-foreground'>
-								Результат появится здесь
-							</p>
-						)}
-					</div>
-				</div>
+				)}
 
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>

@@ -7,9 +7,7 @@ import {
 
 describe('daysBetween', () => {
 	it('золотой пример из planetcalc: 2021-09-01 → 2026-08-16 = 1810 дней', () => {
-		expect(
-			daysBetween(new Date(2021, 8, 1), new Date(2026, 7, 16))
-		).toBe(1810)
+		expect(daysBetween(new Date(2021, 8, 1), new Date(2026, 7, 16))).toBe(1810)
 	})
 
 	it('порядок дат не важен — результат положительный', () => {
@@ -61,9 +59,7 @@ describe('yearsMonthsDaysBetween', () => {
 	it('порядок дат не важен', () => {
 		const a = new Date(2020, 0, 1)
 		const b = new Date(2023, 5, 20)
-		expect(yearsMonthsDaysBetween(a, b)).toEqual(
-			yearsMonthsDaysBetween(b, a)
-		)
+		expect(yearsMonthsDaysBetween(a, b)).toEqual(yearsMonthsDaysBetween(b, a))
 	})
 })
 

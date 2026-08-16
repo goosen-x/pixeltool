@@ -559,7 +559,7 @@ export const toolWidgets: Widget[] = [
 		gradient: 'from-cyan-500 to-blue-600',
 		title: 'Удалить фон с фото',
 		description:
-			'Удалите фон с фото прямо в браузере — фото никуда не отправляется. Первый запуск скачивает модель (~40 МБ), дальше работает из кэша.',
+			'Удалите фон с фото прямо в браузере — фото никуда не отправляется на сервер.',
 		useCase:
 			'Убрать фон с фотографии для маркетплейса, аватарки или дизайна — без загрузки на сторонний сервер',
 		recommendedTools: [
@@ -630,9 +630,20 @@ export const toolWidgets: Widget[] = [
 			'Посчитайте разницу между двумя датами: дней, недель, месяцев и лет, а также отдельно рабочих дней.',
 		useCase:
 			'Посчитать количество дней между двумя датами — для дедлайна, срока действия документа, юбилея или отчётного периода',
-		recommendedTools: ['timer-countdown', 'random-number-generator', 'utm-builder'],
+		recommendedTools: [
+			'timer-countdown',
+			'random-number-generator',
+			'utm-builder'
+		],
 		difficulty: 'beginner',
-		tags: ['date', 'days', 'calendar', 'calculator', 'difference', 'business-days'],
+		tags: [
+			'date',
+			'days',
+			'calendar',
+			'calculator',
+			'difference',
+			'business-days'
+		],
 		metaTitle: 'Калькулятор дней между датами онлайн',
 		updatedAt: '2026-08-16',
 		metaDescription:
