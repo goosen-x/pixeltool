@@ -833,6 +833,21 @@ export const fontStyles: FontStyles = {
 				.map(char => map[char] || char)
 				.join('')
 		}
+	},
+
+	strikethrough: {
+		name: 'Strikethrough',
+		description: 'Зачёркнутый текст — работает в Telegram, VK и большинстве чатов',
+		// Комбинирующий символ U+0336 (COMBINING LONG STROKE OVERLAY) рисует
+		// черту через предыдущий символ — таблица соответствий тут не нужна,
+		// приём работает на любом алфавите и знаках препинания. Ставится
+		// после каждого символа, а не через join — иначе первый символ
+		// остаётся без черты.
+		convert: (text: string) =>
+			text
+				.split('')
+				.map(char => char + '̶')
+				.join('')
 	}
 }
 
