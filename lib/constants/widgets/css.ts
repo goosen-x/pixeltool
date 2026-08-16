@@ -77,7 +77,7 @@ export const cssWidgets: Widget[] = [
 		path: 'flexbox-generator',
 		gradient: 'from-blue-500 to-indigo-500',
 		title: 'CSS Flexbox генератор',
-		metaTitle: 'CSS Flexbox онлайн — генератор justify-content и align-items',
+		metaTitle: 'CSS Flexbox generator онлайн — justify-content и align-items',
 		description:
 			'Визуальный генератор CSS Flexbox: настройте направление, выравнивание и перенос элементов и скопируйте готовый код CSS и Tailwind.',
 		useCase:
@@ -88,7 +88,7 @@ export const cssWidgets: Widget[] = [
 			'css-specificity'
 		],
 		difficulty: 'beginner',
-		updatedAt: '2026-07-07',
+		updatedAt: '2026-08-16',
 		tags: ['css', 'flexbox', 'layout', 'responsive', 'alignment'],
 		metaDescription:
 			'Расположите элементы в ряд или столбец, выровняйте их и настройте отступы — генератор Flexbox сразу покажет готовый CSS и Tailwind. Бесплатно, в браузере.',
