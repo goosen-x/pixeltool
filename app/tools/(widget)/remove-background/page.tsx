@@ -1,10 +1,17 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Check, Download, Loader2, Scissors, Trash2, Upload } from 'lucide-react'
+import {
+	Check,
+	Download,
+	Loader2,
+	Scissors,
+	Trash2,
+	Upload
+} from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { RemoveBackgroundSeo } from './RemoveBackgroundSeo'
@@ -147,6 +154,15 @@ export default function RemoveBackgroundPage() {
 						<Button
 							size='icon'
 							variant='ghost'
+							onClick={() => fileInputRef.current?.click()}
+							title={sourceUrl ? 'Выбрать другое фото' : 'Загрузить фото'}
+							className={toolIconButton}
+						>
+							<Upload className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
 							onClick={downloadResult}
 							disabled={!resultUrl}
 							title='Скачать PNG'
@@ -177,19 +193,9 @@ export default function RemoveBackgroundPage() {
 				/>
 
 				{resultUrl && sourceUrl ? (
-					// Результат готов — слайдер «до/после» на всю ширину карточки.
-					<div className='space-y-3 px-5 py-6 sm:px-6'>
-						<BeforeAfterSlider beforeUrl={sourceUrl} afterUrl={resultUrl} />
-						<div className='text-center'>
-							<button
-								type='button'
-								onClick={() => fileInputRef.current?.click()}
-								className='cursor-pointer text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline'
-							>
-								Выбрать другое фото
-							</button>
-						</div>
-					</div>
+					// Результат готов — слайдер «до/после» во всю ширину и высоту
+					// карточки, без отступов. Заменить фото — иконка Upload в toolBar.
+					<BeforeAfterSlider beforeUrl={sourceUrl} afterUrl={resultUrl} />
 				) : (
 					<div className='flex flex-col items-center gap-4 px-5 py-6 sm:px-6'>
 						{sourceUrl ? (
@@ -261,12 +267,6 @@ export default function RemoveBackgroundPage() {
 						)}
 					</div>
 				)}
-
-				<div className={toolFooterBar}>
-					<span className='text-sm text-muted-foreground'>
-						Результат — PNG с прозрачным фоном
-					</span>
-				</div>
 			</Card>
 
 			<RemoveBackgroundSeo />

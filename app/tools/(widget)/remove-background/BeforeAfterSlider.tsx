@@ -21,23 +21,29 @@ const CHECKERBOARD_STYLE = {
 } as const
 
 /**
- * Слайдер «до/после»: обе картинки — одного размера в пикселях (библиотека
- * возвращает результат с теми же исходными width/height, см. её исходники),
- * поэтому object-contain в одинаковых по размеру слоях выравнивает их
- * пиксель в пиксель без доп. расчётов.
+ * Слайдер «до/после» во всю ширину карточки.
  *
- * Ручка — обычный <input type="range"> поверх, растянутый на всю картинку и
- * визуально прозрачный: даром достаются клавиатура, тач и aria без лишнего
- * кода на pointer-событиях.
+ * Контейнер держит aspect-ratio настоящего фото (снимается один раз через
+ * onLoad, обе картинки гарантированно одного размера в пикселях — библиотека
+ * возвращает результат с исходными width/height). Без этого при
+ * object-contain в контейнере фиксированной высоты фото могло не доходить
+ * до боковых краёв (леттербоксинг), и проценты clip-path переставали
+ * совпадать с реальными границами фото — ручка визуально «ехала» мимо
+ * картинки. С подогнанным контейнером object-contain всегда заполняет его
+ * ровно, без пустых полей.
  */
 export function BeforeAfterSlider({
 	beforeUrl,
 	afterUrl
 }: BeforeAfterSliderProps) {
 	const [position, setPosition] = useState(50)
+	const [aspectRatio, setAspectRatio] = useState<number | null>(null)
 
 	return (
-		<div className='relative mx-auto h-80 w-full max-w-xl overflow-hidden rounded-xl border select-none'>
+		<div
+			className='relative w-full overflow-hidden select-none'
+			style={{ aspectRatio: aspectRatio ?? 16 / 9 }}
+		>
 			{/* «После» — во всю ширину, снизу */}
 			<div className='absolute inset-0' style={CHECKERBOARD_STYLE}>
 				{/* eslint-disable-next-line @next/next/no-img-element -- object URL, не оптимизируем через next/image */}
@@ -46,6 +52,12 @@ export function BeforeAfterSlider({
 					alt='Фото без фона'
 					className='h-full w-full object-contain'
 					draggable={false}
+					onLoad={event => {
+						const img = event.currentTarget
+						if (img.naturalWidth && img.naturalHeight) {
+							setAspectRatio(img.naturalWidth / img.naturalHeight)
+						}
+					}}
 				/>
 			</div>
 
