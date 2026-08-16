@@ -34,9 +34,17 @@ export function GlobalGoalsTracker() {
 			const toolName = toolMatch ? toolMatch[1] : 'unknown'
 
 			// Track copy actions
+			//
+			// lucide-react рендерит иконки с классом `lucide-{имя}`, а не
+			// атрибутом `data-lucide` — старая проверка `[data-lucide="copy"]`
+			// никогда не совпадала (см. вывод DOM в тестах), а буквенная
+			// проверка на английский текст мимо русского интерфейса кнопок.
+			// Из-за этого result_copied/result_downloaded не набирали данные
+			// в Метрике два месяца при частом реальном использовании.
 			if (
 				buttonText.includes('copy') ||
-				button.querySelector('[data-lucide="copy"]')
+				buttonText.includes('копир') ||
+				button.querySelector('.lucide-copy')
 			) {
 				YandexGoals.resultCopied(toolName)
 			}
@@ -44,7 +52,8 @@ export function GlobalGoalsTracker() {
 			// Track download actions
 			if (
 				buttonText.includes('download') ||
-				button.querySelector('[data-lucide="download"]')
+				buttonText.includes('скачат') ||
+				button.querySelector('.lucide-download')
 			) {
 				YandexGoals.resultDownloaded(toolName)
 			}
