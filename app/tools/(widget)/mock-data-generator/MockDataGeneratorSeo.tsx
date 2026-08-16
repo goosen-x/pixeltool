@@ -1,4 +1,18 @@
 import Link from 'next/link'
+import { GuideCodeBlock } from '@/components/widgets/GuideCodeBlock'
+
+// Четыре стартовых покемона — для превью ниже. Спрайты берём напрямую из
+// GitHub-репозитория PokeAPI: тот же адрес, что приходит в ответе API
+// (sprites.front_default), но без живого запроса — на статичной странице
+// он не нужен, а рендер получается предсказуемым.
+const SAMPLE_POKEMON = [
+	{ id: 1, name: 'bulbasaur' },
+	{ id: 4, name: 'charmander' },
+	{ id: 7, name: 'squirtle' },
+	{ id: 25, name: 'pikachu' }
+]
+const spriteUrl = (id: number) =>
+	`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
 
 /**
  * SEO-контент под инструментом. Отдельная секция про Mockaroo намеренно
@@ -32,13 +46,13 @@ export function MockDataGeneratorSeo() {
 					Какие API входят и когда какой использовать
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					Все эндпоинты бесплатны, не требуют регистрации и API-ключа, кроме
-					одного демо-примера. Шесть категорий:
+					Все эндпоинты бесплатны и не требуют регистрации или API-ключа. Шесть
+					категорий:
 				</p>
 				<ul className='mt-3 list-disc space-y-2 pl-5 text-muted-foreground'>
 					<li>
 						<strong className='text-foreground'>Пользователи и профили</strong>{' '}
-						— JSONPlaceholder, RandomUser, ReqRes: готовые профили с именами,
+						— JSONPlaceholder и RandomUser: готовые профили с именами,
 						аватарами, адресами для верстки списков и карточек.
 					</li>
 					<li>
@@ -65,6 +79,76 @@ export function MockDataGeneratorSeo() {
 						httpbin для проверки самого запроса, советы дня.
 					</li>
 				</ul>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Пример: как использовать ответ PokeAPI
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Эндпоинт «Список покемонов» отдаёт только имена и ссылки на
+					подробности — так устроен PokeAPI, чтобы не гонять по сети лишний вес.
+					Имя показать можно сразу, а за картинкой и характеристиками нужен
+					второй запрос по адресу из <code>url</code>:
+				</p>
+				<GuideCodeBlock
+					className='mt-4'
+					language='jsx'
+					code={`const list = await fetch(
+  'https://pokeapi.co/api/v2/pokemon?limit=10'
+).then(res => res.json())
+
+// list.results — только { name, url }, для карточки нужны детали
+const pokemon = await Promise.all(
+  list.results.map(p => fetch(p.url).then(res => res.json()))
+)
+
+function PokemonCard({ name, sprite }) {
+  return (
+    <div className="rounded-xl border p-4 text-center">
+      <img src={sprite} alt={name} className="mx-auto h-20 w-20" />
+      <p className="mt-2 text-sm capitalize">{name}</p>
+    </div>
+  )
+}
+
+// pokemon[i].sprites.front_default — прямая ссылка на картинку
+<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+  {pokemon.map(p => (
+    <PokemonCard
+      key={p.name}
+      name={p.name}
+      sprite={p.sprites.front_default}
+    />
+  ))}
+</div>`}
+				/>
+
+				<p className='mt-6 text-sm text-muted-foreground'>
+					Так это выглядит на странице:
+				</p>
+				<div className='mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4'>
+					{SAMPLE_POKEMON.map(p => (
+						<div key={p.name} className='rounded-xl border p-4 text-center'>
+							{/* eslint-disable-next-line @next/next/no-img-element -- статичный внешний спрайт, не оптимизируем через next/image */}
+							<img
+								src={spriteUrl(p.id)}
+								alt={p.name}
+								className='mx-auto h-20 w-20'
+								width={80}
+								height={80}
+							/>
+							<p className='mt-2 text-sm text-foreground capitalize'>
+								{p.name}
+							</p>
+						</div>
+					))}
+				</div>
+
+				<p className='mt-6 text-muted-foreground'>
+					Тот же приём подходит для любого списочного эндпоинта отсюда, где
+					объект содержит ссылку на себя, а не все поля сразу.
+				</p>
 			</section>
 
 			<p className='text-muted-foreground'>

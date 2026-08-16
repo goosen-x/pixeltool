@@ -1,9 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Copy, Check, RefreshCw, Download } from 'lucide-react'
+import {
+	Copy,
+	Check,
+	RefreshCw,
+	Download,
+	Users,
+	FileText,
+	ShoppingBag,
+	Globe,
+	Gamepad2,
+	Wrench
+} from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import {
 	toolBar,
@@ -52,18 +64,6 @@ const publicAPIs: APIEndpoint[] = [
 		rateLimit: 'Unlimited',
 		documentation: 'https://randomuser.me/'
 	},
-	{
-		id: 'reqres-users',
-		name: 'Пользователи ReqRes',
-		description: 'Пользователи с аватарами для тестирования',
-		endpoint: 'https://reqres.in/api/users?page=1',
-		category: 'users',
-		method: 'GET',
-		requiresAuth: false,
-		rateLimit: 'Unlimited',
-		documentation: 'https://reqres.in/'
-	},
-
 	// Posts & Content
 	{
 		id: 'jsonplaceholder-posts',
@@ -77,15 +77,15 @@ const publicAPIs: APIEndpoint[] = [
 		documentation: 'https://jsonplaceholder.typicode.com/'
 	},
 	{
-		id: 'quotable',
+		id: 'dummyjson-quotes',
 		name: 'Случайные цитаты',
 		description: 'Вдохновляющие цитаты с авторами',
-		endpoint: 'https://api.quotable.io/quotes/random?limit=5',
+		endpoint: 'https://dummyjson.com/quotes/random',
 		category: 'content',
 		method: 'GET',
 		requiresAuth: false,
-		rateLimit: '180 запросов в минуту',
-		documentation: 'https://github.com/lukePeavey/quotable'
+		rateLimit: 'Unlimited',
+		documentation: 'https://dummyjson.com/docs/quotes'
 	},
 	{
 		id: 'lorem-picsum',
@@ -125,27 +125,28 @@ const publicAPIs: APIEndpoint[] = [
 
 	// Geographic Data
 	{
-		id: 'restcountries',
+		id: 'countries-dataset',
 		name: 'Данные о странах',
 		description: 'Подробная информация о странах',
-		endpoint: 'https://restcountries.com/v3.1/all',
+		endpoint:
+			'https://cdn.jsdelivr.net/gh/mledoze/countries@master/dist/countries.json',
 		category: 'geographic',
 		method: 'GET',
 		requiresAuth: false,
 		rateLimit: 'Unlimited',
-		documentation: 'https://restcountries.com/'
+		documentation: 'https://github.com/mledoze/countries'
 	},
 	{
-		id: 'openweather',
+		id: 'open-meteo',
 		name: 'Данные о погоде',
-		description: 'Текущая погода в Лондоне (демо)',
+		description: 'Текущая погода в Лондоне',
 		endpoint:
-			'https://api.openweathermap.org/data/2.5/weather?q=London&appid=demo',
+			'https://api.open-meteo.com/v1/forecast?latitude=51.5074&longitude=-0.1278&current_weather=true',
 		category: 'geographic',
 		method: 'GET',
 		requiresAuth: false,
-		rateLimit: 'Ограниченный демо-ключ',
-		documentation: 'https://openweathermap.org/api'
+		rateLimit: 'Unlimited',
+		documentation: 'https://open-meteo.com/en/docs'
 	},
 
 	// Entertainment
@@ -243,22 +244,22 @@ const publicAPIs: APIEndpoint[] = [
 		id: 'bored-api',
 		name: 'Чем заняться',
 		description: 'Идея, чем заняться от скуки',
-		endpoint: 'https://www.boredapi.com/api/activity',
+		endpoint: 'https://bored-api.appbrewery.com/random',
 		category: 'entertainment',
 		method: 'GET',
 		requiresAuth: false,
-		rateLimit: 'Unlimited',
-		documentation: 'https://www.boredapi.com/documentation'
+		rateLimit: '100 запросов за окно',
+		documentation: 'https://bored-api.appbrewery.com/documentation'
 	}
 ]
 
 const categories = {
-	users: { name: 'Пользователи и профили', icon: '👤' },
-	content: { name: 'Записи и контент', icon: '📝' },
-	products: { name: 'Товары и e-commerce', icon: '🛍️' },
-	geographic: { name: 'Географические данные', icon: '🌍' },
-	entertainment: { name: 'Развлечения', icon: '🎮' },
-	utilities: { name: 'Утилиты', icon: '🔧' }
+	users: { name: 'Пользователи и профили', icon: Users },
+	content: { name: 'Записи и контент', icon: FileText },
+	products: { name: 'Товары и e-commerce', icon: ShoppingBag },
+	geographic: { name: 'Географические данные', icon: Globe },
+	entertainment: { name: 'Развлечения', icon: Gamepad2 },
+	utilities: { name: 'Утилиты', icon: Wrench }
 }
 
 export default function MockDataGeneratorPage() {
@@ -268,8 +269,8 @@ export default function MockDataGeneratorPage() {
 	const [data, setData] = useState<any>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [copiedData, setCopiedData] = useState(false)
+	const [copiedEndpoint, setCopiedEndpoint] = useState(false)
 	const [activeCategory, setActiveCategory] = useState('users')
-	const [viewMode, setViewMode] = useState<'json' | 'formatted'>('json')
 	const [searchQuery, setSearchQuery] = useState('')
 	const [responseTime, setResponseTime] = useState<number | null>(null)
 	const [dataSize, setDataSize] = useState<string | null>(null)
@@ -329,6 +330,18 @@ export default function MockDataGeneratorPage() {
 		}
 	}
 
+	const copyEndpoint = async () => {
+		if (!selectedApiInfo) return
+
+		try {
+			await navigator.clipboard.writeText(selectedApiInfo.endpoint)
+			setCopiedEndpoint(true)
+			setTimeout(() => setCopiedEndpoint(false), 2000)
+		} catch (err) {
+			console.error('Не удалось скопировать адрес:', err)
+		}
+	}
+
 	const downloadJSON = () => {
 		if (!data) return
 
@@ -362,48 +375,6 @@ export default function MockDataGeneratorPage() {
 		})
 	}
 
-	const renderFormattedData = (obj: any, depth = 0): React.ReactNode => {
-		if (obj === null) return <span className='text-muted-foreground'>null</span>
-		if (typeof obj !== 'object')
-			return <span className='text-foreground'>{String(obj)}</span>
-
-		if (Array.isArray(obj)) {
-			return (
-				<div className='space-y-2'>
-					{obj.map((item, index) => (
-						<div key={index} className='rounded-lg border p-3'>
-							<div className='mb-1 font-mono text-xs text-muted-foreground'>
-								[{index}]
-							</div>
-							{renderFormattedData(item, depth + 1)}
-						</div>
-					))}
-				</div>
-			)
-		}
-
-		return (
-			<div className='space-y-2'>
-				{Object.entries(obj).map(([key, value]) => (
-					<div key={key} className='flex items-start gap-2'>
-						<span className='text-sm font-medium text-muted-foreground min-w-[120px]'>
-							{key}:
-						</span>
-						<div className='flex-1'>
-							{typeof value === 'object' && value !== null ? (
-								<div className='rounded-lg border p-2'>
-									{renderFormattedData(value, depth + 1)}
-								</div>
-							) : (
-								renderFormattedData(value, depth + 1)
-							)}
-						</div>
-					</div>
-				))}
-			</div>
-		)
-	}
-
 	const selectedApiInfo = publicAPIs.find(api => api.id === selectedAPI)
 
 	return (
@@ -425,7 +396,7 @@ export default function MockDataGeneratorPage() {
 									'flex items-center gap-1.5'
 								)}
 							>
-								<span aria-hidden>{category.icon}</span>
+								<category.icon className='h-3.5 w-3.5' aria-hidden />
 								{category.name.split(' ')[0]}
 							</button>
 						))}
@@ -527,18 +498,22 @@ export default function MockDataGeneratorPage() {
 								{error}
 							</p>
 						) : loading ? (
-							<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
-								Загружаем…
-							</p>
+							// Строки повторяют силуэт JSON-ответа, а не абстрактный
+							// спиннер: форма результата видна ещё до того, как он придёт.
+							<div className='space-y-2 px-5 py-4 sm:px-6'>
+								<Skeleton className='h-3.5 w-2/5' />
+								<Skeleton className='ml-4 h-3.5 w-1/3' />
+								<Skeleton className='ml-4 h-3.5 w-1/2' />
+								<Skeleton className='ml-4 h-3.5 w-2/5' />
+								<Skeleton className='ml-8 h-3.5 w-1/4' />
+								<Skeleton className='ml-4 h-3.5 w-1/3' />
+								<Skeleton className='h-3.5 w-1/5' />
+							</div>
 						) : data ? (
 							<div className='max-h-[30rem] overflow-auto px-5 py-4 sm:px-6'>
-								{viewMode === 'json' ? (
-									<pre className='font-mono text-xs leading-relaxed whitespace-pre-wrap'>
-										{JSON.stringify(data, null, 2)}
-									</pre>
-								) : (
-									renderFormattedData(data)
-								)}
+								<pre className='font-mono text-xs leading-relaxed whitespace-pre-wrap'>
+									{JSON.stringify(data, null, 2)}
+								</pre>
 							</div>
 						) : (
 							<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
@@ -548,30 +523,26 @@ export default function MockDataGeneratorPage() {
 					</div>
 				</div>
 
-				{/* Полоса ответа: вид, адрес и что получилось по времени и весу. */}
+				{/* Полоса ответа: адрес и что получилось по времени и весу. */}
 				<div className={toolFooterBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
-						{(
-							[
-								['json', 'JSON'],
-								['formatted', 'Списком']
-							] as ['json' | 'formatted', string][]
-						).map(([value, label]) => (
-							<button
-								key={value}
-								type='button'
-								onClick={() => setViewMode(value)}
-								aria-pressed={viewMode === value}
-								className={toolPill(viewMode === value)}
-							>
-								{label}
-							</button>
-						))}
-					</div>
-
 					{selectedApiInfo && (
-						<span className='min-w-0 truncate font-mono text-xs text-muted-foreground'>
-							{selectedApiInfo.endpoint}
+						<span className='flex min-w-0 items-center gap-1'>
+							<span className='min-w-0 truncate font-mono text-xs text-muted-foreground'>
+								{selectedApiInfo.endpoint}
+							</span>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={copyEndpoint}
+								title='Скопировать адрес'
+								className={cn(toolIconButton, 'h-6 w-6 shrink-0')}
+							>
+								{copiedEndpoint ? (
+									<Check className='h-3 w-3 text-green-600 dark:text-green-400' />
+								) : (
+									<Copy className='h-3 w-3' />
+								)}
+							</Button>
 						</span>
 					)}
 
