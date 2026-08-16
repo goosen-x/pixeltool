@@ -1,14 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import {
-	Check,
-	Download,
-	Loader2,
-	Scissors,
-	Trash2,
-	Upload
-} from 'lucide-react'
+import { Check, Download, Scissors, Trash2, Upload } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
@@ -30,7 +23,6 @@ export default function RemoveBackgroundPage() {
 	const widget = getWidgetById('remove-background')!
 
 	const [status, setStatus] = useState<Status>('idle')
-	const [sourceFile, setSourceFile] = useState<File | null>(null)
 	const [sourceUrl, setSourceUrl] = useState<string | null>(null)
 	const [resultUrl, setResultUrl] = useState<string | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -55,16 +47,15 @@ export default function RemoveBackgroundPage() {
 		const file = event.target.files?.[0]
 		if (!file) return
 
-		setSourceFile(file)
 		setSourceUrl(URL.createObjectURL(file))
 		setResultUrl(null)
-		setStatus('idle')
 		setErrorMessage(null)
+		// Обработка стартует сразу — лишний клик по отдельной кнопке «Убрать
+		// фон» ничего не решал, результат детерминирован от файла.
+		void processFile(file)
 	}
 
-	const removeBackground = async () => {
-		if (!sourceFile) return
-
+	const processFile = async (file: File) => {
 		setStatus('processing')
 		setErrorMessage(null)
 		progressByKey.current = new Map()
@@ -77,7 +68,7 @@ export default function RemoveBackgroundPage() {
 			// fetch(image) сама (см. imageSourceToImageData в её исходниках), а
 			// File — это уже Blob, декодируется напрямую без сетевого запроса.
 			// Так надёжнее и меньше точек отказа.
-			const blob = await removeBackground(sourceFile, {
+			const blob = await removeBackground(file, {
 				// isnet_quint8 — самая лёгкая из трёх моделей (~40 МБ, квантованная
 				// int8). isnet_fp16 (~80 МБ) и isnet (~170 МБ) точнее, но тяжелее
 				// скачивать на мобильном — не оправдано для первой версии.
@@ -116,7 +107,6 @@ export default function RemoveBackgroundPage() {
 	}
 
 	const reset = () => {
-		setSourceFile(null)
 		setSourceUrl(null)
 		setResultUrl(null)
 		setStatus('idle')
@@ -134,21 +124,16 @@ export default function RemoveBackgroundPage() {
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-3'>
-						<span className='text-sm text-muted-foreground'>
-							Обработка целиком в браузере — фото не отправляется на сервер
+					{modelReady ? (
+						<span className='inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400'>
+							<Check className='h-3 w-3' />
+							Модель уже загружена
 						</span>
-						{modelReady ? (
-							<span className='inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400'>
-								<Check className='h-3 w-3' />
-								Модель уже загружена
-							</span>
-						) : (
-							<span className='inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
-								Модель ещё не скачана (~40 МБ)
-							</span>
-						)}
-					</div>
+					) : (
+						<span className='inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+							Модель ещё не скачана (~40 МБ)
+						</span>
+					)}
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
@@ -196,6 +181,33 @@ export default function RemoveBackgroundPage() {
 					// Результат готов — слайдер «до/после» во всю ширину и высоту
 					// карточки, без отступов. Заменить фото — иконка Upload в toolBar.
 					<BeforeAfterSlider beforeUrl={sourceUrl} afterUrl={resultUrl} />
+				) : status === 'processing' ? (
+					// Крупный спиннер вместо строки текста — обработка стартует сразу
+					// после выбора фото, отдельной кнопки-подтверждения больше нет.
+					<div className='flex flex-col items-center gap-5 px-5 py-20 text-center sm:px-6'>
+						<div className='relative flex h-16 w-16 items-center justify-center'>
+							<div className='absolute inset-0 animate-spin rounded-full border-4 border-primary/15 border-t-primary' />
+							<Scissors className='h-6 w-6 text-primary' />
+						</div>
+						<div className='w-full max-w-xs space-y-2'>
+							<p className='font-medium text-foreground'>
+								{/* modelReady — уже видели успешный прогон на этом устройстве:
+								    даже если колбэк progress ещё раз тикнет (читает из кэша),
+								    не пишем «загружаем модель» — это будет неправдой. */}
+								{!modelReady && progressPercent !== null
+									? `Загружаем модель… ${progressPercent}%`
+									: 'Убираем фон…'}
+							</p>
+							{!modelReady && progressPercent !== null && (
+								<div className='h-1.5 w-full overflow-hidden rounded-full bg-muted'>
+									<div
+										className='h-full bg-primary transition-all'
+										style={{ width: `${progressPercent}%` }}
+									/>
+								</div>
+							)}
+						</div>
+					</div>
 				) : (
 					<div className='flex flex-col items-center gap-4 px-5 py-6 sm:px-6'>
 						{sourceUrl ? (
@@ -221,45 +233,6 @@ export default function RemoveBackgroundPage() {
 								<Upload className='h-6 w-6 text-muted-foreground' />
 								<span className='text-sm'>Выберите фото</span>
 							</button>
-						)}
-
-						{sourceUrl && status !== 'processing' && (
-							<div className='w-full max-w-xs space-y-2 text-center'>
-								<Button
-									onClick={removeBackground}
-									className='w-full cursor-pointer gap-2'
-								>
-									<Scissors className='h-4 w-4' />
-									Убрать фон
-								</Button>
-								<p className='text-xs text-muted-foreground'>
-									{modelReady
-										? 'Модель уже загружена на этом устройстве — обработка займёт пару секунд.'
-										: 'При первом запуске на этом устройстве скачается модель ИИ (~40 МБ) — дальше она в кэше браузера, повторно скачивать не придётся.'}
-								</p>
-							</div>
-						)}
-
-						{status === 'processing' && (
-							<div className='w-full max-w-xs space-y-2'>
-								<div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
-									<Loader2 className='h-4 w-4 animate-spin' />
-									{/* modelReady — уже видели успешный прогон на этом устройстве:
-									    даже если колбэк progress ещё раз тикнет (читает из кэша),
-									    не пишем «загружаем модель» — это будет неправдой. */}
-									{!modelReady && progressPercent !== null
-										? `Загружаем модель… ${progressPercent}%`
-										: 'Убираем фон…'}
-								</div>
-								{!modelReady && progressPercent !== null && (
-									<div className='h-1.5 w-full overflow-hidden rounded-full bg-muted'>
-										<div
-											className='h-full bg-primary transition-all'
-											style={{ width: `${progressPercent}%` }}
-										/>
-									</div>
-								)}
-							</div>
 						)}
 
 						{errorMessage && (
