@@ -4,8 +4,8 @@ import {
 	CaseSensitive,
 	EyeOff,
 	FileSearch,
+	Dot,
 	FlipVertical,
-	GitCommitHorizontal,
 	GitCompare,
 	Laugh,
 	Smile,
@@ -516,7 +516,7 @@ export const textWidgets: Widget[] = [
 		// интент («на русский» 3845, «с морзе на русский» 2215, «звук» 314,
 		// «в текст» 289). Берём консервативную оценку по головному термину.
 		searchVolume: 26916,
-		icon: GitCommitHorizontal,
+		icon: Dot,
 		category: 'text',
 		translationKey: 'morseCodeTranslator',
 		path: 'morse-code-translator',
