@@ -561,7 +561,11 @@ export const toolWidgets: Widget[] = [
 			'Удалите фон с фото прямо в браузере — фото никуда не отправляется. Первый запуск скачивает модель (~40 МБ), дальше работает из кэша.',
 		useCase:
 			'Убрать фон с фотографии для маркетплейса, аватарки или дизайна — без загрузки на сторонний сервер',
-		recommendedTools: ['favicon-generator', 'image-size-checker', 'qr-generator'],
+		recommendedTools: [
+			'favicon-generator',
+			'image-size-checker',
+			'qr-generator'
+		],
 		difficulty: 'beginner',
 		tags: [
 			'background',
