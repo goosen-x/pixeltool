@@ -1,11 +1,11 @@
 import { Widget } from './index'
 import {
+	Blocks,
 	Clock,
 	Database,
 	ImageIcon,
 	LinkIcon,
 	Monitor,
-	Paintbrush,
 	TerminalSquare,
 	Youtube
 } from 'lucide-react'
@@ -481,7 +481,7 @@ export const toolWidgets: Widget[] = [
 		// мобильной игрой-раскраской «Pixel Art: Color by Number» (взлом,
 		// coloring, игра), в searchVolume не берём.
 		searchVolume: 1102,
-		icon: Paintbrush,
+		icon: Blocks,
 		category: 'utilities',
 		translationKey: 'pixelArtEditor',
 		path: 'pixel-art-editor',

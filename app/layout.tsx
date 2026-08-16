@@ -12,7 +12,8 @@ import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { WebVitals } from '@/components/analytics/WebVitals'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
+import { pluralizeRu } from '@/lib/utils/pluralize'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
 import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregister'
@@ -37,11 +38,28 @@ export async function generateMetadata(): Promise<Metadata> {
 	const locale = 'ru' // Only Russian locale now
 
 	// Запасной заголовок: показывается только там, где сегмент не задал свой.
-	// Число берём из widgets.length — «52+» тут держалось годами при 48 реальных
-	// тулах, а «калькуляторы» обещали то, чего в продукте нет вовсе.
+	// Число берём из publicWidgets.length, а не widgets.length — демо-тулы
+	// (Widget['demo']) в паблик-счётчик не считаются. «52+» тут держалось
+	// годами при 48 реальных тулах, а «калькуляторы» обещали то, чего в
+	// продукте нет вовсе.
+	const toolCount = publicWidgets.length
+	// У прилагательного своя пара форм: «1 бесплатный», «2+/5+ бесплатных» —
+	// gen. plural одинаков что для «мало», что для «много», в отличие от
+	// существительного (см. pluralizeRu). Родительный падеж мн. ч. И.И.
+	const freeForm = pluralizeRu(toolCount, [
+		'бесплатный',
+		'бесплатных',
+		'бесплатных'
+	])
+	const toolForm = pluralizeRu(toolCount, [
+		'онлайн-инструмент',
+		'онлайн-инструмента',
+		'онлайн-инструментов'
+	])
+
 	const currentMetadata = {
 		title: {
-			default: `PixelTool — ${widgets.length} бесплатных онлайн-инструментов`,
+			default: `PixelTool — ${toolCount} ${freeForm} ${toolForm}`,
 			template: '%s | PixelTool'
 		},
 		description: `Бесплатные онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом и кодом. Без установки и регистрации.`

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, X, Loader2 } from 'lucide-react'
-import { widgetCategories, widgets } from '@/lib/constants/widgets'
+import { widgetCategories, publicWidgets } from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
 import { cn } from '@/lib/utils'
@@ -24,8 +24,8 @@ interface Props {
 /** Сколько инструментов в категории — показываем на чипсе. */
 function countIn(category: string): number {
 	return category === ''
-		? widgets.length
-		: widgets.filter(widget => widget.category === category).length
+		? publicWidgets.length
+		: publicWidgets.filter(widget => widget.category === category).length
 }
 
 function hrefFor(category: string): string {
@@ -46,7 +46,7 @@ export function CategoryHero({
 	const meta =
 		CATEGORY_META[category as keyof typeof CATEGORY_META] ?? CATEGORY_META['']
 
-	const found = filterWidgets(widgets, debouncedSearch, category).length
+	const found = filterWidgets(publicWidgets, debouncedSearch, category).length
 	const chips: string[] = ['', ...Object.keys(widgetCategories)]
 
 	// bg-muted, а не bg-card: в светлой теме card — чистый белый, и карточка

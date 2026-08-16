@@ -4,7 +4,8 @@ import { WhyChooseSection } from '@/components/homepage/WhyChooseSection'
 import { RecentToolsSection } from '@/components/homepage/RecentToolsSection'
 import { ArticlesSection } from '@/components/homepage/ArticlesSection'
 import { FaqSection } from '@/components/homepage/FaqSection'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
+import { onlineToolsCountLabel, toolsCountLabel } from '@/lib/utils/pluralize'
 import { Metadata } from 'next'
 
 interface Props {
@@ -21,11 +22,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	// keywords не задаём: поисковики игнорируют его с середины нулевых.
 	const metadata = {
 		// 69 символов — влезает в срез Яндекса (~70).
-		title: `Случайное число, QR-код, пароль, эмодзи — ${widgets.length} инструментов | PixelTool`,
+		title: `Случайное число, QR-код, пароль, эмодзи — ${toolsCountLabel(publicWidgets.length)} | PixelTool`,
 		// 142 символа — влезает в срез (~160). «Бесплатных» не пишем безусловно:
 		// часть инструментов и монетизация (реклама/платные тулы) планируются —
 		// см. заметку пользователя от 2026-07-20.
-		description: `${widgets.length} онлайн-инструментов: случайные числа, QR-коды, пароли, эмодзи, работа с текстом. Без установки и регистрации — прямо в браузере.`
+		description: `${onlineToolsCountLabel(publicWidgets.length)}: случайные числа, QR-коды, пароли, эмодзи, работа с текстом. Без установки и регистрации — прямо в браузере.`
 	}
 
 	return {

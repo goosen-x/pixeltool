@@ -5,9 +5,9 @@ import {
 	EyeOff,
 	FileSearch,
 	FlipVertical,
+	GitCommitHorizontal,
 	GitCompare,
 	Laugh,
-	Radio,
 	Smile,
 	Volume2,
 	WandSparkles
@@ -516,7 +516,7 @@ export const textWidgets: Widget[] = [
 		// интент («на русский» 3845, «с морзе на русский» 2215, «звук» 314,
 		// «в текст» 289). Берём консервативную оценку по головному термину.
 		searchVolume: 26916,
-		icon: Radio,
+		icon: GitCommitHorizontal,
 		category: 'text',
 		translationKey: 'morseCodeTranslator',
 		path: 'morse-code-translator',

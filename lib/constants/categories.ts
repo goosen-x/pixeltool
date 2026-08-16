@@ -1,4 +1,5 @@
-import { widgetCategories, widgets } from './widgets'
+import { widgetCategories, publicWidgets } from './widgets'
+import { pluralizeRu } from '@/lib/utils/pluralize'
 
 export type CategoryKey = keyof typeof widgetCategories
 
@@ -42,11 +43,11 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 	'': {
 		title: 'Все',
 		heading: 'Онлайн-инструменты для любых задач',
-		description: `${widgets.length} инструментов для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом и кодом. Всё считается прямо в браузере: файлы никуда не уходят, регистрация не нужна.`,
+		description: `${publicWidgets.length} ${pluralizeRu(publicWidgets.length, ['инструмент', 'инструмента', 'инструментов'])} для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом и кодом. Всё считается прямо в браузере: файлы никуда не уходят, регистрация не нужна.`,
 		// Корневой layout дописывает « | PixelTool» (+12 симв.) ко всем дочерним
 		// сегментам — держим строку короткой, чтобы итог влез в срез Яндекса (~70).
 		metaTitle: 'Онлайн-инструменты: случайные числа, QR-коды, пароли',
-		metaDescription: `${widgets.length} бесплатных онлайн-инструментов: генератор случайных чисел, QR-кодов и паролей, эмодзи, работа с текстом, генераторы CSS и форматтеры. Без регистрации, всё в браузере.`,
+		metaDescription: `${publicWidgets.length} ${pluralizeRu(publicWidgets.length, ['бесплатный', 'бесплатных', 'бесплатных'])} онлайн-${pluralizeRu(publicWidgets.length, ['инструмент', 'инструмента', 'инструментов'])}: генератор случайных чисел, QR-кодов и паролей, эмодзи, работа с текстом, генераторы CSS и форматтеры. Без регистрации, всё в браузере.`,
 		intro: [
 			{
 				title: 'Полезно',

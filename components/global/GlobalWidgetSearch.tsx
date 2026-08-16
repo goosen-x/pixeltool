@@ -23,7 +23,12 @@ import {
 	Clock,
 	Sparkles
 } from 'lucide-react'
-import { widgets, widgetCategories, type Widget } from '@/lib/constants/widgets'
+import {
+	publicWidgets,
+	widgetCategories,
+	type Widget
+} from '@/lib/constants/widgets'
+import { toolsCountLabel } from '@/lib/utils/pluralize'
 import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { highlightText } from '@/lib/utils/highlightText'
@@ -54,7 +59,7 @@ export function GlobalWidgetSearch({
 
 	// Convert widgets to searchable items
 	const searchableWidgets = useMemo(() => {
-		return widgets.map(widget => {
+		return publicWidgets.map(widget => {
 			// Hardcoded Russian titles and descriptions
 			const titles: Record<string, string> = {
 				qrGenerator: 'QR-код генератор',
@@ -438,7 +443,7 @@ export function GlobalWidgetSearch({
 						</div>
 						<span className='flex items-center gap-1 mx-auto sm:mx-0'>
 							<Sparkles className='w-3 h-3' />
-							{widgets.length} инструментов
+							{toolsCountLabel(publicWidgets.length)}
 						</span>
 					</div>
 				</DialogContent>
