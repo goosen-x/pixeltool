@@ -54,8 +54,8 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 							)}
 							{widget?.demo && (
 								<div className='mb-6 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-400'>
-									Демо-версия — тул ещё не утверждён финально и не
-									опубликован на прод (не в каталоге, не в поиске).
+									Демо-версия — тул ещё не утверждён финально и не опубликован
+									на прод (не в каталоге, не в поиске).
 								</div>
 							)}
 							{widget && (

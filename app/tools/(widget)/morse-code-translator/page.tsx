@@ -5,8 +5,17 @@ import { ArrowLeftRight, Check, Copy, Play, Trash2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
-import { textToMorse, morseToText, type MorseLang } from '@/lib/utils/morse-code'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
+import {
+	textToMorse,
+	morseToText,
+	type MorseLang
+} from '@/lib/utils/morse-code'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { MorseCodeTranslatorSeo } from './MorseCodeTranslatorSeo'
