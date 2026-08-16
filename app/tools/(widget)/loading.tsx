@@ -1,65 +1,44 @@
+import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { toolBar, toolFooterBar } from '@/lib/ui/tool-pill'
 
+/**
+ * Next.js route-level fallback для `(widget)` во время серверной навигации.
+ *
+ * Подставляется только вместо `{children}` в `ProjectsLayoutWrapper` — шапка
+ * тула, breadcrumbs, сайдбар и подвал уже отрисованы им самим и здесь не
+ * дублируются. Форма повторяет единую карточку тула, см. WidgetSkeleton.
+ */
 export default function ToolLoading() {
 	return (
-		<div className='container max-w-7xl mx-auto px-4 py-8'>
-			<div className='grid gap-6 lg:grid-cols-[1fr_300px]'>
-				{/* Main Content */}
-				<div className='space-y-6'>
-					{/* Header */}
-					<div className='space-y-4'>
-						<Skeleton className='h-12 w-3/4' />
-						<Skeleton className='h-6 w-full' />
-						<Skeleton className='h-6 w-2/3' />
-					</div>
-
-					{/* Widget Card */}
-					<Card>
-						<CardHeader>
-							<Skeleton className='h-8 w-48' />
-						</CardHeader>
-						<CardContent className='space-y-4'>
-							<Skeleton className='h-12 w-full' />
-							<Skeleton className='h-12 w-full' />
-							<Skeleton className='h-24 w-full' />
-						</CardContent>
-					</Card>
-
-					{/* Result Card */}
-					<Card>
-						<CardHeader>
-							<Skeleton className='h-8 w-32' />
-						</CardHeader>
-						<CardContent>
-							<Skeleton className='h-48 w-full' />
-						</CardContent>
-					</Card>
+		<Card className='overflow-hidden p-0'>
+			<div className={toolBar}>
+				<div className='flex flex-wrap items-center gap-1.5'>
+					<Skeleton className='h-7 w-16 rounded-full' />
+					<Skeleton className='h-7 w-16 rounded-full' />
+					<Skeleton className='h-7 w-16 rounded-full' />
 				</div>
-
-				{/* Sidebar */}
-				<aside className='space-y-4'>
-					<Card>
-						<CardHeader>
-							<Skeleton className='h-6 w-32' />
-						</CardHeader>
-						<CardContent className='space-y-3'>
-							<Skeleton className='h-4 w-full' />
-							<Skeleton className='h-4 w-3/4' />
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardHeader>
-							<Skeleton className='h-6 w-24' />
-						</CardHeader>
-						<CardContent className='space-y-2'>
-							<Skeleton className='h-8 w-full' />
-							<Skeleton className='h-8 w-full' />
-						</CardContent>
-					</Card>
-				</aside>
+				<div className='flex items-center gap-0.5 sm:ml-auto'>
+					<Skeleton className='h-8 w-8' />
+					<Skeleton className='h-8 w-8' />
+				</div>
 			</div>
-		</div>
+
+			<div className='grid md:grid-cols-2'>
+				<div className='space-y-3 px-5 py-6 sm:px-6 md:border-r'>
+					<Skeleton className='h-4 w-24' />
+					<Skeleton className='h-24 w-full' />
+				</div>
+				<div className='space-y-3 px-5 py-6 sm:px-6'>
+					<Skeleton className='h-4 w-24' />
+					<Skeleton className='h-24 w-full' />
+				</div>
+			</div>
+
+			<div className={toolFooterBar}>
+				<Skeleton className='h-7 w-28 rounded-full' />
+				<Skeleton className='ml-auto h-4 w-20' />
+			</div>
+		</Card>
 	)
 }
