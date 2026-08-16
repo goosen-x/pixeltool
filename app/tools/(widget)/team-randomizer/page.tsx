@@ -6,7 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Shuffle, Copy, Check, RotateCcw, Download } from 'lucide-react'
-import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TeamRandomizerSeo } from './TeamRandomizerSeo'
@@ -15,6 +20,9 @@ interface Team {
 	name: string
 	members: string[]
 }
+
+// Восемь имён — на них видно, как делит и на 2 команды, и на 3.
+const EXAMPLE_PARTICIPANTS = 'Аня\nБорис\nВера\nГлеб\nДаша\nЕгор\nЖеня\nЗоя'
 
 // Fisher-Yates shuffle algorithm
 function shuffleArray<T>(array: T[]): T[] {
@@ -127,6 +135,11 @@ export default function TeamRandomizerPage() {
 		setTeams(generatedTeams)
 	}, [participants, numberOfTeams, preferredTeamSize, validateInputs])
 
+	// Load example participants
+	const loadExample = useCallback(() => {
+		setParticipantsInput(EXAMPLE_PARTICIPANTS)
+	}, [])
+
 	// Reset all inputs
 	const resetAll = useCallback(() => {
 		setParticipantsInput('')
@@ -216,6 +229,13 @@ export default function TeamRandomizerPage() {
 					</span>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<button
+							type='button'
+							onClick={loadExample}
+							className={toolPill(false)}
+						>
+							Пример
+						</button>
 						<Button
 							size='icon'
 							variant='ghost'
