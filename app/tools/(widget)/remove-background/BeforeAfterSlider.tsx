@@ -1,12 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-	motion,
-	useMotionValue,
-	useSpring,
-	useTransform
-} from 'motion/react'
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
 
 interface BeforeAfterSliderProps {
 	beforeUrl: string
@@ -61,13 +56,19 @@ export function BeforeAfterSlider({
 
 	const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
 		if (!isDragging) return
-		updateFromPointer(event.clientX, event.currentTarget.getBoundingClientRect())
+		updateFromPointer(
+			event.clientX,
+			event.currentTarget.getBoundingClientRect()
+		)
 	}
 
 	const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
 		setIsDragging(true)
 		event.currentTarget.setPointerCapture(event.pointerId)
-		updateFromPointer(event.clientX, event.currentTarget.getBoundingClientRect())
+		updateFromPointer(
+			event.clientX,
+			event.currentTarget.getBoundingClientRect()
+		)
 	}
 
 	return (
@@ -110,15 +111,20 @@ export function BeforeAfterSlider({
 				/>
 			</motion.div>
 
-			{/* Разделитель */}
+			{/* Разделитель: линия и круглая ручка позиционируются независимо друг
+			    от друга и обе явно центрируются на handleLeft — раньше ручка была
+			    просто вторым элементом внутри flex-обёртки с absolute без своих
+			    left/top, поэтому падала в статичный поток сразу правее линии
+			    вместо центра на ней. */}
 			<motion.div
-				className='pointer-events-none absolute inset-y-0 flex -translate-x-1/2 items-center'
+				className='pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.15)]'
+				style={{ left: handleLeft }}
+			/>
+			<motion.div
+				className='pointer-events-none absolute top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md'
 				style={{ left: handleLeft }}
 			>
-				<div className='h-full w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.15)]' />
-				<div className='absolute flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md'>
-					<span className='text-xs text-foreground'>↔</span>
-				</div>
+				<span className='text-xs text-foreground'>↔</span>
 			</motion.div>
 
 			<span className='pointer-events-none absolute top-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white'>
