@@ -475,14 +475,7 @@ export const textWidgets: Widget[] = [
 			'emoji-list'
 		],
 		difficulty: 'beginner',
-		tags: [
-			'invisible',
-			'symbol',
-			'unicode',
-			'blank',
-			'nickname',
-			'zero-width'
-		],
+		tags: ['invisible', 'symbol', 'unicode', 'blank', 'nickname', 'zero-width'],
 		metaTitle: 'Невидимый символ для ника — скопировать онлайн',
 		updatedAt: '2026-08-16',
 		metaDescription:
