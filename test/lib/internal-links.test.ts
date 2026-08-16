@@ -211,7 +211,8 @@ describe('runChecks', () => {
 		const report = runChecks(graph)
 		expect(report.issues).toContainEqual({
 			severity: 'error',
-			message: 'Битая ссылка: _posts/article-a.md → /tools/no-such-tool (тула не существует)'
+			message:
+				'Битая ссылка: _posts/article-a.md → /tools/no-such-tool (тула не существует)'
 		})
 	})
 
@@ -267,15 +268,14 @@ describe('runChecks', () => {
 		const report = runChecks(graph)
 		expect(report.issues).toContainEqual({
 			severity: 'warning',
-			message: 'Асимметричный related: article-a.md → article-b.md, обратной ссылки нет'
+			message:
+				'Асимметричный related: article-a.md → article-b.md, обратной ссылки нет'
 		})
 	})
 
 	it('не находит проблем в полностью согласованном графе', () => {
 		const graph = fakeGraph({
-			toolBlogLinks: new Map([
-				['tool-a', ['article-a']]
-			]),
+			toolBlogLinks: new Map([['tool-a', ['article-a']]]),
 			articles: [
 				{
 					slug: 'article-a',

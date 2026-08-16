@@ -313,7 +313,10 @@ export function runChecks(graph: LinkGraph): CheckReport {
 	for (const article of graph.articles) {
 		for (const relatedSlug of article.relatedSlugs) {
 			const relatedArticle = articlesBySlug.get(relatedSlug)
-			if (relatedArticle && !relatedArticle.relatedSlugs.includes(article.slug)) {
+			if (
+				relatedArticle &&
+				!relatedArticle.relatedSlugs.includes(article.slug)
+			) {
 				issues.push({
 					severity: 'warning',
 					message: `Асимметричный related: ${article.slug}.md → ${relatedSlug}.md, обратной ссылки нет`
