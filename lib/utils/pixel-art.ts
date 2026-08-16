@@ -95,11 +95,7 @@ export function imageDataToGrid(
 
 			const hex =
 				'#' +
-				[
-					source.data[idx],
-					source.data[idx + 1],
-					source.data[idx + 2]
-				]
+				[source.data[idx], source.data[idx + 1], source.data[idx + 2]]
 					.map(c => c.toString(16).padStart(2, '0'))
 					.join('')
 

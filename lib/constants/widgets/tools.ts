@@ -488,7 +488,11 @@ export const toolWidgets: Widget[] = [
 			'Нарисуйте пиксель-арт по сетке или превратите фото в пиксельную картинку — выберите ретро-палитру и скачайте PNG.',
 		useCase:
 			'Рисование пиксель-арта с нуля или превращение фото в пиксельную картинку для аватарок, спрайтов и иконок',
-		recommendedTools: ['ascii-art-generator', 'favicon-generator', 'emoji-list'],
+		recommendedTools: [
+			'ascii-art-generator',
+			'favicon-generator',
+			'emoji-list'
+		],
 		difficulty: 'beginner',
 		tags: [
 			'pixel',
