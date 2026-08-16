@@ -40,6 +40,16 @@ export function buildWidgetMetadata(slug: string): Metadata {
 	const url = `${BASE_URL}/tools/${slug}`
 	const ogImageUrl = buildWidgetOgImagePath(widget)
 
+	// Демо-тул: доступен по прямой ссылке для проверки, но не публикуется —
+	// noindex вместо canonical и явная пометка в заголовке вкладки.
+	if (widget.demo) {
+		return {
+			title: `[Демо] ${title}`,
+			description,
+			robots: { index: false, follow: false }
+		}
+	}
+
 	return {
 		title,
 		description,

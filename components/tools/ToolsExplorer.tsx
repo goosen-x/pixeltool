@@ -8,7 +8,7 @@ import {
 	ToolsFilterBar,
 	type SortOption
 } from '@/components/tools/ToolsFilterBar'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
 
 interface Props {
@@ -33,7 +33,7 @@ export function ToolsExplorer({ category }: Props) {
 	// перебирал бы полсотни виджетов на каждое нажатие клавиши.
 	const debouncedSearch = useDebouncedValue(search, 250)
 	const isSearching = search !== debouncedSearch
-	const found = filterWidgets(widgets, debouncedSearch, category).length
+	const found = filterWidgets(publicWidgets, debouncedSearch, category).length
 
 	return (
 		<>

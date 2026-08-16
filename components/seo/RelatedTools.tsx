@@ -1,4 +1,4 @@
-import { widgets, getRecommendedWidgets } from '@/lib/constants/widgets'
+import { publicWidgets, getRecommendedWidgets } from '@/lib/constants/widgets'
 import { RelatedToolsCarousel } from '@/components/seo/RelatedToolsCarousel'
 
 interface RelatedToolsProps {
@@ -20,7 +20,7 @@ export function RelatedTools({
 }: RelatedToolsProps) {
 	const recommended = getRecommendedWidgets(currentTool).slice(0, MAX_RELATED)
 
-	const sameCategory = widgets.filter(
+	const sameCategory = publicWidgets.filter(
 		widget =>
 			widget.id !== currentTool &&
 			!recommended.some(item => item.id === widget.id) &&

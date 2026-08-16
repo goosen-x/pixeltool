@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { widgets, widgetCategories } from '@/lib/constants/widgets'
+import { publicWidgets, widgetCategories } from '@/lib/constants/widgets'
 import { cn } from '@/lib/utils'
 import { FlipFadeText } from '@/components/ui/flip-fade-text'
 import { DitherHeroBackground } from '@/components/homepage/DitherHeroBackground'
@@ -101,7 +101,7 @@ export function HeroSection() {
 					/>
 					<div className='relative z-10 leading-tight'>
 						<span className='text-sm font-medium text-muted-foreground'>
-							{widgets.length} онлайн-инструментов
+							{publicWidgets.length} онлайн-инструментов
 						</span>
 					</div>
 				</div>

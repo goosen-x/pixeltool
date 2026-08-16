@@ -1,5 +1,5 @@
 import { Zap, Globe, Terminal } from 'lucide-react'
-import { widgets, widgetCategories } from '@/lib/constants/widgets'
+import { publicWidgets, widgetCategories } from '@/lib/constants/widgets'
 import { CardPattern } from '@/components/tools/CardPattern'
 import { CornerBadge } from '@/components/tools/CornerBadge'
 
@@ -31,7 +31,7 @@ const features = [
 		icon: Terminal,
 		gradient: 'from-neutral-500 to-neutral-400',
 		pattern: 4,
-		title: `${widgets.length} инструментов`,
+		title: `${publicWidgets.length} инструментов`,
 		description:
 			'От QR-кодов и генератора паролей до CSS-инструментов и работы с текстом — всё нужное под рукой.',
 		tags: [

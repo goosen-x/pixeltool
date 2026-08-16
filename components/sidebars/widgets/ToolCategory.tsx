@@ -10,6 +10,7 @@ type Item = {
 	title: string
 	Icon: React.ComponentType<{ className?: string }>
 	active: boolean
+	demo?: boolean
 }
 
 type Props = {
@@ -66,6 +67,7 @@ export const ToolCategory = ({
 						title={w.title ?? ''} // на случай undefined
 						Icon={w.Icon}
 						active={w.active}
+						demo={w.demo}
 						onClick={onItemClick}
 						transitionDelayMs={collapsed || !hydrated ? 0 : i * 50}
 					/>

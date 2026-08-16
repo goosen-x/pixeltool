@@ -1,6 +1,6 @@
 'use client'
 
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { useToolHistory } from '@/lib/hooks/useToolHistory'
 
@@ -22,7 +22,7 @@ export function RecentToolsSection() {
 	const ids = [...favorites, ...recentOnly].slice(0, DISPLAY_LIMIT)
 
 	const items = ids
-		.map(id => widgets.find(widget => widget.id === id))
+		.map(id => publicWidgets.find(widget => widget.id === id))
 		.filter((widget): widget is NonNullable<typeof widget> => Boolean(widget))
 
 	if (items.length === 0) return null

@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import Link from 'next/link'
 import { Search } from 'lucide-react'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
 import { highlightText } from '@/lib/utils/highlightText'
 import { CATEGORY_META, type CategoryKey } from '@/lib/constants/categories'
@@ -44,7 +44,7 @@ export function EnhancedWidgetSearch({
 	sort
 }: Props) {
 	const filtered = useMemo(() => {
-		let result = filterWidgets(widgets, search, category)
+		let result = filterWidgets(publicWidgets, search, category)
 
 		if (difficulty.length > 0) {
 			result = result.filter(

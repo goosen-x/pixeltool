@@ -34,6 +34,14 @@ export interface Widget {
 	 */
 	updatedAt?: string
 	/**
+	 * Тул ещё не утверждён финально — не публикуется на прод-поверхностях
+	 * (каталог /tools, sitemap, JSON-LD, «Похожие инструменты», случайный
+	 * тул, счётчики на главной), но доступен по прямой ссылке и виден в
+	 * левом сайдбаре с плашкой «Демо» — так его можно проверить перед тем,
+	 * как снять флаг. См. `publicWidgets` в этом файле.
+	 */
+	demo?: boolean
+	/**
 	 * Показов/мес в Вордстате по головной фразе тула (см. lib/seo/phrases.txt,
 	 * lib/seo/demand-report.md) — сырая частота, без очистки от чужого интента.
 	 * У части тулов (qr-generator, emoji-list и т.п.) реальный релевантный спрос
@@ -70,6 +78,14 @@ export const widgets: Widget[] = [
 	...toolWidgets
 ]
 
+/**
+ * Тулы без демо-флага — источник для всех прод-поверхностей (каталог,
+ * sitemap, структурные данные, «Похожие инструменты», счётчики). `widgets`
+ * (полный список) остаётся источником для getWidgetById и сайдбара — там
+ * демо-тулы обязаны резолвиться и быть видны.
+ */
+export const publicWidgets: Widget[] = widgets.filter(w => !w.demo)
+
 export const getWidgetById = (id: string): Widget | undefined => {
 	return widgets.find(w => w.id === id)
 }
@@ -90,7 +106,7 @@ export const getRecommendedWidgets = (widgetId: string): Widget[] => {
 
 	return widget.recommendedTools
 		.map(id => getWidgetById(id))
-		.filter((w): w is Widget => w !== undefined)
+		.filter((w): w is Widget => w !== undefined && !w.demo)
 }
 
 export const widgetCategories = {

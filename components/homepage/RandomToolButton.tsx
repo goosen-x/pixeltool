@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
 
 interface Props {
 	className?: string
@@ -15,7 +15,8 @@ export function RandomToolButton({ className }: Props) {
 	const router = useRouter()
 
 	const goToRandomTool = useCallback(() => {
-		const widget = widgets[Math.floor(Math.random() * widgets.length)]
+		const widget =
+			publicWidgets[Math.floor(Math.random() * publicWidgets.length)]
 		router.push(`/tools/${widget.path}`)
 	}, [router])
 

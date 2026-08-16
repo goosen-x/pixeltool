@@ -9,6 +9,7 @@ type Props = {
 	title: string
 	Icon: React.ComponentType<{ className?: string }>
 	active: boolean
+	demo?: boolean
 	onClick?: () => void
 	transitionDelayMs?: number
 }
@@ -18,6 +19,7 @@ export const ToolLink = ({
 	title,
 	Icon,
 	active,
+	demo,
 	onClick,
 	transitionDelayMs = 0
 }: Props) => (
@@ -39,6 +41,11 @@ export const ToolLink = ({
 		>
 			<Icon className='w-4 h-4' />
 			<span className='flex-1 truncate text-left'>{title}</span>
+			{demo && (
+				<span className='shrink-0 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[0.625rem] font-medium tracking-wide text-amber-600 uppercase dark:text-amber-400'>
+					Демо
+				</span>
+			)}
 			{active && <ChevronRight className='w-4 h-4' aria-hidden='true' />}
 		</Link>
 	</div>

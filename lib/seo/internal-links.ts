@@ -132,7 +132,11 @@ export interface LinkGraph {
 }
 
 export function loadTools(): ToolInfo[] {
-	return widgets.map(w => ({ id: w.id, path: w.path, title: w.title || w.id }))
+	// Демо-тулы (Widget['demo']) сознательно без ссылки из статьи — их рано
+	// проверять на orphan, они ещё не утверждены финально и не в проде.
+	return widgets
+		.filter(w => !w.demo)
+		.map(w => ({ id: w.id, path: w.path, title: w.title || w.id }))
 }
 
 export function loadArticles(postsDir: string): Article[] {

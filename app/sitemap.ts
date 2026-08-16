@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
 import { CATEGORY_KEYS } from '@/lib/constants/categories'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
@@ -31,7 +31,9 @@ const CONTENT_LAST_UPDATED = '2026-08-02'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Get all blog posts
-	const posts = getAllPostsFromFiles()
+	// Статьи про демо-тулы (Post['demo']) не публикуются в sitemap — см.
+	// Widget['demo'] в lib/constants/widgets/index.ts.
+	const posts = getAllPostsFromFiles().filter(post => !post.demo)
 
 	// Static routes
 	// /settings сюда сознательно не входит — у неё noindex (app/settings/layout.tsx),
@@ -73,7 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Add widget routes — стабильная дата, с переопределением на уровне тула.
 	// changeFrequency: 'monthly' — инструменты меняются редко, «weekly» вводил бы
 	// в заблуждение.
-	widgets.forEach(widget => {
+	publicWidgets.forEach(widget => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/${widget.path}`,
 			lastModified: widget.updatedAt || CONTENT_LAST_UPDATED,

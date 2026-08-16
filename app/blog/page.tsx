@@ -74,7 +74,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Blog(props: Props) {
-	const posts = await getAllPosts()
+	// Статьи про демо-тулы (Post['demo']) не публикуются в листинге, пока тул
+	// не утверждён финально — см. lib/constants/widgets/index.ts Widget['demo'].
+	const posts = (await getAllPosts()).filter(post => !post.demo)
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
 	// JSON-LD structured data for blog listing

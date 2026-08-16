@@ -73,6 +73,12 @@ export default async function Post(props: Params) {
 					]}
 				/>
 				{/* <Alert preview={post.preview} /> */}
+				{post.demo && (
+					<div className='mt-6 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-400'>
+						Демо-версия — статья про тул, который ещё не утверждён
+						финально и не опубликован на прод.
+					</div>
+				)}
 				{/* Сайдбар прячем на узких экранах: в статье он второстепенен,
 				    а текст важнее — на мобильном он бы вытеснил чтение */}
 				<div className='flex gap-8'>
@@ -172,17 +178,19 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 		alternates: {
 			canonical: articleUrl
 		},
-		robots: {
-			index: true,
-			follow: true,
-			googleBot: {
-				index: true,
-				follow: true,
-				'max-video-preview': -1,
-				'max-image-preview': 'large',
-				'max-snippet': -1
-			}
-		}
+		robots: post.demo
+			? { index: false, follow: false }
+			: {
+					index: true,
+					follow: true,
+					googleBot: {
+						index: true,
+						follow: true,
+						'max-video-preview': -1,
+						'max-image-preview': 'large',
+						'max-snippet': -1
+					}
+				}
 	}
 }
 

@@ -31,7 +31,8 @@ export const CategoriesNavigation = ({
 					href: `/tools/${w.path}`,
 					title: w.title ?? w.path,
 					Icon: w.icon,
-					active: pathname === `/tools/${w.path}`
+					active: pathname === `/tools/${w.path}`,
+					demo: w.demo
 				}))
 				return {
 					key,
@@ -49,6 +50,7 @@ export const CategoriesNavigation = ({
 				title: string
 				Icon: React.ComponentType<{ className?: string }>
 				active: boolean
+				demo?: boolean
 			}[]
 			isCollapsed: boolean
 		}>

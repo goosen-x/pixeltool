@@ -45,6 +45,7 @@ export function getPostBySlugFromFile(slug: string): Post {
 		},
 		content,
 		preview: data.preview || false,
+		demo: data.demo || false,
 		related: Array.isArray(data.related) ? data.related : []
 	}
 }

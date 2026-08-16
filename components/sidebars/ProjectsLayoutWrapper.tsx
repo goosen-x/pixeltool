@@ -49,7 +49,15 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
 						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
-							{widget && <WidgetStructuredData widget={widget} />}
+							{widget && !widget.demo && (
+								<WidgetStructuredData widget={widget} />
+							)}
+							{widget?.demo && (
+								<div className='mb-6 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-400'>
+									Демо-версия — тул ещё не утверждён финально и не
+									опубликован на прод (не в каталоге, не в поиске).
+								</div>
+							)}
 							{widget && (
 								<Breadcrumbs
 									className='px-0 sm:px-0 lg:px-0 pt-0 sm:pt-0 pb-0 sm:pb-0 mb-8 max-w-none mx-0'

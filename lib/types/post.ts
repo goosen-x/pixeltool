@@ -12,6 +12,12 @@ export type Post = {
 	}
 	content: string
 	preview?: boolean
+	/**
+	 * Статья про демо-тул (Widget['demo']) — не публикуется на прод (не в
+	 * листинге /blog, не в sitemap, noindex), доступна по прямой ссылке с
+	 * плашкой. Снимать вместе с demo у тула, когда он утверждён финально.
+	 */
+	demo?: boolean
 	/** Слаги связанных статей — задаются вручную во frontmatter */
 	related?: string[]
 }
