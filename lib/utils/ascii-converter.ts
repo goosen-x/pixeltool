@@ -9,10 +9,9 @@ export interface AsciiOptions {
 	fontSize?: number
 }
 
-export function textToAscii(
-	text: string,
-	font: 'standard' | 'small' = 'standard'
-): string {
+export type AsciiFont = 'standard' | 'small' | 'block'
+
+export function textToAscii(text: string, font: AsciiFont = 'standard'): string {
 	// Simple ASCII text generation
 	const fonts: Record<string, Record<string, string[]>> = {
 		standard: {
@@ -124,6 +123,17 @@ export function textToAscii(
 			' ': ['  ', '  ']
 		}
 	}
+
+	// «Крупный» — не новый набор глифов, а «Стандартный», перерисованный
+	// сплошным блоком. Рисовать 70 глифов (RU+EN+цифры) вручную под другой
+	// стиль — источник опечаток; форма букв уже проверена в «Стандартном»,
+	// меняем только «чернила» с буквы-заливки на █.
+	fonts.block = Object.fromEntries(
+		Object.entries(fonts.standard).map(([char, rows]) => [
+			char,
+			rows.map(row => row.replace(/[^ ]/g, '█'))
+		])
+	)
 
 	const selectedFont = fonts[font] || fonts.standard
 	const upperText = text.toUpperCase()

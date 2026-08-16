@@ -23,7 +23,8 @@ import {
 	textToAscii,
 	imageToAscii,
 	downloadAsciiAsImage,
-	downloadAsciiAsText
+	downloadAsciiAsText,
+	type AsciiFont
 } from '@/lib/utils/ascii-converter'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -31,16 +32,18 @@ import { AsciiArtGeneratorSeo } from './AsciiArtGeneratorSeo'
 
 type Mode = 'text' | 'image' | 'patterns'
 
-type AsciiFont = 'standard' | 'small'
-
 /**
- * Шрифтов ровно два. Третий, «Крупный», был заглушкой из двух букв (A и B)
- * с комментарием «// ... more letters» — на любом другом символе конвертер
- * падал. Обещать в интерфейсе то, чего нет, хуже, чем не обещать.
+ * Раньше здесь было только два шрифта: третий, «Крупный», был заглушкой из
+ * двух букв (A и B) и на любом другом символе конвертер падал — обещать в
+ * интерфейсе то, чего нет, хуже, чем не обещать, поэтому его убрали.
+ * Новый «Крупный» — не ручной набор глифов той же болезни, а «Стандартный»,
+ * перерисованный сплошным блоком (см. ascii-converter.ts) — работает для
+ * всех тех же символов, что и «Стандартный», без исключений.
  */
 const FONTS: [AsciiFont, string][] = [
 	['standard', 'Стандартный'],
-	['small', 'Мелкий']
+	['small', 'Мелкий'],
+	['block', 'Крупный']
 ]
 
 export default function AsciiArtGeneratorPage() {
