@@ -837,7 +837,8 @@ export const fontStyles: FontStyles = {
 
 	strikethrough: {
 		name: 'Strikethrough',
-		description: 'Зачёркнутый текст — работает в Telegram, VK и большинстве чатов',
+		description:
+			'Зачёркнутый текст — работает в Telegram, VK и большинстве чатов',
 		// Комбинирующий символ U+0336 (COMBINING LONG STROKE OVERLAY) рисует
 		// черту через предыдущий символ — таблица соответствий тут не нужна,
 		// приём работает на любом алфавите и знаках препинания. Ставится
