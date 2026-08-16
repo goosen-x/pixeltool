@@ -78,8 +78,13 @@ export const cssWidgets: Widget[] = [
 		gradient: 'from-blue-500 to-indigo-500',
 		title: 'CSS Flexbox генератор',
 		metaTitle: 'CSS Flexbox generator онлайн — justify-content и align-items',
+		// Карточка тула (ToolCard) обрезает description через line-clamp-2 — с
+		// прежней формулировкой обрыв приходился прямо на середину
+		// перечисления через запятую («настройте направление,...»), выглядело
+		// как сломанный текст. Одна связная фраза после двоеточия — как у
+		// grid-generator — обрывается по границе клаузы, а не списка.
 		description:
-			'Визуальный генератор CSS Flexbox: настройте направление, выравнивание и перенос элементов и скопируйте готовый код CSS и Tailwind.',
+			'Визуальный генератор CSS Flexbox: расположите и выровняйте элементы, скопируйте готовый код CSS или Tailwind.',
 		useCase:
 			'Бесплатный генератор Flexbox для создания адаптивных CSS макетов и изучения flexbox',
 		recommendedTools: [
