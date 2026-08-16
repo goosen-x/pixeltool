@@ -5,7 +5,12 @@ import { Download, Loader2, Trash2, Upload } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { formatBytes, percentSaved } from '@/lib/utils/format-bytes'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -93,7 +98,9 @@ export default function CompressImagePage() {
 			setStatus('done')
 		} catch (error) {
 			console.error(error)
-			setErrorMessage('Не получилось сжать файл. Попробуйте другое изображение.')
+			setErrorMessage(
+				'Не получилось сжать файл. Попробуйте другое изображение.'
+			)
 			setStatus('error')
 		}
 	}
