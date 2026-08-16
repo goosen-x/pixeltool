@@ -5,7 +5,12 @@ import { Check, Copy, Trash2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { flipUpsideDown, reverseText } from '@/lib/utils/flip-text'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
