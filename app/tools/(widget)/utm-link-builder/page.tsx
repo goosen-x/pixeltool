@@ -45,6 +45,10 @@ interface Preset {
 	name: string
 	source: string
 	medium: string
+	// Пример кампании: без него ссылка не соберётся сразу после клика на
+	// пресет — utm_campaign обязателен наравне с source и medium, а его
+	// пресеты раньше не трогали.
+	campaign: string
 	icon: React.ReactNode
 	color: string
 	gradient: string
@@ -64,6 +68,7 @@ const PRESETS: Preset[] = [
 		name: 'Google Ads',
 		source: 'google',
 		medium: 'cpc',
+		campaign: 'summer-sale',
 		icon: <FaGoogle className='w-5 h-5' />,
 		color: 'text-blue-600',
 		gradient: 'from-blue-500 to-blue-600',
@@ -74,6 +79,7 @@ const PRESETS: Preset[] = [
 		name: 'Yandex.Direct',
 		source: 'yandex',
 		medium: 'cpc',
+		campaign: 'summer-sale',
 		icon: <FaYandex className='w-5 h-5' />,
 		color: 'text-red-600',
 		gradient: 'from-red-500 to-red-600',
@@ -84,6 +90,7 @@ const PRESETS: Preset[] = [
 		name: 'VKontakte',
 		source: 'vk',
 		medium: 'social',
+		campaign: 'launch',
 		icon: <FaVk className='w-5 h-5' />,
 		color: 'text-blue-500',
 		gradient: 'from-blue-400 to-blue-500'
@@ -93,6 +100,7 @@ const PRESETS: Preset[] = [
 		name: 'Facebook',
 		source: 'facebook',
 		medium: 'social',
+		campaign: 'launch',
 		icon: <FaFacebookF className='w-5 h-5' />,
 		color: 'text-indigo-600',
 		gradient: 'from-indigo-500 to-indigo-600'
@@ -102,6 +110,7 @@ const PRESETS: Preset[] = [
 		name: 'Instagram',
 		source: 'instagram',
 		medium: 'social',
+		campaign: 'launch',
 		icon: <FaInstagram className='w-5 h-5' />,
 		color: 'text-pink-600',
 		gradient: 'from-pink-500 to-purple-600'
@@ -111,6 +120,7 @@ const PRESETS: Preset[] = [
 		name: 'Email',
 		source: 'newsletter',
 		medium: 'email',
+		campaign: 'newsletter',
 		icon: <FaEnvelope className='w-5 h-5' />,
 		color: 'text-green-600',
 		gradient: 'from-green-500 to-green-600',
@@ -226,7 +236,10 @@ export default function UTMBuilderPage() {
 			setParams(prev => ({
 				...prev,
 				source: preset.source,
-				medium: preset.medium
+				medium: preset.medium,
+				// Кампания — тоже обязательное поле: без неё ссылка после клика
+				// на пресет не соберётся. Не трогаем, если человек уже вписал своё.
+				campaign: prev.campaign || preset.campaign
 			}))
 		}
 	}
