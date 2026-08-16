@@ -43,6 +43,7 @@
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.10.0",
+		"@imgly/background-removal": "^1.7.0",
 		"@neondatabase/serverless": "^1.0.2",
 		"@paper-design/shaders-react": "^0.0.77",
 		"@radix-ui/react-avatar": "^1.1.11",
