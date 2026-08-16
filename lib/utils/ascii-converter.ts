@@ -11,7 +11,10 @@ export interface AsciiOptions {
 
 export type AsciiFont = 'standard' | 'small' | 'block'
 
-export function textToAscii(text: string, font: AsciiFont = 'standard'): string {
+export function textToAscii(
+	text: string,
+	font: AsciiFont = 'standard'
+): string {
 	// Simple ASCII text generation
 	const fonts: Record<string, Record<string, string[]>> = {
 		standard: {
