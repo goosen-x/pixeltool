@@ -15,6 +15,7 @@ export default function RemoveBackgroundPage() {
 	const widget = getWidgetById('remove-background')!
 
 	const [status, setStatus] = useState<Status>('idle')
+	const [sourceFile, setSourceFile] = useState<File | null>(null)
 	const [sourceUrl, setSourceUrl] = useState<string | null>(null)
 	const [resultUrl, setResultUrl] = useState<string | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -34,6 +35,7 @@ export default function RemoveBackgroundPage() {
 		const file = event.target.files?.[0]
 		if (!file) return
 
+		setSourceFile(file)
 		setSourceUrl(URL.createObjectURL(file))
 		setResultUrl(null)
 		setStatus('idle')
@@ -41,7 +43,7 @@ export default function RemoveBackgroundPage() {
 	}
 
 	const removeBackground = async () => {
-		if (!sourceUrl) return
+		if (!sourceFile) return
 
 		setStatus('processing')
 		setErrorMessage(null)
@@ -51,7 +53,11 @@ export default function RemoveBackgroundPage() {
 		try {
 			const { removeBackground } = await import('@imgly/background-removal')
 
-			const blob = await removeBackground(sourceUrl, {
+			// Передаём File, а не blob:-URL строкой: библиотека для строк делает
+			// fetch(image) сама (см. imageSourceToImageData в её исходниках), а
+			// File — это уже Blob, декодируется напрямую без сетевого запроса.
+			// Так надёжнее и меньше точек отказа.
+			const blob = await removeBackground(sourceFile, {
 				// isnet_quint8 — самая лёгкая из трёх моделей (~40 МБ, квантованная
 				// int8). isnet_fp16 (~80 МБ) и isnet (~170 МБ) точнее, но тяжелее
 				// скачивать на мобильном — не оправдано для первой версии.
@@ -88,6 +94,7 @@ export default function RemoveBackgroundPage() {
 	}
 
 	const reset = () => {
+		setSourceFile(null)
 		setSourceUrl(null)
 		setResultUrl(null)
 		setStatus('idle')
