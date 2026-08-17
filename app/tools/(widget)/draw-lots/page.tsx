@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
+import { pluralizeRu } from '@/lib/utils/pluralize'
 import {
 	toolBar,
 	toolFooterBar,
@@ -93,6 +94,9 @@ export default function DrawLotsPage() {
 	}, [])
 
 	const revealedLots = lots.filter(lot => lot.isRevealed)
+	const participantCount = inputText
+		.split('\n')
+		.filter(line => line.trim() !== '').length
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
@@ -102,7 +106,9 @@ export default function DrawLotsPage() {
 					<span className='text-sm text-muted-foreground'>
 						{isDrawing
 							? `Открыто ${revealedLots.length} из ${lots.length}`
-							: 'Один участник на строку'}
+							: participantCount > 0
+								? `${participantCount} ${pluralizeRu(participantCount, ['участник', 'участника', 'участников'])} · один на строку`
+								: 'Один участник на строку'}
 					</span>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
