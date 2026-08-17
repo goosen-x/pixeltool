@@ -17,9 +17,18 @@ function getPool(): Pool {
 function ensureSchema(db: Pool): Promise<void> {
 	if (!schemaReady) {
 		const sql = readFileSync(join(process.cwd(), 'lib/db/schema.sql'), 'utf8')
-		schemaReady = db.query(sql).then(() => undefined)
+		schemaReady = db.query(sql).then(
+			() => undefined,
+			error => {
+				// Один сбой (например, БД временно недоступна) не должен навсегда
+				// «отравлять» схему для всех последующих запросов процесса —
+				// сбрасываем кэш, чтобы следующий getDb() попробовал снова.
+				schemaReady = null
+				throw error
+			}
+		)
 	}
-	return schemaReady as Promise<void>
+	return schemaReady
 }
 
 export async function getDb(): Promise<Pool> {
