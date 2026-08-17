@@ -38,4 +38,14 @@ describe('createRateLimiter', () => {
 		vi.advanceTimersByTime(61_000)
 		expect(limiter.check('1.2.3.4')).toBe(true)
 	})
+
+	// Внутренняя эвикция пустых записей из Map (см. rate-limit.ts) не меняет
+	// наблюдаемое поведение check() — публичный API не даёт заглянуть в Map,
+	// поэтому здесь только фиксируем, что поведение для крайнего случая
+	// limit=0 (сразу отклоняющего каждую проверку) не сломалось.
+	it('отклоняет каждую проверку при limit=0 без падений', () => {
+		const limiter = createRateLimiter(0, 60_000)
+		expect(limiter.check('spoofed-key')).toBe(false)
+		expect(limiter.check('spoofed-key')).toBe(false)
+	})
 })
