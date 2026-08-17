@@ -1,10 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Star } from 'lucide-react'
+import { Eye, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SharePopover } from '@/components/share/SharePopover'
 import { useToolHistory } from '@/lib/hooks/useToolHistory'
+import { useToolStats } from '@/lib/hooks/useToolStats'
 import { ToolRatingWidget } from './ToolRatingWidget'
 import { useRecordToolView } from '@/lib/hooks/useRecordToolView'
 
@@ -22,6 +23,7 @@ export function WidgetActions({ widgetId, title }: Props) {
 	// иначе тул записался бы в «недавние» дважды
 	const { toggleFavorite, isFavorite, ready } = useToolHistory()
 	useRecordToolView(widgetId)
+	const { views } = useToolStats(widgetId)
 
 	const starred = ready && isFavorite(widgetId)
 
@@ -48,6 +50,16 @@ export function WidgetActions({ widgetId, title }: Props) {
 			<SharePopover title={title} />
 
 			<ToolRatingWidget toolId={widgetId} />
+
+			{views > 0 && (
+				<span className='flex items-center gap-1 text-xs text-muted-foreground'>
+					<Eye className='h-3.5 w-3.5' />
+					{new Intl.NumberFormat('ru', {
+						notation: 'compact',
+						maximumFractionDigits: 1
+					}).format(views)}
+				</span>
+			)}
 		</div>
 	)
 }
