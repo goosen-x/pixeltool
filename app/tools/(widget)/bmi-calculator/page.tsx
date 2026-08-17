@@ -145,8 +145,7 @@ export default function BmiCalculatorPage() {
 
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>
-						Пороги категорий — стандарт ВОЗ для взрослых, для детей не
-						применимы
+						Пороги категорий — стандарт ВОЗ для взрослых, для детей не применимы
 					</span>
 				</div>
 			</Card>
