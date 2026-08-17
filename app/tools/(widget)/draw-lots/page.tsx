@@ -177,17 +177,28 @@ export default function DrawLotsPage() {
 									disabled={lot.isRevealed}
 									title={lot.isRevealed ? undefined : 'Открыть'}
 									className={cn(
-										'flex aspect-[3/4] items-center justify-center rounded-xl border p-3 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-										lot.isRevealed
-											? 'cursor-default border-primary bg-primary/5'
-											: 'cursor-pointer bg-muted/30 hover:border-primary/50 hover:bg-muted'
+										'group aspect-[3/4] rounded-xl text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+										lot.isRevealed ? 'cursor-default' : 'cursor-pointer'
 									)}
+									style={{ perspective: '1000px' }}
 								>
-									{lot.isRevealed ? (
-										<span className='font-medium break-words'>{lot.value}</span>
-									) : (
-										<span className='text-2xl text-muted-foreground'>?</span>
-									)}
+									<div
+										className={cn(
+											'relative h-full w-full transition-transform duration-500 [transform-style:preserve-3d]',
+											lot.isRevealed && '[transform:rotateY(180deg)]'
+										)}
+									>
+										{/* Рубашка — видна, пока карточка не открыта */}
+										<div className='absolute inset-0 flex items-center justify-center rounded-xl border bg-muted/30 p-3 [backface-visibility:hidden] group-hover:border-primary/50 group-hover:bg-muted'>
+											<span className='text-2xl text-muted-foreground'>?</span>
+										</div>
+										{/* Лицевая сторона — повёрнута на 180°, проявляется после флипа */}
+										<div className='absolute inset-0 flex items-center justify-center rounded-xl border border-primary bg-primary/5 p-3 [backface-visibility:hidden] [transform:rotateY(180deg)]'>
+											<span className='font-medium break-words'>
+												{lot.value}
+											</span>
+										</div>
+									</div>
 								</button>
 							))}
 						</div>
@@ -210,18 +221,6 @@ export default function DrawLotsPage() {
 					</>
 				)}
 			</Card>
-
-			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
-				<p>
-					Жеребьёвка нужна там, где решение должно быть честным и его не должен
-					принимать человек: очерёдность выступлений, распределение задач,
-					победитель конкурса, кто идёт первым в игре.
-				</p>
-				<p>
-					Список перемешивается перед раскладкой, поэтому порядок карточек уже
-					не связан с порядком ввода — открывать их можно любым.
-				</p>
-			</div>
 
 			<DrawLotsSeo />
 		</WidgetSEOWrapper>
