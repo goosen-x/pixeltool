@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { useFileDrop } from '@/lib/hooks/useFileDrop'
+import { cn } from '@/lib/utils'
 import { RemoveBackgroundSeo } from './RemoveBackgroundSeo'
 import { BeforeAfterSlider } from './BeforeAfterSlider'
 
@@ -43,10 +45,7 @@ export default function RemoveBackgroundPage() {
 		new Map()
 	)
 
-	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0]
-		if (!file) return
-
+	const selectFile = (file: File) => {
 		setSourceUrl(URL.createObjectURL(file))
 		setResultUrl(null)
 		setErrorMessage(null)
@@ -54,6 +53,13 @@ export default function RemoveBackgroundPage() {
 		// фон» ничего не решал, результат детерминирован от файла.
 		void processFile(file)
 	}
+
+	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0]
+		if (file) selectFile(file)
+	}
+
+	const { isDragging, ...dropHandlers } = useFileDrop(selectFile)
 
 	const processFile = async (file: File) => {
 		setStatus('processing')
@@ -102,7 +108,7 @@ export default function RemoveBackgroundPage() {
 		if (!resultUrl) return
 		const link = document.createElement('a')
 		link.href = resultUrl
-		link.download = 'no-background.png'
+		link.download = 'pixeltool.pro-no-background.png'
 		link.click()
 	}
 
@@ -122,7 +128,13 @@ export default function RemoveBackgroundPage() {
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<Card className='overflow-hidden p-0'>
+			<Card
+				className={cn(
+					'overflow-hidden p-0 transition-colors',
+					isDragging && 'ring-2 ring-primary ring-inset'
+				)}
+				{...dropHandlers}
+			>
 				<div className={toolBar}>
 					{modelReady ? (
 						<span className='inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400'>
@@ -228,10 +240,15 @@ export default function RemoveBackgroundPage() {
 							<button
 								type='button'
 								onClick={() => fileInputRef.current?.click()}
-								className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-16 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								className={cn(
+									'flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-16 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									isDragging && 'border-primary bg-primary/5'
+								)}
 							>
 								<Upload className='h-6 w-6 text-muted-foreground' />
-								<span className='text-sm'>Выберите фото</span>
+								<span className='text-sm'>
+									Выберите фото или перетащите сюда
+								</span>
 							</button>
 						)}
 

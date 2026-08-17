@@ -393,7 +393,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'У форм и сервисов часто есть ограничение по весу или пикселям — узнать об этом заранее быстрее, чем ловить ошибку загрузки и гадать, что не так.'
 			}
 		],
-		image: '/images/categories/tools.png'
+		image: '/images/categories/images.png'
 	},
 
 	utilities: {

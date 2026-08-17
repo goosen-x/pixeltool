@@ -14,6 +14,8 @@ import {
 import { formatBytes, percentSaved } from '@/lib/utils/format-bytes'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { useFileDrop } from '@/lib/hooks/useFileDrop'
+import { cn } from '@/lib/utils'
 import { CompressImageSeo } from './CompressImageSeo'
 
 type OutputFormat = 'image/jpeg' | 'image/webp'
@@ -105,16 +107,20 @@ export default function CompressImagePage() {
 		}
 	}
 
-	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0]
-		if (!file) return
-
+	const selectFile = (file: File) => {
 		setOriginalFile(file)
 		setOriginalUrl(URL.createObjectURL(file))
 		setCompressedBlob(null)
 		setCompressedUrl(null)
 		void runCompression(file, format, quality)
 	}
+
+	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0]
+		if (file) selectFile(file)
+	}
+
+	const { isDragging, ...dropHandlers } = useFileDrop(selectFile)
 
 	// Пересжимаем при смене формата/качества — с дебаунсом, чтобы не гонять
 	// canvas на каждый пиксель движения ползунка.
@@ -132,7 +138,7 @@ export default function CompressImagePage() {
 		const baseName = originalFile.name.replace(/\.[^.]+$/, '')
 		const link = document.createElement('a')
 		link.href = compressedUrl
-		link.download = `${baseName}-compressed.${EXTENSIONS[format]}`
+		link.download = `pixeltool.pro-${baseName}-compressed.${EXTENSIONS[format]}`
 		link.click()
 	}
 
@@ -153,7 +159,13 @@ export default function CompressImagePage() {
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			<Card className='overflow-hidden p-0'>
+			<Card
+				className={cn(
+					'overflow-hidden p-0 transition-colors',
+					isDragging && 'ring-2 ring-primary ring-inset'
+				)}
+				{...dropHandlers}
+			>
 				<div className={toolBar}>
 					<div className='flex flex-wrap items-center gap-1.5'>
 						{FORMAT_LABELS.map(([value, label]) => (
@@ -265,10 +277,13 @@ export default function CompressImagePage() {
 						<button
 							type='button'
 							onClick={() => fileInputRef.current?.click()}
-							className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-16 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							className={cn(
+								'flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-16 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+								isDragging && 'border-primary bg-primary/5'
+							)}
 						>
 							<Upload className='h-6 w-6 text-muted-foreground' />
-							<span className='text-sm'>Выберите фото</span>
+							<span className='text-sm'>Выберите фото или перетащите сюда</span>
 						</button>
 					</div>
 				)}
