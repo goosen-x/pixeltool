@@ -49,17 +49,19 @@ export function WidgetActions({ widgetId, title }: Props) {
 
 			<SharePopover title={title} />
 
-			<ToolRatingWidget toolId={widgetId} />
+			<div className='ml-auto flex items-center gap-2'>
+				{views > 0 && (
+					<span className='flex items-center gap-1 text-xs text-muted-foreground'>
+						<Eye className='h-3.5 w-3.5' />
+						{new Intl.NumberFormat('ru', {
+							notation: 'compact',
+							maximumFractionDigits: 1
+						}).format(views)}
+					</span>
+				)}
 
-			{views > 0 && (
-				<span className='flex items-center gap-1 text-xs text-muted-foreground'>
-					<Eye className='h-3.5 w-3.5' />
-					{new Intl.NumberFormat('ru', {
-						notation: 'compact',
-						maximumFractionDigits: 1
-					}).format(views)}
-				</span>
-			)}
+				<ToolRatingWidget toolId={widgetId} />
+			</div>
 		</div>
 	)
 }
