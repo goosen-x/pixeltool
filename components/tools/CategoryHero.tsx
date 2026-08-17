@@ -6,10 +6,20 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, X, Loader2 } from 'lucide-react'
-import { widgetCategories, publicWidgets } from '@/lib/constants/widgets'
+import {
+	widgetCategories,
+	devSubcategories,
+	publicWidgets
+} from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
-import { filterWidgets } from '@/lib/utils/filter-widgets'
+import {
+	filterWidgets,
+	widgetMatchesCategory
+} from '@/lib/utils/filter-widgets'
 import { cn } from '@/lib/utils'
+
+/** Разработка + её подстраницы — где показываем дополнительный ряд чипсов. */
+const DEV_CLUSTER = ['development', ...Object.keys(devSubcategories)]
 
 interface Props {
 	/** '' — общий каталог. Внутри не меняется: категорию выбирают ссылкой. */
@@ -23,9 +33,8 @@ interface Props {
 
 /** Сколько инструментов в категории — показываем на чипсе. */
 function countIn(category: string): number {
-	return category === ''
-		? publicWidgets.length
-		: publicWidgets.filter(widget => widget.category === category).length
+	return publicWidgets.filter(widget => widgetMatchesCategory(widget, category))
+		.length
 }
 
 function hrefFor(category: string): string {
@@ -118,6 +127,37 @@ export function CategoryHero({
 							})}
 						</ul>
 					</nav>
+
+					{/* Раздел «Разработка» слил css/html/javascript в одну категорию,
+					    но их страницы остались живыми — эта строка их не даёт
+					    потерять: без неё до /tools/css и соседей можно дойти только
+					    через sitemap. */}
+					{DEV_CLUSTER.includes(category) && (
+						<nav aria-label='Языки внутри «Разработки»' className='mt-3'>
+							<ul className='flex flex-wrap gap-2'>
+								{Object.entries(devSubcategories).map(([key, title]) => {
+									const active = key === category
+									return (
+										<li key={key}>
+											<Link
+												href={`/tools/${key}`}
+												aria-current={active ? 'page' : undefined}
+												className={cn(
+													'inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-dashed px-2.5 py-1 text-xs font-medium transition-colors',
+													active
+														? 'border-primary text-primary'
+														: 'border-border/70 text-muted-foreground hover:border-primary/50 hover:text-foreground'
+												)}
+											>
+												{title}
+												<span className='opacity-60'>{countIn(key)}</span>
+											</Link>
+										</li>
+									)
+								})}
+							</ul>
+						</nav>
+					)}
 
 					<div className='relative mt-6 max-w-xl'>
 						<Search className='pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground' />

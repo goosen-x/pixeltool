@@ -1,4 +1,19 @@
 import type { Widget } from '@/lib/constants/widgets'
+import { devSubcategories } from '@/lib/constants/widgets'
+
+/**
+ * css/html/javascript больше не значения Widget['category'] (слиты в
+ * 'development'), но их страницы остались живыми фильтрами — отсюда
+ * сверяем widget.subcategory, а не widget.category.
+ */
+export function widgetMatchesCategory(
+	widget: Widget,
+	category: string
+): boolean {
+	if (category === '') return true
+	if (category in devSubcategories) return widget.subcategory === category
+	return widget.category === category
+}
 
 /**
  * Отбор инструментов по строке поиска и категории.
@@ -15,9 +30,7 @@ export function filterWidgets(
 	const query = search.trim().toLowerCase()
 
 	return widgets.filter(widget => {
-		const matchesCategory = category === '' || widget.category === category
-
-		if (!matchesCategory) return false
+		if (!widgetMatchesCategory(widget, category)) return false
 		if (query === '') return true
 
 		return (

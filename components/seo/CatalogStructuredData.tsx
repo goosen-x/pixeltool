@@ -1,5 +1,6 @@
 import { publicWidgets } from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
+import { widgetMatchesCategory } from '@/lib/utils/filter-widgets'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -21,10 +22,9 @@ export function CatalogStructuredData({ category }: Props) {
 	const url =
 		category === '' ? `${BASE_URL}/tools` : `${BASE_URL}/tools/${category}`
 
-	const items =
-		category === ''
-			? publicWidgets
-			: publicWidgets.filter(widget => widget.category === category)
+	const items = publicWidgets.filter(widget =>
+		widgetMatchesCategory(widget, category)
+	)
 
 	const collectionPage = {
 		'@context': 'https://schema.org',

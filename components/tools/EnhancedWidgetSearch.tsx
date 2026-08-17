@@ -102,7 +102,8 @@ export function EnhancedWidgetSearch({
 				const Icon = widget.icon
 				const title = widget.title || widget.translationKey
 				const categoryLabel =
-					CATEGORY_META[widget.category as CategoryKey]?.title
+					CATEGORY_META[(widget.subcategory ?? widget.category) as CategoryKey]
+						?.title
 
 				return (
 					<Link
