@@ -13,7 +13,7 @@ const STAR_VALUES = [1, 2, 3, 4, 5] as const
 export function ToolRatingWidget({ toolId }: Props) {
 	const { rating, ratingCount, hasVoted, vote } = useToolStats(toolId)
 
-	const filled = hasVoted ? Math.round(rating) : 0
+	const filled = Math.round(rating)
 
 	return (
 		<div
@@ -44,7 +44,7 @@ export function ToolRatingWidget({ toolId }: Props) {
 					/>
 				</button>
 			))}
-			{hasVoted && ratingCount > 0 && (
+			{ratingCount > 0 && (
 				<span className='text-xs text-muted-foreground'>
 					{rating.toFixed(1)} · {ratingCount}
 				</span>
