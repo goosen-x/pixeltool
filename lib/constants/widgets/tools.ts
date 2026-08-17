@@ -241,7 +241,7 @@ export const toolWidgets: Widget[] = [
 		// закрыт текстом в ImageSizeCheckerSeo, а не подменой числа.
 		searchVolume: 6332,
 		icon: ImageIcon,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'imageSizeChecker',
 		path: 'image-size-checker',
 		gradient: 'from-cyan-500 to-blue-600',
@@ -485,7 +485,7 @@ export const toolWidgets: Widget[] = [
 		// coloring, игра), в searchVolume не берём.
 		searchVolume: 1102,
 		icon: Blocks,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'pixelArtEditor',
 		path: 'pixel-art-editor',
 		gradient: 'from-fuchsia-500 to-purple-600',
@@ -554,7 +554,7 @@ export const toolWidgets: Widget[] = [
 		// ONNX Runtime Web/WASM — целиком в браузере, фото не уходит на сервер.
 		searchVolume: 292964,
 		icon: Scissors,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'removeBackground',
 		path: 'remove-background',
 		gradient: 'from-cyan-500 to-blue-600',
@@ -683,7 +683,7 @@ export const toolWidgets: Widget[] = [
 		// тулов сессии — canvas.toBlob(), без ML-модели и зависимостей.
 		searchVolume: 57238,
 		icon: Shrink,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'compressImage',
 		path: 'compress-image',
 		gradient: 'from-emerald-500 to-teal-600',

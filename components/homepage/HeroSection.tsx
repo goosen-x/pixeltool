@@ -53,11 +53,10 @@ const featherMask: CSSProperties = {
 // места, чем «JavaScript», хотя в обоих ровно по 10 букв. Подписи по-прежнему
 // берутся из widgetCategories — здесь только порядок.
 const NAV_ORDER = [
-	'css',
-	'html',
+	'development',
 	'text',
+	'images',
 	'utilities',
-	'javascript',
 	'generators',
 	'security'
 ] as const satisfies readonly (keyof typeof widgetCategories)[]

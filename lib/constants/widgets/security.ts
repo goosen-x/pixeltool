@@ -159,7 +159,7 @@ export const securityWidgets: Widget[] = [
 		id: 'base64-encoder',
 		searchVolume: 25350,
 		icon: Lock,
-		category: 'security',
+		category: 'development',
 		translationKey: 'base64Encoder',
 		path: 'base64-encoder',
 		gradient: 'from-green-500 to-teal-600',
@@ -212,7 +212,7 @@ export const securityWidgets: Widget[] = [
 		// Поэтому в заголовках «расшифровать», а не «декодер».
 		searchVolume: 10391,
 		icon: JWTIcon,
-		category: 'security',
+		category: 'development',
 		translationKey: 'jwtDecoder',
 		path: 'jwt-decoder',
 		gradient: 'from-purple-500 to-pink-600',
@@ -267,7 +267,7 @@ export const securityWidgets: Widget[] = [
 		// 34872 тул задирался в топ мимо инструментов с реально большим спросом.
 		searchVolume: 3071,
 		icon: Fingerprint,
-		category: 'security',
+		category: 'development',
 		translationKey: 'uuidGenerator',
 		path: 'uuid-generator',
 		gradient: 'from-indigo-500 to-blue-600',

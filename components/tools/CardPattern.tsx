@@ -147,15 +147,16 @@ function hashIndex(s: string): number {
 	return sum % PATTERNS.length
 }
 
-// У каждой категории — свой узор («рубашка»): категорий ровно 7, как и узоров.
+// У каждой категории — свой узор («рубашка»). Узоров 7, категорий 6
+// (css/html/javascript слиты в development, images выделена из utilities) —
+// один узор остаётся про запас, ему достаются карточки по hashIndex.
 const CATEGORY_PATTERN: Record<string, number> = {
 	generators: 0,
-	html: 1,
-	css: 2,
-	javascript: 3,
+	development: 2,
 	text: 4,
 	security: 5,
-	utilities: 6
+	utilities: 6,
+	images: 1
 }
 
 /** Индекс узора по категории инструмента (fallback — хеш строки). */

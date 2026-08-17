@@ -34,7 +34,9 @@ export function WidgetStructuredData({ widget }: WidgetStructuredDataProps) {
 		url: url,
 		applicationCategory: 'DeveloperApplication',
 		browserRequirements: 'Requires JavaScript. Requires HTML5.',
-		applicationSubCategory: getCategoryName(widget.category),
+		applicationSubCategory: getCategoryName(
+			widget.subcategory ?? widget.category
+		),
 		operatingSystem: 'Web Browser',
 		offers: {
 			'@type': 'Offer',
@@ -123,9 +125,11 @@ function getCategoryName(category: string): string {
 		css: 'CSS Development Tools',
 		html: 'HTML Development Tools',
 		javascript: 'JavaScript Development Tools',
+		development: 'Web Development Tools',
 		text: 'Text Processing Tools',
-		generators: 'Generator & Randomizer Tools',
-		security: 'Security & Encoding Tools',
+		generators: 'Randomizer Tools',
+		security: 'Password & QR Tools',
+		images: 'Image Tools',
 		tools: 'Utility Tools'
 	}
 	return categories[category] || 'Utility Tools'

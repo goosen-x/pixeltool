@@ -8,13 +8,19 @@ export interface Widget {
 	icon: React.ComponentType<{ className?: string }>
 	iconName?: string
 	category:
-		| 'css'
-		| 'html'
-		| 'javascript'
+		| 'development'
 		| 'text'
 		| 'generators'
 		| 'security'
 		| 'utilities'
+		| 'images'
+	/**
+	 * Только у тулов category: 'development' — какой из бывших разделов
+	 * (css/html/javascript) до слияния в «Разработку». Двигает страницы
+	 * /tools/css, /tools/html, /tools/javascript, которые остались живыми
+	 * SEO-подстраницами (см. DEV_SUBCATEGORIES в lib/constants/categories.ts).
+	 */
+	subcategory?: 'css' | 'html' | 'javascript'
 	translationKey: string
 	path: string
 	gradient: string
@@ -109,12 +115,22 @@ export const getRecommendedWidgets = (widgetId: string): Widget[] => {
 		.filter((w): w is Widget => w !== undefined && !w.demo)
 }
 
-export const widgetCategories = {
-	generators: 'Генераторы',
-	html: 'HTML',
+/**
+ * Бывшие категории css/html/javascript — теперь под category: 'development',
+ * но их страницы /tools/css, /tools/html, /tools/javascript остались живыми
+ * SEO-подстраницами-фильтрами. Ключ карты — значение Widget['subcategory'].
+ */
+export const devSubcategories = {
 	css: 'CSS',
-	javascript: 'JavaScript',
+	html: 'HTML',
+	javascript: 'JavaScript'
+} as const
+
+export const widgetCategories = {
+	development: 'Разработка',
+	generators: 'Рандомайзер',
 	text: 'Текст',
+	images: 'Изображения',
 	security: 'Безопасность',
 	utilities: 'Утилиты'
 } as const
