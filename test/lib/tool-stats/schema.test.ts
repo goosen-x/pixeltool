@@ -34,7 +34,10 @@ describe('toolStatsActionSchema', () => {
 	})
 
 	it('отклоняет неизвестное action', () => {
-		const result = toolStatsActionSchema.safeParse({ toolId: 'x', action: 'like' })
+		const result = toolStatsActionSchema.safeParse({
+			toolId: 'x',
+			action: 'like'
+		})
 		expect(result.success).toBe(false)
 	})
 })
