@@ -5,6 +5,8 @@ import { Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SharePopover } from '@/components/share/SharePopover'
 import { useToolHistory } from '@/lib/hooks/useToolHistory'
+import { ToolRatingWidget } from './ToolRatingWidget'
+import { useRecordToolView } from '@/lib/hooks/useRecordToolView'
 
 interface Props {
 	widgetId: string
@@ -19,6 +21,7 @@ export function WidgetActions({ widgetId, title }: Props) {
 	// Не передаём widgetId в хук: историю посещений ведёт карточка в сайдбаре,
 	// иначе тул записался бы в «недавние» дважды
 	const { toggleFavorite, isFavorite, ready } = useToolHistory()
+	useRecordToolView(widgetId)
 
 	const starred = ready && isFavorite(widgetId)
 
@@ -43,6 +46,8 @@ export function WidgetActions({ widgetId, title }: Props) {
 			</Button>
 
 			<SharePopover title={title} />
+
+			<ToolRatingWidget toolId={widgetId} />
 		</div>
 	)
 }

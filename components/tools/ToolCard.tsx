@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Eye, Star } from 'lucide-react'
 import { highlightText } from '@/lib/utils/highlightText'
 import { cn } from '@/lib/utils'
 import { CardPattern, patternIndexForCategory } from './CardPattern'
 import { CornerBadge } from './CornerBadge'
+import { useToolStats } from '@/lib/hooks/useToolStats'
 import type { Widget } from '@/lib/constants/widgets'
 
 interface ToolCardProps {
@@ -23,6 +24,8 @@ export function ToolCard({
 
 	const title = widget.title || widget.translationKey
 	const description = widget.description || ''
+	const { views, rating, ratingCount } = useToolStats(widget.id)
+	const hasStats = ratingCount > 0 || views > 0
 
 	return (
 		<Link
@@ -59,6 +62,25 @@ export function ToolCard({
 				<p className='mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground'>
 					{searchQuery ? highlightText(description, searchQuery) : description}
 				</p>
+				{hasStats && (
+					<span className='mt-3 flex items-center gap-3 text-xs text-muted-foreground'>
+						{ratingCount > 0 && (
+							<span className='flex items-center gap-1'>
+								<Star className='h-3.5 w-3.5 fill-amber-500 text-amber-500' />
+								{rating.toFixed(1)} · {ratingCount}
+							</span>
+						)}
+						{views > 0 && (
+							<span className='flex items-center gap-1'>
+								<Eye className='h-3.5 w-3.5' />
+								{new Intl.NumberFormat('ru', {
+									notation: 'compact',
+									maximumFractionDigits: 1
+								}).format(views)}
+							</span>
+						)}
+					</span>
+				)}
 				<span className='mt-5 inline-flex w-fit items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors group-hover:bg-primary/90'>
 					Попробовать
 					<ArrowRight className='h-4 w-4 transition-transform group-hover:translate-x-0.5' />

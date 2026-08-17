@@ -11,6 +11,7 @@ import YandexMetrika from '@/components/analytics/YandexMetrika'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ToolStatsProvider } from '@/components/providers/ToolStatsProvider'
 import { WebVitals } from '@/components/analytics/WebVitals'
 import { publicWidgets } from '@/lib/constants/widgets'
 import { pluralizeRu } from '@/lib/utils/pluralize'
@@ -292,25 +293,27 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Suspense fallback={null}>
-						<NavigationProgress />
-					</Suspense>
-					<YandexMetrika />
-					<Suspense fallback={null}>
-						<GlobalGoalsTracker />
-					</Suspense>
-					<ServiceWorkerUnregister />
-					<WebVitals />
-					<Header />
-					<AutoBreadcrumbs />
-					<SiteStructuredData />
-					{children}
-					{/* Общий футер везде, кроме страниц инструментов: там своя раскладка
-					    с фиксированной высотой, и большой футер ломал сайдбар */}
-					<SiteFooter />
-					<ScrollToTop />
-					<Toaster />
-					<CookieConsent />
+					<ToolStatsProvider>
+						<Suspense fallback={null}>
+							<NavigationProgress />
+						</Suspense>
+						<YandexMetrika />
+						<Suspense fallback={null}>
+							<GlobalGoalsTracker />
+						</Suspense>
+						<ServiceWorkerUnregister />
+						<WebVitals />
+						<Header />
+						<AutoBreadcrumbs />
+						<SiteStructuredData />
+						{children}
+						{/* Общий футер везде, кроме страниц инструментов: там своя раскладка
+						    с фиксированной высотой, и большой футер ломал сайдбар */}
+						<SiteFooter />
+						<ScrollToTop />
+						<Toaster />
+						<CookieConsent />
+					</ToolStatsProvider>
 				</ThemeProvider>
 			</body>
 		</html>
