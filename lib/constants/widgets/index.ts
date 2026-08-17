@@ -14,6 +14,7 @@ export interface Widget {
 		| 'security'
 		| 'utilities'
 		| 'images'
+		| 'health'
 	/**
 	 * Только у тулов category: 'development' — какой из бывших разделов
 	 * (css/html/javascript) до слияния в «Разработку». Двигает страницы
@@ -65,6 +66,7 @@ export { textWidgets } from './text'
 export { generatorWidgets } from './generators'
 export { securityWidgets } from './security'
 export { toolWidgets } from './tools'
+export { healthWidgets } from './health'
 
 import { cssWidgets } from './css'
 import { htmlWidgets } from './html'
@@ -73,6 +75,7 @@ import { textWidgets } from './text'
 import { generatorWidgets } from './generators'
 import { securityWidgets } from './security'
 import { toolWidgets } from './tools'
+import { healthWidgets } from './health'
 
 export const widgets: Widget[] = [
 	...cssWidgets,
@@ -81,7 +84,8 @@ export const widgets: Widget[] = [
 	...textWidgets,
 	...generatorWidgets,
 	...securityWidgets,
-	...toolWidgets
+	...toolWidgets,
+	...healthWidgets
 ]
 
 /**
@@ -131,6 +135,7 @@ export const widgetCategories = {
 	generators: 'Рандомайзер',
 	text: 'Текст',
 	images: 'Изображения',
+	health: 'Здоровье',
 	security: 'Безопасность',
 	utilities: 'Утилиты'
 } as const
