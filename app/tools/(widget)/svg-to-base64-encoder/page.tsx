@@ -174,13 +174,14 @@ export default function SVGEncoderPage() {
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
-							size='icon'
+							size='sm'
 							variant='ghost'
 							onClick={() => setSvgInput(exampleSvg)}
 							title='Подставить пример'
-							className={toolIconButton}
+							className='cursor-pointer gap-1.5 text-muted-foreground hover:bg-muted hover:text-foreground'
 						>
 							<Lightbulb className='h-4 w-4' />
+							Пример
 						</Button>
 						<Button
 							size='icon'
