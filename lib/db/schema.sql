@@ -16,3 +16,11 @@ CREATE TABLE IF NOT EXISTS leads (
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_data_at TIMESTAMPTZ;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_ads_at TIMESTAMPTZ;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_version TEXT;
+
+-- Оценки (звёзды 1-5) и счётчик просмотров тулов.
+CREATE TABLE IF NOT EXISTS tool_stats (
+	tool_id TEXT PRIMARY KEY,
+	views BIGINT NOT NULL DEFAULT 0,
+	rating_sum INTEGER NOT NULL DEFAULT 0,
+	rating_count INTEGER NOT NULL DEFAULT 0
+);
