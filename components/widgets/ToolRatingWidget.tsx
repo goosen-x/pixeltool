@@ -3,11 +3,7 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useToolStats } from '@/lib/hooks/useToolStats'
-import {
-	Popover,
-	PopoverAnchor,
-	PopoverContent
-} from '@/components/ui/popover'
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 

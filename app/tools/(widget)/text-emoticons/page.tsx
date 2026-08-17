@@ -213,7 +213,11 @@ const emoticonCategories: EmoticonCategory[] = [
 			{ text: '(づ￣ ³￣)づ', name: 'kiss', tags: ['love', 'kiss', 'hug'] },
 			{ text: '(⊃｡•́‿•̀｡)⊃', name: 'hug', tags: ['love', 'hug', 'cute'] },
 			{ text: '(｡◕‿◕｡)', name: 'happy', tags: ['happy', 'cute', 'smile'] },
-			{ text: 'ヽ(°〇°)ﾉ', name: 'excited', tags: ['excited', 'wow', 'amazed'] },
+			{
+				text: 'ヽ(°〇°)ﾉ',
+				name: 'excited',
+				tags: ['excited', 'wow', 'amazed']
+			},
 			{ text: '(☆▽☆)', name: 'excited', tags: ['excited', 'starry', 'wow'] },
 			{
 				text: '(๑˃̵ᴗ˂̵)و',
@@ -221,7 +225,11 @@ const emoticonCategories: EmoticonCategory[] = [
 				tags: ['cheer', 'fighting', 'motivated']
 			},
 			{ text: '( ˘ ³˘)♥', name: 'kiss', tags: ['love', 'kiss', 'cute'] },
-			{ text: 'ヾ(＾-＾)ノ', name: 'happy', tags: ['happy', 'wave', 'greeting'] },
+			{
+				text: 'ヾ(＾-＾)ノ',
+				name: 'happy',
+				tags: ['happy', 'wave', 'greeting']
+			},
 			{ text: '٩(◕‿◕)۶', name: 'happy', tags: ['happy', 'cute', 'joy'] },
 			{ text: '(๑>ᴗ<๑)', name: 'happy', tags: ['happy', 'joy', 'cute'] },
 			{ text: '(◍•ᴗ•◍)', name: 'happy', tags: ['happy', 'sweet', 'cute'] },
@@ -267,7 +275,11 @@ const emoticonCategories: EmoticonCategory[] = [
 			{ text: '(╥_╥)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
 			{ text: 'ヽ(ｏ`皿′ｏ)ﾉ', name: 'angry', tags: ['angry', 'mad', 'yell'] },
 			{ text: '(´-ω-`)', name: 'sad', tags: ['sad', 'tired', 'down'] },
-			{ text: '(¬_¬)', name: 'disapproval', tags: ['annoyed', 'side-eye', 'skeptical'] }
+			{
+				text: '(¬_¬)',
+				name: 'disapproval',
+				tags: ['annoyed', 'side-eye', 'skeptical']
+			}
 		]
 	},
 	{
@@ -359,7 +371,11 @@ const emoticonCategories: EmoticonCategory[] = [
 				tags: ['table', 'calm', 'put back']
 			},
 			{ text: '(☝ ՞ਊ՞)☝', name: 'pointing', tags: ['point', 'up', 'cool'] },
-			{ text: '( ⚆ _ ⚆ )', name: 'suspicious', tags: ['suspicious', 'side-eye'] },
+			{
+				text: '( ⚆ _ ⚆ )',
+				name: 'suspicious',
+				tags: ['suspicious', 'side-eye']
+			},
 			{ text: '(ㆆ_ㆆ)', name: 'suspicious', tags: ['suspicious', 'stare'] },
 			{ text: '(¬‿¬)', name: 'smirk', tags: ['smirk', 'sly', 'wink'] },
 			{

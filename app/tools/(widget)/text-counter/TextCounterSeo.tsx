@@ -30,10 +30,9 @@ export function TextCounterSeo() {
 				<p className='mt-3 text-muted-foreground'>
 					Инструмент сразу показывает, сколько текста осталось до лимита
 					конкретной площадки — X (280 символов), Instagram (2200), LinkedIn
-					(3000), Facebook (63206), ВКонтакте и Одноклассники (15895),
-					Telegram (4096 в сообщении, 1024 в подписи к медиа, 255 в описании
-					канала) — и отдельно SEO-лимиты Google и Яндекса: около 60 символов
-					для тега{' '}
+					(3000), Facebook (63206), ВКонтакте и Одноклассники (15895), Telegram
+					(4096 в сообщении, 1024 в подписи к медиа, 255 в описании канала) — и
+					отдельно SEO-лимиты Google и Яндекса: около 60 символов для тега{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>title</code>{' '}
 					и около 160 для{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>

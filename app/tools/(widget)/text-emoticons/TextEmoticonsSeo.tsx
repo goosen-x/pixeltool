@@ -54,8 +54,8 @@ export function TextEmoticonsSeo() {
 			</section>
 
 			<p className='text-muted-foreground'>
-				Готовые эмодзи-картинки — не единственная альтернатива: полный список
-				на все случаи собран в{' '}
+				Готовые эмодзи-картинки — не единственная альтернатива: полный список на
+				все случаи собран в{' '}
 				<Link
 					href='/tools/emoji-list'
 					className='cursor-pointer font-medium text-primary hover:underline'

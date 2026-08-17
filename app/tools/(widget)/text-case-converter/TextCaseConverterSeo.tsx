@@ -12,8 +12,7 @@ export function TextCaseConverterSeo() {
 					считает все варианты сразу по мере ввода — не нужно нажимать отдельную
 					кнопку «в заглавные»: прокрутите список результатов и скопируйте
 					нужный. Так же работает Title Case (Каждое Слово С Заглавной) и
-					Sentence case (заглавная только в начале предложения — и после
-					каждого{' '}
+					Sentence case (заглавная только в начале предложения — и после каждого{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>.</code>,{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>!</code> или{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>?</code>, а

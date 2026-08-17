@@ -235,7 +235,8 @@ export const textWidgets: Widget[] = [
 		path: 'emoji-list',
 		gradient: 'from-yellow-400 to-orange-500',
 		title: 'Эмодзи — скопировать одним кликом',
-		description: 'Просмотрите и скопируйте 1900+ актуальных эмодзи по категориям',
+		description:
+			'Просмотрите и скопируйте 1900+ актуальных эмодзи по категориям',
 		recommendedTools: [
 			'special-symbols-picker',
 			'fancy-text-generator',
