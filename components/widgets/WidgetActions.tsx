@@ -28,7 +28,7 @@ export function WidgetActions({ widgetId, title }: Props) {
 	const starred = ready && isFavorite(widgetId)
 
 	return (
-		<div className='flex items-center gap-2'>
+		<div className='flex flex-wrap items-center gap-2'>
 			<Button
 				variant='outline'
 				size='sm'
@@ -49,7 +49,7 @@ export function WidgetActions({ widgetId, title }: Props) {
 
 			<SharePopover title={title} />
 
-			<div className='ml-auto flex items-center gap-2'>
+			<div className='flex items-center gap-2 sm:ml-auto'>
 				{views > 0 && (
 					<span className='flex items-center gap-1 text-xs text-muted-foreground'>
 						<Eye className='h-3.5 w-3.5' />
