@@ -28,7 +28,8 @@ export function useRecordToolView(toolId: string): void {
 		})
 			.then(response => (response.ok ? response.json() : null))
 			.then((data: { views: number } | null) => {
-				if (data) applyView(toolId, data.views)
+				if (!data) return
+				applyView(toolId, data.views)
 				try {
 					localStorage.setItem(key, '1')
 				} catch {

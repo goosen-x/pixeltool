@@ -18,6 +18,15 @@ function mockFetch() {
 	})
 }
 
+function mockFetchWithFailingPost() {
+	return vi.fn().mockImplementation((_url: string, init?: RequestInit) => {
+		if (!init?.method || init.method === 'GET') {
+			return Promise.resolve({ ok: true, json: async () => ({}) })
+		}
+		return Promise.resolve({ ok: false, json: async () => ({}) })
+	})
+}
+
 describe('useRecordToolView', () => {
 	beforeEach(() => {
 		localStorage.clear()
@@ -62,5 +71,26 @@ describe('useRecordToolView', () => {
 			([, init]) => init?.method === 'POST'
 		)
 		expect(postCalls).toHaveLength(0)
+	})
+
+	it('не запоминает флаг, если сервер ответил ошибкой на POST', async () => {
+		vi.stubGlobal('fetch', mockFetchWithFailingPost())
+
+		render(
+			<ToolStatsProvider>
+				<ViewProbe toolId='qr-generator' />
+			</ToolStatsProvider>
+		)
+
+		await waitFor(() => {
+			const postCalls = (fetch as ReturnType<typeof vi.fn>).mock.calls.filter(
+				([, init]) => init?.method === 'POST'
+			)
+			expect(postCalls).toHaveLength(1)
+		})
+
+		await new Promise(resolve => setTimeout(resolve, 0))
+
+		expect(localStorage.getItem(todayViewKey('qr-generator'))).toBeNull()
 	})
 })
