@@ -80,6 +80,66 @@ input[type='button'] {
 	}
 }
 
+/* Звезда оценки инструмента (ToolRatingWidget) — кольцо-пульс, эластичная
+   заливка и обратный ход обводки при клике. Играют один раз через inline
+   animation с классами ниже — держим их только ради prefers-reduced-motion. */
+@keyframes star-ring {
+	from,
+	20% {
+		opacity: 1;
+		r: 8px;
+		stroke-width: 16px;
+		transform: scale(0);
+	}
+	35% {
+		opacity: 0.5;
+		r: 8px;
+		stroke-width: 16px;
+		transform: scale(1);
+	}
+	50%,
+	to {
+		opacity: 0;
+		r: 16px;
+		stroke-width: 0;
+		transform: scale(1);
+	}
+}
+
+@keyframes star-fill {
+	from,
+	40% {
+		transform: scale(0);
+	}
+	60% {
+		transform: scale(1.2);
+	}
+	80% {
+		transform: scale(0.9);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+
+@keyframes star-stroke {
+	from {
+		transform: scale(1);
+	}
+	20%,
+	to {
+		transform: scale(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rating-star-ring,
+	.rating-star-fill,
+	.rating-star-stroke {
+		animation: none !important;
+	}
+}
+
 /* Smooth scale animation */
 @keyframes scaleIn {
 	from {
