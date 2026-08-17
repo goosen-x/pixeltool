@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { toolBar, toolPill } from '@/lib/ui/tool-pill'
+import { toolBar, toolToggleOption, toolToggleTrack } from '@/lib/ui/tool-pill'
 import { Camera, Upload, Copy, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -204,7 +204,7 @@ export default function QRScannerPage() {
 				{/* Верхняя полоса: откуда читаем код. Вкладками это быть перестало —
 				    два варианта не стоят полноразмерного переключателя во всю ширину. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{(
 							[
 								{ key: 'camera', label: 'С камеры' },
@@ -216,7 +216,7 @@ export default function QRScannerPage() {
 								type='button'
 								onClick={() => setMode(item.key)}
 								aria-pressed={mode === item.key}
-								className={toolPill(mode === item.key)}
+								className={toolToggleOption(mode === item.key)}
 							>
 								{item.label}
 							</button>

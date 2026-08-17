@@ -24,3 +24,16 @@ CREATE TABLE IF NOT EXISTS tool_stats (
 	rating_sum INTEGER NOT NULL DEFAULT 0,
 	rating_count INTEGER NOT NULL DEFAULT 0
 );
+
+-- Свободный комментарий, который просим при низкой оценке (≤3) —
+-- лог отдельных сообщений, а не агрегат, поэтому отдельная таблица, а не
+-- колонка в tool_stats. rating дублирует оценку, с которой пришёл комментарий,
+-- чтобы не JOIN'ить с tool_stats (та хранит только текущую сумму, историю
+-- по конкретному голосу не восстановить).
+CREATE TABLE IF NOT EXISTS tool_feedback (
+	id SERIAL PRIMARY KEY,
+	tool_id TEXT NOT NULL,
+	rating SMALLINT NOT NULL,
+	comment TEXT NOT NULL,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

@@ -9,7 +9,8 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { SvgEncoderSeo } from './SvgEncoderSeo'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -288,22 +289,24 @@ export default function SVGEncoderPage() {
 					    там значение всегда в одинарных, иначе класс развалится. */}
 					<div className='flex flex-wrap items-center gap-1.5'>
 						<span className='mr-1 text-sm text-muted-foreground'>Кавычки</span>
-						{(
-							[
-								['double', 'двойные "'],
-								['single', "одинарные '"]
-							] as ['double' | 'single', string][]
-						).map(([value, label]) => (
-							<button
-								key={value}
-								type='button'
-								onClick={() => setQuotes(value)}
-								aria-pressed={quotes === value}
-								className={toolPill(quotes === value)}
-							>
-								{label}
-							</button>
-						))}
+						<div className={toolToggleTrack}>
+							{(
+								[
+									['double', 'двойные "'],
+									['single', "одинарные '"]
+								] as ['double' | 'single', string][]
+							).map(([value, label]) => (
+								<button
+									key={value}
+									type='button'
+									onClick={() => setQuotes(value)}
+									aria-pressed={quotes === value}
+									className={toolToggleOption(quotes === value)}
+								>
+									{label}
+								</button>
+							))}
+						</div>
 					</div>
 				</div>
 

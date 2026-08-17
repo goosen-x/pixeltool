@@ -8,10 +8,29 @@ export interface FontStyles {
 	[key: string]: FontStyle
 }
 
+/**
+ * Стилизованные блоки Unicode (Mathematical Alphanumeric Symbols и т. п.)
+ * назначены только латинице — для кириллицы таких кодпоинтов не существует
+ * в принципе, это ограничение стандарта, не пробел в таблицах ниже.
+ *
+ * Пробовали два обходных пути и оба откатили:
+ * 1) буквы-омоглифы (а, е, о, р, с, у, х и заглавные), визуально совпадающие
+ *    с латиницей — сломано, потому что стилизуется только часть слова, а
+ *    остальные буквы остаются как есть: получается вперемешку, читается как
+ *    баг, а не как стиль.
+ * 2) комбинирующая обводка U+20DD/U+20DE для «Пузырьков»/«Квадратов» —
+ *    сломано иначе: шрифт сайта не рисует эти кодпоинты, вместо рамки
+ *    показывает «тофу»-квадраты.
+ *
+ * Оставляем честное «не поддерживается»: кириллица проходит как есть во всех
+ * буквенных стилях (кроме Zalgo и Strikethrough — они не заменяют буквы, а
+ * накладывают комбинирующий символ, и не ломаются на этом).
+ */
+
 // Character mappings for different font styles
 export const fontStyles: FontStyles = {
 	outlined: {
-		name: 'Outlined',
+		name: 'Контурный',
 		description: 'Hollow style font, perfect for headers',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -86,7 +105,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	smallCaps: {
-		name: 'Small Caps',
+		name: 'Капитель',
 		description:
 			'Elegant text where lowercase letters appear as small capitals',
 		convert: (text: string) => {
@@ -126,7 +145,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	bubble: {
-		name: 'Bubble Text',
+		name: 'Пузырьки',
 		description: 'Circular bubble-like characters',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -201,7 +220,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	square: {
-		name: 'Square Text',
+		name: 'Квадраты',
 		description: 'Squared characters for modern look',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -266,7 +285,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	bold: {
-		name: 'Bold',
+		name: 'Жирный',
 		description: 'Bold mathematical alphanumeric symbols',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -341,7 +360,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	italic: {
-		name: 'Italic',
+		name: 'Курсив',
 		description: 'Italic mathematical alphanumeric symbols',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -406,7 +425,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	boldItalic: {
-		name: 'Bold Italic',
+		name: 'Жирный курсив',
 		description: 'Bold italic mathematical alphanumeric symbols',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -471,7 +490,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	monospace: {
-		name: 'Monospace',
+		name: 'Моноширинный',
 		description: 'Monospace mathematical alphanumeric symbols',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -546,7 +565,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	script: {
-		name: 'Script',
+		name: 'Рукописный',
 		description: 'Script mathematical alphanumeric symbols',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -611,7 +630,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	fraktur: {
-		name: 'Fraktur',
+		name: 'Готический',
 		description: 'Fraktur mathematical alphanumeric symbols',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -676,7 +695,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	upsideDown: {
-		name: 'Upside Down',
+		name: 'Вверх ногами',
 		description: 'Upside down text effect',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -764,7 +783,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	superscript: {
-		name: 'Superscript',
+		name: 'Надстрочный',
 		description: 'Superscript characters',
 		convert: (text: string) => {
 			const map: { [key: string]: string } = {
@@ -836,7 +855,7 @@ export const fontStyles: FontStyles = {
 	},
 
 	strikethrough: {
-		name: 'Strikethrough',
+		name: 'Зачёркнутый',
 		description:
 			'Зачёркнутый текст — работает в Telegram, VK и большинстве чатов',
 		// Комбинирующий символ U+0336 (COMBINING LONG STROKE OVERLAY) рисует

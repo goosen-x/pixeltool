@@ -10,7 +10,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { useFancyTextGenerator } from '@/lib/hooks/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -49,7 +51,7 @@ export default function FancyTextGeneratorPage() {
 				{/* Верхняя полоса: шрифты и zalgo — два разных результата из одного
 				    текста, раньше они были вкладками во всю ширину. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{(
 							[
 								['styles', 'Шрифты'],
@@ -61,7 +63,7 @@ export default function FancyTextGeneratorPage() {
 								type='button'
 								onClick={() => setMode(value)}
 								aria-pressed={mode === value}
-								className={toolPill(mode === value)}
+								className={toolToggleOption(mode === value)}
 							>
 								{label}
 							</button>
@@ -185,19 +187,6 @@ export default function FancyTextGeneratorPage() {
 					</>
 				)}
 			</Card>
-
-			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
-				<p>
-					Начертания собраны из символов Unicode — это не шрифт, а отдельные
-					знаки, поэтому текст вставляется куда угодно: в ник, в шапку профиля,
-					в сообщение. Оформление сохраняется даже там, где своих шрифтов нет.
-				</p>
-				<p>
-					Zalgo — «сломанный» текст из комбинирующихся диакритических знаков.
-					Чем выше хаос, тем больше знаков накладывается на каждую букву.
-					Учтите: часть площадок такой текст режет или показывает как обычный.
-				</p>
-			</div>
 
 			<FancyTextGeneratorSeo />
 		</WidgetSEOWrapper>

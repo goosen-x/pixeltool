@@ -13,11 +13,12 @@ import {
 	Trash2,
 	MessageSquare,
 	Facebook,
-	Twitter,
 	Linkedin,
-	Instagram,
-	Search
+	Instagram
 } from 'lucide-react'
+import { RiTwitterXFill } from 'react-icons/ri'
+import { SiGoogle, SiVk, SiOdnoklassniki, SiWhatsapp } from 'react-icons/si'
+import { BiLogoTelegram } from 'react-icons/bi'
 import { cn } from '@/lib/utils'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -49,12 +50,28 @@ interface PlatformLimit {
 
 const PLATFORM_LIMITS: PlatformLimit[] = [
 	{
-		name: 'Twitter',
-		icon: Twitter,
+		name: 'X',
+		icon: RiTwitterXFill,
 		limit: 280,
 		type: 'characters',
 		description: 'Твит',
 		color: 'text-sky-500'
+	},
+	{
+		name: 'ВКонтакте',
+		icon: SiVk,
+		limit: 15895,
+		type: 'characters',
+		description: 'Пост',
+		color: 'text-blue-500'
+	},
+	{
+		name: 'Одноклассники',
+		icon: SiOdnoklassniki,
+		limit: 15895,
+		type: 'characters',
+		description: 'Заметка',
+		color: 'text-orange-500'
 	},
 	{
 		name: 'Facebook',
@@ -73,6 +90,30 @@ const PLATFORM_LIMITS: PlatformLimit[] = [
 		color: 'text-pink-600'
 	},
 	{
+		name: 'Telegram',
+		icon: BiLogoTelegram,
+		limit: 4096,
+		type: 'characters',
+		description: 'Сообщение',
+		color: 'text-sky-400'
+	},
+	{
+		name: 'Telegram',
+		icon: BiLogoTelegram,
+		limit: 1024,
+		type: 'characters',
+		description: 'Подпись к медиа',
+		color: 'text-sky-400'
+	},
+	{
+		name: 'Telegram',
+		icon: BiLogoTelegram,
+		limit: 255,
+		type: 'characters',
+		description: 'Описание канала',
+		color: 'text-sky-400'
+	},
+	{
 		name: 'LinkedIn',
 		icon: Linkedin,
 		limit: 3000,
@@ -81,16 +122,16 @@ const PLATFORM_LIMITS: PlatformLimit[] = [
 		color: 'text-blue-700'
 	},
 	{
-		name: 'Google Title',
-		icon: Search,
+		name: 'Google / Яндекс',
+		icon: SiGoogle,
 		limit: 60,
 		type: 'characters',
 		description: 'SEO заголовок',
 		color: 'text-green-600'
 	},
 	{
-		name: 'Google Description',
-		icon: Search,
+		name: 'Google / Яндекс',
+		icon: SiGoogle,
 		limit: 160,
 		type: 'characters',
 		description: 'SEO описание',
@@ -106,7 +147,7 @@ const PLATFORM_LIMITS: PlatformLimit[] = [
 	},
 	{
 		name: 'WhatsApp',
-		icon: MessageSquare,
+		icon: SiWhatsapp,
 		limit: 65536,
 		type: 'characters',
 		description: 'Сообщение',
@@ -437,7 +478,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 					Влезет ли текст: лимиты площадок
 				</p>
 				<div className='mt-2 space-y-3 rounded-xl border p-4'>
-					{PLATFORM_LIMITS.slice(0, 5).map(platform => {
+					{PLATFORM_LIMITS.map(platform => {
 						const progress = getPlatformProgress(platform)
 						const Icon = platform.icon
 						const remaining =

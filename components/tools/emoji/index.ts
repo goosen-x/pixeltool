@@ -1,1 +1,0 @@
-export { EmojiInfo } from './EmojiInfo'

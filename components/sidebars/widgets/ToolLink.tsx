@@ -42,7 +42,14 @@ export const ToolLink = ({
 			<Icon className='w-4 h-4' />
 			<span className='flex-1 truncate text-left'>{title}</span>
 			{demo && (
-				<span className='shrink-0 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[0.625rem] font-medium tracking-wide text-amber-600 uppercase dark:text-amber-400'>
+				<span
+					className={cn(
+						'shrink-0 rounded-full px-1.5 py-0.5 text-[0.625rem] font-medium tracking-wide uppercase',
+						active
+							? 'bg-white/25 text-white'
+							: 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+					)}
+				>
 					Демо
 				</span>
 			)}

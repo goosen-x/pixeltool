@@ -1,15 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
 	Clock,
 	Smile,
-	Heart,
-	Frown,
-	Angry,
+	Laugh,
 	Sparkles,
+	Star,
+	MoreHorizontal,
 	Trash2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -21,13 +22,10 @@ import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 /** Русские названия категорий: в данных лежат английские id. */
 const CATEGORY_LABELS: Record<string, string> = {
 	popular: 'Популярные',
-	happy: 'Радость',
-	sad: 'Грусть',
-	angry: 'Злость',
-	love: 'Любовь',
+	classic: 'Классические',
+	emotions: 'Эмоции',
 	animals: 'Животные',
-	special: 'Особые',
-	japanese: 'Японские'
+	misc: 'Разное'
 }
 
 /**
@@ -53,6 +51,7 @@ const EMOTICON_LABELS: Record<string, string> = {
 	hug: 'Обнимашки',
 	cat: 'Кот',
 	dog: 'Собака',
+	fox: 'Лиса',
 	surprised: 'Удивление',
 	fish: 'Рыба',
 	give: 'Дать',
@@ -63,9 +62,21 @@ const EMOTICON_LABELS: Record<string, string> = {
 	singing: 'Пение',
 	goodbye: 'Прощание',
 	curious: 'Любопытство',
-	content: 'Довольство',
+	content: 'Спокойствие',
 	friends: 'Друзья',
-	embarrassed: 'Смущение'
+	embarrassed: 'Смущение',
+	tableUnflip: 'Стол на место',
+	suspicious: 'Подозрение',
+	smirk: 'Ухмылка',
+	confident: 'Уверенность',
+	bigGrin: 'Широкая улыбка',
+	wink: 'Подмигивание',
+	tongueOut: 'Показать язык',
+	neutral: 'Нейтрально',
+	skeptical: 'Скепсис',
+	heart: 'Сердце',
+	brokenHeart: 'Разбитое сердце',
+	cheer: 'Ура'
 }
 
 interface EmoticonCategory {
@@ -81,7 +92,7 @@ interface EmoticonCategory {
 const emoticonCategories: EmoticonCategory[] = [
 	{
 		id: 'popular',
-		icon: <Sparkles className='w-4 h-4' />,
+		icon: <Star className='w-4 h-4' />,
 		emoticons: [
 			{
 				text: '( ͡° ͜ʖ ͡°)',
@@ -136,7 +147,33 @@ const emoticonCategories: EmoticonCategory[] = [
 		]
 	},
 	{
-		id: 'happy',
+		id: 'classic',
+		icon: <Laugh className='w-4 h-4' />,
+		emoticons: [
+			{ text: ':-)', name: 'happy', tags: ['smile', 'happy', 'classic'] },
+			{ text: ':)', name: 'happy', tags: ['smile', 'happy', 'simple'] },
+			{ text: ':-D', name: 'bigGrin', tags: ['grin', 'happy', 'laugh'] },
+			{ text: ';-)', name: 'wink', tags: ['wink', 'flirt', 'joke'] },
+			{ text: ':-(', name: 'sad', tags: ['sad', 'frown', 'classic'] },
+			{ text: ":'(", name: 'crying', tags: ['crying', 'sad', 'tears'] },
+			{ text: ':-P', name: 'tongueOut', tags: ['tongue', 'joke', 'playful'] },
+			{ text: ':-O', name: 'surprised', tags: ['surprised', 'shock', 'wow'] },
+			{ text: ':-|', name: 'neutral', tags: ['neutral', 'meh', 'deadpan'] },
+			{
+				text: ':-/',
+				name: 'skeptical',
+				tags: ['skeptical', 'confused', 'unsure']
+			},
+			{ text: 'B-)', name: 'cool', tags: ['cool', 'sunglasses', 'classic'] },
+			{ text: '<3', name: 'heart', tags: ['love', 'heart', 'classic'] },
+			{ text: '</3', name: 'brokenHeart', tags: ['sad', 'heartbreak', 'love'] },
+			{ text: ':-*', name: 'kiss', tags: ['kiss', 'love', 'classic'] },
+			{ text: '>:(', name: 'angry', tags: ['angry', 'mad', 'classic'] },
+			{ text: '\\o/', name: 'cheer', tags: ['cheer', 'yay', 'hooray'] }
+		]
+	},
+	{
+		id: 'emotions',
 		icon: <Smile className='w-4 h-4' />,
 		emoticons: [
 			{ text: '(^▽^)', name: 'happy', tags: ['happy', 'joy', 'smile'] },
@@ -158,45 +195,7 @@ const emoticonCategories: EmoticonCategory[] = [
 				text: '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧',
 				name: 'excited',
 				tags: ['excited', 'sparkle', 'happy']
-			}
-		]
-	},
-	{
-		id: 'sad',
-		icon: <Frown className='w-4 h-4' />,
-		emoticons: [
-			{ text: '(╥﹏╥)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
-			{ text: '(ToT)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
-			{
-				text: '｡ﾟ(ﾟ´Д｀ﾟ)ﾟ｡',
-				name: 'crying',
-				tags: ['crying', 'sad', 'upset']
 			},
-			{ text: '(ಥ﹏ಥ)', name: 'crying', tags: ['crying', 'sad', 'tears'] },
-			{ text: '(T_T)', name: 'crying', tags: ['sad', 'crying', 'simple'] },
-			{ text: '(;_;)', name: 'sad', tags: ['sad', 'tears', 'simple'] },
-			{ text: '(._．)', name: 'sad', tags: ['sad', 'down', 'simple'] },
-			{ text: '(´;︵;`)', name: 'sad', tags: ['sad', 'crying', 'upset'] }
-		]
-	},
-	{
-		id: 'angry',
-		icon: <Angry className='w-4 h-4' />,
-		emoticons: [
-			{ text: '(╬ಠ益ಠ)', name: 'angry', tags: ['angry', 'mad', 'rage'] },
-			{ text: '(╯°□°)╯', name: 'angry', tags: ['angry', 'flip', 'rage'] },
-			{ text: '(ノಠ益ಠ)ノ', name: 'angry', tags: ['angry', 'mad', 'rage'] },
-			{ text: '(＃｀Д´)', name: 'angry', tags: ['angry', 'mad', 'yell'] },
-			{ text: '(｀皿´＃)', name: 'angry', tags: ['angry', 'mad', 'grr'] },
-			{ text: 'ლ(ಠ益ಠლ)', name: 'angry', tags: ['angry', 'why', 'rage'] },
-			{ text: '(╬ Ò﹏Ó)', name: 'angry', tags: ['angry', 'upset', 'mad'] },
-			{ text: '凸(-_-)凸', name: 'angry', tags: ['angry', 'rude', 'flip'] }
-		]
-	},
-	{
-		id: 'love',
-		icon: <Heart className='w-4 h-4' />,
-		emoticons: [
 			{ text: '(♥‿♥)', name: 'love', tags: ['love', 'heart', 'eyes'] },
 			{ text: '(´♡‿♡`)', name: 'love', tags: ['love', 'heart', 'cute'] },
 			{
@@ -212,7 +211,63 @@ const emoticonCategories: EmoticonCategory[] = [
 			{ text: '(｡♥‿♥｡)', name: 'love', tags: ['love', 'heart', 'happy'] },
 			{ text: '♡(˃͈ દ ˂͈ ༶ )', name: 'love', tags: ['love', 'heart', 'cute'] },
 			{ text: '(づ￣ ³￣)づ', name: 'kiss', tags: ['love', 'kiss', 'hug'] },
-			{ text: '(⊃｡•́‿•̀｡)⊃', name: 'hug', tags: ['love', 'hug', 'cute'] }
+			{ text: '(⊃｡•́‿•̀｡)⊃', name: 'hug', tags: ['love', 'hug', 'cute'] },
+			{ text: '(｡◕‿◕｡)', name: 'happy', tags: ['happy', 'cute', 'smile'] },
+			{ text: 'ヽ(°〇°)ﾉ', name: 'excited', tags: ['excited', 'wow', 'amazed'] },
+			{ text: '(☆▽☆)', name: 'excited', tags: ['excited', 'starry', 'wow'] },
+			{
+				text: '(๑˃̵ᴗ˂̵)و',
+				name: 'excited',
+				tags: ['cheer', 'fighting', 'motivated']
+			},
+			{ text: '( ˘ ³˘)♥', name: 'kiss', tags: ['love', 'kiss', 'cute'] },
+			{ text: 'ヾ(＾-＾)ノ', name: 'happy', tags: ['happy', 'wave', 'greeting'] },
+			{ text: '٩(◕‿◕)۶', name: 'happy', tags: ['happy', 'cute', 'joy'] },
+			{ text: '(๑>ᴗ<๑)', name: 'happy', tags: ['happy', 'joy', 'cute'] },
+			{ text: '(◍•ᴗ•◍)', name: 'happy', tags: ['happy', 'sweet', 'cute'] },
+			{
+				text: 'ヽ(*≧ω≦)ノ',
+				name: 'excited',
+				tags: ['excited', 'happy', 'yay']
+			},
+			{
+				text: '(づ｡◕‿‿◕｡)づ',
+				name: 'hug',
+				tags: ['love', 'hug', 'cute']
+			},
+			{ text: '(╥﹏╥)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
+			{ text: '(ToT)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
+			{
+				text: '｡ﾟ(ﾟ´Д｀ﾟ)ﾟ｡',
+				name: 'crying',
+				tags: ['crying', 'sad', 'upset']
+			},
+			{ text: '(ಥ﹏ಥ)', name: 'crying', tags: ['crying', 'sad', 'tears'] },
+			{ text: '(T_T)', name: 'crying', tags: ['sad', 'crying', 'simple'] },
+			{ text: '(;_;)', name: 'sad', tags: ['sad', 'tears', 'simple'] },
+			{ text: '(._．)', name: 'sad', tags: ['sad', 'down', 'simple'] },
+			{ text: '(´;︵;`)', name: 'sad', tags: ['sad', 'crying', 'upset'] },
+			{ text: '(╬ಠ益ಠ)', name: 'angry', tags: ['angry', 'mad', 'rage'] },
+			{ text: '(╯°□°)╯', name: 'angry', tags: ['angry', 'flip', 'rage'] },
+			{ text: '(ノಠ益ಠ)ノ', name: 'angry', tags: ['angry', 'mad', 'rage'] },
+			{ text: '(＃｀Д´)', name: 'angry', tags: ['angry', 'mad', 'yell'] },
+			{ text: '(｀皿´＃)', name: 'angry', tags: ['angry', 'mad', 'grr'] },
+			{ text: 'ლ(ಠ益ಠლ)', name: 'angry', tags: ['angry', 'why', 'rage'] },
+			{ text: '(╬ Ò﹏Ó)', name: 'angry', tags: ['angry', 'upset', 'mad'] },
+			{ text: '凸(-_-)凸', name: 'angry', tags: ['angry', 'rude', 'flip'] },
+			{ text: '(>_<)', name: 'sad', tags: ['frustrated', 'pain', 'sad'] },
+			{
+				text: 'Σ(°△°|||)︴',
+				name: 'shocked',
+				tags: ['shocked', 'scared', 'surprised']
+			},
+			{ text: 'ヽ(`Д´)ノ', name: 'angry', tags: ['angry', 'rage', 'mad'] },
+			{ text: '(இ﹏இ`｡)', name: 'crying', tags: ['sad', 'crying', 'upset'] },
+			{ text: 'ㅠ_ㅠ', name: 'crying', tags: ['sad', 'crying', 'tears'] },
+			{ text: '(╥_╥)', name: 'crying', tags: ['sad', 'crying', 'tears'] },
+			{ text: 'ヽ(ｏ`皿′ｏ)ﾉ', name: 'angry', tags: ['angry', 'mad', 'yell'] },
+			{ text: '(´-ω-`)', name: 'sad', tags: ['sad', 'tired', 'down'] },
+			{ text: '(¬_¬)', name: 'disapproval', tags: ['annoyed', 'side-eye', 'skeptical'] }
 		]
 	},
 	{
@@ -230,42 +285,18 @@ const emoticonCategories: EmoticonCategory[] = [
 				name: 'surprised',
 				tags: ['surprised', 'shocked', 'animal']
 			},
-			{ text: '<(°)#)><', name: 'fish', tags: ['fish', 'animal', 'water'] }
+			{ text: '<(°)#)><', name: 'fish', tags: ['fish', 'animal', 'water'] },
+			{ text: '(^ω^)', name: 'fox', tags: ['fox', 'animal', 'cute'] },
+			{ text: '▼・ᴥ・▼', name: 'dog', tags: ['dog', 'animal', 'cute'] },
+			{ text: '( ͡• ᴥ ͡•)', name: 'dog', tags: ['dog', 'bear', 'animal'] },
+			{ text: 'ฅ^•ﻌ•^ฅ', name: 'cat', tags: ['cat', 'animal', 'paws'] },
+			{ text: '=^..^=', name: 'cat', tags: ['cat', 'animal', 'simple'] },
+			{ text: '(＾• ω •＾)', name: 'fox', tags: ['fox', 'animal', 'cute'] }
 		]
 	},
 	{
-		id: 'special',
-		icon: <Sparkles className='w-4 h-4' />,
-		emoticons: [
-			{ text: '༼ つ ◕_◕ ༽つ', name: 'give', tags: ['give', 'take', 'energy'] },
-			{
-				text: 'ヽ༼ຈل͜ຈ༽ﾉ',
-				name: 'excited',
-				tags: ['excited', 'dongers', 'raise']
-			},
-			{ text: '(☞ﾟヮﾟ)☞', name: 'pointing', tags: ['point', 'you', 'cool'] },
-			{ text: '☜(ﾟヮﾟ☜)', name: 'pointing', tags: ['point', 'you', 'cool'] },
-			{
-				text: "(ง'̀-'́)ง",
-				name: 'fighting',
-				tags: ['fight', 'determined', 'boxing']
-			},
-			{ text: 'ᕕ( ᐛ )ᕗ', name: 'happy', tags: ['happy', 'running', 'excited'] },
-			{
-				text: '♪~ ᕕ(ᐛ)ᕗ',
-				name: 'dancing',
-				tags: ['dancing', 'music', 'happy']
-			},
-			{
-				text: '(屮ﾟДﾟ)屮',
-				name: 'shocked',
-				tags: ['shocked', 'surprised', 'yell']
-			}
-		]
-	},
-	{
-		id: 'japanese',
-		icon: <span className='text-sm'>🌸</span>,
+		id: 'misc',
+		icon: <MoreHorizontal className='w-4 h-4' />,
 		emoticons: [
 			{
 				text: 'φ(゜▽゜*)♪',
@@ -298,6 +329,48 @@ const emoticonCategories: EmoticonCategory[] = [
 				text: '(￣ω￣;)',
 				name: 'embarrassed',
 				tags: ['embarrassed', 'awkward', 'sweat']
+			},
+			{ text: '༼ つ ◕_◕ ༽つ', name: 'give', tags: ['give', 'take', 'energy'] },
+			{
+				text: 'ヽ༼ຈل͜ຈ༽ﾉ',
+				name: 'excited',
+				tags: ['excited', 'dongers', 'raise']
+			},
+			{ text: '☜(ﾟヮﾟ☜)', name: 'pointing', tags: ['point', 'you', 'cool'] },
+			{
+				text: "(ง'̀-'́)ง",
+				name: 'fighting',
+				tags: ['fight', 'determined', 'boxing']
+			},
+			{ text: 'ᕕ( ᐛ )ᕗ', name: 'happy', tags: ['happy', 'running', 'excited'] },
+			{
+				text: '♪~ ᕕ(ᐛ)ᕗ',
+				name: 'dancing',
+				tags: ['dancing', 'music', 'happy']
+			},
+			{
+				text: '(屮ﾟДﾟ)屮',
+				name: 'shocked',
+				tags: ['shocked', 'surprised', 'yell']
+			},
+			{
+				text: '┬─┬ノ( º _ ºノ)',
+				name: 'tableUnflip',
+				tags: ['table', 'calm', 'put back']
+			},
+			{ text: '(☝ ՞ਊ՞)☝', name: 'pointing', tags: ['point', 'up', 'cool'] },
+			{ text: '( ⚆ _ ⚆ )', name: 'suspicious', tags: ['suspicious', 'side-eye'] },
+			{ text: '(ㆆ_ㆆ)', name: 'suspicious', tags: ['suspicious', 'stare'] },
+			{ text: '(¬‿¬)', name: 'smirk', tags: ['smirk', 'sly', 'wink'] },
+			{
+				text: '(｡•̀ᴗ-)✧',
+				name: 'confident',
+				tags: ['confident', 'wink', 'proud']
+			},
+			{
+				text: '(ノ°∀°)ノ',
+				name: 'excited',
+				tags: ['excited', 'raise', 'cheer']
 			}
 		]
 	}
@@ -330,6 +403,7 @@ export default function TextEmoticonsPage() {
 		try {
 			await navigator.clipboard.writeText(emoticon)
 			setCopiedEmoticon(emoticon)
+			toast.success(`Скопировано: ${emoticon}`)
 
 			// Add to recent emoticons
 			setRecentEmoticons(prev => {
@@ -341,6 +415,7 @@ export default function TextEmoticonsPage() {
 			setTimeout(() => setCopiedEmoticon(null), 2000)
 		} catch (err) {
 			console.error('Не удалось скопировать смайлик:', err)
+			toast.error('Не удалось скопировать смайлик')
 		}
 	}
 
@@ -432,7 +507,7 @@ export default function TextEmoticonsPage() {
 				</div>
 
 				{filteredEmoticons.length > 0 ? (
-					<div className='grid grid-cols-2 gap-1 px-5 py-6 sm:grid-cols-3 sm:px-6 md:grid-cols-4 lg:grid-cols-5'>
+					<div className='grid grid-cols-2 gap-1 px-5 py-6 sm:grid-cols-3 sm:px-6 md:grid-cols-4'>
 						{filteredEmoticons.map((emoticon, index) => (
 							<button
 								key={`${emoticon.text}-${index}`}
@@ -462,18 +537,6 @@ export default function TextEmoticonsPage() {
 					</p>
 				)}
 			</Card>
-
-			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
-				<p>
-					Текстовые смайлики (каомодзи) собраны из обычных символов Unicode,
-					поэтому вставляются куда угодно — в ник, в сообщение, в комментарий —
-					и выглядят одинаково на любом устройстве, в отличие от эмодзи.
-				</p>
-				<p>
-					Клик по смайлику копирует его в буфер обмена, а сам смайлик попадает в
-					«Недавние» — там копятся последние двадцать.
-				</p>
-			</div>
 
 			<TextEmoticonsSeo />
 		</WidgetSEOWrapper>

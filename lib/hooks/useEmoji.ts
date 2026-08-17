@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { emojiCategories, type CategoryId } from '@/lib/data/emoji-data'
 
 interface UseEmojiProps {
@@ -32,6 +33,7 @@ export function useEmoji({ maxRecentEmojis = 30 }: UseEmojiProps = {}) {
 			try {
 				await navigator.clipboard.writeText(emoji)
 				setCopiedEmoji(emoji)
+				toast.success(`Скопировано: ${emoji}`)
 
 				// Add to recent emojis
 				const newRecent = [
@@ -46,6 +48,7 @@ export function useEmoji({ maxRecentEmojis = 30 }: UseEmojiProps = {}) {
 				return true
 			} catch (error) {
 				console.error('Failed to copy emoji:', error)
+				toast.error('Не удалось скопировать эмодзи')
 				return false
 			}
 		},

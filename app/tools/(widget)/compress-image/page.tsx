@@ -9,7 +9,8 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { formatBytes, percentSaved } from '@/lib/utils/format-bytes'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -167,14 +168,14 @@ export default function CompressImagePage() {
 				{...dropHandlers}
 			>
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{FORMAT_LABELS.map(([value, label]) => (
 							<button
 								key={value}
 								type='button'
 								onClick={() => setFormat(value)}
 								aria-pressed={format === value}
-								className={toolPill(format === value)}
+								className={toolToggleOption(format === value)}
 							>
 								{label}
 							</button>

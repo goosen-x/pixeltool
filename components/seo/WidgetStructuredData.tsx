@@ -1,9 +1,15 @@
 import { Widget } from '@/lib/constants/widgets'
 import { getToolSpecificSchema } from '@/lib/seo/widget-schemas'
+import type { ToolStats } from '@/lib/tool-stats/get-all-stats'
 
 interface WidgetStructuredDataProps {
 	widget: Widget
+	stats?: ToolStats
 }
+
+// Ниже этого числа голосов рейтинг в поиске не показываем: 5 звёзд на
+// 1-2 оценках выглядит накрученным и может дать обратный эффект.
+const MIN_RATING_COUNT_FOR_SCHEMA = 5
 
 /**
  * Серверная структурная разметка страницы инструмента:
@@ -13,7 +19,10 @@ interface WidgetStructuredDataProps {
  * FAQ здесь НЕ дублируем — его отдаёт FAQ.tsx (через WidgetFAQ).
  * Крошки — глобальный AutoBreadcrumbs / ProjectsLayoutWrapper.
  */
-export function WidgetStructuredData({ widget }: WidgetStructuredDataProps) {
+export function WidgetStructuredData({
+	widget,
+	stats
+}: WidgetStructuredDataProps) {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools/${widget.path}`
 	const locale = 'ru'
@@ -56,7 +65,21 @@ export function WidgetStructuredData({ widget }: WidgetStructuredDataProps) {
 		inLanguage: locale,
 		isAccessibleForFree: true,
 		featureList: widget.tags || [],
-		softwareVersion: '1.0'
+		softwareVersion: '1.0',
+		// Реальные оценки из tool_stats (ToolRatingWidget), не выдуманные — но
+		// показываем поисковику только начиная с порога голосов, см.
+		// MIN_RATING_COUNT_FOR_SCHEMA.
+		...(stats && stats.ratingCount >= MIN_RATING_COUNT_FOR_SCHEMA
+			? {
+					aggregateRating: {
+						'@type': 'AggregateRating',
+						ratingValue: Number(stats.rating.toFixed(1)),
+						ratingCount: stats.ratingCount,
+						bestRating: 5,
+						worstRating: 1
+					}
+				}
+			: {})
 	}
 
 	// WebPage schema for SEO

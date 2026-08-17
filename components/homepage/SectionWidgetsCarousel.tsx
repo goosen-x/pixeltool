@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, Sparkles } from 'lucide-react'
-import { widgets } from '@/lib/constants/widgets'
+import { publicWidgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
 import {
 	Carousel,
@@ -40,7 +40,7 @@ export function SectionWidgetsCarousel() {
 	// filter(Boolean) — страховка: если id переименуют, блок потеряет карточку,
 	// но не упадёт с undefined в ToolCard.
 	const popularWidgets = POPULAR_IDS.map(id =>
-		widgets.find(widget => widget.id === id)
+		publicWidgets.find(widget => widget.id === id)
 	).filter((widget): widget is NonNullable<typeof widget> => Boolean(widget))
 
 	return (

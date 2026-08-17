@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import {
 	symbolCategories,
 	type SymbolCategories
@@ -36,6 +37,7 @@ export function useSpecialSymbols({
 			try {
 				await navigator.clipboard.writeText(symbol)
 				setCopiedSymbol(symbol)
+				toast.success(`Скопировано: ${symbol}`)
 
 				// Add to recent symbols
 				const newRecent = [
@@ -50,6 +52,7 @@ export function useSpecialSymbols({
 				return true
 			} catch (error) {
 				console.error('Failed to copy symbol:', error)
+				toast.error('Не удалось скопировать символ')
 				return false
 			}
 		},
@@ -88,36 +91,18 @@ export function useSpecialSymbols({
 	// Get category icons (simple mapping)
 	const getCategoryIcon = useCallback((categoryId: string) => {
 		const iconMap: Record<string, string> = {
-			popular: '⭐',
-			chess: '♛',
-			music: '♪',
-			weather: '☀',
-			business: '©',
-			objects: '✂',
-			technical: '⌘',
-			zodiac: '☉',
-			checkmarks: '✓',
-			cards: '♠',
-			dice: '⚀',
-			units: '°',
-			numbers: '①',
-			punctuation: '•',
-			brackets: '〈',
-			hearts: '♥',
-			hands: '☞',
-			religious: '☪',
-			crosses: '✝',
-			stars: '★',
-			flowers: '❀',
+			popular: '★',
 			arrows: '→',
-			squares: '■',
-			triangles: '▲',
-			circles: '●',
 			math: '∞',
-			fractions: '½',
-			superscript: '²',
+			currency: '$',
 			greek: 'Ω',
-			currency: '$'
+			punctuation: '•',
+			shapes: '■',
+			stars: '✦',
+			nature: '☀',
+			objects: '✂',
+			religious: '☪',
+			games: '♛'
 		}
 		return iconMap[categoryId] || '◦'
 	}, [])

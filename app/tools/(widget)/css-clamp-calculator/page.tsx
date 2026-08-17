@@ -9,7 +9,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { ClampGuide } from './ClampGuide'
 
@@ -325,39 +327,43 @@ export default function ClampCalculatorPage() {
 				<div className={toolFooterBar}>
 					<div className='flex flex-wrap items-center gap-1.5'>
 						<span className='mr-1 text-sm text-muted-foreground'>Единицы</span>
-						{(['px', 'rem'] as Unit[]).map(item => (
-							<button
-								key={item}
-								type='button'
-								onClick={() => setUnit(item)}
-								aria-pressed={unit === item}
-								className={toolPill(unit === item, 'font-mono')}
-							>
-								{item}
-							</button>
-						))}
+						<div className={toolToggleTrack}>
+							{(['px', 'rem'] as Unit[]).map(item => (
+								<button
+									key={item}
+									type='button'
+									onClick={() => setUnit(item)}
+									aria-pressed={unit === item}
+									className={toolToggleOption(unit === item, 'font-mono')}
+								>
+									{item}
+								</button>
+							))}
+						</div>
 					</div>
 
 					<div className='flex flex-wrap items-center gap-1.5'>
 						<span className='mr-1 text-sm text-muted-foreground'>
 							Результат
 						</span>
-						{(
-							[
-								['css', 'CSS'],
-								['tailwind', 'Tailwind']
-							] as [Format, string][]
-						).map(([value, label]) => (
-							<button
-								key={value}
-								type='button'
-								onClick={() => setFormat(value)}
-								aria-pressed={format === value}
-								className={toolPill(format === value)}
-							>
-								{label}
-							</button>
-						))}
+						<div className={toolToggleTrack}>
+							{(
+								[
+									['css', 'CSS'],
+									['tailwind', 'Tailwind']
+								] as [Format, string][]
+							).map(([value, label]) => (
+								<button
+									key={value}
+									type='button'
+									onClick={() => setFormat(value)}
+									aria-pressed={format === value}
+									className={toolToggleOption(format === value)}
+								>
+									{label}
+								</button>
+							))}
+						</div>
 					</div>
 				</div>
 			</Card>

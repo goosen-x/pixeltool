@@ -6,7 +6,13 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Copy, Check, Trash2 } from 'lucide-react'
-import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolIconButton,
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
+} from '@/lib/ui/tool-pill'
 
 import { cn } from '@/lib/utils'
 
@@ -312,22 +318,24 @@ div.container > p::first-line
 				    читаются без подписей. */}
 				<div className={toolBar}>
 					<div className='flex flex-wrap items-center gap-1.5'>
-						<button
-							type='button'
-							onClick={() => setSortBy('order')}
-							aria-pressed={sortBy === 'order'}
-							className={toolPill(sortBy === 'order')}
-						>
-							По порядку
-						</button>
-						<button
-							type='button'
-							onClick={() => setSortBy('weight')}
-							aria-pressed={sortBy === 'weight'}
-							className={toolPill(sortBy === 'weight')}
-						>
-							По весу
-						</button>
+						<div className={toolToggleTrack}>
+							<button
+								type='button'
+								onClick={() => setSortBy('order')}
+								aria-pressed={sortBy === 'order'}
+								className={toolToggleOption(sortBy === 'order')}
+							>
+								По порядку
+							</button>
+							<button
+								type='button'
+								onClick={() => setSortBy('weight')}
+								aria-pressed={sortBy === 'weight'}
+								className={toolToggleOption(sortBy === 'weight')}
+							>
+								По весу
+							</button>
+						</div>
 						{results.length > 0 && (
 							<span className='ml-2 text-sm text-muted-foreground'>
 								{results.length} шт.

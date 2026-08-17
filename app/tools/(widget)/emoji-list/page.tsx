@@ -7,7 +7,6 @@ import { Download, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { useEmoji } from '@/lib/hooks/useEmoji'
-import { EmojiInfo } from '@/components/tools/emoji'
 import { emojiCategories, type CategoryId } from '@/lib/data/emoji-data'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -139,7 +138,6 @@ export default function EmojiListPage() {
 				)}
 			</Card>
 
-			<EmojiInfo />
 			<EmojiListSeo />
 		</WidgetSEOWrapper>
 	)

@@ -16,12 +16,14 @@ import { cn } from '@/lib/utils'
 import { ProjectsLeftSidebar } from './ProjectsLeftSidebar'
 import { ProjectsRightSidebar } from './ProjectsRightSidebar'
 import { CompactFooter } from '@/components/layout/CompactFooter'
+import type { ToolStats } from '@/lib/tool-stats/get-all-stats'
 
 type Props = {
 	children: ReactNode
+	toolStats: Record<string, ToolStats>
 }
 
-export function ProjectsLayoutWrapper({ children }: Props) {
+export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 	const pathname = usePathname()
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -50,7 +52,10 @@ export function ProjectsLayoutWrapper({ children }: Props) {
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
 						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
 							{widget && !widget.demo && (
-								<WidgetStructuredData widget={widget} />
+								<WidgetStructuredData
+									widget={widget}
+									stats={widgetId ? toolStats[widgetId] : undefined}
+								/>
 							)}
 							{widget?.demo && (
 								<div className='mb-6 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-400'>

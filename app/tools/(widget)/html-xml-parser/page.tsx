@@ -18,7 +18,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 
 interface ParseResult {
@@ -219,12 +221,12 @@ export default function HtmlXmlParserPage() {
 				    заменены таблетками, выпадающий список отступа — тремя
 				    значениями подряд. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						<button
 							type='button'
 							onClick={() => setMinify(false)}
 							aria-pressed={!minify}
-							className={toolPill(!minify)}
+							className={toolToggleOption(!minify)}
 						>
 							Форматировать
 						</button>
@@ -232,7 +234,7 @@ export default function HtmlXmlParserPage() {
 							type='button'
 							onClick={() => setMinify(true)}
 							aria-pressed={minify}
-							className={toolPill(minify)}
+							className={toolToggleOption(minify)}
 						>
 							Минифицировать
 						</button>

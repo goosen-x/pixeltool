@@ -13,7 +13,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 
 type ShadowMode = 'box' | 'text'
@@ -601,7 +603,7 @@ export default function CSSBoxShadowGeneratorPage() {
 				{/* Верхняя полоса: box-shadow и text-shadow — это разные свойства с
 				    разным набором параметров, поэтому переключатель здесь главный. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{(
 							[
 								['box', 'box-shadow'],
@@ -613,7 +615,7 @@ export default function CSSBoxShadowGeneratorPage() {
 								type='button'
 								onClick={() => switchMode(value)}
 								aria-pressed={mode === value}
-								className={toolPill(mode === value, 'font-mono')}
+								className={toolToggleOption(mode === value, 'font-mono')}
 							>
 								{label}
 							</button>

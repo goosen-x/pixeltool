@@ -9,7 +9,8 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import {
 	textToMorse,
@@ -96,7 +97,7 @@ export default function MorseCodeTranslatorPage() {
 			<Card className='overflow-hidden p-0'>
 				{/* Шапка: направление и язык слева, действия справа. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{(
 							[
 								['encode', 'Текст → Морзе'],
@@ -108,7 +109,7 @@ export default function MorseCodeTranslatorPage() {
 								type='button'
 								onClick={() => setDirection(value)}
 								aria-pressed={direction === value}
-								className={toolPill(direction === value)}
+								className={toolToggleOption(direction === value)}
 							>
 								{label}
 							</button>
@@ -192,22 +193,24 @@ export default function MorseCodeTranslatorPage() {
 				{/* Нижняя полоса: выбор языка. */}
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>Язык</span>
-					{(
-						[
-							['ru', 'Русский'],
-							['en', 'English']
-						] as [MorseLang, string][]
-					).map(([value, label]) => (
-						<button
-							key={value}
-							type='button'
-							onClick={() => setLang(value)}
-							aria-pressed={lang === value}
-							className={toolPill(lang === value)}
-						>
-							{label}
-						</button>
-					))}
+					<div className={toolToggleTrack}>
+						{(
+							[
+								['ru', 'Русский'],
+								['en', 'English']
+							] as [MorseLang, string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => setLang(value)}
+								aria-pressed={lang === value}
+								className={toolToggleOption(lang === value)}
+							>
+								{label}
+							</button>
+						))}
+					</div>
 				</div>
 			</Card>
 

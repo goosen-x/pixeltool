@@ -17,9 +17,17 @@ export const rateActionSchema = z.object({
 	])
 })
 
+export const feedbackActionSchema = z.object({
+	toolId: z.string().min(1),
+	action: z.literal('feedback'),
+	rating: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+	comment: z.string().trim().min(1).max(1000)
+})
+
 export const toolStatsActionSchema = z.discriminatedUnion('action', [
 	viewActionSchema,
-	rateActionSchema
+	rateActionSchema,
+	feedbackActionSchema
 ])
 
 export type ToolStatsAction = z.infer<typeof toolStatsActionSchema>

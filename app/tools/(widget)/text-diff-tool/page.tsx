@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { diffLines, diffWords, type Change } from 'diff'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -17,7 +18,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -28,12 +31,19 @@ import { TextDiffToolSeo } from './TextDiffToolSeo'
 type DiffType = 'unified' | 'side-by-side'
 type ChangeType = 'add' | 'delete' | 'modify' | 'equal'
 
+interface DiffSegment {
+	text: string
+	changed: boolean
+}
+
 interface DiffLine {
 	type: ChangeType
 	oldLine?: number
 	newLine?: number
 	content: string
-	isHighlighted?: boolean
+	// Только для 'modify' — посимвольная (по словам) подсветка внутри
+	// изменённой строки, а не только целиком жёлтая строка.
+	segments?: DiffSegment[]
 }
 
 interface DiffResult {
@@ -85,75 +95,164 @@ export default function TextDiffToolPage() {
 		}, 100)
 	}
 
+	// Строки, оставшиеся на месте, но изменившиеся внутри, получают
+	// посимвольную (по словам) подсветку — какие именно слова добавились и
+	// какие пропали, а не только «вся строка жёлтая».
+	const diffLineWords = (
+		oldText: string,
+		newText: string
+	): { oldSegments: DiffSegment[]; newSegments: DiffSegment[] } => {
+		const parts: Change[] = diffWords(oldText, newText, { ignoreCase })
+		const oldSegments: DiffSegment[] = []
+		const newSegments: DiffSegment[] = []
+
+		for (const part of parts) {
+			if (part.added) {
+				newSegments.push({ text: part.value, changed: true })
+			} else if (part.removed) {
+				oldSegments.push({ text: part.value, changed: true })
+			} else {
+				oldSegments.push({ text: part.value, changed: false })
+				newSegments.push({ text: part.value, changed: false })
+			}
+		}
+
+		return { oldSegments, newSegments }
+	}
+
 	const computeDiff = (original: string, modified: string): DiffResult => {
-		let originalLines = original.split('\n')
-		let modifiedLines = modified.split('\n')
+		const originalLines = original.split('\n')
+		const modifiedLines = modified.split('\n')
 
-		// Apply filters
-		if (ignoreWhitespace) {
-			originalLines = originalLines.map(line => line.trim())
-			modifiedLines = modifiedLines.map(line => line.trim())
+		const normalizeLine = (line: string) => {
+			const trimmed = ignoreWhitespace ? line.trim() : line
+			return ignoreCase ? trimmed.toLowerCase() : trimmed
 		}
 
-		if (ignoreCase) {
-			originalLines = originalLines.map(line => line.toLowerCase())
-			modifiedLines = modifiedLines.map(line => line.toLowerCase())
-		}
+		// diffLines реально ищет совпадающие строки (LCS), а не сравнивает
+		// строку i со строкой i по позиции — одна вставленная/удалённая строка
+		// больше не сбивает выравнивание всего текста после неё. Сравниваем по
+		// нормализованному виду (typings diffLines не знают про ignoreCase, хотя
+		// ignoreWhitespace умеет сам — нормализуем оба флага здесь одинаково,
+		// чтобы не мешать типизированное и нет), а в результат подставляем
+		// исходные строки — регистр и пробелы в выводе не теряются.
+		const parts: Change[] = diffLines(
+			originalLines.map(normalizeLine).join('\n'),
+			modifiedLines.map(normalizeLine).join('\n')
+		)
 
-		const diffLines: DiffLine[] = []
+		const resultLines: DiffLine[] = []
 		let additions = 0
 		let deletions = 0
 		let modifications = 0
+		let oldLineNum = 0
+		let newLineNum = 0
+		let oldCursor = 0
+		let newCursor = 0
 
-		// Simple diff algorithm (Myers algorithm would be better but more complex)
-		const maxLines = Math.max(originalLines.length, modifiedLines.length)
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i]
+			const count = part.count ?? 0
 
-		for (let i = 0; i < maxLines; i++) {
-			const originalLine = originalLines[i]
-			const modifiedLine = modifiedLines[i]
+			if (!part.added && !part.removed) {
+				for (let j = 0; j < count; j++) {
+					oldLineNum++
+					newLineNum++
+					resultLines.push({
+						type: 'equal',
+						oldLine: oldLineNum,
+						newLine: newLineNum,
+						content: originalLines[oldCursor]
+					})
+					oldCursor++
+					newCursor++
+				}
+				continue
+			}
 
-			if (originalLine === undefined) {
-				// Addition
-				diffLines.push({
-					type: 'add',
-					newLine: i + 1,
-					content: modifiedLine
-				})
+			if (part.removed) {
+				const removedLines = originalLines.slice(oldCursor, oldCursor + count)
+				oldCursor += count
+				const next = parts[i + 1]
+
+				if (next?.added) {
+					// Блок «убрали N строк, добавили M» — первые min(N,M) пар
+					// сравниваем как изменённые строки с подсветкой слов,
+					// остаток — чистое добавление/удаление.
+					const nextCount = next.count ?? 0
+					const addedLines = modifiedLines.slice(
+						newCursor,
+						newCursor + nextCount
+					)
+					newCursor += nextCount
+					const pairCount = Math.min(removedLines.length, addedLines.length)
+
+					for (let j = 0; j < pairCount; j++) {
+						const { oldSegments, newSegments } = diffLineWords(
+							removedLines[j],
+							addedLines[j]
+						)
+						oldLineNum++
+						newLineNum++
+						resultLines.push({
+							type: 'delete',
+							oldLine: oldLineNum,
+							content: removedLines[j],
+							segments: oldSegments
+						})
+						resultLines.push({
+							type: 'add',
+							newLine: newLineNum,
+							content: addedLines[j],
+							segments: newSegments
+						})
+						modifications++
+					}
+
+					for (let j = pairCount; j < removedLines.length; j++) {
+						oldLineNum++
+						resultLines.push({
+							type: 'delete',
+							oldLine: oldLineNum,
+							content: removedLines[j]
+						})
+						deletions++
+					}
+
+					for (let j = pairCount; j < addedLines.length; j++) {
+						newLineNum++
+						resultLines.push({
+							type: 'add',
+							newLine: newLineNum,
+							content: addedLines[j]
+						})
+						additions++
+					}
+
+					i++ // следующий блок (added) уже обработан здесь
+					continue
+				}
+
+				for (const content of removedLines) {
+					oldLineNum++
+					resultLines.push({ type: 'delete', oldLine: oldLineNum, content })
+					deletions++
+				}
+				continue
+			}
+
+			// Чистое добавление без предшествующего удаления.
+			const addedLines = modifiedLines.slice(newCursor, newCursor + count)
+			newCursor += count
+			for (const content of addedLines) {
+				newLineNum++
+				resultLines.push({ type: 'add', newLine: newLineNum, content })
 				additions++
-			} else if (modifiedLine === undefined) {
-				// Deletion
-				diffLines.push({
-					type: 'delete',
-					oldLine: i + 1,
-					content: originalLine
-				})
-				deletions++
-			} else if (originalLine === modifiedLine) {
-				// Equal
-				diffLines.push({
-					type: 'equal',
-					oldLine: i + 1,
-					newLine: i + 1,
-					content: originalLine
-				})
-			} else {
-				// Modification
-				diffLines.push({
-					type: 'delete',
-					oldLine: i + 1,
-					content: originalLine
-				})
-				diffLines.push({
-					type: 'add',
-					newLine: i + 1,
-					content: modifiedLine
-				})
-				modifications++
 			}
 		}
 
 		return {
-			lines: diffLines,
+			lines: resultLines,
 			stats: {
 				additions,
 				deletions,
@@ -262,6 +361,24 @@ export default function TextDiffToolPage() {
 		}
 	}
 
+	// Строки без segments (add/delete целиком, equal) рендерятся как текст;
+	// у 'modify' строк segments размечают, какие именно слова поменялись.
+	const renderLineContent = (line: DiffLine) => {
+		if (!line.segments) return line.content
+		return line.segments.map((segment, index) => (
+			<span
+				key={index}
+				className={
+					segment.changed
+						? 'rounded-sm bg-yellow-200/70 dark:bg-yellow-500/40'
+						: undefined
+				}
+			>
+				{segment.text}
+			</span>
+		))
+	}
+
 	const renderUnifiedDiff = () => {
 		if (!diffResult) return null
 
@@ -281,7 +398,7 @@ export default function TextDiffToolPage() {
 							{line.type === 'add' && '+ '}
 							{line.type === 'delete' && '- '}
 							{line.type === 'equal' && '  '}
-							{line.content}
+							{renderLineContent(line)}
 						</span>
 					</div>
 				))}
@@ -292,6 +409,13 @@ export default function TextDiffToolPage() {
 	const renderSideBySideDiff = () => {
 		if (!diffResult) return null
 
+		const leftLines = diffResult.lines.filter(
+			line => line.type === 'equal' || line.type === 'delete'
+		)
+		const rightLines = diffResult.lines.filter(
+			line => line.type === 'equal' || line.type === 'add'
+		)
+
 		return (
 			<div className='grid grid-cols-2 gap-4'>
 				<div>
@@ -299,14 +423,19 @@ export default function TextDiffToolPage() {
 						Исходный текст
 					</h4>
 					<div className='space-y-1 font-mono text-sm'>
-						{originalText.split('\n').map((line, index) => (
-							<div key={index} className='p-2 bg-muted/30 rounded'>
+						{leftLines.map((line, index) => (
+							<div
+								key={index}
+								className={cn('p-2 rounded', getDiffLineClass(line.type))}
+							>
 								{showLineNumbers && (
 									<span className='inline-block w-12 text-muted-foreground mr-4'>
-										{index + 1}
+										{line.oldLine}
 									</span>
 								)}
-								<span>{line}</span>
+								<span className={getDiffTextClass(line.type)}>
+									{renderLineContent(line)}
+								</span>
 							</div>
 						))}
 					</div>
@@ -317,14 +446,19 @@ export default function TextDiffToolPage() {
 						Измененный текст
 					</h4>
 					<div className='space-y-1 font-mono text-sm'>
-						{modifiedText.split('\n').map((line, index) => (
-							<div key={index} className='p-2 bg-muted/30 rounded'>
+						{rightLines.map((line, index) => (
+							<div
+								key={index}
+								className={cn('p-2 rounded', getDiffLineClass(line.type))}
+							>
 								{showLineNumbers && (
 									<span className='inline-block w-12 text-muted-foreground mr-4'>
-										{index + 1}
+										{line.newLine}
 									</span>
 								)}
-								<span>{line}</span>
+								<span className={getDiffTextClass(line.type)}>
+									{renderLineContent(line)}
+								</span>
 							</div>
 						))}
 					</div>
@@ -340,7 +474,7 @@ export default function TextDiffToolPage() {
 				    результатом. Режим раньше жил в выпадающем списке посреди
 				    статистики — рядом с числами, но управлял видом ниже. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{(
 							[
 								['unified', 'Одним потоком'],
@@ -352,7 +486,7 @@ export default function TextDiffToolPage() {
 								type='button'
 								onClick={() => setDiffType(value)}
 								aria-pressed={diffType === value}
-								className={toolPill(diffType === value)}
+								className={toolToggleOption(diffType === value)}
 							>
 								{label}
 							</button>
@@ -493,20 +627,6 @@ export default function TextDiffToolPage() {
 					)}
 				</div>
 			</Card>
-
-			<div className='mt-6 space-y-3 text-sm text-muted-foreground'>
-				<p>
-					Сравнение идёт по строкам: строка, которой нет во втором тексте,
-					считается удалённой, новая — добавленной, а изменённая подсвечивается
-					жёлтым. Всё считается прямо в браузере, тексты никуда не отправляются.
-				</p>
-				<p>
-					«Без учёта пробелов» полезно, когда отличается только форматирование
-					(отступы, переносы), а «без учёта регистра» — когда важен смысл, а не
-					то, с какой буквы написано слово. Результат можно забрать кнопкой
-					скачивания в виде патча.
-				</p>
-			</div>
 
 			<TextDiffToolSeo />
 		</WidgetSEOWrapper>

@@ -13,7 +13,9 @@
  * 2. Полосы: шапка (режимы слева, иконки-действия справа) → рабочая область
  *    на чистом фоне → одна или несколько нижних полос с параметрами.
  * 3. Переключатели — «таблетки» (`toolPill`), а не вкладки во всю ширину,
- *    тумблеры с подписями и выпадающие списки на три значения.
+ *    тумблеры с подписями и выпадающие списки на три значения. Если вариантов
+ *    ровно два — это не список, а один тумблер: `toolToggleTrack` +
+ *    `toolToggleOption` (см. группу режимов ниже).
  * 4. Ничего не прятать за шестерёнкой и раскрывашкой: если настройка влияет
  *    на результат, она видна.
  * 5. Результат — герой: крупный моноширинный текст, кнопка спокойная.
@@ -31,7 +33,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 
 type Mode = 'first' | 'second'
@@ -61,7 +65,7 @@ export default function TemplateWidgetPage() {
 		<Card className='overflow-hidden p-0'>
 			{/* Шапка: режимы слева, действия справа. */}
 			<div className={toolBar}>
-				<div className='flex flex-wrap items-center gap-1.5'>
+				<div className={toolToggleTrack}>
 					{(
 						[
 							['first', 'Первый режим'],
@@ -73,7 +77,7 @@ export default function TemplateWidgetPage() {
 							type='button'
 							onClick={() => setMode(value)}
 							aria-pressed={mode === value}
-							className={toolPill(mode === value)}
+							className={toolToggleOption(mode === value)}
 						>
 							{label}
 						</button>

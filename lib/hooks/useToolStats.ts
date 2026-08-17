@@ -31,7 +31,7 @@ export function useToolStats(toolId: string) {
 					.then((data: { error?: string }) => data.error)
 					.catch(() => undefined)
 				toast.error(message ?? 'Не удалось отправить оценку')
-				return
+				return false
 			}
 
 			const data: { rating: number; ratingCount: number } =
@@ -44,8 +44,30 @@ export function useToolStats(toolId: string) {
 				// приватный режим — не критично
 			}
 			setHasVoted(true)
+			return true
 		} catch {
 			toast.error('Не удалось отправить оценку')
+			return false
+		}
+	}
+
+	async function sendFeedback(rating: 1 | 2 | 3, comment: string) {
+		try {
+			const response = await fetch('/api/tool-stats', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ toolId, action: 'feedback', rating, comment })
+			})
+
+			if (!response.ok) {
+				toast.error('Не удалось отправить отзыв')
+				return false
+			}
+
+			return true
+		} catch {
+			toast.error('Не удалось отправить отзыв')
+			return false
 		}
 	}
 
@@ -56,6 +78,7 @@ export function useToolStats(toolId: string) {
 		rating: entry?.rating ?? 0,
 		ratingCount: entry?.ratingCount ?? 0,
 		hasVoted,
-		vote
+		vote,
+		sendFeedback
 	}
 }

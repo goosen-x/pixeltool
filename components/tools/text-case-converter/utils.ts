@@ -12,7 +12,6 @@ export type CaseType =
 	| 'dot.case'
 	| 'path/case'
 	| 'Header-Case'
-	| 'Train-Case'
 	| 'alternating'
 	| 'inverse'
 	| 'reverse'
@@ -67,16 +66,13 @@ export function convertCase(text: string, type: CaseType): string {
 				.join(' ')
 
 		case 'sentence':
+			// Границей предложения раньше считалась только точка — «Привет!
+			// Как дела?» лишало заглавных букв всё после первого «!».
+			// Заглавная ставится в начале строки и после любого из .!? плюс
+			// пробел, регистр остального текста не трогается split'ом.
 			return text
-				.split('. ')
-				.map(sentence => {
-					const trimmed = sentence.trim()
-					if (trimmed.length === 0) return ''
-					return (
-						trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase()
-					)
-				})
-				.join('. ')
+				.toLowerCase()
+				.replace(/(^\s*\S|[.!?]+\s+\S)/g, match => match.toUpperCase())
 
 		case 'camelCase':
 			return text
@@ -126,12 +122,6 @@ export function convertCase(text: string, type: CaseType): string {
 				.toLowerCase()
 
 		case 'Header-Case':
-			return text
-				.split(/[\s_]+/)
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-				.join('-')
-
-		case 'Train-Case':
 			return text
 				.split(/[\s_]+/)
 				.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())

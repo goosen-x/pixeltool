@@ -11,7 +11,6 @@ import {
 	Zap,
 	Sparkles,
 	Binary,
-	GitBranch,
 	Terminal,
 	FileCode,
 	Brackets
@@ -31,7 +30,6 @@ export type CaseType =
 	| 'dot.case'
 	| 'path/case'
 	| 'Header-Case'
-	| 'Train-Case'
 	| 'alternating'
 	| 'inverse'
 	| 'reverse'
@@ -121,12 +119,6 @@ export const caseConfigs: Record<CaseType, CaseConfig> = {
 		type: 'Header-Case',
 		icon: <FileCode className='w-4 h-4' />,
 		gradient: 'from-violet-400 to-violet-600',
-		category: 'programming'
-	},
-	'Train-Case': {
-		type: 'Train-Case',
-		icon: <GitBranch className='w-4 h-4' />,
-		gradient: 'from-fuchsia-400 to-fuchsia-600',
 		category: 'programming'
 	},
 	alternating: {

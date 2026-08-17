@@ -11,7 +11,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { useCSSGradientGenerator } from '@/lib/hooks/widgets'
 import {
@@ -299,14 +301,14 @@ export default function CSSGradientGeneratorPage() {
 
 					{settings.type === 'radial' && (
 						<>
-							<div className='flex flex-wrap items-center gap-1.5'>
+							<div className={toolToggleTrack}>
 								{(['circle', 'ellipse'] as const).map(shape => (
 									<button
 										key={shape}
 										type='button'
 										onClick={() => updateRadialShape(shape)}
 										aria-pressed={settings.radialShape === shape}
-										className={toolPill(
+										className={toolToggleOption(
 											settings.radialShape === shape,
 											'font-mono'
 										)}

@@ -11,7 +11,9 @@ import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 
 interface ContrastResult {
@@ -512,7 +514,7 @@ export default function ColorContrastCheckerPage() {
 						</span>
 					</label>
 
-					<div className='flex flex-wrap items-center gap-1.5'>
+					<div className={toolToggleTrack}>
 						{(
 							[
 								['normal', 'Обычный'],
@@ -524,7 +526,7 @@ export default function ColorContrastCheckerPage() {
 								type='button'
 								onClick={() => setFontWeight(value)}
 								aria-pressed={fontWeight === value}
-								className={toolPill(fontWeight === value)}
+								className={toolToggleOption(fontWeight === value)}
 							>
 								{label}
 							</button>

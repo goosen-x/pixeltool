@@ -23,6 +23,27 @@ export const toolPill = (active: boolean, extra?: string) =>
 		extra
 	)
 
+/**
+ * Двухпозиционный переключатель для полос инструмента.
+ *
+ * Когда вариантов ровно два (px/rem, CSS/Tailwind, светлая/тёмная), это не
+ * набор фильтров, а один переключатель состояния — трек с двумя подписанными
+ * сегментами читается как единое целое, а не как список кнопок. Наборы из
+ * трёх и более вариантов остаются `toolPill`: там нет одной оси «туда-сюда».
+ */
+export const toolToggleTrack =
+	'inline-flex items-center overflow-hidden rounded-lg border bg-muted/40 p-1'
+
+export const toolToggleOption = (active: boolean, extra?: string) =>
+	cn(
+		'cursor-pointer rounded-full px-3 py-0.5 text-sm transition-colors',
+		'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+		active
+			? 'bg-background text-foreground shadow-sm'
+			: 'text-muted-foreground hover:text-foreground',
+		extra
+	)
+
 /** Верхняя полоса инструмента: режимы слева, действия справа. */
 export const toolBar =
 	'flex flex-wrap items-center gap-x-6 gap-y-3 border-b bg-muted/30 px-5 py-3 sm:px-6'

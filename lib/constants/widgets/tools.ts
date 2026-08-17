@@ -22,7 +22,7 @@ export const toolWidgets: Widget[] = [
 		// Собственный компонент, а не lucide: без явного имени карточка в блоге
 		// не могла подобрать иконку и рисовала запасной «гаечный ключ»
 		iconName: 'FileCode',
-		category: 'utilities',
+		category: 'development',
 		translationKey: 'svgEncoder',
 		path: 'svg-to-base64-encoder',
 		gradient: 'from-teal-500 to-cyan-500',
@@ -73,7 +73,7 @@ export const toolWidgets: Widget[] = [
 		id: 'youtube-thumbnail',
 		searchVolume: 67,
 		icon: Youtube,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'youtubeThumbnail',
 		path: 'youtube-thumbnail-downloader',
 		gradient: 'from-red-500 to-pink-500',
@@ -131,7 +131,7 @@ export const toolWidgets: Widget[] = [
 		// Разница с генераторами явно объяснена в MockDataGeneratorSeo.
 		searchVolume: 516,
 		icon: Database,
-		category: 'utilities',
+		category: 'development',
 		translationKey: 'mockDataGenerator',
 		path: 'mock-data-generator',
 		gradient: 'from-emerald-500 to-teal-600',
@@ -475,9 +475,6 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'pixel-art-editor',
-		// Не утверждён финально — виден в сайдбаре с плашкой «Демо», исключён
-		// из каталога/sitemap/структурных данных. См. Widget['demo'].
-		demo: true,
 		// Вордстат: «пиксель арт онлайн» 1102 (генераторный интент — рисовать/
 		// сделать/создать) + отдельный кластер «пикселизация фото» 908 (фото →
 		// пиксель-арт). Головной англ. «pixel art» 15869 — ловушка, забита
@@ -545,8 +542,6 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'remove-background',
-		// Не утверждён финально — см. Widget['demo'].
-		demo: true,
 		// Вордстат: «удалить фон» 292964/мес — крупнейшая находка за сессию,
 		// весь разбор чистый generator-intent («онлайн» 89114, «с фото» 20650,
 		// «бесплатно» 17648, «с картинки» 12152). Технически: @imgly/
@@ -612,8 +607,6 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'date-difference-calculator',
-		// Не утверждён финально — см. Widget['demo'].
-		demo: true,
 		// Вордстат: «калькулятор дат между датами» 43517/мес + «калькулятор
 		// дней между датами» 30472/мес + «сколько дней между датами» 6637 +
 		// «разница между датами» ~3700 чисто. Крупнейшая находка сессии после
@@ -674,8 +667,6 @@ export const toolWidgets: Widget[] = [
 	},
 	{
 		id: 'compress-image',
-		// Не утверждён финально — см. Widget['demo'].
-		demo: true,
 		// Вордстат: «сжать фото» 57238/мес + «сжать изображение» 17597/мес +
 		// «уменьшить размер фото» 29263/мес — крупнейшая находка сессии по
 		// объёму. Весь разбор чистый: «онлайн» 15633+6117, «без потери

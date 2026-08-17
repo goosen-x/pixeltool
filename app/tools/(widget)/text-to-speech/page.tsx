@@ -13,6 +13,9 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { TextToSpeechSeo } from './TextToSpeechSeo'
 
 /** Короткие фразы, на которых слышно разницу между голосами. */
 const EXAMPLE_PHRASES = [
@@ -52,6 +55,7 @@ interface HistoryItem {
 }
 
 export default function TextToSpeechPage() {
+	const widget = getWidgetById('text-to-speech')!
 	const locale = 'ru'
 	const [mounted, setMounted] = useState(false)
 	const [text, setText] = useState('')
@@ -281,7 +285,7 @@ export default function TextToSpeechPage() {
 	const selectedVoiceObj = voices.find(v => v.name === selectedVoice)
 
 	return (
-		<>
+		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: воспроизведение и что сделать с текстом. Кнопка
 				    «играть» раньше была кругом 48×48 справа от поля ввода — она
@@ -521,6 +525,8 @@ export default function TextToSpeechPage() {
 					</div>
 				</div>
 			)}
-		</>
+
+			<TextToSpeechSeo />
+		</WidgetSEOWrapper>
 	)
 }

@@ -7,7 +7,6 @@ import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { useSpecialSymbols } from '@/lib/hooks/useSpecialSymbols'
-import { SymbolInfo } from '@/components/tools/special-symbols'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { SpecialSymbolsPickerSeo } from './SpecialSymbolsPickerSeo'
@@ -31,9 +30,9 @@ export default function SpecialSymbolsPickerPage() {
 	const filteredSymbols = getFilteredSymbols('', selectedCategory)
 
 	const categories: { id: string; name: string; icon: string }[] = [
-		{ id: 'all', name: 'Все', icon: '⭐' },
+		{ id: 'all', name: 'Все', icon: '★' },
 		...(recentSymbols.length > 0
-			? [{ id: 'recent', name: 'Недавние', icon: '🕒' }]
+			? [{ id: 'recent', name: 'Недавние', icon: '↺' }]
 			: []),
 		...symbolCategories.map(category => ({
 			id: category.id,
@@ -108,7 +107,6 @@ export default function SpecialSymbolsPickerPage() {
 				)}
 			</Card>
 
-			<SymbolInfo />
 			<SpecialSymbolsPickerSeo />
 		</WidgetSEOWrapper>
 	)

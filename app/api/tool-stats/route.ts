@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { toolStatsActionSchema } from '@/lib/tool-stats/schema'
 import { createRateLimiter } from '@/lib/tool-stats/rate-limit'
+import { getAllToolStats } from '@/lib/tool-stats/get-all-stats'
 
 // Один процесс на контейнер (без serverless, см. CLAUDE.md), поэтому лимитер
 // в памяти модуля реально копит историю между запросами.
@@ -27,31 +28,9 @@ function clientIp(request: NextRequest): string {
 	return request.headers.get('x-real-ip') || 'unknown'
 }
 
-interface ToolStatsRow {
-	tool_id: string
-	views: string
-	rating_sum: number
-	rating_count: number
-}
-
 export async function GET() {
 	try {
-		const db = await getDb()
-		const { rows } = await db.query<ToolStatsRow>(
-			'SELECT tool_id, views, rating_sum, rating_count FROM tool_stats'
-		)
-
-		const stats = Object.fromEntries(
-			rows.map(row => [
-				row.tool_id,
-				{
-					views: Number(row.views),
-					rating: row.rating_count > 0 ? row.rating_sum / row.rating_count : 0,
-					ratingCount: row.rating_count
-				}
-			])
-		)
-
+		const stats = await getAllToolStats()
 		return NextResponse.json(stats)
 	} catch (error) {
 		console.error('Не удалось получить статистику тулов:', error)
@@ -101,6 +80,30 @@ export async function POST(request: NextRequest) {
 			console.error('Не удалось записать просмотр тула:', error)
 			return NextResponse.json(
 				{ error: 'Не удалось записать просмотр' },
+				{ status: 500 }
+			)
+		}
+	}
+
+	if (parsed.data.action === 'feedback') {
+		if (!rateLimiter.check(clientIp(request))) {
+			return NextResponse.json(
+				{ error: 'Слишком много запросов, попробуйте позже' },
+				{ status: 429 }
+			)
+		}
+
+		try {
+			const db = await getDb()
+			await db.query(
+				`INSERT INTO tool_feedback (tool_id, rating, comment) VALUES ($1, $2, $3)`,
+				[parsed.data.toolId, parsed.data.rating, parsed.data.comment]
+			)
+			return NextResponse.json({ ok: true })
+		} catch (error) {
+			console.error('Не удалось сохранить отзыв тула:', error)
+			return NextResponse.json(
+				{ error: 'Не удалось сохранить отзыв' },
 				{ status: 500 }
 			)
 		}

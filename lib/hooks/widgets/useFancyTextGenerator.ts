@@ -97,7 +97,7 @@ export function useFancyTextGenerator(
 		const randomExample =
 			exampleTexts[Math.floor(Math.random() * exampleTexts.length)]
 		setInputText(randomExample)
-		toast.success('Example text loaded')
+		toast.success('Пример подставлен')
 	}, [])
 
 	// Clear all text
