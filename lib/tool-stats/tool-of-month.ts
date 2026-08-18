@@ -6,7 +6,9 @@ export function currentYearMonth(date: Date = new Date()): string {
 }
 
 export function previousYearMonth(date: Date = new Date()): string {
-	const prev = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() - 1, 1))
+	const prev = new Date(
+		Date.UTC(date.getUTCFullYear(), date.getUTCMonth() - 1, 1)
+	)
 	return currentYearMonth(prev)
 }
 
