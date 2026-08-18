@@ -36,11 +36,14 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 	useAnalytics(widgetId || '')
 
 	return (
-		<div className='flex h-[calc(100vh-5rem)] relative'>
+		// --chrome-h — реальная высота баннера «инструмент месяца» + шапки,
+		// её выставляет ChromeHeightVar (lib/ui/chrome-height.ts). 5rem —
+		// фоллбэк на высоту одной шапки (h-20), пока эффект не отработал.
+		<div className='flex h-[calc(100vh-var(--chrome-h,5rem))] relative'>
 			{/* Sidebar - hidden on mobile, shown on desktop */}
 			<div
 				className={cn(
-					'fixed lg:relative top-20 lg:top-0 left-0 z-40 h-[calc(100vh-5rem)] lg:h-full transform transition-transform duration-300 ease-in-out lg:transform-none',
+					'fixed lg:relative top-[var(--chrome-h,5rem)] lg:top-0 left-0 z-40 h-[calc(100vh-var(--chrome-h,5rem))] lg:h-full transform transition-transform duration-300 ease-in-out lg:transform-none',
 					isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
 				)}
 			>

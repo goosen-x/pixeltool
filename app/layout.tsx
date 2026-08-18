@@ -29,6 +29,7 @@ import {
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
 import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
+import { ChromeHeightVar } from '@/components/layout/ChromeHeightVar'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
 import { SiteStructuredData } from '@/components/seo/SiteStructuredData'
 
@@ -246,11 +247,14 @@ export const viewport = {
 	viewportFit: 'cover'
 }
 
-// ISR: раз в неделю достаточно для баннера с невысокой значимостью данных —
-// крона в проекте нет (self-hosted, один процесс, см. CLAUDE.md), точечная
+// ISR: крона в проекте нет (self-hosted, один процесс, см. CLAUDE.md), точечная
 // ревалидация всего layout'а через revalidate — единственный способ обновить
 // «инструмент месяца» без нового деплоя.
-export const revalidate = 604800
+// Час, а не неделя: на билде БД недоступна, поэтому в статические маршруты
+// запекается пустой баннер, а каждый деплой сбрасывает счётчик ISR — с недельным
+// окном баннер не появился бы на них никогда. Тот же интервал, что и у
+// app/blog/[slug]/page.tsx.
+export const revalidate = 3600
 
 export default async function RootLayout({ children }: Readonly<Props>) {
 	return (
@@ -310,8 +314,11 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						</Suspense>
 						<ServiceWorkerUnregister />
 						<WebVitals />
-						<ToolOfMonthBanner />
+						<Suspense fallback={null}>
+							<ToolOfMonthBanner />
+						</Suspense>
 						<Header />
+						<ChromeHeightVar />
 						<AutoBreadcrumbs />
 						<SiteStructuredData />
 						{children}

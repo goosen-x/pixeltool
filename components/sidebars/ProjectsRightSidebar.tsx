@@ -11,7 +11,8 @@ import { LeadMagnetCard } from './widgets/LeadMagnetCard'
 interface Props {
 	/**
 	 * true — страницы инструментов (ProjectsLayoutWrapper): там сайдбар живёт
-	 * внутри h-[calc(100vh-5rem)]-колонки со своим скроллом, и h-full/overflow
+	 * внутри h-[calc(100vh-var(--chrome-h,5rem))]-колонки со своим скроллом, и
+	 * h-full/overflow
 	 * тянут его на всю эту колонку. false — страницы блога: обычный поток
 	 * документа, сайдбар просто position:sticky и сам решает свою высоту по
 	 * контенту. h-full там был мёртвым (проценты без заданной высоты предка),
