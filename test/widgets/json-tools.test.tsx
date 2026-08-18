@@ -16,7 +16,7 @@ describe('json-tools: перевод между JSON и YAML', () => {
 		await user.click(input)
 		await user.paste('{"name":"Аня","tags":["a","b"]}')
 
-		const yamlTab = await screen.findByRole('tab', { name: /yaml/i })
+		const yamlTab = await screen.findByRole('button', { name: /yaml/i })
 		await user.click(yamlTab)
 
 		await waitFor(() => {
