@@ -28,6 +28,7 @@ import {
 } from '@/lib/fonts/fonts'
 import Script from 'next/script'
 import Header from '@/components/layout/Header/Header'
+import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
 import { SiteStructuredData } from '@/components/seo/SiteStructuredData'
 
@@ -245,6 +246,12 @@ export const viewport = {
 	viewportFit: 'cover'
 }
 
+// ISR: раз в неделю достаточно для баннера с невысокой значимостью данных —
+// крона в проекте нет (self-hosted, один процесс, см. CLAUDE.md), точечная
+// ревалидация всего layout'а через revalidate — единственный способ обновить
+// «инструмент месяца» без нового деплоя.
+export const revalidate = 604800
+
 export default async function RootLayout({ children }: Readonly<Props>) {
 	return (
 		<html
@@ -303,6 +310,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						</Suspense>
 						<ServiceWorkerUnregister />
 						<WebVitals />
+						<ToolOfMonthBanner />
 						<Header />
 						<AutoBreadcrumbs />
 						<SiteStructuredData />
