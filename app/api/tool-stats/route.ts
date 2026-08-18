@@ -75,6 +75,17 @@ export async function POST(request: NextRequest) {
 				 RETURNING views`,
 				[parsed.data.toolId]
 			)
+			// AT TIME ZONE 'UTC' — важно совпадать с currentYearMonth() в
+			// lib/tool-stats/tool-of-month.ts, которая тоже считает UTC. Если БД
+			// работает в другом часовом поясе сессии, now() без явного UTC даст
+			// другую границу месяца и запись уйдёт не в тот year_month.
+			await db.query(
+				`INSERT INTO tool_views_monthly (tool_id, year_month, views)
+				 VALUES ($1, to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM'), 1)
+				 ON CONFLICT (tool_id, year_month) DO UPDATE
+				 SET views = tool_views_monthly.views + 1`,
+				[parsed.data.toolId]
+			)
 			return NextResponse.json({ views: Number(rows[0].views) })
 		} catch (error) {
 			console.error('Не удалось записать просмотр тула:', error)
