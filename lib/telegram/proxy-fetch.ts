@@ -94,3 +94,37 @@ export async function telegramFetch(
 
 	throw new Error('Все прокси недоступны')
 }
+
+/**
+ * Отправить простое HTML-сообщение в общий чат уведомлений сайта
+ * (TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID) через telegramFetch выше.
+ */
+export async function sendTelegramMessage(text: string): Promise<void> {
+	const botToken = process.env.TELEGRAM_BOT_TOKEN
+	const chatId = process.env.TELEGRAM_CHAT_ID
+
+	if (!botToken || !chatId) {
+		throw new Error('Telegram credentials not configured')
+	}
+
+	const response = await telegramFetch(
+		`https://api.telegram.org/bot${botToken}/sendMessage`,
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				chat_id: chatId,
+				text,
+				parse_mode: 'HTML',
+				disable_web_page_preview: true
+			})
+		}
+	)
+
+	if (!response.ok) {
+		const errorData = await response.json().catch(() => ({}))
+		throw new Error(
+			`Telegram API error: ${errorData.description || response.status}`
+		)
+	}
+}

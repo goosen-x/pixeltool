@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { telegramFetch } from '@/lib/telegram/proxy-fetch'
+import { getDb } from '@/lib/db'
 
 interface ContactRequest {
 	name: string
@@ -70,23 +71,27 @@ export async function POST(request: NextRequest) {
 			)
 		}
 
+		// Сначала БД — это гарантированная копия. Telegram дальше best-effort:
+		// его падение больше не значит, что сообщение потеряно навсегда.
+		const db = await getDb()
+		const {
+			rows: [row]
+		} = await db.query<{ id: number }>(
+			`INSERT INTO site_messages (source, name, email, subject, message)
+			 VALUES ('contact', $1, $2, $3, $4) RETURNING id`,
+			[body.name, body.email, body.subject, body.message]
+		)
+
 		try {
 			await sendToTelegram(body)
+			await db.query(
+				`UPDATE site_messages SET telegram_sent_at = now() WHERE id = $1`,
+				[row.id]
+			)
 		} catch (telegramError) {
 			console.error(
-				'Не удалось доставить сообщение с формы контактов в Telegram:',
+				'Сообщение с формы контактов сохранено, но не доставлено в Telegram:',
 				telegramError
-			)
-
-			return NextResponse.json(
-				{
-					error: 'Не удалось отправить сообщение. Попробуйте ещё раз.',
-					details:
-						telegramError instanceof Error
-							? telegramError.message
-							: String(telegramError)
-				},
-				{ status: 502 }
 			)
 		}
 

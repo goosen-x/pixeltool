@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { telegramFetch } from '@/lib/telegram/proxy-fetch'
+import { getDb } from '@/lib/db'
 
 interface FeedbackRequest {
 	type: 'bug' | 'feature' | 'general'
@@ -34,23 +35,44 @@ export async function POST(request: NextRequest) {
 			url: request.headers.get('referer')
 		}
 
-		// Раньше ошибка доставки глоталась, и запрос всё равно отвечал 200:
-		// человек видел «отзыв отправлен», а до нас ничего не доходило.
-		// Теперь провал доставки — это провал запроса, и он виден.
+		// Раньше ошибка доставки в Telegram глоталась, и запрос всё равно отвечал
+		// 200 — человек видел «отзыв отправлен», а до нас ничего не доходило.
+		// Потом это исправили ценой обратной проблемы: провал Telegram стал
+		// провалом запроса — а Telegram две недели был недоступен целиком
+		// (сервер не мог достучаться до api.telegram.org, см. proxy-fetch.ts),
+		// и за это время реальные баг-репорты терялись без всякого следа.
+		// Теперь сначала гарантированная копия в БД, Telegram — best-effort
+		// уведомление поверх неё, а не единственный канал.
+		const db = await getDb()
+		const {
+			rows: [row]
+		} = await db.query<{ id: number }>(
+			`INSERT INTO site_messages (source, type, email, subject, message, meta)
+			 VALUES ('feedback', $1, $2, $3, $4, $5) RETURNING id`,
+			[
+				body.type,
+				body.email ?? null,
+				body.title,
+				body.description,
+				JSON.stringify({
+					widget: body.widget,
+					url: feedbackData.url,
+					userAgent: feedbackData.userAgent,
+					ip: feedbackData.ip
+				})
+			]
+		)
+
 		try {
 			await sendToTelegram(feedbackData)
+			await db.query(
+				`UPDATE site_messages SET telegram_sent_at = now() WHERE id = $1`,
+				[row.id]
+			)
 		} catch (telegramError) {
-			console.error('Не удалось доставить отзыв в Telegram:', telegramError)
-
-			return NextResponse.json(
-				{
-					error: 'Не удалось отправить отзыв. Попробуйте ещё раз.',
-					details:
-						telegramError instanceof Error
-							? telegramError.message
-							: String(telegramError)
-				},
-				{ status: 502 }
+			console.error(
+				'Отзыв сохранён, но не доставлен в Telegram:',
+				telegramError
 			)
 		}
 

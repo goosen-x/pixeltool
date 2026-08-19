@@ -4,6 +4,15 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { toolStatsActionSchema } from '@/lib/tool-stats/schema'
 import { createRateLimiter } from '@/lib/tool-stats/rate-limit'
 import { getAllToolStats } from '@/lib/tool-stats/get-all-stats'
+import { sendTelegramMessage } from '@/lib/telegram/proxy-fetch'
+
+// Тот же escapeHtml, что и в app/api/contact и app/api/feedback — parse_mode
+// 'HTML' у Telegram сломается или исполнит разметку на необработанном тексте.
+const escapeHtml = (value: unknown): string =>
+	String(value ?? '')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
 
 // Один процесс на контейнер (без serverless, см. CLAUDE.md), поэтому лимитер
 // в памяти модуля реально копит историю между запросами.
@@ -116,6 +125,27 @@ export async function POST(request: NextRequest) {
 				`INSERT INTO tool_feedback (tool_id, rating, comment) VALUES ($1, $2, $3)`,
 				[parsed.data.toolId, parsed.data.rating, parsed.data.comment]
 			)
+
+			// БД — гарантированная копия, это уведомление сверху, best-effort.
+			// Раньше такие отзывы вообще никуда не попадали, кроме БД, — их
+			// приходилось смотреть вручную через psql.
+			sendTelegramMessage(
+				[
+					`⭐ <b>Низкая оценка тула</b>`,
+					'',
+					`<b>Тул:</b> ${escapeHtml(parsed.data.toolId)}`,
+					`<b>Оценка:</b> ${parsed.data.rating}/5`,
+					'',
+					`<b>Комментарий</b>`,
+					escapeHtml(parsed.data.comment)
+				].join('\n')
+			).catch(telegramError => {
+				console.error(
+					'Отзыв тула сохранён, но не доставлен в Telegram:',
+					telegramError
+				)
+			})
+
 			return NextResponse.json({ ok: true })
 		} catch (error) {
 			console.error('Не удалось сохранить отзыв тула:', error)

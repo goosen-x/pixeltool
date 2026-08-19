@@ -48,3 +48,21 @@ CREATE TABLE IF NOT EXISTS tool_feedback (
 	comment TEXT NOT NULL,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Форма контактов и виджет «Ошибка/Идея/Вопрос» раньше уходили только в
+-- Telegram — если доставка падала (см. случай 03–19.08.2026, сервер не мог
+-- достучаться до api.telegram.org две недели), сообщение терялось
+-- безвозвратно, без единого следа. Теперь сначала пишутся сюда, Telegram —
+-- best-effort уведомление поверх, а не единственная копия.
+CREATE TABLE IF NOT EXISTS site_messages (
+	id SERIAL PRIMARY KEY,
+	source TEXT NOT NULL, -- 'contact' | 'feedback'
+	type TEXT, -- у feedback: bug/feature/general; у contact всегда NULL
+	name TEXT,
+	email TEXT,
+	subject TEXT NOT NULL,
+	message TEXT NOT NULL,
+	meta JSONB,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+	telegram_sent_at TIMESTAMPTZ
+);
