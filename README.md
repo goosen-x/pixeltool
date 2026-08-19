@@ -14,7 +14,7 @@
 [Все инструменты](https://pixeltool.pro/tools) ·
 [Блог](https://pixeltool.pro/blog)
 
-![PixelTool](public/images/readme-hero.jpg)
+![PixelTool](public/images/readme-demo.gif)
 
 </div>
 
