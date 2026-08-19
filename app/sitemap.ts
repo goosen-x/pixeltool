@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { getAllPostsFromFiles } from '@/lib/api-file'
 import { publicWidgets } from '@/lib/constants/widgets'
 import { CATEGORY_KEYS } from '@/lib/constants/categories'
+import { unitPairs } from '@/lib/constants/unit-pairs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -81,6 +82,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			lastModified: widget.updatedAt || CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.9
+		})
+	})
+
+	// Страницы пар единиц (/tools/unit-converter/мм-в-дюймы и т.п.) — не входят
+	// в publicWidgets (это не отдельные тулы, а SEO-страницы одного хаба), тот
+	// же паттерн, что у CATEGORY_KEYS выше.
+	unitPairs.forEach(pair => {
+		sitemapEntries.push({
+			url: `${BASE_URL}/tools/unit-converter/${pair.slug}`,
+			lastModified: CONTENT_LAST_UPDATED,
+			changeFrequency: 'monthly',
+			priority: 0.8
 		})
 	})
 
