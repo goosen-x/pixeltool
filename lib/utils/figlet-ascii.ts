@@ -43,23 +43,33 @@ function loadFiglet(): Promise<typeof FigletDefault> {
 			import('figlet/fonts/Shaded Blocky'),
 			import('figlet/fonts/RubiFont'),
 			import('figlet/fonts/Alpha')
-		]).then(([figletModule, doom, ansiShadow, blurVision, shadedBlocky, rubiFont, alpha]) => {
-			const figlet = figletModule.default
+		]).then(
+			([
+				figletModule,
+				doom,
+				ansiShadow,
+				blurVision,
+				shadedBlocky,
+				rubiFont,
+				alpha
+			]) => {
+				const figlet = figletModule.default
 
-			// На отсутствующий шрифт браузерная сборка по умолчанию пытается
-			// сама сходить в сеть за .flf — нам нужны только эти шесть,
-			// зарегистрированных локально, без скрытых сетевых запросов.
-			figlet.defaults({ fetchFontIfMissing: false })
+				// На отсутствующий шрифт браузерная сборка по умолчанию пытается
+				// сама сходить в сеть за .flf — нам нужны только эти шесть,
+				// зарегистрированных локально, без скрытых сетевых запросов.
+				figlet.defaults({ fetchFontIfMissing: false })
 
-			figlet.parseFont('Doom', doom.default)
-			figlet.parseFont('ANSI Shadow', ansiShadow.default)
-			figlet.parseFont('BlurVision ASCII', blurVision.default)
-			figlet.parseFont('Shaded Blocky', shadedBlocky.default)
-			figlet.parseFont('RubiFont', rubiFont.default)
-			figlet.parseFont('Alpha', alpha.default)
+				figlet.parseFont('Doom', doom.default)
+				figlet.parseFont('ANSI Shadow', ansiShadow.default)
+				figlet.parseFont('BlurVision ASCII', blurVision.default)
+				figlet.parseFont('Shaded Blocky', shadedBlocky.default)
+				figlet.parseFont('RubiFont', rubiFont.default)
+				figlet.parseFont('Alpha', alpha.default)
 
-			return figlet
-		})
+				return figlet
+			}
+		)
 	}
 	return figletPromise
 }
