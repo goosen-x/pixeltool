@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/favicon-512x512.png" alt="PixelTool" width="72" height="72"/>
+
 # PixelTool
 
 **Всё нужное под рукой**
