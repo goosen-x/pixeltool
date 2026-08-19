@@ -29,11 +29,6 @@ interface PasswordOptions {
 	excludeAmbiguous: boolean
 }
 
-interface PasswordHistory {
-	password: string
-	timestamp: number
-}
-
 type GeneratorMode = 'random' | 'memorable' | 'phrase'
 
 /** Стойкость в битах энтропии плюс подпись, из чего эти биты набраны. */
@@ -117,8 +112,6 @@ const randomInt = (max: number): number => {
 	return value % max
 }
 
-const HISTORY_KEY = 'password-history'
-
 // Паролей в секунду. Оценка для быстрого хэша (MD5/SHA-1 на GPU) — ровно та же,
 // по которой считает калькулятор в статье /blog/nadezhnyy-parol. Держать их
 // одинаковыми обязательно: иначе сайт сам себе противоречит в цифрах.
@@ -199,7 +192,6 @@ export default function PasswordGeneratorPage() {
 	const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS)
 	const [strength, setStrength] = useState<Strength | null>(null)
 	const [showPassword, setShowPassword] = useState(true)
-	const [history, setHistory] = useState<PasswordHistory[]>([])
 	const [mode, setMode] = useState<GeneratorMode>('random')
 	const [formatKey, setFormatKey] = useState(PHRASE_FORMATS[0].key)
 	const [wordCount, setWordCount] = useState(5)
@@ -214,29 +206,6 @@ export default function PasswordGeneratorPage() {
 	const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?'
 	const SIMILAR = 'il1Lo0O'
 	const AMBIGUOUS = '{}[]()/\\\\\'"`~,;.<>'
-
-	// В историю попадают только скопированные пароли. Раньше туда писался
-	// каждый сгенерированный — при автогенерации на каждое движение ползунка
-	// список превратился бы в мусор, да и «мои пароли» — это те, что человек
-	// реально забрал, а не те, что промелькнули на экране.
-	useEffect(() => {
-		const saved = localStorage.getItem(HISTORY_KEY)
-		if (!saved) return
-
-		try {
-			const parsed = JSON.parse(saved)
-			if (Array.isArray(parsed)) {
-				setHistory(
-					parsed.map((item: PasswordHistory) => ({
-						...item,
-						timestamp: new Date(item.timestamp).getTime()
-					}))
-				)
-			}
-		} catch {
-			localStorage.removeItem(HISTORY_KEY)
-		}
-	}, [])
 
 	const generatePassword = useCallback((): Generated | null => {
 		let charset = ''
@@ -390,17 +359,6 @@ export default function PasswordGeneratorPage() {
 		generate()
 	}, [generate])
 
-	const rememberPassword = useCallback((value: string) => {
-		setHistory(previous => {
-			const next = [
-				{ password: value, timestamp: Date.now() },
-				...previous.filter(item => item.password !== value)
-			].slice(0, 20)
-			localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
-			return next
-		})
-	}, [])
-
 	const copyToClipboard = useCallback(
 		async (value = password) => {
 			if (!value) return
@@ -408,19 +366,14 @@ export default function PasswordGeneratorPage() {
 			try {
 				await navigator.clipboard.writeText(value)
 				setCopied(true)
-				rememberPassword(value)
+				toast.success('Скопировано')
 				setTimeout(() => setCopied(false), 2000)
 			} catch {
 				toast.error('Не удалось скопировать — сохраните пароль вручную')
 			}
 		},
-		[password, rememberPassword]
+		[password]
 	)
-
-	const clearHistory = useCallback(() => {
-		setHistory([])
-		localStorage.removeItem(HISTORY_KEY)
-	}, [])
 
 	// Цвет по битам энтропии, а не по баллам эвристики: меньше 40 бит пароль
 	// ломается за обозримое время, 60+ — уже серьёзно, 80+ перебором
@@ -531,9 +484,18 @@ export default function PasswordGeneratorPage() {
 				</div>
 
 				{/* Сам пароль — на чистом фоне, без вложенной карточки с тенью.
-				    Он и есть результат работы инструмента, всё остальное вокруг. */}
+				    Он и есть результат работы инструмента, всё остальное вокруг.
+				    Кликабелен целиком: копировать нужно чаще, чем выделять
+				    вручную, а иконка в шапке для этого же действия — не
+				    единственный путь. */}
 				<div className='px-5 py-10 sm:px-6 sm:py-14'>
-					<div className='min-h-[3rem] text-center font-mono text-2xl break-all select-all sm:text-3xl lg:text-4xl'>
+					<button
+						type='button'
+						onClick={() => copyToClipboard()}
+						disabled={!password}
+						title='Скопировать пароль'
+						className='min-h-[3rem] w-full cursor-pointer text-center font-mono text-2xl break-all select-all transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default disabled:hover:opacity-100 sm:text-3xl lg:text-4xl'
+					>
 						{password ? (
 							showPassword ? (
 								<TextRoll
@@ -564,7 +526,7 @@ export default function PasswordGeneratorPage() {
 								Включите хотя бы один набор символов
 							</span>
 						)}
-					</div>
+					</button>
 
 					{/* Вместо абстрактной шкалы «сильный/слабый» — сколько займёт
 					    перебор. Оценка «сильный» ничего не говорит о том, по чьей она
@@ -701,53 +663,7 @@ export default function PasswordGeneratorPage() {
 						</div>
 					)}
 				</div>
-
-				{history.length > 0 && (
-					<div className='flex items-center justify-between gap-4 border-t px-5 py-3 sm:px-6'>
-						<span className='text-sm text-muted-foreground'>
-							Скопировано паролей: {history.length}
-						</span>
-						<button
-							type='button'
-							onClick={clearHistory}
-							className='cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-						>
-							Забыть все
-						</button>
-					</div>
-				)}
 			</Card>
-
-			{/* Тихий список под инструментом — раньше история копилась в
-			    localStorage (до 50 записей) и не показывалась вообще нигде. */}
-			{history.length > 0 && (
-				<div className='mt-6'>
-					<p className='px-1 text-sm text-muted-foreground'>
-						Недавно скопированные
-					</p>
-					<div className='mt-2 divide-y rounded-xl border'>
-						{history.map(item => (
-							<button
-								key={item.timestamp}
-								type='button'
-								onClick={() => copyToClipboard(item.password)}
-								title='Скопировать снова'
-								className='flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
-							>
-								<span className='min-w-0 flex-1 truncate font-mono text-sm'>
-									{item.password}
-								</span>
-								<span className='shrink-0 text-xs text-muted-foreground/70'>
-									{new Date(item.timestamp).toLocaleTimeString('ru-RU', {
-										hour: '2-digit',
-										minute: '2-digit'
-									})}
-								</span>
-							</button>
-						))}
-					</div>
-				</div>
-			)}
 
 			<PasswordSeo />
 		</WidgetSEOWrapper>

@@ -83,6 +83,7 @@
 		"embla-carousel": "^8.6.0",
 		"embla-carousel-autoplay": "^8.6.0",
 		"embla-carousel-react": "^8.6.0",
+		"figlet": "^1.11.4",
 		"framer-motion": "^12.23.26",
 		"gray-matter": "^4.0.3",
 		"gsap": "^3.14.2",

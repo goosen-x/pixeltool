@@ -26,11 +26,18 @@ import {
 	downloadAsciiAsText,
 	type AsciiFont
 } from '@/lib/utils/ascii-converter'
+import {
+	figletTextToAscii,
+	isFigletFont,
+	FIGLET_FONTS,
+	type FigletFontName
+} from '@/lib/utils/figlet-ascii'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { AsciiArtGeneratorSeo } from './AsciiArtGeneratorSeo'
 
 type Mode = 'text' | 'image' | 'patterns'
+type TextFont = AsciiFont | FigletFontName
 
 /**
  * Раньше здесь было только два шрифта: третий, «Крупный», был заглушкой из
@@ -39,11 +46,18 @@ type Mode = 'text' | 'image' | 'patterns'
  * Новый «Крупный» — не ручной набор глифов той же болезни, а «Стандартный»,
  * перерисованный сплошным блоком (см. ascii-converter.ts) — работает для
  * всех тех же символов, что и «Стандартный», без исключений.
+ *
+ * Шесть шрифтов ниже — настоящие FIGlet-шрифты (та же библиотека, что стоит
+ * за patorjk.com/software/taag) через пакет `figlet`, подключены только эти
+ * шесть (см. figlet-ascii.ts). Ни один из них не знает кириллицы, а «Alpha»
+ * ещё и цифр с пунктуацией — рендер сам подставляет непонятые символы
+ * обычным текстом вместо стилизованного глифа.
  */
-const FONTS: [AsciiFont, string][] = [
+const FONTS: [TextFont, string][] = [
 	['standard', 'Стандартный'],
 	['small', 'Мелкий'],
-	['block', 'Крупный']
+	['block', 'Крупный'],
+	...FIGLET_FONTS
 ]
 
 export default function AsciiArtGeneratorPage() {
@@ -54,7 +68,7 @@ export default function AsciiArtGeneratorPage() {
 
 	// Текст
 	const [text, setText] = useState('')
-	const [font, setFont] = useState<AsciiFont>('standard')
+	const [font, setFont] = useState<TextFont>('standard')
 
 	// Изображение
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -66,10 +80,28 @@ export default function AsciiArtGeneratorPage() {
 	const [selectedPattern, setSelectedPattern] = useState('')
 
 	// Текст пересчитывается на лету: кнопка «Создать ASCII-арт» ничего не
-	// решала — результат зависит только от текста и шрифта.
+	// решала — результат зависит только от текста и шрифта. FIGlet-шрифты
+	// грузятся асинхронно (см. figlet-ascii.ts) — при быстром наборе успеет
+	// прийти ответ на устаревший текст, поэтому старые результаты гасим
+	// флагом cancelled, как в загрузке картинки ниже.
 	useEffect(() => {
 		if (mode !== 'text') return
-		setAsciiOutput(text.trim() ? textToAscii(text, font) : '')
+		if (!text.trim()) {
+			setAsciiOutput('')
+			return
+		}
+
+		if (isFigletFont(font)) {
+			let cancelled = false
+			figletTextToAscii(text, font).then(result => {
+				if (!cancelled) setAsciiOutput(result)
+			})
+			return () => {
+				cancelled = true
+			}
+		}
+
+		setAsciiOutput(textToAscii(text, font))
 	}, [mode, text, font])
 
 	/** Пересборка ASCII из уже загруженной картинки при смене настроек. */
@@ -294,21 +326,26 @@ export default function AsciiArtGeneratorPage() {
 					</div>
 				)}
 
-				{/* Полоса параметров — своя у каждого режима. */}
+				{/* Полоса параметров — своя у каждого режима. Шрифтов девять —
+				    таблетки в ряд расползлись бы по ширине, поэтому здесь
+				    единственный на всей странице выпадающий список вместо
+				    привычных toolPill (как «Символы» в режиме «Из картинки»). */}
 				{mode === 'text' && (
 					<div className={toolFooterBar}>
-						<span className='mr-1 text-sm text-muted-foreground'>Шрифт</span>
-						{FONTS.map(([value, label]) => (
-							<button
-								key={value}
-								type='button'
-								onClick={() => setFont(value)}
-								aria-pressed={font === value}
-								className={toolPill(font === value)}
+						<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+							<span>Шрифт</span>
+							<select
+								value={font}
+								onChange={event => setFont(event.target.value as TextFont)}
+								className='cursor-pointer rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 							>
-								{label}
-							</button>
-						))}
+								{FONTS.map(([value, label]) => (
+									<option key={value} value={value}>
+										{label}
+									</option>
+								))}
+							</select>
+						</label>
 					</div>
 				)}
 

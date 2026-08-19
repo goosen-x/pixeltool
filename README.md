@@ -1,186 +1,73 @@
-# PixelTool.pro
+<div align="center">
 
-Коллекция полезных онлайн-инструментов и виджетов для разработчиков и
-дизайнеров.
+# PixelTool
 
-![screen-gif](/public/images/readme.gif)
+**Всё нужное под рукой**
 
-## 🌟 Особенности
+54 бесплатных онлайн-инструмента для повседневных и рабочих задач — прямо в
+браузере, без установки и регистрации.
 
-- Более 40 полезных инструментов и калькуляторов
-- Адаптивный дизайн для всех устройств
-- Темная и светлая темы
-- Быстрая производительность с Next.js 15
-- Горячие клавиши для быстрого доступа
-- Избранные инструменты
-- 3D анимации и интерактивные элементы
+[pixeltool.pro](https://pixeltool.pro) · [Все инструменты](https://pixeltool.pro/tools) · [Блог](https://pixeltool.pro/blog)
 
-## 🛠 Технологический стек
+![PixelTool](public/images/readme-hero.jpg)
 
-- Next.js 15
-- React 18
-- TypeScript
-- Tailwind CSS
-- Three.js / React Three Fiber
-- Docker для развертывания
-- PostgreSQL (Supabase)
-- Redis (счетчик онлайн пользователей)
+</div>
 
-## 🚀 Быстрый старт
+## Что это
 
-### Требования
+Под каждую мелкую задачу — сгенерировать QR-код, посчитать проценты, сжать
+JSON, выбрать случайное число — обычно приходится гуглить отдельный сайт и
+продираться через рекламу. PixelTool держит такие инструменты в одном месте
+и открывает их мгновенно: ничего не устанавливать, никуда не регистрироваться,
+файлы не покидают браузер.
 
-- Node.js (v20 или выше)
-- Yarn
-- Docker и Docker Compose (опционально, для Redis)
+- **Разработка** — форматтеры, генераторы CSS, JWT, regex, favicon
+- **Текст** — счётчики, сравнение текстов, эмодзи, ASCII-арт
+- **Изображения** — сжатие, удаление фона, конвертация
+- **Рандомайзер** — случайные числа, жеребьёвка, кубик
+- **Безопасность** — пароли, UUID, base64
+- **Здоровье** — калькуляторы вроде ИМТ
+- **Утилиты** — таймеры, конвертеры единиц и по мелочи
 
-### Установка
+## Запуск проекта
 
-1. Клонировать репозиторий:
-
-   ```bash
-   git clone https://github.com/goosen-x/pixeltool
-   cd pixeltool
-   ```
-
-2. Установить зависимости:
-
-   ```bash
-   yarn install
-   ```
-
-3. Создать файл `.env.local` из примера:
-
-   ```bash
-   cp .env.example .env.local
-   ```
-
-   И заполнить необходимые переменные окружения.
-
-4. **Запустить Redis** (для счётчика онлайн пользователей):
-
-   **Вариант 1: Docker Compose (рекомендуется)**
-
-   ```bash
-   docker compose up -d
-   ```
-
-   **Вариант 2: Локальный Redis**
-
-   ```bash
-   redis-server
-   ```
-
-   **Примечание:** Приложение работает и без Redis, но счётчик онлайн
-   пользователей не будет отображаться.
-
-### Запуск в режиме разработки
+Нужны Node.js 20+ и pnpm.
 
 ```bash
-yarn dev
+git clone https://github.com/goosen-x/pixeltool
+cd pixeltool
+pnpm install
+
+cp .env.example .env.local
+# заполнить переменные — см. комментарии в .env.example
+
+pnpm dev
 ```
 
-Откройте [http://localhost:3000](http://localhost:3000) в браузере.
+Откройте [http://localhost:3000](http://localhost:3000).
 
-### Мониторинг Redis
-
-**Проверить количество онлайн пользователей:**
+Полезные команды:
 
 ```bash
-# Через Docker
-docker exec -it redis_gooselabs redis-cli KEYS "online:pixeltool:*" | wc -l
-
-# Локальный Redis
-redis-cli KEYS "online:pixeltool:*" | wc -l
+pnpm build       # production-сборка
+pnpm test        # тесты (Vitest)
+pnpm typecheck   # проверка типов
+pnpm lint        # ESLint
+pnpm check:all   # все проверки разом
 ```
 
-**Проверить TTL конкретного ключа:**
+Подробнее — в [`/docs`](docs/README.md), включая
+[руководство по созданию нового инструмента](docs/guides/WIDGET_CREATION_GUIDE.md).
 
-```bash
-docker exec -it redis_gooselabs redis-cli TTL "online:pixeltool:<session_id>"
-```
+## Участие в разработке
 
-## 📁 Структура проекта
+Открыт для issues и pull request'ов — нашли баг, есть идея для инструмента
+или предложение по коду, welcome.
 
-- `app/`: Next.js App Router страницы
-  - `(main)/`: Главная страница
-  - `(tools)/`: Страницы инструментов
-  - `(other)/`: Блог, контакты и др.
-- `components/`: React компоненты
-  - `widgets/`: Базовые компоненты виджетов
-  - `ui/`: UI компоненты (shadcn/ui)
-  - `global/`: Глобальные компоненты
-- `lib/`: Утилиты и хуки
-  - `db/`: Работа с базой данных
-  - `hooks/`: Пользовательские React хуки
-  - `utils/`: Вспомогательные функции
-- `public/`: Статические файлы
+## Контакты
 
-## 🚢 Развертывание
+Дмитрий Борисенко — [dmitryborisenko.msk@gmail.com](mailto:dmitryborisenko.msk@gmail.com)
 
-### Docker (рекомендуется)
+## Лицензия
 
-```bash
-# Сборка образа
-docker build -t pixeltool .
-
-# Запуск контейнера
-docker run -p 3000:3000 --env-file .env.production pixeltool
-```
-
-### GitHub Actions CI/CD
-
-Проект настроен на автоматическое развертывание через GitHub Actions. См.
-`.github/workflows/deploy.yml` для деталей.
-
-### Production сборка
-
-```bash
-yarn build
-yarn start
-```
-
-## 📚 Документация
-
-Полная документация проекта организована в папке `/docs`:
-
-- [Обзор документации](docs/README.md) - Структурированный каталог всей
-  документации
-- [CLAUDE.md](CLAUDE.md) - Основные инструкции для работы с Claude Code
-- [Создание виджетов](docs/guides/WIDGET_CREATION_GUIDE.md) - Руководство по
-  созданию новых инструментов
-
-## 🎯 Основные команды
-
-```bash
-# Разработка
-yarn dev                 # Запуск сервера разработки
-yarn build               # Production сборка
-yarn lint                # Проверка ESLint
-yarn typecheck           # Проверка TypeScript
-yarn clean               # Очистка кеша
-
-# Проверка качества
-yarn check:all           # Все проверки
-yarn format              # Форматирование кода
-
-# База данных
-yarn tsx lib/scripts/migrate-posts.ts     # Миграция постов
-yarn tsx lib/scripts/check-supabase.ts    # Проверка подключения
-```
-
-## 🤝 Участие в разработке
-
-Открыт для предложений и улучшений. Не стесняйтесь создавать issues или pull
-requests.
-
-## 📞 Контакты
-
-Дмитрий Борисенко -
-[dmitryborisenko.msk@gmail.com](mailto:dmitryborisenko.msk@gmail.com)
-
-Проект: [https://www.pixeltool.pro](https://www.pixeltool.pro)
-
----
-
-Спасибо за интерес к проекту!
+[MIT](LICENSE)
