@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img src="public/favicon-512x512.png" alt="" width="40" height="40" style="vertical-align: middle;"/> PixelTool
+# <img src="public/favicon-512x512.png" alt="" width="20" height="20" style="vertical-align: middle;"/> PixelTool
 
 **Всё нужное под рукой**
 
