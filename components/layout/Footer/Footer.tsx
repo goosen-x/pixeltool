@@ -1,12 +1,5 @@
 import Link from 'next/link'
-import {
-	Code2,
-	Github,
-	Mail,
-	ExternalLink,
-	Heart,
-	Sparkles
-} from 'lucide-react'
+import { Code2, Github, Mail, ExternalLink, Sparkles } from 'lucide-react'
 import { Logo } from '@/components/global/Logo'
 
 export const Footer = () => {
@@ -159,17 +152,9 @@ export const Footer = () => {
 
 				{/* Bottom Bar */}
 				<div className='pt-8 border-t border-border/50'>
-					<div className='flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground'>
-						<div className='flex items-center gap-2'>
-							<span>© {year} PixelTool.</span>
-							<span className='hidden sm:inline'>Все права защищены.</span>
-						</div>
-
-						<div className='flex items-center gap-1.5 text-xs'>
-							<span>Сделано с</span>
-							<Heart className='w-3.5 h-3.5 text-red-500 fill-current animate-pulse' />
-							<span>чтобы всё нужное было под рукой</span>
-						</div>
+					<div className='flex items-center justify-center gap-2 text-sm text-muted-foreground sm:justify-start'>
+						<span>© {year} PixelTool.</span>
+						<span className='hidden sm:inline'>Все права защищены.</span>
 					</div>
 				</div>
 			</div>
