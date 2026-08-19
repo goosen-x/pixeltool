@@ -128,3 +128,13 @@ jobs:
             docker logs pixeltool
             exit 1
           fi
+
+    # Отдельный шаг, не внутри SSH-скрипта: IndexNow нужен только исходящий
+    # доступ к pixeltool.pro и api.indexnow.org, серверу для этого заходить
+    # не обязательно. Покрывает Яндекс/Bing — у Google автоматизации для
+    # обычных страниц нет в принципе (см. scripts/indexnow.mjs).
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Notify IndexNow (Яндекс/Bing)
+      run: node scripts/indexnow.mjs

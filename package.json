@@ -39,6 +39,7 @@
 		"typecheck": "tsc --noEmit",
 		"prepare": "husky",
 		"wordstat": "npx tsx scripts/wordstat.ts",
+		"indexnow": "node scripts/indexnow.mjs",
 		"check:internal-links": "npx tsx scripts/check-internal-links.ts"
 	},
 	"dependencies": {
