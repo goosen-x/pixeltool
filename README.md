@@ -1,6 +1,6 @@
-<img align="right" width="400" src="public/images/readme-demo.gif" alt="PixelTool"/>
-
 # <img src="public/favicon-512x512.png" alt="" width="20" height="20" style="vertical-align: middle;"/> PixelTool
+
+<img align="right" width="400" src="public/images/readme-demo.gif" alt="PixelTool"/>
 
 **Всё нужное под рукой**
 
