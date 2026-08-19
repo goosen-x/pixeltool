@@ -11,7 +11,8 @@
 <a href="https://github.com/goosen-x/pixeltool/blob/main/LICENSE"><img src="https://img.shields.io/github/license/goosen-x/pixeltool?style=for-the-badge&color=53B5CA&logoColor=355981" alt="License"/></a>
 <a href="https://github.com/goosen-x/pixeltool/releases"><img src="https://img.shields.io/github/v/release/goosen-x/pixeltool?style=for-the-badge&color=53B5CA&logoColor=355981" alt="Release"/></a>
 
-[Все инструменты](https://pixeltool.pro/tools) · [Блог](https://pixeltool.pro/blog)
+[Все инструменты](https://pixeltool.pro/tools) ·
+[Блог](https://pixeltool.pro/blog)
 
 ![PixelTool](public/images/readme-hero.jpg)
 
