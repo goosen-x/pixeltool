@@ -46,6 +46,43 @@ export function yearsMonthsDaysBetween(a: Date, b: Date): YearsMonthsDays {
 	return { years, months, days }
 }
 
+export type PeriodUnit = 'days' | 'months' | 'years'
+
+/**
+ * Прибавляет период к дате календарно, с клампом дня месяца — 31 января +
+ * 1 месяц даёт 28/29 февраля, а не «перетекает» в март, как при голом
+ * `setMonth` (JS Date нормализует несуществующий день сам, без клампа).
+ */
+export function addPeriod(date: Date, amount: number, unit: PeriodUnit): Date {
+	if (unit === 'days') {
+		const result = atMidnight(date)
+		result.setDate(result.getDate() + amount)
+		return result
+	}
+
+	const monthsToAdd = unit === 'years' ? amount * 12 : amount
+	const day = date.getDate()
+	const firstOfTargetMonth = new Date(
+		date.getFullYear(),
+		date.getMonth() + monthsToAdd,
+		1
+	)
+	const daysInTargetMonth = new Date(
+		firstOfTargetMonth.getFullYear(),
+		firstOfTargetMonth.getMonth() + 1,
+		0
+	).getDate()
+	firstOfTargetMonth.setDate(Math.min(day, daysInTargetMonth))
+	return firstOfTargetMonth
+}
+
+/** Подписанная разница в днях: положительная — b позже a, отрицательная — раньше. */
+export function signedDaysBetween(a: Date, b: Date): number {
+	return Math.round(
+		(atMidnight(b).getTime() - atMidnight(a).getTime()) / DAY_MS
+	)
+}
+
 const SUNDAY = 0
 const SATURDAY = 6
 

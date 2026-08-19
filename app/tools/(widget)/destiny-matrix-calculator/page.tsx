@@ -1,0 +1,165 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import { Check, Copy } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import { calculateDestinyMatrix, getArcana } from '@/lib/utils/destiny-matrix'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { DestinyMatrixCalculatorSeo } from './DestinyMatrixCalculatorSeo'
+
+function parseIso(
+	value: string
+): { day: number; month: number; year: number } | null {
+	if (!value) return null
+	const [year, month, day] = value.split('-').map(Number)
+	if (!year || !month || !day) return null
+	return { day, month, year }
+}
+
+const POSITIONS = [
+	{ key: 'day', label: 'Личность и характер' },
+	{ key: 'month', label: 'Таланты от рождения' },
+	{ key: 'year', label: 'Родовые программы' },
+	{ key: 'fourth', label: 'Реализация в социуме' }
+] as const
+
+export default function DestinyMatrixCalculatorPage() {
+	const widget = getWidgetById('destiny-matrix-calculator')!
+
+	const [birthDate, setBirthDate] = useState('')
+	const [copied, setCopied] = useState(false)
+
+	const result = useMemo(() => {
+		const parsed = parseIso(birthDate)
+		if (!parsed) return null
+		return calculateDestinyMatrix(parsed.day, parsed.month, parsed.year)
+	}, [birthDate])
+
+	const copyResult = async () => {
+		if (!result) return
+		const lines = POSITIONS.map(({ key, label }) => {
+			const arcana = getArcana(result[key])
+			return `${label}: ${arcana.number} (${arcana.name})`
+		})
+		const center = getArcana(result.center)
+		lines.push(`Предназначение: ${center.number} (${center.name})`)
+		await navigator.clipboard.writeText(lines.join('\n'))
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
+	}
+
+	return (
+		<WidgetSEOWrapper widget={widget}>
+			<Card className='overflow-hidden p-0'>
+				<div className={toolBar}>
+					<span className='text-sm text-muted-foreground'>Дата рождения</span>
+
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copyResult}
+							disabled={!result}
+							title='Скопировать результат'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+					</div>
+				</div>
+
+				<div className='border-b px-5 py-6 sm:px-6'>
+					<label className='block max-w-xs'>
+						<span className='mb-1.5 block text-sm text-muted-foreground'>
+							Число, месяц и год рождения
+						</span>
+						<input
+							type='date'
+							value={birthDate}
+							onChange={event => setBirthDate(event.target.value)}
+							aria-label='Дата рождения'
+							className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						/>
+					</label>
+				</div>
+
+				{result ? (
+					<div className='px-5 py-8 sm:px-6'>
+						<div className='mx-auto grid max-w-lg grid-cols-2 gap-3'>
+							{POSITIONS.map(({ key, label }) => {
+								const arcana = getArcana(result[key])
+								return (
+									<div key={key} className='rounded-xl border p-4 text-center'>
+										<span className='block font-mono text-3xl font-bold tracking-tight text-foreground'>
+											{arcana.number}
+										</span>
+										<span className='mt-1 block text-sm font-medium text-foreground'>
+											{arcana.name}
+										</span>
+										<span className='mt-1 block text-xs text-muted-foreground'>
+											{label}
+										</span>
+									</div>
+								)
+							})}
+						</div>
+
+						{(() => {
+							const center = getArcana(result.center)
+							return (
+								<div className='mx-auto mt-3 max-w-lg rounded-xl border border-primary bg-primary/5 p-5 text-center'>
+									<span className='block font-mono text-4xl font-bold tracking-tight text-primary'>
+										{center.number}
+									</span>
+									<span className='mt-1 block font-medium text-foreground'>
+										{center.name}
+									</span>
+									<span className='mt-1 block text-xs text-muted-foreground'>
+										Главное предназначение
+									</span>
+									<p className='mt-3 text-sm text-muted-foreground'>
+										{center.meaning}
+									</p>
+								</div>
+							)
+						})()}
+
+						<div className='mx-auto mt-6 max-w-lg space-y-3'>
+							{POSITIONS.map(({ key, label }) => {
+								const arcana = getArcana(result[key])
+								return (
+									<p key={key} className='text-sm text-muted-foreground'>
+										<span className='font-medium text-foreground'>
+											{label} ({arcana.name}):
+										</span>{' '}
+										{arcana.meaning}
+									</p>
+								)
+							})}
+						</div>
+					</div>
+				) : (
+					<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+						Укажите дату рождения
+					</p>
+				)}
+
+				<div className={toolFooterBar}>
+					<span className='text-sm text-muted-foreground'>
+						Нумерология и арканы Таро — не наука, у метода нет единого стандарта
+						расчёта
+					</span>
+				</div>
+			</Card>
+
+			<DestinyMatrixCalculatorSeo />
+		</WidgetSEOWrapper>
+	)
+}
