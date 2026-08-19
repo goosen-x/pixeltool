@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { telegramFetch } from '@/lib/telegram/proxy-fetch'
 
 interface ContactRequest {
 	name: string
@@ -36,7 +37,7 @@ async function sendToTelegram(data: ContactRequest) {
 		`<b>Время:</b> ${escapeHtml(new Date().toLocaleString('ru-RU'))}`
 	]
 
-	const response = await fetch(
+	const response = await telegramFetch(
 		`https://api.telegram.org/bot${botToken}/sendMessage`,
 		{
 			method: 'POST',

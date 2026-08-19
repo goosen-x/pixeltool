@@ -64,12 +64,13 @@ jobs:
         SMTP_FROM: ${{ secrets.SMTP_FROM }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_PROXY_URL: ${{ secrets.TELEGRAM_PROXY_URL }}
       with:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22
-        envs: REGISTRY,IMAGE_NAME,DATABASE_URL,NEXT_PUBLIC_YANDEX_METRIKA_ID,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,SMTP_FROM,TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID
+        envs: REGISTRY,IMAGE_NAME,DATABASE_URL,NEXT_PUBLIC_YANDEX_METRIKA_ID,SMTP_HOST,SMTP_PORT,SMTP_USER,SMTP_PASSWORD,SMTP_FROM,TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID,TELEGRAM_PROXY_URL
         script: |
           mkdir -p ~/pixeltool
           cd ~/pixeltool
@@ -91,6 +92,7 @@ jobs:
           SMTP_FROM=${SMTP_FROM}
           TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
           TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+          TELEGRAM_PROXY_URL=${TELEGRAM_PROXY_URL}
           NEXT_PUBLIC_SITE_URL=https://pixeltool.pro
           NODE_ENV=production
           PORT=3000
