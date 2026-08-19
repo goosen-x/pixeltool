@@ -1,4 +1,4 @@
-<div align="center">
+<img align="right" width="400" src="public/images/readme-demo.gif" alt="PixelTool"/>
 
 # <img src="public/favicon-512x512.png" alt="" width="20" height="20" style="vertical-align: middle;"/> PixelTool
 
@@ -14,9 +14,7 @@
 [Все инструменты](https://pixeltool.pro/tools) ·
 [Блог](https://pixeltool.pro/blog)
 
-![PixelTool](public/images/readme-demo.gif)
-
-</div>
+<br clear="both"/>
 
 ## Что это
 
