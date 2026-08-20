@@ -5,6 +5,7 @@ import { AnimationGuide } from './AnimationGuide'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
+import { ToolSelect } from '@/components/ui/tool-select'
 import {
 	Play,
 	Pause,
@@ -458,17 +459,17 @@ export default function CSSKeyframesGeneratorPage() {
 	) => (
 		<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 			<span className='font-mono text-xs'>{label}</span>
-			<select
+			<ToolSelect
 				value={value}
 				onChange={event => onChange(event.target.value)}
-				className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+				className='font-mono'
 			>
 				{options.map(option => (
 					<option key={option} value={option}>
 						{option}
 					</option>
 				))}
-			</select>
+			</ToolSelect>
 		</label>
 	)
 
@@ -634,11 +635,11 @@ export default function CSSKeyframesGeneratorPage() {
 						)}
 
 						<div className='flex items-center gap-2 sm:ml-auto'>
-							<select
+							<ToolSelect
 								value={selectedProperty}
 								onChange={event => setSelectedProperty(event.target.value)}
 								aria-label='Свойство для добавления'
-								className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								className='font-mono'
 							>
 								{CSS_PROPERTIES.map(category => (
 									<optgroup key={category.category} label={category.category}>
@@ -649,7 +650,7 @@ export default function CSSKeyframesGeneratorPage() {
 										))}
 									</optgroup>
 								))}
-							</select>
+							</ToolSelect>
 							<input
 								value={propertyValue}
 								onChange={event => setPropertyValue(event.target.value)}

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { FlexboxGuide } from './FlexboxGuide'
 import { Slider } from '@/components/ui/slider'
+import { ToolSelect } from '@/components/ui/tool-select'
 import { Button } from '@/components/ui/button'
 import { Copy, RotateCcw, Check } from 'lucide-react'
 import { toast } from 'sonner'
@@ -302,17 +303,17 @@ export default function FlexboxGeneratorPage() {
 							className='flex items-center gap-2 text-sm text-muted-foreground'
 						>
 							<span className='font-mono text-xs'>{property.label}</span>
-							<select
+							<ToolSelect
 								value={props[property.key] as string}
 								onChange={event => updateProp(property.key, event.target.value)}
-								className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								className='font-mono'
 							>
 								{property.options.map(option => (
 									<option key={option} value={option}>
 										{option}
 									</option>
 								))}
-							</select>
+							</ToolSelect>
 						</label>
 					))}
 

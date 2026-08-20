@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Slider } from '@/components/ui/slider'
+import { ToolSelect } from '@/components/ui/tool-select'
 import { Play, Pause, Square, Trash2, FileDown, Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -387,10 +388,10 @@ export default function TextToSpeechPage() {
 				<div className={toolFooterBar}>
 					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 						<span>Голос</span>
-						<select
+						<ToolSelect
 							value={selectedVoice}
 							onChange={event => setSelectedVoice(event.target.value)}
-							className='max-w-[16rem] cursor-pointer rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							className='max-w-[16rem]'
 						>
 							{Object.entries(voicesByLanguage).map(([lang, langVoices]) => (
 								<optgroup key={lang} label={lang.toUpperCase()}>
@@ -402,7 +403,7 @@ export default function TextToSpeechPage() {
 									))}
 								</optgroup>
 							))}
-						</select>
+						</ToolSelect>
 					</label>
 
 					{[

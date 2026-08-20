@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
+import { ToolSelect } from '@/components/ui/tool-select'
 import { cn } from '@/lib/utils'
 import {
 	toolBar,
@@ -334,17 +335,16 @@ export default function AsciiArtGeneratorPage() {
 					<div className={toolFooterBar}>
 						<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 							<span>Шрифт</span>
-							<select
+							<ToolSelect
 								value={font}
 								onChange={event => setFont(event.target.value as TextFont)}
-								className='cursor-pointer rounded-md border bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 							>
 								{FONTS.map(([value, label]) => (
 									<option key={value} value={value}>
 										{label}
 									</option>
 								))}
-							</select>
+							</ToolSelect>
 						</label>
 					</div>
 				)}
@@ -369,19 +369,19 @@ export default function AsciiArtGeneratorPage() {
 
 						<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 							<span>Символы</span>
-							<select
+							<ToolSelect
 								value={charset}
 								onChange={event =>
 									setCharset(event.target.value as AsciiCharset)
 								}
-								className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								className='font-mono'
 							>
 								{Object.entries(asciiCharsets).map(([key, value]) => (
 									<option key={key} value={key}>
 										{key} — {value.slice(0, 10)}
 									</option>
 								))}
-							</select>
+							</ToolSelect>
 						</label>
 
 						<button

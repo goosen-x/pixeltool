@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { GradientGuide } from './GradientGuide'
 import { Slider } from '@/components/ui/slider'
+import { ToolSelect } from '@/components/ui/tool-select'
 import { Copy, Check, RotateCcw, Plus, Trash2, Shuffle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -319,21 +320,21 @@ export default function CSSGradientGeneratorPage() {
 							</div>
 							<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 								<span className='font-mono text-xs'>size</span>
-								<select
+								<ToolSelect
 									value={settings.radialSize}
 									onChange={event =>
 										updateRadialSize(
 											event.target.value as (typeof RADIAL_SIZES)[number]
 										)
 									}
-									className='cursor-pointer rounded-md border bg-background px-2 py-1 font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+									className='font-mono'
 								>
 									{RADIAL_SIZES.map(size => (
 										<option key={size} value={size}>
 											{size}
 										</option>
 									))}
-								</select>
+								</ToolSelect>
 							</label>
 							{sliderControl(
 								'x',

@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { ArrowLeftRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ToolSelect } from '@/components/ui/tool-select'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import {
 	unitCategories,
@@ -81,9 +82,7 @@ export function UnitConverterWidget({
 
 			<div className='grid items-end gap-4 px-5 py-8 sm:grid-cols-[1fr_auto_1fr] sm:px-6'>
 				<label className='block'>
-					<span className='mb-1.5 block text-sm text-muted-foreground'>
-						Из
-					</span>
+					<span className='mb-1.5 block text-sm text-muted-foreground'>Из</span>
 					<div className='flex gap-2'>
 						<input
 							type='text'
@@ -93,18 +92,17 @@ export function UnitConverterWidget({
 							aria-label='Исходное значение'
 							className='w-full rounded-md border bg-background px-3 py-2 font-mono text-lg text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
-						<select
+						<ToolSelect
 							value={fromId}
 							onChange={event => setFromId(event.target.value)}
 							aria-label='Исходная единица'
-							className='cursor-pointer rounded-md border bg-background px-2 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						>
 							{category.units.map(u => (
 								<option key={u.id} value={u.id}>
 									{u.symbol}
 								</option>
 							))}
-						</select>
+						</ToolSelect>
 					</div>
 				</label>
 
@@ -119,9 +117,7 @@ export function UnitConverterWidget({
 				</Button>
 
 				<label className='block'>
-					<span className='mb-1.5 block text-sm text-muted-foreground'>
-						В
-					</span>
+					<span className='mb-1.5 block text-sm text-muted-foreground'>В</span>
 					<div className='flex gap-2'>
 						<input
 							type='text'
@@ -130,18 +126,17 @@ export function UnitConverterWidget({
 							aria-label='Результат'
 							className='w-full rounded-md border bg-muted/30 px-3 py-2 font-mono text-lg text-foreground focus:outline-none'
 						/>
-						<select
+						<ToolSelect
 							value={toId}
 							onChange={event => setToId(event.target.value)}
 							aria-label='Единица результата'
-							className='cursor-pointer rounded-md border bg-background px-2 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						>
 							{category.units.map(u => (
 								<option key={u.id} value={u.id}>
 									{u.symbol}
 								</option>
 							))}
-						</select>
+						</ToolSelect>
 					</div>
 				</label>
 			</div>
