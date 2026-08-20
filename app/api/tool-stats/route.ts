@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, isDbUnavailableError } from '@/lib/db'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { toolStatsActionSchema } from '@/lib/tool-stats/schema'
 import { createRateLimiter } from '@/lib/tool-stats/rate-limit'
@@ -42,6 +42,12 @@ export async function GET() {
 		const stats = await getAllToolStats()
 		return NextResponse.json(stats)
 	} catch (error) {
+		// БД не поднята (лок. разработка без докера, окружение сборки) —
+		// ToolStatsProvider и так трактует пустой ответ как «данных пока
+		// нет», так что 500 тут вводит в заблуждение больше, чем помогает.
+		if (isDbUnavailableError(error)) {
+			return NextResponse.json({})
+		}
 		console.error('Не удалось получить статистику тулов:', error)
 		return NextResponse.json(
 			{ error: 'Не удалось получить статистику' },
@@ -103,7 +109,9 @@ export async function POST(request: NextRequest) {
 			)
 			return NextResponse.json({ views: Number(rows[0].views) })
 		} catch (error) {
-			console.error('Не удалось записать просмотр тула:', error)
+			if (!isDbUnavailableError(error)) {
+				console.error('Не удалось записать просмотр тула:', error)
+			}
 			return NextResponse.json(
 				{ error: 'Не удалось записать просмотр' },
 				{ status: 500 }
@@ -148,7 +156,9 @@ export async function POST(request: NextRequest) {
 
 			return NextResponse.json({ ok: true })
 		} catch (error) {
-			console.error('Не удалось сохранить отзыв тула:', error)
+			if (!isDbUnavailableError(error)) {
+				console.error('Не удалось сохранить отзыв тула:', error)
+			}
 			return NextResponse.json(
 				{ error: 'Не удалось сохранить отзыв' },
 				{ status: 500 }
@@ -183,7 +193,9 @@ export async function POST(request: NextRequest) {
 			ratingCount: rating_count
 		})
 	} catch (error) {
-		console.error('Не удалось сохранить оценку тула:', error)
+		if (!isDbUnavailableError(error)) {
+			console.error('Не удалось сохранить оценку тула:', error)
+		}
 		return NextResponse.json(
 			{ error: 'Не удалось сохранить оценку' },
 			{ status: 500 }

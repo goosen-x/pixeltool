@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { ProjectsLayoutWrapper } from '@/components/sidebars/ProjectsLayoutWrapper'
 import { getAllToolStats, type ToolStats } from '@/lib/tool-stats/get-all-stats'
+import { isDbUnavailableError } from '@/lib/db'
 
 // БД недоступна из окружения сборки (см. CLAUDE.md — сеть pixeltool-net
 // только на проде), поэтому этот layout не должен пытаться статически
@@ -19,7 +20,12 @@ export default async function WidgetsLayout({ children }: Props) {
 	try {
 		toolStats = await getAllToolStats()
 	} catch (error) {
-		console.error('Не удалось получить статистику тулов для JSON-LD:', error)
+		if (!isDbUnavailableError(error)) {
+			console.error(
+				'Не удалось получить статистику тулов для JSON-LD:',
+				error
+			)
+		}
 	}
 
 	return (

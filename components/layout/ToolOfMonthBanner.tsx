@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { getToolOfTheMonth } from '@/lib/tool-stats/tool-of-month'
+import { isDbUnavailableError } from '@/lib/db'
 import type { Widget } from '@/lib/constants/widgets'
 import { ToolOfMonthBannerDismiss } from './ToolOfMonthBannerDismiss'
 
@@ -14,7 +15,12 @@ export async function ToolOfMonthBanner() {
 	try {
 		widget = await getToolOfTheMonth()
 	} catch (error) {
-		console.error('Не удалось выбрать инструмент месяца:', error)
+		// «БД не поднята» — ожидаемо на билде и в локальной разработке без
+		// докера, не повод шуметь в консоли. Настоящие баги (кривой SQL,
+		// неверный пароль) логируем как и раньше.
+		if (!isDbUnavailableError(error)) {
+			console.error('Не удалось выбрать инструмент месяца:', error)
+		}
 	}
 	if (!widget) return null
 

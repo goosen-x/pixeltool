@@ -36,3 +36,18 @@ export async function getDb(): Promise<Pool> {
 	await ensureSchema(db)
 	return db
 }
+
+/** true для ECONNREFUSED/ENOTFOUND (в том числе завёрнутых в AggregateError,
+ *  когда pg перебирает IPv4/IPv6) — ожидаемый случай «БД сейчас не поднята»
+ *  (локальная разработка без докера, окружение сборки), а не настоящий баг.
+ *  Вызывающий код на основании этого решает, логировать ли ошибку. */
+export function isDbUnavailableError(error: unknown): boolean {
+	if (error instanceof AggregateError) {
+		return error.errors.every(isDbUnavailableError)
+	}
+	if (error && typeof error === 'object' && 'code' in error) {
+		const code = (error as { code?: unknown }).code
+		return code === 'ECONNREFUSED' || code === 'ENOTFOUND'
+	}
+	return false
+}
