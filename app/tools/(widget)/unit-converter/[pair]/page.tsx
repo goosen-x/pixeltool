@@ -32,7 +32,15 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 			description: pair.metaDescription,
 			url,
 			siteName: 'PixelTool',
-			locale: 'ru_RU'
+			type: 'website',
+			locale: 'ru_RU',
+			images: [
+				{
+					url: `${BASE_URL}/api/og?title=${encodeURIComponent(pair.metaTitle)}&description=${encodeURIComponent(pair.metaDescription)}&locale=ru`,
+					width: 1200,
+					height: 630
+				}
+			]
 		},
 		robots: {
 			index: true,

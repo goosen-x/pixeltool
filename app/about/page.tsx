@@ -13,7 +13,15 @@ export const metadata: Metadata = {
 			'PixelTool — бесплатные онлайн-инструменты для работы с CSS, HTML, JSON, текстом и изображениями.',
 		url: 'https://pixeltool.pro/about',
 		siteName: 'PixelTool',
-		type: 'website'
+		type: 'website',
+		locale: 'ru_RU',
+		images: [
+			{
+				url: `https://pixeltool.pro/api/og?title=${encodeURIComponent('О нас')}&description=${encodeURIComponent('PixelTool — бесплатные онлайн-инструменты')}&locale=ru`,
+				width: 1200,
+				height: 630
+			}
+		]
 	}
 }
 

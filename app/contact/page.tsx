@@ -14,7 +14,15 @@ export const metadata: Metadata = {
 			'Свяжитесь с командой PixelTool. Мы всегда рады помочь и ответить на ваши вопросы.',
 		url: 'https://pixeltool.pro/contact',
 		siteName: 'PixelTool',
-		type: 'website'
+		type: 'website',
+		locale: 'ru_RU',
+		images: [
+			{
+				url: `https://pixeltool.pro/api/og?title=${encodeURIComponent('Контакты')}&description=${encodeURIComponent('Свяжитесь с командой PixelTool')}&locale=ru`,
+				width: 1200,
+				height: 630
+			}
+		]
 	}
 }
 

@@ -45,7 +45,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			url,
 			siteName: 'PixelTool',
 			type: 'website',
-			locale: 'ru_RU'
+			locale: 'ru_RU',
+			images: [
+				{
+					url: `${BASE_URL}/api/og?title=${encodeURIComponent(meta.metaTitle)}&description=${encodeURIComponent(meta.metaDescription)}&locale=ru`,
+					width: 1200,
+					height: 630
+				}
+			]
 		},
 		twitter: {
 			card: 'summary_large_image',

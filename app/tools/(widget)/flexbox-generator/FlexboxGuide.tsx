@@ -216,9 +216,9 @@ export function FlexboxGuide() {
 				</li>
 			</ol>
 
-			<h1 className='mt-10 text-2xl font-bold tracking-tight'>
+			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
 				Примеры раскладок
-			</h1>
+			</h2>
 			<div className='mt-4 space-y-5'>
 				{EXAMPLES.map(ex => (
 					<div
