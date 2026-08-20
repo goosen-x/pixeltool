@@ -21,10 +21,7 @@ export default async function WidgetsLayout({ children }: Props) {
 		toolStats = await getAllToolStats()
 	} catch (error) {
 		if (!isDbUnavailableError(error)) {
-			console.error(
-				'Не удалось получить статистику тулов для JSON-LD:',
-				error
-			)
+			console.error('Не удалось получить статистику тулов для JSON-LD:', error)
 		}
 	}
 
