@@ -153,8 +153,8 @@ export default function DestinyMatrixCalculatorPage() {
 
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>
-						Нумерология и арканы Таро — не наука, у метода нет единого стандарта
-						расчёта
+						У метода нет единого стандарта расчёта — числа на разных сайтах
+						могут немного отличаться
 					</span>
 				</div>
 			</Card>
