@@ -50,7 +50,10 @@ export function ToolsExplorer({ category }: Props) {
 				onSortChange={setSort}
 			/>
 
-			<section className='relative mb-12 mt-10 flex flex-col gap-6' id='tools-list'>
+			<section
+				className='relative mb-12 mt-10 flex flex-col gap-6'
+				id='tools-list'
+			>
 				<ToolsFilterBar
 					found={found}
 					search={search}

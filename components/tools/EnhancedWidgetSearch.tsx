@@ -75,13 +75,11 @@ export function EnhancedWidgetSearch({
 			// Реальные просмотры с сайта (GET /api/tool-stats), не Вордстат-спрос —
 			// та же логика «нет данных → в конец», что и у popularity.
 			result = [...result].sort(
-				(a, b) =>
-					(stats[b.id]?.views ?? -1) - (stats[a.id]?.views ?? -1)
+				(a, b) => (stats[b.id]?.views ?? -1) - (stats[a.id]?.views ?? -1)
 			)
 		} else if (sort === 'rating') {
 			result = [...result].sort(
-				(a, b) =>
-					(stats[b.id]?.rating ?? -1) - (stats[a.id]?.rating ?? -1)
+				(a, b) => (stats[b.id]?.rating ?? -1) - (stats[a.id]?.rating ?? -1)
 			)
 		}
 

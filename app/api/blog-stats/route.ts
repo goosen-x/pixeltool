@@ -41,7 +41,8 @@ export async function GET(request: NextRequest) {
 		const row = rows[0]
 		return NextResponse.json({
 			views: row ? Number(row.views) : 0,
-			rating: row && row.rating_count > 0 ? row.rating_sum / row.rating_count : 0,
+			rating:
+				row && row.rating_count > 0 ? row.rating_sum / row.rating_count : 0,
 			ratingCount: row?.rating_count ?? 0
 		})
 	} catch (error) {

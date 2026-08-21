@@ -83,7 +83,10 @@ export function MobileCatalogHeader({
 		CATEGORY_META[category as keyof typeof CATEGORY_META] ?? CATEGORY_META['']
 
 	const isFiltered =
-		search !== '' || sort !== 'default' || viewMode !== 'grid' || category !== ''
+		search !== '' ||
+		sort !== 'default' ||
+		viewMode !== 'grid' ||
+		category !== ''
 
 	// Категория — не клиентское состояние, а отдельная SEO-страница (см.
 	// CategoryChipsNav), поэтому «сброс» для нёе — это переход на /tools, а не

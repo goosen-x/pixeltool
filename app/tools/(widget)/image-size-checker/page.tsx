@@ -443,7 +443,10 @@ export default function ImageSizeCheckerPage() {
 							</div>
 
 							<div className='flex flex-col justify-center gap-4'>
-								<p className='truncate text-sm text-muted-foreground' title={images[0].name}>
+								<p
+									className='truncate text-sm text-muted-foreground'
+									title={images[0].name}
+								>
 									{images[0].name}
 								</p>
 
@@ -465,7 +468,9 @@ export default function ImageSizeCheckerPage() {
 									<Button
 										variant='outline'
 										className='w-fit cursor-pointer gap-2'
-										onClick={() => copyToClipboard(copyText(images[0]), 'single')}
+										onClick={() =>
+											copyToClipboard(copyText(images[0]), 'single')
+										}
 									>
 										{copiedItem === 'single' ? (
 											<Check className='h-4 w-4 text-emerald-600' />
@@ -525,7 +530,8 @@ export default function ImageSizeCheckerPage() {
 													{image.name}
 												</p>
 												<p className='text-xs text-muted-foreground'>
-													Изменён: {image.lastModified.toLocaleDateString('ru-RU')}
+													Изменён:{' '}
+													{image.lastModified.toLocaleDateString('ru-RU')}
 												</p>
 											</td>
 											<td className='px-2 py-2 font-mono'>

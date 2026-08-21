@@ -87,7 +87,9 @@ export function useToolHistory(currentWidgetId?: string) {
 		// рендера другого компонента (React ругается на setState чужого
 		// компонента посреди чужого рендера) — откладываем на микротаску, после
 		// того как этот update уже закоммитился.
-		queueMicrotask(() => window.dispatchEvent(new Event(FAVORITES_CHANGED_EVENT)))
+		queueMicrotask(() =>
+			window.dispatchEvent(new Event(FAVORITES_CHANGED_EVENT))
+		)
 	}, [])
 
 	const isFavorite = useCallback(
