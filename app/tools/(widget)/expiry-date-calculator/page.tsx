@@ -138,9 +138,7 @@ export default function ExpiryDateCalculatorPage() {
 							/>
 							<ToolSelect
 								value={unit}
-								onChange={event =>
-									setUnit(event.target.value as PeriodUnit)
-								}
+								onChange={event => setUnit(event.target.value as PeriodUnit)}
 								aria-label='Единица срока хранения'
 								className='w-32 flex-shrink-0 py-2'
 							>

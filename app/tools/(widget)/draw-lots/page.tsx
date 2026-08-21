@@ -251,9 +251,7 @@ export default function DrawLotsPage() {
 					</>
 				) : (
 					<>
-						<div
-							className={cn('grid px-5 py-6 sm:px-6', revealDisplay.grid)}
-						>
+						<div className={cn('grid px-5 py-6 sm:px-6', revealDisplay.grid)}>
 							{lots.map(lot => (
 								<button
 									key={lot.id}
