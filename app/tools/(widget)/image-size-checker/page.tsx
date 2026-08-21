@@ -2,14 +2,29 @@
 
 import { useState, useCallback, useRef } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, Download, X, ImageIcon, Trash2 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import {
+	Upload,
+	Download,
+	X,
+	ImageIcon,
+	Trash2,
+	Copy,
+	Check,
+	AlertTriangle,
+	Minimize2
+} from 'lucide-react'
 import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { ImageSizeCheckerSeo } from './ImageSizeCheckerSeo'
 import { cn } from '@/lib/utils'
+import { pluralizeRu } from '@/lib/utils/pluralize'
+import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard'
+import { setHandoffFile } from '@/lib/tools/file-handoff'
 
 interface ImageInfo {
 	name: string
@@ -21,16 +36,149 @@ interface ImageInfo {
 	fileSizeFormatted: string
 	format: string
 	lastModified: Date
+	/** Оригинальный файл — нужен, чтобы передать его в compress-image по клику «Сжать», а не только показать метаданные. */
+	file: File
+}
+
+const STANDARD_RATIOS = [
+	{ label: '1:1', value: 1 },
+	{ label: '4:3', value: 4 / 3 },
+	{ label: '3:2', value: 3 / 2 },
+	{ label: '16:9', value: 16 / 9 },
+	{ label: '9:16', value: 9 / 16 },
+	{ label: '2:1', value: 2 }
+]
+
+// Ориентир из SEO-текста ниже («до 200–300 КБ на иллюстрацию»).
+const HEAVY_THRESHOLD_BYTES = 300 * 1024
+
+// Если реальное соотношение уже точно совпадает с одним из частых — подсказка
+// не нужна, оно и так узнаваемо. Если нет — берём ближайшее, но только в
+// пределах 15% отклонения: для сильно нестандартного кадра «ближайший»
+// стандарт всё равно бесполезен и только шумит.
+function closestRatioHint(image: ImageInfo): string | null {
+	if (STANDARD_RATIOS.some(r => r.label === image.aspectRatio)) return null
+	const ratio = image.width / image.height
+	let best = STANDARD_RATIOS[0]
+	let bestDiff = Infinity
+	for (const r of STANDARD_RATIOS) {
+		const diff = Math.abs(ratio - r.value)
+		if (diff < bestDiff) {
+			bestDiff = diff
+			best = r
+		}
+	}
+	return bestDiff / best.value < 0.15 ? best.label : null
+}
+
+function copyText(image: ImageInfo): string {
+	return `${image.width} × ${image.height}, ${image.aspectRatio}, ${image.fileSizeFormatted}, ${image.format.split('/')[1]?.toUpperCase() || image.format}`
+}
+
+function RatioBadge({ image }: { image: ImageInfo }) {
+	const hint = closestRatioHint(image)
+	if (!hint) {
+		return (
+			<Badge variant='outline' className='font-mono'>
+				{image.aspectRatio}
+			</Badge>
+		)
+	}
+	return (
+		<Badge
+			variant='outline'
+			title={`Точное соотношение ${image.aspectRatio} — ближе всего к ${hint}, но не совпадает. При вставке в формат ${hint} края обрежутся.`}
+			className='gap-1 border-amber-500/40 font-mono text-amber-700 dark:text-amber-400'
+		>
+			Примерно {hint}
+		</Badge>
+	)
+}
+
+function WeightLabel({ image }: { image: ImageInfo }) {
+	const heavy = image.fileSize > HEAVY_THRESHOLD_BYTES
+	return (
+		<span className='inline-flex flex-wrap items-center gap-1.5'>
+			<span
+				className={cn(
+					'font-mono',
+					heavy ? 'text-amber-700 dark:text-amber-400' : 'text-muted-foreground'
+				)}
+			>
+				{image.fileSizeFormatted}
+			</span>
+			{heavy && (
+				<Badge
+					variant='outline'
+					title='Тяжелее ориентира ~300 КБ для обычной картинки на сайте'
+					className='gap-1 border-amber-500/40 text-amber-700 dark:text-amber-400'
+				>
+					<AlertTriangle className='h-3 w-3' />
+					Большой файл
+				</Badge>
+			)}
+		</span>
+	)
+}
+
+function megapixels(image: ImageInfo): string {
+	return ((image.width * image.height) / 1_000_000).toFixed(1)
+}
+
+/** Мегапиксели и дата изменения — метаданные, которые уже были в объекте ImageInfo, но нигде не показывались. */
+function MetaLine({ image }: { image: ImageInfo }) {
+	return (
+		<div className='flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground'>
+			<span>{megapixels(image)} Мп</span>
+			<span>Изменён: {image.lastModified.toLocaleDateString('ru-RU')}</span>
+		</div>
+	)
+}
+
+function CopyButton({
+	image,
+	copiedId,
+	id,
+	onCopy,
+	className
+}: {
+	image: ImageInfo
+	copiedId: string | null
+	id: string
+	onCopy: (text: string, id: string) => void
+	className?: string
+}) {
+	const copied = copiedId === id
+
+	return (
+		<Button
+			size='icon'
+			variant='ghost'
+			title='Скопировать данные'
+			onClick={() => onCopy(copyText(image), id)}
+			className={cn(toolIconButton, className)}
+		>
+			{copied ? (
+				<Check className='h-4 w-4 text-emerald-600' />
+			) : (
+				<Copy className='h-4 w-4' />
+			)}
+		</Button>
+	)
 }
 
 export default function ImageSizeCheckerPage() {
 	const widget = getWidgetById('image-size-checker')!
+	const router = useRouter()
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	// Сообщение о том, что не получилось: тост тут не годится — он исчезает
 	// раньше, чем человек успевает понять, какой файл не взяли.
 	const [problem, setProblem] = useState('')
+	const { copyToClipboard, copiedItem } = useCopyToClipboard({
+		successMessage: 'Данные скопированы'
+	})
 
 	const formatBytes = (bytes: number): string => {
 		if (bytes === 0) return '0 Bytes'
@@ -63,7 +211,8 @@ export default function ImageSizeCheckerPage() {
 						fileSize: file.size,
 						fileSizeFormatted: formatBytes(file.size),
 						format: file.type || 'unknown',
-						lastModified: new Date(file.lastModified)
+						lastModified: new Date(file.lastModified),
+						file
 					}
 					resolve(imageInfo)
 				}
@@ -142,6 +291,16 @@ export default function ImageSizeCheckerPage() {
 		[handleFiles]
 	)
 
+	// Передаём исходный File, а не его дата-URL: так compress-image может
+	// прочитать файл ровно так же, как если бы его выбрали там напрямую.
+	const compressImage = useCallback(
+		(image: ImageInfo) => {
+			setHandoffFile(image.file)
+			router.push('/tools/compress-image')
+		},
+		[router]
+	)
+
 	const removeImage = useCallback((index: number) => {
 		setImages(prev => prev.filter((_, i) => i !== index))
 	}, [])
@@ -195,7 +354,7 @@ export default function ImageSizeCheckerPage() {
 					>
 						{problem ||
 							(images.length > 0
-								? `${images.length} изображений`
+								? `${images.length} ${pluralizeRu(images.length, ['изображение', 'изображения', 'изображений'])}`
 								: 'Изображения не выбраны')}
 					</span>
 
@@ -233,14 +392,16 @@ export default function ImageSizeCheckerPage() {
 				</div>
 
 				{/* Рабочая область — она же зона перетаскивания: пока картинок нет,
-				    это приглашение, а как появились — сетка с результатами, и
-				    бросить файл можно прямо на неё. */}
+				    это приглашение, один файл — крупный «геройский» результат (не
+				    теряется мелкой карточкой), несколько — таблица, там данные
+				    важнее превью. Бросить ещё файл можно прямо на любое из трёх. */}
 				<div
 					onDrop={handleDrop}
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
 					className={cn(
-						'relative px-5 py-6 transition-colors sm:px-6',
+						'relative transition-colors',
+						images.length === 0 && 'px-5 py-6 sm:px-6',
 						isDragging && 'bg-primary/5'
 					)}
 				>
@@ -254,7 +415,7 @@ export default function ImageSizeCheckerPage() {
 						className='hidden'
 					/>
 
-					{images.length === 0 ? (
+					{images.length === 0 && (
 						<button
 							type='button'
 							onClick={() => fileInputRef.current?.click()}
@@ -268,75 +429,161 @@ export default function ImageSizeCheckerPage() {
 								JPG, PNG, GIF, WebP, SVG — всё считается прямо в браузере
 							</span>
 						</button>
-					) : (
-						<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-							{images.map((image, index) => (
-								<div key={index} className='group'>
-									<div className='relative aspect-video overflow-hidden rounded-xl border bg-muted'>
-										<Image
-											src={image.url}
-											alt={image.name}
-											fill
-											className='object-contain'
-										/>
-										<Button
-											size='icon'
-											variant='ghost'
-											onClick={() => removeImage(index)}
-											title='Убрать'
-											className={cn(
-												toolIconButton,
-												'absolute top-2 right-2 bg-background/90 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
-											)}
-										>
-											<X className='h-4 w-4' />
-										</Button>
-									</div>
+					)}
 
-									<p className='mt-2 truncate px-1 text-sm' title={image.name}>
-										{image.name}
-									</p>
-									<p className='flex flex-wrap items-center gap-x-3 px-1 text-xs text-muted-foreground'>
-										<span className='font-mono text-foreground'>
-											{image.width} × {image.height}
-										</span>
-										<span className='font-mono'>{image.aspectRatio}</span>
-										<span className='font-mono'>{image.fileSizeFormatted}</span>
-										<span className='font-mono'>
-											{image.format.split('/')[1]?.toUpperCase() || '—'}
-										</span>
-									</p>
+					{images.length === 1 && (
+						<div className='grid gap-6 p-5 sm:grid-cols-[1.2fr_1fr] sm:p-8'>
+							<div className='relative flex h-64 items-center justify-center overflow-hidden rounded-xl border bg-muted sm:h-auto sm:max-h-96'>
+								<Image
+									src={images[0].url}
+									alt={images[0].name}
+									fill
+									className='object-contain'
+								/>
+							</div>
+
+							<div className='flex flex-col justify-center gap-4'>
+								<p className='truncate text-sm text-muted-foreground' title={images[0].name}>
+									{images[0].name}
+								</p>
+
+								<p className='font-mono text-3xl font-bold tracking-tight sm:text-4xl'>
+									{images[0].width} × {images[0].height}
+								</p>
+
+								<div className='flex flex-wrap items-center gap-2 text-sm'>
+									<RatioBadge image={images[0]} />
+									<WeightLabel image={images[0]} />
+									<Badge variant='outline'>
+										{images[0].format.split('/')[1]?.toUpperCase() || '—'}
+									</Badge>
 								</div>
-							))}
+
+								<MetaLine image={images[0]} />
+
+								<div className='flex flex-wrap gap-2'>
+									<Button
+										variant='outline'
+										className='w-fit cursor-pointer gap-2'
+										onClick={() => copyToClipboard(copyText(images[0]), 'single')}
+									>
+										{copiedItem === 'single' ? (
+											<Check className='h-4 w-4 text-emerald-600' />
+										) : (
+											<Copy className='h-4 w-4' />
+										)}
+										Скопировать данные
+									</Button>
+
+									{images[0].fileSize > HEAVY_THRESHOLD_BYTES && (
+										<Button
+											variant='outline'
+											className='w-fit cursor-pointer gap-2 border-amber-500/40 text-amber-700 hover:border-amber-500/60 hover:bg-amber-500/10 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-400'
+											onClick={() => compressImage(images[0])}
+										>
+											<Minimize2 className='h-4 w-4' />
+											Сжать в компрессоре
+										</Button>
+									)}
+								</div>
+							</div>
+						</div>
+					)}
+
+					{images.length > 1 && (
+						<div className='overflow-x-auto'>
+							<table className='w-full text-sm'>
+								<thead>
+									<tr className='border-b text-left text-xs text-muted-foreground'>
+										<th className='px-4 py-2 font-medium'></th>
+										<th className='px-2 py-2 font-medium'>Имя</th>
+										<th className='px-2 py-2 font-medium'>Размер, px</th>
+										<th className='px-2 py-2 font-medium'>Соотношение</th>
+										<th className='px-2 py-2 font-medium'>Вес</th>
+										<th className='px-2 py-2 font-medium'>Формат</th>
+										<th className='px-2 py-2'></th>
+									</tr>
+								</thead>
+								<tbody>
+									{images.map((image, index) => (
+										<tr
+											key={index}
+											className='group border-b last:border-0 hover:bg-muted/30'
+										>
+											<td className='px-4 py-2'>
+												<div className='relative h-9 w-9 overflow-hidden rounded-md border bg-muted'>
+													<Image
+														src={image.url}
+														alt=''
+														fill
+														className='object-cover'
+													/>
+												</div>
+											</td>
+											<td className='max-w-48 px-2 py-2'>
+												<p className='truncate' title={image.name}>
+													{image.name}
+												</p>
+												<p className='text-xs text-muted-foreground'>
+													Изменён: {image.lastModified.toLocaleDateString('ru-RU')}
+												</p>
+											</td>
+											<td className='px-2 py-2 font-mono'>
+												{image.width} × {image.height}
+												<p className='font-sans text-xs text-muted-foreground'>
+													{megapixels(image)} Мп
+												</p>
+											</td>
+											<td className='px-2 py-2'>
+												<RatioBadge image={image} />
+											</td>
+											<td className='px-2 py-2'>
+												<WeightLabel image={image} />
+											</td>
+											<td className='px-2 py-2 text-muted-foreground'>
+												{image.format.split('/')[1]?.toUpperCase() || '—'}
+											</td>
+											<td className='px-2 py-2 text-right'>
+												<div className='flex items-center justify-end opacity-0 group-hover:opacity-100'>
+													{image.fileSize > HEAVY_THRESHOLD_BYTES && (
+														<Button
+															size='icon'
+															variant='ghost'
+															onClick={() => compressImage(image)}
+															title='Сжать в компрессоре — большой файл'
+															className={cn(
+																toolIconButton,
+																'text-amber-700 hover:text-amber-800 dark:text-amber-400'
+															)}
+														>
+															<Minimize2 className='h-4 w-4' />
+														</Button>
+													)}
+													<CopyButton
+														image={image}
+														id={`${index}`}
+														copiedId={copiedItem}
+														onCopy={copyToClipboard}
+													/>
+													<Button
+														size='icon'
+														variant='ghost'
+														onClick={() => removeImage(index)}
+														title='Убрать'
+														className={toolIconButton}
+													>
+														<X className='h-4 w-4' />
+													</Button>
+												</div>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
 						</div>
 					)}
 				</div>
 			</Card>
-
-			{/* Частые соотношения сторон — тихая полка под инструментом. */}
-			<div className='mt-6'>
-				<p className='px-1 text-sm text-muted-foreground'>
-					Частые соотношения сторон
-				</p>
-				<div className='mt-2 grid gap-x-8 gap-y-2 rounded-xl border p-4 sm:grid-cols-2'>
-					{[
-						['1:1', 'квадрат — пост в Instagram'],
-						['4:3', 'традиционное фото'],
-						['3:2', 'классический кадр 35 мм'],
-						['16:9', 'широкий экран, обложка YouTube'],
-						['9:16', 'вертикальное видео и сторис'],
-						['2:1', 'шапка профиля']
-					].map(([ratio, description]) => (
-						<div
-							key={ratio}
-							className='flex items-baseline justify-between gap-3 text-sm'
-						>
-							<span className='font-mono'>{ratio}</span>
-							<span className='text-muted-foreground'>{description}</span>
-						</div>
-					))}
-				</div>
-			</div>
 
 			<ImageSizeCheckerSeo />
 		</WidgetSEOWrapper>

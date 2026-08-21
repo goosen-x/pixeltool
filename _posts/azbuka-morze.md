@@ -5,7 +5,7 @@ excerpt:
   что означают пробелы и «/» в записи — и как перевести текст в Морзе и обратно
   прямо в браузере.'
 coverImage: '/images/blog/azbuka-morze.png'
-date: '2026-08-17T12:00:00.000Z'
+date: '2026-08-15T12:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

@@ -5,7 +5,7 @@ excerpt:
   красивый Unicode-шрифт для ника и специальные символы — что использовать и
   когда.'
 coverImage: '/images/blog/smayliki-shrifty-simvoly-dlya-teksta.png'
-date: '2026-08-07T18:00:00.000Z'
+date: '2026-08-14T13:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

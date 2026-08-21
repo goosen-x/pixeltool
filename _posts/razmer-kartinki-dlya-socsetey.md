@@ -4,7 +4,7 @@ excerpt:
   'Точные размеры обложки и аватарки ВКонтакте, превью Telegram и обложки
   YouTube — официальные цифры площадок и почему картинку обрезает и мылит.'
 coverImage: '/images/blog/razmer-kartinki-dlya-socsetey.png'
-date: '2026-08-03T18:00:00.000Z'
+date: '2026-08-05T11:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

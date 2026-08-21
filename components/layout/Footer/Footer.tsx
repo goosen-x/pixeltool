@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Code2, Github, Mail, ExternalLink, Sparkles } from 'lucide-react'
 import { Logo } from '@/components/global/Logo'
+import { widgetCategories } from '@/lib/constants/widgets'
 
 export const Footer = () => {
 	const year = new Date().getFullYear()
@@ -10,9 +11,10 @@ export const Footer = () => {
 			title: 'Инструменты',
 			links: [
 				{ label: 'Все инструменты', href: '/tools' },
-				{ label: 'CSS инструменты', href: '/tools/css' },
-				{ label: 'HTML инструменты', href: '/tools/html' },
-				{ label: 'JavaScript инструменты', href: '/tools/javascript' }
+				...Object.entries(widgetCategories).map(([key, title]) => ({
+					label: title,
+					href: `/tools/${key}`
+				}))
 			]
 		},
 		company: {
@@ -27,8 +29,7 @@ export const Footer = () => {
 			title: 'Юридическое',
 			links: [
 				{ label: 'Политика конфиденциальности', href: '/privacy' },
-				{ label: 'Условия использования', href: '/terms' },
-				{ label: 'Правовые документы (PDF)', href: '/legal' }
+				{ label: 'Условия использования', href: '/terms' }
 			]
 		}
 	}

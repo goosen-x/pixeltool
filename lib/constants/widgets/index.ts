@@ -131,13 +131,13 @@ export const devSubcategories = {
 } as const
 
 export const widgetCategories = {
-	development: 'Разработка',
 	generators: 'Рандомайзер',
 	text: 'Текст',
 	images: 'Изображения',
 	health: 'Здоровье',
 	security: 'Безопасность',
-	utilities: 'Утилиты'
+	utilities: 'Утилиты',
+	development: 'Разработка'
 } as const
 
 export const getWidgetFAQs = (widgetId: string): any[] => {

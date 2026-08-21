@@ -1,6 +1,8 @@
+'use client'
+
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { ComponentProps } from 'react'
+import { ComponentProps, useState } from 'react'
 
 type Props = {
 	title: string
@@ -52,10 +54,14 @@ function getPatternForSlug(slug: string): (typeof coverPatterns)[0] {
 
 export function PostCover({ className, title, slug, coverImage }: Props) {
 	const pattern = getPatternForSlug(slug)
+	const [loadFailed, setLoadFailed] = useState(false)
 
 	// Обложка есть — показываем её. Раньше coverImage игнорировался, и все
-	// статьи получали одинаковую градиентную заглушку с заголовком поверх
-	const hasCover = Boolean(coverImage) && coverImage !== '/images/avatar.jpeg'
+	// статьи получали одинаковую градиентную заглушку с заголовком поверх.
+	// loadFailed ловит случай, когда путь прописан во фронтматтере, но файл
+	// ещё не сгенерирован/битый — иначе вместо заглушки был пустой <img>.
+	const hasCover =
+		Boolean(coverImage) && coverImage !== '/images/avatar.jpeg' && !loadFailed
 
 	if (hasCover) {
 		return (
@@ -72,6 +78,7 @@ export function PostCover({ className, title, slug, coverImage }: Props) {
 					sizes='(max-width: 768px) 100vw, 900px'
 					className='object-cover'
 					priority
+					onError={() => setLoadFailed(true)}
 				/>
 			</div>
 		)

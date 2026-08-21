@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useDebouncedValue } from '@/lib/hooks/useDebouncedValue'
 import { EnhancedWidgetSearch } from '@/components/tools/EnhancedWidgetSearch'
 import { CategoryHero } from '@/components/tools/CategoryHero'
+import { MobileCatalogHeader } from '@/components/tools/MobileCatalogHeader'
 import {
 	ToolsFilterBar,
 	type SortOption
@@ -26,7 +27,6 @@ interface Props {
 export function ToolsExplorer({ category }: Props) {
 	const [search, setSearch] = useState('')
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-	const [selectedDifficulty, setSelectedDifficulty] = useState<string[]>([])
 	const [sort, setSort] = useState<SortOption>('default')
 
 	// Поле откликается сразу, а список пересчитывается с задержкой — иначе он
@@ -37,36 +37,37 @@ export function ToolsExplorer({ category }: Props) {
 
 	return (
 		<>
-			<CategoryHero
+			<CategoryHero category={category} />
+			<MobileCatalogHeader
 				category={category}
 				search={search}
 				onSearchChange={setSearch}
-				debouncedSearch={debouncedSearch}
 				isSearching={isSearching}
+				found={found}
+				viewMode={viewMode}
+				onViewModeChange={setViewMode}
+				sort={sort}
+				onSortChange={setSort}
 			/>
 
-			<section className='relative mb-12 mt-10' id='tools-list'>
-				<div className='flex flex-col gap-6 lg:flex-row lg:items-start'>
-					<ToolsFilterBar
-						found={found}
-						search={search}
-						onSearchChange={setSearch}
+			<section className='relative mb-12 mt-10 flex flex-col gap-6' id='tools-list'>
+				<ToolsFilterBar
+					found={found}
+					search={search}
+					onSearchChange={setSearch}
+					isSearching={isSearching}
+					viewMode={viewMode}
+					onViewModeChange={setViewMode}
+					sort={sort}
+					onSortChange={setSort}
+				/>
+				<div className='min-w-0 overflow-hidden'>
+					<EnhancedWidgetSearch
+						category={category}
+						search={debouncedSearch}
 						viewMode={viewMode}
-						onViewModeChange={setViewMode}
-						selectedDifficulty={selectedDifficulty}
-						onDifficultyChange={setSelectedDifficulty}
 						sort={sort}
-						onSortChange={setSort}
 					/>
-					<div className='min-w-0 flex-1 overflow-hidden'>
-						<EnhancedWidgetSearch
-							category={category}
-							search={debouncedSearch}
-							viewMode={viewMode}
-							difficulty={selectedDifficulty}
-							sort={sort}
-						/>
-					</div>
 				</div>
 			</section>
 		</>

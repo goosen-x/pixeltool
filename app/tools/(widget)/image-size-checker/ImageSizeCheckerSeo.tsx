@@ -32,6 +32,43 @@ export function ImageSizeCheckerSeo() {
 					просит квадрат, а у файла 4:3 — площадка обрежет края; или размеры в
 					норме, а вес 6 МБ — страница будет грузиться секундами.
 				</p>
+
+				<div className='mt-6 overflow-x-auto'>
+					<table className='w-full text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-medium'>Соотношение</th>
+								<th className='py-2 font-medium'>Где встречается</th>
+							</tr>
+						</thead>
+						<tbody className='text-muted-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1:1</td>
+								<td className='py-2'>квадрат — пост в Instagram</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>4:3</td>
+								<td className='py-2'>традиционное фото</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>3:2</td>
+								<td className='py-2'>классический кадр 35 мм</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>16:9</td>
+								<td className='py-2'>широкий экран, обложка YouTube</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>9:16</td>
+								<td className='py-2'>вертикальное видео и сторис</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>2:1</td>
+								<td className='py-2'>шапка профиля</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

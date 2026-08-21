@@ -49,6 +49,16 @@ CREATE TABLE IF NOT EXISTS tool_feedback (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Оценки (звёзды 1-5) и счётчик просмотров статей блога — тот же принцип,
+-- что у tool_stats, но отдельная таблица: у статей нет фидбека при низкой
+-- оценке и помесячной разбивки (нет аналога «тула месяца» для блога).
+CREATE TABLE IF NOT EXISTS blog_stats (
+	post_id TEXT PRIMARY KEY,
+	views BIGINT NOT NULL DEFAULT 0,
+	rating_sum INTEGER NOT NULL DEFAULT 0,
+	rating_count INTEGER NOT NULL DEFAULT 0
+);
+
 -- Форма контактов и виджет «Ошибка/Идея/Вопрос» раньше уходили только в
 -- Telegram — если доставка падала (см. случай 03–19.08.2026, сервер не мог
 -- достучаться до api.telegram.org две недели), сообщение терялось

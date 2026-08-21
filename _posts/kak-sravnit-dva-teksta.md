@@ -6,7 +6,7 @@ excerpt:
   удалённое и изменённое за секунду, и что стоит знать про пробелы, регистр и
   файлы Word/PDF.'
 coverImage: '/images/blog/kak-sravnit-dva-teksta.png'
-date: '2026-08-07T12:00:00.000Z'
+date: '2026-08-08T12:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

@@ -5,7 +5,7 @@ excerpt:
   нужно прибавлять к дате производства календарно, а не делить на 30. Разбираем
   на примере и объясняем частую ошибку с месяцами разной длины.'
 coverImage: '/images/blog/kak-poschitat-srok-godnosti.png'
-date: '2026-08-19T21:00:00.000Z'
+date: '2026-08-19T15:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

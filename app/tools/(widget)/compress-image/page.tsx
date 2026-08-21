@@ -17,6 +17,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { useFileDrop } from '@/lib/hooks/useFileDrop'
 import { cn } from '@/lib/utils'
+import { takeHandoffFile } from '@/lib/tools/file-handoff'
 import { CompressImageSeo } from './CompressImageSeo'
 
 type OutputFormat = 'image/jpeg' | 'image/webp'
@@ -122,6 +123,14 @@ export default function CompressImagePage() {
 	}
 
 	const { isDragging, ...dropHandlers } = useFileDrop(selectFile)
+
+	// Подхватываем файл, переданный кнопкой «Сжать» с другого тула
+	// (image-size-checker) — см. lib/tools/file-handoff.ts.
+	useEffect(() => {
+		const handoff = takeHandoffFile()
+		if (handoff) selectFile(handoff)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	// Пересжимаем при смене формата/качества — с дебаунсом, чтобы не гонять
 	// canvas на каждый пиксель движения ползунка.

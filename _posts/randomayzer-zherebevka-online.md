@@ -7,7 +7,7 @@ excerpt:
   онлайн: деление на команды, жеребьёвка, монетка, кубик и перемешивание списка
   — когда какой использовать.'
 coverImage: '/images/blog/randomayzer-zherebevka-online.png'
-date: '2026-08-07T16:00:00.000Z'
+date: '2026-08-12T16:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

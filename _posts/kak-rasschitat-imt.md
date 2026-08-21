@@ -5,7 +5,7 @@ excerpt:
   честный разбор, почему ИМТ не подходит спортсменам, детям и не заменяет
   консультацию врача.'
 coverImage: '/images/blog/kak-rasschitat-imt.png'
-date: '2026-08-17T21:00:00.000Z'
+date: '2026-08-16T11:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

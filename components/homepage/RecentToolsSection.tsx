@@ -3,6 +3,13 @@
 import { publicWidgets } from '@/lib/constants/widgets'
 import { ToolCard } from '@/components/tools/ToolCard'
 import { useToolHistory } from '@/lib/hooks/useToolHistory'
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious
+} from '@/components/ui/carousel'
 
 const DISPLAY_LIMIT = 4
 
@@ -39,10 +46,29 @@ export function RecentToolsSection() {
 					</p>
 				</div>
 
-				<div className='grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4'>
-					{items.map(widget => (
-						<ToolCard key={widget.id} widget={widget} className='h-full' />
-					))}
+				{/* На мобильном сжатый grid-cols-2 давил карточки настолько, что
+				    текст описания и кнопка обрезались — карусель с
+				    полутора-карточками в кадре решает то же место шире, без
+				    сжатия контента, и намекает свайпом, что элементов больше. */}
+				<div className='relative sm:px-8 lg:px-0'>
+					<Carousel opts={{ align: 'start' }} className='w-full'>
+						<CarouselContent className='-ml-4'>
+							{items.map(widget => (
+								<CarouselItem
+									key={widget.id}
+									className='basis-[85%] pl-4 sm:basis-1/2 lg:basis-1/4'
+								>
+									<ToolCard widget={widget} className='h-full' />
+								</CarouselItem>
+							))}
+						</CarouselContent>
+						<CarouselPrevious className='hidden sm:flex -left-4 lg:-left-12' />
+						<CarouselNext className='hidden sm:flex -right-4 lg:-right-12' />
+					</Carousel>
+
+					<p className='mt-4 text-center text-xs text-muted-foreground sm:hidden'>
+						Свайпайте для просмотра
+					</p>
 				</div>
 			</div>
 		</section>

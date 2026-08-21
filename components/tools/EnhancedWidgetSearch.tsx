@@ -3,10 +3,11 @@
 import { useMemo } from 'react'
 import Link from 'next/link'
 import { Search } from 'lucide-react'
-import { publicWidgets } from '@/lib/constants/widgets'
+import { publicWidgets, widgetCategories } from '@/lib/constants/widgets'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
 import { highlightText } from '@/lib/utils/highlightText'
 import { CATEGORY_META, type CategoryKey } from '@/lib/constants/categories'
+import { useToolStatsContext } from '@/components/providers/ToolStatsProvider'
 import { ToolCard } from './ToolCard'
 import { CornerBadge } from './CornerBadge'
 import { DifficultyBars } from './DifficultyBars'
@@ -14,13 +15,13 @@ import { DIFFICULTY_LABELS, type SortOption } from './ToolsFilterBar'
 
 const DIFFICULTY_ORDER = { beginner: 0, intermediate: 1, advanced: 2 } as const
 
+const CATEGORY_ORDER = Object.keys(widgetCategories)
+
 interface Props {
 	/** Категорию задаёт страница; внутри компонента она не меняется. */
 	category: string
 	search: string
 	viewMode: 'grid' | 'list'
-	/** Пусто = любая сложность. */
-	difficulty: string[]
 	sort: SortOption
 }
 
@@ -40,17 +41,22 @@ export function EnhancedWidgetSearch({
 	category,
 	search,
 	viewMode,
-	difficulty,
 	sort
 }: Props) {
+	const { stats } = useToolStatsContext()
+
 	const filtered = useMemo(() => {
 		let result = filterWidgets(publicWidgets, search, category)
 
-		if (difficulty.length > 0) {
-			result = result.filter(
-				widget => widget.difficulty && difficulty.includes(widget.difficulty)
-			)
-		}
+		// Стабильная база (Array.sort в JS стабилен): на общем каталоге разделы
+		// идут в том же порядке, что в сайдбаре и футере, а не в порядке
+		// объявления в lib/constants/widgets — там «Разработка» шла бы первой,
+		// хотя в навигации её перенесли в конец. На странице одной категории
+		// это no-op: там и так один widget.category на всех.
+		result = [...result].sort(
+			(a, b) =>
+				CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category)
+		)
 
 		if (sort === 'alpha') {
 			result = [...result].sort((a, b) =>
@@ -65,16 +71,22 @@ export function EnhancedWidgetSearch({
 					DIFFICULTY_ORDER[a.difficulty ?? 'beginner'] -
 					DIFFICULTY_ORDER[b.difficulty ?? 'beginner']
 			)
-		} else if (sort === 'popularity') {
-			// searchVolume проставлен не у всех (см. Widget['searchVolume']) —
-			// без данных отправляем в конец, а не притворяемся нулевым спросом.
+		} else if (sort === 'views') {
+			// Реальные просмотры с сайта (GET /api/tool-stats), не Вордстат-спрос —
+			// та же логика «нет данных → в конец», что и у popularity.
 			result = [...result].sort(
-				(a, b) => (b.searchVolume ?? -1) - (a.searchVolume ?? -1)
+				(a, b) =>
+					(stats[b.id]?.views ?? -1) - (stats[a.id]?.views ?? -1)
+			)
+		} else if (sort === 'rating') {
+			result = [...result].sort(
+				(a, b) =>
+					(stats[b.id]?.rating ?? -1) - (stats[a.id]?.rating ?? -1)
 			)
 		}
 
 		return result
-	}, [search, category, difficulty, sort])
+	}, [search, category, sort, stats])
 
 	if (filtered.length === 0) {
 		return (

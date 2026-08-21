@@ -5,7 +5,7 @@ excerpt:
   отличается от XML, когда нужна минификация вместо отступов и почему это не то
   же самое, что проверка валидности.'
 coverImage: '/images/blog/html-xml-parser.png'
-date: '2026-07-20T12:00:00.000Z'
+date: '2026-07-17T12:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

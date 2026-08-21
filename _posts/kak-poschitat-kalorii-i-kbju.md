@@ -7,7 +7,7 @@ excerpt:
   активности, зачем норму калорий делят на белки, жиры и углеводы — и почему это
   ориентир, а не медицинское назначение.'
 coverImage: '/images/blog/kak-poschitat-kalorii-i-kbju.png'
-date: '2026-08-19T22:00:00.000Z'
+date: '2026-08-20T11:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

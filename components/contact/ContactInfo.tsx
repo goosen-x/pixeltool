@@ -1,4 +1,4 @@
-import { Mail, MapPin, Clock, Phone } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
 import { FaTelegram, FaGithub, FaLinkedin } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 
@@ -19,16 +19,6 @@ export default function ContactInfo({ locale }: Props) {
 			label: 'Telegram',
 			value: '@borisenko_dmitry',
 			href: 'https://t.me/borisenko_dmitry'
-		},
-		{
-			icon: MapPin,
-			label: 'Местоположение',
-			value: 'Москва, Россия'
-		},
-		{
-			icon: Clock,
-			label: 'Часовой пояс',
-			value: 'GMT+3 (Moscow)'
 		}
 	]
 

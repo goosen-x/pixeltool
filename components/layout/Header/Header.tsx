@@ -11,6 +11,7 @@ import { Breadcrumbs } from './widgets/Breadcrumbs'
 import { Navigation } from './widgets/Navigation'
 import { Burger } from './widgets/Burger'
 import { SearchButton } from './widgets/SearchButton'
+import { ToolHistoryMenu } from './widgets/ToolHistoryMenu'
 
 const Header = () => {
 	const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -36,9 +37,22 @@ const Header = () => {
 					<div className='hidden lg:flex items-center gap-2'>
 						<SearchButton setIsSearchOpen={setIsSearchOpen} />
 						<div className='h-8 w-px bg-border/50' />
+						<ToolHistoryMenu />
 						<ThemeToggle />
 					</div>
-					<Burger setIsSearchOpen={setIsSearchOpen} />
+					{/* Один flex-контейнер на оба блока: у родителя justify-between, и
+					    если бургер остаётся отдельным ребёнком рядом с этим блоком,
+					    между ними появляется такой же большой зазор, как между
+					    Breadcrumbs и остальным контентом — здесь он не нужен, кнопки
+					    должны стоять вплотную. На мобильном десктопный блок целиком
+					    скрыт (lg:flex выше), поэтому избранное/недавние дублируются
+					    здесь — иначе они были бы недоступны на экранах уже lg, где
+					    сайдбар каталога тоже скрыт */}
+					<div className='flex items-center gap-2 lg:hidden'>
+						<ToolHistoryMenu />
+						<ThemeToggle />
+						<Burger />
+					</div>
 				</div>
 			</div>
 

@@ -1,11 +1,8 @@
 'use client'
 
-import { getWidgetByPath } from '@/lib/constants/widgets'
-import { usePathname } from 'next/navigation'
 import { AdSection } from '@/components/ads'
 import { cn } from '@/lib/utils'
 import { FeedbackCard } from './widgets/FeedbackCard'
-import { RecentToolsCard } from './widgets/RecentToolsCard'
 import { LeadMagnetCard } from './widgets/LeadMagnetCard'
 
 interface Props {
@@ -22,17 +19,9 @@ interface Props {
 	boundedHeight?: boolean
 }
 
-/**
- * Правый сайдбар. К конкретному инструменту привязана только звёздочка
- * «в избранное», поэтому сайдбар работает и там, где инструмента нет —
- * например, на страницах блога.
- */
+/** Правый сайдбар. Избранное и недавние инструменты живут в шапке сайта — тут
+ *  только лид-магнит, реклама и обратная связь. */
 export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
-	const pathname = usePathname()
-
-	const widgetPath = pathname.split('/').pop()
-	const widget = widgetPath ? getWidgetByPath(widgetPath) : undefined
-
 	return (
 		<aside
 			className={cn(
@@ -40,7 +29,6 @@ export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 				boundedHeight && 'h-full overflow-y-auto projects-scroll'
 			)}
 		>
-			<RecentToolsCard widget={widget ?? undefined} />
 			<LeadMagnetCard />
 			<AdSection />
 			<FeedbackCard />

@@ -1,7 +1,8 @@
 'use client'
 
-import { Grid3X3, List, X } from 'lucide-react'
+import { Grid3X3, List, Loader2, Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
 	Select,
 	SelectContent,
@@ -10,11 +11,9 @@ import {
 	SelectValue
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { DifficultyBars } from './DifficultyBars'
-import { FavoritesToolsSection } from './FavoritesToolsSection'
 import type { Widget } from '@/lib/constants/widgets'
 
-export type SortOption = 'default' | 'alpha' | 'difficulty' | 'popularity'
+export type SortOption = 'default' | 'alpha' | 'difficulty' | 'views' | 'rating'
 
 export const DIFFICULTY_LABELS: Record<
 	NonNullable<Widget['difficulty']>,
@@ -29,63 +28,82 @@ const SORT_LABELS: Record<SortOption, string> = {
 	default: 'По умолчанию',
 	alpha: 'По алфавиту',
 	difficulty: 'По сложности',
-	popularity: 'Популярность'
+	views: 'По просмотрам',
+	rating: 'По оценке'
 }
 
 interface Props {
 	found: number
 	search: string
 	onSearchChange: (query: string) => void
+	isSearching: boolean
 	viewMode: 'grid' | 'list'
 	onViewModeChange: (mode: 'grid' | 'list') => void
-	selectedDifficulty: string[]
-	onDifficultyChange: (difficulty: string[]) => void
 	sort: SortOption
 	onSortChange: (sort: SortOption) => void
 }
 
 /**
- * Сайдбар с фильтром по сложности и сортировкой — работает на месте, без
- * перехода на другой URL. Категорию сюда не добавляем: чипсы в CategoryHero
- * уже её выбирают (ссылкой на отдельную SEO-страницу), второй такой же по
- * смыслу контрол рядом был бы дублем.
+ * Панель над карточками каталога: поиск, счётчик найденного, переключатель
+ * вида и сортировка. Категорию сюда не добавляем: чипсы в CategoryHero уже её
+ * выбирают (ссылкой на отдельную SEO-страницу), второй такой же по смыслу
+ * контрол рядом был бы дублем.
+ *
+ * Только sm+ — на мобильном её место занимает `MobileCatalogHeader` со своей
+ * раскладкой (заголовок/поиск/фильтры/сортировка/описание одной колонкой).
  */
 export function ToolsFilterBar({
 	found,
 	search,
 	onSearchChange,
+	isSearching,
 	viewMode,
 	onViewModeChange,
-	selectedDifficulty,
-	onDifficultyChange,
 	sort,
 	onSortChange
 }: Props) {
-	const hasActiveFilters = selectedDifficulty.length > 0
-
 	return (
-		<aside className='w-full shrink-0 space-y-6 rounded-2xl border border-border/50 bg-muted/40 p-4 lg:sticky lg:top-24 lg:w-44'>
-			<FavoritesToolsSection />
+		<div className='sticky top-[var(--chrome-h,5rem)] z-30 hidden flex-wrap items-center gap-3 rounded-2xl border border-border/50 bg-background/90 p-4 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 sm:flex'>
+			<span className='shrink-0 text-sm text-muted-foreground'>
+				Найдено: {found}
+			</span>
 
-			<div>
-				<div className='flex items-center justify-between gap-2'>
-					<span className='text-sm text-muted-foreground'>
-						Найдено: {found}
-					</span>
-					{search !== '' && (
+			<div className='relative mx-auto w-full max-w-md flex-1'>
+				<Search className='pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground' />
+				<Input
+					value={search}
+					onChange={event => onSearchChange(event.target.value)}
+					placeholder='Поиск инструментов…'
+					aria-label='Поиск инструментов'
+					className='h-10 rounded-xl border-border/50 bg-background pl-11 pr-11'
+				/>
+				{isSearching ? (
+					<Loader2
+						aria-hidden
+						className='absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground'
+					/>
+				) : (
+					search && (
 						<Button
 							variant='ghost'
 							size='sm'
 							onClick={() => onSearchChange('')}
-							className='h-7 cursor-pointer px-2'
+							aria-label='Очистить поиск'
+							className='absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 cursor-pointer p-1'
 						>
-							<X className='mr-1 h-3 w-3' />
-							Очистить
+							<X className='h-4 w-4' />
 						</Button>
-					)}
-				</div>
+					)
+				)}
+			</div>
 
-				<div className='mt-3 flex items-center gap-1'>
+			{/* Экранный диктор не видит спиннер — сообщаем результат словами */}
+			<span className='sr-only' role='status' aria-live='polite'>
+				{isSearching ? 'Идёт поиск' : `Найдено инструментов: ${found}`}
+			</span>
+
+			<div className='flex shrink-0 items-center gap-3'>
+				<div className='flex items-center gap-1'>
 					<Button
 						variant={viewMode === 'grid' ? 'default' : 'ghost'}
 						size='sm'
@@ -94,7 +112,7 @@ export function ToolsFilterBar({
 						aria-label='Плиткой'
 						title='Плиткой'
 						className={cn(
-							'h-9 flex-1 cursor-pointer px-0',
+							'h-9 w-9 cursor-pointer px-0',
 							viewMode !== 'grid' && 'hover:!bg-primary/10 hover:!text-primary'
 						)}
 					>
@@ -108,57 +126,19 @@ export function ToolsFilterBar({
 						aria-label='Списком'
 						title='Списком'
 						className={cn(
-							'h-9 flex-1 cursor-pointer px-0',
+							'h-9 w-9 cursor-pointer px-0',
 							viewMode !== 'list' && 'hover:!bg-primary/10 hover:!text-primary'
 						)}
 					>
 						<List className='h-4 w-4' />
 					</Button>
 				</div>
-			</div>
 
-			<div>
-				<p className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-					Сложность
-				</p>
-				<div className='flex items-center gap-1.5'>
-					{(
-						Object.keys(DIFFICULTY_LABELS) as Array<
-							keyof typeof DIFFICULTY_LABELS
-						>
-					).map(key => {
-						const active = selectedDifficulty.includes(key)
-						return (
-							<button
-								key={key}
-								type='button'
-								onClick={() => onDifficultyChange(active ? [] : [key])}
-								aria-pressed={active}
-								aria-label={DIFFICULTY_LABELS[key]}
-								title={DIFFICULTY_LABELS[key]}
-								className={cn(
-									'flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border transition-colors',
-									active
-										? 'border-primary bg-primary text-primary-foreground'
-										: 'border-border bg-background text-foreground hover:border-primary/50'
-								)}
-							>
-								<DifficultyBars level={key} className='h-4 w-4' />
-							</button>
-						)
-					})}
-				</div>
-			</div>
-
-			<div>
-				<p className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-					Сортировка
-				</p>
 				<Select
 					value={sort}
 					onValueChange={value => onSortChange(value as SortOption)}
 				>
-					<SelectTrigger className='w-full text-xs'>
+					<SelectTrigger className='w-44 text-xs'>
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -170,16 +150,6 @@ export function ToolsFilterBar({
 					</SelectContent>
 				</Select>
 			</div>
-
-			{hasActiveFilters && (
-				<button
-					type='button'
-					onClick={() => onDifficultyChange([])}
-					className='cursor-pointer text-xs font-medium text-muted-foreground underline-offset-2 hover:text-primary hover:underline'
-				>
-					Сбросить фильтры
-				</button>
-			)}
-		</aside>
+		</div>
 	)
 }

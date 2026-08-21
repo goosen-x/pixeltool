@@ -4,7 +4,7 @@ excerpt:
   'Разбираем формулу перевода px в rem, чем rem отличается от em и зачем вообще
   использовать rem вместо px.'
 coverImage: '/images/blog/px-rem-converter.png'
-date: '2026-07-20T12:00:00.000Z'
+date: '2026-07-19T15:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

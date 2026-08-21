@@ -5,7 +5,7 @@ excerpt:
   скидка и наценка — четыре формулы, которые чаще всего путают, на числовых
   примерах.'
 coverImage: '/images/blog/kak-poschitat-protsent.png'
-date: '2026-08-19T21:00:00.000Z'
+date: '2026-08-18T12:00:00.000Z'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

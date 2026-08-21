@@ -200,6 +200,19 @@ a {
 	@apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background transition-all duration-200;
 }
 
+/* iOS Safari зумит страницу при фокусе на поле мельче 16px — десятки
+   инструментов используют text-sm (14px) на инпутах по единому дизайн-языку
+   (см. tool-design-language), точечно переписывать каждый нецелесообразно.
+   !important оправдан: это единственный способ перебить специфичность
+   класса .text-sm, а правило живёт только под мобильным брейкпоинтом. */
+@media (max-width: 640px) {
+	input,
+	textarea,
+	select {
+		font-size: 16px !important;
+	}
+}
+
 /* Better focus states for form elements */
 input:focus-visible,
 textarea:focus-visible,
