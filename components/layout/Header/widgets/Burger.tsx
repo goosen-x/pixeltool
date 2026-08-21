@@ -4,7 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { Home, Wrench, BookOpen, Mail, Menu as MenuIcon, X } from 'lucide-react'
+import {
+	Home,
+	Wrench,
+	BookOpen,
+	Mail,
+	Menu as MenuIcon,
+	Search,
+	X
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	Sheet,
@@ -153,8 +161,19 @@ export const Burger = ({ setIsSearchOpen }: Props) => {
 					</div>
 					<div
 						aria-label='Настройки'
-						className='bg-muted/30 rounded-xl p-4 border border-border/30 mt-auto'
+						className='bg-muted/30 rounded-xl p-4 border border-border/30 mt-auto space-y-3'
 					>
+						<button
+							type='button'
+							onClick={() => {
+								setOpen(false)
+								setIsSearchOpen(true)
+							}}
+							className='flex w-full cursor-pointer items-center gap-3 rounded-lg px-1 py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
+						>
+							<Search className='h-4 w-4' />
+							Поиск по сайту
+						</button>
 						<div className='flex items-center gap-3'>
 							<ThemeToggle />
 						</div>

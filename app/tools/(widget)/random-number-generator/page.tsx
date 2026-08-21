@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Copy, Check, Download, Shuffle } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Copy, Check, Download, Shuffle, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import {
 	toolBar,
 	toolFooterBar,
@@ -40,14 +41,15 @@ function generateRandomNumbers(
 	min: number,
 	max: number,
 	count: number,
-	unique: boolean
+	unique: boolean,
+	exclude: Set<number> = new Set()
 ): number[] {
-	if (unique && count > max - min + 1) {
+	if (unique && count > max - min + 1 - exclude.size) {
 		throw new Error('Cannot generate more unique numbers than the range allows')
 	}
 
 	const numbers: number[] = []
-	const usedNumbers = new Set<number>()
+	const usedNumbers = new Set(exclude)
 
 	for (let i = 0; i < count; i++) {
 		let num: number
@@ -73,6 +75,11 @@ export default function RandomNumberGeneratorPage() {
 	const [results, setResults] = useState<GeneratedResult[]>([])
 	const [error, setError] = useState<string | null>(null)
 	const [copiedId, setCopiedId] = useState<string | null>(null)
+	// «Без повторов» держит числа уникальными не только внутри одного броска
+	// (это тривиально при «сколько» = 1), а на протяжении всей серии бросков —
+	// иначе тумблер выглядит нерабочим, когда жмут «Сгенерировать» по одному
+	// числу за раз. Сбрасывается при смене диапазона или самого тумблера.
+	const usedNumbersRef = useRef<Set<number>>(new Set())
 
 	const validate = (): string | null => {
 		if (min < 0 || min > 999999) {
@@ -87,8 +94,11 @@ export default function RandomNumberGeneratorPage() {
 		if (count < 1 || count > 1000) {
 			return 'Количество должно быть от 1 до 1000'
 		}
-		if (unique && count > max - min + 1) {
-			return `Невозможно сгенерировать ${count} уникальных чисел в диапазоне от ${min} до ${max}`
+		const remaining = max - min + 1 - (unique ? usedNumbersRef.current.size : 0)
+		if (unique && count > remaining) {
+			return remaining <= 0
+				? `Все числа от ${min} до ${max} уже выпадали без повторов — увеличьте диапазон или уберите «без повторов»`
+				: `В диапазоне от ${min} до ${max} без повторов осталось только ${remaining} чисел`
 		}
 		return null
 	}
@@ -102,7 +112,16 @@ export default function RandomNumberGeneratorPage() {
 
 		setError(null)
 		try {
-			const numbers = generateRandomNumbers(min, max, count, unique)
+			const numbers = generateRandomNumbers(
+				min,
+				max,
+				count,
+				unique,
+				usedNumbersRef.current
+			)
+			if (unique) {
+				numbers.forEach(n => usedNumbersRef.current.add(n))
+			}
 			const newResult: GeneratedResult = {
 				numbers,
 				timestamp: new Date(),
@@ -112,6 +131,10 @@ export default function RandomNumberGeneratorPage() {
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Ошибка генерации')
 		}
+	}
+
+	const resetUsedNumbers = () => {
+		usedNumbersRef.current = new Set()
 	}
 
 	const copyToClipboard = async (numbers: number[], id: string) => {
@@ -159,7 +182,10 @@ export default function RandomNumberGeneratorPage() {
 						<input
 							type='number'
 							value={min}
-							onChange={event => setMin(Number(event.target.value))}
+							onChange={event => {
+								setMin(Number(event.target.value))
+								resetUsedNumbers()
+							}}
 							aria-label='Минимальное значение'
 							className='w-24 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
@@ -167,7 +193,10 @@ export default function RandomNumberGeneratorPage() {
 						<input
 							type='number'
 							value={max}
-							onChange={event => setMax(Number(event.target.value))}
+							onChange={event => {
+								setMax(Number(event.target.value))
+								resetUsedNumbers()
+							}}
 							aria-label='Максимальное значение'
 							className='w-24 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
@@ -175,20 +204,41 @@ export default function RandomNumberGeneratorPage() {
 
 					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 						сколько
-						<input
-							type='number'
-							value={count}
-							onChange={event => setCount(Number(event.target.value))}
-							aria-label='Количество чисел'
-							className='w-20 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-						/>
+						<span className='flex items-center gap-0.5 rounded-md border bg-background'>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={() => setCount(c => Math.max(1, c - 1))}
+								disabled={count <= 1}
+								title='Меньше'
+								className={cn(toolIconButton, 'h-7 w-7')}
+							>
+								<Minus className='h-3.5 w-3.5' />
+							</Button>
+							<span className='w-8 text-center font-mono text-sm text-foreground tabular-nums'>
+								{count}
+							</span>
+							<Button
+								size='icon'
+								variant='ghost'
+								onClick={() => setCount(c => Math.min(1000, c + 1))}
+								disabled={count >= 1000}
+								title='Больше'
+								className={cn(toolIconButton, 'h-7 w-7')}
+							>
+								<Plus className='h-3.5 w-3.5' />
+							</Button>
+						</span>
 					</label>
 
 					<button
 						type='button'
-						onClick={() => setUnique(!unique)}
+						onClick={() => {
+							setUnique(!unique)
+							resetUsedNumbers()
+						}}
 						aria-pressed={unique}
-						title='Числа не будут повторяться'
+						title='Числа не будут повторяться на протяжении всей серии бросков'
 						className={toolPill(unique)}
 					>
 						без повторов

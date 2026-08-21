@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Copy, Check, Download, FileText, Upload, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 import Image from 'next/image'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -142,9 +143,14 @@ export default function AsciiArtGeneratorPage() {
 
 	const handleCopyAscii = async () => {
 		if (!asciiOutput) return
-		await navigator.clipboard.writeText(asciiOutput)
-		setCopied(true)
-		setTimeout(() => setCopied(false), 2000)
+		try {
+			await navigator.clipboard.writeText(asciiOutput)
+			setCopied(true)
+			toast.success('Скопировано')
+			setTimeout(() => setCopied(false), 2000)
+		} catch {
+			toast.error('Браузер не дал доступ к буферу обмена')
+		}
 	}
 
 	const clearAll = () => {
@@ -404,7 +410,11 @@ export default function AsciiArtGeneratorPage() {
 								{asciiOutput.split('\n').length} строк
 							</span>
 						</div>
-						<pre className='max-h-[28rem] overflow-auto px-5 pt-2 pb-5 font-mono text-[0.625rem] leading-none whitespace-pre sm:px-6'>
+						<pre
+							onClick={handleCopyAscii}
+							title='Нажмите, чтобы скопировать'
+							className='max-h-[28rem] cursor-pointer overflow-auto px-5 pt-2 pb-5 font-mono text-[0.625rem] leading-none whitespace-pre sm:px-6'
+						>
 							{asciiOutput}
 						</pre>
 					</div>

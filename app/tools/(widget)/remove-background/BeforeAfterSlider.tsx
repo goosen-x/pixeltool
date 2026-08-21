@@ -37,6 +37,7 @@ export function BeforeAfterSlider({
 }: BeforeAfterSliderProps) {
 	const [isDragging, setIsDragging] = useState(false)
 	const [aspectRatio, setAspectRatio] = useState<number | null>(null)
+	const [beforeFailed, setBeforeFailed] = useState(false)
 	const motionValue = useMotionValue(50)
 	const position = useSpring(motionValue, { bounce: 0, duration: 0 })
 
@@ -102,13 +103,20 @@ export function BeforeAfterSlider({
 				className='absolute inset-0 overflow-hidden bg-muted'
 				style={{ clipPath: beforeClipPath }}
 			>
-				{/* eslint-disable-next-line @next/next/no-img-element -- object URL, не оптимизируем через next/image */}
-				<img
-					src={beforeUrl}
-					alt='Исходное фото'
-					className='h-full w-full object-contain'
-					draggable={false}
-				/>
+				{beforeFailed ? (
+					<div className='flex h-full w-full items-center justify-center text-sm text-muted-foreground'>
+						Исходное фото не загрузилось
+					</div>
+				) : (
+					// eslint-disable-next-line @next/next/no-img-element -- object URL, не оптимизируем через next/image
+					<img
+						src={beforeUrl}
+						alt='Исходное фото'
+						className='h-full w-full object-contain'
+						draggable={false}
+						onError={() => setBeforeFailed(true)}
+					/>
+				)}
 			</motion.div>
 
 			{/* Разделитель: линия и круглая ручка позиционируются независимо друг

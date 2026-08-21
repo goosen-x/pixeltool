@@ -49,7 +49,7 @@ export function CookieConsent() {
 								<X className='h-4 w-4' />
 							</button>
 
-							<div className='flex items-center gap-4 pr-10'>
+							<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 sm:pr-10'>
 								<div className='flex-shrink-0 hidden sm:block'>
 									<div className='w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center'>
 										<Cookie className='h-5 w-5 text-primary' />
@@ -57,7 +57,7 @@ export function CookieConsent() {
 								</div>
 
 								<div className='flex-1'>
-									<p className='text-sm text-foreground'>
+									<p className='pr-8 text-sm text-foreground sm:pr-0'>
 										Мы используем файлы cookie для улучшения вашего опыта.
 										Продолжая, вы соглашаетесь с их использованием.
 									</p>
@@ -66,7 +66,7 @@ export function CookieConsent() {
 								<Button
 									onClick={handleAccept}
 									size='sm'
-									className='flex-shrink-0 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90'
+									className='w-full flex-shrink-0 sm:w-auto'
 								>
 									Принять
 								</Button>

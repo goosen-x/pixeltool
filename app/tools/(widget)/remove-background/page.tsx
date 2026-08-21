@@ -44,8 +44,17 @@ export default function RemoveBackgroundPage() {
 	const progressByKey = useRef<Map<string, { current: number; total: number }>>(
 		new Map()
 	)
+	// Держит File живым на весь срок жизни sourceUrl. Без этой ссылки Safari
+	// вправе собрать Blob сборщиком мусора, как только заканчивается
+	// processFile(file) — единственное место, где на file была активная
+	// ссылка — и тогда blob:-URL перестаёт грузиться (картинка «До» рвётся
+	// именно в BeforeAfterSlider, который монтируется уже после обработки).
+	// Chrome/Firefox держат Blob живым сами по факту существования URL, этот
+	// баг воспроизводится только в Safari.
+	const sourceFileRef = useRef<File | null>(null)
 
 	const selectFile = (file: File) => {
+		sourceFileRef.current = file
 		setSourceUrl(URL.createObjectURL(file))
 		setResultUrl(null)
 		setErrorMessage(null)
@@ -113,6 +122,7 @@ export default function RemoveBackgroundPage() {
 	}
 
 	const reset = () => {
+		sourceFileRef.current = null
 		setSourceUrl(null)
 		setResultUrl(null)
 		setStatus('idle')

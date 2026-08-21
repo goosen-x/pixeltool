@@ -4,13 +4,10 @@ import { useMemo, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ToolSelect } from '@/components/ui/tool-select'
+import { TextRoll } from '@/components/core/text-roll'
 import { cn } from '@/lib/utils'
-import {
-	toolBar,
-	toolFooterBar,
-	toolIconButton,
-	toolPill
-} from '@/lib/ui/tool-pill'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import {
 	addPeriod,
 	signedDaysBetween,
@@ -94,22 +91,9 @@ export default function ExpiryDateCalculatorPage() {
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
-						<span className='mr-1 text-sm text-muted-foreground'>
-							Срок хранения в
-						</span>
-						{UNITS.map(item => (
-							<button
-								key={item.value}
-								type='button'
-								onClick={() => setUnit(item.value)}
-								aria-pressed={unit === item.value}
-								className={toolPill(unit === item.value)}
-							>
-								{item.label}
-							</button>
-						))}
-					</div>
+					<span className='text-sm text-muted-foreground'>
+						Дата производства и срок хранения
+					</span>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
@@ -124,7 +108,7 @@ export default function ExpiryDateCalculatorPage() {
 					</div>
 				</div>
 
-				<div className='grid items-end gap-4 border-b px-5 py-6 sm:grid-cols-[1fr_auto] sm:px-6'>
+				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-2 sm:px-6'>
 					<label className='block'>
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Дата производства
@@ -142,23 +126,45 @@ export default function ExpiryDateCalculatorPage() {
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Срок хранения
 						</span>
-						<input
-							type='number'
-							min={0}
-							step='any'
-							value={amount}
-							onChange={event => setAmount(event.target.value)}
-							aria-label='Срок хранения'
-							className='w-28 rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-						/>
+						<div className='flex gap-2'>
+							<input
+								type='number'
+								min={0}
+								step='any'
+								value={amount}
+								onChange={event => setAmount(event.target.value)}
+								aria-label='Срок хранения, число'
+								className='w-full min-w-0 rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+							<ToolSelect
+								value={unit}
+								onChange={event =>
+									setUnit(event.target.value as PeriodUnit)
+								}
+								aria-label='Единица срока хранения'
+								className='w-32 flex-shrink-0 py-2'
+							>
+								{UNITS.map(item => (
+									<option key={item.value} value={item.value}>
+										{item.label}
+									</option>
+								))}
+							</ToolSelect>
+						</div>
 					</label>
 				</div>
 
 				{result && status ? (
 					<div className='px-5 py-8 text-center sm:px-6'>
-						<span className='block font-mono text-3xl font-bold tracking-tight text-foreground sm:text-4xl'>
+						<TextRoll
+							key={formatDate(result.expiresAt)}
+							className='inline-block font-mono text-3xl font-bold tracking-tight text-foreground sm:text-4xl'
+							duration={0.4}
+							getEnterDelay={i => i * 0.02}
+							getExitDelay={i => i * 0.02}
+						>
 							{formatDate(result.expiresAt)}
-						</span>
+						</TextRoll>
 						<span className='mt-1 block text-sm text-muted-foreground'>
 							дата истечения срока годности
 						</span>

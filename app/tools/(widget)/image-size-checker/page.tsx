@@ -84,26 +84,31 @@ export default function ImageSizeCheckerPage() {
 	}
 
 	const handleFiles = useCallback(async (files: FileList) => {
-		const imageFiles = Array.from(files).filter(file =>
-			file.type.startsWith('image/')
-		)
+		const fileList = Array.from(files)
+		if (fileList.length === 0) return
 
-		if (imageFiles.length === 0) {
-			setProblem('Это не изображения — нужны JPG, PNG, GIF, WebP или SVG')
-			return
-		}
-
+		// Не отсекаем по file.type заранее: у части файлов браузер/ОС не
+		// проставляет MIME-тип (пустая строка) даже для настоящих картинок —
+		// нестандартное расширение, отдельные источники drag-and-drop,
+		// файлы без корректных метаданных. Реальная проверка — попытка
+		// декодировать через <img>, она и так уже была в processImage.
 		setProblem('')
-
 		const newImages: ImageInfo[] = []
+		const failedNames: string[] = []
 
-		for (const file of imageFiles) {
+		for (const file of fileList) {
 			try {
 				const imageInfo = await processImage(file)
 				newImages.push(imageInfo)
-			} catch (error) {
-				setProblem(`Не удалось прочитать ${file.name}`)
+			} catch {
+				failedNames.push(file.name)
 			}
+		}
+
+		if (newImages.length === 0) {
+			setProblem('Это не изображения — нужны JPG, PNG, GIF, WebP или SVG')
+		} else if (failedNames.length > 0) {
+			setProblem(`Не удалось прочитать: ${failedNames.join(', ')}`)
 		}
 
 		setImages(prev => [...prev, ...newImages])

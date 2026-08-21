@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Shuffle, RotateCcw } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import { pluralizeRu } from '@/lib/utils/pluralize'
 import {
 	toolBar,
 	toolFooterBar,
@@ -16,6 +16,8 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { DrawLotsSeo } from './DrawLotsSeo'
+
+const MAX_PARTICIPANTS = 100
 
 interface Lot {
 	id: string
@@ -32,6 +34,40 @@ function shuffleArray<T>(array: T[]): T[] {
 		;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
 	}
 	return newArray
+}
+
+/**
+ * Размер карточек подстраивается под количество — иначе при 100 участниках
+ * (максимум) 4 фиксированные колонки дают огромные карточки и десятки
+ * экранов прокрутки. Чем больше карточек, тем плотнее сетка и мельче шрифт.
+ */
+function getRevealDisplay(count: number) {
+	if (count <= 8) {
+		return {
+			grid: 'grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4',
+			mark: 'text-2xl',
+			name: 'text-sm'
+		}
+	}
+	if (count <= 24) {
+		return {
+			grid: 'grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6',
+			mark: 'text-xl',
+			name: 'text-xs'
+		}
+	}
+	if (count <= 50) {
+		return {
+			grid: 'grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8',
+			mark: 'text-lg',
+			name: 'text-xs'
+		}
+	}
+	return {
+		grid: 'grid-cols-5 gap-1.5 sm:grid-cols-7 md:grid-cols-10',
+		mark: 'text-base',
+		name: 'text-[0.7rem]'
+	}
 }
 
 export default function DrawLotsPage() {
@@ -60,8 +96,10 @@ export default function DrawLotsPage() {
 			return
 		}
 
-		if (lines.length > 100) {
-			setError('Слишком много элементов (макс. 100)')
+		if (lines.length > MAX_PARTICIPANTS) {
+			const message = `Слишком много участников — максимум ${MAX_PARTICIPANTS}`
+			setError(message)
+			toast.error(message)
 			return
 		}
 
@@ -94,21 +132,31 @@ export default function DrawLotsPage() {
 	}, [])
 
 	const revealedLots = lots.filter(lot => lot.isRevealed)
-	const participantCount = inputText
+	// Тот же парсинг, что в startDrawing — используется и для счётчика, и для
+	// живого предпросмотра участников справа от поля ввода.
+	const previewNames = inputText
 		.split('\n')
-		.filter(line => line.trim() !== '').length
+		.map(line => line.trim())
+		.filter(line => line !== '')
+	const participantCount = previewNames.length
+	const revealDisplay = getRevealDisplay(lots.length)
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				{/* Верхняя полоса: одно действие — начать или начать заново. */}
 				<div className={toolBar}>
-					<span className='text-sm text-muted-foreground'>
+					<span
+						className={cn(
+							'text-sm',
+							!isDrawing && participantCount > MAX_PARTICIPANTS
+								? 'font-medium text-destructive'
+								: 'text-muted-foreground'
+						)}
+					>
 						{isDrawing
 							? `Открыто ${revealedLots.length} из ${lots.length}`
-							: participantCount > 0
-								? `${participantCount} ${pluralizeRu(participantCount, ['участник', 'участника', 'участников'])} · один на строку`
-								: 'Один участник на строку'}
+							: `${participantCount} из ${MAX_PARTICIPANTS} участников · один на строку`}
 					</span>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
@@ -123,58 +171,89 @@ export default function DrawLotsPage() {
 								<RotateCcw className='h-4 w-4' />
 							</Button>
 						) : (
-							<>
-								<button
-									type='button'
-									onClick={() => setInputText(defaultValues)}
-									disabled={inputText === defaultValues}
-									className={cn(
-										toolPill(false),
-										inputText === defaultValues && 'invisible'
-									)}
-								>
-									Вернуть пример
-								</button>
-								<Button
-									size='icon'
-									variant='ghost'
-									onClick={startDrawing}
-									title='Перемешать и разложить'
-									className={toolIconButton}
-								>
-									<Shuffle className='h-4 w-4' />
-								</Button>
-							</>
+							<button
+								type='button'
+								onClick={() => setInputText(defaultValues)}
+								disabled={inputText === defaultValues}
+								className={cn(
+									toolPill(false, 'inline-flex items-center gap-1.5'),
+									inputText === defaultValues && 'invisible'
+								)}
+							>
+								<RotateCcw className='h-3.5 w-3.5' />
+								Вернуть пример
+							</button>
 						)}
 					</div>
 				</div>
 
 				{!isDrawing ? (
 					<>
-						<Textarea
-							id='items'
-							value={inputText}
-							onChange={e => setInputText(e.target.value)}
-							placeholder={'Иван\nПётр\nМария\nАнна'}
-							spellCheck={false}
-							aria-label='Участники жеребьёвки'
-							className='min-h-[14rem] resize-none rounded-none border-0 px-5 py-6 font-mono text-base focus-visible:ring-0 sm:px-6 md:text-sm'
-						/>
+						<div className='grid sm:grid-cols-[1fr_1fr] lg:grid-cols-[3fr_2fr]'>
+							{/* field-sizing:content — textarea растёт по контенту, а не
+							    прячет его за внутренним скроллом на фиксированной высоте
+							    (тот же приём прогрессивного CSS, что corner-shape в
+							    Button). max-h + overflow — предохранитель только на
+							    случай списков, близких к лимиту в 100 строк. Высота
+							    синхронизирована с колонкой предпросмотра справа — иначе
+							    при длинном списке они растут независимо и грид «рвёт»
+							    страницу по самой высокой из двух. */}
+							<Textarea
+								id='items'
+								value={inputText}
+								onChange={e => setInputText(e.target.value)}
+								placeholder={'Иван\nПётр\nМария\nАнна'}
+								spellCheck={false}
+								aria-label='Участники жеребьёвки'
+								className='max-h-[32rem] min-h-[10rem] resize-none overflow-y-auto rounded-none border-0 border-b px-5 py-6 font-mono text-base [field-sizing:content] focus-visible:ring-0 sm:border-r sm:border-b-0 sm:px-6 md:text-sm'
+							/>
 
-						<div className={toolFooterBar}>
-							{error ? (
-								<span className='text-sm text-destructive'>{error}</span>
-							) : (
-								<span className='text-sm text-muted-foreground'>
-									Порядок перемешивается алгоритмом Фишера — Йетса: карточки
-									ложатся вслепую, и открыть их можно в любом порядке
-								</span>
-							)}
+							{/* Живой предпросмотр — как реально распарсился ввод (лишний
+							    пробел, пустая строка, дубль видны сразу), а не только
+							    декоративное заполнение пустого места справа. Колонка —
+							    flex-col высотой в textarea слева (grid stretch), сама
+							    кнопка запуска приклеена к её низу, а не вынесена в общий
+							    футер во всю ширину: отдельный футер под обеими колонками
+							    был лишним — правая колонка и так заканчивается кнопкой. */}
+							<div className='flex max-h-[32rem] flex-col'>
+								<div className='flex min-h-0 flex-1 flex-wrap content-start gap-1.5 overflow-y-auto bg-muted/20 p-5 sm:p-6'>
+									{previewNames.length > 0 ? (
+										previewNames.map((name, index) => (
+											<span
+												key={index}
+												className='max-w-full truncate rounded-full border bg-background px-3 py-1 text-sm'
+											>
+												{name}
+											</span>
+										))
+									) : (
+										<p className='text-sm text-muted-foreground'>
+											Участники появятся здесь по мере ввода
+										</p>
+									)}
+								</div>
+
+								<div className={cn(toolFooterBar, 'shrink-0')}>
+									{error && (
+										<span className='text-sm text-destructive'>{error}</span>
+									)}
+
+									<Button
+										onClick={startDrawing}
+										disabled={participantCount === 0}
+										className='ml-auto cursor-pointer'
+									>
+										Тянуть жребий
+									</Button>
+								</div>
+							</div>
 						</div>
 					</>
 				) : (
 					<>
-						<div className='grid grid-cols-2 gap-3 px-5 py-6 sm:grid-cols-3 sm:px-6 md:grid-cols-4'>
+						<div
+							className={cn('grid px-5 py-6 sm:px-6', revealDisplay.grid)}
+						>
 							{lots.map(lot => (
 								<button
 									key={lot.id}
@@ -195,12 +274,24 @@ export default function DrawLotsPage() {
 										)}
 									>
 										{/* Рубашка — видна, пока карточка не открыта */}
-										<div className='absolute inset-0 flex items-center justify-center rounded-xl border bg-muted/30 p-3 [backface-visibility:hidden] group-hover:border-primary/50 group-hover:bg-muted'>
-											<span className='text-2xl text-muted-foreground'>?</span>
+										<div className='absolute inset-0 flex items-center justify-center rounded-xl border bg-muted/30 p-2 [backface-visibility:hidden] group-hover:border-primary/50 group-hover:bg-muted'>
+											<span
+												className={cn(
+													'text-muted-foreground',
+													revealDisplay.mark
+												)}
+											>
+												?
+											</span>
 										</div>
 										{/* Лицевая сторона — повёрнута на 180°, проявляется после флипа */}
-										<div className='absolute inset-0 flex items-center justify-center rounded-xl border border-primary bg-primary/5 p-3 [backface-visibility:hidden] [transform:rotateY(180deg)]'>
-											<span className='font-medium break-words'>
+										<div className='absolute inset-0 flex items-center justify-center rounded-xl border border-primary bg-primary/5 p-2 [backface-visibility:hidden] [transform:rotateY(180deg)]'>
+											<span
+												className={cn(
+													'break-words font-medium',
+													revealDisplay.name
+												)}
+											>
 												{lot.value}
 											</span>
 										</div>

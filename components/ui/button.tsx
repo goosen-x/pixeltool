@@ -12,13 +12,13 @@ const buttonVariants = cva(
 		variants: {
 			variant: {
 				default:
-					'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 active:scale-100',
+					'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:scale-105 active:scale-100',
 				destructive:
-					'bg-gradient-to-r from-destructive to-destructive/90 text-destructive-foreground shadow-lg hover:shadow-xl hover:scale-105 active:scale-100',
+					'bg-gradient-to-r from-destructive to-destructive/90 text-destructive-foreground hover:scale-105 active:scale-100',
 				outline:
 					'border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent',
 				secondary:
-					'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 hover:shadow-md',
+					'bg-secondary text-secondary-foreground hover:bg-secondary/80',
 				// Ховер на muted, а не на accent: accent в этой теме — насыщенный
 				// синий (--accent 217 91% 60%), и на маленькой иконочной кнопке он
 				// превращался в синий квадрат, съедающий содержимое. Особенно
