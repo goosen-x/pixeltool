@@ -12,6 +12,32 @@ export function createEmptyGrid(size: number): PixelGrid {
 	return Array.from({ length: size }, () => Array<Pixel>(size).fill(null))
 }
 
+export interface PixelFrame {
+	id: string
+	grid: PixelGrid
+	/** Задержка показа кадра в мс — хранится на кадре, а не глобально:
+	 *  в реальной покадровой анимации разные кадры почти всегда идут с
+	 *  разной скоростью (пауза на ключевой позе, быстрые промежуточные). */
+	delayMs: number
+}
+
+export const DEFAULT_FRAME_DELAY_MS = 200
+
+export function createFrameId(): string {
+	return Math.random().toString(36).slice(2)
+}
+
+export function createFrame(
+	size: number,
+	delayMs = DEFAULT_FRAME_DELAY_MS
+): PixelFrame {
+	return {
+		id: createFrameId(),
+		grid: createEmptyGrid(size),
+		delayMs
+	}
+}
+
 /** Меняет размер сетки, сохраняя пересекающиеся пиксели — не сбрасывает рисунок целиком. */
 export function resizeGrid(grid: PixelGrid, newSize: number): PixelGrid {
 	const resized = createEmptyGrid(newSize)

@@ -113,6 +113,7 @@ export function RatingStars({
 			new Promise(resolve => setTimeout(resolve, STAR_ANIMATION_MS))
 		])
 		setPendingValue(null)
+		setHoverValue(null)
 		onVoted?.(value, success)
 	}
 
@@ -139,7 +140,17 @@ export function RatingStars({
 						type='button'
 						disabled={hasVoted}
 						onClick={() => handleVote(value)}
-						onMouseEnter={() => !hasVoted && setHoverValue(value)}
+						// Тач-тап на мобильном генерирует синтетический mouseenter без
+						// парного mouseleave (пальцем не «уводят» с кнопки) — hoverValue
+						// зависает навсегда, и звёзды застревают в состоянии превью
+						// (контур без заливки) даже после голосования. onPointerEnter
+						// с проверкой pointerType включает предпросмотр только на
+						// настоящем наведении мышью.
+						onPointerEnter={event => {
+							if (!hasVoted && event.pointerType === 'mouse') {
+								setHoverValue(value)
+							}
+						}}
 						title={`Оценить на ${value} из 5`}
 						aria-label={`Оценить на ${value} из 5`}
 						className={hasVoted ? 'cursor-default' : 'cursor-pointer'}

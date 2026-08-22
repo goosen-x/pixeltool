@@ -15,6 +15,8 @@ import {
 import {
 	textToMorse,
 	morseToText,
+	detectTextLang,
+	detectMorseLang,
 	type MorseLang
 } from '@/lib/utils/morse-code'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -32,8 +34,14 @@ export default function MorseCodeTranslatorPage() {
 	const widget = getWidgetById('morse-code-translator')!
 
 	const [direction, setDirection] = useState<Direction>('encode')
-	const [lang, setLang] = useState<MorseLang>('ru')
-	const [input, setInput] = useState('')
+	// 'en' по умолчанию: у общих для обеих таблиц кодов (SOS и подобные)
+	// нет способа доказать язык — русская таблица распознаёт даже чужие
+	// коды (просто как другую букву), поэтому неоднозначность решаем в
+	// пользу международного стандарта, а не тихо съезжаем на кириллицу.
+	const [lang, setLang] = useState<MorseLang>('en')
+	// SOS сразу в поле, не в плейсхолдере — показывает рабочий пример без
+	// лишнего клика.
+	const [input, setInput] = useState('SOS')
 	const [copied, setCopied] = useState(false)
 	const [playing, setPlaying] = useState(false)
 	const audioCtxRef = useRef<AudioContext | null>(null)
@@ -41,15 +49,35 @@ export default function MorseCodeTranslatorPage() {
 	const output = useMemo(() => {
 		if (!input.trim()) return ''
 		return direction === 'encode'
-			? textToMorse(input, lang)
+			? textToMorse(input)
 			: morseToText(input, lang)
 	}, [input, direction, lang])
 
 	const morseToPlay = direction === 'encode' ? output : input
 
+	// При кодировании язык каждой буквы однозначен (кириллица и латиница не
+	// пересекаются), поэтому detectTextLang здесь чисто для того, чтобы при
+	// свапе направления декодер сразу открылся на подходящем языке — сама
+	// кодировка от lang не зависит и мешать смешанный текст не мешает.
+	//
+	// При декодировании код Морзе неоднозначен: КАЖДЫЙ код существует в
+	// обеих таблицах и означает РАЗНЫЕ буквы («...-» — это либо V, либо Ж).
+	// Без разделителя языка внутри самого кода честно разделить смешанное
+	// сообщение невозможно — detectMorseLang берёт язык с меньшим числом
+	// нераспознанных «?» на весь ввод целиком, а не пословно.
+	const updateInput = (value: string, dir: Direction) => {
+		setInput(value)
+		setLang(prev =>
+			dir === 'encode'
+				? detectTextLang(value, prev)
+				: detectMorseLang(value, prev)
+		)
+	}
+
 	const swapDirection = () => {
-		setDirection(prev => (prev === 'encode' ? 'decode' : 'encode'))
-		setInput(output)
+		const nextDirection = direction === 'encode' ? 'decode' : 'encode'
+		setDirection(nextDirection)
+		updateInput(output, nextDirection)
 	}
 
 	const copyResult = async () => {
@@ -168,11 +196,11 @@ export default function MorseCodeTranslatorPage() {
 				<div className='grid md:grid-cols-2'>
 					<Textarea
 						value={input}
-						onChange={event => setInput(event.target.value)}
+						onChange={event => updateInput(event.target.value, direction)}
 						placeholder={
 							direction === 'encode'
-								? 'Введите текст'
-								: 'Введите код Морзе (например: ... --- ...)'
+								? 'Введите текст, например: SOS'
+								: 'Введите код Морзе, например: ... --- ... (SOS)'
 						}
 						spellCheck={false}
 						aria-label='Исходные данные'
@@ -190,28 +218,34 @@ export default function MorseCodeTranslatorPage() {
 					)}
 				</div>
 
-				{/* Нижняя полоса: выбор языка. */}
-				<div className={toolFooterBar}>
-					<span className='text-sm text-muted-foreground'>Язык</span>
-					<div className={toolToggleTrack}>
-						{(
-							[
-								['ru', 'Русский'],
-								['en', 'English']
-							] as [MorseLang, string][]
-						).map(([value, label]) => (
-							<button
-								key={value}
-								type='button'
-								onClick={() => setLang(value)}
-								aria-pressed={lang === value}
-								className={toolToggleOption(lang === value)}
-							>
-								{label}
-							</button>
-						))}
+				{/* Нижняя полоса: выбор языка — нужен только при декодировании
+				(каждый код Морзе соответствует и русской, и английской букве
+				одновременно, поэтому расшифровка неоднозначна и требует выбора
+				языка; при кодировании буквы кириллицы и латиницы не пересекаются,
+				язык определяется однозначно по каждой букве, выбирать нечего). */}
+				{direction === 'decode' && (
+					<div className={toolFooterBar}>
+						<span className='text-sm text-muted-foreground'>Язык</span>
+						<div className={toolToggleTrack}>
+							{(
+								[
+									['ru', 'Русский'],
+									['en', 'English']
+								] as [MorseLang, string][]
+							).map(([value, label]) => (
+								<button
+									key={value}
+									type='button'
+									onClick={() => setLang(value)}
+									aria-pressed={lang === value}
+									className={toolToggleOption(lang === value)}
+								>
+									{label}
+								</button>
+							))}
+						</div>
 					</div>
-				</div>
+				)}
 			</Card>
 
 			<MorseCodeTranslatorSeo />

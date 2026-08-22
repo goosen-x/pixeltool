@@ -118,11 +118,16 @@ export async function GET(request: NextRequest) {
 			url: response.url // Final URL after redirects
 		}
 
-		// Analyze image accessibility if og:image is present
+		// Analyze image accessibility if og:image is present. og:image в HTML
+		// сайта часто относительный ("/images/cover.jpg") — резолвим в абсолютный
+		// URL и подменяем им ogTags, иначе клиент попытается загрузить картинку
+		// с домена pixeltool.pro вместо домена проверяемого сайта.
 		let imageData = null
 		if (ogTags['og:image']) {
 			try {
 				const imageUrl = new URL(ogTags['og:image'], url)
+				ogTags['og:image'] = imageUrl.toString()
+
 				const imageResponse = await fetch(imageUrl.toString(), {
 					method: 'HEAD',
 					signal: AbortSignal.timeout(5000)

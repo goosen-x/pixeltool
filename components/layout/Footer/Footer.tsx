@@ -91,7 +91,7 @@ export const Footer = () => {
 					</div>
 
 					{/* Links Sections */}
-					<div className='lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-8'>
+					<div className='lg:col-span-8 grid grid-cols-2 gap-8 sm:grid-cols-3'>
 						{/* Tools */}
 						<div>
 							<p className='text-sm font-semibold mb-4 text-foreground'>

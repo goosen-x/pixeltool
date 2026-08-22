@@ -29,7 +29,7 @@ interface PasswordOptions {
 	excludeAmbiguous: boolean
 }
 
-type GeneratorMode = 'random' | 'memorable' | 'phrase'
+type GeneratorMode = 'random' | 'memorable'
 
 /** Стойкость в битах энтропии плюс подпись, из чего эти биты набраны. */
 interface Strength {
@@ -196,7 +196,6 @@ export default function PasswordGeneratorPage() {
 	const [formatKey, setFormatKey] = useState(PHRASE_FORMATS[0].key)
 	const [wordCount, setWordCount] = useState(5)
 	const [wordlist, setWordlist] = useState<readonly string[] | null>(null)
-	const [customWords, setCustomWords] = useState('')
 	const [copied, setCopied] = useState(false)
 
 	// Character sets
@@ -270,11 +269,11 @@ export default function PasswordGeneratorPage() {
 		}
 	}, [options, AMBIGUOUS])
 
-	// Одна механика на оба словесных режима: выбрать N слов из словаря
-	// НЕЗАВИСИМО (с возвращением) и склеить выбранным форматом.
+	// Выбрать N слов из словаря НЕЗАВИСИМО (с возвращением) и склеить
+	// выбранным форматом.
 	//
-	// Раньше режим «Из слов» брал четыре слова и просто перемешивал их между
-	// собой — это 4! = 24 варианта, около 8 бит, пароль ломался мгновенно.
+	// Раньше режим брал четыре слова и просто перемешивал их между собой —
+	// это 4! = 24 варианта, около 8 бит, пароль ломался мгновенно.
 	// Перестановка фиксированного набора не создаёт энтропию, её создаёт только
 	// независимый выбор каждого слова из большого словаря.
 	const buildPhrase = useCallback(
@@ -302,22 +301,12 @@ export default function PasswordGeneratorPage() {
 	)
 
 	const generate = useCallback(() => {
-		// Пока словарь не подгрузился, собирать фразу не из чего — показываем
-		// пустое состояние, а не пароль из четырёх слов-заглушек.
-		if (mode !== 'random') {
+		if (mode === 'memorable') {
+			// Пока словарь не подгрузился, собирать фразу не из чего — показываем
+			// пустое состояние, а не пароль из четырёх слов-заглушек.
 			if (!wordlist) return
 
-			const custom = customWords
-				.trim()
-				.split(/\s+/)
-				.filter(word => word.length > 0)
-
-			const dictionary =
-				mode === 'phrase' && custom.length >= 2
-					? Array.from(new Set(custom))
-					: wordlist
-
-			const built = buildPhrase(dictionary)
+			const built = buildPhrase(wordlist)
 			setPassword(built.value)
 			setStrength({ bits: built.bits, caption: built.caption })
 			return
@@ -335,7 +324,7 @@ export default function PasswordGeneratorPage() {
 
 		setPassword(next.value)
 		setStrength({ bits: next.bits, caption: next.caption })
-	}, [mode, wordlist, customWords, buildPhrase, generatePassword])
+	}, [mode, wordlist, buildPhrase, generatePassword])
 
 	// Словарь на 7776 слов весит около 90 КБ — тем, кто пришёл за случайным
 	// паролем, он не нужен, поэтому грузим его только при первом заходе в
@@ -419,7 +408,7 @@ export default function PasswordGeneratorPage() {
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
-				{/* Верхняя полоса: три способа собрать пароль. Раньше это был
+				{/* Верхняя полоса: два способа собрать пароль. Раньше это был
 				    сегментированный контрол по центру карточки — он висел сам по
 				    себе и ни с чем не выравнивался. */}
 				<div className={toolBar}>
@@ -427,8 +416,7 @@ export default function PasswordGeneratorPage() {
 						{(
 							[
 								{ key: 'random', label: 'Случайный' },
-								{ key: 'memorable', label: 'Запоминающийся' },
-								{ key: 'phrase', label: 'Из слов' }
+								{ key: 'memorable', label: 'Запоминающийся' }
 							] as { key: GeneratorMode; label: string }[]
 						).map(item => (
 							<button
@@ -641,25 +629,6 @@ export default function PasswordGeneratorPage() {
 									</button>
 								))}
 							</div>
-						</div>
-					)}
-
-					{mode === 'phrase' && (
-						<div className='w-full space-y-2'>
-							<textarea
-								value={customWords}
-								onChange={event => setCustomWords(event.target.value)}
-								placeholder='Свои слова через пробел — фраза соберётся из них'
-								spellCheck={false}
-								className='min-h-[3.5rem] w-full resize-none rounded-lg border bg-background px-3 py-2 font-mono text-sm placeholder:font-sans placeholder:text-muted-foreground/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-							/>
-							{/* Прямо говорим, чем расплачивается свой словарь: десять своих
-							    слов дают заметно меньше вариантов, чем 7776 из готового. */}
-							<p className='text-xs text-muted-foreground'>
-								{customWords.trim().split(/\s+/).filter(Boolean).length >= 2
-									? 'Слова берутся из вашего списка — чем он короче, тем меньше вариантов у пароля.'
-									: 'Пока поле пустое, слова берутся из словаря на 7776 слов.'}
-							</p>
 						</div>
 					)}
 				</div>

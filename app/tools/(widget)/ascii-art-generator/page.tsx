@@ -57,7 +57,6 @@ type TextFont = AsciiFont | FigletFontName
  */
 const FONTS: [TextFont, string][] = [
 	['standard', 'Стандартный'],
-	['small', 'Мелкий'],
 	['block', 'Крупный'],
 	...FIGLET_FONTS
 ]
@@ -68,9 +67,10 @@ export default function AsciiArtGeneratorPage() {
 	const [asciiOutput, setAsciiOutput] = useState('')
 	const [copied, setCopied] = useState(false)
 
-	// Текст
-	const [text, setText] = useState('')
-	const [font, setFont] = useState<TextFont>('standard')
+	// Текст. Пример сразу в поле — виден готовый результат без единого
+	// клика, а не пустая карточка с плейсхолдером.
+	const [text, setText] = useState('IDDQD')
+	const [font, setFont] = useState<TextFont>('BlurVision ASCII')
 
 	// Изображение
 	const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -137,7 +137,7 @@ export default function AsciiArtGeneratorPage() {
 		const pattern = asciiPatterns.find(p => p.id === patternId)
 		if (!pattern) return
 
-		setAsciiOutput(pattern.pattern.trim())
+		setAsciiOutput(pattern.pattern)
 		setSelectedPattern(patternId)
 	}
 
@@ -323,7 +323,7 @@ export default function AsciiArtGeneratorPage() {
 												    интервале больше единицы ASCII-арт растягивается
 												    по вертикали и перестаёт читаться. */}
 												<pre className='mt-1 overflow-x-auto font-mono text-[0.625rem] leading-none whitespace-pre'>
-													{pattern.pattern.trim()}
+													{pattern.pattern}
 												</pre>
 											</button>
 										))}
@@ -406,9 +406,24 @@ export default function AsciiArtGeneratorPage() {
 					<div className='border-t'>
 						<div className='flex items-center justify-between gap-2 px-5 pt-4 sm:px-6'>
 							<span className='text-sm font-medium'>Результат</span>
-							<span className='text-xs text-muted-foreground'>
-								{asciiOutput.split('\n').length} строк
-							</span>
+							<div className='flex items-center gap-3'>
+								<span className='text-xs text-muted-foreground'>
+									{asciiOutput.split('\n').length} строк
+								</span>
+								<Button
+									size='sm'
+									variant='outline'
+									onClick={handleCopyAscii}
+									className='h-7 cursor-pointer gap-1.5 px-2.5 text-xs'
+								>
+									{copied ? (
+										<Check className='h-3.5 w-3.5 text-green-600 dark:text-green-400' />
+									) : (
+										<Copy className='h-3.5 w-3.5' />
+									)}
+									Скопировать
+								</Button>
+							</div>
 						</div>
 						<pre
 							onClick={handleCopyAscii}

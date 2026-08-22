@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { RotateCcw } from 'lucide-react'
+import { Check, Copy, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -75,11 +75,12 @@ export default function DrawLotsPage() {
 	const [mounted, setMounted] = useState(false)
 	// Пример по-русски: инструмент русскоязычный, а в списке лежали Einstein
 	// и da Vinci — на них и проверяли длину строк.
-	const defaultValues = 'Аня\nБорис\nВера\nГлеб'
+	const defaultValues = 'Бен Аффлек\nБрюс Уиллис\nХаррисон Форд\nНиколас Кейдж'
 	const [inputText, setInputText] = useState(defaultValues)
 	const [lots, setLots] = useState<Lot[]>([])
 	const [isDrawing, setIsDrawing] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+	const [copied, setCopied] = useState(false)
 
 	useEffect(() => {
 		setMounted(true)
@@ -132,6 +133,21 @@ export default function DrawLotsPage() {
 	}, [])
 
 	const revealedLots = lots.filter(lot => lot.isRevealed)
+
+	const copyRevealed = useCallback(async () => {
+		if (revealedLots.length === 0) return
+		try {
+			await navigator.clipboard.writeText(
+				revealedLots.map(lot => lot.value).join('\n')
+			)
+			setCopied(true)
+			toast.success('Скопировано')
+			setTimeout(() => setCopied(false), 2000)
+		} catch {
+			toast.error('Не удалось скопировать')
+		}
+	}, [revealedLots])
+
 	// Тот же парсинг, что в startDrawing — используется и для счётчика, и для
 	// живого предпросмотра участников справа от поля ввода.
 	const previewNames = inputText
@@ -159,7 +175,7 @@ export default function DrawLotsPage() {
 							: `${participantCount} из ${MAX_PARTICIPANTS} участников · один на строку`}
 					</span>
 
-					<div className='flex items-center gap-0.5 sm:ml-auto'>
+					<div className='flex items-center gap-0.5 ml-auto'>
 						{isDrawing ? (
 							<Button
 								size='icon'
@@ -189,7 +205,7 @@ export default function DrawLotsPage() {
 
 				{!isDrawing ? (
 					<>
-						<div className='grid sm:grid-cols-[1fr_1fr] lg:grid-cols-[3fr_2fr]'>
+						<div className='grid sm:grid-cols-[2fr_3fr]'>
 							{/* field-sizing:content — textarea растёт по контенту, а не
 							    прячет его за внутренним скроллом на фиксированной высоте
 							    (тот же приём прогрессивного CSS, что corner-shape в
@@ -233,24 +249,30 @@ export default function DrawLotsPage() {
 									)}
 								</div>
 
-								<div className={cn(toolFooterBar, 'shrink-0')}>
-									{error && (
-										<span className='text-sm text-destructive'>{error}</span>
-									)}
-
+								<div className={cn(toolFooterBar, 'border-t-0 shrink-0')}>
 									<Button
 										onClick={startDrawing}
 										disabled={participantCount === 0}
-										className='ml-auto cursor-pointer'
+										className='cursor-pointer'
 									>
 										Тянуть жребий
 									</Button>
+
+									{error && (
+										<span className='text-sm text-destructive'>{error}</span>
+									)}
 								</div>
 							</div>
 						</div>
 					</>
 				) : (
 					<>
+						{revealedLots.length < lots.length && (
+							<p className='px-5 pt-5 text-center text-sm text-muted-foreground sm:px-6'>
+								Нажмите на карточку, чтобы открыть
+							</p>
+						)}
+
 						<div className={cn('grid px-5 py-6 sm:px-6', revealDisplay.grid)}>
 							{lots.map(lot => (
 								<button
@@ -299,18 +321,46 @@ export default function DrawLotsPage() {
 						</div>
 
 						{revealedLots.length > 0 && (
-							<div className={toolFooterBar}>
-								<span className='mr-1 text-sm text-muted-foreground'>
-									Открыты по порядку
-								</span>
-								{revealedLots.map((lot, index) => (
-									<span key={lot.id} className='text-sm'>
-										<span className='mr-1 font-mono text-xs text-muted-foreground'>
-											{index + 1}.
-										</span>
-										{lot.value}
+							<div
+								className={cn(
+									toolFooterBar,
+									'flex-col flex-nowrap items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center'
+								)}
+							>
+								{/* На мобильном заголовок и кнопка копирования — своя строка
+								    сверху (копия прижата в правый верхний угол), а список —
+								    отдельная колонка под ней. На sm+ обе обёртки схлопываются
+								    в contents и всё возвращается в исходную построчную сетку. */}
+								<div className='flex items-center justify-between sm:contents'>
+									<span className='mr-1 text-sm text-muted-foreground'>
+										Открыты по порядку
 									</span>
-								))}
+
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={copyRevealed}
+										title='Скопировать открытые'
+										className={cn(toolIconButton, 'sm:order-last sm:ml-auto')}
+									>
+										{copied ? (
+											<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+										) : (
+											<Copy className='h-4 w-4' />
+										)}
+									</Button>
+								</div>
+
+								<div className='flex flex-col gap-1.5 sm:contents'>
+									{revealedLots.map((lot, index) => (
+										<span key={lot.id} className='text-sm'>
+											<span className='mr-1 font-mono text-xs text-muted-foreground'>
+												{index + 1}.
+											</span>
+											{lot.value}
+										</span>
+									))}
+								</div>
 							</div>
 						)}
 					</>

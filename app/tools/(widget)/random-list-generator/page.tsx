@@ -248,14 +248,7 @@ export default function RandomListGeneratorPage() {
 				</div>
 
 				<div className={toolFooterBar}>
-					{error ? (
-						<span className='text-sm text-destructive'>{error}</span>
-					) : (
-						<span className='text-sm text-muted-foreground'>
-							Порядок задаётся crypto.getRandomValues — предсказать результат
-							нельзя даже зная предыдущие
-						</span>
-					)}
+					{error && <span className='text-sm text-destructive'>{error}</span>}
 
 					<Button
 						onClick={shuffleList}

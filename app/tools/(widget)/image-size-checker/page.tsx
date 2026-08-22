@@ -422,11 +422,12 @@ export default function ImageSizeCheckerPage() {
 							className='flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-14 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						>
 							<ImageIcon className='h-8 w-8 text-muted-foreground' />
-							<span className='text-sm'>
+							<span className='hidden text-sm sm:inline'>
 								Перетащите изображения сюда или выберите файлы
 							</span>
+							<span className='text-sm sm:hidden'>Выберите файлы</span>
 							<span className='text-xs text-muted-foreground'>
-								JPG, PNG, GIF, WebP, SVG — всё считается прямо в браузере
+								JPG, PNG, GIF, WebP, SVG
 							</span>
 						</button>
 					)}
