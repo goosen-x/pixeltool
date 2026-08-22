@@ -132,8 +132,6 @@ export default async function UnitPairPage(props: Params) {
 					))}
 				</div>
 
-				<FaqAccordion items={pair.faqs} title='Частые вопросы' withSchema />
-
 				{relatedPairs.length > 0 && (
 					<div>
 						<h2 className='text-lg font-semibold'>Похожие пары единиц</h2>
@@ -150,6 +148,8 @@ export default async function UnitPairPage(props: Params) {
 						</div>
 					</div>
 				)}
+
+				<FaqAccordion items={pair.faqs} title='Частые вопросы' withSchema />
 			</div>
 		</>
 	)
