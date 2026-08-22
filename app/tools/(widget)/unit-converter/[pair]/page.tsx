@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { unitPairs, getUnitPairBySlug } from '@/lib/constants/unit-pairs'
-import { getUnit } from '@/lib/constants/units'
 import { UnitConverterWidget } from '@/components/tools/UnitConverterWidget'
 import { FaqAccordion } from '@/components/tools/FaqAccordion'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
@@ -60,8 +59,8 @@ export async function generateStaticParams() {
 	return unitPairs.map(pair => ({ pair: pair.slug }))
 }
 
-// Закрытый список слагов — только 6 проверенных пар, не все 491 кандидата
-// из merged-tool-candidates.md. Без dynamicParams=false несуществующий слаг
+// Закрытый список слагов — только проверенные по Вордстату пары, не все 491
+// кандидат из merged-tool-candidates.md. Без dynamicParams=false несуществующий слаг
 // рендерился бы через notFound() внутри ISR-роута и кэшировался с кодом 200
 // (тот же soft-404, что уже чинили для /blog/[slug] — см. blog-soft-404).
 export const dynamicParams = false
@@ -74,9 +73,13 @@ export default async function UnitPairPage(props: Params) {
 		return notFound()
 	}
 
-	const fromUnit = getUnit(pair.category, pair.from)!
-	const toUnit = getUnit(pair.category, pair.to)!
 	const url = `${BASE_URL}/tools/unit-converter/${pair.slug}`
+
+	// Другие пары той же категории — простая и всегда актуальная перелинковка,
+	// без ручного списка «связанных» пар на каждую запись.
+	const relatedPairs = unitPairs
+		.filter(p => p.category === pair.category && p.slug !== pair.slug)
+		.slice(0, 4)
 
 	const structuredData = {
 		'@context': 'https://schema.org',
@@ -107,7 +110,7 @@ export default async function UnitPairPage(props: Params) {
 				]}
 				className='mb-6'
 			/>
-			<div className='mb-8'>
+			<div className='mb-4'>
 				<h1 className='text-balance text-2xl font-heading font-bold sm:text-3xl md:text-4xl'>
 					{pair.h1}
 				</h1>
@@ -123,21 +126,30 @@ export default async function UnitPairPage(props: Params) {
 			/>
 
 			<div className='mx-auto mt-16 max-w-3xl space-y-8'>
-				<p className='text-muted-foreground'>{pair.intro}</p>
+				<div className='space-y-4 text-muted-foreground'>
+					{pair.intro.split('\n\n').map((paragraph, index) => (
+						<p key={index}>{paragraph}</p>
+					))}
+				</div>
 
 				<FaqAccordion items={pair.faqs} title='Частые вопросы' withSchema />
 
-				<p className='text-sm text-muted-foreground'>
-					Нужна другая пара единиц —{' '}
-					<Link
-						href='/tools/unit-converter'
-						className='cursor-pointer font-medium text-primary hover:underline'
-					>
-						общий конвертер
-					</Link>{' '}
-					считает {fromUnit.nameRu} и {toUnit.nameRu}, а также вес и
-					температуру.
-				</p>
+				{relatedPairs.length > 0 && (
+					<div>
+						<h2 className='text-lg font-semibold'>Похожие пары единиц</h2>
+						<div className='mt-3 flex flex-wrap gap-2'>
+							{relatedPairs.map(related => (
+								<Link
+									key={related.slug}
+									href={`/tools/unit-converter/${related.slug}`}
+									className='cursor-pointer rounded-full border px-3 py-1 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground'
+								>
+									{related.h1}
+								</Link>
+							))}
+						</div>
+					</div>
+				)}
 			</div>
 		</>
 	)

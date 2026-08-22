@@ -6,7 +6,7 @@ export interface Unit {
 	fromBase: (value: number) => number
 }
 
-export type UnitCategoryId = 'length' | 'weight' | 'temperature'
+export type UnitCategoryId = 'length' | 'weight' | 'temperature' | 'volume'
 
 export interface UnitCategory {
 	id: UnitCategoryId
@@ -30,6 +30,13 @@ export const unitCategories: UnitCategory[] = [
 				symbol: 'мм',
 				toBase: v => v / 1000,
 				fromBase: v => v * 1000
+			},
+			{
+				id: 'cm',
+				nameRu: 'сантиметры',
+				symbol: 'см',
+				toBase: v => v / 100,
+				fromBase: v => v * 100
 			},
 			{
 				id: 'in',
@@ -129,6 +136,45 @@ export const unitCategories: UnitCategory[] = [
 				symbol: '°F',
 				toBase: v => ((v - 32) * 5) / 9,
 				fromBase: v => (v * 9) / 5 + 32
+			}
+		]
+	},
+	{
+		id: 'volume',
+		nameRu: 'Объём',
+		units: [
+			{
+				id: 'ml',
+				nameRu: 'миллилитры',
+				symbol: 'мл',
+				toBase: v => v,
+				fromBase: v => v
+			},
+			{
+				id: 'l',
+				nameRu: 'литры',
+				symbol: 'л',
+				toBase: v => v * 1000,
+				fromBase: v => v / 1000
+			},
+			{
+				// Метрическая столовая ложка — 15 мл ровно (используется в
+				// России и Европе). Не путать с американской (14,7867648 мл).
+				id: 'tbsp',
+				nameRu: 'столовые ложки',
+				symbol: 'ст. л.',
+				toBase: v => v * 15,
+				fromBase: v => v / 15
+			},
+			{
+				// Американский жидкий галлон — тот, что на канистрах бензина
+				// и в расходе топлива США. Британский имперский галлон (4,546 л)
+				// отличается почти на 20% и здесь не используется.
+				id: 'gallon',
+				nameRu: 'галлоны (США)',
+				symbol: 'гал',
+				toBase: v => v * 3785.411784,
+				fromBase: v => v / 3785.411784
 			}
 		]
 	}
