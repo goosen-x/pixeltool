@@ -25,7 +25,12 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
-import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import {
 	createEmptyGrid,
 	createFrame,
@@ -89,7 +94,11 @@ function loadStoredState(): StoredState | null {
 		return {
 			gridSize: parsed.gridSize,
 			frames: [
-				{ id: createFrameId(), grid: parsed.grid, delayMs: DEFAULT_FRAME_DELAY_MS }
+				{
+					id: createFrameId(),
+					grid: parsed.grid,
+					delayMs: DEFAULT_FRAME_DELAY_MS
+				}
 			]
 		}
 	} catch {
@@ -230,7 +239,10 @@ export default function PixelArtEditorPage() {
 	// бить точно по кадру, который был активен в момент действия
 	// (frameIndexRef), а не по тому, что стал активным к моменту, когда
 	// setState реально применится.
-	function updateFrameGrid(index: number, updater: (grid: PixelGrid) => PixelGrid) {
+	function updateFrameGrid(
+		index: number,
+		updater: (grid: PixelGrid) => PixelGrid
+	) {
 		setFrames(prev =>
 			prev.map((f, i) => (i === index ? { ...f, grid: updater(f.grid) } : f))
 		)
@@ -354,9 +366,7 @@ export default function PixelArtEditorPage() {
 	}
 
 	function setFrameDelay(index: number, delayMs: number) {
-		setFrames(prev =>
-			prev.map((f, i) => (i === index ? { ...f, delayMs } : f))
-		)
+		setFrames(prev => prev.map((f, i) => (i === index ? { ...f, delayMs } : f)))
 	}
 
 	function downloadPng() {
@@ -894,7 +904,6 @@ export default function PixelArtEditorPage() {
 						</Button>
 					</div>
 				</div>
-
 			</Card>
 
 			<PixelArtEditorSeo />

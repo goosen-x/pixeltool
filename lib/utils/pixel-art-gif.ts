@@ -66,7 +66,10 @@ function buildPalette(frames: PixelFrame[]): {
  * GIF 16×16, который превращается в нечитаемое пятно в любом чате или
  * превью, не применяющем pixelated-скейлинг сам.
  */
-export function framesToGif(frames: PixelFrame[], gridSize: number): Uint8Array {
+export function framesToGif(
+	frames: PixelFrame[],
+	gridSize: number
+): Uint8Array {
 	const targetSize = 512
 	const cellPx = Math.max(1, Math.floor(targetSize / gridSize))
 	const dim = cellPx * gridSize

@@ -27,7 +27,10 @@ export function createFrameId(): string {
 	return Math.random().toString(36).slice(2)
 }
 
-export function createFrame(size: number, delayMs = DEFAULT_FRAME_DELAY_MS): PixelFrame {
+export function createFrame(
+	size: number,
+	delayMs = DEFAULT_FRAME_DELAY_MS
+): PixelFrame {
 	return {
 		id: createFrameId(),
 		grid: createEmptyGrid(size),
