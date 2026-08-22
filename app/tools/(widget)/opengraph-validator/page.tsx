@@ -71,6 +71,15 @@ const RECOMMENDED_OG_TAGS = [
 	'twitter:image'
 ]
 
+// Без протокола `new URL()` бросает исключение, а не молча его добавляет —
+// без этой нормализации ввод вида "example.com" валился с «Введите
+// корректный URL» вместо того, чтобы просто подставить https.
+function normalizeUrl(value: string): string {
+	const trimmed = value.trim()
+	if (/^https?:\/\//i.test(trimmed)) return trimmed
+	return `https://${trimmed}`
+}
+
 // Разбирает набор тегов в результат валидации и данные для превью.
 // Используется и для реальной проверки по API, и для готовых примеров.
 function buildValidation(
@@ -340,7 +349,7 @@ export default function OpenGraphValidatorPage() {
 					return 'URL обязателен для заполнения'
 				}
 				try {
-					new URL(value)
+					new URL(normalizeUrl(value))
 					return true
 				} catch {
 					return 'Введите корректный URL'
@@ -402,7 +411,9 @@ export default function OpenGraphValidatorPage() {
 	// Кнопка «Проверить»: валидирует поле и запускает проверку введённого URL.
 	const validateUrl = useCallback(() => {
 		if (!widget.validateAllInputs()) return
-		runValidation(widget.inputs.url)
+		const normalized = normalizeUrl(widget.inputs.url)
+		if (normalized !== widget.inputs.url) widget.updateInput('url', normalized)
+		runValidation(normalized)
 	}, [widget, runValidation])
 
 	// Кнопка-пример: подставляет URL и сразу гонит его через реальный фетч.
@@ -584,7 +595,7 @@ export default function OpenGraphValidatorPage() {
 								</Button>
 								<Button
 									onClick={() =>
-										loadExample('https://www.youtube.com/watch?v=jNQXAC9IVRw')
+										loadExample('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 									}
 									variant='outline'
 								>

@@ -154,7 +154,7 @@ export default function PercentCalculatorPage() {
 						))}
 					</div>
 
-					<div className='flex items-center gap-0.5 sm:ml-auto'>
+					<div className='flex w-full items-center justify-end gap-0.5 sm:w-auto sm:ml-auto'>
 						<Button
 							size='icon'
 							variant='ghost'

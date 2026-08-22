@@ -4,14 +4,20 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { useTheme } from 'next-themes'
 import {
 	ArrowLeftRight,
+	Copy,
 	Download,
 	Eraser,
+	Film,
 	Maximize2,
 	Paintbrush,
+	Pause,
+	Play,
+	Plus,
 	Redo2,
 	Trash2,
 	Undo2,
 	Upload,
+	X,
 	ZoomIn,
 	ZoomOut
 } from 'lucide-react'
@@ -19,13 +25,18 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
-import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import {
 	createEmptyGrid,
+	createFrame,
+	createFrameId,
 	resizeGrid,
 	imageDataToGrid,
+	DEFAULT_FRAME_DELAY_MS,
+	type PixelFrame,
 	type PixelGrid
 } from '@/lib/utils/pixel-art'
+import { framesToGif } from '@/lib/utils/pixel-art-gif'
 import {
 	DEFAULT_PALETTE_ID,
 	getPaletteById
@@ -54,6 +65,13 @@ const STORAGE_KEY = 'pixel-art-editor-state'
 
 interface StoredState {
 	gridSize: GridSize
+	frames: PixelFrame[]
+}
+
+/** Формат до появления анимации — один кадр без обёртки. Читаем старые
+ *  сохранения молча вместо того, чтобы стереть чей-то рисунок при апдейте. */
+interface LegacyStoredState {
+	gridSize: GridSize
 	grid: PixelGrid
 }
 
@@ -66,7 +84,14 @@ function loadStoredState(): StoredState | null {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY)
 		if (!raw) return null
-		return JSON.parse(raw) as StoredState
+		const parsed = JSON.parse(raw) as StoredState | LegacyStoredState
+		if ('frames' in parsed) return parsed
+		return {
+			gridSize: parsed.gridSize,
+			frames: [
+				{ id: createFrameId(), grid: parsed.grid, delayMs: DEFAULT_FRAME_DELAY_MS }
+			]
+		}
 	} catch {
 		return null
 	}
@@ -82,7 +107,9 @@ export default function PixelArtEditorPage() {
 	const isDark = resolvedTheme === 'dark'
 
 	const [gridSize, setGridSize] = useState<GridSize>(16)
-	const [grid, setGrid] = useState<PixelGrid>(() => createEmptyGrid(16))
+	const [frames, setFrames] = useState<PixelFrame[]>(() => [createFrame(16)])
+	const [frameIndex, setFrameIndex] = useState(0)
+	const [playing, setPlaying] = useState(false)
 	const [primaryColor, setPrimaryColor] = useState('#000000')
 	const [secondaryColor, setSecondaryColor] = useState('#ffffff')
 	const [recentColors, setRecentColors] = useState<string[]>([])
@@ -91,6 +118,8 @@ export default function PixelArtEditorPage() {
 	const [zoom, setZoom] = useState(1)
 	const [past, setPast] = useState<PixelGrid[]>([])
 	const [future, setFuture] = useState<PixelGrid[]>([])
+
+	const grid = frames[frameIndex].grid
 
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const viewportRef = useRef<HTMLDivElement>(null)
@@ -104,13 +133,15 @@ export default function PixelArtEditorPage() {
 		viewportY: number
 	} | null>(null)
 
-	// Всегда актуальная копия текущего рисунка для undo/redo и шорткатов —
-	// эти обработчики не переподписываются на каждое изменение grid, поэтому
-	// не могут просто взять его из замыкания.
+	// Всегда актуальная копия текущего рисунка и номера кадра для undo/redo
+	// и шорткатов — эти обработчики не переподписываются на каждое
+	// изменение, поэтому не могут просто взять их из замыкания.
 	const gridRef = useRef(grid)
+	const frameIndexRef = useRef(frameIndex)
 	useEffect(() => {
 		gridRef.current = grid
-	}, [grid])
+		frameIndexRef.current = frameIndex
+	}, [grid, frameIndex])
 
 	const colorsRef = useRef({ primary: primaryColor, secondary: secondaryColor })
 	useEffect(() => {
@@ -127,7 +158,7 @@ export default function PixelArtEditorPage() {
 		const stored = loadStoredState()
 		if (stored) {
 			setGridSize(stored.gridSize)
-			setGrid(stored.grid)
+			setFrames(stored.frames)
 		}
 		setHydrated(true)
 	}, [])
@@ -136,10 +167,10 @@ export default function PixelArtEditorPage() {
 	useEffect(() => {
 		if (!hydrated) return
 		const timeout = setTimeout(() => {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify({ gridSize, grid }))
+			localStorage.setItem(STORAGE_KEY, JSON.stringify({ gridSize, frames }))
 		}, 500)
 		return () => clearTimeout(timeout)
-	}, [hydrated, gridSize, grid])
+	}, [hydrated, gridSize, frames])
 
 	const cellSize = CANVAS_DISPLAY_SIZE / gridSize
 
@@ -195,6 +226,16 @@ export default function PixelArtEditorPage() {
 		return { row, col }
 	}
 
+	// Все правки кадра идут через один метод — undo/redo и рисование должны
+	// бить точно по кадру, который был активен в момент действия
+	// (frameIndexRef), а не по тому, что стал активным к моменту, когда
+	// setState реально применится.
+	function updateFrameGrid(index: number, updater: (grid: PixelGrid) => PixelGrid) {
+		setFrames(prev =>
+			prev.map((f, i) => (i === index ? { ...f, grid: updater(f.grid) } : f))
+		)
+	}
+
 	function paintCell(cell: Cell, button: 0 | 2) {
 		const color =
 			button === 2
@@ -203,7 +244,7 @@ export default function PixelArtEditorPage() {
 					? null
 					: colorsRef.current.primary
 
-		setGrid(prev => {
+		updateFrameGrid(frameIndexRef.current, prev => {
 			const next = prev.map(r => [...r])
 			next[cell.row][cell.col] = color
 			return next
@@ -220,7 +261,7 @@ export default function PixelArtEditorPage() {
 			if (p.length === 0) return p
 			const previous = p[p.length - 1]
 			setFuture(f => [gridRef.current, ...f].slice(0, MAX_HISTORY))
-			setGrid(previous)
+			updateFrameGrid(frameIndexRef.current, () => previous)
 			return p.slice(0, -1)
 		})
 	}
@@ -230,12 +271,13 @@ export default function PixelArtEditorPage() {
 			if (f.length === 0) return f
 			const next = f[0]
 			setPast(p => [...p, gridRef.current].slice(-MAX_HISTORY))
-			setGrid(next)
+			updateFrameGrid(frameIndexRef.current, () => next)
 			return f.slice(1)
 		})
 	}
 
 	function handlePointerDown(event: React.PointerEvent<HTMLCanvasElement>) {
+		if (playing) return
 		if (event.button !== 0 && event.button !== 2) return
 		const cell = getCell(event.clientX, event.clientY)
 		if (!cell) return
@@ -255,7 +297,7 @@ export default function PixelArtEditorPage() {
 	}
 
 	function handleGridSizeChange(size: GridSize) {
-		setGrid(prev => resizeGrid(prev, size))
+		setFrames(prev => prev.map(f => ({ ...f, grid: resizeGrid(f.grid, size) })))
 		setGridSize(size)
 		// Старая история — для другой размерности клеток, восстанавливать
 		// в неё после ресайза уже нельзя.
@@ -265,7 +307,56 @@ export default function PixelArtEditorPage() {
 
 	function clearCanvas() {
 		pushHistory()
-		setGrid(createEmptyGrid(gridSize))
+		updateFrameGrid(frameIndexRef.current, () => createEmptyGrid(gridSize))
+	}
+
+	function selectFrame(index: number) {
+		setPlaying(false)
+		setFrameIndex(index)
+		setPast([])
+		setFuture([])
+	}
+
+	function addFrame() {
+		setPlaying(false)
+		setFrames(prev => [
+			...prev,
+			createFrame(gridSize, prev[prev.length - 1]?.delayMs)
+		])
+		setFrameIndex(frames.length)
+		setPast([])
+		setFuture([])
+	}
+
+	function duplicateFrame(index: number) {
+		setPlaying(false)
+		setFrames(prev => {
+			const source = prev[index]
+			const copy: PixelFrame = {
+				id: createFrameId(),
+				grid: source.grid.map(r => [...r]),
+				delayMs: source.delayMs
+			}
+			return [...prev.slice(0, index + 1), copy, ...prev.slice(index + 1)]
+		})
+		setFrameIndex(index + 1)
+		setPast([])
+		setFuture([])
+	}
+
+	function deleteFrame(index: number) {
+		if (frames.length <= 1) return
+		setPlaying(false)
+		setFrames(prev => prev.filter((_, i) => i !== index))
+		setFrameIndex(i => Math.min(i, frames.length - 2))
+		setPast([])
+		setFuture([])
+	}
+
+	function setFrameDelay(index: number, delayMs: number) {
+		setFrames(prev =>
+			prev.map((f, i) => (i === index ? { ...f, delayMs } : f))
+		)
 	}
 
 	function downloadPng() {
@@ -275,6 +366,17 @@ export default function PixelArtEditorPage() {
 		link.download = 'pixel-art.png'
 		link.href = canvas.toDataURL('image/png')
 		link.click()
+	}
+
+	function downloadGif() {
+		const bytes = framesToGif(frames, gridSize)
+		const blob = new Blob([new Uint8Array(bytes)], { type: 'image/gif' })
+		const url = URL.createObjectURL(blob)
+		const link = document.createElement('a')
+		link.download = 'pixel-art.gif'
+		link.href = url
+		link.click()
+		URL.revokeObjectURL(url)
 	}
 
 	function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
@@ -292,7 +394,9 @@ export default function PixelArtEditorPage() {
 				ctx.drawImage(img, 0, 0)
 				const imageData = ctx.getImageData(0, 0, img.width, img.height)
 				pushHistory()
-				setGrid(imageDataToGrid(imageData, gridSize, palette.colors))
+				updateFrameGrid(frameIndexRef.current, () =>
+					imageDataToGrid(imageData, gridSize, palette.colors)
+				)
 			}
 			img.src = e.target?.result as string
 		}
@@ -361,6 +465,27 @@ export default function PixelArtEditorPage() {
 		container.scrollTop = anchor.ratioY * newSize - anchor.viewportY
 	}, [zoom])
 
+	// Проигрывание превью: рекурсивный setTimeout, а не setInterval — у
+	// каждого кадра своя задержка (delayMs), фиксированный период тут не
+	// подходит. Эффект сам себя перезапускает через смену frameIndex.
+	useEffect(() => {
+		if (!playing) return
+		if (frames.length < 2) {
+			setPlaying(false)
+			return
+		}
+		const timeout = setTimeout(() => {
+			setFrameIndex(i => (i + 1) % frames.length)
+		}, frames[frameIndex].delayMs)
+		return () => clearTimeout(timeout)
+	}, [playing, frameIndex, frames])
+
+	function togglePlaying() {
+		setPast([])
+		setFuture([])
+		setPlaying(p => !p)
+	}
+
 	// Клавиши: B/E — инструмент, X — свап цветов, 1–9 — цвет из палитры,
 	// Ctrl/Cmd+Z — отменить, Ctrl/Cmd+Shift+Z — вернуть.
 	useEffect(() => {
@@ -396,6 +521,7 @@ export default function PixelArtEditorPage() {
 	}, [palette])
 
 	const hasContent = grid.some(row => row.some(cell => cell !== null))
+	const hasMultipleFrames = frames.length > 1
 	const viewportSize = CANVAS_DISPLAY_SIZE * zoom
 
 	return (
@@ -463,10 +589,24 @@ export default function PixelArtEditorPage() {
 							variant='ghost'
 							onClick={downloadPng}
 							disabled={!hasContent}
-							title='Скачать PNG'
+							title='Скачать PNG (текущий кадр)'
 							className={toolIconButton}
 						>
 							<Download className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadGif}
+							disabled={!hasMultipleFrames}
+							title={
+								hasMultipleFrames
+									? 'Скачать анимацию GIF'
+									: 'Добавьте ещё кадр, чтобы собрать анимацию'
+							}
+							className={toolIconButton}
+						>
+							<Film className='h-4 w-4' />
 						</Button>
 						<Button
 							size='icon'
@@ -660,9 +800,139 @@ export default function PixelArtEditorPage() {
 						</div>
 					</div>
 				</div>
+				{/* Полоса кадров: покадровая анимация. Задержка — на активном
+				    кадре, а не глобальная, потому что в реальной анимации
+				    ключевая поза держится дольше промежуточных. */}
+				<div className={cn(toolFooterBar, 'flex-wrap')}>
+					<Button
+						size='icon'
+						variant='ghost'
+						onClick={togglePlaying}
+						disabled={!hasMultipleFrames}
+						title={playing ? 'Остановить превью' : 'Проиграть превью'}
+						className={toolIconButton}
+					>
+						{playing ? (
+							<Pause className='h-4 w-4' />
+						) : (
+							<Play className='h-4 w-4' />
+						)}
+					</Button>
+
+					<label className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+						<span>Задержка</span>
+						<input
+							type='number'
+							min={20}
+							max={5000}
+							step={10}
+							value={frames[frameIndex].delayMs}
+							onChange={event => {
+								const value = Number(event.target.value)
+								if (Number.isFinite(value) && value > 0) {
+									setFrameDelay(frameIndex, value)
+								}
+							}}
+							className='w-16 rounded-md border bg-background px-1.5 py-1 text-sm tabular-nums'
+							aria-label='Задержка текущего кадра, мс'
+						/>
+						<span>мс</span>
+					</label>
+
+					<div className='mx-1 h-5 w-px bg-border' aria-hidden />
+
+					<div className='flex flex-1 items-center gap-1.5 overflow-x-auto py-0.5'>
+						{frames.map((frame, index) => (
+							<button
+								key={frame.id}
+								type='button'
+								onClick={() => selectFrame(index)}
+								title={`Кадр ${index + 1}`}
+								className={cn(
+									'relative flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md border-2 bg-muted/40 transition-colors',
+									index === frameIndex
+										? 'border-primary'
+										: 'border-transparent hover:border-border'
+								)}
+							>
+								<FrameThumbnail grid={frame.grid} size={gridSize} />
+								<span className='pointer-events-none absolute -bottom-1 -right-1 rounded border bg-background px-1 text-[10px] leading-tight text-muted-foreground'>
+									{index + 1}
+								</span>
+							</button>
+						))}
+					</div>
+
+					<div className='flex items-center gap-0.5'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={addFrame}
+							title='Добавить кадр'
+							className={toolIconButton}
+						>
+							<Plus className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => duplicateFrame(frameIndex)}
+							title='Дублировать кадр'
+							className={toolIconButton}
+						>
+							<Copy className='h-4 w-4' />
+						</Button>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={() => deleteFrame(frameIndex)}
+							disabled={frames.length <= 1}
+							title='Удалить кадр'
+							className={toolIconButton}
+						>
+							<X className='h-4 w-4' />
+						</Button>
+					</div>
+				</div>
+
 			</Card>
 
 			<PixelArtEditorSeo />
 		</WidgetSEOWrapper>
+	)
+}
+
+/** Миниатюра кадра в полосе анимации — свой маленький канвас, не CSS-грид:
+ *  на сетке 64×64 грид из 4096 div'ов на каждую из N миниатюр заметно
+ *  тормозит, canvas рисует те же данные без разницы в качестве. */
+function FrameThumbnail({ grid, size }: { grid: PixelGrid; size: number }) {
+	const canvasRef = useRef<HTMLCanvasElement>(null)
+
+	useEffect(() => {
+		const canvas = canvasRef.current
+		if (!canvas) return
+		const ctx = canvas.getContext('2d')
+		if (!ctx) return
+
+		const cellSize = canvas.width / size
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		for (let row = 0; row < size; row++) {
+			for (let col = 0; col < size; col++) {
+				const color = grid[row]?.[col]
+				if (!color) continue
+				ctx.fillStyle = color
+				ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize)
+			}
+		}
+	}, [grid, size])
+
+	return (
+		<canvas
+			ref={canvasRef}
+			width={44}
+			height={44}
+			className='h-9 w-9 rounded-sm [image-rendering:pixelated]'
+			aria-hidden
+		/>
 	)
 }

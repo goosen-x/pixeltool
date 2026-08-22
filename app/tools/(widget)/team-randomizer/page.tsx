@@ -5,12 +5,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { Shuffle, Copy, Check, RotateCcw, Download } from 'lucide-react'
+import { Copy, Check, RotateCcw, Download } from 'lucide-react'
 import {
 	toolBar,
 	toolFooterBar,
 	toolIconButton,
-	toolPill
+	toolPill,
+	toolToggleOption,
+	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -62,11 +64,18 @@ function distributeIntoTeams(
 	return teams
 }
 
+// Раньше оба поля — «команд» и «или по человек» — стояли рядом всегда
+// видимыми, и было непонятно, что это два взаимоисключающих способа задать
+// одно и то же: указано число участников в команде — оно и решает, второе
+// поле молча игнорируется. Явный переключатель убирает эту неоднозначность.
+type SplitMode = 'count' | 'size'
+
 export default function TeamRandomizerPage() {
 	const widget = getWidgetById('team-randomizer')!
 	const [participantsInput, setParticipantsInput] = useState('')
+	const [splitMode, setSplitMode] = useState<SplitMode>('count')
 	const [numberOfTeams, setNumberOfTeams] = useState(2)
-	const [preferredTeamSize, setPreferredTeamSize] = useState('')
+	const [teamSize, setTeamSize] = useState('3')
 	const [teams, setTeams] = useState<Team[]>([])
 	const [participants, setParticipants] = useState<string[]>([])
 	const [errors, setErrors] = useState<string[]>([])
@@ -89,27 +98,27 @@ export default function TeamRandomizerPage() {
 			validationErrors.push('Минимум 2 участника')
 		}
 
-		if (numberOfTeams < 2) {
-			validationErrors.push('Минимум 2 команды')
-		}
-
-		if (numberOfTeams > participants.length) {
-			validationErrors.push('Максимум 10 команд')
-		}
-
-		if (preferredTeamSize) {
-			const teamSizeNum = parseInt(preferredTeamSize)
-			if (isNaN(teamSizeNum) || teamSizeNum < 1) {
-				validationErrors.push('Размер команды должен быть больше 0')
-			} else if (teamSizeNum * numberOfTeams > participants.length * 2) {
+		if (splitMode === 'count') {
+			if (numberOfTeams < 2) {
+				validationErrors.push('Минимум 2 команды')
+			} else if (numberOfTeams > participants.length) {
 				validationErrors.push(
-					'Размер команды слишком большой для количества участников'
+					`Команд не может быть больше, чем участников (${participants.length})`
+				)
+			}
+		} else {
+			const teamSizeNum = parseInt(teamSize)
+			if (!teamSize || isNaN(teamSizeNum) || teamSizeNum < 1) {
+				validationErrors.push('Укажите размер команды')
+			} else if (teamSizeNum > participants.length) {
+				validationErrors.push(
+					`В команде не может быть больше человек, чем участников (${participants.length})`
 				)
 			}
 		}
 
 		return validationErrors
-	}, [participants.length, numberOfTeams, preferredTeamSize])
+	}, [participants.length, splitMode, numberOfTeams, teamSize])
 
 	// Generate teams
 	const generateTeams = useCallback(() => {
@@ -122,18 +131,14 @@ export default function TeamRandomizerPage() {
 			return
 		}
 
-		// If preferred team size is specified, calculate number of teams
-		let teamsToCreate = numberOfTeams
-		if (preferredTeamSize) {
-			const teamSizeNum = parseInt(preferredTeamSize)
-			if (!isNaN(teamSizeNum) && teamSizeNum > 0) {
-				teamsToCreate = Math.ceil(participants.length / teamSizeNum)
-			}
-		}
+		const teamsToCreate =
+			splitMode === 'count'
+				? numberOfTeams
+				: Math.ceil(participants.length / parseInt(teamSize))
 
 		const generatedTeams = distributeIntoTeams(participants, teamsToCreate)
 		setTeams(generatedTeams)
-	}, [participants, numberOfTeams, preferredTeamSize, validateInputs])
+	}, [participants, splitMode, numberOfTeams, teamSize, validateInputs])
 
 	// Load example participants
 	const loadExample = useCallback(() => {
@@ -143,8 +148,9 @@ export default function TeamRandomizerPage() {
 	// Reset all inputs
 	const resetAll = useCallback(() => {
 		setParticipantsInput('')
+		setSplitMode('count')
 		setNumberOfTeams(2)
-		setPreferredTeamSize('')
+		setTeamSize('3')
 		setTeams([])
 		setErrors([])
 	}, [])
@@ -194,41 +200,58 @@ export default function TeamRandomizerPage() {
 				    результатом. Раньше поля жили в левой колонке под подписями, а
 				    кнопки — тремя штуками во всю ширину под ними. */}
 				<div className={toolBar}>
-					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
-						команд
-						<input
-							type='number'
-							min={2}
-							max={10}
-							value={numberOfTeams}
-							onChange={event => setNumberOfTeams(Number(event.target.value))}
-							aria-label='Количество команд'
-							className='w-16 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-						/>
-					</label>
+					<div className={toolToggleTrack}>
+						<button
+							type='button'
+							onClick={() => setSplitMode('count')}
+							aria-pressed={splitMode === 'count'}
+							className={toolToggleOption(splitMode === 'count')}
+						>
+							Число команд
+						</button>
+						<button
+							type='button'
+							onClick={() => setSplitMode('size')}
+							aria-pressed={splitMode === 'size'}
+							className={toolToggleOption(splitMode === 'size')}
+						>
+							Людей в команде
+						</button>
+					</div>
 
-					<label
-						className='flex items-center gap-2 text-sm text-muted-foreground'
-						title='Если указать, число команд посчитается само'
-					>
-						или по
-						<input
-							type='number'
-							min={1}
-							value={preferredTeamSize}
-							onChange={event => setPreferredTeamSize(event.target.value)}
-							placeholder='—'
-							aria-label='Размер команды'
-							className='w-16 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-						/>
-						человек
-					</label>
+					{splitMode === 'count' ? (
+						<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+							команд
+							<input
+								type='number'
+								min={2}
+								max={10}
+								value={numberOfTeams}
+								onChange={event => setNumberOfTeams(Number(event.target.value))}
+								aria-label='Количество команд'
+								className='w-16 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+						</label>
+					) : (
+						<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+							по
+							<input
+								type='number'
+								min={1}
+								value={teamSize}
+								onChange={event => setTeamSize(event.target.value)}
+								aria-label='Человек в команде'
+								className='w-16 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+							человек
+						</label>
+					)}
 
 					<span className='text-sm text-muted-foreground'>
 						{participants.length} участников
 					</span>
 
-					<div className='flex items-center gap-0.5 sm:ml-auto'>
+					<div className='flex w-full items-center justify-end gap-0.5 sm:w-auto sm:ml-auto'>
 						<button
 							type='button'
 							onClick={loadExample}
@@ -293,9 +316,8 @@ export default function TeamRandomizerPage() {
 					<Button
 						onClick={generateTeams}
 						disabled={participants.length === 0}
-						className='cursor-pointer gap-2 sm:ml-auto'
+						className='cursor-pointer sm:ml-auto'
 					>
-						<Shuffle className='h-4 w-4' />
 						Разбить на команды
 					</Button>
 				</div>

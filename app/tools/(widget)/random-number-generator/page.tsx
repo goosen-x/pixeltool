@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Copy, Check, Download, Shuffle, Minus, Plus } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Copy, Check, Download, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
@@ -14,6 +14,8 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { RandomNumberGeneratorSeo } from './RandomNumberGeneratorSeo'
+import { TextRoll } from '@/components/core/text-roll'
+import { toast } from 'sonner'
 
 interface GeneratedResult {
 	numbers: number[]
@@ -40,27 +42,12 @@ function getSecureRandomNumber(min: number, max: number): number {
 function generateRandomNumbers(
 	min: number,
 	max: number,
-	count: number,
-	unique: boolean,
-	exclude: Set<number> = new Set()
+	count: number
 ): number[] {
-	if (unique && count > max - min + 1 - exclude.size) {
-		throw new Error('Cannot generate more unique numbers than the range allows')
-	}
-
 	const numbers: number[] = []
-	const usedNumbers = new Set(exclude)
 
 	for (let i = 0; i < count; i++) {
-		let num: number
-		do {
-			num = getSecureRandomNumber(min, max)
-		} while (unique && usedNumbers.has(num))
-
-		numbers.push(num)
-		if (unique) {
-			usedNumbers.add(num)
-		}
+		numbers.push(getSecureRandomNumber(min, max))
 	}
 
 	return numbers
@@ -68,24 +55,24 @@ function generateRandomNumbers(
 
 export default function RandomNumberGeneratorPage() {
 	const widget = getWidgetById('random-number-generator')!
-	const [min, setMin] = useState(1)
-	const [max, setMax] = useState(10)
+	// Поля «от»/«до» держат сырой текст, а не число: контролируемый number-инпут
+	// не даёт полю побыть пустым (Number('') === 0 тут же возвращается в DOM как
+	// «0»), из-за чего 0 невозможно стереть и следующая цифра приклеивается к
+	// нему («0111» вместо «111»). Текстовое поле такого не делает.
+	const [minText, setMinText] = useState('1')
+	const [maxText, setMaxText] = useState('10')
+	const min = minText === '' ? NaN : Number(minText)
+	const max = maxText === '' ? NaN : Number(maxText)
 	const [count, setCount] = useState(5)
-	const [unique, setUnique] = useState(true)
 	const [results, setResults] = useState<GeneratedResult[]>([])
 	const [error, setError] = useState<string | null>(null)
 	const [copiedId, setCopiedId] = useState<string | null>(null)
-	// «Без повторов» держит числа уникальными не только внутри одного броска
-	// (это тривиально при «сколько» = 1), а на протяжении всей серии бросков —
-	// иначе тумблер выглядит нерабочим, когда жмут «Сгенерировать» по одному
-	// числу за раз. Сбрасывается при смене диапазона или самого тумблера.
-	const usedNumbersRef = useRef<Set<number>>(new Set())
 
 	const validate = (): string | null => {
-		if (min < 0 || min > 999999) {
+		if (Number.isNaN(min) || min < 0 || min > 999999) {
 			return 'Минимальное значение должно быть от 0 до 999999'
 		}
-		if (max < 0 || max > 999999) {
+		if (Number.isNaN(max) || max < 0 || max > 999999) {
 			return 'Максимальное значение должно быть от 0 до 999999'
 		}
 		if (min > max) {
@@ -93,12 +80,6 @@ export default function RandomNumberGeneratorPage() {
 		}
 		if (count < 1 || count > 1000) {
 			return 'Количество должно быть от 1 до 1000'
-		}
-		const remaining = max - min + 1 - (unique ? usedNumbersRef.current.size : 0)
-		if (unique && count > remaining) {
-			return remaining <= 0
-				? `Все числа от ${min} до ${max} уже выпадали без повторов — увеличьте диапазон или уберите «без повторов»`
-				: `В диапазоне от ${min} до ${max} без повторов осталось только ${remaining} чисел`
 		}
 		return null
 	}
@@ -112,16 +93,7 @@ export default function RandomNumberGeneratorPage() {
 
 		setError(null)
 		try {
-			const numbers = generateRandomNumbers(
-				min,
-				max,
-				count,
-				unique,
-				usedNumbersRef.current
-			)
-			if (unique) {
-				numbers.forEach(n => usedNumbersRef.current.add(n))
-			}
+			const numbers = generateRandomNumbers(min, max, count)
 			const newResult: GeneratedResult = {
 				numbers,
 				timestamp: new Date(),
@@ -133,17 +105,14 @@ export default function RandomNumberGeneratorPage() {
 		}
 	}
 
-	const resetUsedNumbers = () => {
-		usedNumbersRef.current = new Set()
-	}
-
 	const copyToClipboard = async (numbers: number[], id: string) => {
 		try {
 			await navigator.clipboard.writeText(numbers.join('    '))
 			setCopiedId(id)
+			toast.success('Скопировано')
 			setTimeout(() => setCopiedId(null), 2000)
-		} catch (err) {
-			console.error('Не удалось скопировать:', err)
+		} catch {
+			toast.error('Не удалось скопировать')
 		}
 	}
 
@@ -180,22 +149,26 @@ export default function RandomNumberGeneratorPage() {
 					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 						от
 						<input
-							type='number'
-							value={min}
+							type='text'
+							inputMode='numeric'
+							pattern='[0-9]*'
+							value={minText}
 							onChange={event => {
-								setMin(Number(event.target.value))
-								resetUsedNumbers()
+								const raw = event.target.value
+								if (/^[0-9]*$/.test(raw)) setMinText(raw)
 							}}
 							aria-label='Минимальное значение'
 							className='w-24 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
 						до
 						<input
-							type='number'
-							value={max}
+							type='text'
+							inputMode='numeric'
+							pattern='[0-9]*'
+							value={maxText}
 							onChange={event => {
-								setMax(Number(event.target.value))
-								resetUsedNumbers()
+								const raw = event.target.value
+								if (/^[0-9]*$/.test(raw)) setMaxText(raw)
 							}}
 							aria-label='Максимальное значение'
 							className='w-24 rounded-md border bg-background px-2 py-1 text-center font-mono text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
@@ -230,19 +203,6 @@ export default function RandomNumberGeneratorPage() {
 							</Button>
 						</span>
 					</label>
-
-					<button
-						type='button'
-						onClick={() => {
-							setUnique(!unique)
-							resetUsedNumbers()
-						}}
-						aria-pressed={unique}
-						title='Числа не будут повторяться на протяжении всей серии бросков'
-						className={toolPill(unique)}
-					>
-						без повторов
-					</button>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
@@ -280,9 +240,27 @@ export default function RandomNumberGeneratorPage() {
 					{error ? (
 						<p className='text-sm text-destructive'>{error}</p>
 					) : latestResult ? (
-						<p className='flex flex-wrap items-center justify-center gap-x-6 gap-y-3 font-mono text-4xl tabular-nums sm:text-5xl'>
+						<p className='flex flex-wrap items-center justify-center gap-x-12 gap-y-4 font-mono text-4xl tabular-nums sm:text-5xl'>
 							{latestResult.numbers.map((number, index) => (
-								<span key={index}>{number}</span>
+								<TextRoll
+									key={`${latestResult.id}-${index}`}
+									duration={0.4}
+									getEnterDelay={i => index * 0.08 + i * 0.015}
+									getExitDelay={i => index * 0.08 + i * 0.015}
+									transition={{ ease: [0.25, 0.1, 0.25, 1] }}
+									variants={{
+										enter: {
+											initial: { y: 0, opacity: 1 },
+											animate: { y: -50, opacity: 0.1 }
+										},
+										exit: {
+											initial: { y: 50, opacity: 0 },
+											animate: { y: 0, opacity: 1 }
+										}
+									}}
+								>
+									{String(number)}
+								</TextRoll>
 							))}
 						</p>
 					) : (
@@ -291,11 +269,7 @@ export default function RandomNumberGeneratorPage() {
 						</p>
 					)}
 
-					<Button
-						onClick={handleGenerate}
-						className='mt-8 cursor-pointer gap-2'
-					>
-						<Shuffle className='h-4 w-4' />
+					<Button onClick={handleGenerate} className='mt-8 cursor-pointer'>
 						Сгенерировать
 					</Button>
 				</div>
@@ -303,7 +277,7 @@ export default function RandomNumberGeneratorPage() {
 				{/* Предыдущие броски — тихая полоса под результатом. */}
 				{results.length > 1 && (
 					<div className={toolFooterBar}>
-						<span className='mr-1 text-sm text-muted-foreground'>Раньше</span>
+						<span className='mr-1 text-sm text-muted-foreground'>История</span>
 						{results.slice(1).map(result => (
 							<button
 								key={result.id}

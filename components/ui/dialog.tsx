@@ -42,7 +42,13 @@ const DialogContent = React.forwardRef<
 			<DialogPrimitive.Content
 				ref={ref}
 				className={cn(
-					'fixed left-[50%] top-[50%] z-50 grid w-full max-w-[1000px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg sm:rounded-lg',
+					// На мобильном якорь сверху (top-4), а не по центру экрана: при
+					// открытой клавиатуре top-[50%] считается от полной высоты
+					// вьюпорта, которую клавиатура не уменьшает, и диалог оказывается
+					// наполовину выше видимой области — так пропадает шапка с
+					// заголовком. max-h + overflow-y-auto подстраховывают, если
+					// контент всё равно не помещается.
+					'fixed left-[50%] top-4 z-50 grid max-h-[calc(100vh-2rem)] w-full max-w-[1000px] translate-x-[-50%] gap-4 overflow-y-auto border bg-background p-6 shadow-lg sm:top-[50%] sm:max-h-[85vh] sm:translate-y-[-50%] sm:rounded-lg',
 					'transition-all duration-300',
 					className
 				)}

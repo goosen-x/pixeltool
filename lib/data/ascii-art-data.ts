@@ -7,7 +7,63 @@ export interface AsciiPattern {
 	height?: number
 }
 
-export const asciiPatterns: AsciiPattern[] = [
+/**
+ * Каждый паттерн начинается с `\n` сразу после открывающей кавычки — так
+ * исходник читается построчно вместо одной длинной строки. Раньше эту
+ * пустую первую строку убирали через `.trim()`, а `trim()` вместе с ней
+ * съедал и ведущие пробелы первой смысловой строки (это тоже «пробельные»
+ * символы) — фигура теряла отступ ровно на одной строке и «съезжала»
+ * относительно остальных. Здесь режем только сам перевод строки в начале и
+ * в конце, не трогая отступы внутри фигуры.
+ */
+function stripWrappingNewlines(pattern: string): string {
+	return pattern.replace(/^\n/, '').replace(/\n+$/, '')
+}
+
+const rawPatterns: AsciiPattern[] = [
+	// Gaming
+	{
+		id: 'triforce',
+		name: 'Triforce',
+		pattern: `
+        █
+       ███
+      █████
+     ███████
+    █████████
+    █       █
+   ███     ███
+  █████   █████
+ ███████ ███████
+█████████████████`,
+		category: 'gaming',
+		width: 17,
+		height: 10
+	},
+	// Holidays
+	{
+		id: 'christmas-tree',
+		name: 'Christmas Tree',
+		pattern: `
+     *
+     ^
+    ^^^
+   ^^^^^
+     ^
+    ^^^
+   ^^^^^
+  ^^^^^^^
+     ^
+    ^^^
+   ^^^^^
+  ^^^^^^^
+ ^^^^^^^^^
+    |||
+    |||`,
+		category: 'holidays',
+		width: 11,
+		height: 15
+	},
 	// Emotions
 	{
 		id: 'smile',
@@ -58,6 +114,20 @@ export const asciiPatterns: AsciiPattern[] = [
 		category: 'emotions',
 		width: 18,
 		height: 9
+	},
+	{
+		id: 'ghost',
+		name: 'Ghost',
+		pattern: `
+  .-""-.
+ /      \\
+| ()  () |
+|   ..   |
+ \\      /
+ vvvvvvvvv`,
+		category: 'emotions',
+		width: 11,
+		height: 6
 	},
 	// Animals
 	{
@@ -159,6 +229,21 @@ export const asciiPatterns: AsciiPattern[] = [
 		width: 11,
 		height: 7
 	},
+	{
+		id: 'gem',
+		name: 'Gem',
+		pattern: `
+   /\\
+  /  \\
+ /    \\
+/______\\
+ \\    /
+  \\  /
+   \\/`,
+		category: 'objects',
+		width: 8,
+		height: 7
+	},
 	// Nature
 	{
 		id: 'tree',
@@ -208,6 +293,19 @@ export const asciiPatterns: AsciiPattern[] = [
 		width: 12,
 		height: 7
 	},
+	{
+		id: 'star',
+		name: 'Star',
+		pattern: `
+   \\   /
+    \\ /
+-----*-----
+    / \\
+   /   \\`,
+		category: 'nature',
+		width: 11,
+		height: 5
+	},
 	// Tech
 	{
 		id: 'robot',
@@ -243,7 +341,14 @@ export const asciiPatterns: AsciiPattern[] = [
 	}
 ]
 
+export const asciiPatterns: AsciiPattern[] = rawPatterns.map(pattern => ({
+	...pattern,
+	pattern: stripWrappingNewlines(pattern.pattern)
+}))
+
 export const asciiCategories = {
+	gaming: 'Gaming',
+	holidays: 'Holidays',
 	emotions: 'Emotions',
 	animals: 'Animals',
 	objects: 'Objects',

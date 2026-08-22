@@ -171,17 +171,17 @@ export const generatorWidgets: Widget[] = [
 	},
 	{
 		id: 'random-list-generator',
-		searchVolume: 1331,
+		searchVolume: 467,
 		icon: List,
 		category: 'generators',
 		translationKey: 'randomListGenerator',
 		path: 'random-list-generator',
 		gradient: 'from-violet-500 to-purple-600',
-		title: 'Генератор случайных списков',
+		title: 'Перемешать список',
 		description:
-			'Создавайте случайные списки элементов для тестирования или творчества',
+			'Перемешайте список случайным образом — вставьте элементы и получите новый порядок в один клик',
 		useCase:
-			'Генерация случайных списков для тестов, розыгрышей или вдохновения',
+			'Перемешивание списка участников, вопросов или пунктов в случайном порядке',
 		recommendedTools: [
 			'draw-lots',
 			'random-number-generator',

@@ -46,7 +46,11 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 				className
 			)}
 		>
-			<ol className='flex items-center gap-1.5 overflow-x-auto text-sm text-muted-foreground [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+			{/* pb-1.5: на iOS оверлейный индикатор скролла рисуется поверх
+			    контента у самого низа скролл-контейнера — без запаса он ложится
+			    прямо на текст. Классы скрытия скроллбара выше на сам индикатор
+			    не действуют, это разные вещи. */}
+			<ol className='flex items-center gap-1.5 overflow-x-auto pb-1.5 text-sm text-muted-foreground [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
 				{items.map((item, index) => {
 					const isLast = index === items.length - 1
 

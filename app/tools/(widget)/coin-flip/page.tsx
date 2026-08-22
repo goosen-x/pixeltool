@@ -3,15 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { RotateCcw, Coins } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import {
-	toolBar,
-	toolFooterBar,
-	toolIconButton,
-	toolPill
-} from '@/lib/ui/tool-pill'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import Image from 'next/image'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -55,9 +50,6 @@ export default function CoinFlipPage() {
 	const [flipHistory, setFlipHistory] = useState<FlipResult[]>([])
 	// Монета одна — рубль; состояние здесь ни к чему.
 	const selectedCoin = coinTypes[0]
-	const [animationSpeed, setAnimationSpeed] = useState<
-		'slow' | 'normal' | 'fast'
-	>('normal')
 	const [rotation, setRotation] = useState(0)
 	const [headsCount, setHeadsCount] = useState(0)
 	const [tailsCount, setTailsCount] = useState(0)
@@ -94,8 +86,7 @@ export default function CoinFlipPage() {
 		const result: 'heads' | 'tails' = randomArray[0] < 128 ? 'heads' : 'tails'
 
 		// Calculate rotation
-		const baseRotations =
-			animationSpeed === 'slow' ? 3 : animationSpeed === 'fast' ? 8 : 5
+		const baseRotations = 5
 
 		// Определяем текущую позицию монеты (какая сторона сейчас видна)
 		const currentPosition = rotation % 360
@@ -113,8 +104,7 @@ export default function CoinFlipPage() {
 		setRotation(finalRotation)
 
 		// Animation duration
-		const duration =
-			animationSpeed === 'slow' ? 2000 : animationSpeed === 'fast' ? 800 : 1200
+		const duration = 1200
 
 		setTimeout(() => {
 			setCurrentResult(result)
@@ -135,14 +125,7 @@ export default function CoinFlipPage() {
 			// Save to localStorage
 			localStorage.setItem('coinFlipHistory', JSON.stringify(newHistory))
 		}, duration)
-	}, [
-		isFlipping,
-		animationSpeed,
-		rotation,
-		selectedCoin,
-		flipHistory,
-		updateCounts
-	])
+	}, [isFlipping, rotation, selectedCoin, flipHistory, updateCounts])
 
 	const clearHistory = useCallback(() => {
 		setFlipHistory([])
@@ -150,17 +133,6 @@ export default function CoinFlipPage() {
 		setTailsCount(0)
 		localStorage.removeItem('coinFlipHistory')
 	}, [])
-
-	const getAnimationDuration = () => {
-		switch (animationSpeed) {
-			case 'slow':
-				return 2
-			case 'fast':
-				return 0.8
-			default:
-				return 1.2
-		}
-	}
 
 	const headsPercentage =
 		flipHistory.length > 0
@@ -174,32 +146,8 @@ export default function CoinFlipPage() {
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
-				{/* Верхняя полоса: скорость вращения. Раньше она была ползунком на
-				    три деления с эмодзи-подписями 🐌 ⚡ 🚀 — три значения удобнее
-				    выбрать таблетками. */}
-				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
-						<span className='mr-1 text-sm text-muted-foreground'>Скорость</span>
-						{(
-							[
-								['slow', 'медленно'],
-								['normal', 'обычно'],
-								['fast', 'быстро']
-							] as ['slow' | 'normal' | 'fast', string][]
-						).map(([value, label]) => (
-							<button
-								key={value}
-								type='button'
-								onClick={() => setAnimationSpeed(value)}
-								aria-pressed={animationSpeed === value}
-								className={toolPill(animationSpeed === value)}
-							>
-								{label}
-							</button>
-						))}
-					</div>
-
-					{flipHistory.length > 0 && (
+				{flipHistory.length > 0 && (
+					<div className={toolBar}>
 						<div className='flex items-center gap-0.5 sm:ml-auto'>
 							<Button
 								size='icon'
@@ -211,18 +159,15 @@ export default function CoinFlipPage() {
 								<RotateCcw className='h-4 w-4' />
 							</Button>
 						</div>
-					)}
-				</div>
+					</div>
+				)}
 
 				<div className='flex flex-col items-center gap-6 px-5 py-8 sm:px-6'>
 					<div className='relative h-56 w-56'>
 						<motion.div
 							className='relative h-full w-full'
 							animate={{ rotateY: rotation }}
-							transition={{
-								duration: getAnimationDuration(),
-								ease: 'easeInOut'
-							}}
+							transition={{ duration: 1.2, ease: 'easeInOut' }}
 							style={{ transformStyle: 'preserve-3d' }}
 						>
 							<div
@@ -267,9 +212,8 @@ export default function CoinFlipPage() {
 					<Button
 						onClick={flipCoin}
 						disabled={isFlipping}
-						className='cursor-pointer gap-2'
+						className='cursor-pointer'
 					>
-						<Coins className={cn('h-4 w-4', isFlipping && 'animate-spin')} />
 						{isFlipping ? 'Подбрасываем…' : 'Подбросить'}
 					</Button>
 				</div>

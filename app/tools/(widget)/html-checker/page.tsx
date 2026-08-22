@@ -683,7 +683,7 @@ export default function HTMLTreePage() {
 								Перетащите файл сюда или нажмите, чтобы выбрать
 							</span>
 							<span className='text-xs text-muted-foreground'>
-								.html, .htm, .xml, .svg — читается прямо в браузере
+								.html, .htm, .xml, .svg
 							</span>
 						</div>
 						<input
