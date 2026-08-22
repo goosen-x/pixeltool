@@ -4,7 +4,12 @@ import { useMemo, useState } from 'react'
 import { Check, Copy, RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import {
@@ -119,7 +124,12 @@ export default function FractionCalculatorPage() {
 	const errorMessage = useMemo(() => {
 		if (aDenVal === 0 || bDenVal === 0) return 'Знаменатель не может быть 0'
 		if (mode === 'divide' && bNumVal === 0) return 'Деление на 0 невозможно'
-		if (aNumVal === null || aDenVal === null || bNumVal === null || bDenVal === null) {
+		if (
+			aNumVal === null ||
+			aDenVal === null ||
+			bNumVal === null ||
+			bDenVal === null
+		) {
 			return 'Заполните обе дроби'
 		}
 		return null
@@ -237,7 +247,8 @@ export default function FractionCalculatorPage() {
 				{result && (
 					<div className={toolFooterBar}>
 						<span className='text-sm text-muted-foreground'>
-							≈ <span className='font-mono text-foreground'>
+							≈{' '}
+							<span className='font-mono text-foreground'>
 								{formatDecimal(toDecimal(result))}
 							</span>
 						</span>
