@@ -27,7 +27,20 @@ export function RelatedTools({
 			widget.category === category
 	)
 
-	const relatedTools = [...recommended, ...sameCategory].slice(0, MAX_RELATED)
+	let relatedTools = [...recommended, ...sameCategory].slice(0, MAX_RELATED)
+
+	// У части категорий (security, javascript, health) всего 3 тула на весь
+	// каталог: без текущего и явных рекомендаций может остаться 1–2 карточки.
+	// Карусели нужен минимум три слайда, поэтому добираем чем угодно public.
+	const MIN_RELATED = 3
+	if (relatedTools.length < MIN_RELATED) {
+		const filler = publicWidgets.filter(
+			widget =>
+				widget.id !== currentTool &&
+				!relatedTools.some(item => item.id === widget.id)
+		)
+		relatedTools = [...relatedTools, ...filler].slice(0, MIN_RELATED)
+	}
 
 	if (relatedTools.length === 0) {
 		return null

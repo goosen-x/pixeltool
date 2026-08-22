@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { Check, Copy, RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
 	toolBar,
 	toolFooterBar,
@@ -224,44 +225,63 @@ export default function FractionCalculatorPage() {
 					/>
 					<span className='font-mono text-3xl text-muted-foreground'>=</span>
 
-					{result ? (
-						<div className='flex flex-col items-center gap-2'>
+					{/* Ширина блока зафиксирована явно (w-40), а не выводится из
+					контента: у span с ошибкой нет текста, когда дробь валидна,
+					а пустой invisible-элемент даёт 0px и не резервирует место —
+					сама grid-ячейка тогда «плавает» по ширине активного варианта.
+					Явный w-40 держит место навсегда, чем бы ячейка ни была занята. */}
+					<div className='grid w-40 place-items-center'>
+						<div
+							className={cn(
+								'col-start-1 row-start-1 flex flex-col items-center gap-2',
+								!result && 'invisible'
+							)}
+						>
 							<span className='text-xs text-muted-foreground'>Результат</span>
 							<div className='flex flex-col items-center gap-1'>
 								<span className='font-mono text-3xl font-bold text-foreground sm:text-4xl'>
-									{result.num}
+									{result ? result.num : 0}
 								</span>
 								<div className='h-0.5 w-14 bg-foreground' />
 								<span className='font-mono text-3xl font-bold text-foreground sm:text-4xl'>
-									{result.den}
+									{result ? result.den : 0}
 								</span>
 							</div>
 						</div>
-					) : (
-						<span className='max-w-40 text-center text-sm text-muted-foreground'>
+						<span
+							className={cn(
+								'col-start-1 row-start-1 text-center text-sm text-muted-foreground',
+								result && 'invisible'
+							)}
+						>
 							{errorMessage}
 						</span>
-					)}
+					</div>
 				</div>
 
-				{result && (
-					<div className={toolFooterBar}>
-						<span className='text-sm text-muted-foreground'>
-							≈{' '}
-							<span className='font-mono text-foreground'>
-								{formatDecimal(toDecimal(result))}
-							</span>
+				{/* Полоса всегда в разметке — прячем содержимое через invisible,
+				чтобы карточка не меняла высоту при появлении/исчезновении результата. */}
+				<div className={toolFooterBar}>
+					<span
+						className={cn('text-sm text-muted-foreground', !result && 'invisible')}
+					>
+						≈{' '}
+						<span className='font-mono text-foreground'>
+							{result ? formatDecimal(toDecimal(result)) : '0'}
 						</span>
-						{showMixed && mixed && (
-							<span className='text-sm text-muted-foreground'>
-								Смешанное число:{' '}
-								<span className='font-mono text-foreground'>
-									{mixed.whole} {mixed.num}/{mixed.den}
-								</span>
-							</span>
+					</span>
+					<span
+						className={cn(
+							'text-sm text-muted-foreground',
+							!(showMixed && mixed) && 'invisible'
 						)}
-					</div>
-				)}
+					>
+						Смешанное число:{' '}
+						<span className='font-mono text-foreground'>
+							{mixed ? `${mixed.whole} ${mixed.num}/${mixed.den}` : '0 0/0'}
+						</span>
+					</span>
+				</div>
 			</Card>
 
 			<FractionCalculatorSeo />
