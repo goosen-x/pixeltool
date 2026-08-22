@@ -93,7 +93,8 @@ export const HTTP_STATUS_CODES: HttpStatusCode[] = [
 	{
 		code: 308,
 		title: 'Permanent Redirect',
-		description: 'Как 301, но, в отличие от него, запрещает менять метод запроса.'
+		description:
+			'Как 301, но, в отличие от него, запрещает менять метод запроса.'
 	},
 	{
 		code: 400,
@@ -127,7 +128,8 @@ export const HTTP_STATUS_CODES: HttpStatusCode[] = [
 	{
 		code: 408,
 		title: 'Request Timeout',
-		description: 'Сервер не дождался полного запроса от клиента за отведённое время.'
+		description:
+			'Сервер не дождался полного запроса от клиента за отведённое время.'
 	},
 	{
 		code: 409,
@@ -149,7 +151,8 @@ export const HTTP_STATUS_CODES: HttpStatusCode[] = [
 	{
 		code: 415,
 		title: 'Unsupported Media Type',
-		description: 'Сервер не умеет обрабатывать формат данных, указанный в запросе.'
+		description:
+			'Сервер не умеет обрабатывать формат данных, указанный в запросе.'
 	},
 	{
 		code: 422,
@@ -172,7 +175,8 @@ export const HTTP_STATUS_CODES: HttpStatusCode[] = [
 	{
 		code: 501,
 		title: 'Not Implemented',
-		description: 'Сервер не поддерживает функциональность, нужную для выполнения запроса.'
+		description:
+			'Сервер не поддерживает функциональность, нужную для выполнения запроса.'
 	},
 	{
 		code: 502,

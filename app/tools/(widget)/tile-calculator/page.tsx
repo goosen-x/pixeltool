@@ -73,13 +73,23 @@ export default function TileCalculatorPage() {
 			jointWidthMm: jw,
 			wastePercent: waste
 		})
-	}, [roomLength, roomWidth, tileLength, tileWidth, tileThickness, jointWidth, waste])
+	}, [
+		roomLength,
+		roomWidth,
+		tileLength,
+		tileWidth,
+		tileThickness,
+		jointWidth,
+		waste
+	])
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				<div className={toolBar}>
-					<span className='text-sm text-muted-foreground'>Запас на подрезку</span>
+					<span className='text-sm text-muted-foreground'>
+						Запас на подрезку
+					</span>
 					<div className='flex flex-wrap gap-1.5'>
 						{WASTE_OPTIONS.map(option => (
 							<button
@@ -96,24 +106,52 @@ export default function TileCalculatorPage() {
 				</div>
 
 				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-2 sm:px-6'>
-					<Field label='Длина помещения, м' value={roomLength} onChange={setRoomLength} />
-					<Field label='Ширина помещения, м' value={roomWidth} onChange={setRoomWidth} />
+					<Field
+						label='Длина помещения, м'
+						value={roomLength}
+						onChange={setRoomLength}
+					/>
+					<Field
+						label='Ширина помещения, м'
+						value={roomWidth}
+						onChange={setRoomWidth}
+					/>
 				</div>
 
 				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-4 sm:px-6'>
-					<Field label='Длина плитки, см' value={tileLength} onChange={setTileLength} />
-					<Field label='Ширина плитки, см' value={tileWidth} onChange={setTileWidth} />
-					<Field label='Толщина плитки, мм' value={tileThickness} onChange={setTileThickness} />
-					<Field label='Ширина шва, мм' value={jointWidth} onChange={setJointWidth} />
+					<Field
+						label='Длина плитки, см'
+						value={tileLength}
+						onChange={setTileLength}
+					/>
+					<Field
+						label='Ширина плитки, см'
+						value={tileWidth}
+						onChange={setTileWidth}
+					/>
+					<Field
+						label='Толщина плитки, мм'
+						value={tileThickness}
+						onChange={setTileThickness}
+					/>
+					<Field
+						label='Ширина шва, мм'
+						value={jointWidth}
+						onChange={setJointWidth}
+					/>
 				</div>
 
 				{result ? (
 					<div className='grid grid-cols-3 gap-4 px-5 py-8 text-center sm:px-6'>
 						<div>
 							<span className='block font-mono text-3xl font-bold text-foreground'>
-								{result.areaM2.toLocaleString('ru-RU', { maximumFractionDigits: 2 })}
+								{result.areaM2.toLocaleString('ru-RU', {
+									maximumFractionDigits: 2
+								})}
 							</span>
-							<span className='mt-1 block text-sm text-muted-foreground'>м² площади</span>
+							<span className='mt-1 block text-sm text-muted-foreground'>
+								м² площади
+							</span>
 						</div>
 						<div>
 							<span className='block font-mono text-3xl font-bold text-foreground'>
@@ -125,9 +163,13 @@ export default function TileCalculatorPage() {
 						</div>
 						<div>
 							<span className='block font-mono text-3xl font-bold text-foreground'>
-								{result.groutKgTotal.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}
+								{result.groutKgTotal.toLocaleString('ru-RU', {
+									maximumFractionDigits: 1
+								})}
 							</span>
-							<span className='mt-1 block text-sm text-muted-foreground'>кг затирки</span>
+							<span className='mt-1 block text-sm text-muted-foreground'>
+								кг затирки
+							</span>
 						</div>
 					</div>
 				) : (

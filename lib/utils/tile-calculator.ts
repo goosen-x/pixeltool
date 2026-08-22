@@ -30,13 +30,13 @@ const GROUT_DENSITY = 1.6
  * примере производителя: плитка 330×330 мм, толщина 10 мм, шов 2 мм → 0,194
  * кг/м².
  */
-export function calculateTiles(input: TileCalculatorInput): TileCalculatorResult {
+export function calculateTiles(
+	input: TileCalculatorInput
+): TileCalculatorResult {
 	const areaM2 = input.roomLength * input.roomWidth
 	const tileAreaM2 = (input.tileLength / 100) * (input.tileWidth / 100)
 	const tilesExact = areaM2 / tileAreaM2
-	const tilesWithWaste = Math.ceil(
-		tilesExact * (1 + input.wastePercent / 100)
-	)
+	const tilesWithWaste = Math.ceil(tilesExact * (1 + input.wastePercent / 100))
 
 	const tileLengthMm = input.tileLength * 10
 	const tileWidthMm = input.tileWidth * 10

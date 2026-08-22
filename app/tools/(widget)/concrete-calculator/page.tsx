@@ -93,14 +93,20 @@ export default function ConcreteCalculatorPage() {
 				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-3 sm:px-6'>
 					<Field label='Длина, м' value={length} onChange={setLength} />
 					<Field label='Ширина, м' value={width} onChange={setWidth} />
-					<Field label='Высота (толщина), м' value={height} onChange={setHeight} />
+					<Field
+						label='Высота (толщина), м'
+						value={height}
+						onChange={setHeight}
+					/>
 				</div>
 
 				{result ? (
 					<>
 						<div className='px-5 py-8 text-center sm:px-6'>
 							<span className='block font-mono text-5xl font-bold tracking-tight text-foreground sm:text-6xl'>
-								{result.volumeM3.toLocaleString('ru-RU', { maximumFractionDigits: 2 })}
+								{result.volumeM3.toLocaleString('ru-RU', {
+									maximumFractionDigits: 2
+								})}
 							</span>
 							<span className='mt-2 block text-base font-medium text-muted-foreground'>
 								м³ бетона
@@ -120,19 +126,25 @@ export default function ConcreteCalculatorPage() {
 								<span className='block font-mono text-xl font-semibold text-foreground'>
 									{formatKg(result.sandKg)} кг
 								</span>
-								<span className='mt-1 block text-sm text-muted-foreground'>песок</span>
+								<span className='mt-1 block text-sm text-muted-foreground'>
+									песок
+								</span>
 							</div>
 							<div>
 								<span className='block font-mono text-xl font-semibold text-foreground'>
 									{formatKg(result.gravelKg)} кг
 								</span>
-								<span className='mt-1 block text-sm text-muted-foreground'>щебень</span>
+								<span className='mt-1 block text-sm text-muted-foreground'>
+									щебень
+								</span>
 							</div>
 							<div>
 								<span className='block font-mono text-xl font-semibold text-foreground'>
 									{formatKg(result.waterL)} л
 								</span>
-								<span className='mt-1 block text-sm text-muted-foreground'>вода</span>
+								<span className='mt-1 block text-sm text-muted-foreground'>
+									вода
+								</span>
 							</div>
 						</div>
 					</>

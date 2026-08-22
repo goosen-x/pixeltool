@@ -86,8 +86,10 @@ export default function ProportionCalculatorPage() {
 		unknown !== null && result === null && emptyFields.length === 1
 
 	const statusMessage = (() => {
-		if (emptyFields.length === 0) return 'Очистите одно поле — оно станет искомым'
-		if (emptyFields.length > 1) return 'Заполните три поля, четвёртое оставьте пустым'
+		if (emptyFields.length === 0)
+			return 'Очистите одно поле — оно станет искомым'
+		if (emptyFields.length > 1)
+			return 'Заполните три поля, четвёртое оставьте пустым'
 		if (zeroDivision) return 'Известное число рядом с искомым не может быть 0'
 		return null
 	})()

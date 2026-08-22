@@ -32,8 +32,7 @@ export default function ReactionTestPage() {
 
 	const startRound = useCallback(() => {
 		setPhase('waiting')
-		const delay =
-			MIN_DELAY_MS + Math.random() * (MAX_DELAY_MS - MIN_DELAY_MS)
+		const delay = MIN_DELAY_MS + Math.random() * (MAX_DELAY_MS - MIN_DELAY_MS)
 		timeoutRef.current = setTimeout(() => {
 			readyAtRef.current = performance.now()
 			setPhase('ready')
@@ -68,7 +67,9 @@ export default function ReactionTestPage() {
 
 	const average =
 		results.length > 0
-			? Math.round(results.reduce((sum, value) => sum + value, 0) / results.length)
+			? Math.round(
+					results.reduce((sum, value) => sum + value, 0) / results.length
+				)
 			: null
 	const best = results.length > 0 ? Math.min(...results) : null
 
