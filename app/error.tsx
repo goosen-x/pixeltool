@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { AlertCircle, Copy, Check } from 'lucide-react'
 
 import Link from 'next/link'
+import { isChunkLoadError, reloadOnceForChunkError } from '@/lib/utils/chunk-error'
 
 export default function Error({
 	error,
@@ -18,6 +19,11 @@ export default function Error({
 	useEffect(() => {
 		// Логирование ошибки в консоль для отладки
 		console.error('Server error:', error)
+
+		// Устаревший чанк после деплоя — React ловит его через этот error
+		// boundary раньше, чем событие дошло бы до глобальных слушателей
+		// в ChunkErrorReload. Перезагружаем молча, не показывая «Упс».
+		if (isChunkLoadError(error.message)) reloadOnceForChunkError()
 	}, [error])
 
 	const copyErrorDetails = async () => {

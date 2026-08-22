@@ -18,6 +18,7 @@ import { pluralizeRu } from '@/lib/utils/pluralize'
 import { NavigationProgress } from '@/components/ui/navigation-progress'
 import { CookieConsent } from '@/components/global/CookieConsent'
 import { ServiceWorkerUnregister } from '@/components/global/ServiceWorkerUnregister'
+import { ChunkErrorReload } from '@/components/global/ChunkErrorReload'
 import { ConsoleBanner } from '@/components/global/ConsoleBanner'
 import { GlobalGoalsTracker } from '@/components/analytics/GlobalGoalsTracker'
 import {
@@ -314,6 +315,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 							<GlobalGoalsTracker />
 						</Suspense>
 						<ServiceWorkerUnregister />
+						<ChunkErrorReload />
 						<ConsoleBanner />
 						<WebVitals />
 						<Suspense fallback={null}>
