@@ -263,7 +263,10 @@ export default function FractionCalculatorPage() {
 				чтобы карточка не меняла высоту при появлении/исчезновении результата. */}
 				<div className={toolFooterBar}>
 					<span
-						className={cn('text-sm text-muted-foreground', !result && 'invisible')}
+						className={cn(
+							'text-sm text-muted-foreground',
+							!result && 'invisible'
+						)}
 					>
 						≈{' '}
 						<span className='font-mono text-foreground'>
