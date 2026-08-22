@@ -14,7 +14,7 @@ export function UtmLinkBuilderSeo() {
 					UTM-метки для Tilda, Яндекс.Директа и других площадок
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					Специального формата под конкретную платформу не существует — UTM
+					Специального формата под конкретную платформу не существует. UTM
 					одинаковы везде, разница только в готовых значениях{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>
 						utm_source
@@ -24,10 +24,10 @@ export function UtmLinkBuilderSeo() {
 						utm_medium
 					</code>
 					. Пресеты в конструкторе уже подставляют правильные значения для
-					Google Ads, Яндекс.Директа, VK, Facebook, Instagram и email — не нужно
-					вспоминать точное написание. Если сайт сделан на Tilda, готовую ссылку
-					с меткой просто вставляют в поле URL кнопки или блока — конструктор
-					сайта её не меняет и не обрезает.
+					Google Ads, Яндекс.Директа, VK, Facebook, Instagram и email, так что
+					точное написание вспоминать не придётся. Если сайт сделан на Tilda,
+					готовую ссылку с меткой просто вставляют в поле URL кнопки или блока,
+					конструктор сайта её не меняет и не обрезает.
 				</p>
 			</section>
 
@@ -37,9 +37,9 @@ export function UtmLinkBuilderSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					Google Analytics и Яндекс.Метрика различают источники по точному
-					совпадению строки: «Email» и «email» — для аналитики два разных
-					источника, трафик расползается по двум строкам вместо одной. Пробел в
-					значении параметра превращается в ссылке в{' '}
+					совпадению строки. «Email» и «email» для аналитики два разных
+					источника, и трафик расползается по двум строкам вместо одной. Пробел
+					в значении параметра превращается в ссылке в{' '}
 					<code className='rounded bg-muted px-1.5 py-0.5 text-sm'>%20</code>,
 					поэтому в названии кампании лучше сразу использовать дефис вместо
 					пробела.
@@ -47,7 +47,7 @@ export function UtmLinkBuilderSeo() {
 			</section>
 
 			<p className='text-muted-foreground'>
-				Полный разбор параметров и частых ошибок — в статье{' '}
+				Полный разбор параметров и частых ошибок есть в статье{' '}
 				<Link
 					href='/blog/kak-sozdat-utm-metku'
 					className='cursor-pointer font-medium text-primary hover:underline'

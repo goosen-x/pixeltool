@@ -10,14 +10,14 @@ export function CoinFlipSeo() {
 				<p className='mt-3 text-muted-foreground'>
 					У честной монеты шансы всегда 50 на 50, независимо от того, что выпало
 					раньше. Ощущение, что после пяти орлов подряд «должна» выпасть решка,
-					— известная когнитивная ошибка (gambler&apos;s fallacy): монета не
+					это известная когнитивная ошибка (gambler&apos;s fallacy). Монета не
 					помнит предыдущие броски, у каждого свои независимые 50%.
 				</p>
 			</section>
 
 			<p className='text-muted-foreground'>
-				Если нужно не бинарное решение, а выбор из нескольких вариантов — жребий
-				или деление на команды — в статье{' '}
+				Если нужно выбрать из нескольких вариантов, а не из двух, помогут жребий
+				и деление на команды. Об этом есть статья{' '}
 				<Link
 					href='/blog/randomayzer-zherebevka-online'
 					className='cursor-pointer font-medium text-primary hover:underline'

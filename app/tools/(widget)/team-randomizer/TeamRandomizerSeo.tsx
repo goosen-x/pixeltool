@@ -9,14 +9,14 @@ export function TeamRandomizerSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					Если число участников не делится на число команд без остатка, лишние
-					люди распределяются по одному в разные команды — разница между самой
+					люди распределяются по одному в разные команды. Разница между самой
 					большой и самой маленькой командой никогда не превышает одного
 					человека. Например, 11 человек на 3 команды дадут 4+4+3, а не 5+3+3.
 				</p>
 			</section>
 
 			<p className='text-muted-foreground'>
-				Если вместо команд нужен жребий или монетка — в статье{' '}
+				Если вместо команд нужен жребий или монетка, в статье{' '}
 				<Link
 					href='/blog/randomayzer-zherebevka-online'
 					className='cursor-pointer font-medium text-primary hover:underline'

@@ -23,7 +23,7 @@ const EXAMPLES: { title: string; desc: string; code: string; demo: Demo }[] = [
 	},
 	{
 		title: 'Центрирование по обеим осям',
-		desc: 'Классическая задача «отцентрировать блок». justify-content центрирует по горизонтали, align-items — по вертикали.',
+		desc: 'Классическая задача «отцентрировать блок». justify-content центрирует по горизонтали, align-items по вертикали.',
 		demo: 'center',
 		code: `.box {
   display: flex;
@@ -50,11 +50,11 @@ const EXAMPLES: { title: string; desc: string; code: string; demo: Demo }[] = [
 const PROPS: { name: string; desc: string }[] = [
 	{
 		name: 'display: flex',
-		desc: 'Включает флекс-раскладку — все прямые потомки становятся флекс-элементами.'
+		desc: 'Включает флекс-раскладку, и все прямые потомки становятся флекс-элементами.'
 	},
 	{
 		name: 'flex-direction',
-		desc: 'Основная ось: row (в ряд) или column (в столбец), плюс варианты -reverse.'
+		desc: 'Основная ось. Бывает row (в ряд) или column (в столбец), плюс варианты -reverse.'
 	},
 	{
 		name: 'justify-content',
@@ -70,11 +70,11 @@ const PROPS: { name: string; desc: string }[] = [
 	},
 	{
 		name: 'gap',
-		desc: 'Отступы между флекс-элементами — по обеим осям или раздельно (row/column).'
+		desc: 'Отступы между флекс-элементами, по обеим осям сразу или раздельно (row/column).'
 	},
 	{
 		name: 'flex: grow shrink basis',
-		desc: 'Как элемент растёт и сжимается. flex: 1 — занять всё свободное место поровну.'
+		desc: 'Как элемент растёт и сжимается. flex: 1 занимает всё свободное место поровну.'
 	},
 	{
 		name: 'align-self / order',
@@ -171,15 +171,14 @@ export function FlexboxGuide() {
 				Что такое CSS Flexbox
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
-				CSS Flexbox — одномерная система раскладки: она выстраивает элементы
-				вдоль <strong>одной оси</strong> — в ряд или в столбец — и удобно
-				управляет их выравниванием и распределением свободного места. Этим
-				Flexbox отличается от Grid, который работает с двумя осями сразу.
-				Раскладка задаётся свойством{' '}
+				CSS Flexbox — одномерная система раскладки. Она выстраивает элементы
+				вдоль одной оси, в ряд или в столбец, и управляет их выравниванием и
+				распределением свободного места. Этим Flexbox отличается от Grid,
+				который работает с двумя осями сразу. Раскладка задаётся свойством{' '}
 				<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 					display: flex
 				</code>{' '}
-				на контейнере, а поведение элементов — через{' '}
+				на контейнере, а поведение элементов задают{' '}
 				<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 					justify-content
 				</code>
@@ -199,7 +198,7 @@ export function FlexboxGuide() {
 			</h2>
 			<ol className='mt-3 space-y-2 text-foreground leading-relaxed'>
 				<li>
-					Выберите направление оси и способ выравнивания — раскладка сразу
+					Выберите направление оси и способ выравнивания, раскладка сразу
 					перестроится в предпросмотре.
 				</li>
 				<li>
@@ -211,7 +210,7 @@ export function FlexboxGuide() {
 				</li>
 				<li>Скопируйте готовый CSS или Tailwind-классы одной кнопкой.</li>
 				<li>
-					Вставьте код в проект — раскладка работает во всех современных
+					Вставьте код в проект, раскладка работает во всех современных
 					браузерах.
 				</li>
 			</ol>
@@ -237,8 +236,8 @@ export function FlexboxGuide() {
 				Основные свойства CSS Flexbox
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
-				Короткая шпаргалка по свойствам, которые настраивает генератор выше, —
-				скопируйте нужное в свой CSS.
+				Короткая шпаргалка по свойствам, которые настраивает генератор выше.
+				Скопируйте нужное в свой CSS.
 			</p>
 			<div className='mt-4 overflow-x-auto'>
 				<table className='w-full border-collapse text-sm'>
@@ -264,14 +263,14 @@ export function FlexboxGuide() {
 			</div>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
-				Flexbox или Grid — что выбрать
+				Flexbox или Grid: что выбрать
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
-				Правило простое: <strong>Flexbox — для одномерных раскладок</strong>{' '}
-				(панель кнопок, меню, ряд карточек, центрирование),{' '}
-				<strong>Grid — для двумерных</strong> (страница, галерея, дашборд).
-				Часто их сочетают: Grid задаёт крупную структуру страницы, Flexbox
-				выравнивает элементы внутри блоков. Для двумерных раскладок используйте{' '}
+				Правило простое. Flexbox берут для одномерных раскладок (панель кнопок,
+				меню, ряд карточек, центрирование), Grid для двумерных (страница,
+				галерея, дашборд). Часто их сочетают: Grid задаёт крупную структуру
+				страницы, Flexbox выравнивает элементы внутри блоков. Для двумерных
+				раскладок используйте{' '}
 				<Link
 					href='/tools/grid-generator'
 					className='cursor-pointer font-medium text-primary hover:underline'
