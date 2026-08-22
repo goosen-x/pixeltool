@@ -12,7 +12,7 @@ type Demo = 'linear' | 'radial' | 'conic'
 const EXAMPLES: { title: string; desc: string; code: string; demo: Demo }[] = [
 	{
 		title: 'Линейный градиент',
-		desc: 'Плавный переход цвета вдоль прямой. Угол задаёт направление: 90deg — слева направо, 45deg — по диагонали.',
+		desc: 'Плавный переход цвета вдоль прямой. Угол задаёт направление: 90deg слева направо, 45deg по диагонали.',
 		demo: 'linear',
 		code: 'background: linear-gradient(90deg, #a855f7, #ec4899);'
 	},
@@ -33,7 +33,7 @@ const EXAMPLES: { title: string; desc: string; code: string; demo: Demo }[] = [
 const PROPS: { name: string; desc: string }[] = [
 	{
 		name: 'linear-gradient()',
-		desc: 'Линейный переход. Первый аргумент — угол (90deg) или направление (to right), далее цветовые точки.'
+		desc: 'Линейный переход. Первым аргументом идёт угол (90deg) или направление (to right), далее цветовые точки.'
 	},
 	{
 		name: 'radial-gradient()',
@@ -41,7 +41,7 @@ const PROPS: { name: string; desc: string }[] = [
 	},
 	{
 		name: 'conic-gradient()',
-		desc: 'Вращение цветов вокруг точки. from задаёт стартовый угол, at — центр вращения.'
+		desc: 'Вращение цветов вокруг точки. from задаёт стартовый угол, at задаёт центр вращения.'
 	},
 	{
 		name: 'color stops',
@@ -49,11 +49,11 @@ const PROPS: { name: string; desc: string }[] = [
 	},
 	{
 		name: 'repeating-*-gradient()',
-		desc: 'Повторяющийся узор из градиента — полоски, кольца, сектора без картинок.'
+		desc: 'Повторяющийся узор из градиента: полоски, кольца, сектора без картинок.'
 	},
 	{
 		name: 'transparent / rgba()',
-		desc: 'Прозрачные точки дают эффект затухания — например от цвета к прозрачности.'
+		desc: 'Прозрачные точки дают затухание, скажем от цвета к прозрачности.'
 	}
 ]
 
@@ -101,15 +101,15 @@ export function GradientGuide() {
 				<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 					conic-gradient
 				</code>{' '}
-				(по кругу). Градиенты — это векторы: они не грузятся отдельным файлом,
-				идеально масштабируются и легко анимируются.
+				(по кругу). Градиенты векторные, поэтому они не грузятся отдельным
+				файлом, масштабируются без потерь и легко анимируются.
 			</p>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
 				Как пользоваться генератором
 			</h2>
 			<ol className='mt-3 space-y-2 text-foreground leading-relaxed'>
-				<li>Выберите тип градиента — линейный, радиальный или конический.</li>
+				<li>Выберите тип градиента: линейный, радиальный или конический.</li>
 				<li>Добавьте цветовые точки и задайте их позиции и направление.</li>
 				<li>Скопируйте готовый CSS или Tailwind-классы одной кнопкой.</li>
 				<li>Вставьте код в свойство background нужного элемента.</li>
@@ -137,7 +137,7 @@ export function GradientGuide() {
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
 				Короткая шпаргалка по функциям и параметрам, которые собирает генератор
-				выше, — скопируйте нужное в свой CSS.
+				выше. Скопируйте нужное в свой CSS.
 			</p>
 			<div className='mt-4 overflow-x-auto'>
 				<table className='w-full border-collapse text-sm'>
@@ -167,8 +167,8 @@ export function GradientGuide() {
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
 				CSS-градиент почти всегда лучше картинки-фона: меньше вес, нет лишнего
-				HTTP-запроса, идеальное масштабирование и возможность анимации.
-				Подобрать цвета для точек удобно в{' '}
+				HTTP-запроса, масштабируется без потерь и умеет анимироваться. Подобрать
+				цвета для точек удобно в{' '}
 				<Link
 					href='/tools/color-converter'
 					className='cursor-pointer font-medium text-primary hover:underline'

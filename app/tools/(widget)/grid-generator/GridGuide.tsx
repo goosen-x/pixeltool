@@ -23,7 +23,7 @@ const EXAMPLES: { title: string; desc: string; code: string; demo: Demo }[] = [
 	},
 	{
 		title: 'Адаптивная галерея',
-		desc: 'Карточки сами переносятся на новую строку. auto-fill + minmax() — раскладка без медиазапросов.',
+		desc: 'Карточки сами переносятся на новую строку. Связка auto-fill и minmax() даёт раскладку без медиазапросов.',
 		demo: 'gallery',
 		code: `.gallery {
   display: grid;
@@ -33,7 +33,7 @@ const EXAMPLES: { title: string; desc: string; code: string; demo: Demo }[] = [
 	},
 	{
 		title: 'Раскладка страницы через grid-template-areas',
-		desc: 'Классический макет: шапка, сайдбар, контент, подвал — заданы по именам областей.',
+		desc: 'Классический макет. Шапка, сайдбар, контент и подвал заданы по именам областей.',
 		demo: 'holygrail',
 		code: `.page {
   display: grid;
@@ -142,7 +142,7 @@ function GridPreview({ demo }: { demo: Demo }) {
 const PROPS: { name: string; desc: string }[] = [
 	{
 		name: 'grid-template-columns',
-		desc: 'Задаёт число и ширину колонок. Значения — fr, px, %, minmax(), repeat().'
+		desc: 'Задаёт число и ширину колонок. Значениями идут fr, px, %, minmax(), repeat().'
 	},
 	{
 		name: 'grid-template-rows',
@@ -162,11 +162,11 @@ const PROPS: { name: string; desc: string }[] = [
 	},
 	{
 		name: 'grid-auto-flow',
-		desc: 'Как размещаются элементы автоматически: по строкам, колонкам или плотно (dense).'
+		desc: 'Как элементы размещаются автоматически: по строкам, колонкам или плотно (dense).'
 	},
 	{
 		name: 'repeat() и minmax()',
-		desc: 'repeat(auto-fit, minmax(12rem, 1fr)) — адаптивная сетка без медиазапросов.'
+		desc: 'Запись repeat(auto-fit, minmax(12rem, 1fr)) даёт адаптивную сетку без медиазапросов.'
 	}
 ]
 
@@ -175,10 +175,9 @@ export function GridGuide() {
 		<section className='mt-12 max-w-3xl mx-auto text-left text-foreground'>
 			<h2 className='text-2xl font-bold tracking-tight'>Что такое CSS Grid</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
-				CSS Grid — двумерная система раскладки: она управляет одновременно{' '}
-				<strong>строками и колонками</strong>. Этим Grid отличается от Flexbox,
-				который раскладывает элементы в одном направлении. Сетка задаётся
-				свойствами{' '}
+				CSS Grid — двумерная система раскладки, она управляет строками и
+				колонками одновременно. Этим Grid отличается от Flexbox, который
+				раскладывает элементы в одном направлении. Сетка задаётся свойствами{' '}
 				<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 					grid-template-columns
 				</code>
@@ -206,7 +205,7 @@ export function GridGuide() {
 			</h2>
 			<ol className='mt-3 space-y-2 text-foreground leading-relaxed'>
 				<li>
-					Задайте число колонок и строк — сетка сразу перестроится в
+					Задайте число колонок и строк, сетка сразу перестроится в
 					предпросмотре.
 				</li>
 				<li>
@@ -218,7 +217,7 @@ export function GridGuide() {
 				</li>
 				<li>Скопируйте готовый CSS или Tailwind-классы одной кнопкой.</li>
 				<li>
-					Вставьте код в проект — раскладка работает во всех современных
+					Вставьте код в проект, раскладка работает во всех современных
 					браузерах.
 				</li>
 			</ol>
@@ -244,8 +243,8 @@ export function GridGuide() {
 				Основные свойства CSS Grid
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
-				Короткая шпаргалка по свойствам, которые настраивает генератор выше, —
-				скопируйте нужное в свой CSS.
+				Короткая шпаргалка по свойствам, которые настраивает генератор выше.
+				Скопируйте нужное в свой CSS.
 			</p>
 			<div className='mt-4 overflow-x-auto'>
 				<table className='w-full border-collapse text-sm'>
@@ -271,14 +270,13 @@ export function GridGuide() {
 			</div>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
-				Grid или Flexbox — что выбрать
+				Grid или Flexbox: что выбрать
 			</h2>
 			<p className='mt-3 text-foreground leading-relaxed'>
-				Правило простое: <strong>Grid — для двумерных макетов</strong>{' '}
-				(страница, галерея, дашборд), <strong>Flexbox — для одномерных</strong>{' '}
-				(панель кнопок, меню, ряд карточек). Часто их сочетают: Grid задаёт
-				крупную структуру страницы, Flexbox выравнивает элементы внутри ячеек.
-				Для одномерных раскладок используйте{' '}
+				Правило простое. Grid берут для двумерных макетов (страница, галерея,
+				дашборд), Flexbox для одномерных (панель кнопок, меню, ряд карточек).
+				Часто их сочетают: Grid задаёт крупную структуру страницы, Flexbox
+				выравнивает элементы внутри ячеек. Для одномерных раскладок используйте{' '}
 				<Link
 					href='/tools/flexbox-generator'
 					className='cursor-pointer font-medium text-primary hover:underline'

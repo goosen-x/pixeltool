@@ -14,7 +14,7 @@ interface AnimationExample {
 const EXAMPLES: AnimationExample[] = [
 	{
 		title: 'Появление элемента',
-		desc: 'Самая частая анимация: блок всплывает снизу и проявляется. fill-mode: both удерживает конечное состояние, иначе элемент мигнёт обратно.',
+		desc: 'Самая частая анимация. Блок всплывает снизу и проявляется. fill-mode: both удерживает конечное состояние, иначе элемент мигнёт обратно.',
 		demoClass: 'guide-demo-fade',
 		code: `@keyframes fadeInUp {
   from { opacity: 0; transform: translateY(12px); }
@@ -39,8 +39,8 @@ const EXAMPLES: AnimationExample[] = [
 }`
 	},
 	{
-		title: 'Загрузка — спиннер',
-		desc: 'Бесконечное вращение с линейной функцией времени: любая другая даст рывок на стыке оборотов.',
+		title: 'Загрузка, спиннер',
+		desc: 'Бесконечное вращение с линейной функцией времени. Любая другая даст рывок на стыке оборотов.',
 		demoClass: 'guide-demo-spin',
 		code: `@keyframes spin {
   to { transform: rotate(360deg); }
@@ -51,8 +51,8 @@ const EXAMPLES: AnimationExample[] = [
 }`
 	},
 	{
-		title: 'Мерцание — скелетон',
-		desc: 'Заглушка на месте ещё не загруженного контента. Двигаем градиент, а не размеры, — вёрстка не пересчитывается.',
+		title: 'Мерцание, скелетон',
+		desc: 'Заглушка на месте ещё не загруженного контента. Двигаем градиент, а не размеры, поэтому вёрстка не пересчитывается.',
 		demoClass: 'guide-demo-shimmer',
 		code: `@keyframes shimmer {
   from { background-position: -200% 0; }
@@ -70,7 +70,7 @@ const EXAMPLES: AnimationExample[] = [
 	},
 	{
 		title: 'Встряска при ошибке',
-		desc: 'Короткое движение по горизонтали — понятный сигнал о неверном пароле или незаполненном поле.',
+		desc: 'Короткое движение по горизонтали, понятный сигнал о неверном пароле или незаполненном поле.',
 		demoClass: 'guide-demo-shake',
 		code: `@keyframes shake {
   0%, 100%      { transform: translateX(0);    }
@@ -91,11 +91,11 @@ const PROPS: { name: string; desc: string }[] = [
 	},
 	{
 		name: 'animation-duration',
-		desc: 'Длительность одного цикла. Для интерфейса обычно 0.2–0.6s: дольше — и движение начинает раздражать.'
+		desc: 'Длительность одного цикла. Для интерфейса обычно 0.2–0.6s, дольше движение начинает раздражать.'
 	},
 	{
 		name: 'animation-timing-function',
-		desc: 'Кривая скорости: ease, linear, ease-in-out или своя cubic-bezier().'
+		desc: 'Кривая скорости. Бывает ease, linear, ease-in-out или своя cubic-bezier().'
 	},
 	{
 		name: 'animation-delay',
@@ -107,7 +107,7 @@ const PROPS: { name: string; desc: string }[] = [
 	},
 	{
 		name: 'animation-direction',
-		desc: 'Направление. Значение alternate проигрывает каждый второй цикл задом наперёд — движение идёт туда-обратно без рывка.'
+		desc: 'Направление. Значение alternate проигрывает каждый второй цикл задом наперёд, движение идёт туда-обратно без рывка.'
 	},
 	{
 		name: 'animation-fill-mode',
@@ -218,7 +218,7 @@ export function AnimationGuide() {
 			<p className='mt-3 leading-relaxed'>
 				Анимация собирается из двух частей. Сначала вы описываете кадры в
 				правиле <Code>@keyframes</Code>: что происходит в начале и в конце.
-				Потом подключаете их к элементу свойством <Code>animation</Code> — имя и
+				Потом подключаете их к элементу свойством <Code>animation</Code>. Имя и
 				длительность обязательны, остальное по необходимости.
 			</p>
 			<GuideCodeBlock
@@ -235,7 +235,7 @@ export function AnimationGuide() {
 }`}
 			/>
 			<p className='mt-3 leading-relaxed'>
-				Кадров может быть сколько угодно — вместо <Code>from</Code> и{' '}
+				Кадров может быть сколько угодно. Вместо <Code>from</Code> и{' '}
 				<Code>to</Code> пишите проценты: <Code>0%</Code>, <Code>50%</Code>,{' '}
 				<Code>100%</Code>. Конструктор выше собирает такой код визуально: вы
 				двигаете ползунки, а он отдаёт готовое правило.
@@ -246,7 +246,7 @@ export function AnimationGuide() {
 			</h2>
 			<p className='mt-3 leading-relaxed'>
 				Пять анимаций, которые закрывают почти все задачи интерфейса. Демо слева
-				крутятся бесконечно, чтобы их было видно, — в коде повтор стоит только
+				крутятся бесконечно, чтобы их было видно. В коде повтор стоит только
 				там, где он нужен по смыслу.
 			</p>
 			<div className='mt-4 space-y-5'>
@@ -267,7 +267,7 @@ export function AnimationGuide() {
 				Анимация кнопки при наведении
 			</h2>
 			<p className='mt-3 leading-relaxed'>
-				Для наведения <Code>@keyframes</Code> обычно не нужен — хватает{' '}
+				Для наведения <Code>@keyframes</Code> обычно не нужен, хватает{' '}
 				<Code>transition</Code>. Она оживляет переход между обычным состоянием и{' '}
 				<Code>:hover</Code>, и это дешевле. Наведите курсор на карточку ниже.
 			</p>
@@ -302,10 +302,9 @@ export function AnimationGuide() {
 				animation или transition
 			</h2>
 			<p className='mt-3 leading-relaxed'>
-				Разница в том, кто запускает движение.{' '}
-				<strong>Transition реагирует на событие</strong> — наведение, клик,
-				добавление класса — и умеет переходить только между двумя состояниями.{' '}
-				<strong>Animation живёт сама</strong>: стартует без событий, проходит
+				Разница в том, кто запускает движение. Transition реагирует на событие:
+				наведение, клик, добавление класса. Переходить он умеет только между
+				двумя состояниями. Animation живёт сама, стартует без событий, проходит
 				через любое число кадров и может повторяться бесконечно. Наведение и
 				клик — <Code>transition</Code>; лоадер, пульсация, появление при
 				загрузке страницы — <Code>animation</Code>.
@@ -361,13 +360,13 @@ export function AnimationGuide() {
 				раскладку страницы на каждом кадре. А <Code>transform</Code> и{' '}
 				<Code>opacity</Code> считаются на видеокарте и вёрстку не трогают.
 				Поэтому сдвиг делайте через <Code>transform: translate()</Code>, а
-				увеличение — через <Code>transform: scale()</Code>, а не изменением
+				увеличение через <Code>transform: scale()</Code>, а не изменением
 				размеров.
 			</p>
 			<p className='mt-3 leading-relaxed'>
-				И не забудьте про тех, кому движение мешает физически: часть людей
-				отключает анимации в настройках системы. Уважьте эту настройку —
-				достаточно одного медиазапроса.
+				И не забудьте про тех, кому движение мешает физически. Часть людей
+				отключает анимации в настройках системы. Уважить эту настройку можно
+				одним медиазапросом.
 			</p>
 			<GuideCodeBlock
 				className='mt-4'
@@ -379,7 +378,7 @@ export function AnimationGuide() {
 }`}
 			/>
 			<p className='mt-3 leading-relaxed'>
-				Больше приёмов и разбор сложных случаев — в{' '}
+				Больше приёмов и разбор нетривиальных случаев собраны в{' '}
 				<Link
 					href='/blog/css-animations'
 					className='cursor-pointer font-medium text-primary hover:underline'
