@@ -5,6 +5,7 @@ excerpt:
   отличается от британского, почему в барреле 42 галлона и когда миллилитр стал
   ровно равен кубическому сантиметру.'
 date: '2026-08-22T12:00:00.000Z'
+coverImage: '/images/blog/perevod-edinic-obyoma.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

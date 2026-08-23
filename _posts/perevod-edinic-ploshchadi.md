@@ -5,6 +5,7 @@ excerpt:
   километра, как читать акры в зарубежных объявлениях и почему у площадей другие
   множители, чем у длин.'
 date: '2026-08-22T12:00:00.000Z'
+coverImage: '/images/blog/perevod-edinic-ploshchadi.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

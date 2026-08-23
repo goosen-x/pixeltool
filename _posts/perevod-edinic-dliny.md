@@ -4,6 +4,7 @@ excerpt:
   'Таблица единиц длины и соотношения между ними: метрическая цепочка от
   миллиметра до километра, дюймы с футами, две разные мили и световой год.'
 date: '2026-08-22T12:00:00.000Z'
+coverImage: '/images/blog/perevod-edinic-dliny.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

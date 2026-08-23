@@ -4,6 +4,7 @@ excerpt:
   'Таблица единиц массы и переводы между ними: граммы с килограммами, тонны и
   центнеры, фунты с унциями, карат ювелира и разница между массой и весом.'
 date: '2026-08-22T12:00:00.000Z'
+coverImage: '/images/blog/perevod-edinic-vesa.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
