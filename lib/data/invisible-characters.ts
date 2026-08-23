@@ -61,8 +61,11 @@ export interface InvisiblePlatform {
 	name: string
 	/** Где именно на платформе символ проходит: ник, статус, био. */
 	field: string
-	/** id символа из invisibleCharacters выше. */
-	charId: string
+	/**
+	 * id символа из invisibleCharacters выше. Пусто, если площадка вырезает
+	 * невидимые символы и копировать нечего.
+	 */
+	charId?: string
 	/** Насколько надёжны данные: см. docs/seo/invisible-character-platforms.md */
 	confidence: 'verified' | 'sources' | 'thin'
 	/** Известное ограничение, если есть. */
@@ -150,11 +153,16 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		confidence: 'verified'
 	},
 	{
+		// Проверено владельцем проекта 23.08.2026: VK ID вырезает скрытые
+		// символы, неразрывные пробелы и пустые строки прямо при сохранении, а
+		// заявку на смену имени дополнительно смотрит модератор. Оставляем в
+		// списке намеренно: запрос «невидимое имя ВК» массовый, и честный ответ
+		// «не получится» полезнее молчания.
 		id: 'vk',
 		name: 'ВКонтакте',
 		field: 'имя и статус',
-		charId: 'hangul-filler',
-		confidence: 'thin'
+		confidence: 'verified',
+		caveat: 'VK ID удаляет скрытые символы при сохранении, плюс модерация имён'
 	},
 	{
 		id: 'tiktok',

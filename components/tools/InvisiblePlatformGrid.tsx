@@ -14,7 +14,7 @@ import {
 	SiWhatsapp,
 	SiX
 } from 'react-icons/si'
-import { Apple, Check, Copy, Gamepad2 } from 'lucide-react'
+import { Apple, Ban, Check, Copy, Gamepad2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import {
 	invisiblePlatforms,
@@ -87,21 +87,33 @@ export function InvisiblePlatformGrid() {
 					const Icon = ICONS[platform.id]
 					const char = invisibleCharacters.find(c => c.id === platform.charId)
 					const copied = copiedId === platform.id
+					const blocked = !platform.charId
+
+					// Площадка без символа копировать нечего, поэтому строка перестаёт
+					// быть кнопкой: рисуем её же разметку обычным блоком.
+					const Row = blocked ? 'div' : 'button'
 
 					return (
-						<button
+						<Row
 							key={platform.id}
-							type='button'
-							onClick={() =>
-								copyFor(
-									platform.id,
-									platform.charId,
-									platform.name,
-									char?.name ?? 'символ'
-								)
+							{...(blocked
+								? {}
+								: {
+										type: 'button' as const,
+										onClick: () =>
+											copyFor(
+												platform.id,
+												platform.charId as string,
+												platform.name,
+												char?.name ?? 'символ'
+											),
+										title: `Скопировать символ для ${platform.name}`
+									})}
+							className={
+								blocked
+									? 'flex items-center gap-4 bg-background px-5 py-4 text-left sm:px-6'
+									: 'group flex cursor-pointer items-center gap-4 bg-background px-5 py-4 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6'
 							}
-							title={`Скопировать символ для ${platform.name}`}
-							className='group flex cursor-pointer items-center gap-4 bg-background px-5 py-4 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6'
 						>
 							{Icon ? (
 								<Icon
@@ -121,7 +133,9 @@ export function InvisiblePlatformGrid() {
 								</span>
 
 								<span className='mt-0.5 block text-xs text-muted-foreground'>
-									{char?.name} {char?.codepoint}
+									{blocked
+										? 'не получится'
+										: `${char?.name} ${char?.codepoint}`}
 									{' · '}
 									{CONFIDENCE_LABEL[platform.confidence]}
 								</span>
@@ -134,13 +148,15 @@ export function InvisiblePlatformGrid() {
 							</span>
 
 							<span className='shrink-0 text-muted-foreground group-hover:text-foreground'>
-								{copied ? (
+								{blocked ? (
+									<Ban className='h-4 w-4' />
+								) : copied ? (
 									<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
 								) : (
 									<Copy className='h-4 w-4' />
 								)}
 							</span>
-						</button>
+						</Row>
 					)
 				})}
 			</div>
