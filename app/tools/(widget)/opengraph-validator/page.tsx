@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useWidgetCreation } from '@/lib/hooks/widgets/useWidgetCreation'
+import { reportClientError } from '@/lib/utils/report-client-error'
 import {
 	Globe,
 	CheckCircle,
@@ -376,7 +377,14 @@ export default function OpenGraphValidatorPage() {
 				)
 
 				if (!response.ok) {
-					throw new Error('Не удалось загрузить данные страницы')
+					// Раньше причина сбоя терялась — сервер уже возвращает
+					// содержательное сообщение (таймаут, статус, текст ошибки
+					// fetch), а клиент показывал один и тот же общий текст.
+					const errorBody = await response.json().catch(() => null)
+					throw new Error(
+						errorBody?.error ||
+							`Не удалось загрузить данные страницы (${response.status})`
+					)
 				}
 
 				const data = await response.json()
@@ -400,6 +408,11 @@ export default function OpenGraphValidatorPage() {
 						: 'Не удалось выполнить проверку'
 				widget.setError(errorMessage)
 				toast.error('Ошибка валидации')
+				void reportClientError({
+					title: 'opengraph-validator: ошибка проверки URL',
+					description: `Проверяемый URL: ${url}\nОшибка: ${errorMessage}`,
+					widget: 'opengraph-validator'
+				})
 			} finally {
 				setIsValidating(false)
 				widget.setLoading(false)
