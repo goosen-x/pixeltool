@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect } from 'react'
-import { isChunkLoadError, reloadOnceForChunkError } from '@/lib/utils/chunk-error'
+import {
+	isChunkLoadError,
+	reloadOnceForChunkError
+} from '@/lib/utils/chunk-error'
 
 // После каждого деплоя хеши статических файлов меняются, а старый билд
 // не остаётся на диске — у пользователя с открытой вкладкой следующий
@@ -18,8 +21,7 @@ export function ChunkErrorReload() {
 
 		function handleRejection(event: PromiseRejectionEvent) {
 			const reason = event.reason
-			const message =
-				reason instanceof Error ? reason.message : String(reason)
+			const message = reason instanceof Error ? reason.message : String(reason)
 			if (isChunkLoadError(message)) reloadOnceForChunkError()
 		}
 

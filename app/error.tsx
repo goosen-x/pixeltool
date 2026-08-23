@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button'
 import { AlertCircle, Copy, Check } from 'lucide-react'
 
 import Link from 'next/link'
-import { isChunkLoadError, reloadOnceForChunkError } from '@/lib/utils/chunk-error'
+import {
+	isChunkLoadError,
+	reloadOnceForChunkError
+} from '@/lib/utils/chunk-error'
 
 export default function Error({
 	error,
