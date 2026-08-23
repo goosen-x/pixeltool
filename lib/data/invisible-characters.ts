@@ -70,8 +70,8 @@ export const invisibleCharacters: InvisibleCharacter[] = [
 		name: 'Combining Grapheme Joiner',
 		char: '\u034F',
 		codepoint: 'U+034F',
-		worksWell: 'Telegram (имя профиля)',
-		note: 'Проверен вручную в имени профиля Telegram. Формально это комбинирующая метка, а не пробел, поэтому фильтры пропускают его там, где режут zero-width символы.'
+		worksWell: 'Telegram, X (имя профиля)',
+		note: 'Проверен вручную в имени профиля Telegram и X. Формально это комбинирующая метка, а не пробел, поэтому фильтры пропускают его там, где режут zero-width символы.'
 	},
 	{
 		// Тоже записан escape-последовательностью: bidi-метка невидима и в
@@ -211,11 +211,13 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		confidence: 'thin'
 	},
 	{
+		// Проверено владельцем проекта 23.08.2026 в имени профиля. Про текст
+		// постов данных нет, поэтому поле сузили до проверенного.
 		id: 'x',
 		name: 'X (Twitter)',
-		field: 'имя и посты',
-		charId: 'hangul-filler',
-		confidence: 'thin'
+		field: 'имя профиля',
+		charId: 'cgj',
+		confidence: 'verified'
 	}
 ]
 
