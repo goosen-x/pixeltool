@@ -108,7 +108,13 @@ describe('коэффициенты новых единиц', () => {
 		['force', 'n', 'kgf', 9.80665, 1],
 		['force', 'kn', 'tonnef', 9.80665, 1],
 		['angle', 'deg', 'rad', 180, Math.PI],
-		['current', 'a', 'ma', 1, 1000]
+		['current', 'a', 'ma', 1, 1000],
+		['pressure', 'mpa', 'atm', 1, 9.869232667160128],
+		['pressure', 'mpa', 'bar', 1, 10],
+		['pressure', 'mpa', 'at', 1, 10.197162129779283],
+		['pressure', 'atm', 'mmhg', 1, 760],
+		['pressure', 'atm', 'pa', 1, 101325],
+		['pressure', 'psi', 'kpa', 1, 6.894757293168]
 	]
 
 	it.each(cases)('%s: %s → %s', (category, from, to, value, expected) => {
