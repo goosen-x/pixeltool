@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { invisibleCharacters } from '@/lib/data/invisible-characters'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { InvisiblePlatformGrid } from '@/components/tools/InvisiblePlatformGrid'
 import { InvisibleCharacterSeo } from './InvisibleCharacterSeo'
 
 export default function InvisibleCharacterPage() {
@@ -73,6 +74,8 @@ export default function InvisibleCharacterPage() {
 					))}
 				</div>
 			</Card>
+
+			<InvisiblePlatformGrid />
 
 			<InvisibleCharacterSeo />
 		</WidgetSEOWrapper>
