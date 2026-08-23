@@ -551,7 +551,7 @@ export default function ImageSizeCheckerPage() {
 												{image.format.split('/')[1]?.toUpperCase() || '—'}
 											</td>
 											<td className='px-2 py-2 text-right'>
-												<div className='flex items-center justify-end opacity-0 group-hover:opacity-100'>
+												<div className='flex items-center justify-end opacity-60 group-hover:opacity-100'>
 													{image.fileSize > HEAVY_THRESHOLD_BYTES && (
 														<Button
 															size='icon'

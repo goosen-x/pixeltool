@@ -572,7 +572,7 @@ export default function UTMBuilderPage() {
 									title='Скопировать ссылку'
 									className={cn(
 										toolIconButton,
-										'h-7 w-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
+										'h-7 w-7 opacity-60 group-hover:opacity-100 focus-visible:opacity-100'
 									)}
 								>
 									<Copy className='h-3.5 w-3.5' />

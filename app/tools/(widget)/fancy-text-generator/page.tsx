@@ -126,7 +126,7 @@ export default function FancyTextGeneratorPage() {
 									{copiedStyle === styleKey ? (
 										<Check className='h-4 w-4 shrink-0 text-green-600 dark:text-green-400' />
 									) : (
-										<Copy className='h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
+										<Copy className='h-4 w-4 shrink-0 text-muted-foreground opacity-60 transition-opacity group-hover:opacity-100' />
 									)}
 								</button>
 							))}

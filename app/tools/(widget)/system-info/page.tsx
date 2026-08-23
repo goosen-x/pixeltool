@@ -205,7 +205,7 @@ export default function SystemInfoPage() {
 										{copiedItem === label ? (
 											<Check className='h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400' />
 										) : (
-											<Copy className='h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
+											<Copy className='h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-60 transition-opacity group-hover:opacity-100' />
 										)}
 									</span>
 								</button>

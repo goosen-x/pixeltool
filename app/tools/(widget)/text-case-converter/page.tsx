@@ -325,7 +325,7 @@ export default function TextCaseConverterPage() {
 									{copiedCase === caseType ? (
 										<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
 									) : (
-										<Copy className='h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
+										<Copy className='h-4 w-4 text-muted-foreground opacity-60 transition-opacity group-hover:opacity-100' />
 									)}
 								</span>
 							</div>
