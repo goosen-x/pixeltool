@@ -43,74 +43,69 @@ export function InvisibleCharacterCatalog() {
 	}
 
 	return (
-		<Card className='mt-6 overflow-hidden p-0'>
-			<div className='border-b bg-muted/30 px-5 py-3 sm:px-6'>
-				<h2 className='font-medium text-foreground'>
-					Полный каталог: {invisibleCharacterCatalog.length} символов
-				</h2>
-				<p className='mt-0.5 text-sm text-muted-foreground'>
-					Все невидимые символы Юникода с их категориями. Категория определяет,
-					под какой фильтр символ попадёт: пробелы режет обрезка по краям,
-					служебные знаки — регулярки по формат-символам.
-				</p>
-			</div>
+		<div className='mt-6'>
+			<h2 className='mb-2 text-sm font-medium text-muted-foreground'>
+				Все существующие невидимые символы
+			</h2>
 
-			<div className='divide-y'>
-				{ORDER.map(group => {
-					const items = invisibleCharacterCatalog.filter(
-						entry => entry.group === group
-					)
-					if (items.length === 0) return null
+			<Card className='overflow-hidden p-0'>
+				<div className='divide-y'>
+					{ORDER.map(group => {
+						const items = invisibleCharacterCatalog.filter(
+							entry => entry.group === group
+						)
+						if (items.length === 0) return null
 
-					return (
-						<section key={group} className='px-5 py-4 sm:px-6'>
-							<h3 className='text-sm font-medium text-foreground'>
-								{INVISIBLE_GROUPS[group]}{' '}
-								<span className='font-normal text-muted-foreground'>
-									({items.length})
-								</span>
-							</h3>
+						return (
+							<section key={group} className='px-5 py-4 sm:px-6'>
+								<h3 className='text-sm font-medium text-foreground'>
+									{INVISIBLE_GROUPS[group]}{' '}
+									<span className='font-normal text-muted-foreground'>
+										({items.length})
+									</span>
+								</h3>
 
-							{GROUP_NOTES[group] ? (
-								<p className='mt-1 text-xs text-muted-foreground'>
-									{GROUP_NOTES[group]}
-								</p>
-							) : null}
+								{GROUP_NOTES[group] ? (
+									<p className='mt-1 text-xs text-muted-foreground'>
+										{GROUP_NOTES[group]}
+									</p>
+								) : null}
 
-							<div className='mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3'>
-								{items.map(entry => (
-									<button
-										key={entry.codepoint}
-										type='button'
-										onClick={() =>
-											copy(entry.codepoint, entry.char, entry.name)
-										}
-										title={`Скопировать ${entry.name}`}
-										className='group flex cursor-pointer items-center gap-3 rounded-md border bg-background px-3 py-2 text-left transition-colors hover:border-primary/40 hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-									>
-										<span className='min-w-0 flex-1'>
-											<span className='block truncate text-sm text-foreground'>
-												{entry.name}
+								<div className='mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3'>
+									{items.map(entry => (
+										<button
+											key={entry.codepoint}
+											type='button'
+											onClick={() =>
+												copy(entry.codepoint, entry.char, entry.name)
+											}
+											title={`Скопировать ${entry.name}`}
+											className='group flex cursor-pointer items-center gap-3 rounded-md border bg-background px-3 py-2 text-left transition-colors hover:border-primary/40 hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+										>
+											<span className='min-w-0 flex-1'>
+												<span className='block truncate text-sm text-foreground'>
+													{entry.name}
+												</span>
+												<span className='block font-mono text-xs text-muted-foreground'>
+													{entry.codepoint} · {entry.category}
+												</span>
 											</span>
-											<span className='block font-mono text-xs text-muted-foreground'>
-												{entry.codepoint} · {entry.category}
-											</span>
-										</span>
 
-										<span className='shrink-0 text-muted-foreground group-hover:text-foreground'>
-											{copied === entry.codepoint ? (
-												<Check className='h-3.5 w-3.5 text-green-600 dark:text-green-400' />
-											) : (
-												<Copy className='h-3.5 w-3.5' />
-											)}
-										</span>
-									</button>
-								))}
-							</div>
-						</section>
-					)
-				})}
-			</div>
-		</Card>
+											<span className='shrink-0 text-muted-foreground group-hover:text-foreground'>
+												{copied === entry.codepoint ? (
+													<Check className='h-3.5 w-3.5 text-green-600 dark:text-green-400' />
+												) : (
+													<Copy className='h-3.5 w-3.5' />
+												)}
+											</span>
+										</button>
+									))}
+								</div>
+							</section>
+						)
+					})}
+				</div>
+			</Card>
+		</div>
 	)
 }

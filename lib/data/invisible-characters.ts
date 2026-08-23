@@ -90,6 +90,29 @@ export const invisibleCharacters: InvisibleCharacter[] = [
 		codepoint: 'U+200D',
 		worksWell: 'iOS (имена папок)',
 		note: 'Проверен вручную: подходит для папки без названия на iOS. В никах соцсетей, как и соседний U+200C, чаще фильтруется.'
+	},
+	{
+		// Формально это буква (Letter, а не Format/Mark), а не служебный
+		// невидимый символ — но в шрифте Discord рендерится настолько узкой
+		// меткой, что визуально сходит за пустоту. Проверено владельцем
+		// проекта вручную 23.08.2026.
+		id: 'high-hamza',
+		name: 'Arabic Letter High Hamza',
+		char: 'ٴ',
+		codepoint: 'U+0674',
+		worksWell: 'Discord (ник и статус)',
+		note: 'Проверен вручную в нике и статусе Discord — единственный найденный рабочий вариант там, Braille Blank не подошёл.'
+	},
+	{
+		// Один символ High Hamza в ВК не проходит проверку на минимальную
+		// длину имени — а два подряд проходят. Кнопка копирует сразу оба, а
+		// не один, чтобы не заставлять человека вставлять дважды вручную.
+		id: 'high-hamza-x2',
+		name: 'Arabic Letter High Hamza ×2',
+		char: 'ٴٴ',
+		codepoint: 'U+0674 ×2',
+		worksWell: 'ВКонтакте (имя)',
+		note: 'Проверено вручную: один символ VK ID не принимает как имя (слишком короткое), два подряд — принимает.'
 	}
 ]
 
@@ -133,41 +156,13 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		caveat: 'В @username не проходит: фильтр на стороне сервера'
 	},
 	{
-		id: 'discord',
-		name: 'Discord',
-		field: 'ник и статус',
-		charId: 'braille-blank',
-		confidence: 'sources',
-		caveat: 'Zero-width символы Discord фильтрует, о чём пишет в документации'
-	},
-	{
-		id: 'steam',
-		name: 'Steam',
-		field: 'ник профиля',
-		charId: 'hangul-filler',
-		confidence: 'sources',
-		caveat: 'Valve периодически закрывает конкретные символы обновлениями'
-	},
-	{
-		id: 'roblox',
-		name: 'Roblox',
-		field: 'отображаемое имя',
-		charId: 'hangul-filler',
-		confidence: 'sources'
-	},
-	{
-		id: 'pubg',
-		name: 'PUBG Mobile',
-		field: 'игровой ник',
-		charId: 'hangul-filler',
-		confidence: 'sources'
-	},
-	{
-		id: 'freefire',
-		name: 'Free Fire',
-		field: 'игровой ник',
-		charId: 'hangul-filler',
-		confidence: 'sources'
+		// Проверено владельцем проекта 23.08.2026: один High Hamza VK ID не
+		// принимает как имя (слишком короткое), а два подряд — принимает.
+		id: 'vk',
+		name: 'ВКонтакте',
+		field: 'имя',
+		charId: 'high-hamza-x2',
+		confidence: 'verified'
 	},
 	{
 		id: 'instagram',
@@ -192,18 +187,6 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		confidence: 'verified'
 	},
 	{
-		// Проверено владельцем проекта 23.08.2026: VK ID вырезает скрытые
-		// символы, неразрывные пробелы и пустые строки прямо при сохранении, а
-		// заявку на смену имени дополнительно смотрит модератор. Оставляем в
-		// списке намеренно: запрос «невидимое имя ВК» массовый, и честный ответ
-		// «не получится» полезнее молчания.
-		id: 'vk',
-		name: 'ВКонтакте',
-		field: 'имя и статус',
-		confidence: 'verified',
-		caveat: 'VK ID удаляет скрытые символы при сохранении, плюс модерация имён'
-	},
-	{
 		id: 'tiktok',
 		name: 'TikTok',
 		field: 'ник и био',
@@ -218,6 +201,37 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		field: 'имя профиля',
 		charId: 'cgj',
 		confidence: 'verified'
+	},
+	{
+		id: 'steam',
+		name: 'Steam',
+		field: 'ник профиля',
+		charId: 'hangul-filler',
+		confidence: 'sources',
+		caveat: 'Valve периодически закрывает конкретные символы обновлениями'
+	},
+	{
+		// Владелец проекта проверил вручную 23.08.2026: Braille Blank не
+		// проходит, а Arabic Letter High Hamza — проходит.
+		id: 'discord',
+		name: 'Discord',
+		field: 'ник и статус',
+		charId: 'high-hamza',
+		confidence: 'verified'
+	},
+	{
+		id: 'pubg',
+		name: 'PUBG Mobile',
+		field: 'игровой ник',
+		charId: 'hangul-filler',
+		confidence: 'sources'
+	},
+	{
+		id: 'roblox',
+		name: 'Roblox',
+		field: 'отображаемое имя',
+		charId: 'hangul-filler',
+		confidence: 'sources'
 	}
 ]
 

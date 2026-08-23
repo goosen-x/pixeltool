@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import type { IconType } from 'react-icons'
 import {
+	SiApple,
 	SiDiscord,
 	SiInstagram,
 	SiRoblox,
@@ -14,38 +15,45 @@ import {
 	SiWhatsapp,
 	SiX
 } from 'react-icons/si'
-import { Apple, Ban, Check, Copy, Gamepad2 } from 'lucide-react'
+import { Ban, Check, Copy } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import { FeedbackModal } from '@/components/feedback/FeedbackModal'
 import {
 	invisiblePlatforms,
 	getInvisibleChar,
 	invisibleCharacters
 } from '@/lib/data/invisible-characters'
 
+// Официальный логотип PUBG Mobile сложнее плоской монохромной марки simple
+// icons (это экспорт из Illustrator, ~34 КБ путей даже после svgo) — держим
+// файлом в /public, а не инлайним, и красим через dark:invert, раз
+// currentColor тут недоступен (SVG грузится как <img>, не как разметка).
+function PubgMobileIcon({ className }: { className?: string }) {
+	return (
+		<img
+			src='/icons/pubg-mobile.svg'
+			alt=''
+			className={`${className ?? ''} dark:invert`}
+		/>
+	)
+}
+
 /**
  * Иконки держим здесь, а не в данных: файл с символами описывает факты о
- * юникоде и не должен тянуть за собой React. Для PUBG и Free Fire у simple
- * icons нет годных марок, поэтому джойстик из lucide как нейтральная замена.
+ * юникоде и не должен тянуть за собой React.
  */
-const ICONS: Record<string, IconType | typeof Apple> = {
+const ICONS: Record<string, IconType | typeof PubgMobileIcon> = {
 	telegram: SiTelegram,
 	discord: SiDiscord,
 	steam: SiSteam,
 	roblox: SiRoblox,
-	pubg: Gamepad2,
-	freefire: Gamepad2,
+	pubg: PubgMobileIcon,
 	instagram: SiInstagram,
 	whatsapp: SiWhatsapp,
-	ios: Apple,
+	ios: SiApple,
 	vk: SiVk,
 	tiktok: SiTiktok,
 	x: SiX
-}
-
-const CONFIDENCE_LABEL: Record<string, string> = {
-	verified: 'проверено вручную',
-	sources: 'по источникам',
-	thin: 'данных мало'
 }
 
 export function InvisiblePlatformGrid() {
@@ -75,10 +83,20 @@ export function InvisiblePlatformGrid() {
 	return (
 		<Card className='mt-6 overflow-hidden p-0'>
 			<div className='border-b bg-muted/30 px-5 py-3 sm:px-6'>
-				<h2 className='font-medium text-foreground'>Символ под площадку</h2>
-				<p className='mt-0.5 text-sm text-muted-foreground'>
-					Кнопка копирует тот символ, который на этой площадке проходит чаще
-					остальных. Если не сохранилось, пробуйте соседние из списка выше.
+				<p className='text-sm text-muted-foreground'>
+					Площадки периодически закрывают лазейки с невидимыми символами,
+					поэтому список быстро устаревает. Нашли рабочий символ —{' '}
+					<FeedbackModal
+						defaultType='feature'
+						trigger={
+							<button
+								type='button'
+								className='cursor-pointer text-primary hover:underline'
+							>
+								напишите нам
+							</button>
+						}
+					/>
 				</p>
 			</div>
 
@@ -123,28 +141,15 @@ export function InvisiblePlatformGrid() {
 							) : null}
 
 							<span className='min-w-0 flex-1'>
-								<span className='flex flex-wrap items-center gap-x-2 gap-y-0.5'>
-									<span className='font-medium text-foreground'>
-										{platform.name}
-									</span>
-									<span className='text-xs text-muted-foreground'>
-										{platform.field}
-									</span>
+								<span className='font-medium text-foreground'>
+									{platform.name}
 								</span>
 
 								<span className='mt-0.5 block text-xs text-muted-foreground'>
 									{blocked
-										? 'не получится'
+										? 'заблокировано разработчиками'
 										: `${char?.name} ${char?.codepoint}`}
-									{' · '}
-									{CONFIDENCE_LABEL[platform.confidence]}
 								</span>
-
-								{platform.caveat ? (
-									<span className='mt-1 block text-xs text-muted-foreground/80'>
-										{platform.caveat}
-									</span>
-								) : null}
 							</span>
 
 							<span className='shrink-0 text-muted-foreground group-hover:text-foreground'>
