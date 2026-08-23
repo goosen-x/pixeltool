@@ -39,12 +39,49 @@ export const invisibleCharacters: InvisibleCharacter[] = [
 		note: 'Технически корейский символ-заполнитель, но рендерится пустым — привычный вариант для игровых ников на мобильных платформах.'
 	},
 	{
+		id: 'choseong-filler',
+		name: 'Hangul Choseong Filler',
+		char: 'ᅟ',
+		codepoint: 'U+115F',
+		worksWell: 'Telegram (имя профиля), Roblox',
+		note: 'Родственник Hangul Filler из того же корейского блока и такой же буквы по категории. Проверен вручную в Telegram, у Roblox упоминается как запасной вариант.'
+	},
+	{
+		id: 'jungseong-filler',
+		name: 'Hangul Jungseong Filler',
+		char: 'ᅠ',
+		codepoint: 'U+1160',
+		worksWell: 'Telegram (имя профиля)',
+		note: 'Третий заполнитель из корейского блока, проверен вручную в Telegram. Если фильтр знает про U+3164 и U+115F, этот может остаться незамеченным.'
+	},
+	{
 		id: 'zwnj',
 		name: 'Zero Width Non-Joiner',
 		char: '‌',
 		codepoint: 'U+200C',
 		worksWell: 'Запасной вариант для текста',
 		note: 'С Unicode 15.0 отнесён к ограниченным для идентификаторов, поэтому в никах проходит всё реже. В обычном тексте по-прежнему работает.'
+	},
+	{
+		// В исходнике записан escape-последовательностью намеренно: это
+		// комбинирующая метка, и литерал в кавычках визуально прилипал бы к
+		// соседнему символу, что превращает правку файла в лотерею.
+		id: 'cgj',
+		name: 'Combining Grapheme Joiner',
+		char: '\u034F',
+		codepoint: 'U+034F',
+		worksWell: 'Telegram (имя профиля)',
+		note: 'Проверен вручную в имени профиля Telegram. Формально это комбинирующая метка, а не пробел, поэтому фильтры пропускают его там, где режут zero-width символы.'
+	},
+	{
+		// Тоже записан escape-последовательностью: bidi-метка невидима и в
+		// редакторе, литерал в кавычках было бы не отличить от пустой строки.
+		id: 'alm',
+		name: 'Arabic Letter Mark',
+		char: '\u061C',
+		codepoint: 'U+061C',
+		worksWell: 'Telegram (имя профиля)',
+		note: 'Проверен вручную в имени профиля Telegram. Служебная метка направления письма: формально та же категория, что у Zero Width Space, но конкретно её фильтры обычно не перечисляют.'
 	},
 	{
 		id: 'zwj',
@@ -86,11 +123,13 @@ export interface InvisiblePlatform {
  */
 export const invisiblePlatforms: InvisiblePlatform[] = [
 	{
+		// Проверено владельцем проекта 23.08.2026 в имени профиля. U+200B там
+		// тоже описывают как рабочий, но подтверждён вручную именно CGJ.
 		id: 'telegram',
 		name: 'Telegram',
-		field: 'имя и сообщения',
-		charId: 'zwsp',
-		confidence: 'sources',
+		field: 'имя профиля',
+		charId: 'cgj',
+		confidence: 'verified',
 		caveat: 'В @username не проходит: фильтр на стороне сервера'
 	},
 	{
