@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import type { IconType } from 'react-icons'
 import {
 	SiDiscord,
@@ -50,13 +51,25 @@ const CONFIDENCE_LABEL: Record<string, string> = {
 export function InvisiblePlatformGrid() {
 	const [copiedId, setCopiedId] = useState<string | null>(null)
 
-	const copyFor = async (platformId: string, charId: string) => {
+	const copyFor = async (
+		platformId: string,
+		charId: string,
+		platformName: string,
+		charName: string
+	) => {
 		const char = getInvisibleChar(charId)
 		if (!char) return
 
-		await navigator.clipboard.writeText(char)
-		setCopiedId(platformId)
-		setTimeout(() => setCopiedId(null), 2000)
+		// Символ невидим, поэтому в тосте называем его и площадку: пустое
+		// уведомление выглядело бы поломкой (см. коммит 9f0ee46 выше по списку).
+		try {
+			await navigator.clipboard.writeText(char)
+			setCopiedId(platformId)
+			setTimeout(() => setCopiedId(null), 2000)
+			toast.success(`${platformName}: скопирован ${charName}`)
+		} catch {
+			toast.error('Не удалось скопировать символ')
+		}
 	}
 
 	return (
@@ -79,7 +92,14 @@ export function InvisiblePlatformGrid() {
 						<button
 							key={platform.id}
 							type='button'
-							onClick={() => copyFor(platform.id, platform.charId)}
+							onClick={() =>
+								copyFor(
+									platform.id,
+									platform.charId,
+									platform.name,
+									char?.name ?? 'символ'
+								)
+							}
 							title={`Скопировать символ для ${platform.name}`}
 							className='group flex cursor-pointer items-center gap-4 bg-background px-5 py-4 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6'
 						>
