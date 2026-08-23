@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Check, Copy } from 'lucide-react'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { invisibleCharacters } from '@/lib/data/invisible-characters'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -12,10 +13,18 @@ export default function InvisibleCharacterPage() {
 	const widget = getWidgetById('invisible-character')!
 	const [copiedId, setCopiedId] = useState<string | null>(null)
 
-	const copyChar = async (id: string, char: string) => {
-		await navigator.clipboard.writeText(char)
-		setCopiedId(id)
-		setTimeout(() => setCopiedId(null), 2000)
+	// Символ невидим, поэтому в отличие от других тулов тост показывает не
+	// сам скопированный символ, а его название — иначе уведомление выглядело
+	// бы пустым.
+	const copyChar = async (id: string, char: string, name: string) => {
+		try {
+			await navigator.clipboard.writeText(char)
+			setCopiedId(id)
+			toast.success(`Скопировано: ${name}`)
+			setTimeout(() => setCopiedId(null), 2000)
+		} catch {
+			toast.error('Не удалось скопировать символ')
+		}
 	}
 
 	return (
@@ -26,7 +35,7 @@ export default function InvisibleCharacterPage() {
 						<button
 							key={item.id}
 							type='button'
-							onClick={() => copyChar(item.id, item.char)}
+							onClick={() => copyChar(item.id, item.char, item.name)}
 							title='Скопировать'
 							className='group flex cursor-pointer items-start gap-4 bg-background px-5 py-4 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:px-6'
 						>
