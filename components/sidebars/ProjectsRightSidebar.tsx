@@ -3,7 +3,6 @@
 import { AdSection } from '@/components/ads'
 import { cn } from '@/lib/utils'
 import { FeedbackCard } from './widgets/FeedbackCard'
-import { LeadMagnetCard } from './widgets/LeadMagnetCard'
 
 interface Props {
 	/**
@@ -20,7 +19,7 @@ interface Props {
 }
 
 /** Правый сайдбар. Избранное и недавние инструменты живут в шапке сайта — тут
- *  только лид-магнит, реклама и обратная связь. */
+ *  только обратная связь и реклама. */
 export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 	return (
 		<aside
@@ -29,9 +28,8 @@ export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 				boundedHeight && 'h-full overflow-y-auto projects-scroll'
 			)}
 		>
-			<LeadMagnetCard />
-			<AdSection />
 			<FeedbackCard />
+			<AdSection />
 		</aside>
 	)
 }
