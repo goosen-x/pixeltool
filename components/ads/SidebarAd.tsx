@@ -1,68 +1,20 @@
 'use client'
 
-import { useEffect } from 'react'
-import { ADS_DISABLED } from '@/lib/config/ads'
+import { useYandexAd } from './useYandexAd'
 
-declare global {
-	interface Window {
-		yaContextCb?: Array<() => void>
-		Ya?: {
-			Context: {
-				AdvManager: {
-					render: (params: { blockId: string; renderTo: string }) => void
-				}
-			}
-		}
-	}
-}
+const BLOCK_ID = 'R-A-19531689-1'
+const CONTAINER_ID = 'yandex_rtb_sidebar_R-A-19531689-1'
 
+/**
+ * Тот же блок в боковой колонке. Как и AdSection, не занимает места, пока
+ * объявление не пришло.
+ */
 export function SidebarAd() {
-	useEffect(() => {
-		if (ADS_DISABLED) return
-
-		// Убедимся, что Яндекс.Контекст загружен
-		if (window.yaContextCb) {
-			window.yaContextCb.push(() => {
-				if (window.Ya?.Context?.AdvManager) {
-					window.Ya.Context.AdvManager.render({
-						blockId: 'R-A-19531689-1',
-						renderTo: 'yandex_rtb_R-A-19531689-1'
-					})
-				}
-			})
-		}
-	}, [])
-
-	// Пустой блок на 250px выглядел бы поломкой вёрстки, поэтому при
-	// отключённой рекламе не рендерим ничего.
-	if (ADS_DISABLED) return null
+	const filled = useYandexAd(BLOCK_ID, CONTAINER_ID)
 
 	return (
-		<div className='sidebar-ad-container'>
-			{/* Yandex.RTB R-A-19531689-1 */}
-			<div id='yandex_rtb_R-A-19531689-1' className='sidebar-ad mx-auto' />
-			<style jsx>{`
-				.sidebar-ad-container {
-					width: 100%;
-					margin: 20px 0;
-				}
-
-				.sidebar-ad {
-					width: 100%;
-					max-width: 300px;
-					min-height: 250px;
-					background: transparent;
-				}
-
-				/* Адаптация для мобильных устройств */
-				@media (max-width: 768px) {
-					.sidebar-ad-container {
-						display: flex;
-						justify-content: center;
-						margin: 20px 0;
-					}
-				}
-			`}</style>
+		<div className={filled ? 'my-5 flex w-full justify-center' : undefined}>
+			<div id={CONTAINER_ID} className='mx-auto w-full max-w-[300px]' />
 		</div>
 	)
 }
