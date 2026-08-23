@@ -25,10 +25,10 @@ import {
 	antonFont,
 	geistMonoFont,
 	interFont,
-	onestFont,
-	openSansFont
+	onestFont
 } from '@/lib/fonts/fonts'
 import Script from 'next/script'
+import { ADS_DISABLED } from '@/lib/config/ads'
 import Header from '@/components/layout/Header/Header'
 import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
 import { ChromeHeightVar } from '@/components/layout/ChromeHeightVar'
@@ -255,7 +255,6 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 			className={cn(
 				'scroll-smooth scroll-pt-24',
 				interFont.variable,
-				openSansFont.variable,
 				antonFont.variable,
 				onestFont.variable,
 				geistMonoFont.variable
@@ -268,8 +267,10 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					interFont.className
 				)}
 			>
-				{/* Yandex.RTB - only in production */}
-				{!dev && (
+				{/* Yandex.RTB: только в проде и только когда реклама включена.
+				    Без второго условия context.js тянул на каждой странице свои
+				    бандлы (около 400 КБ), хотя блоки не рендерились. */}
+				{!dev && !ADS_DISABLED && (
 					<>
 						<Script
 							id='yandex-rtb-init'

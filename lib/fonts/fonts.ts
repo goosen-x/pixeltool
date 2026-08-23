@@ -1,4 +1,4 @@
-import { Anton, Geist_Mono, Inter, Onest, Open_Sans } from 'next/font/google'
+import { Anton, Geist_Mono, Inter, Onest } from 'next/font/google'
 
 // Using Google Fonts with next/font
 export const interFont = Inter({
@@ -7,17 +7,16 @@ export const interFont = Inter({
 	display: 'swap'
 })
 
-export const openSansFont = Open_Sans({
-	subsets: ['latin', 'cyrillic'],
-	variable: '--font-open-sans',
-	display: 'swap'
-})
-
+// Anton нужен только декоративным цифрам флип-часов (.digit-* в globals.css,
+// components/ui/flip-clock*.tsx). preload: false — иначе файл тянулся бы на
+// всех страницах сайта, хотя часы есть на единицах из них: без preload
+// браузер скачает шрифт только там, где правило реально применилось.
 export const antonFont = Anton({
 	weight: '400',
 	subsets: ['latin'],
 	variable: '--font-anton',
-	display: 'swap'
+	display: 'swap',
+	preload: false
 })
 
 // Шрифт заголовков. Кириллица родная (рисовалась вместе с латиницей, а не

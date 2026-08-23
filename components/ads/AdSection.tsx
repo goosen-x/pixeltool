@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { Megaphone } from 'lucide-react'
 import { dev } from '@/lib/config/env'
+import { ADS_DISABLED } from '@/lib/config/ads'
 
 declare global {
 	interface Window {
@@ -16,13 +17,6 @@ declare global {
 		}
 	}
 }
-
-/**
- * Реклама временно отключена: аккаунт заблокирован в РСЯ (15.07.2026). Пока он
- * не разблокирован, блок не рендерится — иначе висел бы вечной заглушкой
- * «Загрузка рекламы…». Чтобы вернуть, снять этот флаг.
- */
-const ADS_DISABLED = true
 
 export function AdSection() {
 	useEffect(() => {

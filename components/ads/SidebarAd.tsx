@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { ADS_DISABLED } from '@/lib/config/ads'
 
 declare global {
 	interface Window {
@@ -17,6 +18,8 @@ declare global {
 
 export function SidebarAd() {
 	useEffect(() => {
+		if (ADS_DISABLED) return
+
 		// Убедимся, что Яндекс.Контекст загружен
 		if (window.yaContextCb) {
 			window.yaContextCb.push(() => {
@@ -29,6 +32,10 @@ export function SidebarAd() {
 			})
 		}
 	}, [])
+
+	// Пустой блок на 250px выглядел бы поломкой вёрстки, поэтому при
+	// отключённой рекламе не рендерим ничего.
+	if (ADS_DISABLED) return null
 
 	return (
 		<div className='sidebar-ad-container'>
