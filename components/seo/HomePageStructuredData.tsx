@@ -3,11 +3,13 @@ export function HomePageStructuredData() {
 		'@context': 'https://schema.org',
 		'@type': 'WebApplication',
 		name: 'PixelTool',
-		alternateName: 'PixelTool Developer Tools',
+		alternateName: 'PixelTool: онлайн-инструменты',
 		url: 'https://pixeltool.pro',
 		description:
-			'Профессиональные инструменты для веб-разработчиков: CSS генераторы, конвертеры цветов, форматировщики, валидаторы и более 50 утилит. Без установки, 100% бесплатно.',
-		applicationCategory: 'DeveloperApplication',
+			'Онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом, конвертер единиц измерения и генераторы CSS. Всё считается в браузере, без установки и регистрации.',
+		// UtilityApplication, а не DeveloperApplication: раздел разработки лишь
+		// один из восьми, остальные тулы бытовые.
+		applicationCategory: 'UtilityApplication',
 		operatingSystem: 'All',
 		offers: {
 			'@type': 'Offer',

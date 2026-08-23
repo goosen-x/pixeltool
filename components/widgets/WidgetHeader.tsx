@@ -17,7 +17,8 @@ export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
 
 	// Get title and description directly from widget data
 	const title = widget.title || widget.id
-	const description = widget.description || 'Инструмент для веб-разработки'
+	const description =
+		widget.description || 'Онлайн-инструмент, работает прямо в браузере'
 
 	return (
 		<div className='mb-8'>

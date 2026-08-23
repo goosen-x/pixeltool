@@ -2,7 +2,8 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const alt = 'PixelTool - Professional Developer Tools'
+export const alt =
+	'PixelTool: онлайн-инструменты для повседневных и рабочих задач'
 export const size = {
 	width: 1200,
 	height: 630
@@ -96,7 +97,7 @@ export default async function Image() {
 					lineHeight: 1.4
 				}}
 			>
-				Professional Developer Tools & Utilities
+				Онлайн-инструменты для повседневных и рабочих задач
 			</p>
 
 			{/* Features */}

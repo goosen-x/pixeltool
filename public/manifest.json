@@ -1,7 +1,7 @@
 {
-	"name": "PixelTool - Developer Tools & Utilities",
+	"name": "PixelTool: онлайн-инструменты",
 	"short_name": "PixelTool",
-	"description": "Professional web developer tools: CSS generators, color converters, formatters, validators, and 50+ more utilities.",
+	"description": "Онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом, конвертер единиц и генераторы CSS.",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
@@ -66,7 +66,7 @@
 			"purpose": "any maskable"
 		}
 	],
-	"categories": ["developer", "productivity", "utilities"],
+	"categories": ["utilities", "productivity", "developer"],
 	"shortcuts": [
 		{
 			"name": "CSS Tools",

@@ -11,7 +11,8 @@ export async function GET(request: NextRequest) {
 		// Get parameters
 		const title = searchParams.get('title') || 'PixelTool'
 		const description =
-			searchParams.get('description') || 'Professional Developer Tools'
+			searchParams.get('description') ||
+			'Онлайн-инструменты для повседневных и рабочих задач'
 		const widgetId = searchParams.get('widget')
 		const locale = searchParams.get('locale') || 'en'
 

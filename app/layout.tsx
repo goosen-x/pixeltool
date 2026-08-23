@@ -83,21 +83,9 @@ export async function generateMetadata(): Promise<Metadata> {
 			template: currentMetadata.title.template || '%s | PixelTool'
 		},
 		description: currentMetadata.description,
-		keywords: [
-			'online tools',
-			'web development',
-			'CSS generator',
-			'color converter',
-			'code formatter',
-			'free utilities',
-			'developer tools',
-			'CSS calculator',
-			'password generator',
-			'QR code generator',
-			'image converter',
-			'HTML parser',
-			'code minifier'
-		],
+		// keywords не задаём: поисковики игнорируют его с середины нулевых, а
+		// прежний список («developer tools», «web development») ещё и описывал
+		// аудиторию, которой сайт давно не ограничивается.
 		creator: 'Dmitry Borisenko',
 		publisher: 'PixelTool',
 		category: 'technology',
@@ -113,14 +101,14 @@ export async function generateMetadata(): Promise<Metadata> {
 					url: `https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`,
 					width: 1200,
 					height: 630,
-					alt: 'PixelTool - Professional Developer Tools',
+					alt: 'PixelTool: онлайн-инструменты для повседневных и рабочих задач',
 					type: 'image/png'
 				},
 				{
 					url: 'https://pixeltool.pro/og-image.png',
 					width: 1024,
 					height: 1024,
-					alt: 'PixelTool - Online tools for developers',
+					alt: 'PixelTool: онлайн-инструменты для повседневных и рабочих задач',
 					type: 'image/png'
 				}
 			]

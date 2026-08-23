@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 					url: 'https://pixeltool.pro/og-image.png',
 					width: 1200,
 					height: 630,
-					alt: 'PixelTool - Профессиональные инструменты разработчика'
+					alt: 'PixelTool: онлайн-инструменты для повседневных и рабочих задач'
 				}
 			]
 		},

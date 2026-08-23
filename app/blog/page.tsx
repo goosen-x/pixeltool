@@ -15,22 +15,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const url = `${baseUrl}/blog`
 
 	const currentMetadata = {
-		title: 'Блог - Туториалы и Руководства для Разработчиков',
+		title: 'Блог: разборы и инструкции по инструментам PixelTool',
 		description:
-			'Читайте наши статьи о веб-разработке, CSS техниках, JavaScript туториалах и инструментах разработчика. Учитесь на практических примерах и фрагментах кода.'
+			'Разборы и инструкции: единицы измерения, расчёты для здоровья, QR-коды и пароли, работа с текстом, CSS и форматы данных. С примерами и без лишней теории.'
 	}
 
 	return {
 		title: currentMetadata.title,
 		description: currentMetadata.description,
-		keywords: [
-			'блог веб-разработки',
-			'CSS туториалы',
-			'JavaScript руководства',
-			'инструменты разработчика',
-			'веб-дизайн',
-			'фронтенд разработка'
-		],
+		// keywords не задаём по той же причине, что и в корневом layout: тег
+		// поисковики игнорируют, а прежний список сужал блог до фронтенда,
+		// хотя половина статей о расчётах, единицах и работе с текстом.
 		openGraph: {
 			title: currentMetadata.title,
 			description: currentMetadata.description,
@@ -85,7 +80,7 @@ export default async function Blog(props: Props) {
 		'@type': 'Blog',
 		name: 'PixelTool Блог',
 		description:
-			'Статьи о веб-разработке, CSS, JavaScript и инструментах разработчика',
+			'Разборы и инструкции: расчёты, единицы измерения, текст, CSS и форматы данных',
 		url: `${baseUrl}/blog`,
 		publisher: {
 			'@type': 'Organization',
@@ -125,8 +120,8 @@ export default async function Blog(props: Props) {
 							Блог
 						</h1>
 						<p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
-							Статьи о веб-разработке, CSS, JavaScript и инструментах, которые
-							экономят время
+							Разборы и инструкции: расчёты, единицы измерения, работа с
+							текстом, CSS и форматы данных
 						</p>
 					</div>
 					<section>
