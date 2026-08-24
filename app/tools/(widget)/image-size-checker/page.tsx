@@ -443,7 +443,7 @@ export default function ImageSizeCheckerPage() {
 								/>
 							</div>
 
-							<div className='flex flex-col justify-center gap-4'>
+							<div className='flex min-w-0 flex-col justify-center gap-4'>
 								<p
 									className='truncate text-sm text-muted-foreground'
 									title={images[0].name}
