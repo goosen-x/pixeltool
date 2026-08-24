@@ -80,12 +80,18 @@ export default async function markdownToHtml(
 
 	// Внешние ссылки (абсолютный http-адрес) открываем в новой вкладке, чтобы не
 	// уводить читателя со статьи. Внутренние (относительные /...) не трогаем.
+	// Таблицы оборачиваем в свой скролл-контейнер: у .markdown table
+	// table-layout по умолчанию auto, и широкая таблица (много колонок, длинные
+	// значения) раздвигала не только себя, но и всю страницу по горизонтали —
+	// сайдбар и хедер обрезались вместе с ней.
 	const htmlString = result
 		.toString()
 		.replace(
 			/<a href="(https?:\/\/[^"]+)"/g,
 			'<a href="$1" target="_blank" rel="noopener noreferrer"'
 		)
+		.replace(/<table>/g, '<div style="overflow-x:auto;margin:2rem 0"><table>')
+		.replace(/<\/table>/g, '</table></div>')
 
 	// Собираем код-блоки (с языком и без) и подсвечиваем каждый через Shiki.
 	// Replace асинхронный, поэтому сначала копим совпадения, потом склеиваем.
