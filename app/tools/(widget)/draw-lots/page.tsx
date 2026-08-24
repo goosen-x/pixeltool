@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Check, Copy, RotateCcw } from 'lucide-react'
+import { Check, Copy, RotateCcw, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import {
 } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { useYandexGoals } from '@/lib/hooks/useYandexGoals'
 import { DrawLotsSeo } from './DrawLotsSeo'
 
 const MAX_PARTICIPANTS = 100
@@ -72,6 +73,12 @@ function getRevealDisplay(count: number) {
 
 export default function DrawLotsPage() {
 	const widget = getWidgetById('draw-lots')!
+	// Глобальный GlobalGoalsTracker ловит клики по тексту кнопки, но список
+	// действий там на английском ('generate', 'roll', 'start'...) — ни разу не
+	// совпадёт с русским «Тянуть жребий». Без явного вызова цель tool_used с
+	// реальным действием (не просто page_view) для этого тула не набиралась
+	// бы вообще — важно сейчас, идёт платный трафик на этот тул.
+	const { trackToolAction } = useYandexGoals()
 	const [mounted, setMounted] = useState(false)
 	// Пример по-русски: инструмент русскоязычный, а в списке лежали Einstein
 	// и da Vinci — на них и проверяли длину строк.
@@ -118,7 +125,8 @@ export default function DrawLotsPage() {
 		const shuffledLots = shuffleArray(lotObjects)
 		setLots(shuffledLots)
 		setIsDrawing(true)
-	}, [inputText])
+		trackToolAction('draw')
+	}, [inputText, trackToolAction])
 
 	const revealLot = useCallback((lotId: string) => {
 		setLots(prev =>
@@ -177,28 +185,42 @@ export default function DrawLotsPage() {
 
 					<div className='flex items-center gap-0.5 ml-auto'>
 						{isDrawing ? (
-							<Button
-								size='icon'
-								variant='ghost'
-								onClick={reset}
-								title='Вернуться к списку'
-								className={toolIconButton}
-							>
-								<RotateCcw className='h-4 w-4' />
-							</Button>
-						) : (
 							<button
 								type='button'
-								onClick={() => setInputText(defaultValues)}
-								disabled={inputText === defaultValues}
-								className={cn(
-									toolPill(false, 'inline-flex items-center gap-1.5'),
-									inputText === defaultValues && 'invisible'
-								)}
+								onClick={reset}
+								title='Вернуться к списку'
+								className={toolPill(false, 'inline-flex items-center gap-1.5')}
 							>
 								<RotateCcw className='h-3.5 w-3.5' />
-								Вернуть пример
+								Сбросить
 							</button>
+						) : (
+							<>
+								<button
+									type='button'
+									onClick={() => setInputText('')}
+									disabled={inputText === ''}
+									className={cn(
+										toolPill(false, 'inline-flex items-center gap-1.5'),
+										inputText === '' && 'invisible'
+									)}
+								>
+									<X className='h-3.5 w-3.5' />
+									Очистить
+								</button>
+								<button
+									type='button'
+									onClick={() => setInputText(defaultValues)}
+									disabled={inputText === defaultValues}
+									className={cn(
+										toolPill(false, 'inline-flex items-center gap-1.5'),
+										inputText === defaultValues && 'invisible'
+									)}
+								>
+									<RotateCcw className='h-3.5 w-3.5' />
+									Вернуть пример
+								</button>
+							</>
 						)}
 					</div>
 				</div>
