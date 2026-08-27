@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const currentMetadata = {
 		title: 'Блог: разборы и инструкции по инструментам PixelTool',
 		description:
-			'Разборы и инструкции: единицы измерения, расчёты для здоровья, QR-коды и пароли, работа с текстом, CSS и форматы данных. С примерами и без лишней теории.'
+			'Разборы и инструкции: единицы измерения, расчёты для здоровья, QR-коды и пароли, работа с текстом и форматами данных. С примерами и без лишней теории.'
 	}
 
 	return {
@@ -80,7 +80,7 @@ export default async function Blog(props: Props) {
 		'@type': 'Blog',
 		name: 'PixelTool Блог',
 		description:
-			'Разборы и инструкции: расчёты, единицы измерения, текст, CSS и форматы данных',
+			'Разборы и инструкции: расчёты, единицы измерения, работа с текстом и форматами данных',
 		url: `${baseUrl}/blog`,
 		publisher: {
 			'@type': 'Organization',
@@ -121,8 +121,8 @@ export default async function Blog(props: Props) {
 							Блог
 						</h1>
 						<p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
-							Разборы и инструкции: расчёты, единицы измерения, работа с
-							текстом, CSS и форматы данных
+							Разборы и инструкции: расчёты, единицы измерения, работа с текстом
+							и форматами данных
 						</p>
 					</div>
 					<section>

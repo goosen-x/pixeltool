@@ -38,7 +38,7 @@ export async function GET() {
 	<channel>
 		<title>PixelTool — Блог</title>
 		<link>${BASE_URL}/blog</link>
-		<description>Разборы и инструкции: расчёты, единицы измерения, текст, CSS и форматы данных</description>
+		<description>Разборы и инструкции: расчёты, единицы измерения, работа с текстом и форматами данных</description>
 		<language>ru</language>
 		<atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="${BASE_URL}/rss.xml" rel="self" type="application/rss+xml"/>${items}
 	</channel>

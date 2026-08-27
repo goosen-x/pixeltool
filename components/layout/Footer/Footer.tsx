@@ -64,8 +64,8 @@ export const Footer = () => {
 							<span className='font-heading'>PixelTool</span>
 						</Link>
 						<p className='text-sm text-muted-foreground mb-6 leading-relaxed max-w-sm'>
-							Всё нужное под рукой: от QR-кода и случайного числа до генераторов
-							CSS. Работают прямо в браузере, быстро и бесплатно.
+							Всё нужное под рукой: от QR-кода и случайного числа до конвертера
+							единиц измерения. Работают прямо в браузере, быстро и бесплатно.
 						</p>
 
 						{/* Social Links */}
