@@ -22,23 +22,32 @@ export function WidgetHeader({ widgetId }: WidgetHeaderProps) {
 
 	return (
 		<div className='mb-8'>
-			<div className='flex flex-col gap-4 sm:flex-row sm:items-start'>
+			{/* Grid вместо flex, чтобы раскладка отличалась по брейкпоинтам без
+			    дублирования заголовка/описания в DOM (важно для одного <h1> на
+			    странице). Мобильный шаблон: иконка+заголовок в первой строке,
+			    описание — второй строкой во всю ширину. На sm+: иконка крупнее
+			    и растянута на обе строки слева, описание — только справа. */}
+			<div
+				className={cn(
+					'grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2 sm:gap-x-4',
+					"[grid-template-areas:'icon_title'_'desc_desc']",
+					"sm:[grid-template-areas:'icon_title'_'icon_desc']"
+				)}
+			>
 				<div
 					className={cn(
-						`w-16 h-16 sm:w-18 sm:h-18 rounded-lg bg-gradient-to-br flex items-center justify-center text-white shrink-0`,
+						'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-white [grid-area:icon] sm:h-18 sm:w-18',
 						widget.gradient
 					)}
 				>
-					<Icon className='w-8 h-8 sm:w-10 sm:h-10' />
+					<Icon className='h-4 w-4 sm:h-10 sm:w-10' />
 				</div>
-				<div className='flex min-w-0 flex-col gap-2'>
-					<h1 className='text-balance text-2xl sm:text-3xl md:text-4xl font-heading font-bold'>
-						{title}
-					</h1>
-					<p className='text-base sm:text-lg md:text-xl text-muted-foreground'>
-						{description}
-					</p>
-				</div>
+				<h1 className='min-w-0 text-balance text-lg font-heading font-bold [grid-area:title] sm:text-3xl md:text-4xl'>
+					{title}
+				</h1>
+				<p className='min-w-0 text-sm text-muted-foreground [grid-area:desc] sm:text-lg md:text-xl'>
+					{description}
+				</p>
 			</div>
 
 			{/* Отдельной строкой: рядом с заголовком кнопки поджимали его и
