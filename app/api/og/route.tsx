@@ -18,8 +18,14 @@ import { getWidgetById } from '@/lib/constants/widgets'
  * Buffer, а @vercel/og типизирует fonts[].data строго как ArrayBuffer,
  * поэтому конвертируем явно.
  */
-const fontPromise = readFile(join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')).then(
-	buffer => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer
+const fontPromise = readFile(
+	join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')
+).then(
+	buffer =>
+		buffer.buffer.slice(
+			buffer.byteOffset,
+			buffer.byteOffset + buffer.byteLength
+		) as ArrayBuffer
 )
 
 export const runtime = 'nodejs'

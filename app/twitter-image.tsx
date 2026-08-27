@@ -6,8 +6,14 @@ import { join } from 'path'
 // на каждый запрос и стабильно падает на этом сервере, см. комментарий в
 // app/api/og/route.tsx. Держим тот же локальный Roboto, а Buffer из readFile
 // конвертируем в ArrayBuffer, как того строго требует тип fonts[].data.
-const fontPromise = readFile(join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')).then(
-	buffer => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer
+const fontPromise = readFile(
+	join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')
+).then(
+	buffer =>
+		buffer.buffer.slice(
+			buffer.byteOffset,
+			buffer.byteOffset + buffer.byteLength
+		) as ArrayBuffer
 )
 
 export const runtime = 'nodejs'
