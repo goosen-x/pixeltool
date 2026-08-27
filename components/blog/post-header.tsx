@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import DateFormatter from './date-formatter'
 import { PostCover } from './post-cover'
@@ -44,7 +45,10 @@ export function PostHeader({
 					{title}
 				</h1>
 				<div className='flex flex-wrap items-center justify-between gap-4 mb-8'>
-					<div className='flex items-center gap-4'>
+					<Link
+						href='/blog/author'
+						className='flex items-center gap-4 cursor-pointer group'
+					>
 						<Avatar>
 							{/* width/height как HTML-атрибуты, не только классы: без них,
 							    если CSS не загрузился, голый <img> рендерится в свой
@@ -65,13 +69,15 @@ export function PostHeader({
 							</AvatarFallback>
 						</Avatar>
 						<div>
-							<div className='font-semibold'>{author.name}</div>
+							<div className='font-semibold group-hover:text-primary transition-colors'>
+								{author.name}
+							</div>
 							<div className='text-sm text-gray-500'>
 								<DateFormatter dateString={date} /> · {readingTime}{' '}
 								{pluralizeRu(readingTime, ['минута', 'минуты', 'минут'])} чтения
 							</div>
 						</div>
-					</div>
+					</Link>
 					<BlogPostActions postId={slug} title={title} />
 				</div>
 			</div>

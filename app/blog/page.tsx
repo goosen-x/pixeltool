@@ -99,7 +99,8 @@ export default async function Blog(props: Props) {
 			datePublished: post.date,
 			author: {
 				'@type': 'Person',
-				name: post.author.name
+				name: post.author.name,
+				url: `${baseUrl}/blog/author`
 			}
 		}))
 	}

@@ -28,7 +28,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
  * Обновляй руками при значимых изменениях набора инструментов/статики.
  * Дату отдельного инструмента можно переопределить через widget.updatedAt.
  */
-const CONTENT_LAST_UPDATED = '2026-08-02'
+const CONTENT_LAST_UPDATED = '2026-08-27'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Get all blog posts
@@ -44,6 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		'',
 		'/contact',
 		'/blog',
+		'/blog/author',
 		'/tools',
 		'/about',
 		'/privacy',

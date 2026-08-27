@@ -44,7 +44,10 @@ export function PostPreview({
 					{title}
 				</Link>
 			</h3>
-			<div className='flex items-center gap-4 mb-4'>
+			<Link
+				href='/blog/author'
+				className='flex items-center gap-4 mb-4 w-fit cursor-pointer group'
+			>
 				<OptimizedImage
 					src={author.picture}
 					alt={author.name}
@@ -53,12 +56,14 @@ export function PostPreview({
 					height={40}
 				/>
 				<div className='flex flex-col'>
-					<div className='font-semibold'>{author.name}</div>
+					<div className='font-semibold group-hover:text-primary transition-colors'>
+						{author.name}
+					</div>
 					<div className='text-sm text-gray-500'>
 						<DateFormatter dateString={date} />
 					</div>
 				</div>
-			</div>
+			</Link>
 			<p className='text-lg leading-relaxed'>{excerpt}</p>
 		</article>
 	)

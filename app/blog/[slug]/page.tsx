@@ -38,7 +38,7 @@ export default async function Post(props: Params) {
 			image: post.author.picture
 				? `${baseUrl}${post.author.picture}`
 				: undefined,
-			url: baseUrl
+			url: `${baseUrl}/blog/author`
 		},
 		publisher: {
 			'@type': 'Organization',
