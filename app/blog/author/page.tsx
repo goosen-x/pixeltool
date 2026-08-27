@@ -76,7 +76,9 @@ export default async function AuthorPage() {
 						<h1 className='text-3xl md:text-4xl font-bold tracking-tight mb-2'>
 							{AUTHOR_NAME}
 						</h1>
-						<p className='text-muted-foreground'>Разработчик и автор PixelTool</p>
+						<p className='text-muted-foreground'>
+							Разработчик и автор PixelTool
+						</p>
 					</div>
 
 					<div className='max-w-xl mx-auto text-center mb-8 space-y-4 text-foreground/90'>
@@ -87,8 +89,8 @@ export default async function AuthorPage() {
 							регистрации.
 						</p>
 						<p>
-							В статьях разбираю то же, что и в инструментах: конкретные
-							задачи, формулы и цифры, без воды.
+							В статьях разбираю то же, что и в инструментах: конкретные задачи,
+							формулы и цифры, без воды.
 						</p>
 					</div>
 
@@ -109,7 +111,9 @@ export default async function AuthorPage() {
 
 					<h2 className='text-2xl font-bold mb-8'>Статьи</h2>
 					{posts.length === 0 ? (
-						<p className='text-muted-foreground'>Пока нет опубликованных статей</p>
+						<p className='text-muted-foreground'>
+							Пока нет опубликованных статей
+						</p>
 					) : (
 						<div className='grid grid-cols-1 gap-y-16'>
 							{posts.map(post => (
