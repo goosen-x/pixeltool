@@ -16,6 +16,7 @@ import {
 	AlertCircle,
 	AlertTriangle,
 	Copy,
+	ImageOff,
 	Loader2
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -179,7 +180,7 @@ function FacebookPreview({ data }: { data: OpenGraphData }) {
 					<span className='text-xs font-medium'>Facebook</span>
 				</div>
 				<div className='overflow-hidden rounded-lg border'>
-					{data.image && (
+					{data.image ? (
 						<div className='aspect-video bg-muted'>
 							<Image
 								src={data.image}
@@ -189,6 +190,11 @@ function FacebookPreview({ data }: { data: OpenGraphData }) {
 								className='h-full w-full object-cover'
 								unoptimized
 							/>
+						</div>
+					) : (
+						<div className='flex aspect-video flex-col items-center justify-center gap-1 bg-muted text-muted-foreground'>
+							<ImageOff className='h-5 w-5' />
+							<span className='text-[10px]'>Нет изображения</span>
 						</div>
 					)}
 					<div className='bg-muted/60 px-3 py-2'>
@@ -220,7 +226,7 @@ function TwitterPreview({ data }: { data: OpenGraphData }) {
 					<span className='text-xs font-medium'>Twitter</span>
 				</div>
 				<div className='overflow-hidden rounded-2xl border'>
-					{data.image && (
+					{data.image ? (
 						<div className='aspect-video bg-muted'>
 							<Image
 								src={data.image}
@@ -230,6 +236,11 @@ function TwitterPreview({ data }: { data: OpenGraphData }) {
 								className='h-full w-full object-cover'
 								unoptimized
 							/>
+						</div>
+					) : (
+						<div className='flex aspect-video flex-col items-center justify-center gap-1 bg-muted text-muted-foreground'>
+							<ImageOff className='h-5 w-5' />
+							<span className='text-[10px]'>Нет изображения</span>
 						</div>
 					)}
 					<div className='px-3 py-2'>
@@ -271,7 +282,7 @@ function TelegramPreview({ data }: { data: OpenGraphData }) {
 					<p className='mt-0.5 line-clamp-3 text-[11px] text-muted-foreground'>
 						{data.description}
 					</p>
-					{data.image && (
+					{data.image ? (
 						<div className='mt-2 aspect-video overflow-hidden rounded-lg bg-muted'>
 							<Image
 								src={data.image}
@@ -281,6 +292,11 @@ function TelegramPreview({ data }: { data: OpenGraphData }) {
 								className='h-full w-full object-cover'
 								unoptimized
 							/>
+						</div>
+					) : (
+						<div className='mt-2 flex aspect-video flex-col items-center justify-center gap-1 rounded-lg bg-muted text-muted-foreground'>
+							<ImageOff className='h-5 w-5' />
+							<span className='text-[10px]'>Нет изображения</span>
 						</div>
 					)}
 				</div>
@@ -304,7 +320,7 @@ function WhatsAppPreview({ data }: { data: OpenGraphData }) {
 					<span className='text-xs font-medium'>WhatsApp</span>
 				</div>
 				<div className='overflow-hidden rounded-lg border'>
-					{data.image && (
+					{data.image ? (
 						<div className='aspect-video bg-muted'>
 							<Image
 								src={data.image}
@@ -314,6 +330,11 @@ function WhatsAppPreview({ data }: { data: OpenGraphData }) {
 								className='h-full w-full object-cover'
 								unoptimized
 							/>
+						</div>
+					) : (
+						<div className='flex aspect-video flex-col items-center justify-center gap-1 bg-muted text-muted-foreground'>
+							<ImageOff className='h-5 w-5' />
+							<span className='text-[10px]'>Нет изображения</span>
 						</div>
 					)}
 					<div className='px-3 py-2'>
