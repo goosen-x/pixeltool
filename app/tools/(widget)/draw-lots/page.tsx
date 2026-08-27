@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Check, Copy, RotateCcw, X } from 'lucide-react'
+import { Check, Copy, RotateCcw, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -195,32 +195,18 @@ export default function DrawLotsPage() {
 								Сбросить
 							</button>
 						) : (
-							<>
-								<button
-									type='button'
-									onClick={() => setInputText('')}
-									disabled={inputText === ''}
-									className={cn(
-										toolPill(false, 'inline-flex items-center gap-1.5'),
-										inputText === '' && 'invisible'
-									)}
-								>
-									<X className='h-3.5 w-3.5' />
-									Очистить
-								</button>
-								<button
-									type='button'
-									onClick={() => setInputText(defaultValues)}
-									disabled={inputText === defaultValues}
-									className={cn(
-										toolPill(false, 'inline-flex items-center gap-1.5'),
-										inputText === defaultValues && 'invisible'
-									)}
-								>
-									<RotateCcw className='h-3.5 w-3.5' />
-									Вернуть пример
-								</button>
-							</>
+							<button
+								type='button'
+								onClick={() => setInputText(defaultValues)}
+								disabled={inputText === defaultValues}
+								className={cn(
+									toolPill(false, 'inline-flex items-center gap-1.5'),
+									inputText === defaultValues && 'invisible'
+								)}
+							>
+								<RotateCcw className='h-3.5 w-3.5' />
+								Вернуть пример
+							</button>
 						)}
 					</div>
 				</div>
@@ -236,15 +222,29 @@ export default function DrawLotsPage() {
 							    синхронизирована с колонкой предпросмотра справа — иначе
 							    при длинном списке они растут независимо и грид «рвёт»
 							    страницу по самой высокой из двух. */}
-							<Textarea
-								id='items'
-								value={inputText}
-								onChange={e => setInputText(e.target.value)}
-								placeholder={'Иван\nПётр\nМария\nАнна'}
-								spellCheck={false}
-								aria-label='Участники жеребьёвки'
-								className='max-h-[32rem] min-h-[10rem] resize-none overflow-y-auto rounded-none border-0 border-b px-5 py-6 font-mono text-base [field-sizing:content] focus-visible:ring-0 sm:border-r sm:border-b-0 sm:px-6 md:text-sm'
-							/>
+							<div className='relative'>
+								<Textarea
+									id='items'
+									value={inputText}
+									onChange={e => setInputText(e.target.value)}
+									placeholder={'Иван\nПётр\nМария\nАнна'}
+									spellCheck={false}
+									aria-label='Участники жеребьёвки'
+									className='max-h-[32rem] min-h-[10rem] resize-none overflow-y-auto rounded-none border-0 border-b px-5 py-6 font-mono text-base [field-sizing:content] focus-visible:ring-0 sm:border-r sm:border-b-0 sm:px-6 md:text-sm'
+								/>
+
+								{inputText !== '' && (
+									<Button
+										size='icon'
+										variant='secondary'
+										onClick={() => setInputText('')}
+										title='Очистить'
+										className='absolute top-3 right-3 h-8 w-8 cursor-pointer shadow-sm'
+									>
+										<Trash2 className='h-4 w-4' />
+									</Button>
+								)}
+							</div>
 
 							{/* Живой предпросмотр — как реально распарсился ввод (лишний
 							    пробел, пустая строка, дубль видны сразу), а не только
