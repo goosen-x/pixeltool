@@ -28,8 +28,8 @@ export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 				boundedHeight && 'h-full overflow-y-auto projects-scroll'
 			)}
 		>
-			<FeedbackCard />
 			<AdSection />
+			<FeedbackCard />
 		</aside>
 	)
 }
