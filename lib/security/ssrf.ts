@@ -1,4 +1,5 @@
 import { lookup } from 'dns/promises'
+import type { LookupAddress } from 'dns'
 import { isIP } from 'net'
 
 /**
@@ -47,7 +48,13 @@ export async function assertPublicHost(hostname: string): Promise<void> {
 		return
 	}
 
-	const addresses = await lookup(hostname, { all: true })
+	let addresses: LookupAddress[]
+	try {
+		addresses = await lookup(hostname, { all: true })
+	} catch {
+		throw new Error('Не удалось найти такой адрес в сети')
+	}
+
 	if (addresses.some(entry => isPrivateAddress(entry.address))) {
 		throw new Error('Адрес ведёт во внутреннюю сеть')
 	}

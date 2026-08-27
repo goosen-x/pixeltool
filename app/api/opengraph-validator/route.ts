@@ -1,27 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { JSDOM } from 'jsdom'
+import { assertPublicHost, toSafePublicUrl } from '@/lib/security/ssrf'
 
 export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
 
 	if (!url) {
-		return NextResponse.json(
-			{ error: 'URL parameter is required' },
-			{ status: 400 }
-		)
+		return NextResponse.json({ error: 'Не передан адрес' }, { status: 400 })
+	}
+
+	// Валидация формата и защита от SSRF (см. lib/security/ssrf): без нее
+	// url мог вести на localhost или на метаданные облака.
+	let parsedUrl: URL
+	try {
+		parsedUrl = await toSafePublicUrl(url)
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : 'Некорректный адрес'
+		return NextResponse.json({ error: message }, { status: 400 })
 	}
 
 	try {
-		// Validate URL format
-		const parsedUrl = new URL(url)
-		if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-			return NextResponse.json(
-				{ error: 'URL must use HTTP or HTTPS protocol' },
-				{ status: 400 }
-			)
-		}
-
 		// Fetch the webpage
 		const controller = new AbortController()
 		const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 		// Ходим под браузерным User-Agent и браузерными заголовками: ботовый UA
 		// с датацентр-IP крупные сайты за Cloudflare/CDN режут (запрос висит до
 		// таймаута). Реалистичные заголовки проходят большинство базовых фильтров.
-		const response = await fetch(url, {
+		const response = await fetch(parsedUrl.toString(), {
 			signal: controller.signal,
 			redirect: 'follow',
 			headers: {
@@ -44,9 +44,16 @@ export async function GET(request: NextRequest) {
 		clearTimeout(timeoutId)
 
 		if (!response.ok) {
+			// Сайт мог реально не ответить, а мог и оказаться статикой на S3/CDN
+			// без серверного роутинга: она отдаёт настоящий 403/404 на любой
+			// путь без объекта и дорисовывает страницу уже в браузере через JS,
+			// которого мы не выполняем (найдено 27.08.2026 на реальном отчёте
+			// об ошибке: tumanvpn.ru/ref/... открывается у живого человека, а
+			// нашему fetch честно отвечает 403). Поэтому не выдаём голый код
+			// ошибки за поломанную ссылку.
 			return NextResponse.json(
 				{
-					error: `Failed to fetch URL: ${response.status} ${response.statusText}`
+					error: `Сайт ответил ошибкой ${response.status} ${response.statusText}. Часть сайтов блокирует автоматические проверки или отдаёт содержимое через JavaScript, которого сервер не выполняет, и если ссылка открывается в браузере, дело именно в этом.`
 				},
 				{ status: 400 }
 			)
@@ -125,7 +132,11 @@ export async function GET(request: NextRequest) {
 		let imageData = null
 		if (ogTags['og:image']) {
 			try {
-				const imageUrl = new URL(ogTags['og:image'], url)
+				const imageUrl = new URL(ogTags['og:image'], parsedUrl)
+
+				// og:image приходит из HTML проверяемого сайта, а не от нашего
+				// пользователя, тот же SSRF-риск, что и с исходным адресом.
+				await assertPublicHost(imageUrl.hostname)
 				ogTags['og:image'] = imageUrl.toString()
 
 				const imageResponse = await fetch(imageUrl.toString(), {
@@ -141,7 +152,7 @@ export async function GET(request: NextRequest) {
 			} catch {
 				imageData = {
 					accessible: false,
-					error: 'Failed to verify image accessibility'
+					error: 'Не удалось проверить доступность og:image'
 				}
 			}
 		}
@@ -160,19 +171,32 @@ export async function GET(request: NextRequest) {
 		if (error instanceof Error) {
 			if (error.name === 'AbortError') {
 				return NextResponse.json(
-					{ error: 'Request timeout - the webpage took too long to respond' },
+					{ error: 'Сайт слишком долго не отвечал, проверка прервана' },
 					{ status: 408 }
 				)
 			}
 
+			// "fetch failed", сетевая ошибка на уровне TCP/DNS/TLS, без HTTP-
+			// ответа вообще (сайт лёг, обрубил соединение, битый сертификат).
+			// Отличается от ответа сайта с кодом ошибки, который ловится выше.
+			if (error.message.includes('fetch failed')) {
+				return NextResponse.json(
+					{
+						error:
+							'Не удалось подключиться к сайту. Возможно, временная проблема сети, попробуйте ещё раз, или сайт сейчас недоступен.'
+					},
+					{ status: 502 }
+				)
+			}
+
 			return NextResponse.json(
-				{ error: `Failed to validate URL: ${error.message}` },
+				{ error: `Не удалось проверить адрес: ${error.message}` },
 				{ status: 500 }
 			)
 		}
 
 		return NextResponse.json(
-			{ error: 'An unexpected error occurred' },
+			{ error: 'Произошла непредвиденная ошибка' },
 			{ status: 500 }
 		)
 	}
