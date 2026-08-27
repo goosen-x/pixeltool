@@ -1,8 +1,28 @@
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
+import { readFile } from 'fs/promises'
+import { join } from 'path'
 import { getWidgetById } from '@/lib/constants/widgets'
 
-export const runtime = 'edge'
+/**
+ * Настоящая причина «failed to pipe response» / «object null is not
+ * iterable», которая раньше валила эту ручку почти на каждый запрос
+ * (диагностировано 27.08.2026, битым оказался перенос строки внутри
+ * repeating-linear-gradient(...) чуть ниже: сатори нормально парсит
+ * несколько градиентов, разделённых переносом между ними, но ломается,
+ * если перенос стоит внутри списка аргументов одной функции). Без
+ * явного fonts сатори вдобавок догружает шрифт для незакрытых глифов
+ * с fonts.googleapis.com на каждый запрос, что на этом сервере
+ * ненадёжно, поэтому держим тот же Roboto-шрифт локально, как уже
+ * сделано для PDF в scripts/generate-legal-pdfs.ts. readFile отдаёт
+ * Buffer, а @vercel/og типизирует fonts[].data строго как ArrayBuffer,
+ * поэтому конвертируем явно.
+ */
+const fontPromise = readFile(join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')).then(
+	buffer => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer
+)
+
+export const runtime = 'nodejs'
 
 export async function GET(request: NextRequest) {
 	try {
@@ -34,6 +54,8 @@ export async function GET(request: NextRequest) {
 			? categoryEmojis[widget.category] || '🛠️'
 			: '🛠️'
 
+		const fontData = await fontPromise
+
 		return new ImageResponse(
 			<div
 				style={{
@@ -46,7 +68,8 @@ export async function GET(request: NextRequest) {
 					backgroundColor: '#0f172a',
 					backgroundImage: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
 					position: 'relative',
-					overflow: 'hidden'
+					overflow: 'hidden',
+					fontFamily: 'Roboto'
 				}}
 			>
 				{/* Background pattern */}
@@ -58,13 +81,8 @@ export async function GET(request: NextRequest) {
 						right: 0,
 						bottom: 0,
 						opacity: 0.05,
-						backgroundImage: `repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(255,255,255,0.05) 10px,
-                rgba(255,255,255,0.05) 20px
-              )`
+						backgroundImage:
+							'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)'
 					}}
 				/>
 
@@ -76,8 +94,7 @@ export async function GET(request: NextRequest) {
 						alignItems: 'center',
 						justifyContent: 'center',
 						padding: '60px',
-						textAlign: 'center',
-						zIndex: 10
+						textAlign: 'center'
 					}}
 				>
 					{/* Widget Icon or Emoji */}
@@ -87,9 +104,13 @@ export async function GET(request: NextRequest) {
 								width: 80,
 								height: 80,
 								marginBottom: 20,
-								background:
-									widget.gradient ||
-									'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
+								// widget.gradient — класс Tailwind вида "from-cyan-500
+								// to-blue-600" для карточек в интерфейсе, не CSS-значение
+								// background, сатори не парсит его и падает (найдено
+								// 27.08.2026). Общий градиент для всех тулов надёжнее,
+								// чем таблица соответствий Tailwind-цветов на 74 записи
+								// ради декоративной иконки в превью для соцсетей.
+								background: 'linear-gradient(135deg, #3b82f6 0%, #10b981 100%)',
 								borderRadius: 16,
 								display: 'flex',
 								alignItems: 'center',
@@ -186,10 +207,14 @@ export async function GET(request: NextRequest) {
 			</div>,
 			{
 				width: 1200,
-				height: 630
+				height: 630,
+				fonts: [
+					{ name: 'Roboto', data: fontData, style: 'normal', weight: 400 }
+				]
 			}
 		)
 	} catch (e) {
+		console.error('Не удалось сгенерировать OG-картинку:', e)
 		return new Response(`Failed to generate image`, {
 			status: 500
 		})

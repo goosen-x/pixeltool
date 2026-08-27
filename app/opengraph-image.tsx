@@ -1,6 +1,16 @@
 import { ImageResponse } from 'next/og'
+import { readFile } from 'fs/promises'
+import { join } from 'path'
 
-export const runtime = 'edge'
+// Без явного fonts satori догружает недостающий шрифт с fonts.googleapis.com
+// на каждый запрос и стабильно падает на этом сервере, см. комментарий в
+// app/api/og/route.tsx. Держим тот же локальный Roboto, а Buffer из readFile
+// конвертируем в ArrayBuffer, как того строго требует тип fonts[].data.
+const fontPromise = readFile(join(process.cwd(), 'public/fonts/Roboto-Regular.ttf')).then(
+	buffer => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer
+)
+
+export const runtime = 'nodejs'
 
 export const alt =
 	'PixelTool: онлайн-инструменты для повседневных и рабочих задач'
@@ -11,6 +21,8 @@ export const size = {
 export const contentType = 'image/png'
 
 export default async function Image() {
+	const fontData = await fontPromise
+
 	return new ImageResponse(
 		<div
 			style={{
@@ -21,7 +33,8 @@ export default async function Image() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				justifyContent: 'center',
-				position: 'relative'
+				position: 'relative',
+				fontFamily: 'Roboto'
 			}}
 		>
 			{/* Background pattern */}
@@ -196,7 +209,8 @@ export default async function Image() {
 			</div>
 		</div>,
 		{
-			...size
+			...size,
+			fonts: [{ name: 'Roboto', data: fontData, style: 'normal', weight: 400 }]
 		}
 	)
 }
