@@ -35,6 +35,12 @@ const HISTORY_LIMIT = 8
 // и палец, и то, что он вот-вот выберет.
 const MAGNIFIER_TOUCH_GAP = 40
 const MAGNIFIER_EDGE_MARGIN = 8
+// Сколько пикселей пройти, прежде чем решить, скролл это или выбор цвета —
+// меньше похоже на дрожание пальца, а не на осознанный жест.
+const GESTURE_DECISION_DISTANCE = 6
+// Насколько вертикальное движение должно перевешивать горизонтальное, чтобы
+// считать его скроллом, а не аккуратным прицеливанием по пикселю.
+const SCROLL_INTENT_RATIO = 1.5
 
 function loadImage(url: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
@@ -99,6 +105,13 @@ export default function PhotoColorPickerPage() {
 	const magnifierFloatRef = useRef<HTMLCanvasElement>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const canvasWrapRef = useRef<HTMLDivElement>(null)
+	// canvas раньше держал touch-action:none — это глушило скролл насмерть для
+	// любого касания фото, а на мобильном фото часто занимает большую часть
+	// экрана, и до результата снизу было не долистать. Решаем сами, в JS: жест
+	// движется в основном вертикально и достаточно далеко — это скролл,
+	// отпускаем браузеру; иначе — выбор цвета, как раньше.
+	const touchStartRef = useRef<{ x: number; y: number } | null>(null)
+	const touchGestureRef = useRef<'undecided' | 'pick' | 'scroll'>('undecided')
 
 	const [hasImage, setHasImage] = useState(false)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -240,23 +253,52 @@ export default function PhotoColorPickerPage() {
 
 	const onCanvasTouchStart = (event: TouchEvent<HTMLCanvasElement>) => {
 		const touch = event.touches[0]
-		if (touch) updateTouchLoupe(touch.clientX, touch.clientY)
+		if (!touch) return
+		touchStartRef.current = { x: touch.clientX, y: touch.clientY }
+		touchGestureRef.current = 'undecided'
+		updateTouchLoupe(touch.clientX, touch.clientY)
 	}
 
 	const onCanvasTouchMove = (event: TouchEvent<HTMLCanvasElement>) => {
-		event.preventDefault()
 		const touch = event.touches[0]
-		if (touch) updateTouchLoupe(touch.clientX, touch.clientY)
+		const start = touchStartRef.current
+		if (!touch || !start) return
+
+		if (touchGestureRef.current === 'undecided') {
+			const dx = touch.clientX - start.x
+			const dy = touch.clientY - start.y
+			if (Math.hypot(dx, dy) >= GESTURE_DECISION_DISTANCE) {
+				touchGestureRef.current =
+					Math.abs(dy) > Math.abs(dx) * SCROLL_INTENT_RATIO ? 'scroll' : 'pick'
+				if (touchGestureRef.current === 'scroll') {
+					setHoverPos(null)
+					setTouchLoupe(null)
+				}
+			}
+		}
+
+		// Жест распознан как скролл — не вызываем preventDefault и не двигаем
+		// лупу, отдаём событие браузеру как обычный свайп по странице.
+		if (touchGestureRef.current === 'scroll') return
+
+		event.preventDefault()
+		updateTouchLoupe(touch.clientX, touch.clientY)
 	}
 
 	const onCanvasTouchEnd = (event: TouchEvent<HTMLCanvasElement>) => {
-		const touch = event.changedTouches[0]
-		if (touch) handlePick(touch.clientX, touch.clientY)
+		if (touchGestureRef.current !== 'scroll') {
+			const touch = event.changedTouches[0]
+			if (touch) handlePick(touch.clientX, touch.clientY)
+		}
+		touchStartRef.current = null
+		touchGestureRef.current = 'undecided'
 		setHoverPos(null)
 		setTouchLoupe(null)
 	}
 
 	const onCanvasTouchCancel = () => {
+		touchStartRef.current = null
+		touchGestureRef.current = 'undecided'
 		setHoverPos(null)
 		setTouchLoupe(null)
 	}
@@ -414,7 +456,9 @@ export default function PhotoColorPickerPage() {
 							onTouchEnd={onCanvasTouchEnd}
 							onTouchCancel={onCanvasTouchCancel}
 							className={cn(
-								'max-h-96 max-w-full touch-none rounded-xl border',
+								// touch-auto (не none): скролл теперь решается в JS —
+								// см. onCanvasTouchMove — а не глушится CSS насмерть.
+								'max-h-96 max-w-full touch-auto rounded-xl border',
 								hasImage ? 'block cursor-crosshair' : 'hidden'
 							)}
 						/>
