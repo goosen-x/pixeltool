@@ -46,9 +46,15 @@ export function PostHeader({
 				<div className='flex flex-wrap items-center justify-between gap-4 mb-8'>
 					<div className='flex items-center gap-4'>
 						<Avatar>
+							{/* width/height как HTML-атрибуты, не только классы: без них,
+							    если CSS не загрузился, голый <img> рендерится в свой
+							    настоящий размер (854×1280 у avatar.jpeg) вместо 40×40,
+							    а HTML-атрибуты размера работают независимо от CSS. */}
 							<AvatarImage
 								src={author.picture}
 								alt={author.name}
+								width={40}
+								height={40}
 								className='object-cover'
 							/>
 							<AvatarFallback>
