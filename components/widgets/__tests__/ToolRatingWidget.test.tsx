@@ -93,7 +93,10 @@ describe('ToolRatingWidget', () => {
 		)
 		// кнопки остаются кликабельными — hasVoted не переключился
 		expect(button).toBeEnabled()
-		expect(screen.queryByText(/·/)).not.toBeInTheDocument()
+		// Счётчик оценок держит место в layout всегда (invisible при
+		// ratingCount === 0), а не пропадает из DOM — иначе первый успешный
+		// голос на туле без оценок сдвигал бы всё, что справа.
+		expect(screen.getByText('0.0 · 0')).toHaveClass('invisible')
 	})
 
 	it('рисует 5 звёзд, кликабельных, пока не проголосовал', () => {

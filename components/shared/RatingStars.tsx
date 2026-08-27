@@ -159,11 +159,20 @@ export function RatingStars({
 					</button>
 				)
 			})}
-			{ratingCount > 0 && (
-				<span className='ml-1 text-xs text-muted-foreground'>
-					{rating.toFixed(1)} · {ratingCount}
-				</span>
-			)}
+			{/* Рендерится всегда, а не по условию ratingCount > 0: первый голос
+			    на туле без оценок раньше монтировал этот span только что, и вся
+			    строка справа (избранное/поделиться) дёргалась вбок вместе с ним.
+			    invisible держит место в layout заранее, ничего не сдвигает при
+			    появлении числа. tabular-nums убирает мелкое дрожание ширины между
+			    соседними оценками (4.5 → 4.6). */}
+			<span
+				className={cn(
+					'ml-1 text-xs text-muted-foreground tabular-nums',
+					ratingCount === 0 && 'invisible'
+				)}
+			>
+				{rating.toFixed(1)} · {ratingCount}
+			</span>
 		</div>
 	)
 }
