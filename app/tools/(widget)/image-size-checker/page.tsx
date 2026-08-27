@@ -293,10 +293,15 @@ export default function ImageSizeCheckerPage() {
 
 	// Передаём исходный File, а не его дата-URL: так compress-image может
 	// прочитать файл ровно так же, как если бы его выбрали там напрямую.
+	// Ждём, пока запись реально уляжется в IndexedDB, и только потом
+	// переходим — иначе при очень быстрой навигации compress-image мог бы
+	// смонтироваться раньше, чем файл появится в хранилище.
 	const compressImage = useCallback(
 		(image: ImageInfo) => {
-			setHandoffFile(image.file)
-			router.push('/tools/compress-image')
+			void (async () => {
+				await setHandoffFile(image.file)
+				router.push('/tools/compress-image')
+			})()
 		},
 		[router]
 	)
