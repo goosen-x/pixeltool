@@ -27,7 +27,7 @@ function buildLlmsTxt(): string {
 			return `- [${widget.title}](${BASE_URL}/tools/${widget.path}): ${summary}`
 		})
 
-		return `### ${title} (${widgets.length})\n\n${meta.description}\n\n${toolLines.join('\n')}`
+		return `## ${title} (${widgets.length})\n\n${meta.description}\n\n${toolLines.join('\n')}`
 	})
 
 	// Страницы пар единиц — не отдельные тулы, а SEO-страницы одного хаба,
@@ -42,7 +42,7 @@ function buildLlmsTxt(): string {
 
 Полные тексты описаний, инструкций и статей: ${BASE_URL}/llms-full.txt
 
-## Инструменты по разделам
+Инструменты сгруппированы по разделам:
 
 ${sections.join('\n\n')}
 
