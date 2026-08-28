@@ -628,23 +628,13 @@ export default function OpenGraphValidatorPage() {
 									Лайфхакер
 								</Button>
 								<Button
-									onClick={() =>
-										loadExample('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-									}
+									onClick={() => loadExample('https://habr.com')}
 									variant='outline'
 								>
-									<svg className='w-4 h-4 mr-2' viewBox='0 0 24 24'>
-										<rect
-											x='1'
-											y='4.5'
-											width='22'
-											height='15'
-											rx='5'
-											fill='#FF0000'
-										/>
-										<path d='M10 8.5l6 3.5-6 3.5v-7z' fill='white' />
-									</svg>
-									YouTube
+									<span className='mr-2 flex h-4 w-4 items-center justify-center rounded-sm bg-[#65A3BE] text-[10px] font-bold text-white'>
+										Х
+									</span>
+									Хабр
 								</Button>
 							</div>
 						</div>
