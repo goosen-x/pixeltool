@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { JSDOM } from 'jsdom'
-import { assertPublicHost } from '@/lib/security/ssrf'
+import { assertPublicHost, safeFetch } from '@/lib/security/ssrf'
 
 /**
  * Поиск фавикона чужого сайта по адресу.
@@ -32,7 +32,17 @@ async function probe(
 	sizes: string | null
 ): Promise<FoundIcon> {
 	try {
-		const response = await fetch(url, {
+		// url приходит из href чужой HTML-страницы, ровно тот же ввод, от
+		// которого защищает SSRF-проверка исходного адреса — сайт может
+		// объявить <link rel="icon" href="http://169.254.169.254/..."> и без
+		// этой проверки сервер сходит туда напрямую.
+		const parsed = new URL(url)
+		if (!['http:', 'https:'].includes(parsed.protocol)) {
+			return { url, rel, sizes, contentType: null, bytes: null, reachable: false }
+		}
+		await assertPublicHost(parsed.hostname)
+
+		const response = await safeFetch(parsed, {
 			method: 'GET',
 			signal: AbortSignal.timeout(5000),
 			headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PixelTool/1.0)' }
@@ -94,7 +104,7 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		const response = await fetch(target.toString(), {
+		const response = await safeFetch(target, {
 			signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
 			headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PixelTool/1.0)' }
 		})

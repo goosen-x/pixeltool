@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { toSafePublicUrl } from '@/lib/security/ssrf'
+import { toSafePublicUrl, safeFetch } from '@/lib/security/ssrf'
 
 /**
  * Скачивает HTML страницы по адресу и отдаёт как текст.
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		const response = await fetch(target.toString(), {
+		const response = await safeFetch(target, {
 			signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
 			headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PixelTool/1.0)' }
 		})

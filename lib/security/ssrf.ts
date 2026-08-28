@@ -74,3 +74,52 @@ export async function toSafePublicUrl(input: string): Promise<URL> {
 	await assertPublicHost(url.hostname)
 	return url
 }
+
+const MAX_REDIRECTS = 5
+
+/**
+ * fetch() с проверкой каждого хопа редиректа, не только исходного адреса.
+ *
+ * Обычный `fetch(url, { redirect: 'follow' })` проверяет SSRF один раз, до
+ * запроса, а дальше молча идёт за любым Location — сайт может ответить 302 на
+ * 169.254.169.254 и обойти assertPublicHost на исходном хосте. Здесь каждый
+ * Location проходит ту же проверку, прежде чем на него пойти. `redirect:
+ * 'manual'` в Node/undici (в отличие от браузерного fetch) отдаёт настоящий
+ * статус и заголовок Location, а не непрозрачный ответ.
+ */
+export async function safeFetch(
+	url: URL,
+	init: RequestInit = {}
+): Promise<Response> {
+	let current = url
+
+	for (let hop = 0; ; hop++) {
+		const response = await fetch(current.toString(), {
+			...init,
+			redirect: 'manual'
+		})
+
+		const location = response.headers.get('location')
+		if (response.status < 300 || response.status >= 400 || !location) {
+			return response
+		}
+
+		if (hop >= MAX_REDIRECTS) {
+			throw new Error('Слишком много редиректов')
+		}
+
+		let next: URL
+		try {
+			next = new URL(location, current)
+		} catch {
+			throw new Error('Редирект ведёт на некорректный адрес')
+		}
+
+		if (!['http:', 'https:'].includes(next.protocol)) {
+			throw new Error('Редирект ведёт на неподдерживаемый протокол')
+		}
+
+		await assertPublicHost(next.hostname)
+		current = next
+	}
+}

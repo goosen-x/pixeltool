@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { JSDOM } from 'jsdom'
-import { assertPublicHost, toSafePublicUrl } from '@/lib/security/ssrf'
+import { assertPublicHost, toSafePublicUrl, safeFetch } from '@/lib/security/ssrf'
 
 export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url)
@@ -29,9 +29,8 @@ export async function GET(request: NextRequest) {
 		// Ходим под браузерным User-Agent и браузерными заголовками: ботовый UA
 		// с датацентр-IP крупные сайты за Cloudflare/CDN режут (запрос висит до
 		// таймаута). Реалистичные заголовки проходят большинство базовых фильтров.
-		const response = await fetch(parsedUrl.toString(), {
+		const response = await safeFetch(parsedUrl, {
 			signal: controller.signal,
-			redirect: 'follow',
 			headers: {
 				'User-Agent':
 					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -139,7 +138,7 @@ export async function GET(request: NextRequest) {
 				await assertPublicHost(imageUrl.hostname)
 				ogTags['og:image'] = imageUrl.toString()
 
-				const imageResponse = await fetch(imageUrl.toString(), {
+				const imageResponse = await safeFetch(imageUrl, {
 					method: 'HEAD',
 					signal: AbortSignal.timeout(5000)
 				})
