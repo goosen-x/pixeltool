@@ -13,7 +13,8 @@ import {
 	Trash2,
 	Copy,
 	Check,
-	AlertTriangle
+	AlertTriangle,
+	Minimize2
 } from 'lucide-react'
 import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -118,12 +119,14 @@ function WeightSection({
 	}
 
 	return (
-		<div className='flex flex-wrap items-center justify-between gap-2'>
+		<div className='flex flex-col gap-3'>
 			<span className='inline-flex flex-wrap items-center gap-1.5 text-sm'>
 				<span
 					className={cn(
 						'font-mono',
-						heavy ? 'text-amber-700 dark:text-amber-400' : 'text-muted-foreground'
+						heavy
+							? 'text-amber-700 dark:text-amber-400'
+							: 'text-muted-foreground'
 					)}
 				>
 					{image.fileSizeFormatted}
@@ -141,13 +144,14 @@ function WeightSection({
 			</span>
 
 			{heavy && (
-				<button
-					type='button'
+				<Button
+					variant='outline'
 					onClick={onToggle}
-					className='cursor-pointer text-sm font-medium text-primary hover:underline'
+					className='w-full cursor-pointer gap-2 border-amber-500/40 text-amber-700 hover:border-amber-500/60 hover:bg-amber-500/10 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-400'
 				>
+					<Minimize2 className='h-4 w-4' />
 					Сжать
-				</button>
+				</Button>
 			)}
 		</div>
 	)

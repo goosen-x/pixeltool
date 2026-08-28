@@ -1,10 +1,11 @@
 'use client'
 
-import { Download } from 'lucide-react'
+import { Download, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { toolToggleOption, toolToggleTrack } from '@/lib/ui/tool-pill'
 import { formatBytes } from '@/lib/utils/format-bytes'
+import { cn } from '@/lib/utils'
 import { useImageCompress } from '@/lib/hooks/useImageCompress'
 import type { OutputFormat } from '@/lib/tools/image-compress'
 
@@ -33,8 +34,15 @@ interface ImageCompressPanelProps {
  * ползунок во всю ширину под ними. По бокам они переносились независимо
  * друг от друга на узких экранах, и было не понять, что означает каждый
  * конец шкалы.
+ *
+ * Статус «идёт сжатие» — спиннер прямо на кнопке «Скачать», а не отдельная
+ * строка текста «Сжимаем…»: скачивать всё равно нечего, пока не готово, и
+ * состояние кнопки — то самое место, где это видно естественно.
  */
-export function ImageCompressPanel({ file, onCollapse }: ImageCompressPanelProps) {
+export function ImageCompressPanel({
+	file,
+	onCollapse
+}: ImageCompressPanelProps) {
 	const {
 		format,
 		setFormat,
@@ -49,13 +57,13 @@ export function ImageCompressPanel({ file, onCollapse }: ImageCompressPanelProps
 		download
 	} = useImageCompress(file)
 
+	const processing = status === 'processing'
+
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex flex-wrap items-center justify-between gap-2'>
 				<span className='text-sm'>
-					{status === 'processing' ? (
-						'Сжимаем…'
-					) : compressedBlob && savedPercent !== null ? (
+					{compressedBlob && savedPercent !== null ? (
 						isOriginalBest ? (
 							'Уже минимальный размер — скачается оригинал'
 						) : (
@@ -83,7 +91,7 @@ export function ImageCompressPanel({ file, onCollapse }: ImageCompressPanelProps
 				</button>
 			</div>
 
-			<div className={toolToggleTrack}>
+			<div className={cn(toolToggleTrack, 'self-start')}>
 				{FORMAT_LABELS.map(([value, label]) => (
 					<button
 						key={value}
@@ -113,12 +121,16 @@ export function ImageCompressPanel({ file, onCollapse }: ImageCompressPanelProps
 
 			<Button
 				onClick={() => download(file.name.replace(/\.[^.]+$/, ''))}
-				disabled={!compressedUrl}
+				disabled={!compressedUrl || processing}
 				size='sm'
 				className='w-full cursor-pointer gap-2'
 			>
-				<Download className='h-4 w-4' />
-				Скачать
+				{processing ? (
+					<Loader2 className='h-4 w-4 animate-spin' />
+				) : (
+					<Download className='h-4 w-4' />
+				)}
+				{processing ? 'Сжимаем…' : 'Скачать'}
 			</Button>
 		</div>
 	)
