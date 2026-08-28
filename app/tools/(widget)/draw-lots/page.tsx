@@ -221,8 +221,16 @@ export default function DrawLotsPage() {
 							    случай списков, близких к лимиту в 100 строк. Высота
 							    синхронизирована с колонкой предпросмотра справа — иначе
 							    при длинном списке они растут независимо и грид «рвёт»
-							    страницу по самой высокой из двух. */}
-							<div className='relative'>
+							    страницу по самой высокой из двух.
+							    min-w-0 здесь и ниже (на этом div, на самой Textarea, на
+							    правой колонке и на обёртке пилюль) — без него одна строка
+							    без пробелов (вставленный мусор, длинный URL) раздвигала
+							    весь грид и страницу вширь: grid/flex-элементы по умолчанию
+							    min-width:auto, то есть не сжимаются меньше max-content
+							    своего содержимого, а field-sizing:content считает этот
+							    max-content без учёта overflow-wrap. min-w-0 обнуляет это
+							    ограничение и отдаёт перенос слов overflow-wrap. */}
+							<div className='relative min-w-0'>
 								<Textarea
 									id='items'
 									value={inputText}
@@ -230,7 +238,7 @@ export default function DrawLotsPage() {
 									placeholder={'Иван\nПётр\nМария\nАнна'}
 									spellCheck={false}
 									aria-label='Участники жеребьёвки'
-									className='max-h-[32rem] min-h-[10rem] resize-none overflow-y-auto rounded-none border-0 border-b px-5 py-6 font-mono text-base [field-sizing:content] focus-visible:ring-0 sm:border-r sm:border-b-0 sm:px-6 md:text-sm'
+									className='max-h-[32rem] min-h-[10rem] min-w-0 resize-none overflow-y-auto rounded-none border-0 border-b px-5 py-6 font-mono text-base [field-sizing:content] focus-visible:ring-0 sm:border-r sm:border-b-0 sm:px-6 md:text-sm'
 								/>
 
 								{inputText !== '' && (
@@ -253,8 +261,8 @@ export default function DrawLotsPage() {
 							    кнопка запуска приклеена к её низу, а не вынесена в общий
 							    футер во всю ширину: отдельный футер под обеими колонками
 							    был лишним — правая колонка и так заканчивается кнопкой. */}
-							<div className='flex max-h-[32rem] flex-col'>
-								<div className='flex min-h-0 flex-1 flex-wrap content-start gap-1.5 overflow-y-auto bg-muted/20 p-5 sm:p-6'>
+							<div className='flex max-h-[32rem] min-w-0 flex-col'>
+								<div className='flex min-h-0 min-w-0 flex-1 flex-wrap content-start gap-1.5 overflow-y-auto bg-muted/20 p-5 sm:p-6'>
 									{previewNames.length > 0 ? (
 										previewNames.map((name, index) => (
 											<span
