@@ -4,7 +4,12 @@ import { useMemo, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { toolBar, toolFooterBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolPill
+} from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { CompoundInterestCalculatorSeo } from './CompoundInterestCalculatorSeo'
