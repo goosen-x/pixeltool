@@ -51,33 +51,11 @@ function loadImage(url: string): Promise<HTMLImageElement> {
 	})
 }
 
-// На телефонах декод больших фото через <img> иногда «успевает» отдать
-// onload раньше, чем данные реально готовы — canvas после drawImage
-// остаётся пустым без единой ошибки. createImageBitmap декодирует до
-// готового результата (или честно бросает исключение) и заодно
-// разворачивает фото по EXIF-ориентации, которую canvas сам не учитывает.
-async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
-	if (typeof createImageBitmap === 'function') {
-		const bitmap = await createImageBitmap(file, {
-			imageOrientation: 'from-image'
-		})
-		if (bitmap.width === 0 || bitmap.height === 0) {
-			bitmap.close()
-			throw new Error('Изображение пустое')
-		}
-		const scale = Math.min(
-			1,
-			MAX_CANVAS_DIMENSION / Math.max(bitmap.width, bitmap.height)
-		)
-		canvas.width = Math.round(bitmap.width * scale)
-		canvas.height = Math.round(bitmap.height * scale)
-		const ctx = canvas.getContext('2d')!
-		ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
-		bitmap.close()
-		return
-	}
-
-	// Старые браузеры без createImageBitmap — прежний путь через <img>.
+// Старые браузеры без createImageBitmap, и общий fallback, когда сам
+// createImageBitmap отказался декодировать файл (см. ниже) — путь через
+// <img>. EXIF-ориентацию canvas сам не учитывает, поэтому фото на этом
+// пути может лечь на бок, но это лучше, чем отказ показать его вовсе.
+async function decodeViaImgElement(file: File, canvas: HTMLCanvasElement) {
 	const objectUrl = URL.createObjectURL(file)
 	try {
 		const img = await loadImage(objectUrl)
@@ -95,6 +73,61 @@ async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
 	} finally {
 		URL.revokeObjectURL(objectUrl)
 	}
+}
+
+function drawBitmapToCanvas(bitmap: ImageBitmap, canvas: HTMLCanvasElement) {
+	if (bitmap.width === 0 || bitmap.height === 0) {
+		bitmap.close()
+		throw new Error('Изображение пустое')
+	}
+	const scale = Math.min(
+		1,
+		MAX_CANVAS_DIMENSION / Math.max(bitmap.width, bitmap.height)
+	)
+	canvas.width = Math.round(bitmap.width * scale)
+	canvas.height = Math.round(bitmap.height * scale)
+	const ctx = canvas.getContext('2d')!
+	ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+	bitmap.close()
+}
+
+// На телефонах декод больших фото через <img> иногда «успевает» отдать
+// onload раньше, чем данные реально готовы — canvas после drawImage
+// остаётся пустым без единой ошибки. createImageBitmap декодирует до
+// готового результата (или честно бросает исключение) и заодно
+// разворачивает фото по EXIF-ориентации, которую canvas сам не учитывает.
+//
+// WebKit на iOS (в том числе Chrome/CriOS — там тот же движок) у части
+// фото с айфона бросает на опции imageOrientation: 'from-image' голый
+// `TypeError: Type error` без подробностей — известная нестабильность
+// этой опции в JavaScriptCore, не наш баг и не битый файл (воспроизведено
+// на нескольких разных фото подряд). Поэтому декодируем в три попытки от
+// более правильного результата к более надёжному: с учётом EXIF → без
+// него (фото может лечь на бок) → совсем другой путь через <img>.
+async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
+	if (typeof createImageBitmap !== 'function') {
+		return decodeViaImgElement(file, canvas)
+	}
+
+	try {
+		const bitmap = await createImageBitmap(file, {
+			imageOrientation: 'from-image'
+		})
+		drawBitmapToCanvas(bitmap, canvas)
+		return
+	} catch {
+		// падаем дальше на попытку без опции ориентации
+	}
+
+	try {
+		const bitmap = await createImageBitmap(file)
+		drawBitmapToCanvas(bitmap, canvas)
+		return
+	} catch {
+		// падаем дальше на путь через <img>
+	}
+
+	return decodeViaImgElement(file, canvas)
 }
 
 export default function PhotoColorPickerPage() {
