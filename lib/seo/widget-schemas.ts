@@ -65,57 +65,14 @@ export function getToolSpecificSchema(
 		})
 	}
 
-	// Add DataCatalog schema for data tools
-	if (
-		widget.translationKey.includes('json') ||
-		widget.translationKey.includes('xml') ||
-		widget.translationKey.includes('yaml')
-	) {
-		schemas.push({
-			'@context': 'https://schema.org',
-			'@type': 'DataCatalog',
-			'@id': `${url}#data-catalog`,
-			name: `${title} Data Processing`,
-			description: `Process and transform data using ${title}`,
-			creator: {
-				'@type': 'Organization',
-				name: 'PixelTool'
-			},
-			distribution: {
-				'@type': 'DataDownload',
-				encodingFormat: getDataFormat(widget.translationKey),
-				contentUrl: url
-			}
-		})
-	}
-
-	// Add ImageObject schema for image tools
-	if (
-		widget.category === 'multimedia' ||
-		widget.translationKey.includes('image') ||
-		widget.translationKey.includes('favicon')
-	) {
-		schemas.push({
-			'@context': 'https://schema.org',
-			'@type': 'ImageObject',
-			'@id': `${url}#image-tool`,
-			name: `Images processed with ${title}`,
-			description: `Image manipulation and processing using ${title}`,
-			contentUrl: `${baseUrl}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&locale=${locale}`,
-			creator: {
-				'@type': 'Organization',
-				name: 'PixelTool'
-			},
-			creditText: 'PixelTool',
-			copyrightNotice: '© PixelTool',
-			license: `${baseUrl}/terms`,
-			acquireLicensePage: `${baseUrl}/terms`,
-			encodingFormat: 'image/png,image/jpeg,image/svg+xml',
-			tool: {
-				'@id': url
-			}
-		})
-	}
+	// DataCatalog (json/xml/yaml-тулы) и ImageObject (картиночные тулы) были
+	// здесь раньше и убраны 28.08.2026 — Ahrefs нашёл на них schema.org
+	// validation error (encodingFormat как список через запятую вместо одного
+	// значения), и по факту разметка вообще не описывала ничего настоящего:
+	// DataDownload.contentUrl указывал на HTML-страницу тула, а не на файл с
+	// данными, ImageObject.contentUrl — на карточку og:image, а не на
+	// «изображение, обработанное тулом» (сайт не хранит и не отдаёт
+	// пользовательские результаты). Выдуманная разметка вместо честной.
 
 	return schemas
 }
@@ -131,14 +88,6 @@ function getCategoryName(category: string): string {
 		lifestyle: 'Health & Lifestyle Tools'
 	}
 	return categories[category] || 'Utility Tools'
-}
-
-function getDataFormat(translationKey: string): string {
-	if (translationKey.includes('json')) return 'application/json'
-	if (translationKey.includes('xml')) return 'application/xml'
-	if (translationKey.includes('yaml')) return 'application/x-yaml'
-	if (translationKey.includes('csv')) return 'text/csv'
-	return 'text/plain'
 }
 
 // Widget-specific FAQ data
