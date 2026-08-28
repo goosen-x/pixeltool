@@ -30,6 +30,7 @@ import {
 	getTopRequests,
 	readWordstatConfig,
 	REGION_RUSSIA,
+	WordstatError,
 	type TopRequestsResult,
 	type WordstatConfig
 } from '../lib/seo/wordstat'
@@ -124,17 +125,24 @@ function delay(ms: number): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+interface Collected {
+	phrase: string
+	data: TopRequestsResult
+	cached: boolean
+}
+
+interface CollectResult {
+	collected: Collected[]
+	/** Фразы, которые API так и не отдал: прогон продолжается без них. */
+	skipped: string[]
+}
+
 async function collect(
 	config: WordstatConfig,
 	options: Options
-): Promise<
-	Array<{ phrase: string; data: TopRequestsResult; cached: boolean }>
-> {
-	const collected: Array<{
-		phrase: string
-		data: TopRequestsResult
-		cached: boolean
-	}> = []
+): Promise<CollectResult> {
+	const collected: Collected[] = []
+	const skipped: string[] = []
 
 	for (const [index, phrase] of options.phrases.entries()) {
 		const path = cachePath(phrase, options.region, options.top)
@@ -147,21 +155,57 @@ async function collect(
 
 		if (index > 0) await delay(REQUEST_DELAY_MS)
 
-		const data = await getTopRequests(config, phrase, {
-			numPhrases: options.top,
-			regions: [options.region]
-		})
+		// Сколько вложенных фраз просить, API решает по каждой фразе отдельно:
+		// на «нумерология по дате рождения» 15 отдаётся мгновенно, а 20 уже не
+		// укладывается в двадцатисекундный бюджет сервиса и приходит 499. Ступени
+		// подобраны так, чтобы сначала пробовать заказанное, а потом отступать.
+		const ladder = [options.top, 25, 15, 10].filter(
+			(value, position, all) =>
+				value <= options.top && all.indexOf(value) === position
+		)
+
+		let data: TopRequestsResult | null = null
+		let lastError: unknown = null
+
+		for (const numPhrases of ladder) {
+			try {
+				data = await getTopRequests(config, phrase, {
+					numPhrases,
+					regions: [options.region]
+				})
+				if (numPhrases !== options.top) {
+					console.error(
+						`  ! ${phrase}: API не отдал ${options.top} вложенных фраз, взято ${numPhrases}`
+					)
+				}
+				break
+			} catch (error) {
+				lastError = error
+				// Отступать по лестнице имеет смысл только когда сервис не справился
+				// с объёмом. Неверный ключ или битый запрос от этого не починятся.
+				if (!(error instanceof WordstatError) || !error.retryable) throw error
+				await delay(REQUEST_DELAY_MS)
+			}
+		}
+
+		if (!data) {
+			// Одна тяжёлая фраза не должна ронять прогон по всей семантике:
+			// остальные уже посчитанные фразы дороже, чем эта одна.
+			const message =
+				lastError instanceof Error ? lastError.message : String(lastError)
+			console.error(`  ✖ ${phrase}: пропущена — ${message.slice(0, 120)}`)
+			skipped.push(phrase)
+			continue
+		}
 
 		writeCache(path, data)
 		collected.push({ phrase, data, cached: false })
 	}
 
-	return collected
+	return { collected, skipped }
 }
 
-function printTable(
-	collected: Array<{ phrase: string; data: TopRequestsResult; cached: boolean }>
-): void {
+function printTable(collected: Collected[]): void {
 	for (const { phrase, data, cached } of collected) {
 		const suffix = cached ? ' (из кэша)' : ''
 		console.log(
@@ -187,13 +231,23 @@ function printTable(
 async function main(): Promise<void> {
 	const options = parseArgs(process.argv.slice(2))
 	const config = readWordstatConfig()
-	const collected = await collect(config, options)
+	const { collected, skipped } = await collect(config, options)
 
 	if (options.json) {
 		console.log(JSON.stringify(collected, null, 2))
 	} else {
 		printTable(collected)
 	}
+
+	if (skipped.length > 0) {
+		console.error(
+			`\n✖ Не удалось получить ${skipped.length} из ${options.phrases.length}: ${skipped.join(', ')}`
+		)
+	}
+
+	// Ненулевой код только если не получено вообще ничего: частичный результат
+	// — рабочий, на нём можно строить семантику дальше.
+	if (collected.length === 0) process.exit(1)
 }
 
 main().catch((error: unknown) => {

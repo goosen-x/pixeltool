@@ -78,26 +78,68 @@ export function readWordstatConfig(): WordstatConfig {
 	return { apiKey, folderId }
 }
 
+/**
+ * Ошибка запроса к API с сохранённым HTTP-статусом: вызывающему коду нужно
+ * отличать «сервис не смог посчитать» от «неверный ключ», чтобы решить,
+ * повторять запрос или падать сразу.
+ */
+export class WordstatError extends Error {
+	constructor(
+		readonly status: number,
+		message: string
+	) {
+		super(message)
+		this.name = 'WordstatError'
+	}
+
+	/**
+	 * Есть ли смысл повторять. 499 («cancelled received from server») API
+	 * отдаёт, когда не уложился в свои 20 секунд, 429 — при упоре в квоту,
+	 * 5xx — при сбое на его стороне. Всё это лечится повтором, а 401 и 400 нет.
+	 */
+	get retryable(): boolean {
+		return this.status === 499 || this.status === 429 || this.status >= 500
+	}
+}
+
+/** Сколько ждать перед повтором: 1, 2, 4 секунды. */
+const RETRY_DELAYS_MS = [1000, 2000, 4000]
+
+function sleep(ms: number): Promise<void> {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 async function request<T>(
 	config: WordstatConfig,
 	method: string,
 	body: Record<string, unknown>
 ): Promise<T> {
-	const response = await fetch(`${API_BASE}/${method}`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Api-Key ${config.apiKey}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ ...body, folderId: config.folderId })
-	})
+	let lastError: WordstatError | null = null
 
-	if (!response.ok) {
+	for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
+		if (attempt > 0) await sleep(RETRY_DELAYS_MS[attempt - 1])
+
+		const response = await fetch(`${API_BASE}/${method}`, {
+			method: 'POST',
+			headers: {
+				Authorization: `Api-Key ${config.apiKey}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ ...body, folderId: config.folderId })
+		})
+
+		if (response.ok) return response.json() as Promise<T>
+
 		const text = await response.text()
-		throw new Error(`Wordstat ${method} → HTTP ${response.status}: ${text}`)
+		lastError = new WordstatError(
+			response.status,
+			`Wordstat ${method} → HTTP ${response.status}: ${text}`
+		)
+
+		if (!lastError.retryable) throw lastError
 	}
 
-	return response.json() as Promise<T>
+	throw lastError
 }
 
 /**
