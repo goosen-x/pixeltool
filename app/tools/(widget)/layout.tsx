@@ -3,10 +3,15 @@ import { ProjectsLayoutWrapper } from '@/components/sidebars/ProjectsLayoutWrapp
 import { getAllToolStats, type ToolStats } from '@/lib/tool-stats/get-all-stats'
 import { isDbUnavailableError } from '@/lib/db'
 
-// БД недоступна из окружения сборки (см. CLAUDE.md — сеть pixeltool-net
-// только на проде), поэтому этот layout не должен пытаться статически
-// рендериться на билде.
-export const dynamic = 'force-dynamic'
+// ISR вместо force-dynamic. Прежний флаг стоял из-за того, что БД недоступна
+// из окружения сборки (см. CLAUDE.md — сеть pixeltool-net только на проде), но
+// цена оказалась несоразмерной: под ним ни одна из 70 страниц тулов не
+// пререндерилась, каждый заход шёл через SSR с запросом в БД, и PageSpeed
+// показывал TTFB около 600 мс на всех тулах одинаково, независимо от начинки.
+// Недоступность БД на билде закрывает try/catch ниже: в статику запекается
+// пустая статистика, а через час ISR подставит настоящую. Тот же интервал и та
+// же логика, что у app/layout.tsx с «инструментом месяца».
+export const revalidate = 3600
 
 type Props = {
 	children: ReactNode

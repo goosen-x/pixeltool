@@ -3,14 +3,14 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Download, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Trash2 } from 'lucide-react'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { useEmoji } from '@/lib/hooks/useEmoji'
 import { emojiCategories, type CategoryId } from '@/lib/data/emoji-data'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { EmojiListSeo } from './EmojiListSeo'
+import { EmojiGrid } from './EmojiGrid'
 
 /** Иконка категории — сама же эмодзи из неё, подпись рядом. */
 const CATEGORY_ICONS: Record<string, string> = {
@@ -102,39 +102,13 @@ export default function EmojiListPage() {
 						В этой категории пока пусто
 					</p>
 				) : (
-					<div className='grid grid-cols-6 gap-1 px-5 py-6 sm:grid-cols-8 sm:px-6 md:grid-cols-10 lg:grid-cols-12'>
-						{filteredEmojis.map((emoji, index) => (
-							<div key={`${emoji}-${index}`} className='group relative'>
-								<button
-									type='button'
-									onClick={() => copyEmoji(emoji)}
-									title='Скопировать'
-									className={cn(
-										'flex h-12 w-full cursor-pointer items-center justify-center rounded-lg text-2xl transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-										copiedEmoji === emoji && 'bg-primary/10 ring-1 ring-primary'
-									)}
-								>
-									{emoji}
-								</button>
-
-								{/* Скачать картинкой — редкое действие, поэтому оно
-								    проявляется только на наведении. */}
-								<Button
-									size='icon'
-									variant='ghost'
-									onClick={() => downloadEmojiAsImage(emoji)}
-									disabled={downloadingEmoji === emoji}
-									title='Скачать картинкой'
-									className={cn(
-										toolIconButton,
-										'absolute -top-1 -right-1 h-6 w-6 bg-background opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
-									)}
-								>
-									<Download className='h-3 w-3' />
-								</Button>
-							</div>
-						))}
-					</div>
+					<EmojiGrid
+						emojis={filteredEmojis}
+						copiedEmoji={copiedEmoji}
+						downloadingEmoji={downloadingEmoji}
+						onCopy={copyEmoji}
+						onDownload={downloadEmojiAsImage}
+					/>
 				)}
 			</Card>
 

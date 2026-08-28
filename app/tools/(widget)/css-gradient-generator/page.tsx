@@ -24,8 +24,6 @@ import {
 
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
-// Force dynamic rendering to avoid build-time errors
-export const dynamic = 'force-dynamic'
 
 const LINEAR_DIRECTIONS = [
 	'to top',

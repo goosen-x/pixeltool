@@ -352,9 +352,6 @@ function WhatsAppPreview({ data }: { data: OpenGraphData }) {
 	)
 }
 
-// Force dynamic rendering to avoid build-time errors
-export const dynamic = 'force-dynamic'
-
 export default function OpenGraphValidatorPage() {
 	const widget = useWidgetCreation({
 		widgetId: WIDGET_CONFIG.id,

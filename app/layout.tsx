@@ -5,7 +5,6 @@ import type { Metadata } from 'next'
 import { SiteFooter } from '@/components/layout'
 
 // import { routing } from '@/i18n/routing'
-import { dev } from '@/lib/config/env'
 import { ReactNode, Suspense } from 'react'
 import YandexMetrika from '@/components/analytics/YandexMetrika'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
@@ -27,8 +26,6 @@ import {
 	interFont,
 	onestFont
 } from '@/lib/fonts/fonts'
-import Script from 'next/script'
-import { ADS_DISABLED } from '@/lib/config/ads'
 import Header from '@/components/layout/Header/Header'
 import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
 import { ChromeHeightVar } from '@/components/layout/ChromeHeightVar'
@@ -267,24 +264,6 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					interFont.className
 				)}
 			>
-				{/* Yandex.RTB: только в проде и только когда реклама включена.
-				    Без второго условия context.js тянул на каждой странице свои
-				    бандлы (около 400 КБ), хотя блоки не рендерились. */}
-				{!dev && !ADS_DISABLED && (
-					<>
-						<Script
-							id='yandex-rtb-init'
-							strategy='afterInteractive'
-							dangerouslySetInnerHTML={{
-								__html: `window.yaContextCb=window.yaContextCb||[]`
-							}}
-						/>
-						<Script
-							src='https://yandex.ru/ads/system/context.js'
-							strategy='lazyOnload'
-						/>
-					</>
-				)}
 				{/* disableTransitionOnChange: у карточек, рамок и фона висят transition
 				    с разной длительностью, и при смене темы каждый элемент доезжал до
 				    нового цвета в своём темпе — картинка «плыла». Флаг гасит переходы

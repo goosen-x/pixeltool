@@ -88,15 +88,25 @@ export default function SpecialSymbolsPickerPage() {
 						В этой категории пока пусто
 					</p>
 				) : (
-					<div className='grid grid-cols-6 gap-1 px-5 py-6 sm:grid-cols-8 sm:px-6 md:grid-cols-10 lg:grid-cols-12'>
+					// Клик ловится делегированием на сетке: символов больше тысячи,
+					// и отдельный обработчик на каждом стоил заметной части
+					// блокировки главного потока при гидратации.
+					<div
+						className='grid grid-cols-6 gap-1 px-5 py-6 sm:grid-cols-8 sm:px-6 md:grid-cols-10 lg:grid-cols-12'
+						onClick={event => {
+							if (!(event.target instanceof Element)) return
+							const cell = event.target.closest<HTMLElement>('[data-symbol]')
+							if (cell?.dataset.symbol) copySymbol(cell.dataset.symbol)
+						}}
+					>
 						{filteredSymbols.map((symbol, index) => (
 							<button
 								key={`${symbol}-${index}`}
 								type='button'
-								onClick={() => copySymbol(symbol)}
+								data-symbol={symbol}
 								title='Скопировать'
 								className={cn(
-									'flex h-12 cursor-pointer items-center justify-center rounded-lg text-2xl transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									'glyph-cell flex h-12 cursor-pointer items-center justify-center rounded-lg text-2xl transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 									copiedSymbol === symbol && 'bg-primary/10 ring-1 ring-primary'
 								)}
 							>

@@ -41,7 +41,6 @@ import {
 	type PixelFrame,
 	type PixelGrid
 } from '@/lib/utils/pixel-art'
-import { framesToGif } from '@/lib/utils/pixel-art-gif'
 import {
 	DEFAULT_PALETTE_ID,
 	getPaletteById
@@ -378,7 +377,11 @@ export default function PixelArtEditorPage() {
 		link.click()
 	}
 
-	function downloadGif() {
+	// gifenc со своим кодировщиком весит заметно больше самого редактора, а
+	// нужен только в момент экспорта — поэтому модуль подтягивается по клику,
+	// а не лежит в стартовом бандле страницы.
+	async function downloadGif() {
+		const { framesToGif } = await import('@/lib/utils/pixel-art-gif')
 		const bytes = framesToGif(frames, gridSize)
 		const blob = new Blob([new Uint8Array(bytes)], { type: 'image/gif' })
 		const url = URL.createObjectURL(blob)

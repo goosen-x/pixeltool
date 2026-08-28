@@ -30,6 +30,10 @@ export function ToolCard({
 	return (
 		<Link
 			href={`/tools/${widget.path}`}
+			// Карточек в кадре бывает много: девять в карусели похожих и все
+			// семьдесят в каталоге. Префетч каждой съедал полосу на старте, см.
+			// комментарий в ToolLink.
+			prefetch={false}
 			className={cn(
 				'group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl px-6 py-7',
 				className
