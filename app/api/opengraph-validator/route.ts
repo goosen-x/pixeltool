@@ -180,6 +180,24 @@ export async function GET(request: NextRequest) {
 			// ответа вообще (сайт лёг, обрубил соединение, битый сертификат).
 			// Отличается от ответа сайта с кодом ошибки, который ловится выше.
 			if (error.message.includes('fetch failed')) {
+				// YouTube отдельно: проверено 28.08.2026 напрямую с прод-сервера —
+				// TLS handshake до youtube.com/youtu.be зависает намертво (Client
+				// Hello уходит, ответа нет), при этом google.com/github.com/vk.com
+				// с того же сервера открываются нормально. Это блокировка YouTube
+				// конкретно IP хостинга (частая практика против скрейпинга видео),
+				// не временный сбой — «попробуйте ещё раз» тут никогда не поможет,
+				// нечестно так писать.
+				const host = parsedUrl.hostname.replace(/^www\./, '')
+				if (host === 'youtube.com' || host === 'youtu.be') {
+					return NextResponse.json(
+						{
+							error:
+								'YouTube блокирует запросы с сервера этого инструмента — не временный сбой, повтор попытки не поможет. Открыть Open Graph теги этой страницы можно через «Просмотр кода страницы» в браузере (Ctrl+U / Cmd+Option+U), поиск по meta property="og:".'
+						},
+						{ status: 502 }
+					)
+				}
+
 				return NextResponse.json(
 					{
 						error:
