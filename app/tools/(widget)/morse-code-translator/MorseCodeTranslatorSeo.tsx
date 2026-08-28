@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function MorseCodeTranslatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -30,6 +32,18 @@ export function MorseCodeTranslatorSeo() {
 					из шести букв.
 				</p>
 			</section>
+
+			<p className='text-muted-foreground'>
+				История кода и разбор различий между русской и английской таблицей
+				собраны в статье{' '}
+				<Link
+					href='/blog/azbuka-morze'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					Азбука Морзе: как устроен код и как перевести текст в точки и тире
+				</Link>
+				.
+			</p>
 		</div>
 	)
 }

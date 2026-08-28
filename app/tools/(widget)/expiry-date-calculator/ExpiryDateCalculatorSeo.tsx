@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function ExpiryDateCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -26,6 +28,18 @@ export function ExpiryDateCalculatorSeo() {
 					продуктов это уже имеет значение.
 				</p>
 			</section>
+
+			<p className='text-muted-foreground'>
+				Частую ошибку с месяцами разной длины и пример расчёта разбираем в
+				статье{' '}
+				<Link
+					href='/blog/kak-poschitat-srok-godnosti'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					Как посчитать срок годности продукта по дате производства
+				</Link>
+				.
+			</p>
 		</div>
 	)
 }
