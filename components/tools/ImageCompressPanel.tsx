@@ -46,7 +46,7 @@ export function ImageCompressPanel({ file }: ImageCompressPanelProps) {
 
 	return (
 		<div className='flex flex-col gap-4 rounded-xl border bg-muted/20 p-4'>
-			<div className='flex items-center justify-between gap-3'>
+			<div className='flex flex-wrap items-center justify-between gap-3'>
 				<div className={toolToggleTrack}>
 					{FORMAT_LABELS.map(([value, label]) => (
 						<button
@@ -97,7 +97,7 @@ export function ImageCompressPanel({ file }: ImageCompressPanelProps) {
 				<span className='text-sm text-destructive'>{errorMessage}</span>
 			) : null}
 
-			<label className='flex items-center gap-3 text-sm text-muted-foreground'>
+			<label className='flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground'>
 				<span className='shrink-0 whitespace-nowrap'>Меньше вес</span>
 				<Slider
 					value={[quality]}
@@ -105,7 +105,7 @@ export function ImageCompressPanel({ file }: ImageCompressPanelProps) {
 					min={10}
 					max={100}
 					step={5}
-					className='w-full cursor-pointer'
+					className='min-w-24 flex-1 cursor-pointer'
 					aria-label='Качество сжатия: слева — меньше вес файла, справа — выше качество изображения'
 				/>
 				<span className='shrink-0 whitespace-nowrap'>Выше качество</span>
