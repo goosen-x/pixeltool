@@ -108,6 +108,22 @@ jobs:
           # Pull latest image
           docker pull ${REGISTRY}/${IMAGE_NAME}:latest
 
+          # Хеш-файлы _next/static копим в постоянный кеш на хосте, а не
+          # оставляем только внутри контейнера, который на следующем шаге
+          # снесём — иначе записи Вебвизора Яндекс.Метрики, сделанные до
+          # этого деплоя, теряют CSS/JS сразу же (старый хеш физически
+          # исчезает вместе со старым контейнером, реальные посетители
+          # при этом ничего не замечают, они видели актуальный файл live).
+          # docker cp с /. на конце сливает, а не затирает — коллизий имён
+          # не бывает благодаря хешу в названии файла. nginx отдаёт эту
+          # директорию напрямую (см. /etc/nginx/sites-available/pixeltool.conf
+          # на сервере, location /_next/static/).
+          mkdir -p ~/pixeltool/static-cache/_next/static
+          STATIC_CID=$(docker create ${REGISTRY}/${IMAGE_NAME}:latest)
+          docker cp "$STATIC_CID:/app/.next/static/." ~/pixeltool/static-cache/_next/static/
+          docker rm "$STATIC_CID" > /dev/null
+          find ~/pixeltool/static-cache/_next/static -type f -mtime +90 -delete 2>/dev/null || true
+
           # Stop existing container
           docker stop pixeltool || true
           docker rm pixeltool || true
