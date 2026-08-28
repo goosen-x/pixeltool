@@ -100,9 +100,14 @@ export function MobileCatalogHeader({
 
 	return (
 		<div className='flex flex-col gap-4 sm:hidden'>
-			<h1 className='text-balance text-3xl font-bold leading-tight tracking-tight'>
+			{/* Не <h1> — настоящий заголовок один на страницу, см. комментарий в
+				   CategoryHero.tsx рядом с её версией этого же текста. */}
+			<p
+				aria-hidden='true'
+				className='text-balance text-3xl font-bold leading-tight tracking-tight'
+			>
 				{meta.heading}
-			</h1>
+			</p>
 
 			<div className='relative'>
 				<Search className='pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground' />

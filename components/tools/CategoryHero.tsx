@@ -54,9 +54,17 @@ export function CategoryHero({ category }: Props) {
 					{/* Заголовки и описания у категорий разной длины, а это разные
 					    страницы — без запаса по высоте вся вёрстка ниже прыгала бы при
 					    каждом переходе. Запас: две строки на заголовок, три на описание. */}
-					<h1 className='min-h-[9rem] text-balance text-3xl font-bold leading-tight tracking-tight sm:min-h-[6.5rem] sm:text-4xl'>
+					{/* Не <h1> — настоящий заголовок один на страницу, рендерится один
+					   раз в ToolsExplorer, а не в каждом из двух responsive-вариантов
+					   (эта карточка и MobileCatalogHeader), иначе в разметке всегда
+					   два <h1> одновременно: hidden/sm:block скрывает визуально, но
+					   не убирает из HTML, который видят краулеры. */}
+					<p
+						aria-hidden='true'
+						className='min-h-[9rem] text-balance text-3xl font-bold leading-tight tracking-tight sm:min-h-[6.5rem] sm:text-4xl'
+					>
 						{meta.heading}
-					</h1>
+					</p>
 					<p className='mt-4 min-h-[7rem] text-base leading-relaxed text-muted-foreground sm:min-h-[5.5rem] sm:text-lg'>
 						{meta.description}
 					</p>

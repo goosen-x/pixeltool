@@ -11,6 +11,7 @@ import {
 } from '@/components/tools/ToolsFilterBar'
 import { publicWidgets } from '@/lib/constants/widgets'
 import { filterWidgets } from '@/lib/utils/filter-widgets'
+import { CATEGORY_META } from '@/lib/constants/categories'
 
 interface Props {
 	/** '' — общий каталог, иначе ключ категории. Задаётся страницей и не меняется. */
@@ -34,9 +35,16 @@ export function ToolsExplorer({ category }: Props) {
 	const debouncedSearch = useDebouncedValue(search, 250)
 	const isSearching = search !== debouncedSearch
 	const found = filterWidgets(publicWidgets, debouncedSearch, category).length
+	const meta =
+		CATEGORY_META[category as keyof typeof CATEGORY_META] ?? CATEGORY_META['']
 
 	return (
 		<>
+			{/* Единственный настоящий <h1> страницы, не зависит от брейкпоинта —
+			    CategoryHero и MobileCatalogHeader показывают тот же текст визуально
+			    (один из них всегда hidden через CSS), но как <p aria-hidden>, иначе
+			    в разметке было бы два <h1> сразу (Ahrefs: Multiple H1 tags). */}
+			<h1 className='sr-only'>{meta.heading}</h1>
 			<CategoryHero category={category} />
 			<MobileCatalogHeader
 				category={category}
