@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { Fragment, useState, useCallback, useRef } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -24,7 +23,7 @@ import { ImageSizeCheckerSeo } from './ImageSizeCheckerSeo'
 import { cn } from '@/lib/utils'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard'
-import { setHandoffFile } from '@/lib/tools/file-handoff'
+import { ImageCompressPanel } from '@/components/tools/ImageCompressPanel'
 
 interface ImageInfo {
 	name: string
@@ -169,9 +168,12 @@ function CopyButton({
 
 export default function ImageSizeCheckerPage() {
 	const widget = getWidgetById('image-size-checker')!
-	const router = useRouter()
 	const [images, setImages] = useState<ImageInfo[]>([])
 	const [isDragging, setIsDragging] = useState(false)
+	// Индекс строки/карточки, под которой сейчас развёрнута панель сжатия —
+	// не набор ID, а один индекс: показываем сжатие максимум для одного
+	// изображения одновременно, чтобы не гонять canvas в фоне сразу для всех.
+	const [expandedCompress, setExpandedCompress] = useState<number | null>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	// Сообщение о том, что не получилось: тост тут не годится — он исчезает
 	// раньше, чем человек успевает понять, какой файл не взяли.
@@ -291,28 +293,28 @@ export default function ImageSizeCheckerPage() {
 		[handleFiles]
 	)
 
-	// Передаём исходный File, а не его дата-URL: так compress-image может
-	// прочитать файл ровно так же, как если бы его выбрали там напрямую.
-	// Ждём, пока запись реально уляжется в IndexedDB, и только потом
-	// переходим — иначе при очень быстрой навигации compress-image мог бы
-	// смонтироваться раньше, чем файл появится в хранилище.
-	const compressImage = useCallback(
-		(image: ImageInfo) => {
-			void (async () => {
-				await setHandoffFile(image.file)
-				router.push('/tools/compress-image')
-			})()
-		},
-		[router]
-	)
+	// Разворачивает панель сжатия прямо под карточкой/строкой — раньше здесь
+	// был переход на отдельный тул compress-image с передачей файла через
+	// IndexedDB (lib/tools/file-handoff.ts), но именно тот путь ломал
+	// картинку после передачи. Панель сжимает тот же File на месте.
+	const toggleCompress = useCallback((index: number) => {
+		setExpandedCompress(current => (current === index ? null : index))
+	}, [])
 
 	const removeImage = useCallback((index: number) => {
 		setImages(prev => prev.filter((_, i) => i !== index))
+		// Индексы после удалённой строки сдвигаются — держать expandedCompress
+		// как есть означало бы разворачивать панель не под той картинкой.
+		setExpandedCompress(current => {
+			if (current === null || current === index) return null
+			return current > index ? current - 1 : current
+		})
 	}, [])
 
 	const clearAll = useCallback(() => {
 		setImages([])
 		setProblem('')
+		setExpandedCompress(null)
 	}, [])
 
 	const exportData = useCallback(() => {
@@ -490,13 +492,17 @@ export default function ImageSizeCheckerPage() {
 										<Button
 											variant='outline'
 											className='w-fit cursor-pointer gap-2 border-amber-500/40 text-amber-700 hover:border-amber-500/60 hover:bg-amber-500/10 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-400'
-											onClick={() => compressImage(images[0])}
+											onClick={() => toggleCompress(0)}
 										>
 											<Minimize2 className='h-4 w-4' />
-											Сжать в компрессоре
+											{expandedCompress === 0 ? 'Скрыть' : 'Сжать'}
 										</Button>
 									)}
 								</div>
+
+								{expandedCompress === 0 && (
+									<ImageCompressPanel file={images[0].file} />
+								)}
 							</div>
 						</div>
 					)}
@@ -517,78 +523,85 @@ export default function ImageSizeCheckerPage() {
 								</thead>
 								<tbody>
 									{images.map((image, index) => (
-										<tr
-											key={index}
-											className='group border-b last:border-0 hover:bg-muted/30'
-										>
-											<td className='px-4 py-2'>
-												<div className='relative h-9 w-9 overflow-hidden rounded-md border bg-muted'>
-													<Image
-														src={image.url}
-														alt=''
-														fill
-														className='object-cover'
-													/>
-												</div>
-											</td>
-											<td className='max-w-48 px-2 py-2'>
-												<p className='truncate' title={image.name}>
-													{image.name}
-												</p>
-												<p className='text-xs text-muted-foreground'>
-													Изменён:{' '}
-													{image.lastModified.toLocaleDateString('ru-RU')}
-												</p>
-											</td>
-											<td className='px-2 py-2 font-mono'>
-												{image.width} × {image.height}
-												<p className='font-sans text-xs text-muted-foreground'>
-													{megapixels(image)} Мп
-												</p>
-											</td>
-											<td className='px-2 py-2'>
-												<RatioBadge image={image} />
-											</td>
-											<td className='px-2 py-2'>
-												<WeightLabel image={image} />
-											</td>
-											<td className='px-2 py-2 text-muted-foreground'>
-												{image.format.split('/')[1]?.toUpperCase() || '—'}
-											</td>
-											<td className='px-2 py-2 text-right'>
-												<div className='flex items-center justify-end opacity-60 group-hover:opacity-100'>
-													{image.fileSize > HEAVY_THRESHOLD_BYTES && (
+										<Fragment key={index}>
+											<tr className='group border-b last:border-0 hover:bg-muted/30'>
+												<td className='px-4 py-2'>
+													<div className='relative h-9 w-9 overflow-hidden rounded-md border bg-muted'>
+														<Image
+															src={image.url}
+															alt=''
+															fill
+															className='object-cover'
+														/>
+													</div>
+												</td>
+												<td className='max-w-48 px-2 py-2'>
+													<p className='truncate' title={image.name}>
+														{image.name}
+													</p>
+													<p className='text-xs text-muted-foreground'>
+														Изменён:{' '}
+														{image.lastModified.toLocaleDateString('ru-RU')}
+													</p>
+												</td>
+												<td className='px-2 py-2 font-mono'>
+													{image.width} × {image.height}
+													<p className='font-sans text-xs text-muted-foreground'>
+														{megapixels(image)} Мп
+													</p>
+												</td>
+												<td className='px-2 py-2'>
+													<RatioBadge image={image} />
+												</td>
+												<td className='px-2 py-2'>
+													<WeightLabel image={image} />
+												</td>
+												<td className='px-2 py-2 text-muted-foreground'>
+													{image.format.split('/')[1]?.toUpperCase() || '—'}
+												</td>
+												<td className='px-2 py-2 text-right'>
+													<div className='flex items-center justify-end opacity-60 group-hover:opacity-100'>
+														{image.fileSize > HEAVY_THRESHOLD_BYTES && (
+															<Button
+																size='icon'
+																variant='ghost'
+																onClick={() => toggleCompress(index)}
+																title='Сжать — большой файл'
+																className={cn(
+																	toolIconButton,
+																	'text-amber-700 hover:text-amber-800 dark:text-amber-400'
+																)}
+															>
+																<Minimize2 className='h-4 w-4' />
+															</Button>
+														)}
+														<CopyButton
+															image={image}
+															id={`${index}`}
+															copiedId={copiedItem}
+															onCopy={copyToClipboard}
+														/>
 														<Button
 															size='icon'
 															variant='ghost'
-															onClick={() => compressImage(image)}
-															title='Сжать в компрессоре — большой файл'
-															className={cn(
-																toolIconButton,
-																'text-amber-700 hover:text-amber-800 dark:text-amber-400'
-															)}
+															onClick={() => removeImage(index)}
+															title='Убрать'
+															className={toolIconButton}
 														>
-															<Minimize2 className='h-4 w-4' />
+															<X className='h-4 w-4' />
 														</Button>
-													)}
-													<CopyButton
-														image={image}
-														id={`${index}`}
-														copiedId={copiedItem}
-														onCopy={copyToClipboard}
-													/>
-													<Button
-														size='icon'
-														variant='ghost'
-														onClick={() => removeImage(index)}
-														title='Убрать'
-														className={toolIconButton}
-													>
-														<X className='h-4 w-4' />
-													</Button>
-												</div>
-											</td>
-										</tr>
+													</div>
+												</td>
+											</tr>
+
+											{expandedCompress === index && (
+												<tr className='border-b last:border-0'>
+													<td colSpan={7} className='bg-background px-2 py-3'>
+														<ImageCompressPanel file={image.file} />
+													</td>
+												</tr>
+											)}
+										</Fragment>
 									))}
 								</tbody>
 							</table>
