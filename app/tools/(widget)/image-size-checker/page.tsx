@@ -13,8 +13,7 @@ import {
 	Trash2,
 	Copy,
 	Check,
-	AlertTriangle,
-	Minimize2
+	AlertTriangle
 } from 'lucide-react'
 import { toolBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -94,42 +93,62 @@ function RatioBadge({ image }: { image: ImageInfo }) {
 	)
 }
 
-function WeightLabel({ image }: { image: ImageInfo }) {
+/**
+ * Вес, плашка «Большой файл» и сжатие — раньше это были три разных места
+ * (бейдж в общем ряду характеристик, отдельная кнопка «Сжать» ниже,
+ * отдельная карточка с панелью сжатия) с задвоенным весом файла (он же
+ * бейдж, он же первая строка внутри панели). Один блок: строка веса, тут
+ * же «Сжать» для тяжёлых файлов, разворачивается на месте, без своей рамки.
+ */
+function WeightSection({
+	image,
+	expanded,
+	onToggle
+}: {
+	image: ImageInfo
+	expanded: boolean
+	onToggle: () => void
+}) {
 	const heavy = image.fileSize > HEAVY_THRESHOLD_BYTES
+
+	// Развёрнуто — панель сама показывает вес (было → стало) и «Скрыть», не
+	// дублируем статичную строку веса сверху ещё раз.
+	if (expanded) {
+		return <ImageCompressPanel file={image.file} onCollapse={onToggle} />
+	}
+
 	return (
-		<span className='inline-flex flex-wrap items-center gap-1.5'>
-			<span
-				className={cn(
-					'font-mono',
-					heavy ? 'text-amber-700 dark:text-amber-400' : 'text-muted-foreground'
-				)}
-			>
-				{image.fileSizeFormatted}
-			</span>
-			{heavy && (
-				<Badge
-					variant='outline'
-					title='Тяжелее ориентира ~300 КБ для обычной картинки на сайте'
-					className='gap-1 border-amber-500/40 text-amber-700 dark:text-amber-400'
+		<div className='flex flex-wrap items-center justify-between gap-2'>
+			<span className='inline-flex flex-wrap items-center gap-1.5 text-sm'>
+				<span
+					className={cn(
+						'font-mono',
+						heavy ? 'text-amber-700 dark:text-amber-400' : 'text-muted-foreground'
+					)}
 				>
-					<AlertTriangle className='h-3 w-3' />
-					Большой файл
-				</Badge>
+					{image.fileSizeFormatted}
+				</span>
+				{heavy && (
+					<Badge
+						variant='outline'
+						title='Тяжелее ориентира ~300 КБ для обычной картинки на сайте'
+						className='gap-1 border-amber-500/40 text-amber-700 dark:text-amber-400'
+					>
+						<AlertTriangle className='h-3 w-3' />
+						Большой файл
+					</Badge>
+				)}
+			</span>
+
+			{heavy && (
+				<button
+					type='button'
+					onClick={onToggle}
+					className='cursor-pointer text-sm font-medium text-primary hover:underline'
+				>
+					Сжать
+				</button>
 			)}
-		</span>
-	)
-}
-
-function megapixels(image: ImageInfo): string {
-	return ((image.width * image.height) / 1_000_000).toFixed(1)
-}
-
-/** Мегапиксели и дата изменения — метаданные, которые уже были в объекте ImageInfo, но нигде не показывались. */
-function MetaLine({ image }: { image: ImageInfo }) {
-	return (
-		<div className='flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground'>
-			<span>{megapixels(image)} Мп</span>
-			<span>Изменён: {image.lastModified.toLocaleDateString('ru-RU')}</span>
 		</div>
 	)
 }
@@ -450,13 +469,22 @@ export default function ImageSizeCheckerPage() {
 								/>
 							</div>
 
-							<div className='flex min-w-0 flex-col justify-center gap-4'>
-								<p
-									className='truncate text-sm text-muted-foreground'
-									title={images[0].name}
-								>
-									{images[0].name}
-								</p>
+							<div className='flex min-w-0 flex-col gap-4'>
+								<div className='flex items-start justify-between gap-2'>
+									<p
+										className='min-w-0 truncate text-sm text-muted-foreground'
+										title={images[0].name}
+									>
+										{images[0].name}
+									</p>
+									<CopyButton
+										image={images[0]}
+										id='single'
+										copiedId={copiedItem}
+										onCopy={copyToClipboard}
+										className='shrink-0'
+									/>
+								</div>
 
 								<p className='font-mono text-3xl font-bold tracking-tight sm:text-4xl'>
 									{images[0].width} × {images[0].height}
@@ -464,45 +492,22 @@ export default function ImageSizeCheckerPage() {
 
 								<div className='flex flex-wrap items-center gap-2 text-sm'>
 									<RatioBadge image={images[0]} />
-									<WeightLabel image={images[0]} />
 									<Badge variant='outline'>
 										{images[0].format.split('/')[1]?.toUpperCase() || '—'}
 									</Badge>
+									<span className='text-xs text-muted-foreground'>
+										Изменён:{' '}
+										{images[0].lastModified.toLocaleDateString('ru-RU')}
+									</span>
 								</div>
 
-								<MetaLine image={images[0]} />
-
-								<div className='flex flex-wrap gap-2'>
-									<Button
-										variant='outline'
-										className='w-fit cursor-pointer gap-2'
-										onClick={() =>
-											copyToClipboard(copyText(images[0]), 'single')
-										}
-									>
-										{copiedItem === 'single' ? (
-											<Check className='h-4 w-4 text-emerald-600' />
-										) : (
-											<Copy className='h-4 w-4' />
-										)}
-										Скопировать данные
-									</Button>
-
-									{images[0].fileSize > HEAVY_THRESHOLD_BYTES && (
-										<Button
-											variant='outline'
-											className='w-fit cursor-pointer gap-2 border-amber-500/40 text-amber-700 hover:border-amber-500/60 hover:bg-amber-500/10 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-400'
-											onClick={() => toggleCompress(0)}
-										>
-											<Minimize2 className='h-4 w-4' />
-											{expandedCompress === 0 ? 'Скрыть' : 'Сжать'}
-										</Button>
-									)}
+								<div className='border-t pt-4'>
+									<WeightSection
+										image={images[0]}
+										expanded={expandedCompress === 0}
+										onToggle={() => toggleCompress(0)}
+									/>
 								</div>
-
-								{expandedCompress === 0 && (
-									<ImageCompressPanel file={images[0].file} />
-								)}
 							</div>
 						</div>
 					)}
@@ -546,35 +551,37 @@ export default function ImageSizeCheckerPage() {
 												</td>
 												<td className='px-2 py-2 font-mono'>
 													{image.width} × {image.height}
-													<p className='font-sans text-xs text-muted-foreground'>
-														{megapixels(image)} Мп
-													</p>
 												</td>
 												<td className='px-2 py-2'>
 													<RatioBadge image={image} />
 												</td>
 												<td className='px-2 py-2'>
-													<WeightLabel image={image} />
+													<span
+														className={cn(
+															'font-mono',
+															image.fileSize > HEAVY_THRESHOLD_BYTES
+																? 'text-amber-700 dark:text-amber-400'
+																: 'text-muted-foreground'
+														)}
+													>
+														{image.fileSizeFormatted}
+													</span>
+													{image.fileSize > HEAVY_THRESHOLD_BYTES &&
+														expandedCompress !== index && (
+															<button
+																type='button'
+																onClick={() => toggleCompress(index)}
+																className='ml-1.5 cursor-pointer text-amber-700 hover:underline dark:text-amber-400'
+															>
+																сжать
+															</button>
+														)}
 												</td>
 												<td className='px-2 py-2 text-muted-foreground'>
 													{image.format.split('/')[1]?.toUpperCase() || '—'}
 												</td>
 												<td className='px-2 py-2 text-right'>
 													<div className='flex items-center justify-end opacity-60 group-hover:opacity-100'>
-														{image.fileSize > HEAVY_THRESHOLD_BYTES && (
-															<Button
-																size='icon'
-																variant='ghost'
-																onClick={() => toggleCompress(index)}
-																title='Сжать — большой файл'
-																className={cn(
-																	toolIconButton,
-																	'text-amber-700 hover:text-amber-800 dark:text-amber-400'
-																)}
-															>
-																<Minimize2 className='h-4 w-4' />
-															</Button>
-														)}
 														<CopyButton
 															image={image}
 															id={`${index}`}
@@ -597,7 +604,10 @@ export default function ImageSizeCheckerPage() {
 											{expandedCompress === index && (
 												<tr className='border-b last:border-0'>
 													<td colSpan={7} className='bg-background px-2 py-3'>
-														<ImageCompressPanel file={image.file} />
+														<ImageCompressPanel
+															file={image.file}
+															onCollapse={() => toggleCompress(index)}
+														/>
 													</td>
 												</tr>
 											)}
