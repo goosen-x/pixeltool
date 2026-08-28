@@ -474,12 +474,16 @@ export default function ImageSizeCheckerPage() {
 							</div>
 
 							<div className='flex min-w-0 flex-col gap-4'>
+								<p
+									className='min-w-0 truncate text-sm text-muted-foreground'
+									title={images[0].name}
+								>
+									{images[0].name}
+								</p>
+
 								<div className='flex items-start justify-between gap-2'>
-									<p
-										className='min-w-0 truncate text-sm text-muted-foreground'
-										title={images[0].name}
-									>
-										{images[0].name}
+									<p className='font-mono text-3xl font-bold tracking-tight sm:text-4xl'>
+										{images[0].width} × {images[0].height}
 									</p>
 									<CopyButton
 										image={images[0]}
@@ -489,10 +493,6 @@ export default function ImageSizeCheckerPage() {
 										className='shrink-0'
 									/>
 								</div>
-
-								<p className='font-mono text-3xl font-bold tracking-tight sm:text-4xl'>
-									{images[0].width} × {images[0].height}
-								</p>
 
 								<div className='flex flex-wrap items-center gap-2 text-sm'>
 									<RatioBadge image={images[0]} />
