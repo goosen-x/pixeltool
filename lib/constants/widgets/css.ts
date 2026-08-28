@@ -26,7 +26,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-clamp-calculator',
 		gradient: 'from-amber-500 to-orange-500',
 		title: 'CSS clamp(): адаптивный шрифт без медиазапросов',
-		metaTitle: 'CSS clamp() — калькулятор адаптивного шрифта',
+		metaTitle: 'CSS clamp() - калькулятор адаптивного шрифта',
 		description:
 			'Задайте минимальный и максимальный размер — калькулятор соберёт clamp(), и шрифт будет плавно тянуться за шириной экрана.',
 		useCase:
@@ -79,7 +79,7 @@ export const cssWidgets: Widget[] = [
 		path: 'flexbox-generator',
 		gradient: 'from-blue-500 to-indigo-500',
 		title: 'CSS Flexbox генератор',
-		metaTitle: 'CSS Flexbox generator онлайн — justify-content и align-items',
+		metaTitle: 'CSS Flexbox generator онлайн - justify-content и align-items',
 		// Карточка тула (ToolCard) обрезает description через line-clamp-2 — с
 		// прежней формулировкой обрыв приходился прямо на середину
 		// перечисления через запятую («настройте направление,...»), выглядело
@@ -98,7 +98,7 @@ export const cssWidgets: Widget[] = [
 		updatedAt: '2026-08-16',
 		tags: ['css', 'flexbox', 'layout', 'responsive', 'alignment'],
 		metaDescription:
-			'Расположите элементы в ряд или столбец, выровняйте их и настройте отступы — генератор Flexbox сразу покажет готовый CSS и Tailwind. Бесплатно, в браузере.',
+			'Расположите элементы в ряд или столбец, выровняйте их и настройте отступы - генератор Flexbox сразу покажет готовый CSS и Tailwind. Бесплатно, в браузере.',
 		faqs: [
 			{
 				question: 'Что такое CSS Flexbox?',
@@ -167,7 +167,7 @@ export const cssWidgets: Widget[] = [
 		path: 'grid-generator',
 		gradient: 'from-green-500 to-emerald-500',
 		title: 'CSS Grid генератор',
-		metaTitle: 'CSS Grid онлайн — генератор сетки, grid-template-columns и gap',
+		metaTitle: 'CSS Grid онлайн - генератор сетки, grid-template-columns и gap',
 		description:
 			'Визуальный генератор CSS Grid: постройте адаптивную сетку без кода и скопируйте результат в CSS или Tailwind.',
 		useCase:
@@ -235,7 +235,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-specificity-calculator',
 		gradient: 'from-indigo-500 to-blue-600',
 		title: 'Специфичность CSS: калькулятор веса селектора',
-		metaTitle: 'Специфичность CSS — калькулятор веса селекторов',
+		metaTitle: 'Специфичность CSS - калькулятор веса селекторов',
 		description:
 			'Вставьте селектор и узнайте его вес — станет понятно, какое правило победит в каскаде и почему стиль не применяется.',
 		useCase: 'Разбор конфликтов стилей: расчёт и сравнение веса CSS-селекторов',
@@ -288,7 +288,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-bezier-curve-generator',
 		gradient: 'from-purple-500 to-indigo-500',
 		title: 'Cubic-bezier: кривая плавности для CSS',
-		metaTitle: 'cubic-bezier — генератор easing для transition и animation',
+		metaTitle: 'cubic-bezier - генератор easing для transition и animation',
 		description:
 			'Потяните за контрольные точки и получите свою cubic-bezier() для transition-timing-function или animation-timing-function.',
 		useCase:
@@ -302,7 +302,7 @@ export const cssWidgets: Widget[] = [
 		updatedAt: '2026-07-13',
 		tags: ['css', 'cubic-bezier', 'easing', 'ease', 'transition', 'animation'],
 		metaDescription:
-			'Соберите свою кривую cubic-bezier мышью и сразу увидьте движение. Готовое значение для transition-timing-function и animation-timing-function — одной кнопкой.',
+			'Соберите свою кривую cubic-bezier мышью и сразу увидьте движение. Готовое значение для transition-timing-function и animation-timing-function - одной кнопкой.',
 		faqs: [
 			{
 				question: 'Что такое cubic-bezier в CSS?',
@@ -341,7 +341,7 @@ export const cssWidgets: Widget[] = [
 		path: 'color-converter',
 		gradient: 'from-pink-500 to-purple-500',
 		title: 'Конвертер цветов',
-		metaTitle: 'Конвертер цветов онлайн — hex в rgb, hsl, cmyk',
+		metaTitle: 'Конвертер цветов онлайн - hex в rgb, hsl, cmyk',
 		description:
 			'Переводите цвет между HEX, RGB, HSL, CMYK и LAB: вставьте значение в любом формате — остальные посчитаются автоматически.',
 		useCase:
@@ -351,7 +351,7 @@ export const cssWidgets: Widget[] = [
 		updatedAt: '2026-07-07',
 		tags: ['color', 'converter', 'hex', 'rgb', 'hsl', 'cmyk'],
 		metaDescription:
-			'Конвертер цветов онлайн: hex в rgb, rgb в hex, hsl, cmyk, lab. Вставьте цвет — получите все форматы сразу. Бесплатно.',
+			'Конвертер цветов онлайн: hex в rgb, rgb в hex, hsl, cmyk, lab. Вставьте цвет - получите все форматы сразу. Бесплатно.',
 		faqs: [
 			{
 				question: 'Какие форматы цветов поддерживаются?',
@@ -401,7 +401,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-minifier',
 		gradient: 'from-pink-500 to-purple-600',
 		title: 'Сжать CSS: минификация онлайн',
-		metaTitle: 'Сжать CSS онлайн — минификатор и оптимизация кода',
+		metaTitle: 'Сжать CSS онлайн - минификатор и оптимизация кода',
 		description:
 			'Вставьте стили и получите сжатый CSS: комментарии и пробелы уйдут, размер файла упадёт на 20–40%.',
 		useCase: 'Сжатие и оптимизация CSS-кода для ускорения загрузки страницы',
@@ -417,7 +417,7 @@ export const cssWidgets: Widget[] = [
 			'compress'
 		],
 		metaDescription:
-			'Минификатор CSS: вставьте код и заберите сжатую версию. Убирает комментарии и пробелы, сокращает цвета и нули — файл становится легче, страница грузится быстрее.',
+			'Минификатор CSS: вставьте код и заберите сжатую версию. Убирает комментарии и пробелы, сокращает цвета и нули - файл становится легче, страница грузится быстрее.',
 		faqs: [
 			{
 				question: 'Как сжать CSS онлайн?',
@@ -462,7 +462,7 @@ export const cssWidgets: Widget[] = [
 		path: 'px-rem-converter',
 		gradient: 'from-pink-500 to-rose-600',
 		title: 'Конвертер px, rem и em',
-		metaTitle: 'Перевести rem в px и px в rem — конвертер единиц CSS',
+		metaTitle: 'Перевести rem в px и px в rem - конвертер единиц CSS',
 		description:
 			'Переведите rem в px или px в rem: введите значение, задайте базовый размер шрифта — результат посчитается сразу.',
 		recommendedTools: [
@@ -520,7 +520,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-box-shadow-generator',
 		gradient: 'from-gray-600 to-gray-800',
 		title: 'Тень в CSS: box-shadow и text-shadow',
-		metaTitle: 'Тень в CSS — box-shadow и text-shadow с готовым кодом',
+		metaTitle: 'Тень в CSS - box-shadow и text-shadow с готовым кодом',
 		description:
 			'Настройте тень блока или текста ползунками и заберите готовый CSS: смещение, размытие, растяжение, внутренняя тень.',
 		recommendedTools: ['css-gradient', 'color-converter', 'css-keyframes'],
@@ -530,7 +530,7 @@ export const cssWidgets: Widget[] = [
 		useCase:
 			'Подбор тени для карточек, кнопок и текста с предпросмотром и готовыми пресетами',
 		metaDescription:
-			'Соберите тень для блока или текста: двигайте ползунки, смотрите результат вживую и копируйте CSS. Готовые пресеты — мягкая, внутренняя, при наведении, неон.',
+			'Соберите тень для блока или текста: двигайте ползунки, смотрите результат вживую и копируйте CSS. Готовые пресеты - мягкая, внутренняя, при наведении, неон.',
 		faqs: [
 			{
 				question: 'Как сделать тень в CSS?',
@@ -584,7 +584,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-gradient-generator',
 		gradient: 'from-purple-500 via-pink-500 to-red-500',
 		title: 'CSS градиент: генератор фона онлайн',
-		metaTitle: 'CSS градиент онлайн — генератор фона linear, radial, conic',
+		metaTitle: 'CSS градиент онлайн - генератор фона linear, radial, conic',
 		description:
 			'Соберите CSS-градиент визуально — линейный, радиальный или конический — настройте цветовые точки и направление и скопируйте готовый код CSS и Tailwind.',
 		recommendedTools: ['css-box-shadow', 'color-converter', 'px-rem-converter'],
@@ -594,7 +594,7 @@ export const cssWidgets: Widget[] = [
 		useCase:
 			'Создание линейных, радиальных и конических CSS градиентов с визуальным редактором',
 		metaDescription:
-			'Настройте цвета, направление и тип градиента — линейный, радиальный или конический — и получите готовый CSS для фона. Бесплатно, с живым предпросмотром.',
+			'Настройте цвета, направление и тип градиента - линейный, радиальный или конический - и получите готовый CSS для фона. Бесплатно, с живым предпросмотром.',
 		faqs: [
 			{
 				question:
@@ -644,7 +644,7 @@ export const cssWidgets: Widget[] = [
 		path: 'color-contrast-checker',
 		gradient: 'from-black to-white',
 		title: 'Контраст текста и фона: проверка по WCAG',
-		metaTitle: 'Контраст текста и фона — проверка цветов по WCAG',
+		metaTitle: 'Контраст текста и фона - проверка цветов по WCAG',
 		description:
 			'Подберите цвет текста и фона так, чтобы надпись читалась: коэффициент контрастности и вердикт по WCAG считаются сразу.',
 		recommendedTools: ['color-converter', 'css-gradient', 'css-box-shadow'],
@@ -705,7 +705,7 @@ export const cssWidgets: Widget[] = [
 		path: 'css-keyframes-generator',
 		gradient: 'from-blue-500 to-purple-600',
 		title: 'CSS-анимации: примеры и готовый код',
-		metaTitle: 'CSS-анимации — примеры, готовый код и конструктор @keyframes',
+		metaTitle: 'CSS-анимации - примеры, готовый код и конструктор @keyframes',
 		description:
 			'Соберите анимацию на @keyframes или возьмите готовую: появление, пульсация, загрузка, анимация кнопки при наведении.',
 		recommendedTools: ['bezier-curve', 'css-box-shadow', 'css-gradient'],

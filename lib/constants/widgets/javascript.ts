@@ -29,7 +29,7 @@ export const javascriptWidgets: Widget[] = [
 			'минификация'
 		],
 		metaDescription:
-			'Форматируйте и проверяйте JSON онлайн: читаемый вид с отступами, сжатие, разбор структуры и перевод JSON в YAML и обратно. Вставьте данные — остальное посчитается само.',
+			'Форматируйте и проверяйте JSON онлайн: читаемый вид с отступами, сжатие, разбор структуры и перевод JSON в YAML и обратно. Вставьте данные - остальное посчитается само.',
 		faqs: [
 			{
 				question: 'Как перевести JSON в YAML?',
@@ -73,7 +73,7 @@ export const javascriptWidgets: Widget[] = [
 		path: 'regex-tester',
 		gradient: 'from-green-500 to-teal-600',
 		title: 'Проверка регулярных выражений',
-		metaTitle: 'Регулярные выражения онлайн — regex тестер с подсветкой',
+		metaTitle: 'Регулярные выражения онлайн - regex тестер с подсветкой',
 		description:
 			'Проверяйте регулярные выражения онлайн для JavaScript, PHP и Python: подсветка совпадений и групп захвата сразу по мере ввода.',
 		recommendedTools: ['javascript-syntax-checker', 'text-diff'],
@@ -126,7 +126,7 @@ export const javascriptWidgets: Widget[] = [
 		path: 'javascript-syntax-checker',
 		gradient: 'from-yellow-500 to-red-600',
 		title: 'Проверить JavaScript: синтаксис и ошибки',
-		metaTitle: 'Проверить JavaScript онлайн — синтаксис и ошибки в коде',
+		metaTitle: 'Проверить JavaScript онлайн - синтаксис и ошибки в коде',
 		description:
 			'Проверьте JavaScript онлайн: найдите синтаксические ошибки в коде ES6/ES2020+ и JSX прямо в браузере, без запуска.',
 		recommendedTools: ['json-tools', 'regex-tester'],

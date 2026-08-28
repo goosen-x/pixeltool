@@ -12,7 +12,7 @@ export const securityWidgets: Widget[] = [
 		path: 'qr-generator',
 		gradient: 'from-violet-500 to-purple-500',
 		title: 'Генератор QR-кодов',
-		metaTitle: 'Генератор QR-кодов онлайн — для ссылки, Wi-Fi и приложений',
+		metaTitle: 'Генератор QR-кодов онлайн - для ссылки, Wi-Fi и приложений',
 		description:
 			'Бесплатный генератор QR-кодов онлайн — создайте код для ссылки, Wi-Fi или приложения за несколько секунд, без регистрации',
 		useCase:
@@ -60,7 +60,7 @@ export const securityWidgets: Widget[] = [
 		path: 'qr-scanner',
 		gradient: 'from-violet-500 to-purple-500',
 		title: 'Сканер QR-кодов',
-		metaTitle: 'Сканер QR-кодов онлайн — через камеру или фото',
+		metaTitle: 'Сканер QR-кодов онлайн - через камеру или фото',
 		description:
 			'Наведите камеру на QR-код или загрузите изображение — сканер распознает ссылку или текст прямо в браузере.',
 		useCase:
@@ -70,7 +70,7 @@ export const securityWidgets: Widget[] = [
 		updatedAt: '2026-07-29',
 		tags: ['qr', 'сканер', 'сканировать qr код', 'camera', 'scanner'],
 		metaDescription:
-			'Сканируйте QR-код через камеру или загрузите картинку — распознавание работает прямо в браузере, ничего не отправляется на сервер.',
+			'Сканируйте QR-код через камеру или загрузите картинку - распознавание работает прямо в браузере, ничего не отправляется на сервер.',
 		faqs: [
 			{
 				question:
@@ -109,7 +109,7 @@ export const securityWidgets: Widget[] = [
 		path: 'password-generator',
 		gradient: 'from-emerald-500 to-teal-600',
 		title: 'Генератор паролей',
-		metaTitle: 'Генератор паролей онлайн — надёжный и сложный пароль',
+		metaTitle: 'Генератор паролей онлайн - надёжный и сложный пароль',
 		description:
 			'Задайте длину и набор символов — пароль соберётся в браузере, а индикатор сразу покажет, насколько он стойкий к перебору.',
 		useCase:
@@ -164,7 +164,7 @@ export const securityWidgets: Widget[] = [
 		path: 'base64-encoder',
 		gradient: 'from-green-500 to-teal-600',
 		title: 'Base64 кодировщик',
-		metaTitle: 'Base64 онлайн — кодировать и декодировать',
+		metaTitle: 'Base64 онлайн - кодировать и декодировать',
 		description: 'Кодируйте и декодируйте данные в формате Base64',
 		recommendedTools: ['jwt-decoder', 'svg-encoder', 'json-tools'],
 		difficulty: 'beginner',
@@ -217,7 +217,7 @@ export const securityWidgets: Widget[] = [
 		path: 'jwt-decoder',
 		gradient: 'from-purple-500 to-pink-600',
 		title: 'JWT: расшифровать токен',
-		metaTitle: 'Расшифровать JWT токен онлайн — JWT decoder',
+		metaTitle: 'Расшифровать JWT токен онлайн - JWT decoder',
 		description:
 			'Покажет payload, claims, алгоритм и срок действия. Токен не уходит с вашего устройства',
 		recommendedTools: ['base64-encoder', 'json-tools', 'uuid-generator'],
@@ -226,7 +226,7 @@ export const securityWidgets: Widget[] = [
 		tags: ['jwt', 'json', 'token', 'decoder', 'authentication'],
 		useCase: 'Анализ структуры JWT токенов для отладки авторизации',
 		metaDescription:
-			'Расшифруйте JWT токен онлайн: payload, claims, алгоритм подписи и срок действия. Работает прямо в браузере — токен никуда не отправляется.',
+			'Расшифруйте JWT токен онлайн: payload, claims, алгоритм подписи и срок действия. Работает прямо в браузере - токен никуда не отправляется.',
 		faqs: [
 			{
 				question: 'Что такое JWT и как он структурирован?',
@@ -275,7 +275,7 @@ export const securityWidgets: Widget[] = [
 		// подкластер после самого «генератор uuid» (702). Раньше H1 был просто
 		// «Генератор UUID» и этот спрос не нёс, хотя metaTitle его уже закрывал.
 		title: 'Генератор UUID: v4, v7 и v1',
-		metaTitle: 'Генератор UUID онлайн — v4, v7 и v1',
+		metaTitle: 'Генератор UUID онлайн - v4, v7 и v1',
 		description: 'Создавайте уникальные идентификаторы UUID — v4, v7 или v1',
 		recommendedTools: [
 			'random-number-generator',

@@ -71,7 +71,7 @@ function closestRatioHint(image: ImageInfo): string | null {
 }
 
 function copyText(image: ImageInfo): string {
-	return `${image.width} × ${image.height}, ${image.aspectRatio}, ${image.fileSizeFormatted}, ${image.format.split('/')[1]?.toUpperCase() || image.format}`
+	return `${image.width} × ${image.height}`
 }
 
 function RatioBadge({ image }: { image: ImageInfo }) {
@@ -176,7 +176,7 @@ function CopyButton({
 		<Button
 			size='icon'
 			variant='ghost'
-			title='Скопировать данные'
+			title='Скопировать разрешение'
 			onClick={() => onCopy(copyText(image), id)}
 			className={cn(toolIconButton, className)}
 		>
@@ -202,7 +202,7 @@ export default function ImageSizeCheckerPage() {
 	// раньше, чем человек успевает понять, какой файл не взяли.
 	const [problem, setProblem] = useState('')
 	const { copyToClipboard, copiedItem } = useCopyToClipboard({
-		successMessage: 'Данные скопированы'
+		successMessage: 'Разрешение скопировано'
 	})
 
 	const formatBytes = (bytes: number): string => {
