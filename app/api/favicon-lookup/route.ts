@@ -38,7 +38,14 @@ async function probe(
 		// этой проверки сервер сходит туда напрямую.
 		const parsed = new URL(url)
 		if (!['http:', 'https:'].includes(parsed.protocol)) {
-			return { url, rel, sizes, contentType: null, bytes: null, reachable: false }
+			return {
+				url,
+				rel,
+				sizes,
+				contentType: null,
+				bytes: null,
+				reachable: false
+			}
 		}
 		await assertPublicHost(parsed.hostname)
 

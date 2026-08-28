@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { JSDOM } from 'jsdom'
-import { assertPublicHost, toSafePublicUrl, safeFetch } from '@/lib/security/ssrf'
+import {
+	assertPublicHost,
+	toSafePublicUrl,
+	safeFetch
+} from '@/lib/security/ssrf'
 
 export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url)
