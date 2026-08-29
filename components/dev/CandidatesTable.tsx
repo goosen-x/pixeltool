@@ -20,8 +20,10 @@ type SortKey = 'name' | 'volume' | 'category' | 'status'
 type SortDir = 'asc' | 'desc'
 
 const STATUS_STYLES: Record<string, string> = {
-	built: 'border-transparent bg-green-500/10 text-green-700 dark:text-green-400',
-	candidate: 'border-transparent bg-blue-500/10 text-blue-700 dark:text-blue-400',
+	built:
+		'border-transparent bg-green-500/10 text-green-700 dark:text-green-400',
+	candidate:
+		'border-transparent bg-blue-500/10 text-blue-700 dark:text-blue-400',
 	rejected: 'border-transparent bg-red-500/10 text-red-700 dark:text-red-400',
 	weak: 'border-transparent bg-muted text-muted-foreground',
 	unverified:
@@ -128,7 +130,9 @@ export function CandidatesTable({ candidates }: { candidates: Candidate[] }) {
 					<button
 						key={value}
 						type='button'
-						onClick={() => setStatus(current => (current === value ? null : value))}
+						onClick={() =>
+							setStatus(current => (current === value ? null : value))
+						}
 						className={toolPill(status === value)}
 					>
 						{statusLabel(value)}

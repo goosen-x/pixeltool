@@ -4,7 +4,10 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { notFound } from 'next/navigation'
 import { dev } from '@/lib/config/env'
-import { CandidatesTable, type Candidate } from '@/components/dev/CandidatesTable'
+import {
+	CandidatesTable,
+	type Candidate
+} from '@/components/dev/CandidatesTable'
 
 const execFileAsync = promisify(execFile)
 
