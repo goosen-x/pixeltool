@@ -14,6 +14,12 @@ export interface Candidate {
 	status: string
 	source: string
 	comment: string
+	/** Позиция в Яндексе по головной фразе; пусто — не измеряли, '>30' — вне глубины. */
+	yandex: string
+	/** То же для Google. Пока пусто у всех: нужен Custom Search API и cx. */
+	google: string
+	/** Какой фразой мерили — без неё цифра непроверяема. */
+	serpPhrase: string
 }
 
 type SortKey = 'name' | 'volume' | 'category' | 'status'
@@ -44,6 +50,28 @@ function statusKind(status: string): string {
 
 function statusLabel(status: string): string {
 	return STATUS_LABELS[statusKind(status)] ?? status
+}
+
+/**
+ * Позиция в выдаче. Пустая строка значит «не измеряли» и рисуется прочерком:
+ * это не то же самое, что «вне топ-30», и путать их нельзя.
+ */
+function SerpCell({ value, phrase }: { value: string; phrase: string }) {
+	if (!value) return <span className='text-muted-foreground/50'>—</span>
+
+	const numeric = Number(value)
+	const good = Number.isFinite(numeric) && numeric <= 10
+	return (
+		<span
+			title={phrase ? `Замер по фразе «${phrase}»` : undefined}
+			className={cn(
+				good && 'text-green-700 dark:text-green-400',
+				value.startsWith('>') && 'text-muted-foreground'
+			)}
+		>
+			{value}
+		</span>
+	)
 }
 
 function builtSlug(status: string): string | null {
@@ -190,6 +218,18 @@ export function CandidatesTable({ candidates }: { candidates: Candidate[] }) {
 							>
 								Статус{sortIndicator('status')}
 							</th>
+							<th
+								className='px-3 py-2 font-medium'
+								title='Позиция в Яндексе по головной фразе'
+							>
+								Яндекс
+							</th>
+							<th
+								className='px-3 py-2 font-medium'
+								title='Позиция в Google по головной фразе'
+							>
+								Google
+							</th>
 							<th className='px-3 py-2 font-medium'>Источник</th>
 							<th className='px-3 py-2 font-medium'>Комментарий</th>
 						</tr>
@@ -221,6 +261,12 @@ export function CandidatesTable({ candidates }: { candidates: Candidate[] }) {
 												{slug}
 											</Link>
 										)}
+									</td>
+									<td className='px-3 py-2 font-mono tabular-nums'>
+										<SerpCell value={c.yandex} phrase={c.serpPhrase} />
+									</td>
+									<td className='px-3 py-2 font-mono tabular-nums'>
+										<SerpCell value={c.google} phrase={c.serpPhrase} />
 									</td>
 									<td className='px-3 py-2 text-muted-foreground'>
 										{c.source}

@@ -39,6 +39,7 @@
 		"typecheck": "tsc --noEmit",
 		"prepare": "husky",
 		"wordstat": "npx tsx scripts/wordstat.ts",
+		"serp": "npx tsx scripts/serp-position.ts",
 		"pagespeed": "npx tsx scripts/pagespeed.ts",
 		"indexnow": "node scripts/indexnow.mjs",
 		"reindex-diff": "npx tsx scripts/reindex-diff.ts",

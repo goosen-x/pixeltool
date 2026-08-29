@@ -25,14 +25,27 @@ function parseTsv(raw: string): Candidate[] {
 	const [, ...rows] = lines // первая строка — заголовок, пропускаем
 
 	return rows.map(line => {
-		const [name, volume, category, status, source, comment] = line.split('\t')
+		const [
+			name,
+			volume,
+			category,
+			status,
+			source,
+			comment,
+			yandex,
+			google,
+			serpPhrase
+		] = line.split('\t')
 		return {
 			name: name ?? '',
 			volume: Number(volume) || 0,
 			category: category ?? '',
 			status: status ?? '',
 			source: source ?? '',
-			comment: comment ?? ''
+			comment: comment ?? '',
+			yandex: (yandex ?? '').trim(),
+			google: (google ?? '').trim(),
+			serpPhrase: (serpPhrase ?? '').trim()
 		}
 	})
 }
