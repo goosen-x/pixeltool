@@ -2,6 +2,7 @@ import { execFile } from 'child_process'
 import { promisify } from 'util'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { dev } from '@/lib/config/env'
 import {
@@ -10,6 +11,21 @@ import {
 } from '@/components/dev/CandidatesTable'
 
 const execFileAsync = promisify(execFile)
+
+/**
+ * Страница внутренняя и на проде отдаёт 404 (флаг dev ниже), но робота
+ * оповещаем и явно: если тул когда-нибудь окажется доступен по недосмотру —
+ * например, dev-сборкой на публичном хосте — таблица со спросом, статусами и
+ * позициями конкурентов не должна попасть ни в индекс, ни в обход ссылок.
+ */
+export const metadata: Metadata = {
+	robots: {
+		index: false,
+		follow: false,
+		nocache: true,
+		googleBot: { index: false, follow: false }
+	}
+}
 
 // Единственный источник истины — файл на сервере (/root/pixeltool/candidates.tsv,
 // рядом с самим проектом, не в общей папке обмена /root/exchange/), доступный

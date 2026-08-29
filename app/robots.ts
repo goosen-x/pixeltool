@@ -15,6 +15,9 @@ export default function robots(): MetadataRoute.Robots {
 				disallow: [
 					'/api/',
 					'/_next/',
+					// Внутренние страницы: на проде их и так нет (флаг dev), запрет
+					// здесь — на случай, если dev-сборка окажется на публичном хосте.
+					'/dev/',
 					'*/test-db',
 					'*/test-redirect',
 					'/private/',
