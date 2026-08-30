@@ -1,8 +1,11 @@
+import Image from 'next/image'
 import {
 	NAMED_LINES,
 	TALENT_POINTS,
 	getArcana,
-	type FullDestinyMatrixResult
+	type FullDestinyMatrixResult,
+	type FullPointKey,
+	type NamedLine
 } from '@/lib/utils/destiny-matrix'
 
 interface DestinyMatrixLinesPanelProps {
@@ -11,64 +14,115 @@ interface DestinyMatrixLinesPanelProps {
 	onToggle: (key: string) => void
 }
 
+/** Точки линии подряд, без повторов узла, где сегменты сходятся. */
+function flattenLine(line: NamedLine): FullPointKey[] {
+	const seen = new Set<FullPointKey>()
+	const flat: FullPointKey[] = []
+	for (const segment of line.segments) {
+		for (const key of segment) {
+			if (!seen.has(key)) {
+				seen.add(key)
+				flat.push(key)
+			}
+		}
+	}
+	return flat
+}
+
+function tabClassName(isActive: boolean): string {
+	return isActive
+		? 'cursor-pointer rounded-full border border-primary bg-primary/5 px-3 py-1.5 text-sm text-primary'
+		: 'cursor-pointer rounded-full border px-3 py-1.5 text-sm text-muted-foreground hover:border-primary/50'
+}
+
+interface PointRowProps {
+	arcanaKey: FullPointKey
+	result: FullDestinyMatrixResult
+	prefix?: string
+}
+
+function PointRow({ arcanaKey, result, prefix }: PointRowProps) {
+	const arcana = getArcana(result[arcanaKey])
+	return (
+		<div className='flex items-start gap-3'>
+			{arcana.image ? (
+				<Image
+					src={arcana.image}
+					alt=''
+					width={28}
+					height={42}
+					className='shrink-0 rounded border'
+				/>
+			) : (
+				<span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-sm font-bold text-primary'>
+					{arcana.number}
+				</span>
+			)}
+			<div>
+				<span className='block text-sm font-medium text-foreground'>
+					{prefix ? `${prefix}: ` : ''}
+					{arcana.number} ({arcana.name})
+				</span>
+				<p className='mt-1 text-sm text-muted-foreground'>{arcana.meaning}</p>
+			</div>
+		</div>
+	)
+}
+
 export function DestinyMatrixLinesPanel({
 	result,
 	highlightedLine,
 	onToggle
 }: DestinyMatrixLinesPanelProps) {
+	const activeLine = NAMED_LINES.find(line => line.key === highlightedLine)
+	const isTalentActive = highlightedLine === 'talent'
+
 	return (
-		<div className='space-y-2'>
+		<div className='space-y-3'>
 			<span className='block text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 				Родовые линии, любовь, деньги, талант
 			</span>
 
-			{NAMED_LINES.map(line => {
-				const isActive = highlightedLine === line.key
-				return (
+			<div className='flex flex-wrap gap-2'>
+				{NAMED_LINES.map(line => (
 					<button
 						key={line.key}
 						type='button'
 						onClick={() => onToggle(line.key)}
-						className={
-							isActive
-								? 'w-full cursor-pointer rounded-lg border border-primary bg-primary/5 p-3 text-left'
-								: 'w-full cursor-pointer rounded-lg border p-3 text-left hover:border-primary/50'
-						}
+						className={tabClassName(highlightedLine === line.key)}
 					>
-						<span className='block text-sm font-medium text-foreground'>
-							{line.label}
-						</span>
-						<span className='mt-1 block space-x-3 font-mono text-xs text-muted-foreground'>
-							{line.segments.map((segment, index) => (
-								<span key={index}>
-									{segment.map(key => result[key]).join(' → ')}
-								</span>
-							))}
-						</span>
+						{line.label}
 					</button>
-				)
-			})}
-
-			<button
-				type='button'
-				onClick={() => onToggle('talent')}
-				className={
-					highlightedLine === 'talent'
-						? 'w-full cursor-pointer rounded-lg border border-primary bg-primary/5 p-3 text-left'
-						: 'w-full cursor-pointer rounded-lg border p-3 text-left hover:border-primary/50'
-				}
-			>
-				<span className='block text-sm font-medium text-foreground'>
+				))}
+				<button
+					type='button'
+					onClick={() => onToggle('talent')}
+					className={tabClassName(isTalentActive)}
+				>
 					Талант
-				</span>
-				<span className='mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
-					{TALENT_POINTS.map(point => (
-						<span key={point.key} className='font-mono'>
-							{getArcana(result[point.key]).number}: {point.label}
-						</span>
+				</button>
+			</div>
+
+			{activeLine && (
+				<div className='space-y-4'>
+					{flattenLine(activeLine).map(key => (
+						<PointRow key={key} arcanaKey={key} result={result} />
 					))}
-				</span>
-			</button>
+				</div>
+			)}
+
+			{isTalentActive && (
+				<div className='space-y-4'>
+					{TALENT_POINTS.map(point => (
+						<PointRow
+							key={point.key}
+							arcanaKey={point.key}
+							result={result}
+							prefix={point.label}
+						/>
+					))}
+				</div>
+			)}
 		</div>
 	)
 }

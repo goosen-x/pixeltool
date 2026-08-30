@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { calculateDestinyMatrix } from '@/lib/utils/destiny-matrix'
+import { calculateFullDestinyMatrix } from '@/lib/utils/destiny-matrix'
 import { DestinyMatrixDiagram } from './DestinyMatrixDiagram'
 import { DestinyYearsMatrix } from './DestinyYearsMatrix'
 
 const EXAMPLE_BIRTH_DATE = '1994-03-17'
-const exampleResult = calculateDestinyMatrix(17, 3, 1994)
+const exampleResult = calculateFullDestinyMatrix(17, 3, 1994)
 
 export function DestinyMatrixCalculatorSeo() {
 	return (
@@ -60,11 +60,12 @@ export function DestinyMatrixCalculatorSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					У полной методики есть ещё одна часть: матрица лет, шкала, которая
-					показывает, какая точка «действует» в разном возрасте. В
-					первоисточнике это 8 секторов по 10 лет на восемь точек расширенной
-					схемы. Наш калькулятор считает только 4 базовые точки, поэтому здесь
-					упрощённая версия шкалы: 4 сектора по 20 лет, по кругу A→B→C→D→снова
-					A. Это наше явное упрощение, а не альтернативный канон.
+					показывает, какая точка «действует» в разном возрасте. Это 8
+					секторов по 10 лет на восемь точек расширенной схемы: день, родовой
+					квадрат дня и месяца, месяц, родовой квадрат месяца и года, год,
+					родовой квадрат года и четвёртой точки, четвёртая точка, родовой
+					квадрат четвёртой точки и дня, по кругу A→F→B→G→C→H→D→I→снова A.
+					Цикл занимает 80 лет, после чего секторы повторяются.
 				</p>
 				<div className='mt-6'>
 					<DestinyYearsMatrix
@@ -94,8 +95,8 @@ export function DestinyMatrixCalculatorSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					Эти два метода часто путают, хотя они устроены по-разному. Матрица
-					судьбы (метод Натальи Ладини) даёт пять чисел от 1 до 22 и связывает
-					их со старшими арканами Таро, именно её считает этот калькулятор.
+					судьбы даёт пять чисел от 1 до 22 и связывает их со старшими арканами
+					Таро, именно её считает этот калькулятор.
 					Квадрат Пифагора устроен иначе: это более старая система, 3×3 сетка, в
 					которую записывается, сколько раз каждая цифра встречается в дате
 					рождения, арканы Таро в ней не участвуют вовсе. Если на другом сайте

@@ -160,7 +160,11 @@ const CORE_EDGES: [FullPointKey, FullPointKey][] = [
 	['day', 'month'],
 	['month', 'year'],
 	['year', 'fourth'],
-	['fourth', 'day']
+	['fourth', 'day'],
+	['day', 'center'],
+	['month', 'center'],
+	['year', 'center'],
+	['fourth', 'center']
 ]
 
 function segmentEdges(segment: FullPointKey[]): [FullPointKey, FullPointKey][] {
@@ -248,13 +252,14 @@ export function DestinyMatrixFullDiagram({
 					const isNeutral =
 						isActive || isLineHighlighted || node.category === 'core'
 
-					const circleClass = isActive || isLineHighlighted
-						? 'fill-background stroke-primary'
-						: isNeutral
-							? isHovered
-								? 'fill-muted stroke-primary/60'
-								: 'fill-background stroke-border'
-							: ''
+					const circleClass =
+						isActive || isLineHighlighted
+							? 'fill-background stroke-primary'
+							: isNeutral
+								? isHovered
+									? 'fill-muted stroke-primary/60'
+									: 'fill-background stroke-border'
+								: ''
 
 					// Наведение делает заливку заметно плотнее, а обводку сплошной:
 					// в состоянии по умолчанию узел почти прозрачный (только тон
@@ -303,6 +308,15 @@ export function DestinyMatrixFullDiagram({
 								cy={node.y}
 								r={node.radius + 6}
 								fill='transparent'
+							/>
+							{/* Непрозрачная подложка под узлом: цветные заливки категорий
+							    ниже полупрозрачные (для мягкого тона), без неё сквозь них
+							    просвечивали бы линии схемы. */}
+							<circle
+								cx={node.x}
+								cy={node.y}
+								r={node.radius}
+								className='fill-background'
 							/>
 							<circle
 								cx={node.x}

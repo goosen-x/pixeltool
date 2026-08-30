@@ -1,17 +1,29 @@
-import { Baby, PersonStanding } from 'lucide-react'
+import { Baby } from 'lucide-react'
+import Image from 'next/image'
 import {
 	ageFromBirthDate,
+	FULL_POINT_LABELS,
 	getArcana,
 	getYearsMatrixSector,
-	POSITIONS,
-	type DestinyMatrixResult
+	type FullDestinyMatrixResult,
+	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
-import { pluralizeRu } from '@/lib/utils/pluralize'
 
-const SECTOR_KEYS = ['day', 'month', 'year', 'fourth'] as const
+const SECTOR_KEYS: FullPointKey[] = [
+	'day',
+	'f',
+	'month',
+	'g',
+	'year',
+	'h',
+	'fourth',
+	'i'
+]
+const CYCLE_YEARS = 80
+const SEGMENT_WIDTH = 100 / SECTOR_KEYS.length
 
 interface DestinyYearsMatrixProps {
-	result: DestinyMatrixResult
+	result: FullDestinyMatrixResult
 	birthDate: string
 }
 
@@ -20,61 +32,103 @@ export function DestinyYearsMatrix({
 	birthDate
 }: DestinyYearsMatrixProps) {
 	const age = ageFromBirthDate(birthDate)
-	const points: [number, number, number, number] = [
-		result.day,
-		result.month,
-		result.year,
-		result.fourth
-	]
+	const points: [number, number, number, number, number, number, number, number] =
+		SECTOR_KEYS.map(key => result[key]) as [
+			number,
+			number,
+			number,
+			number,
+			number,
+			number,
+			number,
+			number
+		]
 	const current = getYearsMatrixSector(age, points)
-	const currentLabel = POSITIONS.find(
-		position => position.key === SECTOR_KEYS[current.sectorIndex]
-	)!.label
+	const currentLabel = FULL_POINT_LABELS[SECTOR_KEYS[current.sectorIndex]]
 	const currentArcana = getArcana(current.arcanaNumber)
+	const markerPercent = ((age % CYCLE_YEARS) / CYCLE_YEARS) * 100
 
 	return (
-		<div className='mx-auto mt-6 max-w-lg'>
+		<div>
 			<span className='mb-2 block text-sm text-muted-foreground'>
-				Матрица лет: упрощённая шкала по 20-летним секторам
+				Матрица возраста
 			</span>
-			<div className='flex items-center gap-2'>
-				<Baby
-					aria-hidden
-					className='h-6 w-6 shrink-0 text-muted-foreground'
-				/>
-				<div className='flex flex-1 overflow-hidden rounded-lg border text-center text-sm'>
-					{SECTOR_KEYS.map((key, index) => {
-						const isCurrent = index === current.sectorIndex
-						const arcana = getArcana(points[index])
-						return (
-							<div
+			<div className='flex items-center gap-3'>
+				<Baby aria-hidden className='h-6 w-6 shrink-0 text-muted-foreground' />
+
+				<div className='min-w-[220px] flex-1'>
+					{/* Номера арканов над линией */}
+					<div className='relative h-4'>
+						{SECTOR_KEYS.map((key, index) => (
+							<span
 								key={key}
 								className={
-									isCurrent
-										? 'flex-1 border-r bg-primary/10 p-3 text-primary last:border-r-0'
-										: 'flex-1 border-r p-3 text-muted-foreground last:border-r-0'
+									index === current.sectorIndex
+										? 'absolute -translate-x-1/2 font-mono text-sm font-bold text-primary'
+										: 'absolute -translate-x-1/2 font-mono text-sm font-bold text-muted-foreground'
 								}
+								style={{ left: `${(index + 0.5) * SEGMENT_WIDTH}%` }}
 							>
-								<span className='block font-mono text-lg font-bold'>
-									{arcana.number}
-								</span>
-								<span className='mt-1 block text-xs'>
-									{index * 20}–{index * 20 + 19} лет
-								</span>
-							</div>
-						)
-					})}
+								{getArcana(points[index]).number}
+							</span>
+						))}
+					</div>
+
+					{/* Сама шкала */}
+					<div className='relative mt-1 h-1.5 rounded-full bg-muted'>
+						<div
+							className='absolute inset-y-0 left-0 rounded-full bg-primary/30'
+							style={{ width: `${markerPercent}%` }}
+						/>
+						{Array.from({ length: SECTOR_KEYS.length - 1 }, (_, i) => i + 1).map(
+							i => (
+								<div
+									key={i}
+									aria-hidden
+									className='absolute top-1/2 h-2.5 w-px -translate-x-1/2 -translate-y-1/2 bg-background'
+									style={{ left: `${i * SEGMENT_WIDTH}%` }}
+								/>
+							)
+						)}
+						<div
+							aria-hidden
+							className='absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-background'
+							style={{ left: `${markerPercent}%` }}
+						/>
+					</div>
+
+					{/* Возрастные диапазоны под линией */}
+					<div className='relative mt-1 h-3'>
+						{SECTOR_KEYS.map((key, index) => (
+							<span
+								key={key}
+								className={
+									index === current.sectorIndex
+										? 'absolute -translate-x-1/2 whitespace-nowrap text-[10px] text-primary'
+										: 'absolute -translate-x-1/2 whitespace-nowrap text-[10px] text-muted-foreground'
+								}
+								style={{ left: `${(index + 0.5) * SEGMENT_WIDTH}%` }}
+							>
+								{index * 10}–{index * 10 + 9}
+							</span>
+						))}
+					</div>
 				</div>
-				<PersonStanding
+
+				<Image
+					src='/icons/old-man.png'
+					alt=''
 					aria-hidden
-					className='h-6 w-6 shrink-0 text-muted-foreground'
+					width={36}
+					height={36}
+					className='h-9 w-9 shrink-0 opacity-70 dark:invert'
 				/>
+
+				<p className='max-w-[220px] text-xs text-muted-foreground'>
+					Действует точка «{currentLabel.toLowerCase()}»: аркан{' '}
+					{currentArcana.number} ({currentArcana.name})
+				</p>
 			</div>
-			<p className='mt-2 text-center text-xs text-muted-foreground'>
-				Сейчас {age} {pluralizeRu(age, ['год', 'года', 'лет'])}, действует точка
-				«{currentLabel.toLowerCase()}»: аркан {currentArcana.number} (
-				{currentArcana.name})
-			</p>
 		</div>
 	)
 }

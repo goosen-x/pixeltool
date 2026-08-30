@@ -19,6 +19,7 @@ export interface Widget {
 		| 'datetime'
 		| 'math'
 		| 'entertainment'
+		| 'esoteric'
 	/**
 	 * Только у тулов category: 'development' — какой из бывших разделов
 	 * (css/html/javascript) до слияния в «Разработку». Двигает страницы
@@ -144,6 +145,7 @@ export const widgetCategories = {
 	math: 'Математика',
 	construction: 'Стройка',
 	entertainment: 'Развлечения',
+	esoteric: 'Эзотерика',
 	utilities: 'Утилиты',
 	development: 'Разработка'
 } as const

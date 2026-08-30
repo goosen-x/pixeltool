@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { DatePicker } from '@/components/ui/date-picker'
 import { ToolSelect } from '@/components/ui/tool-select'
 import { TextRoll } from '@/components/core/text-roll'
 import { cn } from '@/lib/utils'
@@ -113,11 +114,10 @@ export default function ExpiryDateCalculatorPage() {
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Дата производства
 						</span>
-						<input
-							type='date'
+						<DatePicker
 							value={productionDate}
-							onChange={event => setProductionDate(event.target.value)}
-							aria-label='Дата производства'
+							onChange={setProductionDate}
+							ariaLabel='Дата производства'
 							className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
 					</label>

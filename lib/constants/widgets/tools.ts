@@ -24,7 +24,6 @@ import {
 	Scissors,
 	Sigma,
 	Shrink,
-	Sparkles,
 	SplitSquareHorizontal,
 	TerminalSquare,
 	TrendingUp,
@@ -32,6 +31,7 @@ import {
 	Youtube,
 	Zap
 } from 'lucide-react'
+import { DestinyMatrixIcon } from '@/components/icons/DestinyMatrixIcon'
 import { SVGIcon } from '@/components/icons/SVGIcon'
 
 export const toolWidgets: Widget[] = [
@@ -965,12 +965,11 @@ export const toolWidgets: Widget[] = [
 		// находка во всём объединённом списке кандидатов. Эзотерика, не
 		// строгая математика: методика (нумерология + арканы Таро) не имеет
 		// единого стандарта — разные авторы по-разному сводят числа больше
-		// 22. Позиционный вопрос (подходит ли тема PixelTool) сознательно не
-		// решён на уровне бэклога — тул сделан по прямому запросу
-		// пользователя 19.08.2026, а не по методологии «интент → техника».
+		// 22. Позиционный вопрос решён 29.08.2026 — выделена отдельная
+		// категория 'esoteric' вместо того, чтобы прятать тул в utilities.
 		searchVolume: 999861,
-		icon: Sparkles,
-		category: 'utilities',
+		icon: DestinyMatrixIcon,
+		category: 'esoteric',
 		translationKey: 'destinyMatrixCalculator',
 		path: 'destiny-matrix-calculator',
 		gradient: 'from-violet-500 to-purple-700',
@@ -979,7 +978,7 @@ export const toolWidgets: Widget[] = [
 			'Рассчитайте матрицу судьбы по дате рождения — базовые точки и их значения по нумерологии Таро.',
 		useCase:
 			'Построить матрицу судьбы (психоматрицу) по дате рождения для нумерологического разбора личности',
-		recommendedTools: ['random-number-generator', 'date-difference-calculator'],
+		recommendedTools: ['numerology-calculator', 'date-difference-calculator'],
 		difficulty: 'beginner',
 		tags: [
 			'destiny-matrix',
@@ -1429,7 +1428,7 @@ export const toolWidgets: Widget[] = [
 		// один тул, а не два. Механика та же, что у destiny-matrix-calculator.
 		searchVolume: 41060,
 		icon: Sigma,
-		category: 'utilities',
+		category: 'esoteric',
 		translationKey: 'numerologyCalculator',
 		path: 'numerology-calculator',
 		gradient: 'from-violet-500 to-purple-700',

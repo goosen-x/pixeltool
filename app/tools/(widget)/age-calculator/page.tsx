@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Card } from '@/components/ui/card'
+import { DatePicker } from '@/components/ui/date-picker'
 import { toolBar, toolFooterBar } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -60,12 +61,11 @@ export default function AgeCalculatorPage() {
 						<span className='shrink-0 text-sm text-muted-foreground'>
 							Дата рождения
 						</span>
-						<input
-							type='date'
+						<DatePicker
 							value={birthValue}
-							onChange={event => setBirthValue(event.target.value)}
+							onChange={setBirthValue}
 							max={onValue}
-							aria-label='Дата рождения'
+							ariaLabel='Дата рождения'
 							className={inputClass}
 						/>
 					</label>
@@ -74,11 +74,10 @@ export default function AgeCalculatorPage() {
 						<span className='shrink-0 text-sm text-muted-foreground'>
 							На дату
 						</span>
-						<input
-							type='date'
+						<DatePicker
 							value={onValue}
-							onChange={event => setOnValue(event.target.value)}
-							aria-label='Дата, на которую считать возраст'
+							onChange={setOnValue}
+							ariaLabel='Дата, на которую считать возраст'
 							className={inputClass}
 						/>
 					</label>

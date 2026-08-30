@@ -5,7 +5,11 @@ import { CalendarIcon } from 'lucide-react'
 import { ru } from 'date-fns/locale'
 
 import { cn } from '@/lib/utils'
-import { formatIsoToRu, parseRuDateToIso } from '@/lib/utils/date-input'
+import {
+	formatIsoToRu,
+	maskRuDateInput,
+	parseRuDateToIso
+} from '@/lib/utils/date-input'
 import { Calendar } from '@/components/ui/calendar'
 import {
 	Popover,
@@ -84,7 +88,7 @@ export function DatePicker({
 				onFocus={() => {
 					isFocused.current = true
 				}}
-				onChange={event => setText(event.target.value)}
+				onChange={event => setText(maskRuDateInput(event.target.value))}
 				onBlur={event => {
 					isFocused.current = false
 					commit(event.target.value)

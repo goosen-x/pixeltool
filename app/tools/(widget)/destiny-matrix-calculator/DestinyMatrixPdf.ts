@@ -1,9 +1,7 @@
 import {
 	getArcana,
-	getPersonalizedMeaning,
 	POSITIONS,
-	type DestinyMatrixResult,
-	type Gender
+	type DestinyMatrixResult
 } from '@/lib/utils/destiny-matrix'
 
 /**
@@ -31,14 +29,8 @@ async function loadFontBase64(): Promise<string> {
 	return cachedFont
 }
 
-interface DestinyMatrixPdfOptions {
-	name?: string
-	gender?: Gender
-}
-
 export async function downloadDestinyMatrixPdf(
-	result: DestinyMatrixResult,
-	options: DestinyMatrixPdfOptions = {}
+	result: DestinyMatrixResult
 ): Promise<void> {
 	const { jsPDF } = await import('jspdf')
 	const fontBase64 = await loadFontBase64()
@@ -74,29 +66,19 @@ export async function downloadDestinyMatrixPdf(
 		y += lines.length * size * 1.3 + (opts.gap ?? 0)
 	}
 
-	text(
-		options.name ? `Матрица судьбы: ${options.name}` : 'Матрица судьбы',
-		22,
-		{ gap: 16 }
-	)
+	text('Матрица судьбы', 22, { gap: 16 })
 
 	for (const { key, label } of POSITIONS) {
 		const arcana = getArcana(result[key])
 		text(`${label}: ${arcana.number} (${arcana.name})`, 13, { gap: 4 })
-		text(getPersonalizedMeaning(arcana, options.gender), 10, {
-			color: [75, 85, 99],
-			gap: 12
-		})
+		text(arcana.meaning, 10, { color: [75, 85, 99], gap: 12 })
 	}
 
 	const center = getArcana(result.center)
 	text(`Главное предназначение: ${center.number} (${center.name})`, 13, {
 		gap: 4
 	})
-	text(getPersonalizedMeaning(center, options.gender), 10, {
-		color: [75, 85, 99],
-		gap: 12
-	})
+	text(center.meaning, 10, { color: [75, 85, 99], gap: 12 })
 
 	doc.save('matritsa-sudby.pdf')
 }

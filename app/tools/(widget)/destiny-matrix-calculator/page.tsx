@@ -1,25 +1,16 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Check, ChevronRight, Copy, Download } from 'lucide-react'
+import Image from 'next/image'
+import { Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
 import {
-	toolFooterBar,
-	toolToggleOption,
-	toolToggleTrack
-} from '@/lib/ui/tool-pill'
-import { pluralizeRu } from '@/lib/utils/pluralize'
-import {
-	ageFromBirthDate,
 	calculateFullDestinyMatrix,
+	FULL_POINT_LABELS,
 	getArcana,
-	getPersonalizedMeaning,
-	getYearsMatrixSector,
-	POSITIONS,
-	type FullPointKey,
-	type Gender
+	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -29,6 +20,14 @@ import { DestinyMatrixLinesPanel } from './DestinyMatrixLinesPanel'
 import { downloadDestinyMatrixPdf } from './DestinyMatrixPdf'
 import { DestinyMatrixPointDetail } from './DestinyMatrixPointDetail'
 import { DestinyYearsMatrix } from './DestinyYearsMatrix'
+
+const BASE_POINT_KEYS: FullPointKey[] = [
+	'day',
+	'month',
+	'year',
+	'fourth',
+	'center'
+]
 
 function parseIso(
 	value: string
@@ -43,13 +42,7 @@ export default function DestinyMatrixCalculatorPage() {
 	const widget = getWidgetById('destiny-matrix-calculator')!
 
 	const [birthDate, setBirthDate] = useState('')
-	const [name, setName] = useState('')
-	const [gender, setGender] = useState<Gender | undefined>(undefined)
-	const [copied, setCopied] = useState(false)
 	const [active, setActive] = useState<FullPointKey>('center')
-	// Всегда ровно один пункт раскрыт, поэтому стартуем с центра, а не с null:
-	// схлопнуть все карточки нельзя, только переключить, какая открыта.
-	const [expandedPoint, setExpandedPoint] = useState<FullPointKey>('center')
 	const [highlightedLine, setHighlightedLine] = useState<string | null>(null)
 
 	const result = useMemo(() => {
@@ -58,185 +51,75 @@ export default function DestinyMatrixCalculatorPage() {
 		return calculateFullDestinyMatrix(parsed.day, parsed.month, parsed.year)
 	}, [birthDate])
 
-	const age = birthDate ? ageFromBirthDate(birthDate) : null
-
-	const activePeriod =
-		result && age !== null
-			? (() => {
-					const sector = getYearsMatrixSector(age, [
-						result.day,
-						result.month,
-						result.year,
-						result.fourth
-					])
-					return { ...sector, arcana: getArcana(sector.arcanaNumber) }
-				})()
-			: null
-
 	const toggleLine = (key: string) => {
 		setHighlightedLine(current => (current === key ? null : key))
 	}
 
-	// Общий обработчик выбора точки: и клик по диаграмме, и клик по строке
-	// в «Все пять точек» должны раскрывать один и тот же аккордеон, а не
-	// только обновлять подсветку на схеме.
+	// Общий обработчик выбора точки: клик по диаграмме и клик по карточке в
+	// «5 основных точек» должны обновлять одну и ту же активную точку.
 	const selectPoint = (key: FullPointKey) => {
 		setActive(key)
-		setExpandedPoint(key)
-	}
-
-	const copyResult = async () => {
-		if (!result) return
-		const lines: string[] = []
-		if (name) lines.push(`Матрица судьбы: ${name}`, '')
-		lines.push(
-			...POSITIONS.map(({ key, label }) => {
-				const arcana = getArcana(result[key])
-				return `${label}: ${arcana.number} (${arcana.name})`
-			})
-		)
-		const center = getArcana(result.center)
-		lines.push(`Предназначение: ${center.number} (${center.name})`)
-
-		if (activePeriod) {
-			lines.push(
-				`Матрица лет (сейчас): ${activePeriod.arcana.number} (${activePeriod.arcana.name})`
-			)
-		}
-
-		await navigator.clipboard.writeText(lines.join('\n'))
-		setCopied(true)
-		setTimeout(() => setCopied(false), 2000)
 	}
 
 	const downloadPdf = () => {
 		if (!result) return
-		downloadDestinyMatrixPdf(result, { name: name || undefined, gender })
+		downloadDestinyMatrixPdf(result)
 	}
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
-				<div className='space-y-4 border-b px-5 py-6 sm:px-6'>
-					<div className='grid gap-4 sm:grid-cols-2'>
-						<label className='block'>
-							<span className='mb-1.5 block text-sm text-muted-foreground'>
-								Имя (необязательно)
-							</span>
-							<input
-								type='text'
-								value={name}
-								onChange={event => setName(event.target.value)}
-								placeholder='Например, Мария'
-								className='w-full rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-							/>
-						</label>
-
-						<div>
-							<span className='mb-1.5 block text-sm text-muted-foreground'>
-								Пол (необязательно)
-							</span>
-							<div className={toolToggleTrack}>
-								<button
-									type='button'
-									onClick={() =>
-										setGender(current =>
-											current === 'male' ? undefined : 'male'
-										)
-									}
-									className={toolToggleOption(gender === 'male')}
-								>
-									Мужской
-								</button>
-								<button
-									type='button'
-									onClick={() =>
-										setGender(current =>
-											current === 'female' ? undefined : 'female'
-										)
-									}
-									className={toolToggleOption(gender === 'female')}
-								>
-									Женский
-								</button>
-							</div>
-						</div>
-					</div>
-
-					<div className='flex flex-wrap items-end gap-4'>
-						<label className='block'>
-							<span className='mb-1.5 block text-sm text-muted-foreground'>
-								Дата рождения
+				<div
+					className={
+						result
+							? 'border-b px-5 py-6 sm:px-6'
+							: 'px-5 py-20 sm:px-6'
+					}
+				>
+					<div
+						className={
+							result
+								? 'flex flex-wrap items-start gap-4'
+								: 'flex flex-wrap items-center justify-center gap-4'
+						}
+					>
+						<label
+							className={
+								result ? 'block' : 'flex flex-wrap items-center gap-4'
+							}
+						>
+							<span
+								className={
+									result
+										? 'mb-1.5 block text-base font-medium text-muted-foreground'
+										: 'text-2xl font-bold text-foreground'
+								}
+							>
+								Введите дату рождения
 							</span>
 							<DatePicker
 								value={birthDate}
 								onChange={setBirthDate}
 								ariaLabel='Дата рождения'
-								className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								className={
+									result
+										? 'w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+										: 'w-full max-w-[220px] cursor-pointer rounded-md border bg-background px-4 py-3 text-base text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								}
 							/>
 						</label>
 
-						{result && age !== null && (
-							<div>
-								<span className='mb-1.5 block text-sm text-muted-foreground'>
-									Возраст
-								</span>
-								<span className='block rounded-md border bg-muted/30 px-3 py-2 text-sm text-foreground'>
-									{age} {pluralizeRu(age, ['год', 'года', 'лет'])}
-								</span>
+						{result && (
+							<div className='min-w-[280px] flex-1'>
+								<DestinyYearsMatrix result={result} birthDate={birthDate} />
 							</div>
 						)}
-
-						{activePeriod && (
-							<div>
-								<span className='mb-1.5 block text-sm text-muted-foreground'>
-									Активный период
-								</span>
-								<span className='block rounded-md border border-primary bg-primary/5 px-3 py-2 text-sm text-primary'>
-									{activePeriod.sectorStart}-{activePeriod.sectorEnd - 1} лет ·
-									аркан {activePeriod.arcana.number} ({activePeriod.arcana.name}
-									)
-								</span>
-							</div>
-						)}
-
-						<div className='ml-auto flex items-center gap-2'>
-							<Button
-								size='icon'
-								variant='ghost'
-								onClick={downloadPdf}
-								disabled={!result}
-								title='Скачать PDF'
-								className='h-10 w-10 cursor-pointer text-muted-foreground hover:bg-muted hover:text-foreground'
-							>
-								<Download className='h-4 w-4' />
-							</Button>
-							<Button
-								variant='outline'
-								onClick={copyResult}
-								disabled={!result}
-								className='cursor-pointer'
-							>
-								{copied ? (
-									<Check className='mr-2 h-4 w-4 text-green-600 dark:text-green-400' />
-								) : (
-									<Copy className='mr-2 h-4 w-4' />
-								)}
-								Копировать расчёт
-							</Button>
-						</div>
 					</div>
 				</div>
 
 				{result ? (
 					<div className='px-5 py-8 sm:px-6'>
-						{name && (
-							<p className='mb-6 text-center text-lg font-medium text-foreground'>
-								Матрица судьбы: {name}
-							</p>
-						)}
-
-						<div className='grid gap-6 lg:grid-cols-[1fr_360px]'>
+						<div className='grid gap-6 lg:grid-cols-[1fr_440px]'>
 							<div>
 								<DestinyMatrixFullDiagram
 									result={result}
@@ -244,102 +127,71 @@ export default function DestinyMatrixCalculatorPage() {
 									onSelect={selectPoint}
 									highlightedLine={highlightedLine}
 								/>
-								<DestinyYearsMatrix result={result} birthDate={birthDate} />
 							</div>
 
-							<div className='space-y-4'>
-								<DestinyMatrixPointDetail
-									result={result}
-									active={active}
-									gender={gender}
-								/>
+							<DestinyMatrixPointDetail result={result} active={active} />
+						</div>
 
-								<div className='space-y-2'>
-									<span className='block text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-										Все пять точек
-									</span>
-									{[
-										...POSITIONS,
-										{ key: 'center' as const, label: 'Главное предназначение' }
-									].map(({ key, label }) => {
-										const arcana = getArcana(result[key])
-										const isExpanded = expandedPoint === key
-										return (
-											<div
-												key={key}
-												className={
-													active === key
-														? 'rounded-lg border border-primary bg-primary/5'
-														: 'rounded-lg border hover:border-primary/50'
-												}
-											>
-												<button
-													type='button'
-													onClick={() => selectPoint(key)}
-													aria-expanded={isExpanded}
-													className='flex w-full cursor-pointer items-center justify-between p-3 text-left'
-												>
-													<span className='flex items-center gap-3'>
-														<span className='font-mono text-sm font-bold text-foreground'>
-															{arcana.number}
-														</span>
-														<span>
-															<span className='block text-sm font-medium text-foreground'>
-																{arcana.name}
-															</span>
-															<span className='block text-xs text-muted-foreground'>
-																{label}
-															</span>
-														</span>
-													</span>
-													<ChevronRight
-														className={
-															isExpanded
-																? 'h-4 w-4 shrink-0 rotate-90 text-muted-foreground transition-transform'
-																: 'h-4 w-4 shrink-0 text-muted-foreground transition-transform'
-														}
-													/>
-												</button>
-												<div
-													className={
-														isExpanded
-															? 'grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-in-out'
-															: 'grid grid-rows-[0fr] transition-[grid-template-rows] duration-200 ease-in-out'
-													}
-												>
-													<div className='overflow-hidden'>
-														<p className='border-t px-3 pb-3 pt-2 text-sm text-muted-foreground'>
-															{getPersonalizedMeaning(arcana, gender)}
-														</p>
-													</div>
-												</div>
-											</div>
-										)
-									})}
-								</div>
-
-								<DestinyMatrixLinesPanel
-									result={result}
-									highlightedLine={highlightedLine}
-									onToggle={toggleLine}
-								/>
+						<div className='mt-6'>
+							<span className='mb-3 block text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								5 основных точек
+							</span>
+							<div className='grid grid-cols-2 gap-3 sm:grid-cols-5'>
+								{BASE_POINT_KEYS.map(key => {
+									const label = FULL_POINT_LABELS[key]
+									const arcana = getArcana(result[key])
+									return (
+										<button
+											key={key}
+											type='button'
+											onClick={() => selectPoint(key)}
+											className={
+												active === key
+													? 'flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3 text-center'
+													: 'flex cursor-pointer flex-col items-center gap-2 rounded-lg border p-3 text-center hover:border-primary/50'
+											}
+										>
+											{arcana.image ? (
+												<Image
+													src={arcana.image}
+													alt=''
+													width={40}
+													height={60}
+													className='shrink-0 rounded border'
+												/>
+											) : (
+												<span className='font-mono text-sm font-bold text-foreground'>
+													{arcana.number}
+												</span>
+											)}
+											<span className='block text-sm font-medium text-foreground'>
+												{arcana.name}
+											</span>
+											<span className='block text-xs text-muted-foreground'>
+												{label}
+											</span>
+										</button>
+									)
+								})}
 							</div>
 						</div>
-					</div>
-				) : (
-					<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
-						Укажите дату рождения
-					</p>
-				)}
 
-				<div className={toolFooterBar}>
-					<span className='text-sm text-muted-foreground'>
-						У метода нет единого стандарта расчёта, числа на разных сайтах могут
-						немного отличаться. Расширенные точки (родовые линии, любовь,
-						деньги, талант) посчитаны по одной конкретной методике
-						(gadalkindom), а не по общепринятому стандарту.
-					</span>
-				</div>
+						<div className='mt-6'>
+							<DestinyMatrixLinesPanel
+								result={result}
+								highlightedLine={highlightedLine}
+								onToggle={toggleLine}
+							/>
+						</div>
+
+						<div className='mt-6 flex justify-end'>
+							<Button onClick={downloadPdf} className='cursor-pointer'>
+								<Download className='mr-2 h-4 w-4' />
+								Скачать PDF
+							</Button>
+						</div>
+					</div>
+				) : null}
 			</Card>
 
 			<DestinyMatrixCalculatorSeo />

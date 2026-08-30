@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Card } from '@/components/ui/card'
+import { DatePicker } from '@/components/ui/date-picker'
 import { cn } from '@/lib/utils'
 import {
 	toolBar,
@@ -91,12 +92,11 @@ export default function PregnancyCalculatorPage() {
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Первый день последней менструации
 						</span>
-						<input
-							type='date'
+						<DatePicker
 							value={lastPeriod}
 							max={todayIso()}
-							onChange={event => setLastPeriod(event.target.value)}
-							aria-label='Первый день последней менструации'
+							onChange={setLastPeriod}
+							ariaLabel='Первый день последней менструации'
 							className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
 					</label>
