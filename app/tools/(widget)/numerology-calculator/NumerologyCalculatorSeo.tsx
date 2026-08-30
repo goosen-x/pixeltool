@@ -1,3 +1,5 @@
+import { PERSONAL_YEAR_MEANINGS } from '@/lib/utils/numerology'
+
 export function NumerologyCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -26,6 +28,44 @@ export function NumerologyCalculatorSeo() {
 					целиком. Оба числа детерминированы — у одной даты рождения всегда один
 					и тот же результат, никакой случайности в расчёте нет.
 				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Персональный год: расчёт, который меняется каждый год
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					В отличие от числа жизненного пути, персональный год не постоянен: он
+					складывается из дня и месяца рождения плюс текущий календарный год, и
+					меняется раз в год. Например, для 15 апреля персональный год 2026-го
+					считается так: 1+5 = 6 за день, 4 за месяц, 2+0+2+6 = 10 → 1 за год;
+					6+4+1 = 11 → 1+1 = 2. Персональный год 2026 = 2.
+				</p>
+				<p className='mt-3 text-muted-foreground'>
+					Здесь есть важное отличие от числа жизненного пути: персональный год
+					всегда сворачивается до одной цифры от 1 до 9, мастер-числа 11, 22 и
+					33 в нём не сохраняются. Если бы промежуточная сумма 11 осталась как
+					есть, ответ был бы другим, но ни один источник так не считает, поэтому
+					здесь применяется полная свёртка.
+				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Девять тем персонального года
+				</h2>
+				<div className='mt-3 grid gap-3 sm:grid-cols-3'>
+					{([1, 2, 3, 4, 5, 6, 7, 8, 9] as const).map(number => (
+						<div key={number} className='rounded-lg border p-3'>
+							<span className='block font-mono text-lg font-bold text-foreground'>
+								{number}
+							</span>
+							<p className='mt-1 text-sm text-muted-foreground'>
+								{PERSONAL_YEAR_MEANINGS[number]}
+							</p>
+						</div>
+					))}
+				</div>
 			</section>
 
 			<section>
