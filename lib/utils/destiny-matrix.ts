@@ -299,7 +299,10 @@ export function getArcana(number: number): Arcana {
  * аркана он написан, иначе нейтральный meaning. Если родового текста нет,
  * молча падаем на нейтральный, а не показываем пустоту.
  */
-export function getPersonalizedMeaning(arcana: Arcana, gender?: Gender): string {
+export function getPersonalizedMeaning(
+	arcana: Arcana,
+	gender?: Gender
+): string {
 	if (gender === 'male' && arcana.meaningMasc) return arcana.meaningMasc
 	if (gender === 'female' && arcana.meaningFem) return arcana.meaningFem
 	return arcana.meaning

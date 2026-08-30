@@ -152,7 +152,9 @@ export default function DestinyMatrixCalculatorPage() {
 								<button
 									type='button'
 									onClick={() =>
-										setGender(current => (current === 'male' ? undefined : 'male'))
+										setGender(current =>
+											current === 'male' ? undefined : 'male'
+										)
 									}
 									className={toolToggleOption(gender === 'male')}
 								>
