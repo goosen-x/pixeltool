@@ -1,4 +1,10 @@
 import Link from 'next/link'
+import { calculateDestinyMatrix } from '@/lib/utils/destiny-matrix'
+import { DestinyMatrixDiagram } from './DestinyMatrixDiagram'
+import { DestinyYearsMatrix } from './DestinyYearsMatrix'
+
+const EXAMPLE_BIRTH_DATE = '1994-03-17'
+const exampleResult = calculateDestinyMatrix(17, 3, 1994)
 
 export function DestinyMatrixCalculatorSeo() {
 	return (
@@ -19,6 +25,23 @@ export function DestinyMatrixCalculatorSeo() {
 
 			<section>
 				<h2 className='text-2xl font-bold tracking-tight'>
+					Пример расчёта по шагам
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Возьмём дату 17 марта 1994 года. День 17 не больше 22, поэтому точка A
+					= 17 как есть. Месяц 3 тоже берётся как есть, B = 3. Цифры года
+					складываются: 1+9+9+4 = 23, это больше 22, поэтому цифры результата
+					складываются повторно: 2+3 = 5, значит C = 5. Четвёртая точка, сумма
+					первых трёх: 17+3+5 = 25, снова сводим: 2+5 = 7, D = 7. Центр, сумма
+					всех четырёх: 17+3+5+7 = 32, сводим: 3+2 = 5, центр = 5.
+				</p>
+				<div className='mt-6'>
+					<DestinyMatrixDiagram result={exampleResult} />
+				</div>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
 					Что означает каждая точка
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
@@ -33,6 +56,23 @@ export function DestinyMatrixCalculatorSeo() {
 
 			<section>
 				<h2 className='text-2xl font-bold tracking-tight'>
+					Матрица лет: как расчёт продолжается по возрасту
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					У полной методики есть ещё одна часть: матрица лет, шкала, которая
+					показывает, какая точка «действует» в разном возрасте. В
+					первоисточнике это 8 секторов по 10 лет на восемь точек расширенной
+					схемы. Наш калькулятор считает только 4 базовые точки, поэтому здесь
+					упрощённая версия шкалы: 4 сектора по 20 лет, по кругу A→B→C→D→снова
+					A. Это наше явное упрощение, а не альтернативный канон.
+				</p>
+				<div className='mt-6'>
+					<DestinyYearsMatrix result={exampleResult} birthDate={EXAMPLE_BIRTH_DATE} />
+				</div>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
 					Почему цифры могут отличаться от других сайтов
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
@@ -42,6 +82,22 @@ export function DestinyMatrixCalculatorSeo() {
 					вашей матрице вполне могут отличаться. Ошибки тут нет ни у кого,
 					просто методики разные. Воспринимайте результат как повод для
 					размышления о себе, а не как строгий факт.
+				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Чем матрица судьбы отличается от Квадрата Пифагора
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Эти два метода часто путают, хотя они устроены по-разному. Матрица
+					судьбы (метод Натальи Ладини) даёт пять чисел от 1 до 22 и связывает
+					их со старшими арканами Таро, именно её считает этот калькулятор.
+					Квадрат Пифагора устроен иначе: это более старая система, 3×3
+					сетка, в которую записывается, сколько раз каждая цифра встречается
+					в дате рождения, арканы Таро в ней не участвуют вовсе. Если на
+					другом сайте увидели квадрат с частотой цифр, это другой метод, а не
+					другой расчёт того же самого.
 				</p>
 			</section>
 
