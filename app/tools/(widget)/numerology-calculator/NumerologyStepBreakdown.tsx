@@ -26,7 +26,13 @@ interface StepRowProps {
 	startDelayStep: number
 }
 
-function StepRow({ title, parts, total, stopOnMaster, startDelayStep }: StepRowProps) {
+function StepRow({
+	title,
+	parts,
+	total,
+	stopOnMaster,
+	startDelayStep
+}: StepRowProps) {
 	const path = reductionPath(total, stopOnMaster)
 	let stepIndex = startDelayStep
 
@@ -80,7 +86,8 @@ export function NumerologyStepBreakdown({
 	currentYear
 }: NumerologyStepBreakdownProps) {
 	const lifePathTotal = digitSum(day) + digitSum(month) + digitSum(year)
-	const personalYearTotal = digitSum(day) + digitSum(month) + digitSum(currentYear)
+	const personalYearTotal =
+		digitSum(day) + digitSum(month) + digitSum(currentYear)
 
 	return (
 		<div className='mx-auto mt-6 max-w-lg space-y-4'>

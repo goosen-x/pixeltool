@@ -81,7 +81,9 @@ describe('personalYearNumber', () => {
 				const value = personalYearNumber(day, 6, year)
 				expect(value).toBeGreaterThanOrEqual(1)
 				expect(value).toBeLessThanOrEqual(9)
-				expect(PERSONAL_YEAR_MEANINGS[value as keyof typeof PERSONAL_YEAR_MEANINGS]).toBeDefined()
+				expect(
+					PERSONAL_YEAR_MEANINGS[value as keyof typeof PERSONAL_YEAR_MEANINGS]
+				).toBeDefined()
 			}
 		}
 	})
