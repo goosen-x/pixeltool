@@ -70,6 +70,28 @@ input[type='button'] {
 	animation: fadeIn 0.5s ease-out;
 }
 
+/* Пошаговое появление разбора расчёта (NumerologyStepBreakdown) */
+@keyframes stepReveal {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-step-reveal {
+	animation: stepReveal 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-step-reveal {
+		animation: none;
+	}
+}
+
 /* Левитация картинки категории на /tools. Параметры как на moscow.mba: цикл 2
    секунды, движение крошечное — читается в основном наклон, а не смещение.
    alternate вместо повтора с нуля: иначе на стыке циклов был бы рывок. */
