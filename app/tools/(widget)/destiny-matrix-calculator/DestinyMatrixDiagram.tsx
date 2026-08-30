@@ -77,7 +77,7 @@ export function DestinyMatrixDiagram({ result }: DestinyMatrixDiagramProps) {
 							role='button'
 							tabIndex={0}
 							aria-label={`${labelFor(key)}: аркан ${arcana.number}, ${arcana.name}`}
-							className='cursor-pointer focus:outline-none'
+							className='cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
 							onClick={() => setActive(key)}
 							onKeyDown={event => {
 								if (event.key === 'Enter' || event.key === ' ') {
