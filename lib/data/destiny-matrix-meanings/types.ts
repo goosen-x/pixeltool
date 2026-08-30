@@ -10,4 +10,6 @@ import type { FullPointKey } from '@/lib/utils/destiny-matrix'
  */
 export type PositionMeanings = Partial<Record<number, string>>
 
-export type PositionalMeaningsFile = Partial<Record<FullPointKey, PositionMeanings>>
+export type PositionalMeaningsFile = Partial<
+	Record<FullPointKey, PositionMeanings>
+>

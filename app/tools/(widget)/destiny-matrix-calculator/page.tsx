@@ -71,9 +71,7 @@ export default function DestinyMatrixCalculatorPage() {
 			<Card className='overflow-hidden p-0'>
 				<div
 					className={
-						result
-							? 'border-b px-5 py-6 sm:px-6'
-							: 'px-5 py-20 sm:px-6'
+						result ? 'border-b px-5 py-6 sm:px-6' : 'px-5 py-20 sm:px-6'
 					}
 				>
 					<div
@@ -84,9 +82,7 @@ export default function DestinyMatrixCalculatorPage() {
 						}
 					>
 						<label
-							className={
-								result ? 'block' : 'flex flex-wrap items-center gap-4'
-							}
+							className={result ? 'block' : 'flex flex-wrap items-center gap-4'}
 						>
 							<span
 								className={

@@ -82,6 +82,8 @@ export const TAROT_DECK: TarotCard[] = [
 	...MINOR_ARCANA_DECK
 ]
 
-export function getTarotCardByMajorNumber(number: number): TarotCard | undefined {
+export function getTarotCardByMajorNumber(
+	number: number
+): TarotCard | undefined {
 	return MAJOR_ARCANA_DECK.find(card => card.majorNumber === number)
 }

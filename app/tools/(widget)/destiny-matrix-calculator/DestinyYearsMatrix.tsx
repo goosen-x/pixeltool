@@ -32,17 +32,25 @@ export function DestinyYearsMatrix({
 	birthDate
 }: DestinyYearsMatrixProps) {
 	const age = ageFromBirthDate(birthDate)
-	const points: [number, number, number, number, number, number, number, number] =
-		SECTOR_KEYS.map(key => result[key]) as [
-			number,
-			number,
-			number,
-			number,
-			number,
-			number,
-			number,
-			number
-		]
+	const points: [
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number
+	] = SECTOR_KEYS.map(key => result[key]) as [
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number
+	]
 	const current = getYearsMatrixSector(age, points)
 	const currentLabel = FULL_POINT_LABELS[SECTOR_KEYS[current.sectorIndex]]
 	const currentArcana = getArcana(current.arcanaNumber)
@@ -80,16 +88,17 @@ export function DestinyYearsMatrix({
 							className='absolute inset-y-0 left-0 rounded-full bg-primary/30'
 							style={{ width: `${markerPercent}%` }}
 						/>
-						{Array.from({ length: SECTOR_KEYS.length - 1 }, (_, i) => i + 1).map(
-							i => (
-								<div
-									key={i}
-									aria-hidden
-									className='absolute top-1/2 h-2.5 w-px -translate-x-1/2 -translate-y-1/2 bg-background'
-									style={{ left: `${i * SEGMENT_WIDTH}%` }}
-								/>
-							)
-						)}
+						{Array.from(
+							{ length: SECTOR_KEYS.length - 1 },
+							(_, i) => i + 1
+						).map(i => (
+							<div
+								key={i}
+								aria-hidden
+								className='absolute top-1/2 h-2.5 w-px -translate-x-1/2 -translate-y-1/2 bg-background'
+								style={{ left: `${i * SEGMENT_WIDTH}%` }}
+							/>
+						))}
 						<div
 							aria-hidden
 							className='absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-background'

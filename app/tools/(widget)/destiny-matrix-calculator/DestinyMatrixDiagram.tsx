@@ -38,9 +38,7 @@ interface DestinyMatrixDiagramProps {
 	result: DestinyMatrixResult
 }
 
-export function DestinyMatrixDiagram({
-	result
-}: DestinyMatrixDiagramProps) {
+export function DestinyMatrixDiagram({ result }: DestinyMatrixDiagramProps) {
 	const [active, setActive] = useState<NodeKey>('center')
 
 	const arcanaFor = (key: NodeKey) =>
