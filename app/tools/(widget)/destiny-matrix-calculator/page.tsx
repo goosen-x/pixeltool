@@ -4,11 +4,19 @@ import { useMemo, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { DatePicker } from '@/components/ui/date-picker'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
-import { calculateDestinyMatrix, getArcana } from '@/lib/utils/destiny-matrix'
+import {
+	calculateDestinyMatrix,
+	getArcana,
+	getYearsMatrixSector,
+	POSITIONS
+} from '@/lib/utils/destiny-matrix'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { DestinyMatrixCalculatorSeo } from './DestinyMatrixCalculatorSeo'
+import { DestinyMatrixDiagram } from './DestinyMatrixDiagram'
+import { DestinyYearsMatrix } from './DestinyYearsMatrix'
 
 function parseIso(
 	value: string
@@ -18,13 +26,6 @@ function parseIso(
 	if (!year || !month || !day) return null
 	return { day, month, year }
 }
-
-const POSITIONS = [
-	{ key: 'day', label: 'Личность и характер' },
-	{ key: 'month', label: 'Таланты от рождения' },
-	{ key: 'year', label: 'Родовые программы' },
-	{ key: 'fourth', label: 'Реализация в социуме' }
-] as const
 
 export default function DestinyMatrixCalculatorPage() {
 	const widget = getWidgetById('destiny-matrix-calculator')!
@@ -46,6 +47,29 @@ export default function DestinyMatrixCalculatorPage() {
 		})
 		const center = getArcana(result.center)
 		lines.push(`Предназначение: ${center.number} (${center.name})`)
+
+		const parsed = parseIso(birthDate)
+		if (parsed) {
+			const today = new Date()
+			const birth = new Date(parsed.year, parsed.month - 1, parsed.day)
+			let age = today.getFullYear() - birth.getFullYear()
+			const hadBirthday =
+				today.getMonth() > birth.getMonth() ||
+				(today.getMonth() === birth.getMonth() &&
+					today.getDate() >= birth.getDate())
+			if (!hadBirthday) age -= 1
+			const sector = getYearsMatrixSector(Math.max(age, 0), [
+				result.day,
+				result.month,
+				result.year,
+				result.fourth
+			])
+			const sectorArcana = getArcana(sector.arcanaNumber)
+			lines.push(
+				`Матрица лет (сейчас): ${sectorArcana.number} (${sectorArcana.name})`
+			)
+		}
+
 		await navigator.clipboard.writeText(lines.join('\n'))
 		setCopied(true)
 		setTimeout(() => setCopied(false), 2000)
@@ -80,11 +104,10 @@ export default function DestinyMatrixCalculatorPage() {
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Число, месяц и год рождения
 						</span>
-						<input
-							type='date'
+						<DatePicker
 							value={birthDate}
-							onChange={event => setBirthDate(event.target.value)}
-							aria-label='Дата рождения'
+							onChange={setBirthDate}
+							ariaLabel='Дата рождения'
 							className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
 					</label>
@@ -92,6 +115,13 @@ export default function DestinyMatrixCalculatorPage() {
 
 				{result ? (
 					<div className='px-5 py-8 sm:px-6'>
+						<DestinyMatrixDiagram result={result} />
+						<DestinyYearsMatrix result={result} birthDate={birthDate} />
+
+						<span className='mx-auto mt-8 block max-w-lg border-t pt-8 text-center text-sm text-muted-foreground'>
+							То же самое подробно
+						</span>
+
 						<div className='mx-auto grid max-w-lg grid-cols-2 gap-3'>
 							{POSITIONS.map(({ key, label }) => {
 								const arcana = getArcana(result[key])
