@@ -19,9 +19,24 @@ const EXTRA_SPINS = 6
 
 const DEFAULT_ITEMS = 'Пицца\nСуши\nБургеры\nПаста\nШаурма\nСалат'
 
-function segmentColor(index: number, total: number): string {
-	const hue = Math.round((360 / total) * index)
-	return `hsl(${hue}, 72%, 56%)`
+// Категориальная палитра из dataviz-скилла (CVD-safe порядок), а не
+// равномерная HSL-радуга: та при большом числе секторов упиралась в
+// кислотные жёлто-зелёные и грязно-бурые тона. Секторов может быть до
+// MAX_SEGMENTS = 30, палитра на 8 цветов, поэтому дальше идёт по кругу.
+// Для колеса фортуны это уместный компромисс.
+const CATEGORICAL_COLORS = [
+	'#2a78d6', // синий
+	'#eb6834', // оранжевый
+	'#1baf7a', // бирюзовый
+	'#eda100', // жёлтый
+	'#e87ba4', // розовый
+	'#008300', // зелёный
+	'#4a3aa7', // фиолетовый
+	'#e34948' // красный
+]
+
+function segmentColor(index: number): string {
+	return CATEGORICAL_COLORS[index % CATEGORICAL_COLORS.length]
 }
 
 // crypto.getRandomValues, не Math.random — та же практика, что в
@@ -56,7 +71,7 @@ function drawWheel(canvas: HTMLCanvasElement, items: string[]) {
 		ctx.moveTo(center, center)
 		ctx.arc(center, center, radius, start, end)
 		ctx.closePath()
-		ctx.fillStyle = segmentColor(index, items.length)
+		ctx.fillStyle = segmentColor(index)
 		ctx.fill()
 		ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)'
 		ctx.lineWidth = 1
