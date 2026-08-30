@@ -3,7 +3,10 @@ import {
 	getYearsMatrixSector,
 	getPersonalizedMeaning,
 	getArcana,
-	calculateFullDestinyMatrix
+	calculateFullDestinyMatrix,
+	FULL_POINT_LABELS,
+	NAMED_LINES,
+	TALENT_POINTS
 } from '@/lib/utils/destiny-matrix'
 
 describe('getYearsMatrixSector', () => {
@@ -99,5 +102,33 @@ describe('calculateFullDestinyMatrix', () => {
 		expect(result.r).toBe(22)
 		expect(result.r1).toBe(7)
 		expect(result.r2).toBe(5)
+	})
+
+	it('у каждой точки результата есть подпись в FULL_POINT_LABELS', () => {
+		const result = calculateFullDestinyMatrix(17, 3, 1994)
+		for (const key of Object.keys(result) as (keyof typeof result)[]) {
+			expect(FULL_POINT_LABELS[key], `нет подписи для ${key}`).toBeTypeOf(
+				'string'
+			)
+		}
+	})
+
+	it('все ключи в NAMED_LINES и TALENT_POINTS существуют в результате', () => {
+		const result = calculateFullDestinyMatrix(17, 3, 1994)
+		const resultKeys = new Set(Object.keys(result))
+
+		for (const line of NAMED_LINES) {
+			for (const segment of line.segments) {
+				for (const key of segment) {
+					expect(resultKeys.has(key), `${line.key}: нет ключа ${key}`).toBe(
+						true
+					)
+				}
+			}
+		}
+
+		for (const point of TALENT_POINTS) {
+			expect(resultKeys.has(point.key), `нет ключа ${point.key}`).toBe(true)
+		}
 	})
 })

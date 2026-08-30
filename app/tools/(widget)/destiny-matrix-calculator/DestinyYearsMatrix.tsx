@@ -1,25 +1,11 @@
 import {
+	ageFromBirthDate,
 	getArcana,
 	getYearsMatrixSector,
 	POSITIONS,
 	type DestinyMatrixResult
 } from '@/lib/utils/destiny-matrix'
 import { pluralizeRu } from '@/lib/utils/pluralize'
-
-function ageFromIso(iso: string): number {
-	const [year, month, day] = iso.split('-').map(Number)
-	const birth = new Date(year, month - 1, day)
-	const today = new Date()
-
-	let age = today.getFullYear() - birth.getFullYear()
-	const hadBirthdayThisYear =
-		today.getMonth() > birth.getMonth() ||
-		(today.getMonth() === birth.getMonth() &&
-			today.getDate() >= birth.getDate())
-	if (!hadBirthdayThisYear) age -= 1
-
-	return Math.max(age, 0)
-}
 
 const SECTOR_KEYS = ['day', 'month', 'year', 'fourth'] as const
 
@@ -32,7 +18,7 @@ export function DestinyYearsMatrix({
 	result,
 	birthDate
 }: DestinyYearsMatrixProps) {
-	const age = ageFromIso(birthDate)
+	const age = ageFromBirthDate(birthDate)
 	const points: [number, number, number, number] = [
 		result.day,
 		result.month,

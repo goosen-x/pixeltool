@@ -1,3 +1,17 @@
+import { calculateAge } from './age-calculator'
+
+/**
+ * Возраст на сегодня по дате рождения в формате ISO (YYYY-MM-DD).
+ * Переиспользует calculateAge из age-calculator.ts вместо повторного
+ * подсчёта разницы дат в каждом компоненте матрицы судьбы.
+ */
+export function ageFromBirthDate(birthDateIso: string): number {
+	const [year, month, day] = birthDateIso.split('-').map(Number)
+	if (!year || !month || !day) return 0
+	const birth = new Date(year, month - 1, day)
+	return calculateAge(birth, new Date()).years
+}
+
 // Методика «матрица судьбы»: свод больших чисел к диапазону 1-22 сделан
 // повторным суммированием цифр (не вычитанием 22) — один из двух
 // распространённых вариантов, единого стандарта у метода нет (см.
@@ -205,6 +219,41 @@ export const POSITIONS: { key: PositionKey; label: string }[] = [
 	{ key: 'year', label: 'Родовые программы' },
 	{ key: 'fourth', label: 'Реализация в социуме' }
 ]
+
+function corePositionLabel(key: PositionKey): string {
+	return POSITIONS.find(position => position.key === key)!.label
+}
+
+/** Подписи для всех точек расширенной методики, для детальной карточки. */
+export const FULL_POINT_LABELS: Record<FullPointKey, string> = {
+	day: corePositionLabel('day'),
+	month: corePositionLabel('month'),
+	year: corePositionLabel('year'),
+	fourth: corePositionLabel('fourth'),
+	center: 'Главное предназначение',
+	f: 'Родовой квадрат: день и месяц',
+	g: 'Родовой квадрат: месяц и год',
+	h: 'Родовой квадрат: год и четвёртая точка',
+	i: 'Родовой квадрат: четвёртая точка и день',
+	l2: 'Центр рода',
+	l1: 'Общий центр рода и предназначения',
+	j: 'Личная диагональ дня',
+	k: 'Личная диагональ месяца',
+	l: 'Личная диагональ года',
+	m: 'Личная диагональ четвёртой точки',
+	q: 'Узел линии денег',
+	f1: 'Линия мужского рода, первый узел',
+	f2: 'Талант по мужской линии рода',
+	g1: 'Линия женского рода, первый узел',
+	g2: 'Талант по женской линии рода',
+	h1: 'Линия мужского рода, второй узел',
+	h2: 'Линия мужского рода, третий узел',
+	i1: 'Линия женского рода, первый узел',
+	i2: 'Линия женского рода, второй узел',
+	r: 'Узел линии любви и денег',
+	r1: 'Узел линии любви',
+	r2: 'Узел линии денег'
+}
 
 export type Gender = 'male' | 'female'
 
