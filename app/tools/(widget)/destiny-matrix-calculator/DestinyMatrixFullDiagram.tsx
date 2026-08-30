@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import {
 	FULL_POINT_LABELS,
 	NAMED_LINES,
@@ -9,84 +10,124 @@ import {
 	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
 
+type Category = 'core' | 'family' | 'diagonal' | 'familyDiagonal' | 'loveMoney'
+
 interface NodeConfig {
 	key: FullPointKey
 	x: number
 	y: number
 	radius: number
+	category: Category
 	staticLabel?: string
 }
 
 /**
- * Координаты подобраны вручную, не выведены по формуле: внешний квадрат
- * (A,B,C,D) и повёрнутый на 45° родовой квадрат (F,G,H,I) образуют
- * октаграмму, как её описывает источник методики. Остальные точки лежат
- * на диагоналях от каждого угла к центру, ближе к центру тем сильнее
- * узел вложен в формулу (например, F2 использует центр рода, поэтому
- * он ближе к центру, чем F1).
+ * Цвет по категории точки, не по конкретной линии: подсветка выбранной
+ * линии (родовые линии, любовь, деньги) уже красит нужные узлы в primary
+ * поверх этого, категория здесь только помогает разглядеть структуру
+ * схемы, когда ничего не выбрано. Палитра та же, что и в fortune-wheel:
+ * категориальный набор из dataviz-скилла, уже проверенный на сочетаемость.
+ * Подписи те же, что и в легенде под схемой, ключи совпадают.
+ */
+const CATEGORY_COLOR: Record<Exclude<Category, 'core'>, string> = {
+	family: '#2a78d6',
+	diagonal: '#1baf7a',
+	familyDiagonal: '#4a3aa7',
+	loveMoney: '#eb6834'
+}
+
+const CATEGORY_LABEL: Record<Exclude<Category, 'core'>, string> = {
+	family: 'Родовой квадрат',
+	diagonal: 'Личные диагонали',
+	familyDiagonal: 'Диагонали рода',
+	loveMoney: 'Любовь и деньги'
+}
+
+/**
+ * Координаты подобраны вручную, не выведены по формуле. Схема строится как
+ * два самостоятельных четырёхугольника, наложенных друг на друга со
+ * смещением на 45°, а не как один восьмиугольник: прямой квадрат
+ * (родовой, F-G-H-I) и повёрнутый на 45° ромб (личный, A-B-C-D). Так их
+ * описывает источник методики, и так выглядит на референсных схемах
+ * конкурентов. Остальные точки лежат на диагоналях от каждого угла к
+ * центру, ближе к центру тем сильнее узел вложен в формулу (например, F2
+ * использует центр рода, поэтому он ближе к центру, чем F1).
  */
 const NODES: NodeConfig[] = [
-	{ key: 'day', x: 70, y: 200, radius: 22, staticLabel: FULL_POINT_LABELS.day },
+	{
+		key: 'day',
+		x: 70,
+		y: 240,
+		radius: 26,
+		category: 'core',
+		staticLabel: FULL_POINT_LABELS.day
+	},
 	{
 		key: 'month',
-		x: 200,
+		x: 240,
 		y: 70,
-		radius: 22,
+		radius: 26,
+		category: 'core',
 		staticLabel: FULL_POINT_LABELS.month
 	},
 	{
 		key: 'year',
-		x: 330,
-		y: 200,
-		radius: 22,
+		x: 410,
+		y: 240,
+		radius: 26,
+		category: 'core',
 		staticLabel: FULL_POINT_LABELS.year
 	},
 	{
 		key: 'fourth',
-		x: 200,
-		y: 330,
-		radius: 22,
+		x: 240,
+		y: 410,
+		radius: 26,
+		category: 'core',
 		staticLabel: FULL_POINT_LABELS.fourth
 	},
-	{ key: 'center', x: 200, y: 200, radius: 28 },
+	{ key: 'center', x: 240, y: 240, radius: 34, category: 'core' },
 
-	{ key: 'f', x: 108, y: 108, radius: 16 },
-	{ key: 'g', x: 292, y: 108, radius: 16 },
-	{ key: 'h', x: 292, y: 292, radius: 16 },
-	{ key: 'i', x: 108, y: 292, radius: 16 },
+	{ key: 'f', x: 120, y: 120, radius: 20, category: 'family' },
+	{ key: 'g', x: 360, y: 120, radius: 20, category: 'family' },
+	{ key: 'h', x: 360, y: 360, radius: 20, category: 'family' },
+	{ key: 'i', x: 120, y: 360, radius: 20, category: 'family' },
 
-	{ key: 'j', x: 135, y: 200, radius: 13 },
-	{ key: 'k', x: 200, y: 135, radius: 13 },
-	{ key: 'l', x: 265, y: 200, radius: 13 },
-	{ key: 'm', x: 200, y: 265, radius: 13 },
-	{ key: 'q', x: 295, y: 200, radius: 11 },
+	{ key: 'j', x: 155, y: 240, radius: 16, category: 'diagonal' },
+	{ key: 'k', x: 240, y: 155, radius: 16, category: 'diagonal' },
+	{ key: 'l', x: 325, y: 240, radius: 16, category: 'diagonal' },
+	{ key: 'm', x: 240, y: 325, radius: 16, category: 'diagonal' },
+	{ key: 'q', x: 370, y: 240, radius: 13, category: 'diagonal' },
 
-	{ key: 'f1', x: 138, y: 138, radius: 10 },
-	{ key: 'f2', x: 168, y: 168, radius: 10 },
-	{ key: 'g1', x: 262, y: 138, radius: 10 },
-	{ key: 'g2', x: 232, y: 168, radius: 10 },
-	{ key: 'h1', x: 262, y: 262, radius: 10 },
-	{ key: 'h2', x: 232, y: 232, radius: 10 },
-	{ key: 'i1', x: 138, y: 262, radius: 10 },
-	{ key: 'i2', x: 168, y: 232, radius: 10 },
+	{ key: 'f1', x: 162, y: 162, radius: 12, category: 'familyDiagonal' },
+	{ key: 'f2', x: 201, y: 201, radius: 12, category: 'familyDiagonal' },
+	{ key: 'g1', x: 318, y: 162, radius: 12, category: 'familyDiagonal' },
+	{ key: 'g2', x: 279, y: 201, radius: 12, category: 'familyDiagonal' },
+	{ key: 'h1', x: 318, y: 318, radius: 12, category: 'familyDiagonal' },
+	{ key: 'h2', x: 279, y: 279, radius: 12, category: 'familyDiagonal' },
+	{ key: 'i1', x: 162, y: 318, radius: 12, category: 'familyDiagonal' },
+	{ key: 'i2', x: 201, y: 279, radius: 12, category: 'familyDiagonal' },
 
-	{ key: 'r', x: 255, y: 295, radius: 9 },
-	{ key: 'r1', x: 222, y: 277, radius: 9 },
-	{ key: 'r2', x: 261, y: 238, radius: 9 }
+	{ key: 'r', x: 312, y: 364, radius: 11, category: 'loveMoney' },
+	{ key: 'r1', x: 269, y: 341, radius: 11, category: 'loveMoney' },
+	{ key: 'r2', x: 320, y: 290, radius: 11, category: 'loveMoney' }
 ]
 
 const NODE_BY_KEY = new Map(NODES.map(node => [node.key, node]))
 
-/** Базовые линии диаграммы (октаграмма + спицы к центру), видны всегда. */
+/**
+ * Базовые линии диаграммы: два четырёхугольника (ромб A-B-C-D и квадрат
+ * F-G-H-I) плюс спицы к центру, видны всегда в полной схеме.
+ */
 const BASE_EDGES: [FullPointKey, FullPointKey][] = [
-	['day', 'f'],
-	['f', 'month'],
-	['month', 'g'],
-	['g', 'year'],
-	['year', 'h'],
-	['h', 'fourth'],
-	['fourth', 'i'],
-	['i', 'day'],
+	['day', 'month'],
+	['month', 'year'],
+	['year', 'fourth'],
+	['fourth', 'day'],
+	['f', 'g'],
+	['g', 'h'],
+	['h', 'i'],
+	['i', 'f'],
 	['day', 'j'],
 	['j', 'center'],
 	['month', 'k'],
@@ -114,6 +155,14 @@ const BASE_EDGES: [FullPointKey, FullPointKey][] = [
 	['r2', 'r']
 ]
 
+/** В свёрнутом виде: только ромб A-B-C-D, без родового квадрата и диагоналей. */
+const CORE_EDGES: [FullPointKey, FullPointKey][] = [
+	['day', 'month'],
+	['month', 'year'],
+	['year', 'fourth'],
+	['fourth', 'day']
+]
+
 function segmentEdges(segment: FullPointKey[]): [FullPointKey, FullPointKey][] {
 	const edges: [FullPointKey, FullPointKey][] = []
 	for (let index = 0; index < segment.length - 1; index++) {
@@ -135,6 +184,12 @@ export function DestinyMatrixFullDiagram({
 	onSelect,
 	highlightedLine
 }: DestinyMatrixFullDiagramProps) {
+	const [showFull, setShowFull] = useState(false)
+	// Подсветка линии/таланта относится только к точкам за пределами ядра,
+	// поэтому пока она включена, схема разворачивается сама, даже если
+	// пользователь её не разворачивал явно.
+	const isFull = showFull || highlightedLine !== null
+
 	const highlightedLineEdges = new Set<string>()
 	let highlightedNodes: Set<FullPointKey> | null = null
 
@@ -152,90 +207,152 @@ export function DestinyMatrixFullDiagram({
 		highlightedNodes = new Set(TALENT_POINTS.map(point => point.key))
 	}
 
+	const visibleNodes = isFull
+		? NODES
+		: NODES.filter(node => node.category === 'core')
+	const visibleEdges = isFull ? BASE_EDGES : CORE_EDGES
+
 	return (
-		<svg
-			viewBox='0 0 400 400'
-			className='mx-auto h-80 w-80 sm:h-96 sm:w-96'
-			role='img'
-			aria-label='Расширенная схема матрицы судьбы'
-		>
-			{BASE_EDGES.map(([from, to]) => {
-				const isHighlighted = highlightedLineEdges.has(`${from}-${to}`)
-				const a = NODE_BY_KEY.get(from)!
-				const b = NODE_BY_KEY.get(to)!
-				return (
-					<line
-						key={`${from}-${to}`}
-						x1={a.x}
-						y1={a.y}
-						x2={b.x}
-						y2={b.y}
-						className={isHighlighted ? 'stroke-primary' : 'stroke-border'}
-						strokeWidth={isHighlighted ? 2.5 : 1}
-					/>
-				)
-			})}
-
-			{NODES.map(node => {
-				const arcana = getArcana(result[node.key])
-				const isActive = node.key === active
-				const isLineHighlighted = highlightedNodes?.has(node.key) ?? false
-				const isCenter = node.key === 'center'
-
-				const circleClass = isActive
-					? 'fill-primary/10 stroke-primary'
-					: isLineHighlighted
-						? 'fill-primary/5 stroke-primary'
-						: 'fill-background stroke-border'
-
-				return (
-					<g
-						key={node.key}
-						role='button'
-						tabIndex={0}
-						aria-label={`${FULL_POINT_LABELS[node.key]}: аркан ${arcana.number}, ${arcana.name}`}
-						className='cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-						onClick={() => onSelect(node.key)}
-						onKeyDown={event => {
-							if (event.key === 'Enter' || event.key === ' ') {
-								event.preventDefault()
-								onSelect(node.key)
-							}
-						}}
-					>
-						<circle
-							cx={node.x}
-							cy={node.y}
-							r={node.radius}
-							className={circleClass}
-							strokeWidth={isActive || isLineHighlighted ? 2 : 1}
+		<div>
+			<svg
+				viewBox='0 0 480 480'
+				className='mx-auto h-[22rem] w-[22rem] sm:h-[28rem] sm:w-[28rem]'
+				role='img'
+				aria-label='Схема матрицы судьбы'
+			>
+				{visibleEdges.map(([from, to]) => {
+					const isHighlighted = highlightedLineEdges.has(`${from}-${to}`)
+					const a = NODE_BY_KEY.get(from)!
+					const b = NODE_BY_KEY.get(to)!
+					return (
+						<line
+							key={`${from}-${to}`}
+							x1={a.x}
+							y1={a.y}
+							x2={b.x}
+							y2={b.y}
+							className={isHighlighted ? 'stroke-primary' : 'stroke-border'}
+							strokeWidth={isHighlighted ? 2.5 : 1.25}
 						/>
-						<text
-							x={node.x}
-							y={node.y}
-							textAnchor='middle'
-							dominantBaseline='central'
-							className={
-								isCenter
-									? 'fill-foreground text-base font-bold'
-									: 'fill-foreground text-xs font-semibold'
-							}
+					)
+				})}
+
+				{visibleNodes.map(node => {
+					const arcana = getArcana(result[node.key])
+					const isActive = node.key === active
+					const isLineHighlighted = highlightedNodes?.has(node.key) ?? false
+					const isCenter = node.key === 'center'
+					const isNeutral =
+						isActive || isLineHighlighted || node.category === 'core'
+
+					const circleClass = isActive
+						? 'fill-primary/10 stroke-primary'
+						: isLineHighlighted
+							? 'fill-primary/5 stroke-primary'
+							: isNeutral
+								? 'fill-background stroke-border'
+								: ''
+
+					const circleStyle =
+						!isNeutral && node.category !== 'core'
+							? {
+									fill: `${CATEGORY_COLOR[node.category]}1a`,
+									stroke: `${CATEGORY_COLOR[node.category]}99`
+								}
+							: undefined
+
+					const nodeLabel = `${FULL_POINT_LABELS[node.key]}: аркан ${arcana.number}, ${arcana.name}`
+
+					return (
+						<g
+							key={node.key}
+							role='button'
+							tabIndex={0}
+							aria-label={nodeLabel}
+							className='cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+							onClick={() => onSelect(node.key)}
+							onKeyDown={event => {
+								if (event.key === 'Enter' || event.key === ' ') {
+									event.preventDefault()
+									onSelect(node.key)
+								}
+							}}
 						>
-							{arcana.number}
-						</text>
-						{node.staticLabel && (
+							{/* Нативная подсказка по наведению/фокусу, без единой строки JS. */}
+							<title>{nodeLabel}</title>
+							{/* Прозрачная зона побольше самого кружка: у мелких узлов
+							    видимый радиус даёт тач-таргет заметно меньше 44×44px. */}
+							<circle
+								cx={node.x}
+								cy={node.y}
+								r={node.radius + 6}
+								fill='transparent'
+							/>
+							<circle
+								cx={node.x}
+								cy={node.y}
+								r={node.radius}
+								className={`transition-colors duration-150 ${circleClass}`}
+								style={circleStyle}
+								strokeWidth={isActive || isLineHighlighted ? 2.5 : 1.5}
+							/>
 							<text
 								x={node.x}
-								y={node.y + node.radius + 14}
+								y={node.y}
 								textAnchor='middle'
-								className='fill-muted-foreground text-[10px]'
+								dominantBaseline='central'
+								className={
+									isCenter
+										? 'fill-foreground text-lg font-bold'
+										: node.category === 'core'
+											? 'fill-foreground text-sm font-semibold'
+											: 'fill-foreground text-xs font-semibold'
+								}
 							>
-								{node.staticLabel}
+								{arcana.number}
 							</text>
-						)}
-					</g>
-				)
-			})}
-		</svg>
+							{node.staticLabel && (
+								<text
+									x={node.x}
+									y={node.y + node.radius + 16}
+									textAnchor='middle'
+									className='fill-muted-foreground text-[11px]'
+								>
+									{node.staticLabel}
+								</text>
+							)}
+						</g>
+					)
+				})}
+			</svg>
+
+			<div className='mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2'>
+				{isFull &&
+					(Object.keys(CATEGORY_COLOR) as Exclude<Category, 'core'>[]).map(
+						category => (
+							<span
+								key={category}
+								className='flex items-center gap-1.5 text-xs text-muted-foreground'
+							>
+								<span
+									className='h-2.5 w-2.5 rounded-full'
+									style={{ backgroundColor: CATEGORY_COLOR[category] }}
+								/>
+								{CATEGORY_LABEL[category]}
+							</span>
+						)
+					)}
+			</div>
+
+			<div className='mt-2 text-center'>
+				<button
+					type='button'
+					onClick={() => setShowFull(current => !current)}
+					className='cursor-pointer text-sm text-primary hover:underline'
+				>
+					{isFull ? 'Свернуть до пяти точек' : 'Показать полную схему'}
+				</button>
+			</div>
+		</div>
 	)
 }
