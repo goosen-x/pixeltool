@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { getYearsMatrixSector } from '@/lib/utils/destiny-matrix'
+import {
+	getYearsMatrixSector,
+	getPersonalizedMeaning,
+	getArcana
+} from '@/lib/utils/destiny-matrix'
 
 describe('getYearsMatrixSector', () => {
 	const points: [number, number, number, number] = [17, 3, 5, 7]
@@ -31,5 +35,27 @@ describe('getYearsMatrixSector', () => {
 		expect(getYearsMatrixSector(80, points).sectorIndex).toBe(0)
 		expect(getYearsMatrixSector(99, points).sectorIndex).toBe(0)
 		expect(getYearsMatrixSector(100, points).sectorIndex).toBe(1)
+	})
+})
+
+describe('getPersonalizedMeaning', () => {
+	const arcana = getArcana(1)
+
+	it('без указания пола возвращает нейтральный текст', () => {
+		expect(getPersonalizedMeaning(arcana)).toBe(arcana.meaning)
+	})
+
+	it('для мужского пола возвращает meaningMasc, если он задан', () => {
+		expect(getPersonalizedMeaning(arcana, 'male')).toBe(arcana.meaningMasc)
+	})
+
+	it('для женского пола возвращает meaningFem, если он задан', () => {
+		expect(getPersonalizedMeaning(arcana, 'female')).toBe(arcana.meaningFem)
+	})
+
+	it('падает обратно на нейтральный текст, если родового варианта нет', () => {
+		const withoutGendered = { number: 99, name: 'Тест', meaning: 'нейтрально' }
+		expect(getPersonalizedMeaning(withoutGendered, 'male')).toBe('нейтрально')
+		expect(getPersonalizedMeaning(withoutGendered, 'female')).toBe('нейтрально')
 	})
 })

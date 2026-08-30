@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import {
 	getArcana,
+	getPersonalizedMeaning,
 	POSITIONS,
 	type DestinyMatrixResult,
+	type Gender,
 	type PositionKey
 } from '@/lib/utils/destiny-matrix'
 
@@ -36,9 +38,13 @@ function labelFor(key: NodeKey): string {
 
 interface DestinyMatrixDiagramProps {
 	result: DestinyMatrixResult
+	gender?: Gender
 }
 
-export function DestinyMatrixDiagram({ result }: DestinyMatrixDiagramProps) {
+export function DestinyMatrixDiagram({
+	result,
+	gender
+}: DestinyMatrixDiagramProps) {
 	const [active, setActive] = useState<NodeKey>('center')
 
 	const arcanaFor = (key: NodeKey) =>
@@ -123,7 +129,7 @@ export function DestinyMatrixDiagram({ result }: DestinyMatrixDiagramProps) {
 					{activeArcana.number} ({activeArcana.name})
 				</span>
 				<p className='mt-2 text-sm text-muted-foreground'>
-					{activeArcana.meaning}
+					{getPersonalizedMeaning(activeArcana, gender)}
 				</p>
 			</div>
 		</div>

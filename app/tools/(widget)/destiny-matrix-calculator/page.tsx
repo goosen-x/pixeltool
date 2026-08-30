@@ -1,21 +1,30 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy, Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
-import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolToggleOption,
+	toolToggleTrack
+} from '@/lib/ui/tool-pill'
 import {
 	calculateDestinyMatrix,
 	getArcana,
+	getPersonalizedMeaning,
 	getYearsMatrixSector,
-	POSITIONS
+	POSITIONS,
+	type Gender
 } from '@/lib/utils/destiny-matrix'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { DestinyMatrixCalculatorSeo } from './DestinyMatrixCalculatorSeo'
 import { DestinyMatrixDiagram } from './DestinyMatrixDiagram'
+import { downloadDestinyMatrixPdf } from './DestinyMatrixPdf'
 import { DestinyYearsMatrix } from './DestinyYearsMatrix'
 
 function parseIso(
@@ -31,6 +40,8 @@ export default function DestinyMatrixCalculatorPage() {
 	const widget = getWidgetById('destiny-matrix-calculator')!
 
 	const [birthDate, setBirthDate] = useState('')
+	const [name, setName] = useState('')
+	const [gender, setGender] = useState<Gender | undefined>(undefined)
 	const [copied, setCopied] = useState(false)
 
 	const result = useMemo(() => {
@@ -41,10 +52,14 @@ export default function DestinyMatrixCalculatorPage() {
 
 	const copyResult = async () => {
 		if (!result) return
-		const lines = POSITIONS.map(({ key, label }) => {
-			const arcana = getArcana(result[key])
-			return `${label}: ${arcana.number} (${arcana.name})`
-		})
+		const lines: string[] = []
+		if (name) lines.push(`Матрица судьбы: ${name}`, '')
+		lines.push(
+			...POSITIONS.map(({ key, label }) => {
+				const arcana = getArcana(result[key])
+				return `${label}: ${arcana.number} (${arcana.name})`
+			})
+		)
 		const center = getArcana(result.center)
 		lines.push(`Предназначение: ${center.number} (${center.name})`)
 
@@ -75,6 +90,11 @@ export default function DestinyMatrixCalculatorPage() {
 		setTimeout(() => setCopied(false), 2000)
 	}
 
+	const downloadPdf = () => {
+		if (!result) return
+		downloadDestinyMatrixPdf(result, { name: name || undefined, gender })
+	}
+
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
@@ -82,6 +102,16 @@ export default function DestinyMatrixCalculatorPage() {
 					<span className='text-sm text-muted-foreground'>Дата рождения</span>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={downloadPdf}
+							disabled={!result}
+							title='Скачать PDF'
+							className={toolIconButton}
+						>
+							<Download className='h-4 w-4' />
+						</Button>
 						<Button
 							size='icon'
 							variant='ghost'
@@ -99,7 +129,50 @@ export default function DestinyMatrixCalculatorPage() {
 					</div>
 				</div>
 
-				<div className='border-b px-5 py-6 sm:px-6'>
+				<div className='space-y-4 border-b px-5 py-6 sm:px-6'>
+					<div className='grid gap-4 sm:grid-cols-2'>
+						<label className='block'>
+							<span className='mb-1.5 block text-sm text-muted-foreground'>
+								Имя (необязательно)
+							</span>
+							<input
+								type='text'
+								value={name}
+								onChange={event => setName(event.target.value)}
+								placeholder='Например, Мария'
+								className='w-full rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+							/>
+						</label>
+
+						<div>
+							<span className='mb-1.5 block text-sm text-muted-foreground'>
+								Пол (необязательно)
+							</span>
+							<div className={toolToggleTrack}>
+								<button
+									type='button'
+									onClick={() =>
+										setGender(current => (current === 'male' ? undefined : 'male'))
+									}
+									className={toolToggleOption(gender === 'male')}
+								>
+									Мужской
+								</button>
+								<button
+									type='button'
+									onClick={() =>
+										setGender(current =>
+											current === 'female' ? undefined : 'female'
+										)
+									}
+									className={toolToggleOption(gender === 'female')}
+								>
+									Женский
+								</button>
+							</div>
+						</div>
+					</div>
+
 					<label className='block max-w-xs'>
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Число, месяц и год рождения
@@ -115,7 +188,13 @@ export default function DestinyMatrixCalculatorPage() {
 
 				{result ? (
 					<div className='px-5 py-8 sm:px-6'>
-						<DestinyMatrixDiagram result={result} />
+						{name && (
+							<p className='mb-6 text-center text-lg font-medium text-foreground'>
+								Матрица судьбы: {name}
+							</p>
+						)}
+
+						<DestinyMatrixDiagram result={result} gender={gender} />
 						<DestinyYearsMatrix result={result} birthDate={birthDate} />
 
 						<span className='mx-auto mt-8 block max-w-lg border-t pt-8 text-center text-sm text-muted-foreground'>
@@ -155,7 +234,7 @@ export default function DestinyMatrixCalculatorPage() {
 										Главное предназначение
 									</span>
 									<p className='mt-3 text-sm text-muted-foreground'>
-										{center.meaning}
+										{getPersonalizedMeaning(center, gender)}
 									</p>
 								</div>
 							)
@@ -169,7 +248,7 @@ export default function DestinyMatrixCalculatorPage() {
 										<span className='font-medium text-foreground'>
 											{label} ({arcana.name}):
 										</span>{' '}
-										{arcana.meaning}
+										{getPersonalizedMeaning(arcana, gender)}
 									</p>
 								)
 							})}
