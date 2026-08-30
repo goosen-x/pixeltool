@@ -17,7 +17,7 @@ export function BlogPostActions({ postId, title }: Props) {
 	const { views, rating, ratingCount, hasVoted, vote } = useBlogStats(postId)
 
 	return (
-		<div className='flex items-center gap-3'>
+		<div className='flex flex-wrap items-center gap-3'>
 			{views > 0 && (
 				<span className='flex items-center gap-1 text-xs text-muted-foreground'>
 					<Eye className='h-3.5 w-3.5' />
