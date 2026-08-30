@@ -14,7 +14,8 @@ function ageFromIso(iso: string): number {
 	let age = today.getFullYear() - birth.getFullYear()
 	const hadBirthdayThisYear =
 		today.getMonth() > birth.getMonth() ||
-		(today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate())
+		(today.getMonth() === birth.getMonth() &&
+			today.getDate() >= birth.getDate())
 	if (!hadBirthdayThisYear) age -= 1
 
 	return Math.max(age, 0)
@@ -27,7 +28,10 @@ interface DestinyYearsMatrixProps {
 	birthDate: string
 }
 
-export function DestinyYearsMatrix({ result, birthDate }: DestinyYearsMatrixProps) {
+export function DestinyYearsMatrix({
+	result,
+	birthDate
+}: DestinyYearsMatrixProps) {
 	const age = ageFromIso(birthDate)
 	const points: [number, number, number, number] = [
 		result.day,
