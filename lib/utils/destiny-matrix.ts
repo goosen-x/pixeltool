@@ -44,6 +44,15 @@ export function calculateDestinyMatrix(
 	return { day: a, month: b, year: c, fourth: d, center }
 }
 
+export type PositionKey = 'day' | 'month' | 'year' | 'fourth'
+
+export const POSITIONS: { key: PositionKey; label: string }[] = [
+	{ key: 'day', label: 'Личность и характер' },
+	{ key: 'month', label: 'Таланты от рождения' },
+	{ key: 'year', label: 'Родовые программы' },
+	{ key: 'fourth', label: 'Реализация в социуме' }
+]
+
 export interface Arcana {
 	number: number
 	name: string
@@ -191,4 +200,31 @@ export const ARCANA: Arcana[] = [
 
 export function getArcana(number: number): Arcana {
 	return ARCANA[Math.min(Math.max(number, 1), 22) - 1]
+}
+
+export interface YearsMatrixSector {
+	arcanaNumber: number
+	sectorIndex: number
+	sectorStart: number
+	sectorEnd: number
+}
+
+/**
+ * Матрица лет — упрощённая версия традиционной 8-секторной схемы (A→F→B→G→
+ * C→H→D→I по 10 лет), адаптированная под наши 4 точки: 4 сектора по 20 лет,
+ * циклически A→B→C→D. Ни один источник не описывает пятиточечный вариант —
+ * это наше сознательное упрощение, не альтернативная трактовка чужой
+ * методики (см. docs/research/destiny-matrix.md).
+ */
+export function getYearsMatrixSector(
+	age: number,
+	points: [number, number, number, number]
+): YearsMatrixSector {
+	const sectorIndex = Math.floor(age / 20) % 4
+	return {
+		arcanaNumber: points[sectorIndex],
+		sectorIndex,
+		sectorStart: sectorIndex * 20,
+		sectorEnd: sectorIndex * 20 + 20
+	}
 }
