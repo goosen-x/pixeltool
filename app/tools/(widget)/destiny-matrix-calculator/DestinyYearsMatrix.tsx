@@ -4,6 +4,7 @@ import {
 	POSITIONS,
 	type DestinyMatrixResult
 } from '@/lib/utils/destiny-matrix'
+import { pluralizeRu } from '@/lib/utils/pluralize'
 
 function ageFromIso(iso: string): number {
 	const [year, month, day] = iso.split('-').map(Number)
@@ -17,15 +18,6 @@ function ageFromIso(iso: string): number {
 	if (!hadBirthdayThisYear) age -= 1
 
 	return Math.max(age, 0)
-}
-
-function ageWord(age: number): string {
-	const mod100 = age % 100
-	const mod10 = age % 10
-	if (mod100 >= 11 && mod100 <= 14) return 'лет'
-	if (mod10 === 1) return 'год'
-	if (mod10 >= 2 && mod10 <= 4) return 'года'
-	return 'лет'
 }
 
 const SECTOR_KEYS = ['day', 'month', 'year', 'fourth'] as const
@@ -47,11 +39,12 @@ export function DestinyYearsMatrix({ result, birthDate }: DestinyYearsMatrixProp
 	const currentLabel = POSITIONS.find(
 		position => position.key === SECTOR_KEYS[current.sectorIndex]
 	)!.label
+	const currentArcana = getArcana(current.arcanaNumber)
 
 	return (
 		<div className='mx-auto mt-6 max-w-lg'>
 			<span className='mb-2 block text-sm text-muted-foreground'>
-				Матрица лет — упрощённая шкала по 20-летним секторам
+				Матрица лет: упрощённая шкала по 20-летним секторам
 			</span>
 			<div className='flex overflow-hidden rounded-lg border text-center text-sm'>
 				{SECTOR_KEYS.map((key, index) => {
@@ -77,9 +70,9 @@ export function DestinyYearsMatrix({ result, birthDate }: DestinyYearsMatrixProp
 				})}
 			</div>
 			<p className='mt-2 text-center text-xs text-muted-foreground'>
-				Сейчас {age} {ageWord(age)}. Действует точка «{currentLabel.toLowerCase()}»
-				— аркан {getArcana(current.arcanaNumber).number} (
-				{getArcana(current.arcanaNumber).name})
+				Сейчас {age} {pluralizeRu(age, ['год', 'года', 'лет'])}, действует точка
+				«{currentLabel.toLowerCase()}»: аркан {currentArcana.number} (
+				{currentArcana.name})
 			</p>
 		</div>
 	)
