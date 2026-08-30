@@ -170,9 +170,7 @@ export function DestinyMatrixFullDiagram({
 						y1={a.y}
 						x2={b.x}
 						y2={b.y}
-						className={
-							isHighlighted ? 'stroke-primary' : 'stroke-border'
-						}
+						className={isHighlighted ? 'stroke-primary' : 'stroke-border'}
 						strokeWidth={isHighlighted ? 2.5 : 1}
 					/>
 				)

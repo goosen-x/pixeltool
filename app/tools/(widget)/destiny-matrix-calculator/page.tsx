@@ -5,7 +5,11 @@ import { Check, ChevronRight, Copy, Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
-import { toolFooterBar, toolToggleOption, toolToggleTrack } from '@/lib/ui/tool-pill'
+import {
+	toolFooterBar,
+	toolToggleOption,
+	toolToggleTrack
+} from '@/lib/ui/tool-pill'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import {
 	ageFromBirthDate,
@@ -242,38 +246,39 @@ export default function DestinyMatrixCalculatorPage() {
 									<span className='block text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 										Все пять точек
 									</span>
-									{[...POSITIONS, { key: 'center' as const, label: 'Главное предназначение' }].map(
-										({ key, label }) => {
-											const arcana = getArcana(result[key])
-											return (
-												<button
-													key={key}
-													type='button'
-													onClick={() => setActive(key)}
-													className={
-														active === key
-															? 'flex w-full cursor-pointer items-center justify-between rounded-lg border border-primary bg-primary/5 p-3 text-left'
-															: 'flex w-full cursor-pointer items-center justify-between rounded-lg border p-3 text-left hover:border-primary/50'
-													}
-												>
-													<span className='flex items-center gap-3'>
-														<span className='font-mono text-sm font-bold text-foreground'>
-															{arcana.number}
+									{[
+										...POSITIONS,
+										{ key: 'center' as const, label: 'Главное предназначение' }
+									].map(({ key, label }) => {
+										const arcana = getArcana(result[key])
+										return (
+											<button
+												key={key}
+												type='button'
+												onClick={() => setActive(key)}
+												className={
+													active === key
+														? 'flex w-full cursor-pointer items-center justify-between rounded-lg border border-primary bg-primary/5 p-3 text-left'
+														: 'flex w-full cursor-pointer items-center justify-between rounded-lg border p-3 text-left hover:border-primary/50'
+												}
+											>
+												<span className='flex items-center gap-3'>
+													<span className='font-mono text-sm font-bold text-foreground'>
+														{arcana.number}
+													</span>
+													<span>
+														<span className='block text-sm font-medium text-foreground'>
+															{arcana.name}
 														</span>
-														<span>
-															<span className='block text-sm font-medium text-foreground'>
-																{arcana.name}
-															</span>
-															<span className='block text-xs text-muted-foreground'>
-																{label}
-															</span>
+														<span className='block text-xs text-muted-foreground'>
+															{label}
 														</span>
 													</span>
-													<ChevronRight className='h-4 w-4 shrink-0 text-muted-foreground' />
-												</button>
-											)
-										}
-									)}
+												</span>
+												<ChevronRight className='h-4 w-4 shrink-0 text-muted-foreground' />
+											</button>
+										)
+									})}
 								</div>
 
 								<DestinyMatrixLinesPanel
@@ -292,9 +297,9 @@ export default function DestinyMatrixCalculatorPage() {
 
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>
-						У метода нет единого стандарта расчёта, числа на разных сайтах
-						могут немного отличаться. Расширенные точки (родовые линии,
-						любовь, деньги, талант) посчитаны по одной конкретной методике
+						У метода нет единого стандарта расчёта, числа на разных сайтах могут
+						немного отличаться. Расширенные точки (родовые линии, любовь,
+						деньги, талант) посчитаны по одной конкретной методике
 						(gadalkindom), а не по общепринятому стандарту.
 					</span>
 				</div>
