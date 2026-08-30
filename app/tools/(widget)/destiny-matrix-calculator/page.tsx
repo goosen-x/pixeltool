@@ -47,7 +47,9 @@ export default function DestinyMatrixCalculatorPage() {
 	const [gender, setGender] = useState<Gender | undefined>(undefined)
 	const [copied, setCopied] = useState(false)
 	const [active, setActive] = useState<FullPointKey>('center')
-	const [expandedPoint, setExpandedPoint] = useState<FullPointKey | null>(null)
+	// Всегда ровно один пункт раскрыт, поэтому стартуем с центра, а не с null:
+	// схлопнуть все карточки нельзя, только переключить, какая открыта.
+	const [expandedPoint, setExpandedPoint] = useState<FullPointKey>('center')
 	const [highlightedLine, setHighlightedLine] = useState<string | null>(null)
 
 	const result = useMemo(() => {
@@ -73,6 +75,14 @@ export default function DestinyMatrixCalculatorPage() {
 
 	const toggleLine = (key: string) => {
 		setHighlightedLine(current => (current === key ? null : key))
+	}
+
+	// Общий обработчик выбора точки: и клик по диаграмме, и клик по строке
+	// в «Все пять точек» должны раскрывать один и тот же аккордеон, а не
+	// только обновлять подсветку на схеме.
+	const selectPoint = (key: FullPointKey) => {
+		setActive(key)
+		setExpandedPoint(key)
 	}
 
 	const copyResult = async () => {
@@ -231,7 +241,7 @@ export default function DestinyMatrixCalculatorPage() {
 								<DestinyMatrixFullDiagram
 									result={result}
 									active={active}
-									onSelect={setActive}
+									onSelect={selectPoint}
 									highlightedLine={highlightedLine}
 								/>
 								<DestinyYearsMatrix result={result} birthDate={birthDate} />
@@ -265,12 +275,7 @@ export default function DestinyMatrixCalculatorPage() {
 											>
 												<button
 													type='button'
-													onClick={() => {
-														setActive(key)
-														setExpandedPoint(current =>
-															current === key ? null : key
-														)
-													}}
+													onClick={() => selectPoint(key)}
 													aria-expanded={isExpanded}
 													className='flex w-full cursor-pointer items-center justify-between p-3 text-left'
 												>
@@ -295,11 +300,19 @@ export default function DestinyMatrixCalculatorPage() {
 														}
 													/>
 												</button>
-												{isExpanded && (
-													<p className='border-t px-3 pb-3 pt-2 text-sm text-muted-foreground'>
-														{getPersonalizedMeaning(arcana, gender)}
-													</p>
-												)}
+												<div
+													className={
+														isExpanded
+															? 'grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-in-out'
+															: 'grid grid-rows-[0fr] transition-[grid-template-rows] duration-200 ease-in-out'
+													}
+												>
+													<div className='overflow-hidden'>
+														<p className='border-t px-3 pb-3 pt-2 text-sm text-muted-foreground'>
+															{getPersonalizedMeaning(arcana, gender)}
+														</p>
+													</div>
+												</div>
 											</div>
 										)
 									})}

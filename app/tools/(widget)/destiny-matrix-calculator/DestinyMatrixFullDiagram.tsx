@@ -185,6 +185,7 @@ export function DestinyMatrixFullDiagram({
 	highlightedLine
 }: DestinyMatrixFullDiagramProps) {
 	const [showFull, setShowFull] = useState(false)
+	const [hoveredKey, setHoveredKey] = useState<FullPointKey | null>(null)
 	// Подсветка линии/таланта относится только к точкам за пределами ядра,
 	// поэтому пока она включена, схема разворачивается сама, даже если
 	// пользователь её не разворачивал явно.
@@ -242,23 +243,34 @@ export function DestinyMatrixFullDiagram({
 					const isActive = node.key === active
 					const isLineHighlighted = highlightedNodes?.has(node.key) ?? false
 					const isCenter = node.key === 'center'
+					const isHovered =
+						node.key === hoveredKey && !isActive && !isLineHighlighted
 					const isNeutral =
 						isActive || isLineHighlighted || node.category === 'core'
 
-					const circleClass = isActive
-						? 'fill-primary/10 stroke-primary'
-						: isLineHighlighted
-							? 'fill-primary/5 stroke-primary'
-							: isNeutral
-								? 'fill-background stroke-border'
-								: ''
+					const circleClass = isActive || isLineHighlighted
+						? 'fill-background stroke-primary'
+						: isNeutral
+							? isHovered
+								? 'fill-muted stroke-primary/60'
+								: 'fill-background stroke-border'
+							: ''
 
+					// Наведение делает заливку заметно плотнее, а обводку сплошной:
+					// в состоянии по умолчанию узел почти прозрачный (только тон
+					// категории), и без явной реакции на hover непонятно, что по
+					// нему вообще можно кликнуть.
 					const circleStyle =
 						!isNeutral && node.category !== 'core'
-							? {
-									fill: `${CATEGORY_COLOR[node.category]}1a`,
-									stroke: `${CATEGORY_COLOR[node.category]}99`
-								}
+							? isHovered
+								? {
+										fill: `${CATEGORY_COLOR[node.category]}40`,
+										stroke: CATEGORY_COLOR[node.category]
+									}
+								: {
+										fill: `${CATEGORY_COLOR[node.category]}1a`,
+										stroke: `${CATEGORY_COLOR[node.category]}99`
+									}
 							: undefined
 
 					const nodeLabel = `${FULL_POINT_LABELS[node.key]}: аркан ${arcana.number}, ${arcana.name}`
@@ -277,6 +289,10 @@ export function DestinyMatrixFullDiagram({
 									onSelect(node.key)
 								}
 							}}
+							onMouseEnter={() => setHoveredKey(node.key)}
+							onMouseLeave={() => setHoveredKey(null)}
+							onFocus={() => setHoveredKey(node.key)}
+							onBlur={() => setHoveredKey(null)}
 						>
 							{/* Нативная подсказка по наведению/фокусу, без единой строки JS. */}
 							<title>{nodeLabel}</title>
