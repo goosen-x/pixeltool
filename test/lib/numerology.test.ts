@@ -3,8 +3,10 @@ import {
 	birthdayNumber,
 	digitSum,
 	lifePathNumber,
+	personalYearNumber,
 	reduceNumber,
-	LIFE_PATH_MEANINGS
+	LIFE_PATH_MEANINGS,
+	PERSONAL_YEAR_MEANINGS
 } from '@/lib/utils/numerology'
 
 describe('digitSum', () => {
@@ -58,5 +60,29 @@ describe('birthdayNumber', () => {
 		expect(birthdayNumber(29)).toBe(11)
 		expect(birthdayNumber(7)).toBe(7)
 		expect(birthdayNumber(31)).toBe(4)
+	})
+})
+
+describe('personalYearNumber', () => {
+	it('считает персональный год по проверенному примеру', () => {
+		// 15.04.1990, 2026 → 6 + 4 + 1 = 11 → 2
+		expect(personalYearNumber(15, 4, 2026)).toBe(2)
+	})
+
+	it('сворачивает до 1-9 даже когда промежуточная сумма равна мастер-числу', () => {
+		// digitSum(2) + digitSum(3) + digitSum(2004) = 2 + 3 + 6 = 11 → 1+1 = 2,
+		// а не 11. У lifePathNumber свёртка здесь остановилась бы на 11
+		expect(personalYearNumber(2, 3, 2004)).toBe(2)
+	})
+
+	it('всегда попадает в диапазон 1-9', () => {
+		for (let day = 1; day <= 31; day += 5) {
+			for (let year = 2024; year <= 2030; year++) {
+				const value = personalYearNumber(day, 6, year)
+				expect(value).toBeGreaterThanOrEqual(1)
+				expect(value).toBeLessThanOrEqual(9)
+				expect(PERSONAL_YEAR_MEANINGS[value as keyof typeof PERSONAL_YEAR_MEANINGS]).toBeDefined()
+			}
+		}
 	})
 })
