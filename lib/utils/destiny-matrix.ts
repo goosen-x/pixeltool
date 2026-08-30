@@ -44,6 +44,159 @@ export function calculateDestinyMatrix(
 	return { day: a, month: b, year: c, fourth: d, center }
 }
 
+export interface FullDestinyMatrixResult extends DestinyMatrixResult {
+	/** Диагонали личного ромба. */
+	j: number
+	k: number
+	l: number
+	m: number
+	/** Денежный узел (используется в линии денег C→Q→L). */
+	q: number
+	/** Родовой квадрат. */
+	f: number
+	g: number
+	h: number
+	i: number
+	/** Центр рода (сумма F+G+H+I) и общий центр (E+L2). */
+	l2: number
+	l1: number
+	/** Диагонали родового квадрата (по одной паре на каждую сторону). */
+	f1: number
+	f2: number
+	g1: number
+	g2: number
+	h1: number
+	h2: number
+	i1: number
+	i2: number
+	/** Узлы линии любви/денег. */
+	r: number
+	r1: number
+	r2: number
+}
+
+/**
+ * Расширенная методика: точки за пределами консенсусного ядра A-E.
+ * Единственный источник с полными формулами: gadalkindom.ru (см.
+ * docs/research/destiny-matrix.md, раздел «Полная методика», формулы
+ * подтверждены дословным чтением исходной страницы). Это одна
+ * конкретная школа расчёта, не общепринятый стандарт, поэтому в
+ * интерфейсе держим явную оговорку, а не выдаём её за канон, как и
+ * остальную часть методики.
+ */
+export function calculateFullDestinyMatrix(
+	day: number,
+	month: number,
+	year: number
+): FullDestinyMatrixResult {
+	const core = calculateDestinyMatrix(day, month, year)
+	const { day: a, month: b, year: c, fourth: d, center: e } = core
+
+	const j = reduceTo22(a + e)
+	const k = reduceTo22(b + e)
+	const l = reduceTo22(c + e)
+	const m = reduceTo22(d + e)
+	const q = reduceTo22(c + l)
+
+	const f = reduceTo22(a + b)
+	const g = reduceTo22(b + c)
+	const h = reduceTo22(c + d)
+	const i = reduceTo22(d + a)
+	const l2 = reduceTo22(f + g + h + i)
+	const l1 = reduceTo22(e + l2)
+
+	const f2 = reduceTo22(f + l2)
+	const f1 = reduceTo22(f + f2)
+	const g2 = reduceTo22(g + l2)
+	const g1 = reduceTo22(g + g2)
+	const h2 = reduceTo22(h + l2)
+	const h1 = reduceTo22(h + h2)
+	const i2 = reduceTo22(i + l2)
+	const i1 = reduceTo22(i + i2)
+
+	const r = reduceTo22(m + l)
+	const r1 = reduceTo22(r + m)
+	const r2 = reduceTo22(r + l)
+
+	return {
+		...core,
+		j,
+		k,
+		l,
+		m,
+		q,
+		f,
+		g,
+		h,
+		i,
+		l2,
+		l1,
+		f1,
+		f2,
+		g1,
+		g2,
+		h1,
+		h2,
+		i1,
+		i2,
+		r,
+		r1,
+		r2
+	}
+}
+
+export type FullPointKey = keyof FullDestinyMatrixResult
+
+export interface NamedLine {
+	key: string
+	label: string
+	/** Один или несколько отрезков (участок читается от первого к последнему узлу). */
+	segments: FullPointKey[][]
+}
+
+/**
+ * Именованные линии по методике gadalkindom (см. calculateFullDestinyMatrix).
+ * Талант не включён сюда: это три отдельные точки (K, F2, G2), не связная
+ * линия, поэтому у него собственный список TALENT_POINTS ниже.
+ */
+export const NAMED_LINES: NamedLine[] = [
+	{
+		key: 'maleLine',
+		label: 'Линия мужского рода',
+		segments: [
+			['f', 'f1', 'f2'],
+			['h2', 'h1', 'h']
+		]
+	},
+	{
+		key: 'femaleLine',
+		label: 'Линия женского рода',
+		segments: [
+			['i', 'i1', 'i2'],
+			['g2', 'g1', 'g']
+		]
+	},
+	{
+		key: 'love',
+		label: 'Линия любви и отношений',
+		segments: [['m', 'r1', 'r']]
+	},
+	{
+		key: 'money',
+		label: 'Линия денег',
+		segments: [
+			['year', 'q', 'l'],
+			['l', 'r2', 'r']
+		]
+	}
+]
+
+export const TALENT_POINTS: { key: FullPointKey; label: string }[] = [
+	{ key: 'k', label: 'Личный талант' },
+	{ key: 'f2', label: 'Талант по мужской линии рода' },
+	{ key: 'g2', label: 'Талант по женской линии рода' }
+]
+
 export type PositionKey = 'day' | 'month' | 'year' | 'fourth'
 
 export const POSITIONS: { key: PositionKey; label: string }[] = [

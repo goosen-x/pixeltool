@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest'
 import {
 	getYearsMatrixSector,
 	getPersonalizedMeaning,
-	getArcana
+	getArcana,
+	calculateFullDestinyMatrix
 } from '@/lib/utils/destiny-matrix'
 
 describe('getYearsMatrixSector', () => {
@@ -57,5 +58,46 @@ describe('getPersonalizedMeaning', () => {
 		const withoutGendered = { number: 99, name: 'Тест', meaning: 'нейтрально' }
 		expect(getPersonalizedMeaning(withoutGendered, 'male')).toBe('нейтрально')
 		expect(getPersonalizedMeaning(withoutGendered, 'female')).toBe('нейтрально')
+	})
+})
+
+describe('calculateFullDestinyMatrix', () => {
+	// 17.03.1994, сверено вручную с docs/research/destiny-matrix.md
+	// (раздел «Полная методика», числовой пример), формулы дословно
+	// подтверждены на gadalkindom.ru/matritsa-sudby/metodika-raschyota.html
+	it('считает все производные точки на сквозном примере 17.03.1994', () => {
+		const result = calculateFullDestinyMatrix(17, 3, 1994)
+
+		expect(result.day).toBe(17)
+		expect(result.month).toBe(3)
+		expect(result.year).toBe(5)
+		expect(result.fourth).toBe(7)
+		expect(result.center).toBe(5)
+
+		expect(result.j).toBe(22)
+		expect(result.k).toBe(8)
+		expect(result.l).toBe(10)
+		expect(result.m).toBe(12)
+		expect(result.q).toBe(15)
+
+		expect(result.f).toBe(20)
+		expect(result.g).toBe(8)
+		expect(result.h).toBe(12)
+		expect(result.i).toBe(6)
+		expect(result.l2).toBe(10)
+		expect(result.l1).toBe(15)
+
+		expect(result.f2).toBe(3)
+		expect(result.f1).toBe(5)
+		expect(result.g2).toBe(18)
+		expect(result.g1).toBe(8)
+		expect(result.h2).toBe(22)
+		expect(result.h1).toBe(7)
+		expect(result.i2).toBe(16)
+		expect(result.i1).toBe(22)
+
+		expect(result.r).toBe(22)
+		expect(result.r1).toBe(7)
+		expect(result.r2).toBe(5)
 	})
 })
