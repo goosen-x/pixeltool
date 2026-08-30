@@ -15,6 +15,7 @@ import {
 	ageFromBirthDate,
 	calculateFullDestinyMatrix,
 	getArcana,
+	getPersonalizedMeaning,
 	getYearsMatrixSector,
 	POSITIONS,
 	type FullPointKey,
@@ -46,6 +47,7 @@ export default function DestinyMatrixCalculatorPage() {
 	const [gender, setGender] = useState<Gender | undefined>(undefined)
 	const [copied, setCopied] = useState(false)
 	const [active, setActive] = useState<FullPointKey>('center')
+	const [expandedPoint, setExpandedPoint] = useState<FullPointKey | null>(null)
 	const [highlightedLine, setHighlightedLine] = useState<string | null>(null)
 
 	const result = useMemo(() => {
@@ -251,32 +253,54 @@ export default function DestinyMatrixCalculatorPage() {
 										{ key: 'center' as const, label: 'Главное предназначение' }
 									].map(({ key, label }) => {
 										const arcana = getArcana(result[key])
+										const isExpanded = expandedPoint === key
 										return (
-											<button
+											<div
 												key={key}
-												type='button'
-												onClick={() => setActive(key)}
 												className={
 													active === key
-														? 'flex w-full cursor-pointer items-center justify-between rounded-lg border border-primary bg-primary/5 p-3 text-left'
-														: 'flex w-full cursor-pointer items-center justify-between rounded-lg border p-3 text-left hover:border-primary/50'
+														? 'rounded-lg border border-primary bg-primary/5'
+														: 'rounded-lg border hover:border-primary/50'
 												}
 											>
-												<span className='flex items-center gap-3'>
-													<span className='font-mono text-sm font-bold text-foreground'>
-														{arcana.number}
-													</span>
-													<span>
-														<span className='block text-sm font-medium text-foreground'>
-															{arcana.name}
+												<button
+													type='button'
+													onClick={() => {
+														setActive(key)
+														setExpandedPoint(current =>
+															current === key ? null : key
+														)
+													}}
+													aria-expanded={isExpanded}
+													className='flex w-full cursor-pointer items-center justify-between p-3 text-left'
+												>
+													<span className='flex items-center gap-3'>
+														<span className='font-mono text-sm font-bold text-foreground'>
+															{arcana.number}
 														</span>
-														<span className='block text-xs text-muted-foreground'>
-															{label}
+														<span>
+															<span className='block text-sm font-medium text-foreground'>
+																{arcana.name}
+															</span>
+															<span className='block text-xs text-muted-foreground'>
+																{label}
+															</span>
 														</span>
 													</span>
-												</span>
-												<ChevronRight className='h-4 w-4 shrink-0 text-muted-foreground' />
-											</button>
+													<ChevronRight
+														className={
+															isExpanded
+																? 'h-4 w-4 shrink-0 rotate-90 text-muted-foreground transition-transform'
+																: 'h-4 w-4 shrink-0 text-muted-foreground transition-transform'
+														}
+													/>
+												</button>
+												{isExpanded && (
+													<p className='border-t px-3 pb-3 pt-2 text-sm text-muted-foreground'>
+														{getPersonalizedMeaning(arcana, gender)}
+													</p>
+												)}
+											</div>
 										)
 									})}
 								</div>
