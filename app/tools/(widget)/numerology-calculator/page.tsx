@@ -2,12 +2,16 @@
 
 import { useMemo, useState } from 'react'
 import { Card } from '@/components/ui/card'
+import { DatePicker } from '@/components/ui/date-picker'
 import { toolBar, toolFooterBar } from '@/lib/ui/tool-pill'
 import {
 	birthdayNumber,
 	lifePathNumber,
-	LIFE_PATH_MEANINGS
+	personalYearNumber,
+	LIFE_PATH_MEANINGS,
+	PERSONAL_YEAR_MEANINGS
 } from '@/lib/utils/numerology'
+import { NumerologyStepBreakdown } from './NumerologyStepBreakdown'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { NumerologyCalculatorSeo } from './NumerologyCalculatorSeo'
@@ -26,6 +30,8 @@ export default function NumerologyCalculatorPage() {
 
 	const [birthDate, setBirthDate] = useState('1990-04-15')
 
+	const currentYear = useMemo(() => new Date().getFullYear(), [])
+
 	const result = useMemo(() => {
 		const parsed = parseIso(birthDate)
 		if (!parsed) return null
@@ -34,9 +40,13 @@ export default function NumerologyCalculatorPage() {
 		return {
 			lifePath,
 			birthday: birthdayNumber(parsed.day),
-			meaning: LIFE_PATH_MEANINGS[lifePath]
+			meaning: LIFE_PATH_MEANINGS[lifePath],
+			personalYear: personalYearNumber(parsed.day, parsed.month, currentYear),
+			day: parsed.day,
+			month: parsed.month,
+			year: parsed.year
 		}
-	}, [birthDate])
+	}, [birthDate, currentYear])
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
@@ -52,11 +62,10 @@ export default function NumerologyCalculatorPage() {
 						<span className='mb-1.5 block text-sm text-muted-foreground'>
 							Дата рождения
 						</span>
-						<input
-							type='date'
+						<DatePicker
 							value={birthDate}
-							onChange={event => setBirthDate(event.target.value)}
-							aria-label='Дата рождения'
+							onChange={setBirthDate}
+							ariaLabel='Дата рождения'
 							className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
 					</label>
@@ -99,6 +108,27 @@ export default function NumerologyCalculatorPage() {
 									число дня рождения
 								</span>
 							</div>
+						</div>
+
+						<div className='border-t px-5 py-6 sm:px-6'>
+							<div className='mx-auto max-w-lg rounded-xl border border-primary bg-primary/5 p-5 text-center'>
+								<span className='block font-mono text-3xl font-bold tracking-tight text-primary'>
+									{result.personalYear}
+								</span>
+								<span className='mt-1 block text-sm font-medium text-foreground'>
+									Персональный год {currentYear}
+								</span>
+								<p className='mt-2 text-sm text-muted-foreground'>
+									{PERSONAL_YEAR_MEANINGS[result.personalYear]}
+								</p>
+							</div>
+
+							<NumerologyStepBreakdown
+								day={result.day}
+								month={result.month}
+								year={result.year}
+								currentYear={currentYear}
+							/>
 						</div>
 					</>
 				) : (
