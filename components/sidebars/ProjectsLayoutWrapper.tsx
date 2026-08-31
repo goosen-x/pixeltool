@@ -10,7 +10,7 @@ import { WidgetStructuredData } from '@/components/seo/WidgetStructuredData'
 import { getWidgetByPath } from '@/lib/constants/widgets'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { ReactNode, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ProjectsLeftSidebar } from './ProjectsLeftSidebar'
@@ -40,20 +40,41 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 		// её выставляет ChromeHeightVar (lib/ui/chrome-height.ts). 5rem —
 		// фоллбэк на высоту одной шапки (h-20), пока эффект не отработал.
 		<div className='flex h-[calc(100vh-var(--chrome-h,5rem))] relative'>
-			{/* Sidebar - hidden on mobile, shown on desktop */}
+			{/* Затемнение под левым сайдбаром-шитом ниже xl */}
+			{isSidebarOpen && (
+				<div
+					className='fixed inset-0 top-[var(--chrome-h,5rem)] z-30 bg-black/40 xl:hidden'
+					onClick={() => setIsSidebarOpen(false)}
+				/>
+			)}
+
+			{/* Левый сайдбар: ниже xl — шит поверх контента, от xl — статичная колонка */}
 			<div
 				className={cn(
-					'fixed lg:relative top-[var(--chrome-h,5rem)] lg:top-0 left-0 z-40 h-[calc(100vh-var(--chrome-h,5rem))] lg:h-full transform transition-transform duration-300 ease-in-out lg:transform-none',
-					isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+					'fixed xl:relative top-[var(--chrome-h,5rem)] xl:top-0 left-0 z-40 h-[calc(100vh-var(--chrome-h,5rem))] xl:h-full transform transition-transform duration-300 ease-in-out xl:transform-none',
+					isSidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
 				)}
 			>
 				<ProjectsLeftSidebar onLinkClick={() => setIsSidebarOpen(false)} />
 			</div>
 
+			{/* Кнопка открытия сайдбара - зафиксирована в углу, не уезжает при скролле контента */}
+			{!isSidebarOpen && (
+				<Button
+					variant='outline'
+					size='icon'
+					className='fixed top-[calc(var(--chrome-h,5rem)+1rem)] left-4 z-20 h-12 w-12 cursor-pointer xl:hidden'
+					onClick={() => setIsSidebarOpen(true)}
+					aria-label='Категории инструментов'
+				>
+					<Menu className='w-5 h-5' />
+				</Button>
+			)}
+
 			<main className='flex-1 flex flex-col overflow-hidden min-w-0'>
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
-						<div className='container mx-auto py-6 lg:py-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
+						<div className='container mx-auto pt-20 pb-6 lg:pt-20 lg:pb-8 xl:pt-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
 							{widget && !widget.demo && (
 								<WidgetStructuredData
 									widget={widget}
@@ -95,8 +116,8 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 							<CompactFooter />
 						</div>
 					</div>
-					{/* Right sidebar - hidden on mobile and tablets, shown on desktop */}
-					<div className='hidden xl:block overflow-y-auto flex-shrink-0'>
+					{/* Правый сайдбар с рекламой - скрыт только на мобильных, от lg показан всегда */}
+					<div className='hidden lg:block overflow-y-auto flex-shrink-0'>
 						{widgetId && <ProjectsRightSidebar />}
 					</div>
 				</div>

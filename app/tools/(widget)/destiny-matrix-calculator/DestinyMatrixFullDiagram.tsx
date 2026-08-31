@@ -33,6 +33,15 @@ const CATEGORY_COLOR = DIAGRAM_CATEGORY_COLOR
 const CATEGORY_LABEL = DIAGRAM_CATEGORY_LABEL
 type Category = DiagramCategory
 
+// Верх и лево ромба — фиолетовые, низ и право — красные: визуально делят
+// четыре базовые точки на две пары, как попросили на скриншоте схемы.
+const POINT_ACCENT_COLOR: Partial<Record<FullPointKey, string>> = {
+	day: CATEGORY_COLOR.familyDiagonal,
+	month: CATEGORY_COLOR.familyDiagonal,
+	year: '#dc2626',
+	fourth: '#dc2626'
+}
+
 function segmentEdges(segment: FullPointKey[]): [FullPointKey, FullPointKey][] {
 	const edges: [FullPointKey, FullPointKey][] = []
 	for (let index = 0; index < segment.length - 1; index++) {
@@ -41,8 +50,8 @@ function segmentEdges(segment: FullPointKey[]): [FullPointKey, FullPointKey][] {
 	return edges
 }
 
-const RING_INNER = 258
-const RING_OUTER = 300
+const RING_INNER = 264
+const RING_OUTER = 286
 
 /** «Бублик»-сегмент кольца между двумя углами (SVG path, дуга снаружи + дуга внутри). */
 function annulusPath(
@@ -115,11 +124,14 @@ function DestinyYearsRing({
 				const isCurrent = index === current.sectorIndex
 				const isActive = index === activeSectorIndex
 				const arcana = getArcana(result[key])
-				const labelPos = polarToCartesian(RING_OUTER + 20, nodeAngle)
 				const numberPos = polarToCartesian(
 					(RING_INNER + RING_OUTER) / 2,
 					nodeAngle
 				)
+				// Зазор между схемой и кольцом (свободное поле, ~50 юнитов) —
+				// туда, а не за внешний край кольца, чтобы диапазон лет остался
+				// внутри общего круга схемы.
+				const labelPos = polarToCartesian(RING_INNER - 26, nodeAngle)
 				const label = `${FULL_POINT_LABELS[key]}: возраст ${index * 10}–${index * 10 + 9} лет, аркан ${arcana.number} (${arcana.name})`
 
 				return (
@@ -169,6 +181,9 @@ function DestinyYearsRing({
 						>
 							{arcana.number}
 						</text>
+						{/* Диапазон лет — в зазоре между схемой и кольцом, не за
+						    внешним краем кольца: так он остаётся внутри общего
+						    круга схемы, а само кольцо можно держать тонким. */}
 						<text
 							x={labelPos.x}
 							y={labelPos.y}
@@ -252,8 +267,11 @@ function DiagramGraphics({
 				const isCenter = node.key === 'center'
 				const isHovered =
 					node.key === hoveredKey && !isActive && !isLineHighlighted
+				const accentColor = POINT_ACCENT_COLOR[node.key]
 				const isNeutral =
-					isActive || isLineHighlighted || node.category === 'core'
+					isActive ||
+					isLineHighlighted ||
+					(node.category === 'core' && !accentColor)
 
 				const circleClass =
 					isActive || isLineHighlighted
@@ -268,17 +286,15 @@ function DiagramGraphics({
 				// в состоянии по умолчанию узел почти прозрачный (только тон
 				// категории), и без явной реакции на hover непонятно, что по
 				// нему вообще можно кликнуть.
+				const nodeColor =
+					accentColor ??
+					(node.category !== 'core' ? CATEGORY_COLOR[node.category] : undefined)
+
 				const circleStyle =
-					!isNeutral && node.category !== 'core'
+					!isNeutral && nodeColor
 						? isHovered
-							? {
-									fill: `${CATEGORY_COLOR[node.category]}40`,
-									stroke: CATEGORY_COLOR[node.category]
-								}
-							: {
-									fill: `${CATEGORY_COLOR[node.category]}1a`,
-									stroke: `${CATEGORY_COLOR[node.category]}99`
-								}
+							? { fill: `${nodeColor}40`, stroke: nodeColor }
+							: { fill: `${nodeColor}1a`, stroke: `${nodeColor}99` }
 						: undefined
 
 				const nodeLabel = `${FULL_POINT_LABELS[node.key]}: аркан ${arcana.number}, ${arcana.name}`
@@ -440,7 +456,7 @@ export function DestinyMatrixFullDiagram({
 			</svg>
 
 			<svg
-				viewBox='-120 -120 720 720'
+				viewBox='-90 -90 660 660'
 				className='mx-auto hidden aspect-square h-auto w-full sm:block sm:max-w-[32rem]'
 				role='img'
 				aria-label='Схема матрицы судьбы с кольцом матрицы лет'

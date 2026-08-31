@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
+import { ScrollText } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -100,6 +101,12 @@ export default function DestinyMatrixCalculatorPage() {
 		? getCurrentAgeSectorIndex(birthDate)
 		: 0
 
+	const scrollToNarrative = () => {
+		document
+			.getElementById('destiny-matrix-narrative')
+			?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+	}
+
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
@@ -149,12 +156,24 @@ export default function DestinyMatrixCalculatorPage() {
 								</Button>
 							</div>
 						</label>
+
+						{result && (
+							<Button
+								type='button'
+								variant='outline'
+								onClick={scrollToNarrative}
+								className='cursor-pointer gap-2 sm:ml-auto'
+							>
+								<ScrollText className='h-4 w-4' />
+								Перейти к полному толкованию
+							</Button>
+						)}
 					</div>
 				</div>
 
 				{result ? (
-					<div className='px-5 py-8 sm:px-6'>
-						<div className='grid gap-6 lg:grid-cols-[1fr_440px]'>
+					<div className='@container px-5 py-8 sm:px-6'>
+						<div className='grid gap-6 @[900px]:grid-cols-[minmax(320px,32rem)_minmax(300px,34rem)] @[900px]:justify-center'>
 							<div>
 								<DestinyMatrixFullDiagram
 									result={result}
@@ -237,7 +256,10 @@ export default function DestinyMatrixCalculatorPage() {
 				// отключает position: sticky у карт в тексте ниже — любой
 				// overflow, отличный от visible, на предке ломает sticky, даже
 				// если сам этот элемент не скроллится.
-				<Card className='mt-6 rounded-none border-0 bg-transparent p-0 sm:rounded-2xl sm:border sm:bg-card sm:p-6'>
+				<Card
+					id='destiny-matrix-narrative'
+					className='mt-6 scroll-mt-[calc(var(--chrome-h,5rem)+1rem)] rounded-none border-0 bg-transparent p-0 sm:rounded-2xl sm:border sm:bg-card sm:p-6'
+				>
 					<DestinyMatrixNarrative result={result} birthDate={birthDate} />
 				</Card>
 			)}
