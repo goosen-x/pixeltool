@@ -124,7 +124,16 @@ async function fetchOneHop(url: URL, init: RequestInit): Promise<Response> {
 			throw error
 		}
 
-		return fetchViaProxy(url, { ...init, redirect: 'manual' })
+		try {
+			return await fetchViaProxy(url, { ...init, redirect: 'manual' })
+		} catch {
+			// Наружу отдаём исходную ошибку соединения, а не «прокси не
+			// ответил»: для пользователя это одна и та же ситуация — до сайта
+			// не дошли, — и вызывающий код разбирает её по коду. Иначе
+			// instagram.com, который через прокси упирается в редирект на
+			// логин, выдавал человеку 500 с рассказом про наш прокси.
+			throw error
+		}
 	}
 }
 
