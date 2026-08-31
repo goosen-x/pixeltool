@@ -117,6 +117,32 @@ export const DIAGRAM_NODE_BY_KEY = new Map(
 	DIAGRAM_NODES.map(node => [node.key, node])
 )
 
+/** Центр схемы (точка E, viewBox 480×480). */
+export const DIAGRAM_CENTER = { x: 240, y: 240 }
+
+/**
+ * Угол узла относительно центра, в градусах, 0° = вправо, по часовой
+ * стрелке (SVG-конвенция, ось Y вниз). Восемь внешних точек родового
+ * квадрата и личного ромба стоят ровно через 45°, поэтому кольцо матрицы
+ * лет (DestinyYearsRing в DestinyMatrixFullDiagram.tsx) опирается прямо
+ * на эти углы, без отдельной геометрии.
+ */
+export function diagramNodeAngle(key: FullPointKey): number {
+	const node = DIAGRAM_NODE_BY_KEY.get(key)!
+	return (
+		(Math.atan2(node.y - DIAGRAM_CENTER.y, node.x - DIAGRAM_CENTER.x) * 180) /
+		Math.PI
+	)
+}
+
+export function polarToCartesian(radius: number, angleDeg: number) {
+	const rad = (angleDeg * Math.PI) / 180
+	return {
+		x: DIAGRAM_CENTER.x + radius * Math.cos(rad),
+		y: DIAGRAM_CENTER.y + radius * Math.sin(rad)
+	}
+}
+
 /**
  * Базовые линии полной схемы: два четырёхугольника (ромб A-B-C-D и квадрат
  * F-G-H-I) плюс спицы к центру.

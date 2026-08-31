@@ -5,7 +5,10 @@ import {
 	FULL_POINT_LABELS,
 	NAMED_LINES,
 	TALENT_POINTS,
+	YEARS_MATRIX_SECTOR_KEYS,
+	ageFromBirthDate,
 	getArcana,
+	getYearsMatrixSector,
 	type FullDestinyMatrixResult,
 	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
@@ -16,6 +19,8 @@ import {
 	DIAGRAM_CORE_EDGES,
 	DIAGRAM_NODES,
 	DIAGRAM_NODE_BY_KEY,
+	diagramNodeAngle,
+	polarToCartesian,
 	type DiagramCategory
 } from '@/lib/utils/destiny-matrix-diagram'
 
@@ -35,8 +40,158 @@ function segmentEdges(segment: FullPointKey[]): [FullPointKey, FullPointKey][] {
 	return edges
 }
 
+const RING_INNER = 258
+const RING_OUTER = 300
+
+/** «Бублик»-сегмент кольца между двумя углами (SVG path, дуга снаружи + дуга внутри). */
+function annulusPath(
+	innerR: number,
+	outerR: number,
+	startAngle: number,
+	endAngle: number
+): string {
+	const startOuter = polarToCartesian(outerR, startAngle)
+	const endOuter = polarToCartesian(outerR, endAngle)
+	const startInner = polarToCartesian(innerR, endAngle)
+	const endInner = polarToCartesian(innerR, startAngle)
+	const largeArc = endAngle - startAngle <= 180 ? 0 : 1
+	return [
+		`M ${startOuter.x} ${startOuter.y}`,
+		`A ${outerR} ${outerR} 0 ${largeArc} 1 ${endOuter.x} ${endOuter.y}`,
+		`L ${startInner.x} ${startInner.y}`,
+		`A ${innerR} ${innerR} 0 ${largeArc} 0 ${endInner.x} ${endInner.y}`,
+		'Z'
+	].join(' ')
+}
+
+interface DestinyYearsRingProps {
+	result: FullDestinyMatrixResult
+	birthDate: string
+	active: FullPointKey
+	onSelect: (key: FullPointKey) => void
+}
+
+/**
+ * Матрица лет как кольцо вокруг основной схемы — так её рисуют
+ * большинство источников методики (см. docs/research/destiny-matrix.md,
+ * раздел «Визуальные паттерны конкурентов»), а не отдельной линейной
+ * шкалой. Восемь внешних точек родового квадрата и личного ромба уже
+ * стоят через 45° (day → f → month → g → year → h → fourth → i по
+ * часовой), поэтому кольцо просто опирается на их углы — отдельной
+ * геометрии не потребовалось.
+ */
+function DestinyYearsRing({
+	result,
+	birthDate,
+	active,
+	onSelect
+}: DestinyYearsRingProps) {
+	const age = ageFromBirthDate(birthDate)
+	const points = YEARS_MATRIX_SECTOR_KEYS.map(key => result[key]) as [
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number,
+		number
+	]
+	const current = getYearsMatrixSector(age, points)
+
+	const markerAngle =
+		diagramNodeAngle(YEARS_MATRIX_SECTOR_KEYS[current.sectorIndex]) -
+		22.5 +
+		((age % 10) / 10) * 45
+	const marker = polarToCartesian(RING_OUTER + 10, markerAngle)
+
+	return (
+		<g>
+			{YEARS_MATRIX_SECTOR_KEYS.map((key, index) => {
+				const nodeAngle = diagramNodeAngle(key)
+				const startAngle = nodeAngle - 22.5
+				const endAngle = nodeAngle + 22.5
+				const isCurrent = index === current.sectorIndex
+				const isActive = key === active
+				const arcana = getArcana(result[key])
+				const labelPos = polarToCartesian(RING_OUTER + 20, nodeAngle)
+				const numberPos = polarToCartesian(
+					(RING_INNER + RING_OUTER) / 2,
+					nodeAngle
+				)
+				const label = `${FULL_POINT_LABELS[key]}: возраст ${index * 10}–${index * 10 + 9} лет, аркан ${arcana.number} (${arcana.name})`
+
+				return (
+					<g
+						key={key}
+						role='button'
+						tabIndex={0}
+						aria-label={label}
+						className='cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+						onClick={() => onSelect(key)}
+						onKeyDown={event => {
+							if (event.key === 'Enter' || event.key === ' ') {
+								event.preventDefault()
+								onSelect(key)
+							}
+						}}
+					>
+						<title>{label}</title>
+						<path
+							d={annulusPath(RING_INNER, RING_OUTER, startAngle, endAngle)}
+							className={
+								isCurrent
+									? 'fill-primary/15 stroke-primary'
+									: 'fill-muted/40 stroke-border hover:fill-muted'
+							}
+							strokeWidth={isActive ? 2 : 1}
+							style={isActive ? { stroke: 'hsl(var(--primary))' } : undefined}
+						/>
+						<text
+							x={numberPos.x}
+							y={numberPos.y}
+							textAnchor='middle'
+							dominantBaseline='central'
+							className={
+								isCurrent
+									? 'fill-primary text-sm font-bold'
+									: 'fill-foreground text-xs font-semibold'
+							}
+						>
+							{arcana.number}
+						</text>
+						<text
+							x={labelPos.x}
+							y={labelPos.y}
+							textAnchor='middle'
+							dominantBaseline='central'
+							className={
+								isCurrent
+									? 'fill-primary text-[11px] font-semibold'
+									: 'fill-muted-foreground text-[11px]'
+							}
+						>
+							{index * 10}–{index * 10 + 9}
+						</text>
+					</g>
+				)
+			})}
+
+			{/* Точный возраст внутри десятилетия — маркер снаружи кольца. */}
+			<circle
+				cx={marker.x}
+				cy={marker.y}
+				r={5}
+				className='fill-background stroke-primary'
+				strokeWidth={2}
+			/>
+		</g>
+	)
+}
+
 interface DestinyMatrixFullDiagramProps {
 	result: FullDestinyMatrixResult
+	birthDate: string
 	active: FullPointKey
 	onSelect: (key: FullPointKey) => void
 	highlightedLine: string | null
@@ -45,6 +200,7 @@ interface DestinyMatrixFullDiagramProps {
 
 export function DestinyMatrixFullDiagram({
 	result,
+	birthDate,
 	active,
 	onSelect,
 	highlightedLine,
@@ -82,11 +238,18 @@ export function DestinyMatrixFullDiagram({
 	return (
 		<div>
 			<svg
-				viewBox='0 0 480 480'
-				className='mx-auto aspect-square h-auto w-full max-w-[22rem] sm:max-w-[28rem]'
+				viewBox='-120 -120 720 720'
+				className='mx-auto aspect-square h-auto w-full max-w-[26rem] sm:max-w-[32rem]'
 				role='img'
-				aria-label='Схема матрицы судьбы'
+				aria-label='Схема матрицы судьбы с кольцом матрицы лет'
 			>
+				<DestinyYearsRing
+					result={result}
+					birthDate={birthDate}
+					active={active}
+					onSelect={onSelect}
+				/>
+
 				{visibleEdges.map(([from, to]) => {
 					const isHighlighted = highlightedLineEdges.has(`${from}-${to}`)
 					const a = NODE_BY_KEY.get(from)!
@@ -219,6 +382,10 @@ export function DestinyMatrixFullDiagram({
 			</svg>
 
 			<div className='mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2'>
+				<span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+					<span className='h-2.5 w-2.5 rounded-full bg-primary/15 ring-1 ring-primary' />
+					Матрица лет: текущее десятилетие
+				</span>
 				{isFull &&
 					(Object.keys(CATEGORY_COLOR) as Exclude<Category, 'core'>[]).map(
 						category => (

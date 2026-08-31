@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { calculateFullDestinyMatrix } from '@/lib/utils/destiny-matrix'
 import { DestinyMatrixDiagram } from './DestinyMatrixDiagram'
-import { DestinyYearsMatrix } from './DestinyYearsMatrix'
+import { DestinyMatrixFullDiagram } from './DestinyMatrixFullDiagram'
 
 const EXAMPLE_BIRTH_DATE = '1994-03-17'
 const exampleResult = calculateFullDestinyMatrix(17, 3, 1994)
@@ -59,18 +59,22 @@ export function DestinyMatrixCalculatorSeo() {
 					Матрица лет: как расчёт продолжается по возрасту
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					У полной методики есть ещё одна часть: матрица лет, шкала, которая
-					показывает, какая точка «действует» в разном возрасте. Это 8 секторов
-					по 10 лет на восемь точек расширенной схемы: день, родовой квадрат дня
-					и месяца, месяц, родовой квадрат месяца и года, год, родовой квадрат
-					года и четвёртой точки, четвёртая точка, родовой квадрат четвёртой
-					точки и дня, по кругу A→F→B→G→C→H→D→I→снова A. Цикл занимает 80 лет,
-					после чего секторы повторяются.
+					У полной методики есть ещё одна часть: матрица лет, кольцо вокруг
+					основной схемы, которое показывает, какая точка «действует» в разном
+					возрасте. Это 8 секторов по 10 лет на восемь точек расширенной схемы:
+					день, родовой квадрат дня и месяца, месяц, родовой квадрат месяца и
+					года, год, родовой квадрат года и четвёртой точки, четвёртая точка,
+					родовой квадрат четвёртой точки и дня, по кругу A→F→B→G→C→H→D→I→снова
+					A. Цикл занимает 80 лет, после чего секторы повторяются.
 				</p>
 				<div className='mt-6'>
-					<DestinyYearsMatrix
+					<DestinyMatrixFullDiagram
 						result={exampleResult}
 						birthDate={EXAMPLE_BIRTH_DATE}
+						active='center'
+						onSelect={() => {}}
+						highlightedLine={null}
+						onClearLine={() => {}}
 					/>
 				</div>
 			</section>

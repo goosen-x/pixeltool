@@ -18,7 +18,6 @@ import { DestinyMatrixFullDiagram } from './DestinyMatrixFullDiagram'
 import { DestinyMatrixLinesPanel } from './DestinyMatrixLinesPanel'
 import { DestinyMatrixNarrative } from './DestinyMatrixNarrative'
 import { DestinyMatrixPointDetail } from './DestinyMatrixPointDetail'
-import { DestinyYearsMatrix } from './DestinyYearsMatrix'
 
 const BASE_POINT_KEYS: FullPointKey[] = [
 	'day',
@@ -132,12 +131,6 @@ export default function DestinyMatrixCalculatorPage() {
 								</Button>
 							</div>
 						</label>
-
-						{result && (
-							<div className='min-w-[200px] flex-1'>
-								<DestinyYearsMatrix result={result} birthDate={birthDate} />
-							</div>
-						)}
 					</div>
 				</div>
 
@@ -147,6 +140,7 @@ export default function DestinyMatrixCalculatorPage() {
 							<div>
 								<DestinyMatrixFullDiagram
 									result={result}
+									birthDate={birthDate}
 									active={active}
 									onSelect={selectPoint}
 									highlightedLine={highlightedLine}
