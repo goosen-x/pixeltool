@@ -122,7 +122,11 @@ function PointsRow({ keys, result, textByKey }: PointsRowProps) {
 							result={result}
 							className='float-left mr-4 mb-2 w-20 text-center'
 						/>
-						<p className='indent-8 text-sm leading-relaxed text-foreground/90'>
+						{/* text-base, а не text-sm: это длинный текст для чтения,
+						    а не подпись. На десктопе он идёт в text-lg, и 14px
+						    на телефоне читались мелко — при том что телефон
+						    держат ближе к глазам, чем монитор. */}
+						<p className='indent-8 text-base leading-relaxed text-foreground/90'>
 							{text}
 						</p>
 					</div>
