@@ -180,13 +180,15 @@ interface DestinyMatrixFullDiagramProps {
 	active: FullPointKey
 	onSelect: (key: FullPointKey) => void
 	highlightedLine: string | null
+	onClearLine: () => void
 }
 
 export function DestinyMatrixFullDiagram({
 	result,
 	active,
 	onSelect,
-	highlightedLine
+	highlightedLine,
+	onClearLine
 }: DestinyMatrixFullDiagramProps) {
 	const [showFull, setShowFull] = useState(false)
 	const [hoveredKey, setHoveredKey] = useState<FullPointKey | null>(null)
@@ -221,7 +223,7 @@ export function DestinyMatrixFullDiagram({
 		<div>
 			<svg
 				viewBox='0 0 480 480'
-				className='mx-auto h-[22rem] w-[22rem] sm:h-[28rem] sm:w-[28rem]'
+				className='mx-auto aspect-square h-auto w-full max-w-[22rem] sm:max-w-[28rem]'
 				role='img'
 				aria-label='Схема матрицы судьбы'
 			>
@@ -377,7 +379,18 @@ export function DestinyMatrixFullDiagram({
 			<div className='mt-2 text-center'>
 				<button
 					type='button'
-					onClick={() => setShowFull(current => !current)}
+					onClick={() => {
+						if (isFull) {
+							// Подсветка линии сама по себе удерживает схему
+							// развёрнутой (см. isFull выше), поэтому одного
+							// showFull=false недостаточно: без сброса
+							// highlightedLine кнопка выглядит залипшей.
+							setShowFull(false)
+							onClearLine()
+						} else {
+							setShowFull(true)
+						}
+					}}
 					className='cursor-pointer text-sm text-primary hover:underline'
 				>
 					{isFull ? 'Свернуть до пяти точек' : 'Показать полную схему'}

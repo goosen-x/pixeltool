@@ -5,22 +5,12 @@ import {
 	FULL_POINT_LABELS,
 	getArcana,
 	getYearsMatrixSector,
-	type FullDestinyMatrixResult,
-	type FullPointKey
+	YEARS_MATRIX_SECTOR_KEYS,
+	type FullDestinyMatrixResult
 } from '@/lib/utils/destiny-matrix'
 
-const SECTOR_KEYS: FullPointKey[] = [
-	'day',
-	'f',
-	'month',
-	'g',
-	'year',
-	'h',
-	'fourth',
-	'i'
-]
 const CYCLE_YEARS = 80
-const SEGMENT_WIDTH = 100 / SECTOR_KEYS.length
+const SEGMENT_WIDTH = 100 / YEARS_MATRIX_SECTOR_KEYS.length
 
 interface DestinyYearsMatrixProps {
 	result: FullDestinyMatrixResult
@@ -41,7 +31,7 @@ export function DestinyYearsMatrix({
 		number,
 		number,
 		number
-	] = SECTOR_KEYS.map(key => result[key]) as [
+	] = YEARS_MATRIX_SECTOR_KEYS.map(key => result[key]) as [
 		number,
 		number,
 		number,
@@ -52,7 +42,8 @@ export function DestinyYearsMatrix({
 		number
 	]
 	const current = getYearsMatrixSector(age, points)
-	const currentLabel = FULL_POINT_LABELS[SECTOR_KEYS[current.sectorIndex]]
+	const currentLabel =
+		FULL_POINT_LABELS[YEARS_MATRIX_SECTOR_KEYS[current.sectorIndex]]
 	const currentArcana = getArcana(current.arcanaNumber)
 	const markerPercent = ((age % CYCLE_YEARS) / CYCLE_YEARS) * 100
 
@@ -61,13 +52,13 @@ export function DestinyYearsMatrix({
 			<span className='mb-2 block text-sm text-muted-foreground'>
 				Матрица возраста
 			</span>
-			<div className='flex items-center gap-3'>
+			<div className='flex flex-wrap items-center gap-3'>
 				<Baby aria-hidden className='h-6 w-6 shrink-0 text-muted-foreground' />
 
-				<div className='min-w-[220px] flex-1'>
+				<div className='min-w-[160px] flex-1'>
 					{/* Номера арканов над линией */}
 					<div className='relative h-4'>
-						{SECTOR_KEYS.map((key, index) => (
+						{YEARS_MATRIX_SECTOR_KEYS.map((key, index) => (
 							<span
 								key={key}
 								className={
@@ -89,7 +80,7 @@ export function DestinyYearsMatrix({
 							style={{ width: `${markerPercent}%` }}
 						/>
 						{Array.from(
-							{ length: SECTOR_KEYS.length - 1 },
+							{ length: YEARS_MATRIX_SECTOR_KEYS.length - 1 },
 							(_, i) => i + 1
 						).map(i => (
 							<div
@@ -108,7 +99,7 @@ export function DestinyYearsMatrix({
 
 					{/* Возрастные диапазоны под линией */}
 					<div className='relative mt-1 h-3'>
-						{SECTOR_KEYS.map((key, index) => (
+						{YEARS_MATRIX_SECTOR_KEYS.map((key, index) => (
 							<span
 								key={key}
 								className={

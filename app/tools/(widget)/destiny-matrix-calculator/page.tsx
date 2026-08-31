@@ -1,8 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
-import { Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -17,7 +16,7 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { DestinyMatrixCalculatorSeo } from './DestinyMatrixCalculatorSeo'
 import { DestinyMatrixFullDiagram } from './DestinyMatrixFullDiagram'
 import { DestinyMatrixLinesPanel } from './DestinyMatrixLinesPanel'
-import { downloadDestinyMatrixPdf } from './DestinyMatrixPdf'
+import { DestinyMatrixNarrative } from './DestinyMatrixNarrative'
 import { DestinyMatrixPointDetail } from './DestinyMatrixPointDetail'
 import { DestinyYearsMatrix } from './DestinyYearsMatrix'
 
@@ -51,6 +50,29 @@ export default function DestinyMatrixCalculatorPage() {
 		return calculateFullDestinyMatrix(parsed.day, parsed.month, parsed.year)
 	}, [birthDate])
 
+	// Дата из ссылки (?date=1992-04-08) подставляется один раз при заходе,
+	// чтобы шеринг ссылки с уже посчитанным результатом работал.
+	useEffect(() => {
+		const dateParam = new URLSearchParams(window.location.search).get('date')
+		if (dateParam && parseIso(dateParam)) setBirthDate(dateParam)
+	}, [])
+
+	// Query-параметр держится в синхроне с посчитанным результатом, а не
+	// только с кликом по «Рассчитать»: так скопированная в любой момент
+	// ссылка из адресной строки всегда рабочая, даже если пользователь
+	// подтвердил дату клавишей Enter или календарём, а не кнопкой.
+	useEffect(() => {
+		if (!result) return
+		const params = new URLSearchParams(window.location.search)
+		if (params.get('date') === birthDate) return
+		params.set('date', birthDate)
+		window.history.replaceState(
+			null,
+			'',
+			`${window.location.pathname}?${params.toString()}`
+		)
+	}, [result, birthDate])
+
 	const toggleLine = (key: string) => {
 		setHighlightedLine(current => (current === key ? null : key))
 	}
@@ -59,11 +81,6 @@ export default function DestinyMatrixCalculatorPage() {
 	// «5 основных точек» должны обновлять одну и ту же активную точку.
 	const selectPoint = (key: FullPointKey) => {
 		setActive(key)
-	}
-
-	const downloadPdf = () => {
-		if (!result) return
-		downloadDestinyMatrixPdf(result)
 	}
 
 	return (
@@ -93,20 +110,31 @@ export default function DestinyMatrixCalculatorPage() {
 							>
 								Введите дату рождения
 							</span>
-							<DatePicker
-								value={birthDate}
-								onChange={setBirthDate}
-								ariaLabel='Дата рождения'
-								className={
-									result
-										? 'w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-										: 'w-full max-w-[220px] cursor-pointer rounded-md border bg-background px-4 py-3 text-base text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-								}
-							/>
+							<div className='flex gap-2'>
+								<DatePicker
+									value={birthDate}
+									onChange={setBirthDate}
+									ariaLabel='Дата рождения'
+									className={
+										result
+											? 'w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+											: 'w-full max-w-[220px] cursor-pointer rounded-md border bg-background px-4 py-3 text-base text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+									}
+								/>
+								<Button
+									type='button'
+									onClick={() =>
+										(document.activeElement as HTMLElement | null)?.blur()
+									}
+									className='shrink-0 cursor-pointer'
+								>
+									Рассчитать
+								</Button>
+							</div>
 						</label>
 
 						{result && (
-							<div className='min-w-[280px] flex-1'>
+							<div className='min-w-[200px] flex-1'>
 								<DestinyYearsMatrix result={result} birthDate={birthDate} />
 							</div>
 						)}
@@ -122,6 +150,7 @@ export default function DestinyMatrixCalculatorPage() {
 									active={active}
 									onSelect={selectPoint}
 									highlightedLine={highlightedLine}
+									onClearLine={() => setHighlightedLine(null)}
 								/>
 							</div>
 
@@ -180,11 +209,8 @@ export default function DestinyMatrixCalculatorPage() {
 							/>
 						</div>
 
-						<div className='mt-6 flex justify-end'>
-							<Button onClick={downloadPdf} className='cursor-pointer'>
-								<Download className='mr-2 h-4 w-4' />
-								Скачать PDF
-							</Button>
+						<div className='mt-6'>
+							<DestinyMatrixNarrative result={result} birthDate={birthDate} />
 						</div>
 					</div>
 				) : null}

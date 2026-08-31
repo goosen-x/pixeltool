@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import {
 	NAMED_LINES,
@@ -7,6 +10,7 @@ import {
 	type FullPointKey,
 	type NamedLine
 } from '@/lib/utils/destiny-matrix'
+import { fetchPositionalMeaning } from './actions'
 
 interface DestinyMatrixLinesPanelProps {
 	result: FullDestinyMatrixResult
@@ -43,6 +47,23 @@ interface PointRowProps {
 
 function PointRow({ arcanaKey, result, prefix }: PointRowProps) {
 	const arcana = getArcana(result[arcanaKey])
+	// Общий arcana.meaning остаётся фоллбэком, пока позиционный текст грузится
+	// или для этой пары (точка, аркан) ещё не написан.
+	const [positionalMeaning, setPositionalMeaning] = useState<string | null>(
+		null
+	)
+
+	useEffect(() => {
+		let cancelled = false
+		setPositionalMeaning(null)
+		fetchPositionalMeaning(arcanaKey, arcana.number).then(text => {
+			if (!cancelled) setPositionalMeaning(text)
+		})
+		return () => {
+			cancelled = true
+		}
+	}, [arcanaKey, arcana.number])
+
 	return (
 		<div className='flex items-start gap-3'>
 			{arcana.image ? (
@@ -63,7 +84,9 @@ function PointRow({ arcanaKey, result, prefix }: PointRowProps) {
 					{prefix ? `${prefix}: ` : ''}
 					{arcana.number} ({arcana.name})
 				</span>
-				<p className='mt-1 text-sm text-muted-foreground'>{arcana.meaning}</p>
+				<p className='mt-1 text-sm text-muted-foreground'>
+					{positionalMeaning ?? arcana.meaning}
+				</p>
 			</div>
 		</div>
 	)

@@ -1,8 +1,5 @@
-import {
-	getArcana,
-	POSITIONS,
-	type DestinyMatrixResult
-} from '@/lib/utils/destiny-matrix'
+import type { FullPointKey } from '@/lib/utils/destiny-matrix'
+import { NARRATIVE_SECTIONS } from '@/lib/utils/destiny-matrix-narrative-sections'
 
 /**
  * Генерация PDF-отчёта по матрице судьбы.
@@ -30,7 +27,7 @@ async function loadFontBase64(): Promise<string> {
 }
 
 export async function downloadDestinyMatrixPdf(
-	result: DestinyMatrixResult
+	narrativeTexts: Partial<Record<FullPointKey, string>>
 ): Promise<void> {
 	const { jsPDF } = await import('jspdf')
 	const fontBase64 = await loadFontBase64()
@@ -68,17 +65,17 @@ export async function downloadDestinyMatrixPdf(
 
 	text('Матрица судьбы', 22, { gap: 16 })
 
-	for (const { key, label } of POSITIONS) {
-		const arcana = getArcana(result[key])
-		text(`${label}: ${arcana.number} (${arcana.name})`, 13, { gap: 4 })
-		text(arcana.meaning, 10, { color: [75, 85, 99], gap: 12 })
+	for (const section of NARRATIVE_SECTIONS) {
+		const paragraphs = section.keys
+			.map(key => narrativeTexts[key])
+			.filter((value): value is string => Boolean(value))
+		if (paragraphs.length === 0) continue
+		text(section.title, 13, { gap: 4 })
+		paragraphs.forEach((paragraph, index) => {
+			const isLast = index === paragraphs.length - 1
+			text(paragraph, 10, { color: [75, 85, 99], gap: isLast ? 12 : 6 })
+		})
 	}
-
-	const center = getArcana(result.center)
-	text(`Главное предназначение: ${center.number} (${center.name})`, 13, {
-		gap: 4
-	})
-	text(center.meaning, 10, { color: [75, 85, 99], gap: 12 })
 
 	doc.save('matritsa-sudby.pdf')
 }
