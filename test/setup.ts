@@ -36,6 +36,26 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 	disconnect: vi.fn()
 }))
 
+/**
+ * jsdom не реализует matchMedia, а компоненты шапки читают его в эффектах
+ * (тема, брейкпоинты). Без заглушки любой render(<Header />) падает на
+ * commitPassiveMountOnFiber, и ошибка выглядит как поломка React, хотя дело
+ * в отсутствующем API окружения.
+ */
+Object.defineProperty(window, 'matchMedia', {
+	writable: true,
+	value: (query: string) => ({
+		matches: false,
+		media: query,
+		onchange: null,
+		addListener: vi.fn(),
+		removeListener: vi.fn(),
+		addEventListener: vi.fn(),
+		removeEventListener: vi.fn(),
+		dispatchEvent: vi.fn()
+	})
+})
+
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
 	observe: vi.fn(),
