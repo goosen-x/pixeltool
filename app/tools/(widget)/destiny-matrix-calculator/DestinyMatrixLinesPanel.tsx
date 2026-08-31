@@ -51,39 +51,41 @@ function PointRow({ arcanaKey, result, meaning, prefix }: PointRowProps) {
 	const arcana = getArcana(result[arcanaKey])
 
 	return (
-		<div className='flex items-start gap-3'>
-			{arcana.image ? (
-				<Image
-					src={arcana.image}
-					alt=''
-					width={28}
-					height={42}
-					className='shrink-0 rounded border'
-				/>
-			) : (
-				<span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-sm font-bold text-primary'>
-					{arcana.number}
-				</span>
-			)}
-			<div>
-				<span className='block text-sm font-medium text-foreground'>
+		<div>
+			<div className='flex items-center gap-3'>
+				{arcana.image ? (
+					<Image
+						src={arcana.image}
+						alt=''
+						width={28}
+						height={42}
+						className='shrink-0 rounded border'
+					/>
+				) : (
+					<span className='flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-sm font-bold text-primary'>
+						{arcana.number}
+					</span>
+				)}
+				<span className='text-sm font-medium text-foreground'>
 					{prefix ? `${prefix}: ` : ''}
 					{arcana.number} ({arcana.name})
 				</span>
-				<p className='mt-1 text-sm text-muted-foreground'>
-					{meaning ?? arcana.meaning}
-				</p>
 			</div>
+			<p className='mt-2 text-sm text-muted-foreground'>
+				{meaning ?? arcana.meaning}
+			</p>
 		</div>
 	)
 }
 
 function PointRowSkeleton() {
 	return (
-		<div className='flex items-start gap-3'>
-			<Skeleton className='h-[42px] w-7 shrink-0' />
-			<div className='flex-1 space-y-2'>
+		<div>
+			<div className='flex items-center gap-3'>
+				<Skeleton className='h-[42px] w-7 shrink-0' />
 				<Skeleton className='h-4 w-40' />
+			</div>
+			<div className='mt-2 space-y-2'>
 				<Skeleton className='h-3 w-full' />
 				<Skeleton className='h-3 w-5/6' />
 			</div>

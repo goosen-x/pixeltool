@@ -237,7 +237,7 @@ export default function DestinyMatrixCalculatorPage() {
 				// отключает position: sticky у карт в тексте ниже — любой
 				// overflow, отличный от visible, на предке ломает sticky, даже
 				// если сам этот элемент не скроллится.
-				<Card className='mt-6 p-5 sm:p-6'>
+				<Card className='mt-6 rounded-none border-0 bg-transparent p-0 sm:rounded-2xl sm:border sm:bg-card sm:p-6'>
 					<DestinyMatrixNarrative result={result} birthDate={birthDate} />
 				</Card>
 			)}

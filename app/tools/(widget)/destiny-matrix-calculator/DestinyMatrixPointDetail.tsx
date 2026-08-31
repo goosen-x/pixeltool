@@ -70,36 +70,38 @@ export function DestinyMatrixPointDetail({
 		: positionalMeaning
 
 	return (
-		<div className='rounded-xl border p-6'>
-			<div className='flex items-start gap-5'>
+		<div className='sm:rounded-xl sm:border sm:p-6'>
+			<div className='flex items-start gap-3 sm:gap-5'>
 				{arcana.image ? (
 					<Image
 						src={arcana.image}
 						alt={`Карта Таро: ${arcana.name}`}
 						width={136}
 						height={204}
-						className='shrink-0 rounded-md border'
+						className='h-auto w-20 shrink-0 rounded-md border sm:w-[136px]'
 					/>
 				) : (
-					<span className='flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-xl font-bold text-primary'>
+					<span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-base font-bold text-primary sm:h-14 sm:w-14 sm:text-xl'>
 						{arcana.number}
 					</span>
 				)}
 				<div>
-					<span className='block text-lg font-semibold text-foreground'>
+					<span className='block text-base font-semibold text-foreground sm:text-lg'>
 						{arcana.number} ({arcana.name})
 					</span>
-					<p className='mt-2 text-base text-muted-foreground'>
+					<p className='mt-2 text-sm text-muted-foreground sm:text-base'>
 						{arcana.meaning}
 					</p>
 				</div>
 			</div>
 			<div className='mt-4 border-t pt-4'>
-				<span className='block text-lg font-bold text-foreground'>
+				<span className='block text-base font-bold text-foreground sm:text-lg'>
 					{heading}
 				</span>
 				{bodyText && (
-					<p className='mt-2 text-base text-muted-foreground'>{bodyText}</p>
+					<p className='mt-2 text-sm text-muted-foreground sm:text-base'>
+						{bodyText}
+					</p>
 				)}
 			</div>
 		</div>
