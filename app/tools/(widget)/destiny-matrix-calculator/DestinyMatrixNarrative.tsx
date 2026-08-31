@@ -15,14 +15,11 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
-	ageFromBirthDate,
 	getArcana,
-	getYearsMatrixSector,
-	YEARS_MATRIX_SECTOR_KEYS,
-	type Arcana,
 	type FullDestinyMatrixResult,
 	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
+import { getCurrentPeriod } from '@/lib/utils/destiny-matrix-current-period'
 import { NARRATIVE_SECTIONS } from '@/lib/utils/destiny-matrix-narrative-sections'
 import { fetchNarrativeBlock } from './actions'
 import { downloadDestinyMatrixPdf } from './DestinyMatrixPdf'
@@ -53,30 +50,13 @@ interface SectionHeadingProps {
 function SectionHeading({ icon: Icon, children }: SectionHeadingProps) {
 	return (
 		<div className='mb-3 flex gap-6'>
-			<div aria-hidden className='w-44 shrink-0 sm:w-52' />
+			<div aria-hidden className='hidden shrink-0 sm:block sm:w-52' />
 			<h3 className='flex flex-1 items-center gap-2 text-2xl font-semibold text-foreground'>
 				{Icon && <Icon aria-hidden className='h-6 w-6 shrink-0 text-primary' />}
 				{children}
 			</h3>
 		</div>
 	)
-}
-
-/**
- * Точка текущего десятилетия (day/f/month/g/year/h/fourth/i) всегда
- * входит ещё в какой-нибудь другой раздел ниже (личность, родовые
- * линии), поэтому карточный текст для неё там уже есть — брать его же
- * для «Текущего периода» значило бы дублировать абзац дважды. Вместо
- * этого собираем отдельный текст из общего значения аркана (короче и
- * не пересекается ни с одним из 528 текстов датасета) плюс возрастная
- * рамка.
- */
-function buildCurrentPeriodText(
-	arcana: Arcana,
-	sectorStart: number,
-	sectorEnd: number
-): string {
-	return `Ближайшие годы, с ${sectorStart} до ${sectorEnd} лет, проходят под влиянием аркана ${arcana.number} (${arcana.name}). ${arcana.meaning} Эта тема сейчас звучит громче остальных и задаёт тон происходящему.`
 }
 
 interface PointsRowProps {
@@ -87,8 +67,8 @@ interface PointsRowProps {
 
 function PointsRow({ keys, result, paragraphs }: PointsRowProps) {
 	return (
-		<div className='flex gap-6'>
-			<div className='flex w-44 shrink-0 flex-wrap content-start gap-3 sm:w-52'>
+		<div className='flex flex-col gap-4 sm:flex-row sm:gap-6'>
+			<div className='flex w-full flex-wrap gap-3 sm:sticky sm:top-20 sm:h-fit sm:w-52 sm:shrink-0 sm:content-start'>
 				{keys.map(key => {
 					const arcana = getArcana(result[key])
 					return (
@@ -148,25 +128,7 @@ export function DestinyMatrixNarrative({
 
 	if (!texts) return null
 
-	const age = ageFromBirthDate(birthDate)
-	const yearsPoints = YEARS_MATRIX_SECTOR_KEYS.map(key => result[key]) as [
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number
-	]
-	const currentSector = getYearsMatrixSector(age, yearsPoints)
-	const currentKey = YEARS_MATRIX_SECTOR_KEYS[currentSector.sectorIndex]
-	const currentArcana = getArcana(currentSector.arcanaNumber)
-	const currentPeriodText = buildCurrentPeriodText(
-		currentArcana,
-		currentSector.sectorStart,
-		currentSector.sectorEnd - 1
-	)
+	const currentPeriod = getCurrentPeriod(result, birthDate)
 
 	return (
 		<div className='space-y-8'>
@@ -175,7 +137,7 @@ export function DestinyMatrixNarrative({
 					Полное толкование матрицы судьбы
 				</h2>
 				<Button
-					onClick={() => downloadDestinyMatrixPdf(texts)}
+					onClick={() => downloadDestinyMatrixPdf(result, birthDate, texts)}
 					className='cursor-pointer'
 				>
 					<Download className='mr-2 h-4 w-4' />
@@ -186,9 +148,9 @@ export function DestinyMatrixNarrative({
 			<div>
 				<SectionHeading icon={Hourglass}>Текущий период</SectionHeading>
 				<PointsRow
-					keys={[currentKey]}
+					keys={[currentPeriod.key]}
 					result={result}
-					paragraphs={[currentPeriodText]}
+					paragraphs={[currentPeriod.text]}
 				/>
 			</div>
 

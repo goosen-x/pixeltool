@@ -208,13 +208,20 @@ export default function DestinyMatrixCalculatorPage() {
 								onToggle={toggleLine}
 							/>
 						</div>
-
-						<div className='mt-6'>
-							<DestinyMatrixNarrative result={result} birthDate={birthDate} />
-						</div>
 					</div>
 				) : null}
 			</Card>
+
+			{result && (
+				// Отдельная карточка, не внутри той, что выше: overflow-hidden
+				// там нужен, чтобы обрезать скруглённые углы шапки, но он же
+				// отключает position: sticky у карт в тексте ниже — любой
+				// overflow, отличный от visible, на предке ломает sticky, даже
+				// если сам этот элемент не скроллится.
+				<Card className='mt-6 p-5 sm:p-6'>
+					<DestinyMatrixNarrative result={result} birthDate={birthDate} />
+				</Card>
+			)}
 
 			<DestinyMatrixCalculatorSeo />
 		</WidgetSEOWrapper>
