@@ -1,4 +1,9 @@
 import { lookup } from 'dns/promises'
+import {
+	fetchViaProxy,
+	getOutboundProxyUrl,
+	isConnectionFailure
+} from './outbound-proxy'
 import type { LookupAddress } from 'dns'
 import { isIP } from 'net'
 
@@ -77,6 +82,9 @@ export async function toSafePublicUrl(input: string): Promise<URL> {
 
 const MAX_REDIRECTS = 5
 
+/** Сколько ждём прямого ответа, прежде чем пробовать прокси. */
+const DIRECT_ATTEMPT_TIMEOUT_MS = 6000
+
 /**
  * fetch() с проверкой каждого хопа редиректа, не только исходного адреса.
  *
@@ -87,6 +95,39 @@ const MAX_REDIRECTS = 5
  * 'manual'` в Node/undici (в отличие от браузерного fetch) отдаёт настоящий
  * статус и заголовок Location, а не непрозрачный ответ.
  */
+/**
+ * Один переход: сначала напрямую, при обрыве соединения — через прокси.
+ *
+ * До части площадок (t.me, youtube.com, instagram.com) прод-сервер не достаёт:
+ * TCP молча дропается на уровне провайдера, см. lib/security/outbound-proxy.ts.
+ * Прокси пробуем только на ошибках соединения — если сайт ответил хоть чем-то,
+ * даже 403, повторять через прокси незачем, ответ будет тот же.
+ *
+ * Прямой попытке даётся меньше времени, когда прокси настроен: иначе на
+ * заблокированном адресе пользователь ждал бы сначала полный таймаут прямого
+ * запроса, а потом ещё и проксированный.
+ */
+async function fetchOneHop(url: URL, init: RequestInit): Promise<Response> {
+	const proxyConfigured = getOutboundProxyUrl() !== null
+
+	try {
+		return await fetch(url.toString(), {
+			...init,
+			redirect: 'manual',
+			...(proxyConfigured
+				? { signal: AbortSignal.timeout(DIRECT_ATTEMPT_TIMEOUT_MS) }
+				: {})
+		})
+	} catch (error) {
+		const timedOut = error instanceof Error && error.name === 'TimeoutError'
+		if (!proxyConfigured || !(isConnectionFailure(error) || timedOut)) {
+			throw error
+		}
+
+		return fetchViaProxy(url, { ...init, redirect: 'manual' })
+	}
+}
+
 export async function safeFetch(
 	url: URL,
 	init: RequestInit = {}
@@ -94,10 +135,7 @@ export async function safeFetch(
 	let current = url
 
 	for (let hop = 0; ; hop++) {
-		const response = await fetch(current.toString(), {
-			...init,
-			redirect: 'manual'
-		})
+		const response = await fetchOneHop(current, init)
 
 		const location = response.headers.get('location')
 		if (response.status < 300 || response.status >= 400 || !location) {
