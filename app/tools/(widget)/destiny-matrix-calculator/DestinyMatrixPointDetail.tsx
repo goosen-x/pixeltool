@@ -5,37 +5,69 @@ import Image from 'next/image'
 import {
 	FULL_POINT_LABELS,
 	getArcana,
-	type FullDestinyMatrixResult,
-	type FullPointKey
+	type FullDestinyMatrixResult
 } from '@/lib/utils/destiny-matrix'
+import {
+	buildAgePeriodText,
+	getAgeSectorInfo,
+	type DestinyMatrixSelection
+} from '@/lib/utils/destiny-matrix-current-period'
 import { fetchPositionalMeaning } from './actions'
 
 interface DestinyMatrixPointDetailProps {
 	result: FullDestinyMatrixResult
-	active: FullPointKey
+	selection: DestinyMatrixSelection
+	currentAgeSectorIndex: number
 }
 
 export function DestinyMatrixPointDetail({
 	result,
-	active
+	selection,
+	currentAgeSectorIndex
 }: DestinyMatrixPointDetailProps) {
-	const arcana = getArcana(result[active])
-	// Общее значение карты (arcana.meaning) остаётся всегда — позиционный
-	// текст дополняет его, а не подменяет собой.
+	const isAge = selection.kind === 'age'
+	const pointKey = selection.kind === 'point' ? selection.key : null
+	const ageInfo =
+		selection.kind === 'age'
+			? getAgeSectorInfo(result, selection.sectorIndex)
+			: null
+	const arcana = ageInfo ? ageInfo.arcana : getArcana(result[pointKey!])
+
+	// Карточный текст (fetchPositionalMeaning) — только для точек схемы.
+	// Для возрастного периода текст собирается локально
+	// (buildAgePeriodText), без похода на сервер.
 	const [positionalMeaning, setPositionalMeaning] = useState<string | null>(
 		null
 	)
 
 	useEffect(() => {
+		if (isAge || !pointKey) {
+			setPositionalMeaning(null)
+			return
+		}
 		let cancelled = false
 		setPositionalMeaning(null)
-		fetchPositionalMeaning(active, arcana.number).then(text => {
+		fetchPositionalMeaning(pointKey, arcana.number).then(text => {
 			if (!cancelled) setPositionalMeaning(text)
 		})
 		return () => {
 			cancelled = true
 		}
-	}, [active, arcana.number])
+	}, [isAge, pointKey, arcana.number])
+
+	const heading = ageInfo
+		? `Возраст ${ageInfo.sectorStart}–${ageInfo.sectorEnd} лет`
+		: FULL_POINT_LABELS[pointKey!]
+
+	const bodyText = ageInfo
+		? buildAgePeriodText(
+				ageInfo.arcana,
+				ageInfo.sectorStart,
+				ageInfo.sectorEnd,
+				selection.kind === 'age' &&
+					selection.sectorIndex === currentAgeSectorIndex
+			)
+		: positionalMeaning
 
 	return (
 		<div className='rounded-xl border p-6'>
@@ -64,12 +96,10 @@ export function DestinyMatrixPointDetail({
 			</div>
 			<div className='mt-4 border-t pt-4'>
 				<span className='block text-lg font-bold text-foreground'>
-					{FULL_POINT_LABELS[active]}
+					{heading}
 				</span>
-				{positionalMeaning && (
-					<p className='mt-2 text-base text-muted-foreground'>
-						{positionalMeaning}
-					</p>
+				{bodyText && (
+					<p className='mt-2 text-base text-muted-foreground'>{bodyText}</p>
 				)}
 			</div>
 		</div>

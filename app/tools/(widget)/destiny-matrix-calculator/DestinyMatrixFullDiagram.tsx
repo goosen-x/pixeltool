@@ -12,6 +12,7 @@ import {
 	type FullDestinyMatrixResult,
 	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
+import type { DestinyMatrixSelection } from '@/lib/utils/destiny-matrix-current-period'
 import {
 	DIAGRAM_BASE_EDGES,
 	DIAGRAM_CATEGORY_COLOR,
@@ -67,8 +68,8 @@ function annulusPath(
 interface DestinyYearsRingProps {
 	result: FullDestinyMatrixResult
 	birthDate: string
-	active: FullPointKey
-	onSelect: (key: FullPointKey) => void
+	activeSectorIndex: number | null
+	onSelect: (sectorIndex: number) => void
 }
 
 /**
@@ -83,7 +84,7 @@ interface DestinyYearsRingProps {
 function DestinyYearsRing({
 	result,
 	birthDate,
-	active,
+	activeSectorIndex,
 	onSelect
 }: DestinyYearsRingProps) {
 	const age = ageFromBirthDate(birthDate)
@@ -112,7 +113,7 @@ function DestinyYearsRing({
 				const startAngle = nodeAngle - 22.5
 				const endAngle = nodeAngle + 22.5
 				const isCurrent = index === current.sectorIndex
-				const isActive = key === active
+				const isActive = index === activeSectorIndex
 				const arcana = getArcana(result[key])
 				const labelPos = polarToCartesian(RING_OUTER + 20, nodeAngle)
 				const numberPos = polarToCartesian(
@@ -128,24 +129,30 @@ function DestinyYearsRing({
 						tabIndex={0}
 						aria-label={label}
 						className='cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-						onClick={() => onSelect(key)}
+						onClick={() => onSelect(index)}
 						onKeyDown={event => {
 							if (event.key === 'Enter' || event.key === ' ') {
 								event.preventDefault()
-								onSelect(key)
+								onSelect(index)
 							}
 						}}
 					>
 						<title>{label}</title>
+						{/* Заливка сектора реагирует только на клик (isActive), тем
+						    же языком, что и обычные узлы схемы (fill-background
+						    stroke-primary). Текущее десятилетие (isCurrent) не
+						    заливает сектор — иначе два разных смысла («сейчас
+						    здесь» и «сейчас смотрю сюда») выглядели одинаково и
+						    их было не различить. У «сейчас здесь» свой маркер
+						    снаружи кольца, ниже. */}
 						<path
 							d={annulusPath(RING_INNER, RING_OUTER, startAngle, endAngle)}
 							className={
-								isCurrent
-									? 'fill-primary/15 stroke-primary'
+								isActive
+									? 'fill-background stroke-primary'
 									: 'fill-muted/40 stroke-border hover:fill-muted'
 							}
-							strokeWidth={isActive ? 2 : 1}
-							style={isActive ? { stroke: 'hsl(var(--primary))' } : undefined}
+							strokeWidth={isActive ? 2.5 : 1}
 						/>
 						<text
 							x={numberPos.x}
@@ -153,9 +160,11 @@ function DestinyYearsRing({
 							textAnchor='middle'
 							dominantBaseline='central'
 							className={
-								isCurrent
+								isActive
 									? 'fill-primary text-sm font-bold'
-									: 'fill-foreground text-xs font-semibold'
+									: isCurrent
+										? 'fill-foreground text-xs font-bold'
+										: 'fill-foreground text-xs font-semibold'
 							}
 						>
 							{arcana.number}
@@ -166,9 +175,11 @@ function DestinyYearsRing({
 							textAnchor='middle'
 							dominantBaseline='central'
 							className={
-								isCurrent
+								isActive
 									? 'fill-primary text-[11px] font-semibold'
-									: 'fill-muted-foreground text-[11px]'
+									: isCurrent
+										? 'fill-foreground text-[11px] font-semibold'
+										: 'fill-muted-foreground text-[11px]'
 							}
 						>
 							{index * 10}–{index * 10 + 9}
@@ -177,12 +188,13 @@ function DestinyYearsRing({
 				)
 			})}
 
-			{/* Точный возраст внутри десятилетия — маркер снаружи кольца. */}
+			{/* Единственный признак «текущий возраст сейчас здесь» — маркер
+			    снаружи кольца, не заливка сектора (см. комментарий выше). */}
 			<circle
 				cx={marker.x}
 				cy={marker.y}
 				r={5}
-				className='fill-background stroke-primary'
+				className='fill-primary stroke-background'
 				strokeWidth={2}
 			/>
 		</g>
@@ -192,8 +204,9 @@ function DestinyYearsRing({
 interface DestinyMatrixFullDiagramProps {
 	result: FullDestinyMatrixResult
 	birthDate: string
-	active: FullPointKey
-	onSelect: (key: FullPointKey) => void
+	selection: DestinyMatrixSelection
+	onSelectPoint: (key: FullPointKey) => void
+	onSelectAgeSector: (sectorIndex: number) => void
 	highlightedLine: string | null
 	onClearLine: () => void
 }
@@ -201,11 +214,15 @@ interface DestinyMatrixFullDiagramProps {
 export function DestinyMatrixFullDiagram({
 	result,
 	birthDate,
-	active,
-	onSelect,
+	selection,
+	onSelectPoint,
+	onSelectAgeSector,
 	highlightedLine,
 	onClearLine
 }: DestinyMatrixFullDiagramProps) {
+	const activePointKey = selection.kind === 'point' ? selection.key : null
+	const activeSectorIndex =
+		selection.kind === 'age' ? selection.sectorIndex : null
 	const [showFull, setShowFull] = useState(false)
 	const [hoveredKey, setHoveredKey] = useState<FullPointKey | null>(null)
 	// Подсветка линии/таланта относится только к точкам за пределами ядра,
@@ -246,8 +263,8 @@ export function DestinyMatrixFullDiagram({
 				<DestinyYearsRing
 					result={result}
 					birthDate={birthDate}
-					active={active}
-					onSelect={onSelect}
+					activeSectorIndex={activeSectorIndex}
+					onSelect={onSelectAgeSector}
 				/>
 
 				{visibleEdges.map(([from, to]) => {
@@ -269,7 +286,7 @@ export function DestinyMatrixFullDiagram({
 
 				{visibleNodes.map(node => {
 					const arcana = getArcana(result[node.key])
-					const isActive = node.key === active
+					const isActive = node.key === activePointKey
 					const isLineHighlighted = highlightedNodes?.has(node.key) ?? false
 					const isCenter = node.key === 'center'
 					const isHovered =
@@ -312,11 +329,11 @@ export function DestinyMatrixFullDiagram({
 							tabIndex={0}
 							aria-label={nodeLabel}
 							className='cursor-pointer outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-							onClick={() => onSelect(node.key)}
+							onClick={() => onSelectPoint(node.key)}
 							onKeyDown={event => {
 								if (event.key === 'Enter' || event.key === ' ') {
 									event.preventDefault()
-									onSelect(node.key)
+									onSelectPoint(node.key)
 								}
 							}}
 							onMouseEnter={() => setHoveredKey(node.key)}
@@ -383,8 +400,8 @@ export function DestinyMatrixFullDiagram({
 
 			<div className='mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2'>
 				<span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-					<span className='h-2.5 w-2.5 rounded-full bg-primary/15 ring-1 ring-primary' />
-					Матрица лет: текущее десятилетие
+					<span className='h-2.5 w-2.5 rounded-full bg-primary' />
+					Матрица лет: маркер — сейчас здесь
 				</span>
 				{isFull &&
 					(Object.keys(CATEGORY_COLOR) as Exclude<Category, 'core'>[]).map(

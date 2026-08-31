@@ -11,6 +11,10 @@ import {
 	getArcana,
 	type FullPointKey
 } from '@/lib/utils/destiny-matrix'
+import {
+	getCurrentAgeSectorIndex,
+	type DestinyMatrixSelection
+} from '@/lib/utils/destiny-matrix-current-period'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { DestinyMatrixCalculatorSeo } from './DestinyMatrixCalculatorSeo'
@@ -40,7 +44,10 @@ export default function DestinyMatrixCalculatorPage() {
 	const widget = getWidgetById('destiny-matrix-calculator')!
 
 	const [birthDate, setBirthDate] = useState('')
-	const [active, setActive] = useState<FullPointKey>('center')
+	const [selection, setSelection] = useState<DestinyMatrixSelection>({
+		kind: 'point',
+		key: 'center'
+	})
 	const [highlightedLine, setHighlightedLine] = useState<string | null>(null)
 
 	const result = useMemo(() => {
@@ -79,8 +86,19 @@ export default function DestinyMatrixCalculatorPage() {
 	// Общий обработчик выбора точки: клик по диаграмме и клик по карточке в
 	// «5 основных точек» должны обновлять одну и ту же активную точку.
 	const selectPoint = (key: FullPointKey) => {
-		setActive(key)
+		setSelection({ kind: 'point', key })
 	}
+
+	// Клик по кольцу матрицы лет — отдельный выбор, не точка схемы: тот же
+	// узел значит разное («что это за черта» против «что в этом возрасте»),
+	// поэтому не переиспользует selectPoint и не подсвечивает узел схемы.
+	const selectAgeSector = (sectorIndex: number) => {
+		setSelection({ kind: 'age', sectorIndex })
+	}
+
+	const currentAgeSectorIndex = birthDate
+		? getCurrentAgeSectorIndex(birthDate)
+		: 0
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
@@ -141,14 +159,19 @@ export default function DestinyMatrixCalculatorPage() {
 								<DestinyMatrixFullDiagram
 									result={result}
 									birthDate={birthDate}
-									active={active}
-									onSelect={selectPoint}
+									selection={selection}
+									onSelectPoint={selectPoint}
+									onSelectAgeSector={selectAgeSector}
 									highlightedLine={highlightedLine}
 									onClearLine={() => setHighlightedLine(null)}
 								/>
 							</div>
 
-							<DestinyMatrixPointDetail result={result} active={active} />
+							<DestinyMatrixPointDetail
+								result={result}
+								selection={selection}
+								currentAgeSectorIndex={currentAgeSectorIndex}
+							/>
 						</div>
 
 						<div className='mt-6'>
@@ -159,13 +182,15 @@ export default function DestinyMatrixCalculatorPage() {
 								{BASE_POINT_KEYS.map(key => {
 									const label = FULL_POINT_LABELS[key]
 									const arcana = getArcana(result[key])
+									const isActive =
+										selection.kind === 'point' && selection.key === key
 									return (
 										<button
 											key={key}
 											type='button'
 											onClick={() => selectPoint(key)}
 											className={
-												active === key
+												isActive
 													? 'flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3 text-center'
 													: 'flex cursor-pointer flex-col items-center gap-2 rounded-lg border p-3 text-center hover:border-primary/50'
 											}

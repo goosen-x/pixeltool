@@ -71,8 +71,9 @@ export function DestinyMatrixCalculatorSeo() {
 					<DestinyMatrixFullDiagram
 						result={exampleResult}
 						birthDate={EXAMPLE_BIRTH_DATE}
-						active='center'
-						onSelect={() => {}}
+						selection={{ kind: 'point', key: 'center' }}
+						onSelectPoint={() => {}}
+						onSelectAgeSector={() => {}}
 						highlightedLine={null}
 						onClearLine={() => {}}
 					/>

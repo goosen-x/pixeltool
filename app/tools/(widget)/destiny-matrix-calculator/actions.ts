@@ -24,6 +24,27 @@ export async function fetchPositionalMeaning(
 }
 
 /**
+ * Server Action: карточные тексты сразу для нескольких точек за один
+ * запрос — вкладка «Родовые линии, любовь, деньги, талант» показывает до
+ * 6 точек разом, и раньше каждая карточка дёргала fetchPositionalMeaning
+ * сама по себе (до 6 round trip'ов на одно переключение вкладки).
+ * Возвращает только точки, для которых текст уже написан — вызывающий
+ * компонент сам падает на общий arcana.meaning для отсутствующих ключей.
+ */
+export async function fetchPositionalMeanings(
+	keys: FullPointKey[],
+	result: FullDestinyMatrixResult
+): Promise<Partial<Record<FullPointKey, string>>> {
+	const entries = keys
+		.map(key => {
+			const text = getPositionalMeaning(key, result[key])
+			return text ? ([key, text] as const) : null
+		})
+		.filter((entry): entry is readonly [FullPointKey, string] => entry !== null)
+	return Object.fromEntries(entries)
+}
+
+/**
  * Server Action: весь сплошной текст матрицы судьбы за один запрос,
  * вместо 24 отдельных round trip'ов по одному на точку. Для каждой
  * точки — текст, написанный для связного чтения (getNarrativeMeaning),

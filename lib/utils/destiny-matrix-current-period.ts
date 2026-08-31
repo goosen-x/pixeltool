@@ -1,7 +1,6 @@
 import {
 	ageFromBirthDate,
 	getArcana,
-	getYearsMatrixSector,
 	YEARS_MATRIX_SECTOR_KEYS,
 	type Arcana,
 	type FullDestinyMatrixResult,
@@ -14,6 +13,72 @@ export interface CurrentPeriod {
 	sectorStart: number
 	sectorEnd: number
 	text: string
+}
+
+export interface AgeSectorInfo {
+	key: FullPointKey
+	arcana: Arcana
+	sectorStart: number
+	sectorEnd: number
+}
+
+/**
+ * Выбор в схеме матрицы судьбы: либо обычная точка (day, f, center...) —
+ * её роль в структуре схемы, либо сектор кольца матрицы лет — что этот
+ * же узел означает как возрастной период. Формально это одна и та же
+ * точка с одним и тем же арканом, но со смыслом «что это за черта» и
+ * «что происходит в этом возрасте» — разными по сути, поэтому и
+ * выбираются, и показываются в детальной карточке раздельно (не через
+ * общий active, который раньше путал клик по кольцу с точкой схемы).
+ */
+export type DestinyMatrixSelection =
+	| { kind: 'point'; key: FullPointKey }
+	| { kind: 'age'; sectorIndex: number }
+
+function computeSector(
+	result: FullDestinyMatrixResult,
+	sectorIndex: number
+): AgeSectorInfo {
+	const key = YEARS_MATRIX_SECTOR_KEYS[sectorIndex]
+	return {
+		key,
+		arcana: getArcana(result[key]),
+		sectorStart: sectorIndex * 10,
+		sectorEnd: sectorIndex * 10 + 9
+	}
+}
+
+/** Индекс сектора (0-7), в котором сейчас находится человек по дате рождения. */
+export function getCurrentAgeSectorIndex(birthDate: string): number {
+	const age = ageFromBirthDate(birthDate)
+	return Math.floor(age / 10) % 8
+}
+
+/** Данные сектора матрицы лет по индексу (0-7) — для любого сектора, не
+ * только текущего, чтобы клик по кольцу мог показать любой возрастной
+ * период, не только «сейчас». */
+export function getAgeSectorInfo(
+	result: FullDestinyMatrixResult,
+	sectorIndex: number
+): AgeSectorInfo {
+	return computeSector(result, sectorIndex)
+}
+
+/**
+ * Текст возрастного периода. isCurrent меняет рамку с «сейчас/скоро» на
+ * нейтральную «в этом возрасте» — иначе кликнутый, но не текущий период
+ * читался бы так, будто это про сегодняшний день человека.
+ */
+export function buildAgePeriodText(
+	arcana: Arcana,
+	sectorStart: number,
+	sectorEnd: number,
+	isCurrent: boolean
+): string {
+	if (isCurrent) {
+		return `Ближайшие годы, с ${sectorStart} до ${sectorEnd} лет, проходят под влиянием аркана ${arcana.number} (${arcana.name}). ${arcana.meaning} Эта тема сейчас звучит громче остальных и задаёт тон происходящему.`
+	}
+	return `С ${sectorStart} до ${sectorEnd} лет действует аркан ${arcana.number} (${arcana.name}). ${arcana.meaning} Это заметная тема именно этого периода жизни.`
 }
 
 /**
@@ -30,24 +95,13 @@ export function getCurrentPeriod(
 	result: FullDestinyMatrixResult,
 	birthDate: string
 ): CurrentPeriod {
-	const age = ageFromBirthDate(birthDate)
-	const points = YEARS_MATRIX_SECTOR_KEYS.map(key => result[key]) as [
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number
-	]
-	const sector = getYearsMatrixSector(age, points)
-	const key = YEARS_MATRIX_SECTOR_KEYS[sector.sectorIndex]
-	const arcana = getArcana(sector.arcanaNumber)
-	const sectorStart = sector.sectorStart
-	const sectorEnd = sector.sectorEnd - 1
-
-	const text = `Ближайшие годы, с ${sectorStart} до ${sectorEnd} лет, проходят под влиянием аркана ${arcana.number} (${arcana.name}). ${arcana.meaning} Эта тема сейчас звучит громче остальных и задаёт тон происходящему.`
-
-	return { key, arcana, sectorStart, sectorEnd, text }
+	const sectorIndex = getCurrentAgeSectorIndex(birthDate)
+	const info = computeSector(result, sectorIndex)
+	const text = buildAgePeriodText(
+		info.arcana,
+		info.sectorStart,
+		info.sectorEnd,
+		true
+	)
+	return { ...info, text }
 }
