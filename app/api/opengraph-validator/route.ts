@@ -11,7 +11,10 @@ export async function GET(request: NextRequest) {
 	const url = searchParams.get('url')
 
 	if (!url) {
-		return NextResponse.json({ error: 'Не передан адрес' }, { status: 400 })
+		return NextResponse.json(
+			{ error: 'Введите адрес страницы, которую нужно проверить.' },
+			{ status: 400 }
+		)
 	}
 
 	// Валидация формата и защита от SSRF (см. lib/security/ssrf): без нее
@@ -56,7 +59,7 @@ export async function GET(request: NextRequest) {
 			// ошибки за поломанную ссылку.
 			return NextResponse.json(
 				{
-					error: `Сайт ответил ошибкой ${response.status} ${response.statusText}. Часть сайтов блокирует автоматические проверки или отдаёт содержимое через JavaScript, которого сервер не выполняет, и если ссылка открывается в браузере, дело именно в этом.`
+					error: `Сайт ответил ошибкой ${response.status}. Так бывает, когда он не пускает автоматические проверки или собирает страницу уже в браузере. Если у вас ссылка открывается, посмотрите теги вручную: откройте её, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.`
 				},
 				{ status: 400 }
 			)
@@ -155,7 +158,8 @@ export async function GET(request: NextRequest) {
 			} catch {
 				imageData = {
 					accessible: false,
-					error: 'Не удалось проверить доступность og:image'
+					error:
+						'Картинку из og:image не удалось загрузить — проверьте, открывается ли она по прямой ссылке.'
 				}
 			}
 		}
@@ -174,7 +178,10 @@ export async function GET(request: NextRequest) {
 		if (error instanceof Error) {
 			if (error.name === 'AbortError') {
 				return NextResponse.json(
-					{ error: 'Сайт слишком долго не отвечал, проверка прервана' },
+					{
+						error:
+							'Сайт не ответил за 15 секунд, проверка остановлена. Попробуйте ещё раз — возможно, он сейчас перегружен.'
+					},
 					{ status: 408 }
 				)
 			}
@@ -216,7 +223,7 @@ export async function GET(request: NextRequest) {
 					return NextResponse.json(
 						{
 							error:
-								'До сайта не удалось достучаться ни напрямую, ни через запасной маршрут. Сам сайт, скорее всего, работает — открыть его Open Graph теги можно через «Просмотр кода страницы» в браузере (Ctrl+U / Cmd+Option+U) и поиск по meta property="og:".'
+								'До сайта не удалось достучаться. Скорее всего, он работает, но не отвечает на запросы с нашего сервера. Посмотрите теги вручную: откройте ссылку в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.'
 						},
 						{ status: 502 }
 					)
@@ -225,20 +232,23 @@ export async function GET(request: NextRequest) {
 				return NextResponse.json(
 					{
 						error:
-							'Не удалось подключиться к сайту. Возможно, временная проблема сети, попробуйте ещё раз, или сайт сейчас недоступен.'
+							'Не удалось соединиться с сайтом. Проверьте, открывается ли ссылка у вас в браузере: если открывается, повторите проверку через минуту.'
 					},
 					{ status: 502 }
 				)
 			}
 
 			return NextResponse.json(
-				{ error: `Не удалось проверить адрес: ${error.message}` },
+				{
+					error:
+						'Не получилось проверить эту страницу. Попробуйте другой адрес или повторите позже.'
+				},
 				{ status: 500 }
 			)
 		}
 
 		return NextResponse.json(
-			{ error: 'Произошла непредвиденная ошибка' },
+			{ error: 'Что-то пошло не так на нашей стороне. Попробуйте ещё раз.' },
 			{ status: 500 }
 		)
 	}

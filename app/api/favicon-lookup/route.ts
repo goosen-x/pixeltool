@@ -96,7 +96,10 @@ export async function GET(request: NextRequest) {
 
 	if (!['http:', 'https:'].includes(target.protocol)) {
 		return NextResponse.json(
-			{ error: 'Поддерживаются только http и https' },
+			{
+				error:
+					'Проверить можно только ссылки, которые начинаются с http:// или https://'
+			},
 			{ status: 400 }
 		)
 	}

@@ -48,7 +48,9 @@ export function isPrivateAddress(ip: string): boolean {
 export async function assertPublicHost(hostname: string): Promise<void> {
 	if (isIP(hostname)) {
 		if (isPrivateAddress(hostname)) {
-			throw new Error('Адрес ведёт во внутреннюю сеть')
+			throw new Error(
+				'Такой адрес проверить нельзя: он ведёт во внутреннюю сеть, а не в интернет.'
+			)
 		}
 		return
 	}
@@ -57,11 +59,15 @@ export async function assertPublicHost(hostname: string): Promise<void> {
 	try {
 		addresses = await lookup(hostname, { all: true })
 	} catch {
-		throw new Error('Не удалось найти такой адрес в сети')
+		throw new Error(
+			'Такого домена не существует. Проверьте, нет ли опечатки в адресе.'
+		)
 	}
 
 	if (addresses.some(entry => isPrivateAddress(entry.address))) {
-		throw new Error('Адрес ведёт во внутреннюю сеть')
+		throw new Error(
+			'Такой адрес проверить нельзя: он ведёт во внутреннюю сеть, а не в интернет.'
+		)
 	}
 }
 
@@ -73,7 +79,9 @@ export async function toSafePublicUrl(input: string): Promise<URL> {
 	const url = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`)
 
 	if (!['http:', 'https:'].includes(url.protocol)) {
-		throw new Error('Поддерживаются только http и https')
+		throw new Error(
+			'Проверить можно только ссылки, которые начинаются с http:// или https://'
+		)
 	}
 
 	await assertPublicHost(url.hostname)
@@ -152,18 +160,22 @@ export async function safeFetch(
 		}
 
 		if (hop >= MAX_REDIRECTS) {
-			throw new Error('Слишком много редиректов')
+			throw new Error(
+				'Сайт слишком много раз перенаправляет на другие адреса, проверка остановлена.'
+			)
 		}
 
 		let next: URL
 		try {
 			next = new URL(location, current)
 		} catch {
-			throw new Error('Редирект ведёт на некорректный адрес')
+			throw new Error(
+				'Сайт перенаправил на адрес, который не удалось разобрать.'
+			)
 		}
 
 		if (!['http:', 'https:'].includes(next.protocol)) {
-			throw new Error('Редирект ведёт на неподдерживаемый протокол')
+			throw new Error('Сайт перенаправил туда, куда проверка не может пойти.')
 		}
 
 		await assertPublicHost(next.hostname)

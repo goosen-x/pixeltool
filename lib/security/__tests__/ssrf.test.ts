@@ -53,7 +53,7 @@ describe('safeFetch', () => {
 
 		await expect(
 			safeFetch(new URL('http://93.184.216.34/start'))
-		).rejects.toThrow('Адрес ведёт во внутреннюю сеть')
+		).rejects.toThrow('ведёт во внутреннюю сеть')
 		expect(fetchMock).toHaveBeenCalledTimes(1)
 	})
 
@@ -69,7 +69,7 @@ describe('safeFetch', () => {
 
 		await expect(
 			safeFetch(new URL('http://93.184.216.34/start'))
-		).rejects.toThrow('Слишком много редиректов')
+		).rejects.toThrow('слишком много раз перенаправляет')
 	})
 
 	it('блокирует редирект на file:// в обход http/https', async () => {
@@ -83,7 +83,7 @@ describe('safeFetch', () => {
 
 		await expect(
 			safeFetch(new URL('http://93.184.216.34/start'))
-		).rejects.toThrow('неподдерживаемый протокол')
+		).rejects.toThrow('куда проверка не может пойти')
 	})
 
 	it('отдаёт ответ без редиректа как есть', async () => {
