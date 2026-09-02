@@ -12,9 +12,14 @@ import {
 } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { CompoundInterestChart } from '@/components/tools/CompoundInterestChart'
+import { CompoundInterestTable } from '@/components/tools/CompoundInterestTable'
+import {
+	simulate,
+	toYearRows,
+	type Capitalization
+} from '@/lib/utils/compound-interest'
 import { CompoundInterestCalculatorSeo } from './CompoundInterestCalculatorSeo'
-
-type Capitalization = 365 | 12 | 4 | 1
 
 const CAPITALIZATIONS: [Capitalization, string][] = [
 	[365, 'Ежедневно'],
@@ -23,11 +28,10 @@ const CAPITALIZATIONS: [Capitalization, string][] = [
 	[1, 'Раз в год']
 ]
 
-interface SimulationResult {
-	finalAmount: number
-	totalContributed: number
-	interestEarned: number
-}
+const STEPS: ['month' | 'year', string][] = [
+	['month', 'По месяцам'],
+	['year', 'По годам']
+]
 
 function toNumber(value: string): number | null {
 	const parsed = parseFloat(value.replace(',', '.'))
@@ -38,62 +42,6 @@ function formatMoney(value: number): string {
 	return value.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
 }
 
-/**
- * Дневная симуляция, а не готовая формула аннуитета: пополнение всегда
- * ежемесячное (так его чаще всего ищут), а капитализация может быть
- * ежедневной, ежемесячной, ежеквартальной или годовой — эти два периода не
- * совпадают, и формула сложных процентов одним выражением такую комбинацию
- * не считает. Проценты копятся каждый день на текущий остаток и добавляются
- * к нему только в дату капитализации — до этого момента сами на себя не
- * начисляются, ровно как в банковском вкладе.
- */
-function simulate(
-	principal: number,
-	annualRatePercent: number,
-	years: number,
-	monthlyContribution: number,
-	capitalizationsPerYear: Capitalization
-): SimulationResult | null {
-	const totalDays = Math.round(years * 365)
-	if (totalDays <= 0 || principal < 0 || monthlyContribution < 0) return null
-
-	const dailyRate = annualRatePercent / 100 / 365
-
-	let balance = principal
-	let pendingInterest = 0
-	let totalContributed = principal
-
-	let capIndex = 1
-	let nextCapDay = Math.round(365 / capitalizationsPerYear)
-	let contribIndex = 1
-	let nextContribDay = Math.round(365 / 12)
-
-	for (let day = 1; day <= totalDays; day++) {
-		pendingInterest += balance * dailyRate
-
-		if (monthlyContribution > 0 && day === nextContribDay) {
-			balance += monthlyContribution
-			totalContributed += monthlyContribution
-			contribIndex++
-			nextContribDay = Math.round((contribIndex * 365) / 12)
-		}
-
-		if (day === nextCapDay) {
-			balance += pendingInterest
-			pendingInterest = 0
-			capIndex++
-			nextCapDay = Math.round((capIndex * 365) / capitalizationsPerYear)
-		}
-	}
-
-	const finalAmount = balance + pendingInterest
-	return {
-		finalAmount,
-		totalContributed,
-		interestEarned: finalAmount - totalContributed
-	}
-}
-
 export default function CompoundInterestCalculatorPage() {
 	const widget = getWidgetById('compound-interest-calculator')!
 
@@ -102,6 +50,7 @@ export default function CompoundInterestCalculatorPage() {
 	const [years, setYears] = useState('5')
 	const [monthlyContribution, setMonthlyContribution] = useState('10000')
 	const [capitalization, setCapitalization] = useState<Capitalization>(12)
+	const [step, setStep] = useState<'month' | 'year'>('month')
 	const [copied, setCopied] = useState(false)
 
 	const result = useMemo(() => {
@@ -110,8 +59,19 @@ export default function CompoundInterestCalculatorPage() {
 		const y = toNumber(years)
 		const c = toNumber(monthlyContribution) ?? 0
 		if (p === null || r === null || y === null) return null
-		return simulate(p, r, y, c, capitalization)
+		return simulate({
+			principal: p,
+			annualRatePercent: r,
+			years: y,
+			monthlyContribution: c,
+			capitalizationsPerYear: capitalization
+		})
 	}, [principal, rate, years, monthlyContribution, capitalization])
+
+	const rows = useMemo(() => {
+		if (!result) return []
+		return step === 'month' ? result.months : toYearRows(result.months)
+	}, [result, step])
 
 	const summaryText = useMemo(() => {
 		if (!result) return ''
@@ -252,6 +212,12 @@ export default function CompoundInterestCalculatorPage() {
 					</p>
 				)}
 
+				{result && result.months.length > 1 && (
+					<div className='border-t px-2 py-6 sm:px-4'>
+						<CompoundInterestChart months={result.months} />
+					</div>
+				)}
+
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>
 						Проценты начисляются на остаток ежедневно и добавляются к сумме
@@ -259,6 +225,36 @@ export default function CompoundInterestCalculatorPage() {
 					</span>
 				</div>
 			</Card>
+
+			{result && rows.length > 0 && (
+				<section className='mt-8'>
+					<div className='flex flex-wrap items-center gap-x-6 gap-y-3'>
+						<h2 className='text-lg font-semibold'>Расчёт по периодам</h2>
+						<div className='flex items-center gap-1.5 sm:ml-auto'>
+							{STEPS.map(([value, label]) => (
+								<button
+									key={value}
+									type='button'
+									onClick={() => setStep(value)}
+									aria-pressed={step === value}
+									className={toolPill(step === value)}
+								>
+									{label}
+								</button>
+							))}
+						</div>
+					</div>
+
+					<p className='mt-2 text-sm text-muted-foreground'>
+						Те же данные, что на графике, но числами: сколько внесено и сколько
+						начислено в каждом периоде и что из этого выросло на счёте.
+					</p>
+
+					<div className='mt-4'>
+						<CompoundInterestTable rows={rows} step={step} />
+					</div>
+				</section>
+			)}
 
 			<CompoundInterestCalculatorSeo />
 		</WidgetSEOWrapper>
