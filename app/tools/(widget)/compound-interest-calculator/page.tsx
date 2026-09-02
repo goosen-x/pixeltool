@@ -180,26 +180,29 @@ export default function CompoundInterestCalculatorPage() {
 				</div>
 
 				{result ? (
-					<div className='mx-auto grid max-w-2xl grid-cols-1 gap-3 px-5 py-8 text-center sm:grid-cols-3 sm:px-6'>
+					<div className='mx-auto grid max-w-3xl grid-cols-1 gap-3 px-5 py-8 text-center sm:grid-cols-3 sm:px-6'>
 						<div className='rounded-xl border p-4'>
-							<span className='block font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl'>
-								{formatMoney(result.finalAmount)} ₽
+							<span className='block font-mono text-xl font-bold tracking-tight whitespace-nowrap text-foreground sm:text-2xl'>
+								{formatMoney(result.finalAmount)}
+								<span className='ml-1 text-base text-muted-foreground'>₽</span>
 							</span>
 							<span className='mt-1 block text-sm text-muted-foreground'>
 								Итоговая сумма
 							</span>
 						</div>
 						<div className='rounded-xl border p-4'>
-							<span className='block font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl'>
-								{formatMoney(result.totalContributed)} ₽
+							<span className='block font-mono text-xl font-bold tracking-tight whitespace-nowrap text-foreground sm:text-2xl'>
+								{formatMoney(result.totalContributed)}
+								<span className='ml-1 text-base text-muted-foreground'>₽</span>
 							</span>
 							<span className='mt-1 block text-sm text-muted-foreground'>
 								Внесено
 							</span>
 						</div>
 						<div className='rounded-xl border p-4'>
-							<span className='block font-mono text-2xl font-bold tracking-tight text-green-600 dark:text-green-400 sm:text-3xl'>
-								+{formatMoney(result.interestEarned)} ₽
+							<span className='block font-mono text-xl font-bold tracking-tight whitespace-nowrap text-green-600 dark:text-green-400 sm:text-2xl'>
+								+{formatMoney(result.interestEarned)}
+								<span className='ml-1 text-base text-muted-foreground'>₽</span>
 							</span>
 							<span className='mt-1 block text-sm text-muted-foreground'>
 								Начислено процентов

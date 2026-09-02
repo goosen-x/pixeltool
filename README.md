@@ -59,8 +59,8 @@ pnpm lint        # ESLint
 pnpm check:all   # все проверки разом
 ```
 
-Подробнее — в [`/docs`](docs/README.md), включая
-[руководство по созданию нового инструмента](docs/guides/WIDGET_CREATION_GUIDE.md).
+Шаблон нового инструмента со всеми правилами оформления —
+[`app/tools/(widget)/_template/page.tsx`](<app/tools/(widget)/_template/page.tsx>).
 
 ## Участие в разработке
 
