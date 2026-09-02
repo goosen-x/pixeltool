@@ -95,6 +95,32 @@ input[type='button'] {
 /* Левитация картинки категории на /tools. Параметры как на moscow.mba: цикл 2
    секунды, движение крошечное — читается в основном наклон, а не смещение.
    alternate вместо повтора с нуля: иначе на стыке циклов был бы рывок. */
+/* Встряхивание шара предсказаний. Наклон вместе со сдвигом, а не один
+   сдвиг: чистое смещение вбок читается как дребезг интерфейса, а поворот
+   добавляет ощущение веса — будто в руке тяжёлый шар, а не картинка.
+   Амплитуда падает к концу, чтобы движение затухало, а не обрывалось. */
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0) rotate(0deg);
+	}
+	15% {
+		transform: translateX(-10px) rotate(-5deg);
+	}
+	30% {
+		transform: translateX(9px) rotate(4deg);
+	}
+	45% {
+		transform: translateX(-7px) rotate(-3deg);
+	}
+	60% {
+		transform: translateX(5px) rotate(2deg);
+	}
+	80% {
+		transform: translateX(-2px) rotate(-1deg);
+	}
+}
+
 @keyframes levitate {
 	from {
 		transform: translateY(0) rotate(1deg);
