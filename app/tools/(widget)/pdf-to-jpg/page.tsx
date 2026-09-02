@@ -204,7 +204,8 @@ export default function PdfToJpgPage() {
 		}
 	}
 
-	const canExport = Boolean(file) && selectedPages.length > 0 && status === 'idle'
+	const canExport =
+		Boolean(file) && selectedPages.length > 0 && status === 'idle'
 
 	return (
 		<WidgetSEOWrapper widget={widget}>

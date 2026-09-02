@@ -54,9 +54,7 @@ export function MergePdfSeo() {
 			</section>
 
 			<section>
-				<h2 className='text-2xl font-bold tracking-tight'>
-					Файлы с защитой
-				</h2>
+				<h2 className='text-2xl font-bold tracking-tight'>Файлы с защитой</h2>
 				<p className='mt-3 text-muted-foreground'>
 					У многих PDF стоит формальная защита — запрет печати или правки с
 					пустым паролем. Такие файлы открываются любой читалкой, и объединение
