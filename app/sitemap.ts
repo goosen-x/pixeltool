@@ -4,6 +4,7 @@ import { publicWidgets } from '@/lib/constants/widgets'
 import { CATEGORY_KEYS } from '@/lib/constants/categories'
 import { unitPairs } from '@/lib/constants/unit-pairs'
 import { ZODIAC_PAGES } from '@/lib/constants/zodiac-pages'
+import { GEOMETRY_PAGES } from '@/lib/constants/geometry-pages'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -105,6 +106,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	ZODIAC_PAGES.forEach(page => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/zodiac-sign/${page.id}`,
+			lastModified: CONTENT_LAST_UPDATED,
+			changeFrequency: 'monthly',
+			priority: 0.8
+		})
+	})
+
+	// Страницы отдельных фигур (/tools/volume-calculator/cilindra и т.п.) —
+	// тот же паттерн, что у пар единиц и знаков зодиака: SEO-страницы одного
+	// хаба, в publicWidgets их нет.
+	GEOMETRY_PAGES.forEach(page => {
+		sitemapEntries.push({
+			url: `${BASE_URL}/tools/${page.kind === 'area' ? 'area-calculator' : 'volume-calculator'}/${page.slug}`,
 			lastModified: CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.8
