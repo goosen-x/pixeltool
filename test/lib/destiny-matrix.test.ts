@@ -172,6 +172,8 @@ describe('calculateFullDestinyMatrix', () => {
 		expect(result.r).toBe(22)
 		expect(result.r1).toBe(7)
 		expect(result.r2).toBe(5)
+
+		expect(result.n).toBe(19)
 	})
 
 	it('у каждой точки результата есть подпись в FULL_POINT_LABELS', () => {

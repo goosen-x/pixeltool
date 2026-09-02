@@ -381,20 +381,26 @@ interface DestinyMatrixFullDiagramProps {
 	result: FullDestinyMatrixResult
 	birthDate: string
 	selection: DestinyMatrixSelection
-	onSelectPoint: (key: FullPointKey) => void
-	onSelectAgeSector: (sectorIndex: number) => void
+	/**
+	 * Необязательные: статичный пример в DestinyMatrixCalculatorSeo.tsx
+	 * рендерится из серверного layout.tsx и не может передать сюда функции
+	 * (не сериализуются через границу сервер/клиент), только показывает
+	 * схему. Дефолт-заглушки ниже нужны только для этого read-only случая.
+	 */
+	onSelectPoint?: (key: FullPointKey) => void
+	onSelectAgeSector?: (sectorIndex: number) => void
 	highlightedLine: string | null
-	onClearLine: () => void
+	onClearLine?: () => void
 }
 
 export function DestinyMatrixFullDiagram({
 	result,
 	birthDate,
 	selection,
-	onSelectPoint,
-	onSelectAgeSector,
+	onSelectPoint = () => {},
+	onSelectAgeSector = () => {},
 	highlightedLine,
-	onClearLine
+	onClearLine = () => {}
 }: DestinyMatrixFullDiagramProps) {
 	const activePointKey = selection.kind === 'point' ? selection.key : null
 	const activeSectorIndex =

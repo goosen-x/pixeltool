@@ -70,7 +70,12 @@ export function DestinyMatrixPointDetail({
 		: positionalMeaning
 
 	return (
-		<div className='sm:rounded-xl sm:border sm:p-6'>
+		// @container свой, отдельный от родительского (переключает диаграмму и
+		// эту карточку в две колонки): размер картинки и шрифтов здесь зависит
+		// от реальной ширины самой карточки, а не от вьюпорта. На 1400–1500px
+		// вьюпорт большой, но колонке достаётся всего 330–400px — без своего
+		// @container крупный режим включался бы по sm: и не помещался.
+		<div className='@container sm:rounded-xl sm:border sm:p-6'>
 			<div className='flex items-start gap-3 sm:gap-5'>
 				{arcana.image ? (
 					<Image
@@ -78,28 +83,28 @@ export function DestinyMatrixPointDetail({
 						alt={`Карта Таро: ${arcana.name}`}
 						width={136}
 						height={204}
-						className='h-auto w-20 shrink-0 rounded-md border sm:w-[136px]'
+						className='h-auto w-20 shrink-0 rounded-md border @[430px]:w-[136px]'
 					/>
 				) : (
-					<span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-base font-bold text-primary sm:h-14 sm:w-14 sm:text-xl'>
+					<span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-base font-bold text-primary @[430px]:h-14 @[430px]:w-14 @[430px]:text-xl'>
 						{arcana.number}
 					</span>
 				)}
 				<div>
-					<span className='block text-base font-semibold text-foreground sm:text-lg'>
+					<span className='block text-base font-semibold text-foreground @[430px]:text-lg'>
 						{arcana.number} ({arcana.name})
 					</span>
-					<p className='mt-2 text-sm text-muted-foreground sm:text-base'>
+					<p className='mt-2 text-sm text-muted-foreground @[430px]:text-base'>
 						{arcana.meaning}
 					</p>
 				</div>
 			</div>
 			<div className='mt-4 border-t pt-4'>
-				<span className='block text-base font-bold text-foreground sm:text-lg'>
+				<span className='block text-base font-bold text-foreground @[430px]:text-lg'>
 					{heading}
 				</span>
 				{bodyText && (
-					<p className='mt-2 text-sm text-muted-foreground sm:text-base'>
+					<p className='mt-2 text-sm text-muted-foreground @[430px]:text-base'>
 						{bodyText}
 					</p>
 				)}

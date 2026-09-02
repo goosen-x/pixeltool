@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import {
 	NAMED_LINES,
@@ -109,14 +109,30 @@ export function DestinyMatrixLinesPanel({
 
 	// Один запрос на всю вкладку разом, а не по одному на карточку — при
 	// переключении вкладок раньше уходило до 6 round trip'ов одновременно.
+	// Кеш по ключу вкладки: повторное переключение на уже открытую вкладку
+	// берёт текст из cacheRef, а не бьёт в сеть заново. Сбрасывается при
+	// смене result (другая дата — другие арканы, старый текст не подходит).
+	const cacheRef = useRef<
+		Record<string, Partial<Record<FullPointKey, string>>>
+	>({})
 	const [meanings, setMeanings] = useState<Partial<
 		Record<FullPointKey, string>
 	> | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
-		if (!activeKeys) {
+		cacheRef.current = {}
+	}, [result])
+
+	useEffect(() => {
+		if (!highlightedLine || !activeKeys) {
 			setMeanings(null)
+			setIsLoading(false)
+			return
+		}
+		const cached = cacheRef.current[highlightedLine]
+		if (cached) {
+			setMeanings(cached)
 			setIsLoading(false)
 			return
 		}
@@ -124,6 +140,7 @@ export function DestinyMatrixLinesPanel({
 		setIsLoading(true)
 		fetchPositionalMeanings(activeKeys, result).then(data => {
 			if (!cancelled) {
+				cacheRef.current[highlightedLine] = data
 				setMeanings(data)
 				setIsLoading(false)
 			}
@@ -138,7 +155,7 @@ export function DestinyMatrixLinesPanel({
 	return (
 		<div className='space-y-3'>
 			<span className='block text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-				Родовые линии, любовь, деньги, талант
+				Родовые линии, любовь, деньги, талант, кармический хвост
 			</span>
 
 			<div className='flex flex-wrap gap-2'>

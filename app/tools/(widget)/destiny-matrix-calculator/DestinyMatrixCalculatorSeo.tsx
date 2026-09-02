@@ -1,12 +1,37 @@
 import Link from 'next/link'
-import { calculateFullDestinyMatrix } from '@/lib/utils/destiny-matrix'
+import {
+	calculateFullDestinyMatrix,
+	getArcana,
+	type FullPointKey
+} from '@/lib/utils/destiny-matrix'
 import { DestinyMatrixDiagram } from './DestinyMatrixDiagram'
 import { DestinyMatrixFullDiagram } from './DestinyMatrixFullDiagram'
 
-const EXAMPLE_BIRTH_DATE = '1994-03-17'
-const exampleResult = calculateFullDestinyMatrix(17, 3, 1994)
+export const EXAMPLE_BIRTH_DATE = '1994-03-17'
+export const EXAMPLE_RESULT = calculateFullDestinyMatrix(17, 3, 1994)
 
-export function DestinyMatrixCalculatorSeo() {
+interface DestinyMatrixCalculatorSeoProps {
+	/**
+	 * Сплошной текст расшифровки для примерной даты, посчитанный в
+	 * layout.tsx (серверный компонент) через fetchNarrativeBlock. Тут, а не
+	 * внутри этого файла, потому что сам Seo-блок рендерится изнутри
+	 * клиентской page.tsx и не может быть асинхронным компонентом ни
+	 * получить доступ к 550-текстовому датасету без утечки в клиентский
+	 * бандл (см. комментарий у getPositionalMeaning).
+	 */
+	narrativeTexts: Partial<Record<FullPointKey, string>>
+}
+
+export function DestinyMatrixCalculatorSeo({
+	narrativeTexts
+}: DestinyMatrixCalculatorSeoProps) {
+	const exampleResult = EXAMPLE_RESULT
+	const m = getArcana(exampleResult.m)
+	const n = getArcana(exampleResult.n)
+	const d = getArcana(exampleResult.fourth)
+	const introText =
+		narrativeTexts.center ?? getArcana(exampleResult.center).meaning
+
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
 			<section>
@@ -72,10 +97,7 @@ export function DestinyMatrixCalculatorSeo() {
 						result={exampleResult}
 						birthDate={EXAMPLE_BIRTH_DATE}
 						selection={{ kind: 'point', key: 'center' }}
-						onSelectPoint={() => {}}
-						onSelectAgeSector={() => {}}
 						highlightedLine={null}
-						onClearLine={() => {}}
 					/>
 				</div>
 			</section>
@@ -93,6 +115,34 @@ export function DestinyMatrixCalculatorSeo() {
 					доставшихся по мужской и по женской линии. Калькулятор строит все
 					точки сразу и даёт трактовку под каждую в блоке «Полное толкование
 					матрицы судьбы» ниже, а весь расчёт можно скачать PDF-отчётом.
+				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Расшифровка матрицы судьбы
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Расшифровка не сводится к номеру аркана: калькулятор пишет отдельный
+					текст под каждую точку в контексте её позиции, не общее значение
+					карты. Вот как это звучит для главного предназначения в примере 17
+					марта 1994 года: «{introText}» В таком же формате разобрана каждая из
+					родовых линий, любовь, деньги и талант, во вкладках блока «Полное
+					толкование матрицы судьбы» выше.
+				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Кармический хвост в матрице судьбы
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Цепочка из трёх точек: M (сумма четвёртой точки и центра), N (сумма
+					четвёртой точки и M) и сама четвёртая точка D, которой цепочка
+					замыкается. В примере это аркан {m.number} ({m.name}), затем{' '}
+					{n.number} ({n.name}), затем {d.number} ({d.name}), повторяющийся
+					сценарий, а не разовое событие. Калькулятор строит эту линию для любой
+					даты во вкладке «Кармический хвост».
 				</p>
 			</section>
 

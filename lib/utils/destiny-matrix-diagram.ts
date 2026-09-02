@@ -98,6 +98,7 @@ export const DIAGRAM_NODES: DiagramNode[] = [
 	{ key: 'l', x: 325, y: 240, radius: 16, category: 'diagonal' },
 	{ key: 'm', x: 240, y: 325, radius: 16, category: 'diagonal' },
 	{ key: 'q', x: 370, y: 240, radius: 13, category: 'diagonal' },
+	{ key: 'n', x: 240, y: 370, radius: 13, category: 'diagonal' },
 
 	{ key: 'f1', x: 162, y: 162, radius: 12, category: 'familyDiagonal' },
 	{ key: 'f2', x: 201, y: 201, radius: 12, category: 'familyDiagonal' },
@@ -165,6 +166,8 @@ export const DIAGRAM_BASE_EDGES: [FullPointKey, FullPointKey][] = [
 	['l', 'center'],
 	['fourth', 'm'],
 	['m', 'center'],
+	['fourth', 'n'],
+	['n', 'm'],
 	['f', 'f1'],
 	['f1', 'f2'],
 	['f2', 'center'],

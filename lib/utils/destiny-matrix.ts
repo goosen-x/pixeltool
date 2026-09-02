@@ -65,6 +65,8 @@ export interface FullDestinyMatrixResult extends DestinyMatrixResult {
 	k: number
 	l: number
 	m: number
+	/** Средний узел кармического хвоста (M→N→D). */
+	n: number
 	/** Денежный узел (используется в линии денег C→Q→L). */
 	q: number
 	/** Родовой квадрат. */
@@ -111,6 +113,7 @@ export function calculateFullDestinyMatrix(
 	const k = reduceTo22(b + e)
 	const l = reduceTo22(c + e)
 	const m = reduceTo22(d + e)
+	const n = reduceTo22(d + m)
 	const q = reduceTo22(c + l)
 
 	const f = reduceTo22(a + b)
@@ -139,6 +142,7 @@ export function calculateFullDestinyMatrix(
 		k,
 		l,
 		m,
+		n,
 		q,
 		f,
 		g,
@@ -203,6 +207,11 @@ export const NAMED_LINES: NamedLine[] = [
 			['year', 'q', 'l'],
 			['l', 'r2', 'r']
 		]
+	},
+	{
+		key: 'karmicTail',
+		label: 'Кармический хвост',
+		segments: [['m', 'n', 'fourth']]
 	}
 ]
 
@@ -242,6 +251,7 @@ export const FULL_POINT_LABELS: Record<FullPointKey, string> = {
 	k: 'Личная диагональ месяца',
 	l: 'Личная диагональ года',
 	m: 'Личная диагональ четвёртой точки',
+	n: 'Кармический хвост, средний узел',
 	q: 'Линия денег, первый узел',
 	f1: 'Линия мужского рода, первый узел',
 	f2: 'Талант по мужской линии рода',

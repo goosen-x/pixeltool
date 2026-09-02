@@ -18,7 +18,6 @@ import {
 } from '@/lib/utils/destiny-matrix-current-period'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
-import { DestinyMatrixCalculatorSeo } from './DestinyMatrixCalculatorSeo'
 import { DestinyMatrixFullDiagram } from './DestinyMatrixFullDiagram'
 import { DestinyMatrixLinesPanel } from './DestinyMatrixLinesPanel'
 import { DestinyMatrixNarrative } from './DestinyMatrixNarrative'
@@ -115,49 +114,31 @@ export default function DestinyMatrixCalculatorPage() {
 						result ? 'border-b px-5 py-6 sm:px-6' : 'px-5 py-20 sm:px-6'
 					}
 				>
-					<div
-						className={
-							result
-								? 'flex flex-wrap items-start gap-4'
-								: 'flex flex-wrap items-center justify-center gap-4'
-						}
-					>
-						<label
-							className={result ? 'block' : 'flex flex-wrap items-center gap-4'}
-						>
-							<span
-								className={
-									result
-										? 'mb-1.5 block text-base font-medium text-muted-foreground'
-										: 'text-2xl font-bold text-foreground'
-								}
-							>
-								Введите дату рождения
-							</span>
-							<div className='flex gap-2'>
-								<DatePicker
-									value={birthDate}
-									onChange={setBirthDate}
-									ariaLabel='Дата рождения'
-									className={
-										result
-											? 'w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-											: 'w-full max-w-[220px] cursor-pointer rounded-md border bg-background px-4 py-3 text-base text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-									}
-								/>
-								<Button
-									type='button'
-									onClick={() =>
-										(document.activeElement as HTMLElement | null)?.blur()
-									}
-									className='shrink-0 cursor-pointer'
-								>
-									Рассчитать
-								</Button>
-							</div>
-						</label>
+					{result ? (
+						<div className='flex flex-wrap items-start gap-4'>
+							<label className='block'>
+								<span className='mb-1.5 block text-base font-medium text-muted-foreground'>
+									Введите дату рождения
+								</span>
+								<div className='flex gap-2'>
+									<DatePicker
+										value={birthDate}
+										onChange={setBirthDate}
+										ariaLabel='Дата рождения'
+										className='w-full cursor-pointer rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+									/>
+									<Button
+										type='button'
+										onClick={() =>
+											(document.activeElement as HTMLElement | null)?.blur()
+										}
+										className='shrink-0 cursor-pointer'
+									>
+										Рассчитать
+									</Button>
+								</div>
+							</label>
 
-						{result && (
 							<Button
 								type='button'
 								variant='outline'
@@ -167,13 +148,37 @@ export default function DestinyMatrixCalculatorPage() {
 								<ScrollText className='h-4 w-4' />
 								Перейти к полному толкованию
 							</Button>
-						)}
-					</div>
+						</div>
+					) : (
+						<div className='flex flex-col items-center justify-center gap-6'>
+							<label className='flex flex-col items-center gap-4'>
+								<span className='text-2xl font-bold text-foreground'>
+									Введите дату рождения
+								</span>
+								<DatePicker
+									value={birthDate}
+									onChange={setBirthDate}
+									ariaLabel='Дата рождения'
+									className='w-full max-w-[220px] cursor-pointer rounded-md border bg-background px-4 py-3 text-base text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+								/>
+							</label>
+							<Button
+								type='button'
+								size='lg'
+								onClick={() =>
+									(document.activeElement as HTMLElement | null)?.blur()
+								}
+								className='cursor-pointer px-12'
+							>
+								Рассчитать
+							</Button>
+						</div>
+					)}
 				</div>
 
 				{result ? (
 					<div className='@container px-5 py-8 sm:px-6'>
-						<div className='grid gap-6 @[900px]:grid-cols-[minmax(320px,32rem)_minmax(300px,34rem)] @[900px]:justify-center'>
+						<div className='grid gap-6 @[700px]:grid-cols-[minmax(320px,32rem)_minmax(300px,34rem)] @[700px]:justify-center'>
 							<div>
 								<DestinyMatrixFullDiagram
 									result={result}
@@ -263,8 +268,6 @@ export default function DestinyMatrixCalculatorPage() {
 					<DestinyMatrixNarrative result={result} birthDate={birthDate} />
 				</Card>
 			)}
-
-			<DestinyMatrixCalculatorSeo />
 		</WidgetSEOWrapper>
 	)
 }
