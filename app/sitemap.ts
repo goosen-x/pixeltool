@@ -3,6 +3,7 @@ import { getAllPostsFromFiles } from '@/lib/api-file'
 import { publicWidgets } from '@/lib/constants/widgets'
 import { CATEGORY_KEYS } from '@/lib/constants/categories'
 import { unitPairs } from '@/lib/constants/unit-pairs'
+import { ZODIAC_PAGES } from '@/lib/constants/zodiac-pages'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -92,6 +93,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	unitPairs.forEach(pair => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/unit-converter/${pair.slug}`,
+			lastModified: CONTENT_LAST_UPDATED,
+			changeFrequency: 'monthly',
+			priority: 0.8
+		})
+	})
+
+	// Страницы отдельных знаков (/tools/zodiac-sign/lev и т.п.) — тот же
+	// паттерн, что у пар единиц: не самостоятельные тулы, а SEO-страницы
+	// одного хаба, поэтому в publicWidgets их нет.
+	ZODIAC_PAGES.forEach(page => {
+		sitemapEntries.push({
+			url: `${BASE_URL}/tools/zodiac-sign/${page.id}`,
 			lastModified: CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.8
