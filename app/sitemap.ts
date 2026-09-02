@@ -5,6 +5,7 @@ import { CATEGORY_KEYS } from '@/lib/constants/categories'
 import { unitPairs } from '@/lib/constants/unit-pairs'
 import { ZODIAC_PAGES } from '@/lib/constants/zodiac-pages'
 import { GEOMETRY_PAGES } from '@/lib/constants/geometry-pages'
+import { DAYS_UNTIL_PAGES } from '@/lib/constants/days-until-pages'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -118,6 +119,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	GEOMETRY_PAGES.forEach(page => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/${page.kind === 'area' ? 'area-calculator' : 'volume-calculator'}/${page.slug}`,
+			lastModified: CONTENT_LAST_UPDATED,
+			changeFrequency: 'monthly',
+			priority: 0.8
+		})
+	})
+
+	// Страницы конкретных дат (/tools/days-until/leto и т.п.)
+	DAYS_UNTIL_PAGES.forEach(page => {
+		sitemapEntries.push({
+			url: `${BASE_URL}/tools/days-until/${page.slug}`,
 			lastModified: CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.8
