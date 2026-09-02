@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
 	addToHistory,
 	ANSWERS,
+	BINARY_ANSWERS,
 	countByTone,
 	HISTORY_LIMIT,
 	pickAnswer,
@@ -87,5 +88,34 @@ describe('история', () => {
 			history = addToHistory(history, entry(`ответ ${i}`))
 		}
 		expect(history.some(item => item.answer === 'ответ 0')).toBe(false)
+	})
+})
+
+describe('режим «только да или нет»', () => {
+	it('отдаёт ровно два варианта', () => {
+		expect(BINARY_ANSWERS.map(a => a.text)).toEqual(['Да', 'Нет'])
+	})
+
+	it('шансы поровну: нижняя половина да, верхняя нет', () => {
+		expect(pickAnswer(() => 0, undefined, 'binary').text).toBe('Да')
+		expect(pickAnswer(() => 0.49, undefined, 'binary').text).toBe('Да')
+		expect(pickAnswer(() => 0.5, undefined, 'binary').text).toBe('Нет')
+		expect(pickAnswer(() => 0.99, undefined, 'binary').text).toBe('Нет')
+	})
+
+	it('повтор подряд разрешён — иначе вышло бы чередование, а не случайность', () => {
+		const previous = BINARY_ANSWERS[0].id
+		expect(pickAnswer(() => 0, previous, 'binary').id).toBe(previous)
+	})
+
+	it('идентификаторы не пересекаются с каноническими', () => {
+		const classic = new Set(ANSWERS.map(a => a.id))
+		for (const answer of BINARY_ANSWERS) {
+			expect(classic.has(answer.id)).toBe(false)
+		}
+	})
+
+	it('классический режим по-прежнему исключает повтор', () => {
+		expect(pickAnswer(() => 0, 1, 'classic').id).toBe(2)
 	})
 })

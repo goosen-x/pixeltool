@@ -5,7 +5,13 @@ import { Trash2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import {
+	toolBar,
+	toolFooterBar,
+	toolIconButton,
+	toolToggleOption,
+	toolToggleTrack
+} from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import {
@@ -14,6 +20,7 @@ import {
 	pickAnswer,
 	TONE_LABELS,
 	type BallAnswer,
+	type BallMode,
 	type HistoryEntry
 } from '@/lib/utils/magic-ball'
 import { cn } from '@/lib/utils'
@@ -27,6 +34,7 @@ const SHAKE_MS = 900
 export default function MagicBallPage() {
 	const widget = getWidgetById('magic-ball')!
 
+	const [mode, setMode] = useState<BallMode>('classic')
 	const [question, setQuestion] = useState('')
 	const [answer, setAnswer] = useState<BallAnswer | null>(null)
 	const [shaking, setShaking] = useState(false)
@@ -58,7 +66,7 @@ export default function MagicBallPage() {
 		setAnswer(null)
 
 		timer.current = setTimeout(() => {
-			const next = pickAnswer(Math.random, answer?.id)
+			const next = pickAnswer(Math.random, answer?.id, mode)
 			setAnswer(next)
 			setShaking(false)
 
@@ -95,8 +103,32 @@ export default function MagicBallPage() {
 		<WidgetSEOWrapper widget={widget}>
 			<Card className='overflow-hidden p-0'>
 				<div className={toolBar}>
+					<div className={toolToggleTrack}>
+						{(
+							[
+								['classic', 'Классический'],
+								['binary', 'Только да или нет']
+							] as [BallMode, string][]
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type='button'
+								onClick={() => {
+									setMode(value)
+									setAnswer(null)
+								}}
+								aria-pressed={mode === value}
+								className={toolToggleOption(mode === value)}
+							>
+								{label}
+							</button>
+						))}
+					</div>
+
 					<span className='text-sm text-muted-foreground'>
-						Задайте вопрос, на который отвечают «да» или «нет»
+						{mode === 'binary'
+							? 'Только «да» или «нет», ровно пополам'
+							: 'Двадцать реплик, среди них уклончивые'}
 					</span>
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
 						<Button
@@ -119,6 +151,7 @@ export default function MagicBallPage() {
 						type='button'
 						onClick={ask}
 						aria-label='Встряхнуть шар и получить ответ'
+						data-corner='round'
 						className={cn(
 							'group relative aspect-square w-56 cursor-pointer rounded-full transition-transform sm:w-64',
 							'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
@@ -145,7 +178,10 @@ export default function MagicBallPage() {
 
 						{/* Окошко с треугольником */}
 						<span
-							className='absolute left-1/2 top-1/2 flex aspect-square w-[52%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full'
+							/* Окно чуть выше центра: у настоящей игрушки оно смещено, и
+							   идеально центрированный круг делает шар похожим на мишень,
+							   а не на предмет. */
+							className='absolute left-1/2 top-[44%] flex aspect-square w-[52%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full'
 							style={{
 								background:
 									'radial-gradient(circle at 50% 45%, #241f4d 0%, #12102b 70%, #0a0918 100%)',
@@ -199,8 +235,9 @@ export default function MagicBallPage() {
 
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>
-						{counts.positive} ответов «да», {counts.neutral} уклончивых,{' '}
-						{counts.negative} «нет» — как у настоящей игрушки
+						{mode === 'binary'
+							? 'Два ответа с равными шансами — честнее монетки не бывает'
+							: `${counts.positive} ответов «да», ${counts.neutral} уклончивых, ${counts.negative} «нет» — как у настоящей игрушки`}
 					</span>
 					{history.length > 0 && (
 						<span className='text-sm text-muted-foreground sm:ml-auto'>
