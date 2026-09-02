@@ -817,7 +817,7 @@ export const toolWidgets: Widget[] = [
 		// этом числе планы (см. docs/backlog.md).
 		searchVolume: 691216,
 		icon: Combine,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'mergePdf',
 		path: 'merge-pdf',
 		gradient: 'from-red-500 to-rose-600',
@@ -864,7 +864,7 @@ export const toolWidgets: Widget[] = [
 		// госпорталов, отсюда и постоянный спрос.
 		searchVolume: 306487,
 		icon: FileMinus,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'compressPdf',
 		path: 'compress-pdf',
 		gradient: 'from-amber-500 to-red-600',
@@ -963,7 +963,7 @@ export const toolWidgets: Widget[] = [
 		// объясняет, почему подпись и печать живут в одном туле, а не в двух.
 		searchVolume: 1722,
 		icon: FileSignature,
-		category: 'utilities',
+		category: 'images',
 		translationKey: 'signPdf',
 		path: 'sign-pdf',
 		gradient: 'from-violet-500 to-purple-600',
@@ -1187,7 +1187,7 @@ export const toolWidgets: Widget[] = [
 		// «найдите площадь»), а цилиндр считают, когда есть реальная бочка.
 		searchVolume: 64210,
 		icon: Box,
-		category: 'construction',
+		category: 'math',
 		translationKey: 'volumeCalculator',
 		path: 'volume-calculator',
 		gradient: 'from-sky-500 to-blue-700',
@@ -1240,7 +1240,7 @@ export const toolWidgets: Widget[] = [
 		// конкуренция — Википедия и решебники.
 		searchVolume: 73325,
 		icon: Square,
-		category: 'construction',
+		category: 'math',
 		translationKey: 'areaCalculator',
 		path: 'area-calculator',
 		gradient: 'from-emerald-500 to-green-700',
@@ -1348,7 +1348,7 @@ export const toolWidgets: Widget[] = [
 		// вклада/кредита.
 		searchVolume: 39525,
 		icon: TrendingUp,
-		category: 'math',
+		category: 'finance',
 		translationKey: 'compoundInterestCalculator',
 		path: 'compound-interest-calculator',
 		gradient: 'from-emerald-500 to-teal-600',
@@ -1407,7 +1407,7 @@ export const toolWidgets: Widget[] = [
 		// бесплатный API, кэш на стороне клиента на время сессии.
 		searchVolume: 9591,
 		icon: Bitcoin,
-		category: 'utilities',
+		category: 'finance',
 		translationKey: 'bitcoinCalculator',
 		path: 'bitcoin-calculator',
 		gradient: 'from-orange-500 to-amber-600',
@@ -1913,7 +1913,7 @@ export const toolWidgets: Widget[] = [
 		// арифметика вокруг литров на 100 км, ни данных извне, ни бэкенда.
 		searchVolume: 43365,
 		icon: Fuel,
-		category: 'math',
+		category: 'auto',
 		translationKey: 'fuelCalculator',
 		path: 'fuel-calculator',
 		gradient: 'from-orange-500 to-amber-600',
@@ -2041,7 +2041,7 @@ export const toolWidgets: Widget[] = [
 		// себестоимость поддержки нулевая.
 		searchVolume: 21248,
 		icon: Car,
-		category: 'utilities',
+		category: 'auto',
 		translationKey: 'carRegionCodes',
 		path: 'car-region-codes',
 		gradient: 'from-sky-500 to-blue-700',

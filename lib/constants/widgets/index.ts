@@ -20,6 +20,8 @@ export interface Widget {
 		| 'math'
 		| 'entertainment'
 		| 'esoteric'
+		| 'finance'
+		| 'auto'
 	/**
 	 * Только у тулов category: 'development' — какой из бывших разделов
 	 * (css/html/javascript) до слияния в «Разработку». Двигает страницы
@@ -138,12 +140,14 @@ export const devSubcategories = {
 export const widgetCategories = {
 	generators: 'Рандомайзер',
 	text: 'Текст',
-	images: 'Изображения',
+	images: 'Изображения и PDF',
 	health: 'Здоровье',
 	security: 'Безопасность',
 	datetime: 'Дата и время',
 	math: 'Математика',
+	finance: 'Финансы',
 	construction: 'Стройка',
+	auto: 'Авто',
 	entertainment: 'Развлечения',
 	esoteric: 'Эзотерика',
 	utilities: 'Утилиты',
