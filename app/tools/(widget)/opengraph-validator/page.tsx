@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface OpenGraphData {
 	title?: string
@@ -788,6 +789,7 @@ export default function OpenGraphValidatorPage() {
 					</Alert>
 				)}
 			</Card>
+			<ToolScreenshot slug='opengraph-validator' />
 			<OpenGraphSeo />
 		</>
 	)

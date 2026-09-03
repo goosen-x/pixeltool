@@ -18,6 +18,7 @@ import {
 } from '@/components/tools/LaborField'
 import { calculateNdfl, grossFromNet } from '@/lib/utils/tax'
 import { SalaryCalculatorSeo } from './SalaryCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Direction = 'fromGross' | 'fromNet'
 
@@ -147,6 +148,7 @@ export default function SalaryCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='salary-calculator' />
 			<SalaryCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

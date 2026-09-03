@@ -21,6 +21,7 @@ import {
 	type MaternityKind
 } from '@/lib/utils/labor'
 import { MaternityCalculatorSeo } from './MaternityCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const KINDS: [MaternityKind, string][] = [
 	['normal', 'Обычные роды'],
@@ -144,6 +145,7 @@ export default function MaternityCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='maternity-calculator' />
 			<MaternityCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

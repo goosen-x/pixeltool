@@ -17,6 +17,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TeamRandomizerSeo } from './TeamRandomizerSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 interface Team {
 	id: number
 	name: string
@@ -358,6 +359,7 @@ export default function TeamRandomizerPage() {
 				</p>
 			</div>
 
+			<ToolScreenshot slug='team-randomizer' />
 			<TeamRandomizerSeo />
 		</WidgetSEOWrapper>
 	)

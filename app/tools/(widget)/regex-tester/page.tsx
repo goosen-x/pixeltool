@@ -13,6 +13,7 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 type RegexFlavor = 'javascript' | 'php' | 'python'
 
 interface RegexMatch {
@@ -600,6 +601,7 @@ export default function RegexTesterPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='regex-tester' />
 			<RegexGuide />
 		</>
 	)

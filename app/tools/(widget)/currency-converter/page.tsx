@@ -22,6 +22,7 @@ import {
 	type Rate
 } from '@/lib/utils/cbr-rates'
 import { CurrencyConverterSeo } from './CurrencyConverterSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 function format(value: number): string {
 	return value.toLocaleString('ru-RU', {
@@ -190,6 +191,7 @@ export default function CurrencyConverterPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='currency-converter' />
 			<CurrencyConverterSeo />
 		</WidgetSEOWrapper>
 	)

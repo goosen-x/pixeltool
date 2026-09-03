@@ -17,6 +17,7 @@ import {
 } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 interface GridProps {
 	columns: string
 	rows: string
@@ -521,6 +522,7 @@ export default function GridGeneratorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='grid-generator' />
 			<GridGuide />
 		</WidgetSEOWrapper>
 	)

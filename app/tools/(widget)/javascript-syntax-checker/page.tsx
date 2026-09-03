@@ -21,6 +21,7 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import { JsSyntaxSeo } from './JsSyntaxSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 // Simple JavaScript syntax checker without external dependencies
 
 type ParseMode = 'es5' | 'es6' | 'es2020' | 'latest'
@@ -704,6 +705,7 @@ export default function JavaScriptSyntaxCheckerPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='javascript-syntax-checker' />
 			<JsSyntaxSeo />
 		</>
 	)

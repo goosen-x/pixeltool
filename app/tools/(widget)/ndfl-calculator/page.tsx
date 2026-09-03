@@ -17,6 +17,7 @@ import {
 	RATES_VALID_FROM
 } from '@/lib/utils/tax'
 import { NdflCalculatorSeo } from './NdflCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Direction = 'fromGross' | 'fromNet'
 
@@ -168,6 +169,7 @@ export default function NdflCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='ndfl-calculator' />
 			<NdflCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

@@ -17,6 +17,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TextToSpeechSeo } from './TextToSpeechSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Короткие фразы, на которых слышно разницу между голосами. */
 const EXAMPLE_PHRASES = [
@@ -527,6 +528,7 @@ export default function TextToSpeechPage() {
 				</div>
 			)}
 
+			<ToolScreenshot slug='text-to-speech' />
 			<TextToSpeechSeo />
 		</WidgetSEOWrapper>
 	)

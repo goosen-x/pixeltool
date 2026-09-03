@@ -11,6 +11,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { EmojiListSeo } from './EmojiListSeo'
 import { EmojiGrid } from './EmojiGrid'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Иконка категории — сама же эмодзи из неё, подпись рядом. */
 const CATEGORY_ICONS: Record<string, string> = {
@@ -112,6 +113,7 @@ export default function EmojiListPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='emoji-list' />
 			<EmojiListSeo />
 		</WidgetSEOWrapper>
 	)

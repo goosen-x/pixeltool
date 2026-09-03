@@ -25,6 +25,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TextDiffToolSeo } from './TextDiffToolSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 // Режим «встроенный» удалён: он рендерился той же функцией, что и
 // «унифицированный», то есть был третьим пунктом списка без своего вида.
@@ -629,6 +630,7 @@ export default function TextDiffToolPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='text-diff-tool' />
 			<TextDiffToolSeo />
 		</WidgetSEOWrapper>
 	)

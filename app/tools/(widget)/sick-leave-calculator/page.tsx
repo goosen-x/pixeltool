@@ -19,6 +19,7 @@ import {
 	LABOR_VALUES_YEAR
 } from '@/lib/utils/labor'
 import { SickLeaveCalculatorSeo } from './SickLeaveCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function SickLeaveCalculatorPage() {
 	const widget = getWidgetById('sick-leave-calculator')!
@@ -133,6 +134,7 @@ export default function SickLeaveCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='sick-leave-calculator' />
 			<SickLeaveCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

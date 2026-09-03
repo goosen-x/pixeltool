@@ -14,6 +14,7 @@ import {
 	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { ClampGuide } from './ClampGuide'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Property = 'font-size' | 'margin' | 'padding'
 type Unit = 'px' | 'rem'
@@ -393,6 +394,7 @@ export default function ClampCalculatorPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='css-clamp-calculator' />
 			<ClampGuide />
 		</>
 	)

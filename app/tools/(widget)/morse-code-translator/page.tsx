@@ -22,6 +22,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { MorseCodeTranslatorSeo } from './MorseCodeTranslatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Direction = 'encode' | 'decode'
 
@@ -248,6 +249,7 @@ export default function MorseCodeTranslatorPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='morse-code-translator' />
 			<MorseCodeTranslatorSeo />
 		</WidgetSEOWrapper>
 	)

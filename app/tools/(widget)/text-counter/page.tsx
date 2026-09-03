@@ -24,6 +24,7 @@ import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TextCounterSeo } from './TextCounterSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface TextStats {
 	characters: number
@@ -523,6 +524,7 @@ ${stats.commonWords.map(({ word, count }) => `• ${word} (${count})`).join('\n'
 				</div>
 			</div>
 
+			<ToolScreenshot slug='text-counter' />
 			<TextCounterSeo />
 		</WidgetSEOWrapper>
 	)

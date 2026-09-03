@@ -17,6 +17,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { useYandexGoals } from '@/lib/hooks/useYandexGoals'
 import { DrawLotsSeo } from './DrawLotsSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const MAX_PARTICIPANTS = 100
 
@@ -397,6 +398,7 @@ export default function DrawLotsPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='draw-lots' />
 			<DrawLotsSeo />
 		</WidgetSEOWrapper>
 	)

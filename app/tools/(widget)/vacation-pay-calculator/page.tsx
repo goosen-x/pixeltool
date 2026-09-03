@@ -15,6 +15,7 @@ import {
 import { AVERAGE_MONTH_DAYS, calculateVacation } from '@/lib/utils/labor'
 import { calculateNdfl } from '@/lib/utils/tax'
 import { VacationPayCalculatorSeo } from './VacationPayCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function VacationPayCalculatorPage() {
 	const widget = getWidgetById('vacation-pay-calculator')!
@@ -114,6 +115,7 @@ export default function VacationPayCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='vacation-pay-calculator' />
 			<VacationPayCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

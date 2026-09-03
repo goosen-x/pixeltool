@@ -15,6 +15,7 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard'
 import { integerToWords, moneyToWords } from '@/lib/utils/number-to-words'
 import { AmountInWordsSeo } from './AmountInWordsSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const CURRENCIES = [
 	{
@@ -156,6 +157,7 @@ export default function AmountInWordsPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='amount-in-words' />
 			<AmountInWordsSeo />
 		</WidgetSEOWrapper>
 	)

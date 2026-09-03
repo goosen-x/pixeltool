@@ -4,6 +4,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { GeometryCalculator } from '@/components/tools/GeometryCalculator'
 import { VolumeCalculatorSeo } from './VolumeCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function VolumeCalculatorPage() {
 	const widget = getWidgetById('volume-calculator')!
@@ -11,6 +12,7 @@ export default function VolumeCalculatorPage() {
 	return (
 		<WidgetSEOWrapper widget={widget}>
 			<GeometryCalculator kind='volume' />
+			<ToolScreenshot slug='volume-calculator' />
 			<VolumeCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

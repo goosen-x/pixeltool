@@ -10,6 +10,7 @@ import { useSpecialSymbols } from '@/lib/hooks/useSpecialSymbols'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { SpecialSymbolsPickerSeo } from './SpecialSymbolsPickerSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function SpecialSymbolsPickerPage() {
 	const widget = getWidgetById('special-symbols-picker')!
@@ -117,6 +118,7 @@ export default function SpecialSymbolsPickerPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='special-symbols-picker' />
 			<SpecialSymbolsPickerSeo />
 		</WidgetSEOWrapper>
 	)

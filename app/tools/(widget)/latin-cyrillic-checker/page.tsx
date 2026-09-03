@@ -11,6 +11,7 @@ import { analyzeText, fixText } from '@/lib/utils/mixed-script'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { LatinCyrillicCheckerSeo } from './LatinCyrillicCheckerSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const SAMPLE = 'Мой пaроль от сaйта, лoгин и купить iPhone'
 
@@ -193,6 +194,7 @@ export default function LatinCyrillicCheckerPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='latin-cyrillic-checker' />
 			<LatinCyrillicCheckerSeo />
 		</WidgetSEOWrapper>
 	)

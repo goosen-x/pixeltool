@@ -13,6 +13,7 @@ import {
 	getCompatibility
 } from '@/lib/utils/zodiac-compatibility'
 import { ZodiacCompatibilitySeo } from './ZodiacCompatibilitySeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Цвет клетки матрицы по оценке — от конфликтной к гармоничной. */
 function scoreClass(score: number): string {
@@ -180,6 +181,7 @@ export default function ZodiacCompatibilityPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='zodiac-compatibility' />
 			<ZodiacCompatibilitySeo />
 		</WidgetSEOWrapper>
 	)

@@ -32,7 +32,9 @@ const SRC_OVERRIDES: Record<string, string> = {
 	'dice-roller': 'tool-dice-roller-fixed-v2.webp',
 	'qr-generator': 'tool-qr-generator-fixed.webp',
 	'random-number-generator': 'tool-random-number-generator-fixed-v5.webp',
-	'typing-speed-test': 'tool-typing-speed-test-fixed.webp'
+	'typing-speed-test': 'tool-typing-speed-test-fixed.webp',
+	'magic-ball': 'tool-magic-ball-fixed-v2.webp',
+	'draw-lots': 'tool-draw-lots-fixed-v3.webp'
 }
 
 /** Ищет исходник: сначала override, затем tool-<path>.webp, затем tool-<id>.webp. */

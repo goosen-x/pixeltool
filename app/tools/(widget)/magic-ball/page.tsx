@@ -25,6 +25,7 @@ import {
 } from '@/lib/utils/magic-ball'
 import { cn } from '@/lib/utils'
 import { MagicBallSeo } from './MagicBallSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const STORAGE_KEY = 'pixeltool:magic-ball:history'
 
@@ -276,6 +277,7 @@ export default function MagicBallPage() {
 				</section>
 			)}
 
+			<ToolScreenshot slug='magic-ball' />
 			<MagicBallSeo />
 		</WidgetSEOWrapper>
 	)

@@ -11,6 +11,7 @@ import { calculateServiceLength, type Period } from '@/lib/utils/labor'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { sickLeavePercent } from '@/lib/utils/labor'
 import { ServiceLengthCalculatorSeo } from './ServiceLengthCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function ServiceLengthCalculatorPage() {
 	const widget = getWidgetById('service-length-calculator')!
@@ -114,6 +115,7 @@ export default function ServiceLengthCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='service-length-calculator' />
 			<ServiceLengthCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

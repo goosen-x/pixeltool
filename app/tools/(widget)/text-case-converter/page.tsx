@@ -31,6 +31,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TextCaseConverterSeo } from './TextCaseConverterSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Русские подписи к группам: в constants они на английском. */
 const CATEGORY_LABELS: Record<keyof typeof categories, string> = {
@@ -334,6 +335,7 @@ export default function TextCaseConverterPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='text-case-converter' />
 			<TextCaseConverterSeo />
 		</WidgetSEOWrapper>
 	)

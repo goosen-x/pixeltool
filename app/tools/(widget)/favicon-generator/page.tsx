@@ -11,6 +11,7 @@ import JSZip from 'jszip'
 import { buildIco, buildIcoBuffer } from '@/lib/favicon/ico'
 import { FaviconGuide } from './FaviconGuide'
 import { FaviconLookup } from './FaviconLookup'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Размеры, которые кладём в favicon.ico — так его собирают все генераторы. */
 const ICO_SIZES = [16, 32, 48]
@@ -370,6 +371,7 @@ export default function FaviconGeneratorPage() {
 				<FaviconLookup />
 			</div>
 
+			<ToolScreenshot slug='favicon-generator' />
 			<FaviconGuide />
 
 			{/* Скрытый канвас для перерисовки картинки */}

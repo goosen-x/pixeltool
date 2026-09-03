@@ -17,6 +17,7 @@ import {
 } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 interface FlexboxProps {
 	flexDirection: string
 	justifyContent: string
@@ -381,6 +382,7 @@ export default function FlexboxGeneratorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='flexbox-generator' />
 			<FlexboxGuide />
 		</WidgetSEOWrapper>
 	)

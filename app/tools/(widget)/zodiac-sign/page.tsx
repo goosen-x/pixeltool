@@ -5,6 +5,7 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { ZodiacWidget } from '@/components/tools/ZodiacWidget'
 import { ZodiacTable } from '@/components/tools/ZodiacTable'
 import { ZodiacSignSeo } from './ZodiacSignSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function ZodiacSignPage() {
 	const widget = getWidgetById('zodiac-sign')!
@@ -26,6 +27,7 @@ export default function ZodiacSignPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='zodiac-sign' />
 			<ZodiacSignSeo />
 		</WidgetSEOWrapper>
 	)

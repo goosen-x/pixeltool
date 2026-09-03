@@ -23,6 +23,7 @@ import {
 } from '@/lib/utils/tax'
 import { moneyToWords } from '@/lib/utils/number-to-words'
 import { VatCalculatorSeo } from './VatCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'add' | 'extract'
 
@@ -189,6 +190,7 @@ export default function VatCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='vat-calculator' />
 			<VatCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

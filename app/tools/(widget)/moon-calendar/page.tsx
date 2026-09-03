@@ -15,6 +15,7 @@ import {
 	nextNewMoon
 } from '@/lib/utils/moon'
 import { MoonCalendarSeo } from './MoonCalendarSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const MONTHS = [
 	'январь',
@@ -183,6 +184,7 @@ export default function MoonCalendarPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='moon-calendar' />
 			<MoonCalendarSeo />
 		</WidgetSEOWrapper>
 	)

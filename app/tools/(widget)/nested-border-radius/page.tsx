@@ -22,6 +22,7 @@ import {
 	computeOuterRadius
 } from '@/lib/utils/nested-radius'
 import { NestedBorderRadiusSeo } from './NestedBorderRadiusSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /**
  * Что считаем. Третий режим — «одинаковый радиус» — не расчёт, а образец
@@ -312,6 +313,7 @@ export default function NestedBorderRadiusPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='nested-border-radius' />
 			<NestedBorderRadiusSeo />
 		</WidgetSEOWrapper>
 	)

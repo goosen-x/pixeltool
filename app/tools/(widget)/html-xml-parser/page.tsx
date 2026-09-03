@@ -22,6 +22,7 @@ import {
 	toolToggleOption,
 	toolToggleTrack
 } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface ParseResult {
 	output: string
@@ -399,6 +400,7 @@ export default function HtmlXmlParserPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='html-xml-parser' />
 			<HtmlXmlParserSeo />
 		</>
 	)

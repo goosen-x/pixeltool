@@ -12,6 +12,7 @@ import {
 	type HttpStatusClass
 } from '@/lib/data/http-status-codes'
 import { HttpStatusCodesSeo } from './HttpStatusCodesSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const CLASSES: HttpStatusClass[] = ['1xx', '2xx', '3xx', '4xx', '5xx']
 
@@ -131,6 +132,7 @@ export default function HttpStatusCodesPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='http-status-codes' />
 			<HttpStatusCodesSeo />
 		</WidgetSEOWrapper>
 	)
