@@ -1,0 +1,131 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import { Check, Copy } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
+import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
+import { getWidgetById } from '@/lib/constants/widgets'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
+import { DrrCalculatorSeo } from './DrrCalculatorSeo'
+
+function toNumber(value: string): number | null {
+	const parsed = parseFloat(value.replace(/\s/g, '').replace(',', '.'))
+	return Number.isFinite(parsed) ? parsed : null
+}
+
+function fmt(value: number, digits = 2): string {
+	return value.toLocaleString('ru-RU', { maximumFractionDigits: digits })
+}
+
+const inputClass =
+	'w-full rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+
+export default function DrrCalculatorPage() {
+	const widget = getWidgetById('drr-calculator')!
+
+	const [spend, setSpend] = useState('30000')
+	const [revenue, setRevenue] = useState('200000')
+	const [copied, setCopied] = useState(false)
+
+	const result = useMemo(() => {
+		const s = toNumber(spend)
+		const r = toNumber(revenue)
+		if (s === null || r === null || r <= 0) return null
+		return { drr: (s / r) * 100, roas: (r / s) * 100 }
+	}, [spend, revenue])
+
+	const summary = result
+		? `ДРР ${fmt(result.drr)}%, ROAS ${fmt(result.roas)}%`
+		: ''
+
+	const copy = async () => {
+		if (!summary) return
+		await navigator.clipboard.writeText(summary)
+		setCopied(true)
+		setTimeout(() => setCopied(false), 2000)
+	}
+
+	return (
+		<WidgetSEOWrapper widget={widget}>
+			<Card className='overflow-hidden p-0'>
+				<div className={toolBar}>
+					<span className='text-sm text-muted-foreground'>
+						Расходы на рекламу и выручка
+					</span>
+					<div className='flex items-center gap-0.5 sm:ml-auto'>
+						<Button
+							size='icon'
+							variant='ghost'
+							onClick={copy}
+							disabled={!summary}
+							title='Скопировать результат'
+							className={toolIconButton}
+						>
+							{copied ? (
+								<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+							) : (
+								<Copy className='h-4 w-4' />
+							)}
+						</Button>
+					</div>
+				</div>
+
+				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-2 sm:px-6'>
+					<label className='block'>
+						<span className='mb-1.5 block text-sm text-muted-foreground'>
+							Расходы на рекламу
+						</span>
+						<input
+							type='text'
+							inputMode='decimal'
+							value={spend}
+							onChange={e => setSpend(e.target.value)}
+							aria-label='Расходы на рекламу'
+							className={inputClass}
+						/>
+					</label>
+					<label className='block'>
+						<span className='mb-1.5 block text-sm text-muted-foreground'>
+							Выручка от рекламы
+						</span>
+						<input
+							type='text'
+							inputMode='decimal'
+							value={revenue}
+							onChange={e => setRevenue(e.target.value)}
+							aria-label='Выручка от рекламы'
+							className={inputClass}
+						/>
+					</label>
+				</div>
+
+				{result ? (
+					<div className='px-5 py-8 text-center sm:px-6'>
+						<span className='block font-mono text-5xl font-bold tracking-tight text-foreground sm:text-6xl'>
+							{fmt(result.drr)}%
+						</span>
+						<span className='mt-1 block text-sm text-muted-foreground'>
+							доля рекламных расходов в выручке · ROAS {fmt(result.roas)}%
+						</span>
+					</div>
+				) : (
+					<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+						Заполните расходы и выручку
+					</p>
+				)}
+
+				<div className={toolFooterBar}>
+					<span className='text-sm text-muted-foreground'>
+						Считайте ДРР от выручки, которую принесла именно реклама, иначе
+						органика замаскирует убыточные кампании
+					</span>
+				</div>
+			</Card>
+
+			<ToolScreenshot slug='drr-calculator' />
+			<DrrCalculatorSeo />
+		</WidgetSEOWrapper>
+	)
+}

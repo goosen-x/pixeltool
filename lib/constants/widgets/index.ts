@@ -21,6 +21,7 @@ export interface Widget {
 		| 'entertainment'
 		| 'esoteric'
 		| 'finance'
+		| 'marketing'
 		| 'auto'
 	/**
 	 * Только у тулов category: 'development' — какой из бывших разделов
@@ -74,6 +75,7 @@ export { generatorWidgets } from './generators'
 export { securityWidgets } from './security'
 export { toolWidgets } from './tools'
 export { healthWidgets } from './health'
+export { businessWidgets } from './business'
 
 import { cssWidgets } from './css'
 import { htmlWidgets } from './html'
@@ -83,6 +85,7 @@ import { generatorWidgets } from './generators'
 import { securityWidgets } from './security'
 import { toolWidgets } from './tools'
 import { healthWidgets } from './health'
+import { businessWidgets } from './business'
 
 export const widgets: Widget[] = [
 	...cssWidgets,
@@ -92,7 +95,8 @@ export const widgets: Widget[] = [
 	...generatorWidgets,
 	...securityWidgets,
 	...toolWidgets,
-	...healthWidgets
+	...healthWidgets,
+	...businessWidgets
 ]
 
 /**
@@ -146,6 +150,7 @@ export const widgetCategories = {
 	datetime: 'Дата и время',
 	math: 'Математика',
 	finance: 'Финансы',
+	marketing: 'Маркетинг',
 	construction: 'Стройка',
 	auto: 'Авто',
 	entertainment: 'Развлечения',
