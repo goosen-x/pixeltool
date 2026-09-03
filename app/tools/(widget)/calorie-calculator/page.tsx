@@ -12,6 +12,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { CalorieCalculatorSeo } from './CalorieCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Gender = 'male' | 'female'
 type Activity = 'minimal' | 'low' | 'medium' | 'high' | 'veryHigh'
@@ -244,6 +245,7 @@ export default function CalorieCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='calorie-calculator' />
 			<CalorieCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

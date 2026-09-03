@@ -20,6 +20,7 @@ import {
 	type Capitalization
 } from '@/lib/utils/compound-interest'
 import { CompoundInterestCalculatorSeo } from './CompoundInterestCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const CAPITALIZATIONS: [Capitalization, string][] = [
 	[365, 'Ежедневно'],
@@ -259,6 +260,7 @@ export default function CompoundInterestCalculatorPage() {
 				</section>
 			)}
 
+			<ToolScreenshot slug='compound-interest-calculator' />
 			<CompoundInterestCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

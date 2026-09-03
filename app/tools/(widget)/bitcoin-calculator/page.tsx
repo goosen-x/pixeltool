@@ -8,6 +8,7 @@ import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { BitcoinCalculatorSeo } from './BitcoinCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type CryptoId = 'bitcoin' | 'ethereum' | 'tether'
 type FiatCode = 'rub' | 'usd' | 'eur'
@@ -259,6 +260,7 @@ export default function BitcoinCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='bitcoin-calculator' />
 			<BitcoinCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

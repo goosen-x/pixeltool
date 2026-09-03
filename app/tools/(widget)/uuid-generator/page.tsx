@@ -14,6 +14,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { UuidGeneratorSeo } from './UuidGeneratorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type UUIDVersion = 'v4' | 'v7' | 'v1' | 'nil'
 type UUIDFormat = 'standard' | 'uppercase' | 'no-hyphens' | 'braces'
@@ -375,6 +376,7 @@ export default function UUIDGeneratorPage() {
 					</div>
 				</div>
 			</Card>
+			<ToolScreenshot slug='uuid-generator' />
 			<UuidGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

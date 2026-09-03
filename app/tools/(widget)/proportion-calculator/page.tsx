@@ -13,6 +13,7 @@ import {
 	type ProportionField
 } from '@/lib/utils/proportion-calculator'
 import { ProportionCalculatorSeo } from './ProportionCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const DEFAULTS = { a: '2', b: '5', c: '8', d: '' }
 const FIELDS: ProportionField[] = ['a', 'b', 'c', 'd']
@@ -194,6 +195,7 @@ export default function ProportionCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='proportion-calculator' />
 			<ProportionCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

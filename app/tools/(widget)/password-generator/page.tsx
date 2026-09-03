@@ -18,6 +18,7 @@ import { TextRoll } from '@/components/core/text-roll'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { PasswordSeo } from './PasswordSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface PasswordOptions {
 	length: number
@@ -634,6 +635,7 @@ export default function PasswordGeneratorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='password-generator' />
 			<PasswordSeo />
 		</WidgetSEOWrapper>
 	)

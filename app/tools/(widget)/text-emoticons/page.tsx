@@ -18,6 +18,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TextEmoticonsSeo } from './TextEmoticonsSeo'
 import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Русские названия категорий: в данных лежат английские id. */
 const CATEGORY_LABELS: Record<string, string> = {
@@ -554,6 +555,7 @@ export default function TextEmoticonsPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='text-emoticons' />
 			<TextEmoticonsSeo />
 		</WidgetSEOWrapper>
 	)

@@ -11,6 +11,7 @@ import { useFileDrop } from '@/lib/hooks/useFileDrop'
 import { cn } from '@/lib/utils'
 import { RemoveBackgroundSeo } from './RemoveBackgroundSeo'
 import { BeforeAfterSlider } from './BeforeAfterSlider'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Status = 'idle' | 'processing' | 'done' | 'error'
 
@@ -269,6 +270,7 @@ export default function RemoveBackgroundPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='remove-background' />
 			<RemoveBackgroundSeo />
 		</WidgetSEOWrapper>
 	)

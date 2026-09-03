@@ -27,6 +27,7 @@ import {
 	type RGBA,
 	type HSL
 } from '@/lib/utils/color-converter'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function ColorConverterPage() {
 	const [hexValue, setHexValue] = useState('#FF6B9D')
@@ -233,6 +234,7 @@ export default function ColorConverterPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='color-converter' />
 			<ColorGuide />
 		</>
 	)

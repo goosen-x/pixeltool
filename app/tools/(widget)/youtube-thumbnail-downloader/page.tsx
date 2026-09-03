@@ -10,6 +10,7 @@ import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { YoutubeThumbnailSeo } from './YoutubeThumbnailSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /**
  * Пять размеров, которые YouTube отдаёт по фиксированным адресам. Кроме них
@@ -259,6 +260,7 @@ export default function YouTubeThumbnailPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='youtube-thumbnail-downloader' />
 			<YoutubeThumbnailSeo />
 		</WidgetSEOWrapper>
 	)

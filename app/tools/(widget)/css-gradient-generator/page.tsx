@@ -24,6 +24,7 @@ import {
 
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const LINEAR_DIRECTIONS = [
 	'to top',
@@ -445,6 +446,7 @@ export default function CSSGradientGeneratorPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='css-gradient-generator' />
 			<GradientGuide />
 		</WidgetSEOWrapper>
 	)

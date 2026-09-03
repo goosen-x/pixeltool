@@ -17,6 +17,7 @@ import {
 	toolToggleOption,
 	toolToggleTrack
 } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type ShadowMode = 'box' | 'text'
 
@@ -945,6 +946,7 @@ export default function CSSBoxShadowGeneratorPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='css-box-shadow-generator' />
 			<ShadowGuide />
 		</WidgetSEOWrapper>
 	)

@@ -18,6 +18,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { TimezoneDifferenceSeo } from './TimezoneDifferenceSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 function nowHHMM(date: Date): string {
 	return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
@@ -217,6 +218,7 @@ export default function TimezoneDifferencePage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='timezone-difference' />
 			<TimezoneDifferenceSeo />
 		</WidgetSEOWrapper>
 	)

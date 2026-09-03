@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { decodeImageData } from '@/lib/qr-scanner/decode'
 import { QrScannerSeo } from './QrScannerSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type ScanMode = 'camera' | 'upload'
 
@@ -335,6 +336,7 @@ export default function QRScannerPage() {
 					)}
 				</div>
 			</Card>
+			<ToolScreenshot slug='qr-scanner' />
 			<QrScannerSeo />
 		</WidgetSEOWrapper>
 	)

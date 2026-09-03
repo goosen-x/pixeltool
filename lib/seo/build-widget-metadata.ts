@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { getWidgetByPath, type Widget } from '@/lib/constants/widgets'
+import { toolScreenshotBase } from '@/lib/constants/tool-screenshots'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -38,7 +39,13 @@ export function buildWidgetMetadata(slug: string): Metadata {
 		`Онлайн-инструмент «${title}» — бесплатно, без установки, работает прямо в браузере.`
 
 	const url = `${BASE_URL}/tools/${slug}`
-	const ogImageUrl = buildWidgetOgImagePath(widget)
+	// У тула с готовым скриншотом og:image берём из реального файла, а не из
+	// автогенерённой карточки /api/og — картинка интерфейса информативнее в
+	// соцсетях и совпадает с изображением в JSON-LD.
+	const screenshotBase = toolScreenshotBase(widget.path)
+	const ogImage = screenshotBase
+		? { url: `${screenshotBase}-1200.webp`, width: 1200, height: 675 }
+		: { url: buildWidgetOgImagePath(widget), width: 1200, height: 630 }
 
 	// Демо-тул: доступен по прямой ссылке для проверки, но не публикуется —
 	// noindex вместо canonical и явная пометка в заголовке вкладки.
@@ -61,7 +68,7 @@ export function buildWidgetMetadata(slug: string): Metadata {
 			siteName: 'PixelTool',
 			locale: 'ru_RU',
 			type: 'website',
-			images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }]
+			images: [{ ...ogImage, alt: title }]
 		},
 		twitter: {
 			card: 'summary_large_image',

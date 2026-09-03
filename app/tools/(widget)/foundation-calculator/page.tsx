@@ -14,6 +14,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { FoundationCalculatorSeo } from './FoundationCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const TYPES: { value: FoundationType; label: string }[] = [
 	{ value: 'strip', label: 'Ленточный' },
@@ -275,6 +276,7 @@ export default function FoundationCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='foundation-calculator' />
 			<FoundationCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

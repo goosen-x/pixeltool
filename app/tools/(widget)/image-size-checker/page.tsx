@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard'
 import { ImageCompressPanel } from '@/components/tools/ImageCompressPanel'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface ImageInfo {
 	name: string
@@ -624,6 +625,7 @@ export default function ImageSizeCheckerPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='image-size-checker' />
 			<ImageSizeCheckerSeo />
 		</WidgetSEOWrapper>
 	)

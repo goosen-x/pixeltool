@@ -48,6 +48,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { PixelArtEditorSeo } from './PixelArtEditorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const GRID_SIZES = [16, 32, 64] as const
 type GridSize = (typeof GRID_SIZES)[number]
@@ -909,6 +910,7 @@ export default function PixelArtEditorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='pixel-art-editor' />
 			<PixelArtEditorSeo />
 		</WidgetSEOWrapper>
 	)

@@ -15,6 +15,7 @@ import { pluralizeRu } from '@/lib/utils/pluralize'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { PregnancyCalculatorSeo } from './PregnancyCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const CYCLES = [21, 24, 26, 28, 30, 32, 35]
 
@@ -186,6 +187,7 @@ export default function PregnancyCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='pregnancy-calculator' />
 			<PregnancyCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

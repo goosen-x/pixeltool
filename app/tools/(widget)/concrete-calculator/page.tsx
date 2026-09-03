@@ -11,6 +11,7 @@ import {
 	type ConcreteGrade
 } from '@/lib/utils/concrete-calculator'
 import { ConcreteCalculatorSeo } from './ConcreteCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const GRADES: ConcreteGrade[] = ['M100', 'M200', 'M300', 'M400']
 const BAG_WEIGHTS = [25, 50]
@@ -175,6 +176,7 @@ export default function ConcreteCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='concrete-calculator' />
 			<ConcreteCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

@@ -27,6 +27,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const EXAMPLE_HTML = `<!DOCTYPE html>
 <html class="page" lang="ru">
@@ -990,6 +991,7 @@ export default function HTMLTreePage() {
 				</div>
 			)}
 
+			<ToolScreenshot slug='html-checker' />
 			<HtmlCheckerSeo />
 		</>
 	)

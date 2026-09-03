@@ -11,6 +11,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import type { RandomMovie } from '@/app/api/random-movies/route'
 import { RandomMovieGeneratorSeo } from './RandomMovieGeneratorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const ALL_GENRES = 'Любой жанр'
 
@@ -311,6 +312,7 @@ export default function RandomMovieGeneratorPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='random-movie-generator' />
 			<RandomMovieGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

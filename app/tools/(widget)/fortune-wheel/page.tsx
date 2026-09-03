@@ -11,6 +11,7 @@ import { toolBar, toolFooterBar, toolPill } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { FortuneWheelSeo } from './FortuneWheelSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const MAX_SEGMENTS = 30
 const WHEEL_SIZE = 320
@@ -301,6 +302,7 @@ export default function FortuneWheelPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='fortune-wheel' />
 			<FortuneWheelSeo />
 		</WidgetSEOWrapper>
 	)

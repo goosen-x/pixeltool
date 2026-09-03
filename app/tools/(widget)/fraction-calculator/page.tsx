@@ -23,6 +23,7 @@ import {
 	type Fraction
 } from '@/lib/utils/fraction-calculator'
 import { FractionCalculatorSeo } from './FractionCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'add' | 'subtract' | 'multiply' | 'divide'
 
@@ -287,6 +288,7 @@ export default function FractionCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='fraction-calculator' />
 			<FractionCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

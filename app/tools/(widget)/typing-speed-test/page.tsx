@@ -10,6 +10,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { randomTypingText } from '@/lib/data/typing-speed-texts'
 import { TypingSpeedTestSeo } from './TypingSpeedTestSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function TypingSpeedTestPage() {
 	const widget = getWidgetById('typing-speed-test')!
@@ -165,6 +166,7 @@ export default function TypingSpeedTestPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='typing-speed-test' />
 			<TypingSpeedTestSeo />
 		</WidgetSEOWrapper>
 	)

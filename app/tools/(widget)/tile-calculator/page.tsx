@@ -7,6 +7,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { calculateTiles } from '@/lib/utils/tile-calculator'
 import { TileCalculatorSeo } from './TileCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const WASTE_OPTIONS = [5, 10, 15, 20]
 
@@ -187,6 +188,7 @@ export default function TileCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='tile-calculator' />
 			<TileCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

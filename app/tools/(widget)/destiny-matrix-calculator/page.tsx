@@ -22,6 +22,7 @@ import { DestinyMatrixFullDiagram } from './DestinyMatrixFullDiagram'
 import { DestinyMatrixLinesPanel } from './DestinyMatrixLinesPanel'
 import { DestinyMatrixNarrative } from './DestinyMatrixNarrative'
 import { DestinyMatrixPointDetail } from './DestinyMatrixPointDetail'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const BASE_POINT_KEYS: FullPointKey[] = [
 	'day',
@@ -268,6 +269,7 @@ export default function DestinyMatrixCalculatorPage() {
 					<DestinyMatrixNarrative result={result} birthDate={birthDate} />
 				</Card>
 			)}
+			<ToolScreenshot slug='destiny-matrix-calculator' />
 		</WidgetSEOWrapper>
 	)
 }

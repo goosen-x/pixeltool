@@ -15,6 +15,7 @@ import { NumerologyStepBreakdown } from './NumerologyStepBreakdown'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { NumerologyCalculatorSeo } from './NumerologyCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 function parseIso(
 	value: string
@@ -145,6 +146,7 @@ export default function NumerologyCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='numerology-calculator' />
 			<NumerologyCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

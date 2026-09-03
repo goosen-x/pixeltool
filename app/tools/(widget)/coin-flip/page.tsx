@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { CoinFlipSeo } from './CoinFlipSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface FlipResult {
 	id: string
@@ -268,6 +269,7 @@ export default function CoinFlipPage() {
 				</p>
 			</div>
 
+			<ToolScreenshot slug='coin-flip' />
 			<CoinFlipSeo />
 		</WidgetSEOWrapper>
 	)

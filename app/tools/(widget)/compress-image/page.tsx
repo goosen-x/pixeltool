@@ -21,6 +21,7 @@ import { useImageCompress } from '@/lib/hooks/useImageCompress'
 import type { OutputFormat } from '@/lib/tools/image-compress'
 import { cn } from '@/lib/utils'
 import { CompressImageSeo } from './CompressImageSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const FORMAT_LABELS: [OutputFormat, string][] = [
 	['image/jpeg', 'JPEG'],
@@ -262,6 +263,7 @@ export default function CompressImagePage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='compress-image' />
 			<CompressImageSeo />
 		</WidgetSEOWrapper>
 	)

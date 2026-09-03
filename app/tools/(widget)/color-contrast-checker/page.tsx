@@ -15,6 +15,7 @@ import {
 	toolToggleOption,
 	toolToggleTrack
 } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface ContrastResult {
 	ratio: number
@@ -633,6 +634,7 @@ export default function ColorContrastCheckerPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='color-contrast-checker' />
 			<ContrastGuide />
 		</>
 	)

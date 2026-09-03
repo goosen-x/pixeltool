@@ -8,6 +8,7 @@ import { CAR_REGIONS, type CarRegion } from '@/lib/data/car-region-codes'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { CarRegionCodesSeo } from './CarRegionCodesSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const DISTRICTS = [
 	'Все',
@@ -143,6 +144,7 @@ export default function CarRegionCodesPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='car-region-codes' />
 			<CarRegionCodesSeo />
 		</WidgetSEOWrapper>
 	)

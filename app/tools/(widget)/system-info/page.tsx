@@ -9,6 +9,7 @@ import { useSystemInfo } from '@/lib/hooks/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { SystemInfoSeo } from './SystemInfoSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function SystemInfoPage() {
 	const widget = getWidgetById('system-info')!
@@ -221,6 +222,7 @@ export default function SystemInfoPage() {
 				никуда не отправляются.
 			</p>
 
+			<ToolScreenshot slug='system-info' />
 			<SystemInfoSeo />
 		</WidgetSEOWrapper>
 	)

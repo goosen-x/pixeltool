@@ -19,6 +19,7 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface MinificationResult {
 	originalSize: number
@@ -500,6 +501,7 @@ export default function CSSMinifierPage() {
 			</Card>
 
 			{/* Справка — секцией под карточкой, как обучающие блоки в других тулах */}
+			<ToolScreenshot slug='css-minifier' />
 			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
 				<h2 className='text-2xl font-bold tracking-tight'>
 					Что делает минификация

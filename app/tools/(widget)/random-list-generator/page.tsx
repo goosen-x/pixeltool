@@ -17,6 +17,7 @@ import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { RandomListGeneratorSeo } from './RandomListGeneratorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 // Fisher-Yates shuffle algorithm using crypto.getRandomValues for better randomness
 function cryptoShuffle<T>(array: T[]): T[] {
@@ -270,6 +271,7 @@ export default function RandomListGeneratorPage() {
 				</p>
 			</div>
 
+			<ToolScreenshot slug='random-list-generator' />
 			<RandomListGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

@@ -50,6 +50,7 @@ import {
 } from '@/lib/tools/signature-image'
 import { cn } from '@/lib/utils'
 import { SignPdfSeo } from './SignPdfSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type AssetKind = 'signature' | 'stamp'
 
@@ -748,6 +749,7 @@ export default function SignPdfPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='sign-pdf' />
 			<SignPdfSeo />
 		</WidgetSEOWrapper>
 	)

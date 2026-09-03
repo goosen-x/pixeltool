@@ -14,6 +14,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { PercentCalculatorSeo } from './PercentCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'from' | 'to' | 'diff' | 'discount'
 
@@ -354,6 +355,7 @@ export default function PercentCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='percent-calculator' />
 			<PercentCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

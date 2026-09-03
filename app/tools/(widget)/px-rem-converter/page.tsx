@@ -16,6 +16,7 @@ import type { Unit } from '@/lib/utils/unit-converter'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { RemGuide } from './RemGuide'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Размеры, которые реально набирают чаще всего — типографика и шаг сетки. */
 const PRESETS = [12, 14, 16, 18, 24, 32, 48]
@@ -271,6 +272,7 @@ export default function PxRemConverterPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='px-rem-converter' />
 			<RemGuide />
 		</WidgetSEOWrapper>
 	)

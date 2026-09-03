@@ -32,6 +32,7 @@ import { AnimatedProgressBar } from '@/components/widgets/timer/AnimatedProgress
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { TimerCountdownSeo } from './TimerCountdownSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type TimerMode = 'countdown' | 'stopwatch' | 'pomodoro'
 type PomodoroPhase = 'work' | 'shortBreak' | 'longBreak'
@@ -626,6 +627,7 @@ export default function TimerCountdownPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='timer-countdown' />
 			<TimerCountdownSeo />
 		</WidgetSEOWrapper>
 	)

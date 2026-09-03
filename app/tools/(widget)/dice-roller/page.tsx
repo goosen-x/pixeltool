@@ -16,6 +16,7 @@ import { DiceFace } from '@/components/tools/DiceFace'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { DiceRollerSeo } from './DiceRollerSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface DiceResult {
 	id: string
@@ -435,6 +436,7 @@ export default function DiceRollerPage() {
 				</p>
 			</div>
 
+			<ToolScreenshot slug='dice-roller' />
 			<DiceRollerSeo />
 		</WidgetSEOWrapper>
 	)

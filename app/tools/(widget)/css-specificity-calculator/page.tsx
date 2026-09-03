@@ -15,6 +15,7 @@ import {
 } from '@/lib/ui/tool-pill'
 
 import { cn } from '@/lib/utils'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface SpecificityResult {
 	selector: string
@@ -443,6 +444,7 @@ div.container > p::first-line
 			</Card>
 
 			{/* Справка — секцией под тулом, как обучающие блоки в остальных инструментах */}
+			<ToolScreenshot slug='css-specificity-calculator' />
 			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
 				<h2 className='text-2xl font-bold tracking-tight'>
 					Как считается вес селектора

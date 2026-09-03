@@ -9,6 +9,7 @@ import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { ReactionTestSeo } from './ReactionTestSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const ROUNDS = 5
 const MIN_DELAY_MS = 1200
@@ -160,6 +161,7 @@ export default function ReactionTestPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='reaction-test' />
 			<ReactionTestSeo />
 		</WidgetSEOWrapper>
 	)

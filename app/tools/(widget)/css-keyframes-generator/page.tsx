@@ -28,6 +28,7 @@ import {
 	toolIconButton,
 	toolPill
 } from '@/lib/ui/tool-pill'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type AnimationType = 'transform' | 'opacity' | 'color' | 'position' | 'custom'
 type EasingType =
@@ -792,6 +793,7 @@ export default function CSSKeyframesGeneratorPage() {
 				</div>
 			</div>
 
+			<ToolScreenshot slug='css-keyframes-generator' />
 			<AnimationGuide />
 		</>
 	)

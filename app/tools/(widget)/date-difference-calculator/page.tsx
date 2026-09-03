@@ -21,6 +21,7 @@ import { pluralizeRu } from '@/lib/utils/pluralize'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { DateDifferenceCalculatorSeo } from './DateDifferenceCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 function todayIso(): string {
 	const now = new Date()
@@ -204,6 +205,7 @@ export default function DateDifferenceCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='date-difference-calculator' />
 			<DateDifferenceCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

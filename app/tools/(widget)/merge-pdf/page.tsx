@@ -24,6 +24,7 @@ import { mergePdfs, readPageCount } from '@/lib/tools/pdf-merge'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { cn } from '@/lib/utils'
 import { MergePdfSeo } from './MergePdfSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface QueueItem {
 	/** Свой идентификатор, а не имя файла: одинаковые имена в очереди —
@@ -318,6 +319,7 @@ export default function MergePdfPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='merge-pdf' />
 			<MergePdfSeo />
 		</WidgetSEOWrapper>
 	)

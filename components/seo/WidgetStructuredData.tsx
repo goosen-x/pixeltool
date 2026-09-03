@@ -1,4 +1,5 @@
 import { Widget } from '@/lib/constants/widgets'
+import { toolScreenshotBase } from '@/lib/constants/tool-screenshots'
 import { getToolSpecificSchema } from '@/lib/seo/widget-schemas'
 import type { ToolStats } from '@/lib/tool-stats/get-all-stats'
 
@@ -25,6 +26,7 @@ export function WidgetStructuredData({
 }: WidgetStructuredDataProps) {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools/${widget.path}`
+	const screenshotBase = toolScreenshotBase(widget.path)
 	const locale = 'ru'
 	const title = widget.title || widget.id
 	const description =
@@ -47,6 +49,12 @@ export function WidgetStructuredData({
 			widget.subcategory ?? widget.category
 		),
 		operatingSystem: 'Web Browser',
+		...(screenshotBase
+			? {
+					image: `${baseUrl}${screenshotBase}-1200.webp`,
+					screenshot: `${baseUrl}${screenshotBase}-1200.webp`
+				}
+			: {}),
 		offers: {
 			'@type': 'Offer',
 			price: '0',

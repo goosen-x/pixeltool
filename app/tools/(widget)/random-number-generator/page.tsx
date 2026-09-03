@@ -16,6 +16,7 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { RandomNumberGeneratorSeo } from './RandomNumberGeneratorSeo'
 import { TextRoll } from '@/components/core/text-roll'
 import { toast } from 'sonner'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface GeneratedResult {
 	numbers: number[]
@@ -294,6 +295,7 @@ export default function RandomNumberGeneratorPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='random-number-generator' />
 			<RandomNumberGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

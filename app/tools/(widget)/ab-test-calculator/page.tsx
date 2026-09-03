@@ -11,6 +11,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { pickVerdict, wilsonInterval } from '@/lib/utils/ab-test'
 import { AbTestCalculatorSeo } from './AbTestCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface Row {
 	id: string
@@ -364,6 +365,7 @@ export default function AbTestCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='ab-test-calculator' />
 			<AbTestCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

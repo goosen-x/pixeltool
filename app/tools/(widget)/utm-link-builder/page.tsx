@@ -30,6 +30,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { UtmLinkBuilderSeo } from './UtmLinkBuilderSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface UTMParams {
 	url: string
@@ -583,6 +584,7 @@ export default function UTMBuilderPage() {
 				</div>
 			)}
 
+			<ToolScreenshot slug='utm-link-builder' />
 			<UtmLinkBuilderSeo />
 		</WidgetSEOWrapper>
 	)

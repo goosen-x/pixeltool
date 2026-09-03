@@ -23,6 +23,7 @@ import {
 	type RGB
 } from '@/lib/utils/color-converter'
 import { PhotoColorPickerSeo } from './PhotoColorPickerSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const MAX_CANVAS_DIMENSION = 1600
 const MAGNIFIER_SIZE = 110
@@ -613,6 +614,7 @@ export default function PhotoColorPickerPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='photo-color-picker' />
 			<PhotoColorPickerSeo />
 		</WidgetSEOWrapper>
 	)

@@ -18,6 +18,7 @@ import { useFancyTextGenerator } from '@/lib/hooks/widgets'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { FancyTextGeneratorSeo } from './FancyTextGeneratorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'styles' | 'zalgo'
 
@@ -189,6 +190,7 @@ export default function FancyTextGeneratorPage() {
 				)}
 			</Card>
 
+			<ToolScreenshot slug='fancy-text-generator' />
 			<FancyTextGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

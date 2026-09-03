@@ -22,6 +22,7 @@ import {
 	updateCurveFromHandle,
 	type BezierCurve
 } from '@/lib/utils/bezier-easing'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 /** Пять кривых, у которых в CSS есть собственные ключевые слова. */
 const BASE_PRESETS = ['linear', 'ease', 'easeIn', 'easeOut', 'easeInOut']
@@ -662,6 +663,7 @@ export default function BezierCurvePage() {
 			</div>
 
 			{/* Справка — секцией под карточкой, как обучающие блоки в других тулах */}
+			<ToolScreenshot slug='css-bezier-curve-generator' />
 			<section className='mx-auto mt-12 max-w-3xl text-left text-foreground'>
 				<h2 className='text-2xl font-bold tracking-tight'>
 					Что такое cubic-bezier

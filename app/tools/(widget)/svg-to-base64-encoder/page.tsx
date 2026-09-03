@@ -15,6 +15,7 @@ import {
 import { SvgEncoderSeo } from './SvgEncoderSeo'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function SVGEncoderPage() {
 	const widget = getWidgetById('svg-encoder')!
@@ -379,6 +380,7 @@ export default function SVGEncoderPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='svg-to-base64-encoder' />
 			<SvgEncoderSeo />
 		</WidgetSEOWrapper>
 	)

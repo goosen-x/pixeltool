@@ -37,6 +37,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { AsciiArtGeneratorSeo } from './AsciiArtGeneratorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'text' | 'image' | 'patterns'
 type TextFont = AsciiFont | FigletFontName
@@ -450,6 +451,7 @@ export default function AsciiArtGeneratorPage() {
 				</p>
 			</div>
 
+			<ToolScreenshot slug='ascii-art-generator' />
 			<AsciiArtGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

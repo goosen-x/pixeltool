@@ -9,6 +9,7 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { calculateAge, weekdayNameRu } from '@/lib/utils/age-calculator'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { AgeCalculatorSeo } from './AgeCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 function todayInputValue(): string {
 	const now = new Date()
@@ -160,6 +161,7 @@ export default function AgeCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='age-calculator' />
 			<AgeCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

@@ -26,6 +26,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { MockDataGeneratorSeo } from './MockDataGeneratorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface APIEndpoint {
 	id: string
@@ -556,6 +557,7 @@ export default function MockDataGeneratorPage() {
 					)}
 				</div>
 			</Card>
+			<ToolScreenshot slug='mock-data-generator' />
 			<MockDataGeneratorSeo />
 		</WidgetSEOWrapper>
 	)

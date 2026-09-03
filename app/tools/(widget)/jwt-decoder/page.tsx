@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { JwtDecoderSeo } from './JwtDecoderSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface JWTHeader {
 	alg: string
@@ -606,6 +607,7 @@ export default function JWTDecoderPage() {
 					</div>
 				)}
 			</Card>
+			<ToolScreenshot slug='jwt-decoder' />
 			<JwtDecoderSeo />
 		</WidgetSEOWrapper>
 	)

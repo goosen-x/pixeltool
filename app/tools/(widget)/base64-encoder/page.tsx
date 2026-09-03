@@ -17,6 +17,7 @@ import { toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { Base64EncoderSeo } from './Base64EncoderSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Field = 'plain' | 'base64'
 
@@ -443,6 +444,7 @@ export default function Base64EncoderPage() {
 				</div>
 			)}
 
+			<ToolScreenshot slug='base64-encoder' />
 			<Base64EncoderSeo />
 		</WidgetSEOWrapper>
 	)

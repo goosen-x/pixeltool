@@ -36,6 +36,7 @@ import {
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { cn } from '@/lib/utils'
 import { PdfToJpgSeo } from './PdfToJpgSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Format = 'image/jpeg' | 'image/png'
 
@@ -390,6 +391,7 @@ export default function PdfToJpgPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='pdf-to-jpg' />
 			<PdfToJpgSeo />
 		</WidgetSEOWrapper>
 	)

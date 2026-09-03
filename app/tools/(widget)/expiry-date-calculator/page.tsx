@@ -18,6 +18,7 @@ import { pluralizeRu } from '@/lib/utils/pluralize'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { ExpiryDateCalculatorSeo } from './ExpiryDateCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const UNITS: { value: PeriodUnit; label: string }[] = [
 	{ value: 'days', label: 'Дни' },
@@ -197,6 +198,7 @@ export default function ExpiryDateCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='expiry-date-calculator' />
 			<ExpiryDateCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

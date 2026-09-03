@@ -16,6 +16,7 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { FuelCalculatorSeo } from './FuelCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'trip' | 'actual'
 
@@ -232,6 +233,7 @@ export default function FuelCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='fuel-calculator' />
 			<FuelCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

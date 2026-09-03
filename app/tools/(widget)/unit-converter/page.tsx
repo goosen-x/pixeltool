@@ -6,6 +6,7 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { UnitConverterWidget } from '@/components/tools/UnitConverterWidget'
 import { unitPairs } from '@/lib/constants/unit-pairs'
 import { UnitConverterSeo } from './UnitConverterSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function UnitConverterPage() {
 	const widget = getWidgetById('unit-converter')!
@@ -28,6 +29,7 @@ export default function UnitConverterPage() {
 				))}
 			</div>
 
+			<ToolScreenshot slug='unit-converter' />
 			<UnitConverterSeo />
 		</WidgetSEOWrapper>
 	)

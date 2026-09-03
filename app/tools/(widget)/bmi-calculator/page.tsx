@@ -9,6 +9,7 @@ import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { BmiCalculatorSeo } from './BmiCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 interface BmiCategory {
 	label: string
@@ -150,6 +151,7 @@ export default function BmiCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='bmi-calculator' />
 			<BmiCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

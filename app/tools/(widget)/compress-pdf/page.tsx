@@ -23,6 +23,7 @@ import { compressPdf, type CompressMode } from '@/lib/tools/pdf-compress'
 import { pluralizeRu } from '@/lib/utils/pluralize'
 import { cn } from '@/lib/utils'
 import { CompressPdfSeo } from './CompressPdfSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const MODES: [CompressMode, string][] = [
 	['lossless', 'Бережно'],
@@ -339,6 +340,7 @@ export default function CompressPdfPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='compress-pdf' />
 			<CompressPdfSeo />
 		</WidgetSEOWrapper>
 	)

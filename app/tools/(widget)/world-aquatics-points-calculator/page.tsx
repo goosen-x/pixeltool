@@ -31,6 +31,7 @@ import {
 	parseSwimTime
 } from '@/lib/utils/world-aquatics-points'
 import { WorldAquaticsPointsCalculatorSeo } from './WorldAquaticsPointsCalculatorSeo'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 type Mode = 'time-to-points' | 'points-to-time'
 
@@ -297,6 +298,7 @@ export default function WorldAquaticsPointsCalculatorPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='world-aquatics-points-calculator' />
 			<WorldAquaticsPointsCalculatorSeo />
 		</WidgetSEOWrapper>
 	)

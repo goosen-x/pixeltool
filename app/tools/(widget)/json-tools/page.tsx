@@ -24,6 +24,7 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { Card } from '@/components/ui/card'
 import { JsonToolsSeo } from './JsonToolsSeo'
 import { getWidgetById } from '@/lib/constants/widgets'
+import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 interface JSONError {
 	message: string
 	line?: number
@@ -526,6 +527,7 @@ export default function JSONToolsPage() {
 				</div>
 			</Card>
 
+			<ToolScreenshot slug='json-tools' />
 			<JsonToolsSeo />
 		</WidgetSEOWrapper>
 	)
