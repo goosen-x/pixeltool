@@ -168,30 +168,30 @@ export default function CoinFlipPage() {
 				[
 					{
 						offset: 0,
-						transform: `translate3d(0,0,0) rotateY(${rotation}deg) rotateX(0deg) rotateZ(0deg) scale(1)`,
+						transform: `translate3d(0,0,0) rotateY(${rotation}deg) rotateX(0deg) rotateZ(0deg)`,
 						easing: easeUp
 					},
 					{
 						offset: 0.44,
-						transform: `translate3d(${drift * 0.4}px,${-peak}px,0) rotateY(${mid}deg) rotateX(${tilt}deg) rotateZ(${wobble}deg) scale(1.05)`,
+						transform: `translate3d(${drift * 0.4}px,${-peak}px,0) rotateY(${mid}deg) rotateX(${tilt}deg) rotateZ(${wobble}deg)`,
 						easing: easeDown
 					},
 					{
 						offset: 0.82,
-						transform: `translate3d(${drift * 0.3}px,0,0) rotateY(${near}deg) rotateX(0deg) rotateZ(${-wobble * 0.5}deg) scale(1)`,
+						transform: `translate3d(${drift * 0.3}px,0,0) rotateY(${near}deg) rotateX(0deg) rotateZ(${-wobble * 0.5}deg)`,
 						easing: easeSettle
 					},
 					{
 						offset: 0.9,
-						transform: `translate3d(0,3px,0) rotateY(${finalRotation + 7}deg) rotateX(0deg) rotateZ(0deg) scale(1)`
+						transform: `translate3d(0,3px,0) rotateY(${finalRotation + 7}deg) rotateX(0deg) rotateZ(0deg)`
 					},
 					{
 						offset: 0.95,
-						transform: `translate3d(0,0,0) rotateY(${finalRotation - 3}deg) rotateX(0deg) rotateZ(0deg) scale(1)`
+						transform: `translate3d(0,0,0) rotateY(${finalRotation - 3}deg) rotateX(0deg) rotateZ(0deg)`
 					},
 					{
 						offset: 1,
-						transform: `translate3d(0,0,0) rotateY(${finalRotation}deg) rotateX(0deg) rotateZ(0deg) scale(1)`
+						transform: `translate3d(0,0,0) rotateY(${finalRotation}deg) rotateX(0deg) rotateZ(0deg)`
 					}
 				],
 				{ duration: dur, easing: 'linear', fill: 'none' }
@@ -346,7 +346,7 @@ export default function CoinFlipPage() {
 										textAnchor='middle'
 										className='fill-current text-primary [font-size:13px] [font-weight:600]'
 									>
-										Орёл {headsPercentage}%
+										Орёл {headsCount} · {headsPercentage}%
 									</text>
 									<text
 										x='100'
@@ -354,7 +354,7 @@ export default function CoinFlipPage() {
 										textAnchor='middle'
 										className='fill-current text-muted-foreground [font-size:11px]'
 									>
-										Решка {tailsPercentage}%
+										Решка {tailsCount} · {tailsPercentage}%
 									</text>
 								</svg>
 
