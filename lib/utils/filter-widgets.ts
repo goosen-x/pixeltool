@@ -1,5 +1,6 @@
 import type { Widget } from '@/lib/constants/widgets'
 import { devSubcategories } from '@/lib/constants/widgets'
+import { widgetMatchesQuery } from '@/lib/utils/widget-search'
 
 /**
  * css/html/javascript больше не значения Widget['category'] (слиты в
@@ -27,17 +28,12 @@ export function filterWidgets(
 	search: string,
 	category: string
 ): Widget[] {
-	const query = search.trim().toLowerCase()
-
-	return widgets.filter(widget => {
-		if (!widgetMatchesCategory(widget, category)) return false
-		if (query === '') return true
-
-		return (
-			(widget.title ?? widget.translationKey).toLowerCase().includes(query) ||
-			(widget.description ?? '').toLowerCase().includes(query) ||
-			(widget.useCase ?? '').toLowerCase().includes(query) ||
-			(widget.tags ?? []).some(tag => tag.toLowerCase().includes(query))
-		)
-	})
+	// Совпадение считает та же утилита, что и глобальный поиск в шапке: иначе
+	// один и тот же запрос находит в каталоге и в шапке разное. Порядок выдачи
+	// остаётся исходным — сортировкой занимается вызывающий код.
+	return widgets.filter(
+		widget =>
+			widgetMatchesCategory(widget, category) &&
+			widgetMatchesQuery(widget, search)
+	)
 }

@@ -29,6 +29,7 @@ import {
 	type Widget
 } from '@/lib/constants/widgets'
 import { toolsCountLabel } from '@/lib/utils/pluralize'
+import { searchWidgets } from '@/lib/utils/widget-search'
 import { useSearchHistory } from '@/lib/hooks/useSearchHistory'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { highlightText } from '@/lib/utils/highlightText'
@@ -57,188 +58,64 @@ export function GlobalWidgetSearch({
 	const { history, addToHistory } = useSearchHistory()
 	const { favorites } = useFavorites()
 
-	// Convert widgets to searchable items
+	// Данные берём из реестра виджетов: заголовок, описание и категория живут
+	// там и там же поддерживаются. Раньше здесь лежали два словаря по
+	// translationKey на 60 ключей, из-за чего 103 инструмента из 119
+	// показывались сырым ключом («tvSize» вместо «Калькулятор размеров
+	// телевизора») и не находились ни по одному русскому слову.
 	const searchableWidgets = useMemo(() => {
-		return publicWidgets.map(widget => {
-			// Hardcoded Russian titles and descriptions
-			const titles: Record<string, string> = {
-				qrGenerator: 'QR-код генератор',
-				qrScanner: 'Сканер QR-кодов',
-				passwordGenerator: 'Генератор паролей',
-				colorPalette: 'Палитра цветов',
-				textCounter: 'Счетчик символов',
-				urlShortener: 'Сокращение ссылок',
-				tipCalculator: 'Калькулятор чаевых',
-				bmiCalculator: 'Калькулятор ИМТ',
-				unitConverter: 'Конвертер единиц',
-				hashGenerator: 'Генератор хэшей',
-				base64Encoder: 'Base64 кодировщик',
-				jsonFormatter: 'JSON форматтер',
-				regexTester: 'Тестер регулярных выражений',
-				imageCompressor: 'Сжатие изображений',
-				markdownPreview: 'Предпросмотр Markdown',
-				caseConverter: 'Конвертер регистра',
-				uuidGenerator: 'Генератор UUID',
-				randomNumber: 'Случайные числа',
-				dice: 'Игральные кости',
-				coinFlip: 'Подбрасывание монеты',
-				teamRandomizer: 'Рандомизатор команд',
-				gridGenerator: 'Генератор сеток',
-				gradientGenerator: 'Генератор градиентов',
-				paletteExtractor: 'Извлечение палитры',
-				shadcnTheme: 'Генератор тем Shadcn',
-				loremIpsum: 'Lorem Ipsum',
-				nameGenerator: 'Генератор имён',
-				htmlMinifier: 'Минификатор HTML',
-				cssMinifier: 'Минификатор CSS',
-				csvParser: 'Парсер CSV',
-				sqlFormatter: 'Форматтер SQL',
-				imageConverter: 'Конвертер изображений',
-				pdfTools: 'Инструменты PDF',
-				textDiff: 'Сравнение текста',
-				characterMap: 'Карта символов',
-				colorBlindnessSimulator: 'Симулятор дальтонизма',
-				mimeTypeDetector: 'Детектор MIME-типов',
-				asciiArt: 'ASCII арт',
-				barcodeGenerator: 'Генератор штрих-кодов',
-				httpStatusChecker: 'Проверка HTTP статуса',
-				dnslookup: 'DNS запросы',
-				ipInfo: 'Информация об IP',
-				whoisLookup: 'WHOIS запросы',
-				sslChecker: 'Проверка SSL',
-				metaTagsExtractor: 'Извлечение мета-тегов',
-				robotsTxtGenerator: 'Генератор robots.txt',
-				sitemapGenerator: 'Генератор sitemap',
-				openGraphPreview: 'Предпросмотр Open Graph',
-				twitterCardPreview: 'Предпросмотр Twitter Card',
-				faviconGenerator: 'Генератор фавиконок',
-				browserInfo: 'Информация о браузере',
-				screenInfo: 'Информация об экране',
-				deviceInfo: 'Информация об устройстве',
-				networkInfo: 'Информация о сети',
-				batteryInfo: 'Информация о батарее',
-				geolocationInfo: 'Информация о геолокации',
-				timeZoneInfo: 'Информация о часовых поясах',
-				languageInfo: 'Информация о языках',
-				storageInfo: 'Информация о хранилище',
-				performanceInfo: 'Информация о производительности'
-			}
-
-			const descriptions: Record<string, string> = {
-				qrGenerator: 'Создавайте QR-коды для текста, ссылок и данных',
-				qrScanner: 'Сканируйте QR-коды через камеру или изображение',
-				passwordGenerator: 'Генерируйте безопасные пароли с настройками',
-				colorPalette: 'Создавайте и исследуйте цветовые палитры',
-				textCounter: 'Подсчитывайте символы, слова и строки в тексте',
-				urlShortener: 'Сокращайте длинные URL для удобства',
-				tipCalculator: 'Рассчитывайте чаевые и разделите счет',
-				bmiCalculator: 'Рассчитайте индекс массы тела',
-				unitConverter: 'Конвертируйте между различными единицами измерения',
-				hashGenerator: 'Генерируйте хэши MD5, SHA1, SHA256',
-				base64Encoder: 'Кодируйте и декодируйте Base64',
-				jsonFormatter: 'Форматируйте и валидируйте JSON',
-				regexTester: 'Тестируйте регулярные выражения',
-				imageCompressor: 'Сжимайте изображения без потери качества',
-				markdownPreview: 'Предпросмотр Markdown в реальном времени',
-				caseConverter: 'Конвертируйте текст в разные регистры',
-				uuidGenerator: 'Генерируйте уникальные идентификаторы',
-				randomNumber: 'Генерируйте случайные числа',
-				dice: 'Виртуальные игральные кости',
-				coinFlip: 'Виртуальное подбрасывание монеты',
-				teamRandomizer: 'Случайное распределение по командам',
-				gridGenerator: 'Создавайте CSS Grid макеты',
-				gradientGenerator: 'Создавайте CSS градиенты',
-				paletteExtractor: 'Извлекайте цвета из изображений',
-				shadcnTheme: 'Генератор тем для Shadcn UI',
-				loremIpsum: 'Генератор текста-заполнителя',
-				nameGenerator: 'Генератор случайных имён',
-				htmlMinifier: 'Минифицируйте HTML код',
-				cssMinifier: 'Минифицируйте CSS код',
-				csvParser: 'Парсинг и анализ CSV файлов',
-				sqlFormatter: 'Форматирование SQL запросов',
-				imageConverter: 'Конвертация между форматами изображений',
-				pdfTools: 'Инструменты для работы с PDF',
-				textDiff: 'Сравнение и анализ различий в тексте',
-				characterMap: 'Карта символов и эмодзи',
-				colorBlindnessSimulator: 'Симуляция восприятия цветов',
-				mimeTypeDetector: 'Определение MIME-типов файлов',
-				asciiArt: 'Создание ASCII арта',
-				barcodeGenerator: 'Генерация штрих-кодов',
-				httpStatusChecker: 'Проверка HTTP статус кодов',
-				dnslookup: 'DNS запросы и анализ',
-				ipInfo: 'Подробная информация об IP адресах',
-				whoisLookup: 'WHOIS информация о доменах',
-				sslChecker: 'Проверка SSL сертификатов',
-				metaTagsExtractor: 'Извлечение мета-тегов из веб-страниц',
-				robotsTxtGenerator: 'Генерация файлов robots.txt',
-				sitemapGenerator: 'Генерация XML карт сайта',
-				openGraphPreview: 'Предпросмотр Open Graph мета-тегов',
-				twitterCardPreview: 'Предпросмотр Twitter Card',
-				faviconGenerator: 'Генерация фавиконок',
-				browserInfo: 'Информация о браузере пользователя',
-				screenInfo: 'Информация о разрешении экрана',
-				deviceInfo: 'Информация об устройстве',
-				networkInfo: 'Информация о сетевом подключении',
-				batteryInfo: 'Информация о состоянии батареи',
-				geolocationInfo: 'Информация о геолокации',
-				timeZoneInfo: 'Информация о часовых поясах',
-				languageInfo: 'Информация о языковых настройках',
-				storageInfo: 'Информация о хранилище браузера',
-				performanceInfo: 'Информация о производительности'
-			}
-
-			const title = titles[widget.translationKey] || widget.translationKey
-			const description =
-				descriptions[widget.translationKey] ||
-				`Виджет: ${widget.translationKey}`
-
-			return {
-				widget,
-				title,
-				description,
-				category: widget.category,
-				categoryName: widgetCategories[widget.category] || widget.category,
-				isFavorite: favorites.includes(widget.id),
-				path: `/tools/${widget.path}`
-			}
-		})
+		return publicWidgets.map(widget => ({
+			widget,
+			title: widget.title ?? widget.translationKey,
+			description: widget.description ?? '',
+			category: widget.category,
+			categoryName: widgetCategories[widget.category] || widget.category,
+			isFavorite: favorites.includes(widget.id),
+			path: `/tools/${widget.path}`
+		}))
 	}, [favorites])
 
-	// Filter widgets based on search
-	const filteredWidgets = useMemo(() => {
-		if (!searchQuery.trim()) {
-			// Show favorites and recent when no search
-			const favoriteWidgets = searchableWidgets
-				.filter(item => item.isFavorite)
-				.slice(0, 3)
+	// Что показывать в пустом поле: избранное, затем самые ходовые инструменты.
+	// Раньше вместо этого история запросов подставлялась через поиск виджета по
+	// строке запроса, и при пустой истории список оставался пустым.
+	const suggestions = useMemo(() => {
+		const favoriteItems = searchableWidgets.filter(item => item.isFavorite)
+		const byHistory = history
+			.flatMap(query => searchWidgets(publicWidgets, query, { limit: 1 }))
+			.map(widget =>
+				searchableWidgets.find(item => item.widget.id === widget.id)
+			)
+			.filter((item): item is (typeof searchableWidgets)[0] => Boolean(item))
+		const popular = [...searchableWidgets].sort(
+			(a, b) => (b.widget.searchVolume ?? 0) - (a.widget.searchVolume ?? 0)
+		)
 
-			const recentWidgets = history
-				.slice(0, 3)
-				.map(query => {
-					const widget = searchableWidgets.find(
-						w =>
-							w.title.toLowerCase().includes(query.toLowerCase()) ||
-							w.description.toLowerCase().includes(query.toLowerCase())
-					)
-					return widget
-				})
-				.filter(Boolean) as typeof searchableWidgets
-
-			return [...new Set([...favoriteWidgets, ...recentWidgets])].slice(0, 6)
+		const seen = new Set<string>()
+		const result: typeof searchableWidgets = []
+		for (const item of [...favoriteItems, ...byHistory, ...popular]) {
+			if (seen.has(item.widget.id)) continue
+			seen.add(item.widget.id)
+			result.push(item)
+			if (result.length === 6) break
 		}
+		return result
+	}, [searchableWidgets, history])
 
-		return searchableWidgets
-			.filter(item => {
-				const query = searchQuery.toLowerCase()
-				return (
-					item.title.toLowerCase().includes(query) ||
-					item.description.toLowerCase().includes(query) ||
-					item.widget.tags?.some(tag => tag.toLowerCase().includes(query)) ||
-					item.categoryName.toLowerCase().includes(query)
-				)
-			})
-			.slice(0, 8)
-	}, [searchQuery, searchableWidgets, history])
+	const filteredWidgets = useMemo(() => {
+		if (!searchQuery.trim()) return suggestions
+
+		const byId = new Map(searchableWidgets.map(item => [item.widget.id, item]))
+		return searchWidgets(publicWidgets, searchQuery, { limit: 8 })
+			.map(widget => byId.get(widget.id))
+			.filter((item): item is (typeof searchableWidgets)[0] => Boolean(item))
+	}, [searchQuery, searchableWidgets, suggestions])
+
+	// Курсор всегда на первом результате: без сброса он оставался, например, на
+	// шестой строке, и после нового запроса подсветка висела на пустом месте, а
+	// Enter уводил не туда, куда показывает глаз.
+	useEffect(() => {
+		setSelectedIndex(0)
+	}, [searchQuery])
 
 	// Keyboard navigation
 	useEffect(() => {

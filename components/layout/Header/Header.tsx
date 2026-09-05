@@ -49,6 +49,11 @@ const Header = () => {
 					    здесь — иначе они были бы недоступны на экранах уже lg, где
 					    сайдбар каталога тоже скрыт */}
 					<div className='flex items-center gap-2 lg:hidden'>
+						{/* До lg десктопный блок скрыт целиком, и поиска на телефоне не
+						    оставалось вовсе: кнопки нет, в бургере пункта нет, а ⌘K на
+						    телефоне не нажать. Иконкой, потому что рядом ещё три кнопки
+						    и бургер. */}
+						<SearchButton setIsSearchOpen={setIsSearchOpen} compact />
 						<ToolHistoryMenu />
 						<ThemeToggle />
 						<Burger />

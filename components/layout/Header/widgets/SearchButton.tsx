@@ -4,9 +4,29 @@ import { Dispatch, SetStateAction } from 'react'
 
 type Props = {
 	setIsSearchOpen: Dispatch<SetStateAction<boolean>>
+	/**
+	 * Только иконка, без слова «Поиск» и подсказки о ⌘K. Нужен в мобильной
+	 * шапке: там на кнопки остаётся полоска рядом с бургером, а сочетание
+	 * клавиш на телефоне всё равно не нажать.
+	 */
+	compact?: boolean
 }
 
-export const SearchButton = ({ setIsSearchOpen }: Props) => {
+export const SearchButton = ({ setIsSearchOpen, compact }: Props) => {
+	if (compact) {
+		return (
+			<Button
+				variant='ghost'
+				size='icon'
+				onClick={() => setIsSearchOpen(true)}
+				aria-label='Поиск инструментов'
+				title='Поиск инструментов'
+			>
+				<Search className='h-5 w-5' />
+			</Button>
+		)
+	}
+
 	return (
 		<Button
 			variant='ghost'
