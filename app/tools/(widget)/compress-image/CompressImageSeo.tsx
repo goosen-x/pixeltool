@@ -77,6 +77,30 @@ export function CompressImageSeo() {
 					</table>
 				</div>
 			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Сжать или сменить формат — разные задачи
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Этот инструмент про вес: цель — уложить фото в лимит формы или
+					хостинга, а формат на выходе (JPEG или WebP) выбирается как средство к
+					этому, потому что оба сжимают с потерями и дают лёгкий файл. PNG здесь
+					намеренно нет: он сжимает без потерь и для уменьшения веса не годится.
+				</p>
+				<p className='mt-3 text-muted-foreground'>
+					Если вес устраивает, а нужен именно другой формат (перевести скачанный
+					с сайта WebP в привычный JPG, получить PNG с прозрачностью для вставки
+					в макет), берите{' '}
+					<Link
+						href='/tools/image-converter'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						конвертер изображений
+					</Link>
+					: там есть PNG и рамка задачи другая.
+				</p>
+			</section>
 		</div>
 	)
 }

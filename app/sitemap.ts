@@ -6,6 +6,7 @@ import { unitPairs } from '@/lib/constants/unit-pairs'
 import { ZODIAC_PAGES } from '@/lib/constants/zodiac-pages'
 import { GEOMETRY_PAGES } from '@/lib/constants/geometry-pages'
 import { DAYS_UNTIL_PAGES } from '@/lib/constants/days-until-pages'
+import { IMAGE_PAIRS } from '@/lib/constants/image-pairs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -129,6 +130,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	DAYS_UNTIL_PAGES.forEach(page => {
 		sitemapEntries.push({
 			url: `${BASE_URL}/tools/days-until/${page.slug}`,
+			lastModified: CONTENT_LAST_UPDATED,
+			changeFrequency: 'monthly',
+			priority: 0.8
+		})
+	})
+
+	// Страницы пар форматов (/tools/image-converter/webp-v-jpg и т.п.)
+	IMAGE_PAIRS.forEach(pair => {
+		sitemapEntries.push({
+			url: `${BASE_URL}/tools/image-converter/${pair.slug}`,
 			lastModified: CONTENT_LAST_UPDATED,
 			changeFrequency: 'monthly',
 			priority: 0.8
