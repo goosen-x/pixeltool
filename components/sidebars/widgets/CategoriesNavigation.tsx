@@ -71,7 +71,12 @@ export const CategoriesNavigation = ({
 					items={cat.items}
 					collapsed={cat.isCollapsed}
 					hydrated={true}
-					zIndex={10 - idx}
+					// Раньше было `10 - idx`: с 15 категориями последние четыре
+					// (Развлечения, Эзотерика, Утилиты, Разработка) получали
+					// отрицательный z-index и уходили под <nav>, из-за чего клики
+					// по их ссылкам не доходили. Держим стопку убывающей, но
+					// строго положительной.
+					zIndex={categories.length - idx}
 					onToggle={() => toggleCategory(cat.key)}
 					onItemClick={onItemClick}
 				/>
