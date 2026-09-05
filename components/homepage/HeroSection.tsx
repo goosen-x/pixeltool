@@ -45,27 +45,53 @@ const featherMask: CSSProperties = {
 	maskComposite: 'intersect'
 }
 
-// Список категорий берём из widgetCategories — единственного источника правды,
-// чтобы новая категория появлялась здесь сама. Маршрут — app/tools/[category].
-// Порядок захардкожен по ВИЗУАЛЬНОЙ ширине названия — список выключен вправо,
-// и так левый край складывается в ровную лесенку. Считать по числу символов
-// нельзя: кириллица шире латиницы, из-за чего «Генераторы» занимает больше
-// места, чем «JavaScript», хотя в обоих ровно по 10 букв. Подписи по-прежнему
-// берутся из widgetCategories — здесь только порядок.
-const NAV_ORDER = [
-	'development',
+// Список категорий берём из widgetCategories — единственного источника правды.
+// Маршрут — app/tools/[category].
+//
+// Порядок — по ВИЗУАЛЬНОЙ ширине названия: список выключен вправо, и по
+// возрастанию ширины левый край складывается в ровную лесенку. Считать по числу
+// символов нельзя: кириллица шире латиницы, из-за чего «Генераторы» занимает
+// больше места, чем «JavaScript», хотя в обоих ровно по 10 букв. Ширины
+// замерены в Inter 16px/500, то есть в том шрифте, которым список и набран.
+//
+// Категории, которой здесь нет, порядок не помеха: она попадёт в конец списка,
+// а не пропадёт с главной. Раньше вместо этого лежал жёсткий список из шести
+// ключей, и он устарел молча: на главной висели «Утилиты» (4 тула, 12k спроса)
+// и не было ни «Математики» (2,7 млн), ни «Эзотерики» (2,3 млн) — вдвоём это
+// 42% всего спроса каталога.
+const NAV_WIDTH_ORDER = [
+	'auto',
 	'text',
-	'images',
 	'utilities',
+	'construction',
+	'finance',
+	'health',
+	'marketing',
+	'esoteric',
+	'development',
+	'math',
+	'entertainment',
 	'generators',
-	'security'
+	'datetime',
+	'security',
+	'images'
 ] as const satisfies readonly (keyof typeof widgetCategories)[]
 
-const navLinks = NAV_ORDER.map((key, i) => ({
-	label: widgetCategories[key],
-	href: `/tools/${key}`,
-	n: String(i + 1).padStart(2, '0')
-}))
+type CategoryKey = keyof typeof widgetCategories
+
+const navLinks = (Object.keys(widgetCategories) as CategoryKey[])
+	.sort((a, b) => {
+		const rank = (key: CategoryKey) => {
+			const i = (NAV_WIDTH_ORDER as readonly string[]).indexOf(key)
+			return i === -1 ? NAV_WIDTH_ORDER.length : i
+		}
+		return rank(a) - rank(b)
+	})
+	.map((key, i) => ({
+		label: widgetCategories[key],
+		href: `/tools/${key}`,
+		n: String(i + 1).padStart(2, '0')
+	}))
 
 export function HeroSection() {
 	return (
