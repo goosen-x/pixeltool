@@ -528,8 +528,8 @@ export const textWidgets: Widget[] = [
 			'Проверить пароль, ник, артикул или строку кода на скрытую подмену букв, из-за которой текст не находится поиском и не совпадает при сравнении',
 		recommendedTools: [
 			'invisible-character',
-			'text-diff-tool',
-			'special-symbols-picker'
+			'car-region-codes',
+			'text-diff-tool'
 		],
 		difficulty: 'beginner',
 		tags: ['латиница', 'кириллица', 'омоглифы', 'раскладка', 'текст'],
