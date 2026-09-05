@@ -279,8 +279,20 @@ export default function TextToSpeechPage() {
 		navigator.clipboard.writeText(text).then(() => {})
 	}, [text])
 
+	// До монтирования список голосов недоступен, но возвращать null нельзя:
+	// тогда в серверном HTML не остаётся ни разметки виджета, ни SEO-блока.
 	if (!mounted) {
-		return null
+		return (
+			<WidgetSEOWrapper widget={widget}>
+				<Card className='overflow-hidden p-0'>
+					<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+						Спрашиваем у браузера доступные голоса…
+					</p>
+				</Card>
+				<ToolScreenshot slug='text-to-speech' />
+				<TextToSpeechSeo />
+			</WidgetSEOWrapper>
+		)
 	}
 
 	const voicesByLanguage = getVoicesByLanguage()

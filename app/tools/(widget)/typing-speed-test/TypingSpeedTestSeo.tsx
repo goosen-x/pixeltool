@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Formula } from '@/components/seo/Formula'
 
 export function TypingSpeedTestSeo() {
 	return (
@@ -15,6 +16,14 @@ export function TypingSpeedTestSeo() {
 					каждые пять знаков засчитываются как одно условное слово, независимо
 					от реальной длины слов в тексте.
 				</p>
+				<Formula
+					latex='\text{зн/мин} = \dfrac{N}{t}'
+					caption='N — верно набранные символы, t — время в минутах'
+				/>
+				<Formula
+					latex='\text{сл/мин} = \dfrac{N}{5\,t}'
+					caption='то же самое, но пять знаков считаются за слово'
+				/>
 			</section>
 
 			<section>

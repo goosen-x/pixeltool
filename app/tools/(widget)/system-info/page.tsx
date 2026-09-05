@@ -34,13 +34,21 @@ export default function SystemInfoPage() {
 	// Данные о браузере известны только на клиенте, поэтому до монтирования
 	// показывать нечего. Пульсирующая заглушка тут врала бы: ничего не
 	// «загружается», значения появляются в тот же кадр после гидратации.
+	// Значения появляются только после гидратации, но текстовая часть страницы
+	// от браузера не зависит: если отдавать до монтирования голую карточку, в
+	// серверном HTML не останется ни разметки виджета, ни SEO-блока, и краулер
+	// увидит пустую страницу.
 	if (!mounted || !systemInfo || !deviceInfo) {
 		return (
-			<Card className='overflow-hidden p-0'>
-				<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
-					Читаем параметры браузера…
-				</p>
-			</Card>
+			<WidgetSEOWrapper widget={widget}>
+				<Card className='overflow-hidden p-0'>
+					<p className='px-5 py-16 text-center text-sm text-muted-foreground sm:px-6'>
+						Читаем параметры браузера…
+					</p>
+				</Card>
+				<ToolScreenshot slug='system-info' />
+				<SystemInfoSeo />
+			</WidgetSEOWrapper>
 		)
 	}
 

@@ -20,6 +20,40 @@ export function TextToSpeechSeo() {
 					выпадающем меню меняется от устройства к устройству, на телефоне и на
 					компьютере он может быть разным.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Что можно подкрутить и в каких пределах:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Настройка</th>
+								<th className='py-2 pr-4 font-medium'>Диапазон</th>
+								<th className='py-2 pr-4 font-medium'>Шаг</th>
+								<th className='py-2 font-medium'>Что меняет</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Скорость</td>
+								<td className='py-2 pr-4 font-mono'>0,25–3</td>
+								<td className='py-2 pr-4 font-mono'>0,25</td>
+								<td className='py-2'>темп речи, 1 это обычный</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Тон</td>
+								<td className='py-2 pr-4 font-mono'>0,1–2</td>
+								<td className='py-2 pr-4 font-mono'>0,1</td>
+								<td className='py-2'>высота голоса, ниже или выше</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Набор голосов приходит из операционной системы и в разных браузерах
+					отличается, поэтому список в инструменте у каждого свой.
+				</p>
 			</section>
 
 			<section>

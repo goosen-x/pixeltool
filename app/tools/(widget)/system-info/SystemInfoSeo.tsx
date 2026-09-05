@@ -40,6 +40,53 @@ export function SystemInfoSeo() {
 					сайты дополнительно проверяют реальную поддержку конкретных функций
 					(feature detection), а не только имя браузера из строки.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Инструмент показывает пять групп данных, все из браузерных API:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Группа</th>
+								<th className='py-2 font-medium'>Что внутри</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Устройство</td>
+								<td className='py-2'>
+									тип, производитель, модель, ОС, платформа, архитектура
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Браузер</td>
+								<td className='py-2'>
+									название, версия, движок, язык, User-Agent
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Экран</td>
+								<td className='py-2'>
+									логическое и физическое разрешение, плотность пикселей,
+									глубина цвета
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Ввод и сеть</td>
+								<td className='py-2'>
+									тип указателя, сенсорный ввод, тип соединения
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Хранилище и приватность</td>
+								<td className='py-2'>
+									куки, локальное хранилище, режим инкогнито, Do Not Track
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<p className='text-muted-foreground'>

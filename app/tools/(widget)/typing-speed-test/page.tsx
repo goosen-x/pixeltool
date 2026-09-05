@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -8,15 +8,26 @@ import { cn } from '@/lib/utils'
 import { toolBar, toolFooterBar, toolIconButton } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
-import { randomTypingText } from '@/lib/data/typing-speed-texts'
+import {
+	TYPING_SPEED_TEXTS,
+	randomTypingText
+} from '@/lib/data/typing-speed-texts'
 import { TypingSpeedTestSeo } from './TypingSpeedTestSeo'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 export default function TypingSpeedTestPage() {
 	const widget = getWidgetById('typing-speed-test')!
 
-	const [target, setTarget] = useState(() => randomTypingText())
+	// Первый текст берётся детерминированно, а случайный подставляется уже
+	// после гидратации. Если бросать кубик прямо в useState, сервер и клиент
+	// выбирают разные тексты, React ловит расхождение (ошибка #418), выбрасывает
+	// серверную разметку и перерисовывает блок целиком.
+	const [target, setTarget] = useState(TYPING_SPEED_TEXTS[0])
 	const [typed, setTyped] = useState('')
+
+	useEffect(() => {
+		setTarget(current => randomTypingText(current))
+	}, [])
 	const startedAtRef = useRef<number | null>(null)
 	const [finishedAtMs, setFinishedAtMs] = useState<number | null>(null)
 	const textareaRef = useRef<HTMLTextAreaElement>(null)
