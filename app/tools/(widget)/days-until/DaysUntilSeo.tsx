@@ -21,6 +21,49 @@ export function DaysUntilSeo() {
 					23 или 25 часов, и деление дало бы дробь. Округление её прячет, но на
 					длинных промежутках ошибка накапливается.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Готовые счётчики до дат, которые спрашивают чаще всего:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Событие</th>
+								<th className='py-2 pr-4 font-medium'>Дата</th>
+								<th className='py-2 font-medium'>Тонкость</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>До лета</td>
+								<td className='py-2 pr-4'>1 июня</td>
+								<td className='py-2'>
+									календарное лето, астрономическое начинается около 21 июня
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>До 1 сентября</td>
+								<td className='py-2 pr-4'>1 сентября</td>
+								<td className='py-2'>
+									если день выпадает на воскресенье, учебный год начинают со
+									2-го
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>До Нового года</td>
+								<td className='py-2 pr-4'>1 января</td>
+								<td className='py-2'>
+									счётчик идёт до полуночи в вашем часовом поясе
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Когда дата уже прошла, счётчик показывает следующую такую же, а не
+					отрицательное число.
+				</p>
 			</section>
 
 			<section>

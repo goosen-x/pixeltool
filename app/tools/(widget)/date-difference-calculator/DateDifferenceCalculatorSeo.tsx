@@ -32,6 +32,39 @@ export function DateDifferenceCalculatorSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Когда нужно прикинуть срок в уме, пользуются усреднёнными величинами.
+					Календарь так не считает, но порядок они показывают верно:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Период</th>
+								<th className='py-2 pr-4 font-medium'>Средняя длина</th>
+								<th className='py-2 font-medium'>Откуда берётся</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Месяц</td>
+								<td className='py-2 pr-4 font-mono'>30,44 дня</td>
+								<td className='py-2'>365,25 делить на 12</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Квартал</td>
+								<td className='py-2 pr-4 font-mono'>91 день</td>
+								<td className='py-2'>три средних месяца</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Год</td>
+								<td className='py-2 pr-4 font-mono'>365,25 дня</td>
+								<td className='py-2'>три обычных года и один високосный</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

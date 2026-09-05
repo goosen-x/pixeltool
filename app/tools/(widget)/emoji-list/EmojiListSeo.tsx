@@ -20,6 +20,58 @@ export function EmojiListSeo() {
 					новые эмодзи проходят через открытый конкурс предложений при Unicode
 					Consortium и добавляются примерно раз в год.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					В каталоге 1902 эмодзи, разложенных по семи категориям Unicode:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Категория</th>
+								<th className='py-2 pr-4 font-medium'>Эмодзи</th>
+								<th className='py-2 font-medium'>Примеры</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Смайлики и люди</td>
+								<td className='py-2 pr-4 font-mono'>547</td>
+								<td className='py-2'>😀 😍 🤔</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Символы и флаги</td>
+								<td className='py-2 pr-4 font-mono'>494</td>
+								<td className='py-2'>❤️ ✅ 🇷🇺</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Объекты</td>
+								<td className='py-2 pr-4 font-mono'>266</td>
+								<td className='py-2'>💡 📱 🔑</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Путешествия и места</td>
+								<td className='py-2 pr-4 font-mono'>219</td>
+								<td className='py-2'>🌍 🚗 ✈️</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Животные и природа</td>
+								<td className='py-2 pr-4 font-mono'>160</td>
+								<td className='py-2'>🐶 🌸 🔥</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Еда и напитки</td>
+								<td className='py-2 pr-4 font-mono'>131</td>
+								<td className='py-2'>🍕 ☕ 🍎</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Активности</td>
+								<td className='py-2 pr-4 font-mono'>85</td>
+								<td className='py-2'>⚽ 🎉 🎮</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

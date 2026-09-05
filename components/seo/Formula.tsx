@@ -1,4 +1,10 @@
 import katex from 'katex'
+// CSS импортируется здесь, а не в globals.css: там `@import
+// 'katex/dist/katex.min.css'` молча выбрасывался пайплайном Tailwind v4, и на
+// страницу не попадало ни одного правила katex. Из-за этого дробь оставалась
+// неотформатированной, а MathML-дубль для скринридеров, который прячет класс
+// .katex-mathml, показывался обычным текстом второй строкой.
+import 'katex/dist/katex.min.css'
 import { cn } from '@/lib/utils'
 
 interface FormulaProps {

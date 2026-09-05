@@ -557,6 +557,53 @@ export default function CSSMinifierPage() {
 					, — а минификатор примените последним шагом, перед тем как положить
 					файл в продакшен.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Пять преобразований, которые делает инструмент. Каждое можно отключить
+					переключателями выше:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Что делает</th>
+								<th className='py-2 pr-4 font-medium'>Было</th>
+								<th className='py-2 font-medium'>Стало</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Убирает комментарии</td>
+								<td className='py-2 pr-4 font-mono'>/* заголовок */</td>
+								<td className='py-2 font-mono'>ничего</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Схлопывает пробелы и переносы</td>
+								<td className='py-2 pr-4 font-mono'>color: red;</td>
+								<td className='py-2 font-mono'>color:red</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>
+									Убирает точку с запятой перед скобкой
+								</td>
+								<td className='py-2 pr-4 font-mono'>{'margin:0;}'}</td>
+								<td className='py-2 font-mono'>{'margin:0}'}</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Сокращает цвета</td>
+								<td className='py-2 pr-4 font-mono'>#ffffff, rgb(0,0,0)</td>
+								<td className='py-2 font-mono'>#fff, #000</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>
+									Убирает единицы у нуля и ведущий ноль
+								</td>
+								<td className='py-2 pr-4 font-mono'>0px, 0.5em</td>
+								<td className='py-2 font-mono'>0, .5em</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 		</>
 	)

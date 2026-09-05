@@ -23,6 +23,61 @@ export function JsonToolsSeo() {
 					данные в поле выше, и инструмент разберёт структуру и сразу покажет,
 					всё ли в ней правильно.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					В JSON всего шесть типов значений, и на этом язык заканчивается:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Тип</th>
+								<th className='py-2 pr-4 font-medium'>Пример</th>
+								<th className='py-2 font-medium'>Тонкость</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Строка</td>
+								<td className='py-2 pr-4 font-mono'>"текст"</td>
+								<td className='py-2'>
+									только двойные кавычки, одинарные это ошибка
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Число</td>
+								<td className='py-2 pr-4 font-mono'>42, 3.14, -1e5</td>
+								<td className='py-2'>без ведущего нуля и без кавычек</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Логическое</td>
+								<td className='py-2 pr-4 font-mono'>true, false</td>
+								<td className='py-2'>строчными буквами</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Пустое</td>
+								<td className='py-2 pr-4 font-mono'>null</td>
+								<td className='py-2'>не Null и не NULL</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Объект</td>
+								<td className='py-2 pr-4 font-mono'>{'{ "a": 1 }'}</td>
+								<td className='py-2'>ключи всегда строки в кавычках</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Массив</td>
+								<td className='py-2 pr-4 font-mono'>[1, 2, 3]</td>
+								<td className='py-2'>
+									запятая после последнего элемента запрещена
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Больше половины ошибок разбора это как раз лишняя запятая в конце и
+					одинарные кавычки, привычные по JavaScript.
+				</p>
 			</section>
 
 			<section>

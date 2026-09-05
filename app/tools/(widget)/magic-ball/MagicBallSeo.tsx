@@ -30,6 +30,42 @@ export function MagicBallSeo() {
 					Если выровнять пропорции, ощущение от инструмента заметно меняется,
 					поэтому мы их не трогали.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Раскладка канонического набора, ровно как в коде инструмента:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Тон ответа</th>
+								<th className='py-2 pr-4 font-medium'>Реплик</th>
+								<th className='py-2 font-medium'>Вероятность</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Утвердительные</td>
+								<td className='py-2 pr-4 font-mono'>10</td>
+								<td className='py-2 font-mono'>50%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Уклончивые</td>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2 font-mono'>25%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Отрицательные</td>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2 font-mono'>25%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					В режиме «только да или нет» реплик всего две и шансы ровно пополам:
+					уклончивых там нет по определению.
+				</p>
 			</section>
 
 			<section>

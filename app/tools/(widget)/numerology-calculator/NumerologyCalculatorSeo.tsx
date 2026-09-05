@@ -16,6 +16,64 @@ export function NumerologyCalculatorSeo() {
 					здесь ответ именно 11, а не 2. В русскоязычной традиции тот же
 					результат часто называют числом судьбы: формула одна, названия разные.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Что традиция приписывает каждому числу:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Число</th>
+								<th className='py-2 font-medium'>Ключевое слово</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1</td>
+								<td className='py-2'>начало</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>2</td>
+								<td className='py-2'>согласие</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>3</td>
+								<td className='py-2'>выражение</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>4</td>
+								<td className='py-2'>основание</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2'>движение</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>6</td>
+								<td className='py-2'>забота</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>7</td>
+								<td className='py-2'>осмысление</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>8</td>
+								<td className='py-2'>масштаб</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>9</td>
+								<td className='py-2'>завершение</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>11 и 22</td>
+								<td className='py-2'>
+									мастер-числа, не сворачиваются до одной цифры
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

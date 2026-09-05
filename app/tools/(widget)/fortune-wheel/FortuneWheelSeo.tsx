@@ -14,6 +14,52 @@ export function FortuneWheelSeo() {
 					колесо». Если нужно провести несколько раундов подряд без повторов —
 					включите «Убирать победителя из колеса».
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Сколько градусов занимает сектор и с какой вероятностью он выпадает:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Секторов</th>
+								<th className='py-2 pr-4 font-medium'>Угол сектора</th>
+								<th className='py-2 font-medium'>Вероятность</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>2</td>
+								<td className='py-2 pr-4 font-mono'>180°</td>
+								<td className='py-2 font-mono'>50%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>4</td>
+								<td className='py-2 pr-4 font-mono'>90°</td>
+								<td className='py-2 font-mono'>25%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>6</td>
+								<td className='py-2 pr-4 font-mono'>60°</td>
+								<td className='py-2 font-mono'>16,7%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>8</td>
+								<td className='py-2 pr-4 font-mono'>45°</td>
+								<td className='py-2 font-mono'>12,5%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>12</td>
+								<td className='py-2 pr-4 font-mono'>30°</td>
+								<td className='py-2 font-mono'>8,3%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Сектора одинаковые, поэтому вероятность зависит только от их числа.
+					Чтобы вариант выпадал чаще, его вписывают дважды.
+				</p>
 			</section>
 
 			<section>

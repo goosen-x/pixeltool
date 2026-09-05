@@ -23,6 +23,50 @@ export function AsciiArtGeneratorSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					В текстовом режиме доступны шесть шрифтов figlet:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Шрифт</th>
+								<th className='py-2 font-medium'>Характер</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Doom</td>
+								<td className='py-2'>массивные объёмные буквы</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>ANSI Shadow</td>
+								<td className='py-2'>блочные буквы с тенью</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Blur Vision</td>
+								<td className='py-2'>размытый пиксельный вид</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Shaded Blocky</td>
+								<td className='py-2'>плотные блоки со штриховкой</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>RubiFont</td>
+								<td className='py-2'>тонкие контурные буквы</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Alpha</td>
+								<td className='py-2'>крупные буквы из символов</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Ни один из шрифтов figlet не знает кириллицы: русские буквы они просто
+					пропускают, поэтому текст надо писать латиницей.
+				</p>
 			</section>
 		</div>
 	)

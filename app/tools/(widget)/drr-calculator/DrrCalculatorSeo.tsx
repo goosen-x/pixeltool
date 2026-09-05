@@ -30,6 +30,59 @@ export function DrrCalculatorSeo() {
 					200%. Калькулятор считает обе величины, чтобы удобно было
 					разговаривать с теми, кто привык к другой метрике.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Пересчёт из одного в другое: ROAS в разах это 100 разделить на ДРР в
+					процентах.
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>ДРР</th>
+								<th className='py-2 pr-4 font-medium'>ROAS</th>
+								<th className='py-2 font-medium'>Что это значит</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>5%</td>
+								<td className='py-2 pr-4 font-mono'>20</td>
+								<td className='py-2'>на рубль рекламы 20 рублей выручки</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>10%</td>
+								<td className='py-2 pr-4 font-mono'>10</td>
+								<td className='py-2'>десятая часть выручки уходит в рекламу</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>20%</td>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2'>типичный ориентир для e-commerce</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>25%</td>
+								<td className='py-2 pr-4 font-mono'>4</td>
+								<td className='py-2'>четверть выручки в рекламе</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>33%</td>
+								<td className='py-2 pr-4 font-mono'>3</td>
+								<td className='py-2'>треть выручки в рекламе</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>50%</td>
+								<td className='py-2 pr-4 font-mono'>2</td>
+								<td className='py-2'>реклама съедает половину</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>100%</td>
+								<td className='py-2 pr-4 font-mono'>1</td>
+								<td className='py-2'>выручка равна расходу, работа в ноль</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

@@ -51,6 +51,41 @@ export function ServiceLengthCalculatorSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Стаж влияет на размер больничного напрямую, тремя ступенями:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Страховой стаж</th>
+								<th className='py-2 font-medium'>
+									Процент от среднего заработка
+								</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Меньше 5 лет</td>
+								<td className='py-2 font-mono'>60%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>От 5 до 8 лет</td>
+								<td className='py-2 font-mono'>80%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>8 лет и больше</td>
+								<td className='py-2 font-mono'>100%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Ступени жёсткие: при стаже 7 лет 11 месяцев платят 80%, а через месяц
+					уже 100%. Поэтому важен точный подсчёт, а не округление до ближайшего
+					года.
+				</p>
 			</section>
 		</div>
 	)

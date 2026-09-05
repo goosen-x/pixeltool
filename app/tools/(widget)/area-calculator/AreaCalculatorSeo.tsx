@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Formula } from '@/components/seo/Formula'
 
 export function AreaCalculatorSeo() {
 	return (
@@ -23,6 +24,58 @@ export function AreaCalculatorSeo() {
 					обрезки. Инструмент показывает оба числа сразу, чтобы решение
 					оставалось за вами.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Что умеет калькулятор и по каким формулам:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Фигура</th>
+								<th className='py-2 pr-4 font-medium'>Что задаётся</th>
+								<th className='py-2 font-medium'>Площадь</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Прямоугольник</td>
+								<td className='py-2 pr-4'>две стороны</td>
+								<td className='py-2 font-mono'>a × b</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Круг</td>
+								<td className='py-2 pr-4'>диаметр</td>
+								<td className='py-2 font-mono'>π × d² / 4</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Кольцо</td>
+								<td className='py-2 pr-4'>наружный и внутренний диаметр</td>
+								<td className='py-2 font-mono'>π × (D² − d²) / 4</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Треугольник по высоте</td>
+								<td className='py-2 pr-4'>основание и высота</td>
+								<td className='py-2 font-mono'>a × h / 2</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Треугольник по сторонам</td>
+								<td className='py-2 pr-4'>три стороны</td>
+								<td className='py-2 font-mono'>формула Герона</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Трапеция</td>
+								<td className='py-2 pr-4'>два основания и высота</td>
+								<td className='py-2 font-mono'>(a + b) × h / 2</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Стены</td>
+								<td className='py-2 pr-4'>периметр, высота, проёмы</td>
+								<td className='py-2 font-mono'>P × h минус окна и двери</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -37,6 +90,10 @@ export function AreaCalculatorSeo() {
 					инструмент так и скажет, а не покажет ноль или ошибку: у такой фигуры
 					площади не существует, потому что и фигуры не существует.
 				</p>
+				<Formula
+					latex='S = \sqrt{p\,(p-a)(p-b)(p-c)}'
+					caption='a, b, c — стороны треугольника, p — полупериметр, равный (a + b + c) / 2'
+				/>
 			</section>
 
 			<section>
@@ -50,6 +107,7 @@ export function AreaCalculatorSeo() {
 					расхождения: площадь растёт как квадрат, поэтому вдвое больший радиус
 					даёт вчетверо большую площадь.
 				</p>
+				<Formula latex='S = \dfrac{\pi d^2}{4}' caption='d — диаметр круга' />
 			</section>
 
 			<section>

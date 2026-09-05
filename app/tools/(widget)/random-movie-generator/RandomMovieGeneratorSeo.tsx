@@ -23,6 +23,55 @@ export function RandomMovieGeneratorSeo() {
 					фильмов с рейтингом от 7 из 10. Ссылка «Открыть на Кинопоиске» под
 					каждым результатом ведёт к полному описанию, трейлеру и отзывам.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Фильтр по жанру работает через идентификаторы Кинопоиска. Доступны
+					восемь жанров плюс выбор без фильтра:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Жанр</th>
+								<th className='py-2 font-medium'>ID в Кинопоиске</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Драма</td>
+								<td className='py-2 font-mono'>2</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Комедия</td>
+								<td className='py-2 font-mono'>13</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Боевик</td>
+								<td className='py-2 font-mono'>11</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Фантастика</td>
+								<td className='py-2 font-mono'>6</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Ужасы</td>
+								<td className='py-2 font-mono'>17</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Мультфильм</td>
+								<td className='py-2 font-mono'>18</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Фэнтези</td>
+								<td className='py-2 font-mono'>12</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Триллер</td>
+								<td className='py-2 font-mono'>1</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 		</div>
 	)

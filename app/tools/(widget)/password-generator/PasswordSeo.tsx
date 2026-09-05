@@ -21,6 +21,60 @@ export function PasswordSeo() {
 					открыть даже без интернета после первой загрузки, и результат будет
 					таким же случайным.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Стойкость пароля измеряется в битах энтропии: это длина, умноженная на
+					двоичный логарифм размера алфавита. Сколько получается при разных
+					наборах:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Набор символов</th>
+								<th className='py-2 pr-4 font-medium'>Символов</th>
+								<th className='py-2 pr-4 font-medium'>8 знаков</th>
+								<th className='py-2 pr-4 font-medium'>12 знаков</th>
+								<th className='py-2 font-medium'>16 знаков</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Только строчные</td>
+								<td className='py-2 pr-4 font-mono'>26</td>
+								<td className='py-2 pr-4 font-mono'>38 бит</td>
+								<td className='py-2 pr-4 font-mono'>56 бит</td>
+								<td className='py-2 font-mono'>75 бит</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Строчные и заглавные</td>
+								<td className='py-2 pr-4 font-mono'>52</td>
+								<td className='py-2 pr-4 font-mono'>46 бит</td>
+								<td className='py-2 pr-4 font-mono'>68 бит</td>
+								<td className='py-2 font-mono'>91 бит</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Плюс цифры</td>
+								<td className='py-2 pr-4 font-mono'>62</td>
+								<td className='py-2 pr-4 font-mono'>48 бит</td>
+								<td className='py-2 pr-4 font-mono'>71 бит</td>
+								<td className='py-2 font-mono'>95 бит</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Плюс спецсимволы</td>
+								<td className='py-2 pr-4 font-mono'>88</td>
+								<td className='py-2 pr-4 font-mono'>52 бита</td>
+								<td className='py-2 pr-4 font-mono'>78 бит</td>
+								<td className='py-2 font-mono'>103 бита</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Последняя строка это настройки по умолчанию: 16 знаков из всех четырёх
+					наборов. Ориентир простой: до 60 бит пароль слабый, 80 бит приемлемо,
+					от 100 бит перебором его не возьмут.
+				</p>
 			</section>
 
 			<section>

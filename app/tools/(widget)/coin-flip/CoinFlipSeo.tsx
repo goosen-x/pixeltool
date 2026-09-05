@@ -33,6 +33,48 @@ export function CoinFlipSeo() {
 					показывает: на десятке бросков перекос заметный, на сотне почти
 					исчезает.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Вероятность, что подряд выпадет одна и та же сторона. Считается как
+					одна вторая в степени числа бросков:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Бросков подряд</th>
+								<th className='py-2 font-medium'>Вероятность</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>2</td>
+								<td className='py-2 font-mono'>25%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>3</td>
+								<td className='py-2 font-mono'>12,5%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>4</td>
+								<td className='py-2 font-mono'>6,25%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2 font-mono'>3,125%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>10</td>
+								<td className='py-2 font-mono'>0,098%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Важная тонкость: маленькая вероятность относится к серии целиком,
+					загаданной заранее. Если девять орлов уже выпали, десятый всё равно
+					выпадет с вероятностью 50%: монета не помнит предыдущих бросков.
+				</p>
 			</section>
 
 			<section>

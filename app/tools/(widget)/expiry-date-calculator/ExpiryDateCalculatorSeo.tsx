@@ -14,6 +14,43 @@ export function ExpiryDateCalculatorSeo() {
 					в месяцах или годах, а не в днях. Легко забыть, что в феврале 28 дней,
 					а не 30.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Срок можно задать в разных единицах, и прибавляются они по-разному:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Единица</th>
+								<th className='py-2 pr-4 font-medium'>Как прибавляется</th>
+								<th className='py-2 font-medium'>Пример</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Дни</td>
+								<td className='py-2 pr-4'>ровно столько суток</td>
+								<td className='py-2'>10 января + 30 дней = 9 февраля</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Месяцы</td>
+								<td className='py-2 pr-4'>календарно, то же число</td>
+								<td className='py-2'>15 марта + 6 месяцев = 15 сентября</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Годы</td>
+								<td className='py-2 pr-4'>календарно, та же дата</td>
+								<td className='py-2'>1 июня 2026 + 2 года = 1 июня 2028</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Календарное прибавление даёт неочевидный эффект на концах месяцев: 31
+					января плюс месяц это 28 февраля, а не 3 марта. Инструмент ведёт себя
+					так же, как считают сроки на производстве.
+				</p>
 			</section>
 
 			<section>

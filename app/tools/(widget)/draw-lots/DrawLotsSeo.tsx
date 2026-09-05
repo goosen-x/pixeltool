@@ -39,6 +39,43 @@ export function DrawLotsSeo() {
 					ввода имён, поэтому открывать их можно в любой последовательности,
 					результат от этого не изменится.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Шанс каждого участника при честном жребии это просто единица, делённая
+					на число участников:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Участников</th>
+								<th className='py-2 font-medium'>Шанс каждого</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>2</td>
+								<td className='py-2 font-mono'>50%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>3</td>
+								<td className='py-2 font-mono'>33,3%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2 font-mono'>20%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>10</td>
+								<td className='py-2 font-mono'>10%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>20</td>
+								<td className='py-2 font-mono'>5%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

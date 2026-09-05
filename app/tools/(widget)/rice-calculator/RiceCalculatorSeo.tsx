@@ -16,6 +16,49 @@ export function RiceCalculatorSeo() {
 					он в знаменателе, потому что чем дороже задача, тем ниже её приоритет
 					при прочих равных.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Impact не произвольное число, а выбор из фиксированной шкалы. Она и
+					стоит в выпадающем списке калькулятора:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Влияние</th>
+								<th className='py-2 pr-4 font-medium'>Значение</th>
+								<th className='py-2 font-medium'>Когда ставят</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Огромное</td>
+								<td className='py-2 pr-4 font-mono'>3</td>
+								<td className='py-2'>меняет продукт или ключевую метрику</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Большое</td>
+								<td className='py-2 pr-4 font-mono'>2</td>
+								<td className='py-2'>заметно улучшает сценарий</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Среднее</td>
+								<td className='py-2 pr-4 font-mono'>1</td>
+								<td className='py-2'>обычное полезное улучшение</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Малое</td>
+								<td className='py-2 pr-4 font-mono'>0,5</td>
+								<td className='py-2'>мелочь, которую заметят немногие</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Минимальное</td>
+								<td className='py-2 pr-4 font-mono'>0,25</td>
+								<td className='py-2'>почти незаметно</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

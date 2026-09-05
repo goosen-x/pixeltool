@@ -35,6 +35,42 @@ export function BitcoinCalculatorSeo() {
 					если вкладка открыта долго, нажмите «Обновить курс», чтобы подтянуть
 					свежую цену.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Инструмент считает три монеты в трёх валютах:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Монета</th>
+								<th className='py-2 pr-4 font-medium'>Тикер</th>
+								<th className='py-2 font-medium'>Особенность</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Bitcoin</td>
+								<td className='py-2 pr-4 font-mono'>BTC</td>
+								<td className='py-2'>
+									курс меняется постоянно, дробные суммы считаются в сатоши
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Ethereum</td>
+								<td className='py-2 pr-4 font-mono'>ETH</td>
+								<td className='py-2'>
+									вторая по капитализации, курс тоже плавающий
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Tether</td>
+								<td className='py-2 pr-4 font-mono'>USDT</td>
+								<td className='py-2'>стейблкоин, держится около доллара</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 		</div>
 	)

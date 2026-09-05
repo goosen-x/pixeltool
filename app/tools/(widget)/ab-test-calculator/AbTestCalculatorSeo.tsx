@@ -13,6 +13,52 @@ export function AbTestCalculatorSeo() {
 					вопрос: могла ли разница между вариантами получиться просто из-за
 					случайности выборки.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Ширина интервала зависит от выбранного уровня доверия. За ним стоит
+					критическое значение z, и чем выше уверенность, тем шире интервал:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Уровень доверия</th>
+								<th className='py-2 pr-4 font-medium'>Значение z</th>
+								<th className='py-2 font-medium'>Что означает</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>80%</td>
+								<td className='py-2 pr-4 font-mono'>1,282</td>
+								<td className='py-2'>
+									грубая прикидка, ошибётесь в каждом пятом случае
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>90%</td>
+								<td className='py-2 pr-4 font-mono'>1,645</td>
+								<td className='py-2'>мягкий порог для быстрых решений</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>95%</td>
+								<td className='py-2 pr-4 font-mono'>1,960</td>
+								<td className='py-2'>
+									стандарт по умолчанию в продуктовой аналитике
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>99%</td>
+								<td className='py-2 pr-4 font-mono'>2,576</td>
+								<td className='py-2'>когда цена ошибки высока</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Повысить уровень доверия и не потерять в чувствительности можно только
+					одним способом: набрать больше наблюдений.
+				</p>
 			</section>
 
 			<section>

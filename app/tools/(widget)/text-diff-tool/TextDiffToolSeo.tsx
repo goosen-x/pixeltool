@@ -22,6 +22,43 @@ export function TextDiffToolSeo() {
 					Сравнение считается прямо в браузере, тексты никуда не отправляются на
 					сервер.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Четыре сочетания настроек и когда какое нужно:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Режим</th>
+								<th className='py-2 pr-4 font-medium'>Что сравнивает</th>
+								<th className='py-2 font-medium'>Когда брать</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>По строкам</td>
+								<td className='py-2 pr-4'>строки целиком</td>
+								<td className='py-2'>код, конфиги, логи</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>По словам</td>
+								<td className='py-2 pr-4'>отдельные слова</td>
+								<td className='py-2'>текст, статьи, договоры</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Без учёта регистра</td>
+								<td className='py-2 pr-4'>игнорирует большие буквы</td>
+								<td className='py-2'>когда важен смысл, а не оформление</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Без пробелов</td>
+								<td className='py-2 pr-4'>игнорирует отступы</td>
+								<td className='py-2'>после переформатирования кода</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

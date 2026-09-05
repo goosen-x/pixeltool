@@ -14,6 +14,44 @@ export function CpaCalculatorSeo() {
 					регистрацию. CPM стоит особняком: это цена за тысячу показов, поэтому
 					бюджет делят на показы и умножают на тысячу.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Все четыре метрики это одно деление, разница только в том, что стоит в
+					знаменателе:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Метрика</th>
+								<th className='py-2 pr-4 font-medium'>Формула</th>
+								<th className='py-2 font-medium'>Знаменатель</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>CPC</td>
+								<td className='py-2 pr-4 font-mono'>расход / клики</td>
+								<td className='py-2'>клики по объявлению</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>CPL</td>
+								<td className='py-2 pr-4 font-mono'>расход / лиды</td>
+								<td className='py-2'>заявки и контакты</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>CPA</td>
+								<td className='py-2 pr-4 font-mono'>расход / действия</td>
+								<td className='py-2'>целевые действия: покупка, регистрация</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>CPM</td>
+								<td className='py-2 pr-4 font-mono'>расход / показы × 1000</td>
+								<td className='py-2'>показы, цена считается за тысячу</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

@@ -25,6 +25,49 @@ export function SignPdfSeo() {
 					Госуслуги — в браузере это в принципе не делается, ни здесь, ни на
 					любом другом сайте.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Три способа получить подпись и когда какой удобнее:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Способ</th>
+								<th className='py-2 pr-4 font-medium'>Что на выходе</th>
+								<th className='py-2 font-medium'>Когда брать</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Нарисовать мышью или пальцем
+								</td>
+								<td className='py-2 pr-4'>подпись с прозрачным фоном</td>
+								<td className='py-2'>
+									нужна быстро, планшет или телефон под рукой
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Загрузить фото росписи</td>
+								<td className='py-2 pr-4'>
+									картинка, фон убирается автоматически
+								</td>
+								<td className='py-2'>есть готовая подпись на бумаге</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Загрузить печать</td>
+								<td className='py-2 pr-4'>круглая печать поверх текста</td>
+								<td className='py-2'>документ от организации</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Печать ставится полупрозрачной поверх текста, а подпись остаётся
+					непрозрачной: так документ выглядит как настоящий, где печать
+					проступает сквозь буквы, а роспись их перекрывает.
+				</p>
 			</section>
 
 			<section>

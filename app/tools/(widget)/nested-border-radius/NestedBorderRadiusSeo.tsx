@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Formula } from '@/components/seo/Formula'
 
 export function NestedBorderRadiusSeo() {
 	return (
@@ -15,6 +16,52 @@ export function NestedBorderRadiusSeo() {
 					E — расстояние между контурами, то есть padding плюс толщина рамки. То
 					же самое с другой стороны: если задан внутренний радиус, внешний равен{' '}
 					<code>Rᵢ + E</code>.
+				</p>
+				<Formula
+					latex='R_i = R_e - E'
+					caption='Rₑ — радиус внешнего блока, E — расстояние между контурами: padding плюс толщина рамки'
+				/>
+
+				<p className='mt-4 text-muted-foreground'>
+					Сочетания, которые встречаются чаще всего:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Внешний радиус</th>
+								<th className='py-2 pr-4 font-medium'>Отступ</th>
+								<th className='py-2 font-medium'>Внутренний радиус</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>12 px</td>
+								<td className='py-2 pr-4 font-mono'>4 px</td>
+								<td className='py-2 font-mono'>8 px</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>16 px</td>
+								<td className='py-2 pr-4 font-mono'>8 px</td>
+								<td className='py-2 font-mono'>8 px</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>24 px</td>
+								<td className='py-2 pr-4 font-mono'>16 px</td>
+								<td className='py-2 font-mono'>8 px</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>8 px</td>
+								<td className='py-2 pr-4 font-mono'>12 px</td>
+								<td className='py-2 font-mono'>0 px</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Последняя строка показывает частый случай: отступ больше внешнего
+					радиуса, вычитание уходит в минус, и внутренний угол остаётся прямым.
+					Калькулятор в этой ситуации отдаёт ноль, а не отрицательное число.
 				</p>
 			</section>
 

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Formula } from '@/components/seo/Formula'
 
 export function CalorieCalculatorSeo() {
 	return (
@@ -23,6 +24,75 @@ export function CalorieCalculatorSeo() {
 						калькулятор ИМТ
 					</Link>
 					.
+				</p>
+				<Formula
+					latex='\text{BMR} = 10m + 6{,}25h - 5a + s'
+					caption='m — вес в кг, h — рост в см, a — возраст в годах, s равно +5 для мужчин и −161 для женщин'
+				/>
+				<Formula
+					latex='\text{Норма} = \text{BMR} \cdot k \cdot g'
+					caption='k — коэффициент активности от 1,2 до 1,9, g — поправка на цель: 0,85, 1 или 1,15'
+				/>
+
+				<p className='mt-4 text-muted-foreground'>
+					Так выглядит поддерживающая норма по формуле Миффлина-Сан Жеора для
+					двух условных людей: мужчина 80 кг ростом 178 см и женщина 65 кг
+					ростом 165 см. В скобках коэффициент активности:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Кто</th>
+								<th className='py-2 pr-4 font-medium'>Минимальная (1,2)</th>
+								<th className='py-2 pr-4 font-medium'>Средняя (1,55)</th>
+								<th className='py-2 font-medium'>Высокая (1,725)</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Мужчина, 25 лет</td>
+								<td className='py-2 pr-4 font-mono'>2151</td>
+								<td className='py-2 pr-4 font-mono'>2778</td>
+								<td className='py-2 font-mono'>3092</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Мужчина, 40 лет</td>
+								<td className='py-2 pr-4 font-mono'>2061</td>
+								<td className='py-2 pr-4 font-mono'>2662</td>
+								<td className='py-2 font-mono'>2963</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Мужчина, 60 лет</td>
+								<td className='py-2 pr-4 font-mono'>1941</td>
+								<td className='py-2 pr-4 font-mono'>2507</td>
+								<td className='py-2 font-mono'>2790</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Женщина, 25 лет</td>
+								<td className='py-2 pr-4 font-mono'>1674</td>
+								<td className='py-2 pr-4 font-mono'>2163</td>
+								<td className='py-2 font-mono'>2407</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Женщина, 40 лет</td>
+								<td className='py-2 pr-4 font-mono'>1584</td>
+								<td className='py-2 pr-4 font-mono'>2046</td>
+								<td className='py-2 font-mono'>2277</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Женщина, 60 лет</td>
+								<td className='py-2 pr-4 font-mono'>1464</td>
+								<td className='py-2 pr-4 font-mono'>1891</td>
+								<td className='py-2 font-mono'>2105</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Видно главное: разница между сидячим и подвижным образом жизни больше,
+					чем разница в 35 лет возраста. Свои цифры считайте в калькуляторе
+					выше, таблица нужна только чтобы понимать порядок.
 				</p>
 			</section>
 

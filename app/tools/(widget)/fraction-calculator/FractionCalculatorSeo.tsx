@@ -22,6 +22,68 @@ export function FractionCalculatorSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Ходовые дроби в десятичном виде и в процентах, чтобы не считать в уме:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Дробь</th>
+								<th className='py-2 pr-4 font-medium'>Десятичная</th>
+								<th className='py-2 font-medium'>Проценты</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1/2</td>
+								<td className='py-2 pr-4 font-mono'>0,5</td>
+								<td className='py-2 font-mono'>50%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1/3</td>
+								<td className='py-2 pr-4 font-mono'>0,333…</td>
+								<td className='py-2 font-mono'>33,3%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>2/3</td>
+								<td className='py-2 pr-4 font-mono'>0,666…</td>
+								<td className='py-2 font-mono'>66,7%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1/4</td>
+								<td className='py-2 pr-4 font-mono'>0,25</td>
+								<td className='py-2 font-mono'>25%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>3/4</td>
+								<td className='py-2 pr-4 font-mono'>0,75</td>
+								<td className='py-2 font-mono'>75%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1/5</td>
+								<td className='py-2 pr-4 font-mono'>0,2</td>
+								<td className='py-2 font-mono'>20%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>1/8</td>
+								<td className='py-2 pr-4 font-mono'>0,125</td>
+								<td className='py-2 font-mono'>12,5%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>1/16</td>
+								<td className='py-2 pr-4 font-mono'>0,0625</td>
+								<td className='py-2 font-mono'>6,25%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Дроби с тройкой в знаменателе в десятичном виде не заканчиваются
+					никогда, поэтому в расчётах их лучше держать дробью до последнего
+					шага, а округлять только результат.
+				</p>
 			</section>
 
 			<section>

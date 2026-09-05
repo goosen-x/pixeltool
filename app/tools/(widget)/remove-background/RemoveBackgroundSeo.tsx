@@ -39,6 +39,56 @@ export function RemoveBackgroundSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Что модель отделяет хорошо, а где придётся дорабатывать руками:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Сюжет</th>
+								<th className='py-2 font-medium'>Результат</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Человек на однородном фоне
+								</td>
+								<td className='py-2'>
+									отделяется чисто, включая контур причёски
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Предмет на столе</td>
+								<td className='py-2'>надёжно, если предмет контрастнее фона</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Волосы и шерсть на пёстром фоне
+								</td>
+								<td className='py-2'>на просвет остаются артефакты</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Прозрачное и полупрозрачное: стекло, вуаль
+								</td>
+								<td className='py-2'>модель считает это фоном и вырезает</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>
+									Несколько людей на общем плане
+								</td>
+								<td className='py-2'>мелкие фигуры по краям могут пропасть</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Результат сохраняется в PNG: у JPEG нет прозрачности, и вместо
+					вырезанного фона там оказался бы белый прямоугольник.
+				</p>
 			</section>
 		</div>
 	)

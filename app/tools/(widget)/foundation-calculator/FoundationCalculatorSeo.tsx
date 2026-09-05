@@ -20,6 +20,53 @@ export function FoundationCalculatorSeo() {
 
 			<section>
 				<h2 className='text-2xl font-bold tracking-tight'>
+					Глубина промерзания грунта
+				</h2>
+				<p className='mt-4 text-muted-foreground'>
+					Подошву ленточного и столбчатого фундамента закладывают ниже глубины
+					промерзания, иначе морозное пучение будет выдавливать её вверх.
+					Нормативные значения по СП 22.13330.2016:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Город</th>
+								<th className='py-2 font-medium'>
+									Нормативная глубина промерзания
+								</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Москва</td>
+								<td className='py-2 font-mono'>1,4 м</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Санкт-Петербург</td>
+								<td className='py-2 font-mono'>1,2 м</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Новосибирск</td>
+								<td className='py-2 font-mono'>2,2 м</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Краснодар</td>
+								<td className='py-2 font-mono'>0,8 м</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Цифры даны для суглинистых и глинистых грунтов. Для песков и
+					водонасыщенных грунтов глубина больше, а точное значение зависит от
+					того, какой грунт лежит на конкретном участке, поэтому для проекта его
+					берут из результатов геологии, а не из таблицы.
+				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
 					Сколько арматуры закладывать
 				</h2>
 				<p className='mt-3 text-muted-foreground'>

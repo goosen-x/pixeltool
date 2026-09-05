@@ -15,6 +15,52 @@ export function TeamCapacityCalculatorSeo() {
 					поддержку, срочные правки, переключения между задачами. Остаток и есть
 					время, которое можно расписать по задачам спринта.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Как тают часы на примере значений по умолчанию: команда 5 человек,
+					спринт 10 рабочих дней по 8 часов:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Шаг</th>
+								<th className='py-2 pr-4 font-medium'>Часы</th>
+								<th className='py-2 font-medium'>Осталось</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>
+									Номинал: 5 человек × 8 ч × 10 дней
+								</td>
+								<td className='py-2 pr-4 font-mono'>400</td>
+								<td className='py-2 font-mono'>400</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>
+									Минус встречи, 5 ч в неделю на человека
+								</td>
+								<td className='py-2 pr-4 font-mono'>−50</td>
+								<td className='py-2 font-mono'>350</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Минус отпуска и больничные</td>
+								<td className='py-2 pr-4 font-mono'>−16</td>
+								<td className='py-2 font-mono'>334</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Минус буфер 20% на непредвиденное</td>
+								<td className='py-2 pr-4 font-mono'>−66,8</td>
+								<td className='py-2 font-mono'>267,2</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Итог 267 часов из номинальных 400, то есть 67%. Планировать спринт на
+					400 часов означает гарантированно его провалить.
+				</p>
 			</section>
 
 			<section>

@@ -21,6 +21,46 @@ export function PhotoColorPickerSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Один и тот же пиксель инструмент отдаёт в трёх записях. Это один цвет,
+					разные способы его записать:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Формат</th>
+								<th className='py-2 pr-4 font-medium'>Пример</th>
+								<th className='py-2 font-medium'>Где применяется</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>HEX</td>
+								<td className='py-2 pr-4 font-mono'>#3B82F6</td>
+								<td className='py-2'>CSS, дизайн-макеты, самый ходовой</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>RGB</td>
+								<td className='py-2 pr-4 font-mono'>rgb(59, 130, 246)</td>
+								<td className='py-2'>CSS с прозрачностью, canvas, код</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>HSL</td>
+								<td className='py-2 pr-4 font-mono'>hsl(217, 91%, 60%)</td>
+								<td className='py-2'>
+									когда надо сделать тот же цвет светлее или бледнее
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					HSL удобнее остальных именно для правок: чтобы получить оттенок той же
+					гаммы, достаточно изменить последнее число, а в HEX для этого пришлось
+					бы пересчитывать все три пары.
+				</p>
 			</section>
 
 			<section>

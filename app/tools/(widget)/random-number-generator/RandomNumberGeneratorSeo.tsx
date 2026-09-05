@@ -35,6 +35,48 @@ export function RandomNumberGeneratorSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Вероятность, что выпадет конкретное задуманное число:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Диапазон</th>
+								<th className='py-2 pr-4 font-medium'>Вариантов</th>
+								<th className='py-2 font-medium'>Шанс одного числа</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>1–6, как кубик</td>
+								<td className='py-2 pr-4 font-mono'>6</td>
+								<td className='py-2 font-mono'>16,7%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>1–10</td>
+								<td className='py-2 pr-4 font-mono'>10</td>
+								<td className='py-2 font-mono'>10%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>1–36</td>
+								<td className='py-2 pr-4 font-mono'>36</td>
+								<td className='py-2 font-mono'>2,8%</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>1–100</td>
+								<td className='py-2 pr-4 font-mono'>100</td>
+								<td className='py-2 font-mono'>1%</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>1–1000</td>
+								<td className='py-2 pr-4 font-mono'>1000</td>
+								<td className='py-2 font-mono'>0,1%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

@@ -18,6 +18,53 @@ export function TextEmoticonsSeo() {
 					. Каомодзи обычно точнее передают конкретную эмоцию: раздражение,
 					смущение, сарказм. Они не ограничены одной «улыбкой» из двух символов.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Самые ходовые каомодзи и что они означают:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Каомодзи</th>
+								<th className='py-2 pr-4 font-medium'>Название</th>
+								<th className='py-2 font-medium'>Смысл</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>( ͡° ͜ʖ ͡°)</td>
+								<td className='py-2 pr-4'>Lenny Face</td>
+								<td className='py-2'>многозначительный намёк</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>¯\_(ツ)_/¯</td>
+								<td className='py-2 pr-4'>Shrug</td>
+								<td className='py-2'>«ну а что я сделаю»</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>(╯°□°）╯︵ ┻━┻</td>
+								<td className='py-2 pr-4'>Table Flip</td>
+								<td className='py-2'>ярость, всё надоело</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>ಠ_ಠ</td>
+								<td className='py-2 pr-4'>Disapproval</td>
+								<td className='py-2'>осуждающий взгляд</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>ʕ•ᴥ•ʔ</td>
+								<td className='py-2 pr-4'>Bear</td>
+								<td className='py-2'>умиление</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>(≧▽≦)</td>
+								<td className='py-2 pr-4'>Happy</td>
+								<td className='py-2'>бурная радость</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

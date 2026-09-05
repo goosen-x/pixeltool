@@ -21,6 +21,62 @@ export function QrScannerSeo() {
 					и пароля из строки Wi-Fi-кода, сканер не занимается, это задача того,
 					кто код создавал.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Внутри кода всегда текст, но по его началу видно, чем он был задуман:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Начало строки</th>
+								<th className='py-2 pr-4 font-medium'>Что это</th>
+								<th className='py-2 font-medium'>Что делать</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>https:// или http://</td>
+								<td className='py-2 pr-4'>ссылка на сайт</td>
+								<td className='py-2'>
+									открыть, предварительно посмотрев домен
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>WIFI:</td>
+								<td className='py-2 pr-4'>параметры сети</td>
+								<td className='py-2'>
+									подключиться, имя и пароль видны в тексте
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>tel: или sms:</td>
+								<td className='py-2 pr-4'>телефон</td>
+								<td className='py-2'>позвонить или написать</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>mailto:</td>
+								<td className='py-2 pr-4'>адрес почты</td>
+								<td className='py-2'>написать письмо</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>BEGIN:VCARD</td>
+								<td className='py-2 pr-4'>визитка</td>
+								<td className='py-2'>сохранить контакт</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>обычный текст</td>
+								<td className='py-2 pr-4'>просто строка</td>
+								<td className='py-2'>скопировать</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Сканер ничего не открывает сам и показывает содержимое текстом: по
+					QR-коду на объявлении легко увести на поддельный сайт, и увидеть адрес
+					до перехода тут важнее удобства.
+				</p>
 			</section>
 
 			<section>

@@ -20,6 +20,65 @@ export function MoonCalendarSeo() {
 					лунный день начинается в момент новолуния, а не в полночь, поэтому он
 					тоже редко бывает полным.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Фаза определяется по доле пройденного цикла. Восемь фаз распределены
+					неравномерно: четверти и полнолуние это узкие окна около точной даты,
+					а промежуточные фазы длятся по несколько дней:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Фаза</th>
+								<th className='py-2 pr-4 font-medium'>Доля цикла</th>
+								<th className='py-2 font-medium'>Что видно</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Новолуние</td>
+								<td className='py-2 pr-4 font-mono'>0 и 100%</td>
+								<td className='py-2'>диска не видно</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Растущий серп</td>
+								<td className='py-2 pr-4 font-mono'>2–23%</td>
+								<td className='py-2'>тонкий серп справа</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Первая четверть</td>
+								<td className='py-2 pr-4 font-mono'>23–27%</td>
+								<td className='py-2'>ровно половина диска</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Растущая Луна</td>
+								<td className='py-2 pr-4 font-mono'>27–48%</td>
+								<td className='py-2'>больше половины</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Полнолуние</td>
+								<td className='py-2 pr-4 font-mono'>48–52%</td>
+								<td className='py-2'>полный диск</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Убывающая Луна</td>
+								<td className='py-2 pr-4 font-mono'>52–73%</td>
+								<td className='py-2'>больше половины, убывает</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Последняя четверть</td>
+								<td className='py-2 pr-4 font-mono'>73–77%</td>
+								<td className='py-2'>половина диска слева</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Убывающий серп</td>
+								<td className='py-2 pr-4 font-mono'>77–98%</td>
+								<td className='py-2'>тонкий серп слева</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

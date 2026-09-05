@@ -51,6 +51,59 @@ export function MergePdfSeo() {
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					При склейке страницы переносятся как есть, без перерисовки. Что при
+					этом сохраняется, а что теряется:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Элемент документа</th>
+								<th className='py-2 font-medium'>После объединения</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Текст и шрифты</td>
+								<td className='py-2'>сохраняются, текст остаётся выделяемым</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Картинки и векторная графика
+								</td>
+								<td className='py-2'>переносятся без пересжатия</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Поворот страницы</td>
+								<td className='py-2'>сохраняется</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Разный размер страниц</td>
+								<td className='py-2'>
+									сохраняется, страницы остаются разного формата
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Закладки и оглавление</td>
+								<td className='py-2'>теряются</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Формы и поля для заполнения
+								</td>
+								<td className='py-2'>теряются</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Пароль на открытие</td>
+								<td className='py-2'>
+									такой файл не примется, его надо снять заранее
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

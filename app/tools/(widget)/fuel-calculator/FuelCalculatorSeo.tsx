@@ -37,6 +37,40 @@ export function FuelCalculatorSeo() {
 					паспортного — обычное дело, поэтому для планирования бюджета честнее
 					подставлять свой измеренный расход, а не значение из брошюры.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Ориентировочные диапазоны реального расхода бензина в смешанном цикле.
+					Это рыночные средние, а не норматив: конкретная машина легко выходит
+					за диапазон в обе стороны.
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Класс автомобиля</th>
+								<th className='py-2 font-medium'>Расход, л на 100 км</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Хэтчбек, до 1.6 л</td>
+								<td className='py-2 font-mono'>6–8</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Седан, 1.6–2.0 л</td>
+								<td className='py-2 font-mono'>7–10</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Кроссовер</td>
+								<td className='py-2 font-mono'>8–12</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Внедорожник</td>
+								<td className='py-2 font-mono'>11–16</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

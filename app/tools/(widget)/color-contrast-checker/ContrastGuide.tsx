@@ -1,5 +1,6 @@
 'use client'
 
+import { Formula } from '@/components/seo/Formula'
 import Link from 'next/link'
 
 interface Sample {
@@ -77,14 +78,6 @@ const LEVELS: { level: string; normal: string; large: string; note: string }[] =
 		}
 	]
 
-function Code({ children }: { children: string }) {
-	return (
-		<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
-			{children}
-		</code>
-	)
-}
-
 export function ContrastGuide() {
 	return (
 		<section className='mt-12 max-w-3xl mx-auto text-left text-foreground'>
@@ -92,11 +85,13 @@ export function ContrastGuide() {
 				Что такое контраст текста и фона
 			</h2>
 			<p className='mt-3 leading-relaxed'>
-				Контраст — это отношение яркости двух цветов. Его считают по формуле{' '}
-				<Code>(L1 + 0.05) / (L2 + 0.05)</Code>, где L1 — яркость светлого цвета,
-				L2 — тёмного. Шкала идёт от 1:1 (цвета совпадают, текст не виден) до
-				21:1 (чистый чёрный на чистом белом).
+				Контраст — это отношение яркости двух цветов. Шкала идёт от 1:1 (цвета
+				совпадают, текст не виден) до 21:1 (чистый чёрный на чистом белом).
 			</p>
+			<Formula
+				latex='K = \dfrac{L_1 + 0{,}05}{L_2 + 0{,}05}'
+				caption='L₁ — относительная яркость светлого цвета, L₂ — тёмного'
+			/>
 			<p className='mt-3 leading-relaxed'>
 				Главная ловушка в том, что контраст не равен «разнице цветов на глаз».
 				Жёлтый кажется ярким и заметным, но белый текст на жёлтом фоне почти

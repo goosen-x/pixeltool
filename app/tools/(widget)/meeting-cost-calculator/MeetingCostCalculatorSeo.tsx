@@ -15,6 +15,49 @@ export function MeetingCostCalculatorSeo() {
 					регулярных совещаний калькулятор умножает эту сумму на число встреч в
 					году.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Часовая встреча при ставке 1500 рублей в час. Ставка взята для
+					примера, свою подставьте в калькулятор:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Участников</th>
+								<th className='py-2 pr-4 font-medium'>Одна встреча</th>
+								<th className='py-2 font-medium'>Если еженедельно, за год</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>3</td>
+								<td className='py-2 pr-4 font-mono'>4 500 ₽</td>
+								<td className='py-2 font-mono'>234 000 ₽</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>5</td>
+								<td className='py-2 pr-4 font-mono'>7 500 ₽</td>
+								<td className='py-2 font-mono'>390 000 ₽</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>8</td>
+								<td className='py-2 pr-4 font-mono'>12 000 ₽</td>
+								<td className='py-2 font-mono'>624 000 ₽</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>12</td>
+								<td className='py-2 pr-4 font-mono'>18 000 ₽</td>
+								<td className='py-2 font-mono'>936 000 ₽</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Годовая колонка это 52 повторения. Именно она обычно и производит
+					впечатление: еженедельный часовой статус на двенадцать человек стоит
+					как ещё один сотрудник.
+				</p>
 			</section>
 
 			<section>

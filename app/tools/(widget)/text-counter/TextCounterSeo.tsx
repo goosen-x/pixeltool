@@ -41,6 +41,82 @@ export function TextCounterSeo() {
 					. Считать символы вручную или искать эти цифры отдельно не нужно,
 					прогресс-бар сразу показывает, сколько места осталось.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Те же значения, что подсвечиваются в счётчике:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Площадка</th>
+								<th className='py-2 pr-4 font-medium'>Что именно</th>
+								<th className='py-2 font-medium'>Лимит</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>X (Twitter)</td>
+								<td className='py-2 pr-4'>твит</td>
+								<td className='py-2 font-mono'>280</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>ВКонтакте</td>
+								<td className='py-2 pr-4'>пост</td>
+								<td className='py-2 font-mono'>15 895</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Одноклассники</td>
+								<td className='py-2 pr-4'>заметка</td>
+								<td className='py-2 font-mono'>15 895</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Facebook</td>
+								<td className='py-2 pr-4'>пост</td>
+								<td className='py-2 font-mono'>63 206</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Instagram</td>
+								<td className='py-2 pr-4'>подпись</td>
+								<td className='py-2 font-mono'>2 200</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Telegram</td>
+								<td className='py-2 pr-4'>сообщение</td>
+								<td className='py-2 font-mono'>4 096</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Telegram</td>
+								<td className='py-2 pr-4'>подпись к медиа</td>
+								<td className='py-2 font-mono'>1 024</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>LinkedIn</td>
+								<td className='py-2 pr-4'>пост</td>
+								<td className='py-2 font-mono'>3 000</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>SMS</td>
+								<td className='py-2 pr-4'>одно сообщение</td>
+								<td className='py-2 font-mono'>160</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Google и Яндекс</td>
+								<td className='py-2 pr-4'>SEO-заголовок</td>
+								<td className='py-2 font-mono'>60</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Google и Яндекс</td>
+								<td className='py-2 pr-4'>SEO-описание</td>
+								<td className='py-2 font-mono'>160</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Лимиты считаются в символах с пробелами. Время чтения инструмент
+					оценивает по 200 слов в минуту, это средняя скорость чтения про себя.
+				</p>
 			</section>
 
 			<p className='text-muted-foreground'>

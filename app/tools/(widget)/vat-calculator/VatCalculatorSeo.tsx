@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Formula } from '@/components/seo/Formula'
 
 export function VatCalculatorSeo() {
 	return (
@@ -14,6 +15,14 @@ export function VatCalculatorSeo() {
 					налогом больше, чем налог внутри неё. Делить надо на 122 и умножать на
 					22, а не брать 22% от итога.
 				</p>
+				<Formula
+					latex='\text{НДС сверху} = S \cdot \dfrac{22}{100}'
+					caption='S — сумма без налога'
+				/>
+				<Formula
+					latex='\text{НДС внутри} = S_{\text{с НДС}} \cdot \dfrac{22}{122}'
+					caption='делитель 122 это 100 плюс ставка, а не 100'
+				/>
 				<p className='mt-3 text-muted-foreground'>
 					На числах: если цена с НДС 1220 рублей, то налог внутри — 220, а не
 					268,40. Разница набегает быстро, и в актах сверки её потом ищут долго.

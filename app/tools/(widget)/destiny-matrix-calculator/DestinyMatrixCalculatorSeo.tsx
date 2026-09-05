@@ -55,6 +55,48 @@ export function DestinyMatrixCalculatorSeo({
 					</Link>
 					.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Точки схемы объединяются в линии, и разбор обычно строится по ним:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Линия</th>
+								<th className='py-2 font-medium'>О чём</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Линия мужского рода</td>
+								<td className='py-2'>что пришло по отцовской ветке</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Линия женского рода</td>
+								<td className='py-2'>что пришло по материнской ветке</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Линия любви и отношений</td>
+								<td className='py-2'>сценарии в паре</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Линия денег</td>
+								<td className='py-2'>отношения с деньгами и ресурсом</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Кармический хвост</td>
+								<td className='py-2'>
+									повторяющийся сюжет, который считают унаследованным
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Личный талант</td>
+								<td className='py-2'>отдельная точка в центре схемы</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

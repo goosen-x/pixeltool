@@ -19,6 +19,48 @@ export function QrGeneratorSeo() {
 					передаются. Всё, что вы ввели, остаётся на вашем устройстве, а
 					итоговый PNG можно сразу скачать или скопировать в буфер обмена.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					QR-код это просто закодированная строка. Три режима инструмента
+					отличаются только тем, какую строку он собирает:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Режим</th>
+								<th className='py-2 pr-4 font-medium'>Что попадает в код</th>
+								<th className='py-2 font-medium'>Как ведёт себя камера</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Ссылка</td>
+								<td className='py-2 pr-4 font-mono'>адрес как есть</td>
+								<td className='py-2'>предлагает открыть сайт</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Wi-Fi</td>
+								<td className='py-2 pr-4 font-mono'>
+									WIFI:T:тип;S:имя;P:пароль;H:скрытая;
+								</td>
+								<td className='py-2'>предлагает подключиться к сети</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Приложение</td>
+								<td className='py-2 pr-4 font-mono'>
+									ссылка на App Store или Google Play
+								</td>
+								<td className='py-2'>открывает магазин на нужной странице</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Пароль от Wi-Fi лежит в коде открытым текстом: любой, кто отсканирует
+					картинку, увидит его целиком. Поэтому такой код уместен на стене в
+					кафе, но не в открытом посте.
+				</p>
 			</section>
 
 			<section>

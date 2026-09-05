@@ -37,6 +37,45 @@ export function PregnancyCalculatorSeo() {
 					Предполагаемая дата родов по правилу Негеле — это первый день
 					последней менструации плюс 280 дней, то есть сорок недель.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Весь срок делят на три триместра, границы считают в акушерских
+					неделях:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Триместр</th>
+								<th className='py-2 pr-4 font-medium'>Недели</th>
+								<th className='py-2 font-medium'>Что происходит</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Первый</td>
+								<td className='py-2 pr-4 font-mono'>1–13</td>
+								<td className='py-2'>
+									закладка органов, первый скрининг на 11–13 неделе
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Второй</td>
+								<td className='py-2 pr-4 font-mono'>14–27</td>
+								<td className='py-2'>
+									второй скрининг, обычно самый спокойный период
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Третий</td>
+								<td className='py-2 pr-4 font-mono'>28–40</td>
+								<td className='py-2'>
+									декретный отпуск с 30 недели, подготовка к родам
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

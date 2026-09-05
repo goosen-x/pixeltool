@@ -28,6 +28,49 @@ export function AmountInWordsSeo() {
 					которая задаёт порядок величины. Переключатель позволяет записать
 					копейки и словами, если этого требует форма документа.
 				</p>
+
+				<p className='mt-4 text-muted-foreground'>
+					Инструмент знает три валюты и режим без валюты. Формы числительных для
+					каждой свои, потому что от них зависит окончание:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Валюта</th>
+								<th className='py-2 pr-4 font-medium'>Основная единица</th>
+								<th className='py-2 font-medium'>Разменная</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Рубли</td>
+								<td className='py-2 pr-4'>рубль, рубля, рублей</td>
+								<td className='py-2'>копейка, копейки, копеек</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Доллары</td>
+								<td className='py-2 pr-4'>доллар, доллара, долларов</td>
+								<td className='py-2'>цент, цента, центов</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Евро</td>
+								<td className='py-2 pr-4'>евро, евро, евро</td>
+								<td className='py-2'>цент, цента, центов</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>Просто число</td>
+								<td className='py-2 pr-4'>без единицы</td>
+								<td className='py-2'>без единицы</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-4 text-muted-foreground'>
+					Евро не склоняется вовсе, а копейка женского рода, в отличие от рубля:
+					поэтому «двадцать одна копейка», но «двадцать один рубль». Именно на
+					этом чаще всего и ошибаются, когда пишут сумму вручную.
+				</p>
 			</section>
 
 			<section>
