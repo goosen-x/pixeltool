@@ -33,6 +33,91 @@ export function MorseCodeTranslatorSeo() {
 				</p>
 			</section>
 
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Таблица азбуки Морзе: русский алфавит и цифры
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Точная таблица соответствий, которую использует сам инструмент. Ё и Е
+					кодируются одинаково — точкой, отдельного знака для Ё в азбуке Морзе
+					нет.
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>Буква</th>
+								<th className='py-2 pr-4 font-semibold'>Код</th>
+								<th className='py-2 pr-4 font-semibold'>Буква</th>
+								<th className='py-2 font-semibold'>Код</th>
+							</tr>
+						</thead>
+						<tbody>
+							{[
+								['А', '.-', 'Р', '.-.'],
+								['Б', '-...', 'С', '...'],
+								['В', '.--', 'Т', '-'],
+								['Г', '--.', 'У', '..-'],
+								['Д', '-..', 'Ф', '..-.'],
+								['Е / Ё', '.', 'Х', '....'],
+								['Ж', '...-', 'Ц', '-.-.'],
+								['З', '--..', 'Ч', '---.'],
+								['И', '..', 'Ш', '----'],
+								['Й', '.---', 'Щ', '--.-'],
+								['К', '-.-', 'Ъ', '--.--'],
+								['Л', '.-..', 'Ы', '-.--'],
+								['М', '--', 'Ь', '-..-'],
+								['Н', '-.', 'Э', '..-..'],
+								['О', '---', 'Ю', '..--'],
+								['П', '.--.', 'Я', '.-.-']
+							].map(([l1, c1, l2, c2]) => (
+								<tr key={l1} className='border-b last:border-0'>
+									<td className='py-2 pr-4 align-top'>{l1}</td>
+									<td className='py-2 pr-4 align-top font-mono text-muted-foreground'>
+										{c1}
+									</td>
+									<td className='py-2 pr-4 align-top'>{l2}</td>
+									<td className='py-2 align-top font-mono text-muted-foreground'>
+										{c2}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>Цифра</th>
+								<th className='py-2 font-semibold'>Код</th>
+							</tr>
+						</thead>
+						<tbody>
+							{[
+								['0', '-----'],
+								['1', '.----'],
+								['2', '..---'],
+								['3', '...--'],
+								['4', '....-'],
+								['5', '.....'],
+								['6', '-....'],
+								['7', '--...'],
+								['8', '---..'],
+								['9', '----.']
+							].map(([digit, code]) => (
+								<tr key={digit} className='border-b last:border-0'>
+									<td className='py-2 pr-4 align-top'>{digit}</td>
+									<td className='py-2 align-top font-mono text-muted-foreground'>
+										{code}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
 			<p className='text-muted-foreground'>
 				История кода и разбор различий между русской и английской таблицей
 				собраны в статье{' '}

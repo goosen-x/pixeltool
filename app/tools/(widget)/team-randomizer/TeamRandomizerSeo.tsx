@@ -16,7 +16,22 @@ export function TeamRandomizerSeo() {
 			</section>
 
 			<p className='text-muted-foreground'>
-				Если вместо команд нужен жребий или монетка, в статье{' '}
+				Если нужно не поделить на команды, а вытянуть один номер победителя,
+				подойдёт{' '}
+				<Link
+					href='/tools/random-number-generator'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					генератор случайных чисел
+				</Link>
+				, а для очерёдности по именам без деления на группы есть{' '}
+				<Link
+					href='/tools/draw-lots'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					жеребьёвка
+				</Link>
+				. Про монетку и остальные способы получить случайный результат в статье{' '}
 				<Link
 					href='/blog/randomayzer-zherebevka-online'
 					className='cursor-pointer font-medium text-primary hover:underline'

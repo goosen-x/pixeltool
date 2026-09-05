@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function ServiceLengthCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -38,7 +40,16 @@ export function ServiceLengthCalculatorSeo() {
 					платят 60% среднего заработка, от пяти до восьми 80%, от восьми 100%.
 					Инструмент показывает получившийся процент сразу под результатом.
 					Страховой стаж считается по периодам, когда за вас платились взносы, и
-					с общим трудовым совпадает не всегда.
+					с общим трудовым совпадает не всегда. При устройстве на новую работу
+					стаж обычно обсуждают вместе с окладом — посчитать, сколько из него
+					придёт на руки, можно в{' '}
+					<Link
+						href='/tools/salary-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе зарплаты
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

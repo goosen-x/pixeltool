@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function MaternityCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -26,6 +28,40 @@ export function MaternityCalculatorSeo() {
 					194 дня. Пособие платят единовременно за весь период сразу, а не
 					помесячно.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Роды</th>
+								<th className='py-2 font-medium'>Длительность отпуска</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Обычные</td>
+								<td className='py-2 font-mono'>140 дней</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Осложнённые</td>
+								<td className='py-2 font-mono'>156 дней</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Многоплодная беременность</td>
+								<td className='py-2 font-mono'>194 дня</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p className='mt-3 text-muted-foreground'>
+					Точную дату выхода в декрет по неделе беременности удобно прикинуть в{' '}
+					<Link
+						href='/tools/pregnancy-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе беременности
+					</Link>
+					.
+				</p>
 			</section>
 
 			<section>
@@ -35,8 +71,15 @@ export function MaternityCalculatorSeo() {
 				<p className='mt-3 text-muted-foreground'>
 					Пособие по беременности и родам НДФЛ не облагается, поэтому
 					начисленная сумма и есть та, что придёт на счёт. Этим оно отличается и
-					от больничного, и от отпускных, с которых налог удерживают. Взносы с
-					него тоже не платятся.
+					от{' '}
+					<Link
+						href='/tools/sick-leave-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						больничного
+					</Link>
+					, и от отпускных, с которых налог удерживают. Взносы с него тоже не
+					платятся.
 				</p>
 			</section>
 		</div>

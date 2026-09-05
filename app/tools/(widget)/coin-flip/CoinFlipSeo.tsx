@@ -81,8 +81,21 @@ export function CoinFlipSeo() {
 
 			<p className='text-muted-foreground'>
 				Если выбрать нужно не из двух вариантов, а из нескольких, монетка не
-				поможет. Тогда пригодятся жребий и деление на команды, об этом есть
-				статья{' '}
+				поможет. Для числа от 1 до 6 подойдёт{' '}
+				<Link
+					href='/tools/dice-roller'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					бросок кубика
+				</Link>
+				, а для произвольного списка своих вариантов есть{' '}
+				<Link
+					href='/tools/fortune-wheel'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					колесо фортуны
+				</Link>
+				. Про жребий и деление на команды есть отдельная статья{' '}
 				<Link
 					href='/blog/randomayzer-zherebevka-online'
 					className='cursor-pointer font-medium text-primary hover:underline'

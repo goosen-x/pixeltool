@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function FuelCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -11,7 +13,15 @@ export function FuelCalculatorSeo() {
 					сто: на 500 км при расходе 8 л/100 км уйдёт 40 литров. Стоимость — те
 					же литры, умноженные на цену. Обратная задача решается так же просто:
 					проехали 450 км и залили до полного 36 литров, значит фактический
-					расход 36 ÷ 450 × 100 = 8 литров на сотню.
+					расход 36 ÷ 450 × 100 = 8 литров на сотню. Если маршрут идёт через
+					другой регион, а на встречных машинах не узнать код на номере, поможет{' '}
+					<Link
+						href='/tools/car-region-codes'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						таблица кодов регионов
+					</Link>
+					.
 				</p>
 			</section>
 

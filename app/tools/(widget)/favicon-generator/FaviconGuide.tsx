@@ -102,7 +102,15 @@ export function FaviconGuide() {
 				PNG остальных размеров. Обратная замена, когда {code('.png')} просто
 				переименовывают в {code('.ico')}, обычно работает, но кладёт внутрь один
 				размер вместо нескольких, и для иконки сайта это хуже. Лучший исходник —
-				квадратный PNG от 512×512 с прозрачным фоном.
+				квадратный PNG от 512×512 с прозрачным фоном, а точные размеры файла
+				перед загрузкой покажет{' '}
+				<Link
+					href='/tools/image-size-checker'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					проверка размера изображения
+				</Link>
+				.
 			</p>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
@@ -131,7 +139,16 @@ export function FaviconGuide() {
 			<p className='mt-3 leading-relaxed'>
 				Минимального набора из {code('favicon.ico')} и PNG на 32 пикселя
 				хватает. Остальное добавляют, когда сайт должен прилично выглядеть
-				ярлыком на телефоне.
+				ярлыком на телефоне. Картинку для превью в мессенджерах и соцсетях
+				фавикон не заменяет, за неё отвечает отдельный тег {code('og:image')},
+				который проверяет{' '}
+				<Link
+					href='/tools/opengraph-validator'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					валидатор Open Graph
+				</Link>
+				.
 			</p>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>

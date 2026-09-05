@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function PdfToJpgSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -14,6 +16,38 @@ export function PdfToJpgSeo() {
 					презентации хватает 150, для печати берут 300, а 72 годятся на быстрое
 					превью.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>DPI</th>
+								<th className='py-2 font-semibold'>
+									Размер картинки для листа A4
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr className='border-b last:border-0'>
+								<td className='py-2 pr-4 align-top'>72</td>
+								<td className='py-2 align-top text-muted-foreground'>
+									≈ 595×842 пикселей
+								</td>
+							</tr>
+							<tr className='border-b last:border-0'>
+								<td className='py-2 pr-4 align-top'>150</td>
+								<td className='py-2 align-top text-muted-foreground'>
+									≈ 1240×1754 пикселей
+								</td>
+							</tr>
+							<tr className='border-b last:border-0'>
+								<td className='py-2 pr-4 align-top'>300</td>
+								<td className='py-2 align-top text-muted-foreground'>
+									≈ 2480×3508 пикселей
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -38,7 +72,16 @@ export function PdfToJpgSeo() {
 					изображения. PNG сжимает без потерь: буквы и линии остаются идеально
 					резкими, без мутного ореола вокруг текста, но и весит такая картинка
 					заметно больше. Берите PNG для страниц со схемами, таблицами и мелким
-					шрифтом, которые потом будут разглядывать.
+					шрифтом, которые потом будут разглядывать. Если вместо картинок нужен
+					просто более лёгкий PDF, тот же документ, но меньшим весом, для этого
+					есть{' '}
+					<Link
+						href='/tools/compress-pdf'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						сжатие PDF
+					</Link>
+					.
 				</p>
 			</section>
 

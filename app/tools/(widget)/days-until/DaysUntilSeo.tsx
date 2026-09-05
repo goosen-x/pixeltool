@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function DaysUntilSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -31,7 +33,15 @@ export function DaysUntilSeo() {
 					постановлением правительства на каждый год отдельно, и зашивать
 					прошлогодний список значило бы выдавать неверный ответ с уверенным
 					видом. Если вам нужен точный производственный календарь, сверяйтесь с
-					постановлением на нужный год.
+					постановлением на нужный год. А если нужна разница между двумя
+					произвольными датами в прошлом, а не отсчёт до сегодня, для этого есть{' '}
+					<Link
+						href='/tools/date-difference-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор разницы дат
+					</Link>
+					.
 				</p>
 			</section>
 

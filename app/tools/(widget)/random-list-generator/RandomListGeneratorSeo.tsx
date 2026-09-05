@@ -17,7 +17,22 @@ export function RandomListGeneratorSeo() {
 			</section>
 
 			<p className='text-muted-foreground'>
-				Другие способы получить случайный результат (жребий, монетка, кубик,
+				Если нужен не весь список в новом порядке, а один случайный номер,
+				возьмите{' '}
+				<Link
+					href='/tools/random-number-generator'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					генератор случайных чисел
+				</Link>
+				, а для деления списка участников на равные группы есть{' '}
+				<Link
+					href='/tools/team-randomizer'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					разделение на команды
+				</Link>
+				. Другие способы получить случайный результат (жребий, монетка, кубик,
 				деление на команды) собраны в статье{' '}
 				<Link
 					href='/blog/randomayzer-zherebevka-online'

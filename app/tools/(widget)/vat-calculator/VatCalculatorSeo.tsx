@@ -33,6 +33,37 @@ export function VatCalculatorSeo() {
 					подставить не ту ставку легче, чем кажется, а результат отличается на
 					проценты от суммы договора.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Ставка</th>
+								<th className='py-2 font-medium'>Когда применяется</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>0%</td>
+								<td className='py-2'>
+									Экспорт товаров и международные перевозки
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>10%</td>
+								<td className='py-2'>
+									Продукты питания, детские товары, лекарства и медицинские
+									изделия, книги и периодика
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>22%</td>
+								<td className='py-2'>
+									Основная ставка, все остальные товары и услуги
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -61,7 +92,15 @@ export function VatCalculatorSeo() {
 					бухгалтера. Он не знает про вычеты, авансы, раздельный учёт и
 					особенности вашего режима налогообложения. Ставки указаны на дату,
 					которая написана в подвале инструмента: законодательство меняется, и
-					сверяться стоит с актуальной редакцией Налогового кодекса.
+					сверяться стоит с актуальной редакцией Налогового кодекса. Если нужен
+					не налог с продажи, а налог с зарплаты, для этого есть отдельный{' '}
+					<Link
+						href='/tools/ndfl-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор НДФЛ
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

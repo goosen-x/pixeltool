@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function CarRegionCodesSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -38,7 +40,15 @@ export function CarRegionCodesSeo() {
 					сегодня и где живёт владелец. С 2013 года машину можно
 					зарегистрировать в любом регионе, а при перепродаже номер часто
 					остаётся прежним. Поэтому по коду нельзя судить ни о владельце, ни о
-					том, откуда приехала машина.
+					том, откуда приехала машина. А если вы, наоборот, собираетесь в
+					соседний регион на машине, расход топлива на маршрут посчитает{' '}
+					<Link
+						href='/tools/fuel-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор расхода топлива
+					</Link>
+					.
 				</p>
 			</section>
 

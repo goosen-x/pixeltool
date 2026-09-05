@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function CurrencyConverterSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -43,7 +45,15 @@ export function CurrencyConverterSeo() {
 					«доллар — евро» считается через него: сначала в рубли, потом из
 					рублей. Такой кросс-курс может слегка отличаться от биржевого курса
 					этой пары, и это не ошибка расчёта, а следствие того, что оба курса
-					установлены к третьей валюте в разные моменты торгов.
+					установлены к третьей валюте в разные моменты торгов. У Центробанка
+					нет курса для криптовалют — для них есть отдельный{' '}
+					<Link
+						href='/tools/bitcoin-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор биткоина
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

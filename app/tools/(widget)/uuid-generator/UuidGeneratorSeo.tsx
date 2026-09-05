@@ -175,9 +175,16 @@ export function UuidGeneratorSeo() {
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
 					Онлайн-генератор удобен, когда нужно несколько значений руками: для
-					сида базы, теста или заглушки в конфиге. В самом приложении UUID
-					генерируют средствами языка или СУБД, отдельная библиотека почти нигде
-					уже не нужна:
+					сида базы, теста или заглушки в конфиге. Если для теста нужны не
+					только ID, но и целые фейковые записи с именами и адресами, посмотрите{' '}
+					<Link
+						href='/tools/mock-data-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						генератор тестовых данных
+					</Link>
+					. В самом приложении UUID генерируют средствами языка или СУБД,
+					отдельная библиотека почти нигде уже не нужна:
 				</p>
 				<div className='mt-4 overflow-x-auto'>
 					<table className='w-full border-collapse text-sm'>

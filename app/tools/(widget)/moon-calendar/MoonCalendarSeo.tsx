@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function MoonCalendarSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -49,7 +51,15 @@ export function MoonCalendarSeo() {
 					между ними называется терминатором. У растущей Луны свет с правой
 					стороны, у убывающей — с левой. Запомнить помогает старое правило:
 					если серп похож на букву «С», Луна стареет, то есть убывает; если к
-					нему мысленно приставить палочку и получается «Р», она растёт.
+					нему мысленно приставить палочку и получается «Р», она растёт. Знак
+					зодиака, в котором находится Солнце в ту же дату, можно узнать в{' '}
+					<Link
+						href='/tools/zodiac-sign'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе знака зодиака
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

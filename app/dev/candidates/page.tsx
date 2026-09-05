@@ -2,6 +2,7 @@ import { execFile } from 'child_process'
 import { promisify } from 'util'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { dev } from '@/lib/config/env'
@@ -101,7 +102,13 @@ export default async function DevCandidatesPage() {
 
 	return (
 		<main className='mx-auto max-w-7xl px-4 py-8 sm:px-6'>
-			<h1 className='text-2xl font-bold tracking-tight'>
+			<Link
+				href='/dev/serp'
+				className='cursor-pointer text-sm text-muted-foreground underline-offset-2 hover:text-primary hover:underline'
+			>
+				Позиции в Яндексе →
+			</Link>
+			<h1 className='mt-2 text-2xl font-bold tracking-tight'>
 				Кандидаты на новые тулы
 			</h1>
 			<p className='mt-1 text-sm text-muted-foreground'>

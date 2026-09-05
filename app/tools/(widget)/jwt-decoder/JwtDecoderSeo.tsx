@@ -43,6 +43,60 @@ export function JwtDecoderSeo() {
 					</Link>
 					, поэтому декодер и показывает их читаемым списком.
 				</p>
+				<p className='mt-3 text-muted-foreground'>
+					У payload есть набор стандартных полей (registered claims), их
+					понимает любая библиотека JWT:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Claim</th>
+								<th className='py-2 font-medium'>Значение</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>iss</td>
+								<td className='py-2'>Issuer, кто выпустил токен</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>sub</td>
+								<td className='py-2'>
+									Subject, для кого выпущен токен (ID пользователя)
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>aud</td>
+								<td className='py-2'>
+									Audience, для какого получателя предназначен токен
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>exp</td>
+								<td className='py-2'>
+									Expiration time, момент, после которого токен недействителен
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>iat</td>
+								<td className='py-2'>Issued at, когда токен выпущен</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>nbf</td>
+								<td className='py-2'>
+									Not before, момент, раньше которого токен ещё не действует
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>jti</td>
+								<td className='py-2'>
+									JWT ID, уникальный идентификатор конкретного токена
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

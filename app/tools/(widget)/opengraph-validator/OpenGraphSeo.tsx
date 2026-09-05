@@ -22,7 +22,16 @@ export function OpenGraphSeo() {
 					<code className='font-mono'>og:url</code>. Вставьте адрес страницы в
 					поле выше, и инструмент разберёт эти теги, покажет, как ссылка
 					выглядит в Telegram, Facebook, Twitter и WhatsApp, и подскажет, каких
-					тегов не хватает, с готовым кодом для вставки.
+					тегов не хватает, с готовым кодом для вставки. Рядом с превью в
+					некоторых соцсетях и вкладках браузера показывается ещё и favicon, его
+					можно собрать в{' '}
+					<Link
+						href='/tools/favicon-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						генераторе иконок сайта
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -57,6 +66,50 @@ export function OpenGraphSeo() {
 					<code className='font-mono'>og:image:height</code>, тогда превью
 					отрисуется сразу, без «прыжка» при загрузке.
 				</p>
+				<p className='mt-3 text-muted-foreground'>
+					Отдельного стандарта под каждую соцсеть нет, но у каждой свой порог,
+					до которого превью выглядит хорошо:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Платформа</th>
+								<th className='py-2 pr-4 font-medium'>Размер</th>
+								<th className='py-2 font-medium'>Примечание</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Facebook</td>
+								<td className='py-2 pr-4 font-mono'>1200×630</td>
+								<td className='py-2'>Официальная рекомендация Meta, до 8 МБ</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>ВКонтакте</td>
+								<td className='py-2 pr-4 font-mono'>1200×630</td>
+								<td className='py-2'>
+									Отдельного стандарта нет, ориентируется на общий OG
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Twitter/X</td>
+								<td className='py-2 pr-4 font-mono'>1200×630</td>
+								<td className='py-2'>
+									Для карточки summary_large_image, соотношение около 1.91:1
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Telegram</td>
+								<td className='py-2 pr-4 font-mono'>от 1200×630</td>
+								<td className='py-2'>
+									Меньше этого размера покажет только небольшой квадратный
+									превью вместо крупной картинки
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

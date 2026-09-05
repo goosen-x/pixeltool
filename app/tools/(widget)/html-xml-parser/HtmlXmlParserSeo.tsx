@@ -35,7 +35,15 @@ export function HtmlXmlParserSeo() {
 					комментарии и сжимает разметку в одну строку ради меньшего размера
 					файла. Переключаются они одним тумблером «Минифицировать». Тип
 					документа определяется автоматически по содержимому, так что
-					инструмент одинаково работает и с HTML, и с XML.
+					инструмент одинаково работает и с HTML, и с XML. Для JSON та же пара
+					операций (форматирование и минификация) собрана отдельно в{' '}
+					<Link
+						href='/tools/json-tools'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						JSON-инструментах
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -56,6 +64,55 @@ export function HtmlXmlParserSeo() {
 					. Форматтер же удобен, когда разметку нужно просто причесать или
 					сжать, в том числе для XML, который проверка не разбирает.
 				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Основные escape-сущности HTML
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Символы ниже зарезервированы под синтаксис разметки, поэтому внутри
+					текста их заменяют сущностями, иначе браузер примет их за начало тега
+					или атрибута.
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Символ</th>
+								<th className='py-2 pr-4 font-medium'>Сущность</th>
+								<th className='py-2 font-medium'>Значение</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>&amp;</td>
+								<td className='py-2 pr-4 font-mono'>&amp;amp;</td>
+								<td className='py-2'>Амперсанд</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>&lt;</td>
+								<td className='py-2 pr-4 font-mono'>&amp;lt;</td>
+								<td className='py-2'>Знак «меньше», начало тега</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>&gt;</td>
+								<td className='py-2 pr-4 font-mono'>&amp;gt;</td>
+								<td className='py-2'>Знак «больше», конец тега</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>"</td>
+								<td className='py-2 pr-4 font-mono'>&amp;quot;</td>
+								<td className='py-2'>Двойная кавычка внутри атрибута</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>&apos;</td>
+								<td className='py-2 pr-4 font-mono'>&amp;#39;</td>
+								<td className='py-2'>Одинарная кавычка (апостроф)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<p className='leading-relaxed'>

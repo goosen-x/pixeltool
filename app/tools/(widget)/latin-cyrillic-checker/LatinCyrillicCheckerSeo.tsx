@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function LatinCyrillicCheckerSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -13,6 +15,43 @@ export function LatinCyrillicCheckerSeo() {
 					полностью: А и A, О и O, е и e, р и p, с и c, х и x, у и y. Глазом
 					подмену не поймать, а текст уже другой.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>Кириллица</th>
+								<th className='py-2 font-semibold'>Латиница</th>
+							</tr>
+						</thead>
+						<tbody>
+							{[
+								['А', 'A'],
+								['В', 'B'],
+								['Е', 'E'],
+								['К', 'K'],
+								['М', 'M'],
+								['Н', 'H'],
+								['О', 'O'],
+								['Р', 'P'],
+								['С', 'C'],
+								['Т', 'T'],
+								['У', 'Y'],
+								['Х', 'X']
+							].map(([cyr, lat]) => (
+								<tr key={cyr} className='border-b last:border-0'>
+									<td className='py-2 pr-4 align-top'>{cyr}</td>
+									<td className='py-2 align-top text-muted-foreground'>
+										{lat}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+					<p className='mt-2 text-xs text-muted-foreground'>
+						Это только заглавные буквы с полным совпадением начертания. У
+						строчных двойников семь: а/a, е/e, о/o, р/p, с/c, у/y, х/x.
+					</p>
+				</div>
 			</section>
 
 			<section>
@@ -57,6 +96,18 @@ export function LatinCyrillicCheckerSeo() {
 					предлагать замену там, где подмены нет, значило бы портить текст.
 				</p>
 			</section>
+
+			<p className='text-muted-foreground'>
+				После чистки от чужих букв текст можно сразу перевести в нужный регистр
+				в{' '}
+				<Link
+					href='/tools/text-case-converter'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					конвертере регистра
+				</Link>
+				.
+			</p>
 		</div>
 	)
 }

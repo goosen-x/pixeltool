@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function TextToSpeechSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -31,6 +33,14 @@ export function TextToSpeechSeo() {
 					Второе применение связано с доступностью, чтение вслух облегчает
 					восприятие текста при нарушениях зрения и дислексии. Третье —
 					послушать длинную статью или документ, пока занимаешься чем-то ещё.
+					Перед озвучкой длинного текста удобно заранее прикинуть его объём в{' '}
+					<Link
+						href='/tools/text-counter'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						счётчике символов
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

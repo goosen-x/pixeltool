@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function NestedBorderRadiusSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -41,7 +43,15 @@ export function NestedBorderRadiusSeo() {
 					внутренний радиус вычисляется из внешнего прямо в стилях. Обёртка в{' '}
 					<code>max(0px, ...)</code> нужна на случай, когда отступ больше
 					радиуса: отрицательное значение браузер отбросил бы вместе со всем
-					свойством, а так угол просто становится прямым.
+					свойством, а так угол просто становится прямым. Такой вложенной
+					карточке часто нужна ещё и тень, подобрать её можно в{' '}
+					<Link
+						href='/tools/css-box-shadow-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						генераторе box-shadow
+					</Link>
+					.
 				</p>
 			</section>
 

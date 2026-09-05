@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function ZodiacSignSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -80,7 +82,22 @@ export function ZodiacSignSeo() {
 					карта — другая задача: там считают положение Луны и планет и
 					асцендент, а для этого нужны точное время и место рождения.
 					Астрологический прогноз инструмент тоже не составляет: он про даты и
-					границы, а не про предсказания.
+					границы, а не про предсказания. Узнав знак, его можно сравнить с чужим
+					в{' '}
+					<Link
+						href='/tools/zodiac-compatibility'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						проверке совместимости знаков
+					</Link>{' '}
+					или свериться с фазой Луны в{' '}
+					<Link
+						href='/tools/moon-calendar'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						лунном календаре
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

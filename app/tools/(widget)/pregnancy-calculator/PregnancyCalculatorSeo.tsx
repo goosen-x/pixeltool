@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function PregnancyCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -11,7 +13,15 @@ export function PregnancyCalculatorSeo() {
 					недели. Он не оценивает состояние здоровья, не ставит диагнозов и не
 					заменяет наблюдение врача. Точный срок определяют по УЗИ, особенно в
 					первом триместре, и именно эта оценка считается основной, если
-					расходится с расчётом по дате.
+					расходится с расчётом по дате. Норма калорий на каждом сроке своя, её
+					можно уточнить в{' '}
+					<Link
+						href='/tools/calorie-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе калорий
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -51,7 +61,14 @@ export function PregnancyCalculatorSeo() {
 					одноплодной беременности и с 28-й — при многоплодной. Листок
 					нетрудоспособности выдаёт врач; калькулятор лишь показывает, на какую
 					календарную дату приходится эта неделя, чтобы можно было заранее
-					спланировать дела на работе.
+					спланировать дела на работе. Сумму самого пособия считает{' '}
+					<Link
+						href='/tools/maternity-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор декретных
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

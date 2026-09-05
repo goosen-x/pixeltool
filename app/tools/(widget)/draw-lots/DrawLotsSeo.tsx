@@ -93,7 +93,22 @@ export function DrawLotsSeo() {
 			</section>
 
 			<p className='text-muted-foreground'>
-				Чем жеребьёвка отличается от деления на команды или броска монеты,
+				Если вместо очерёдности нужно поделить участников на равные группы,
+				возьмите{' '}
+				<Link
+					href='/tools/team-randomizer'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					деление на команды
+				</Link>
+				, а для простого да/нет-ответа без списка имён есть{' '}
+				<Link
+					href='/tools/magic-ball'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					магический шар
+				</Link>
+				. Чем жеребьёвка отличается от деления на команды или броска монеты,
 				разобрано в статье{' '}
 				<Link
 					href='/blog/randomayzer-zherebevka-online'

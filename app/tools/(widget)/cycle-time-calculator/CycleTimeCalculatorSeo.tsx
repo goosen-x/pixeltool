@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function CycleTimeCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -35,7 +37,21 @@ export function CycleTimeCalculatorSeo() {
 					Чем меньше параллельных задач, тем меньше переключений контекста и
 					времени, которое задача проводит в ожидании, и тем быстрее каждая
 					доходит до конца — при той же численности команды. Прогноз, сколько
-					команда успеет за спринт, даёт калькулятор ёмкости команды.
+					команда успеет за спринт, даёт{' '}
+					<Link
+						href='/tools/team-capacity-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор ёмкости команды
+					</Link>
+					, а порядок, в котором брать задачи в работу, поможет расставить{' '}
+					<Link
+						href='/tools/rice-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор RICE
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

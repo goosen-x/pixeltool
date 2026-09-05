@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function RiceCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -38,6 +40,15 @@ export function RiceCalculatorSeo() {
 					возможности, одним человеком: у разных людей калибровка Impact и
 					Confidence разъезжается. Приоритизация нужна, чтобы спор о бэклоге
 					сводился к обсуждению оценок, а не к перетягиванию каждой строки.
+					После того как порядок задач выбран, сколько реально займёт каждая от
+					старта до готовности, показывает{' '}
+					<Link
+						href='/tools/cycle-time-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор cycle time
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

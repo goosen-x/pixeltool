@@ -17,7 +17,23 @@ export function RandomNumberGeneratorSeo() {
 					зафиксируйте список до генерации. Задайте диапазон от 1 до числа
 					участников, и выпавшее число будет номером победителя. Для розыгрыша
 					нескольких призов генерируйте по одному числу за раз: если номер уже
-					выигрывал, нажмите «Сгенерировать» ещё раз.
+					выигрывал, нажмите «Сгенерировать» ещё раз. Если вместо номера нужен
+					результат броска игральной кости, для этого есть отдельный{' '}
+					<Link
+						href='/tools/dice-roller'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						бросок кубика
+					</Link>
+					, а чтобы перемешать сам список участников целиком, а не выбрать
+					номер, подойдёт{' '}
+					<Link
+						href='/tools/random-list-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						перемешивание списка
+					</Link>
+					.
 				</p>
 			</section>
 

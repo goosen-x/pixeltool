@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { PERSONAL_YEAR_MEANINGS } from '@/lib/utils/numerology'
 
 export function NumerologyCalculatorSeo() {
@@ -77,7 +78,15 @@ export function NumerologyCalculatorSeo() {
 					обоснования, и результат расчёта не говорит ничего о конкретном
 					человеке. Считать его основанием для решений о здоровье, деньгах,
 					работе или отношениях не стоит. Инструмент честно выполняет арифметику
-					и приводит принятую трактовку — не более того.
+					и приводит принятую трактовку — не более того. Похожим образом дату
+					рождения раскладывает и{' '}
+					<Link
+						href='/tools/destiny-matrix-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						матрица судьбы
+					</Link>
+					, только через символику Таро, а не через цифры жизненного пути.
 				</p>
 			</section>
 		</div>

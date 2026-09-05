@@ -19,9 +19,32 @@ export function LiquidityCalculatorSeo() {
 				<h2 className='text-2xl font-bold tracking-tight'>
 					Нормативы и как их читать
 				</h2>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Коэффициент</th>
+								<th className='py-2 font-medium'>Норматив</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Текущая ликвидность</td>
+								<td className='py-2 font-mono'>1,5–2,5</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Быстрая ликвидность</td>
+								<td className='py-2 font-mono'>0,8–1</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Абсолютная ликвидность</td>
+								<td className='py-2 font-mono'>от 0,2</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 				<p className='mt-3 text-muted-foreground'>
-					Ориентиры: текущая от 1,5 до 2,5, быстрая от 0,8 до 1, абсолютная от
-					0,2. Значения ниже говорят о риске кассовых разрывов и неплатежей.
+					Значения ниже нормы говорят о риске кассовых разрывов и неплатежей.
 					Значения заметно выше нормы — не всегда хорошо: это часто означает,
 					что на счетах и складе заморожены деньги, которые могли бы работать в
 					обороте или развитии. Нормативы приблизительные и сильно зависят от

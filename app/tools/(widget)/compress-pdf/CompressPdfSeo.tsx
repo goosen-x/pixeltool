@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function CompressPdfSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -12,6 +14,14 @@ export function CompressPdfSeo() {
 					отсканированный в 600 dpi, легко весит десять мегабайт. Поэтому
 					тяжёлые PDF — это почти всегда сканы и презентации с фотографиями, и
 					настоящее сжатие сводится к тому, чтобы уменьшить именно картинки.
+					Если несколько файлов сначала нужно склеить в один, для этого есть{' '}
+					<Link
+						href='/tools/merge-pdf'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						объединение PDF
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -48,8 +58,42 @@ export function CompressPdfSeo() {
 					текст на странице остаётся разборчивым. Документ, который понесут на
 					печать, — 300 dpi: на бумаге разница с 150 уже видна глазом. 96 dpi
 					берите, когда нужно любой ценой уложиться в лимит вложения и качество
-					вторично.
+					вторично. Если вместо целого PDF нужны именно картинки отдельных
+					страниц, для этого есть{' '}
+					<Link
+						href='/tools/pdf-to-jpg'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						конвертер PDF в JPG
+					</Link>
+					.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full border-collapse text-sm'>
+						<thead>
+							<tr className='border-b text-left'>
+								<th className='py-2 pr-4 font-semibold'>Задача</th>
+								<th className='py-2 font-semibold'>DPI</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr className='border-b last:border-0'>
+								<td className='py-2 pr-4 align-top'>Чтение с экрана, почта</td>
+								<td className='py-2 align-top text-muted-foreground'>150</td>
+							</tr>
+							<tr className='border-b last:border-0'>
+								<td className='py-2 pr-4 align-top'>Печать на бумаге</td>
+								<td className='py-2 align-top text-muted-foreground'>300</td>
+							</tr>
+							<tr className='border-b last:border-0'>
+								<td className='py-2 pr-4 align-top'>
+									Минимальный размер файла
+								</td>
+								<td className='py-2 align-top text-muted-foreground'>96</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

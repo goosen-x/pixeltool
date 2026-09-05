@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function AsciiArtGeneratorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -11,7 +13,15 @@ export function AsciiArtGeneratorSeo() {
 					Режим «Изображение» превращает загруженную фотографию в ASCII-рисунок
 					из символов разной плотности. Здесь лучше работают контрастные
 					картинки с простыми объектами, а фото с мелкими деталями на выходе
-					превращаются в кашу из символов.
+					превращаются в кашу из символов. Если вместо символов нужен именно
+					пиксельный стиль с сеткой и цветом, для этого есть{' '}
+					<Link
+						href='/tools/pixel-art-editor'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						редактор пиксель-арта
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

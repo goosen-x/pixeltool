@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function BreakevenCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -12,7 +14,42 @@ export function BreakevenCalculatorSeo() {
 					на покрытие аренды, окладов и других расходов, которые не меняются от
 					объёма. Когда накопленная маржа сравнялась с постоянными затратами,
 					бизнес вышел в ноль; всё, что продано сверх этого, — прибыль.
+					Насколько выгодным получился сам проект, показывает{' '}
+					<Link
+						href='/tools/roi-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор ROI
+					</Link>
+					.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Модель</th>
+								<th className='py-2 pr-4 font-medium'>Затраты и цена</th>
+								<th className='py-2 font-medium'>Точка безубыточности</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Кофейня</td>
+								<td className='py-2 pr-4 font-mono'>
+									300 000 ₽ пост., цена 250 ₽, перем. 100 ₽
+								</td>
+								<td className='py-2 font-mono'>2 000 чашек, 500 000 ₽</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Онлайн-курс</td>
+								<td className='py-2 pr-4 font-mono'>
+									200 000 ₽ пост., цена 5 000 ₽, перем. 1 000 ₽
+								</td>
+								<td className='py-2 font-mono'>50 продаж, 250 000 ₽</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -39,7 +76,14 @@ export function BreakevenCalculatorSeo() {
 					Формула в этом случае даёт деление на ноль или отрицательное число, и
 					калькулятор честно сообщает, что решения нет. Сначала нужно поднять
 					цену, снизить себестоимость или отказаться от продукта — считать объём
-					бессмысленно.
+					бессмысленно. Подобрать новую цену от нужной маржи или наценки поможет{' '}
+					<Link
+						href='/tools/pricing-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор наценки
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

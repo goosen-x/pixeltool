@@ -70,8 +70,96 @@ export function HtmlCheckerSeo() {
 				</ul>
 				<p className='mt-4 text-muted-foreground'>
 					Всё это собирается в единый отчёт с оценкой, который можно скачать в
-					PDF.
+					PDF. А если разметку нужно не только проверить, но и привести в
+					порядок (отступы, экранирование{' '}
+					<code className='font-mono'>&lt;</code> и{' '}
+					<code className='font-mono'>&amp;</code>, подсчёт тегов), для этого
+					есть отдельный{' '}
+					<Link
+						href='/tools/html-xml-parser'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						форматировщик HTML
+					</Link>
+					.
 				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Частые ошибки и как их исправить
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Большая часть находок в проверке сводится к нескольким повторяющимся
+					проблемам:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Ошибка</th>
+								<th className='py-2 font-medium'>Исправление</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>Незакрытый тег</td>
+								<td className='py-2'>
+									Добавить закрывающий тег или сделать его самозакрывающимся (
+									<code className='font-mono'>&lt;img /&gt;</code>,{' '}
+									<code className='font-mono'>&lt;br /&gt;</code>)
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Дублирующийся <code className='font-mono'>id</code>
+								</td>
+								<td className='py-2'>
+									Оставить один уникальный id на странице, для остальных
+									использовать class
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Изображение без <code className='font-mono'>alt</code>
+								</td>
+								<td className='py-2'>
+									Добавить атрибут alt с описанием картинки (пустой alt="", если
+									изображение декоративное)
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Блочный элемент внутри строчного
+								</td>
+								<td className='py-2'>
+									Например, div внутри span — поменять местами или заменить
+									строчный элемент на блочный
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>
+									Неэкранированные <code className='font-mono'>&lt;</code> и{' '}
+									<code className='font-mono'>&amp;</code>
+								</td>
+								<td className='py-2'>
+									Заменить на сущности{' '}
+									<code className='font-mono'>&amp;lt;</code> и{' '}
+									<code className='font-mono'>&amp;amp;</code>
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>
+									Отсутствует <code className='font-mono'>lang</code> у страницы
+								</td>
+								<td className='py-2'>
+									Указать язык в теге html, например{' '}
+									<code className='font-mono'>&lt;html lang="ru"&gt;</code>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function SalaryCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -12,6 +14,30 @@ export function SalaryCalculatorSeo() {
 					стоит проговаривать на переговорах прямо, чтобы не выяснить потом, что
 					стороны имели в виду разное.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Оклад</th>
+								<th className='py-2 font-medium'>На руки</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>50 000 ₽</td>
+								<td className='py-2 font-mono'>43 500 ₽</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>100 000 ₽</td>
+								<td className='py-2 font-mono'>87 000 ₽</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>150 000 ₽</td>
+								<td className='py-2 font-mono'>130 500 ₽</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -36,7 +62,23 @@ export function SalaryCalculatorSeo() {
 					Страховые взносы в фонды идут сверх вашего оклада и из зарплаты не
 					удерживаются, поэтому в расчёте их нет. Работодателю сотрудник
 					обходится примерно на 30% дороже оклада, но на сумму в руках это не
-					влияет. Единственное, что удерживают из начисленного, — НДФЛ.
+					влияет. Единственное, что удерживают из начисленного, — НДФЛ, разбивку
+					по ступеням шкалы можно посмотреть в{' '}
+					<Link
+						href='/tools/ndfl-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе НДФЛ
+					</Link>
+					. Отпускные считаются по другой базе, среднему заработку за 12
+					месяцев, для них есть отдельный{' '}
+					<Link
+						href='/tools/vacation-pay-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор отпускных
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

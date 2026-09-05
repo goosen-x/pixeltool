@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function FractionCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -11,6 +13,14 @@ export function FractionCalculatorSeo() {
 					знаменатели отдельно, деление заменяется умножением на перевёрнутую
 					вторую дробь. После любой операции результат делится на наибольший
 					общий делитель числителя и знаменателя, чтобы получить простейший вид.
+					Если дробь нужно перевести в проценты или наоборот, для этого есть{' '}
+					<Link
+						href='/tools/percent-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор процентов
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -24,7 +34,15 @@ export function FractionCalculatorSeo() {
 					промежуточном вычислении получаются чуть больше. На итоговый
 					упрощённый результат способ не влияет: 1/4 + 1/6 через произведение
 					знаменателей (24) и через НОК (12) в итоге сокращаются к одной и той
-					же дроби 5/12.
+					же дроби 5/12. Если нужно решить пропорцию с дробями, а не сложить их,
+					для этого есть{' '}
+					<Link
+						href='/tools/proportion-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор пропорций
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

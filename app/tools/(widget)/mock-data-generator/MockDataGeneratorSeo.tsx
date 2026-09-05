@@ -37,7 +37,15 @@ export function MockDataGeneratorSeo() {
 					структурой полей, задержкой сети и форматом данных, какими они будут в
 					проде. Это удобнее, когда нужно быстро посмотреть, как выглядит ответ
 					конкретного API, а не сгенерировать произвольный набор строк под свою
-					схему.
+					схему. А если нужен просто уникальный идентификатор для записи, без
+					остальных полей, быстрее взять{' '}
+					<Link
+						href='/tools/uuid-generator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						генератор UUID
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -75,6 +83,87 @@ export function MockDataGeneratorSeo() {
 						Утилиты. Задачи, httpbin для проверки самого запроса, советы дня.
 					</li>
 				</ul>
+				<p className='mt-4 text-muted-foreground'>
+					Полный список источников и что каждый отдаёт:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Источник</th>
+								<th className='py-2 font-medium'>Что отдаёт</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>JSONPlaceholder</td>
+								<td className='py-2'>
+									Тестовых пользователей, записи блога, список задач
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>RandomUser.me</td>
+								<td className='py-2'>Случайных пользователей с фотографиями</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>DummyJSON</td>
+								<td className='py-2'>
+									Случайные цитаты и товары с категориями
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Lorem Picsum</td>
+								<td className='py-2'>Случайные изображения-заглушки</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Fake Store API</td>
+								<td className='py-2'>
+									Товары интернет-магазина с ценами и картинками
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>mledoze/countries</td>
+								<td className='py-2'>Подробные данные о странах</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Open-Meteo</td>
+								<td className='py-2'>Текущую погоду</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>PokeAPI</td>
+								<td className='py-2'>Список покемонов с подробностями</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Rick and Morty API</td>
+								<td className='py-2'>Персонажей сериала «Рик и Морти»</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Chuck Norris API</td>
+								<td className='py-2'>Шутки о Чаке Норрисе</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>httpbin</td>
+								<td className='py-2'>Проверку HTTP-запросов и ответов</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Dog API</td>
+								<td className='py-2'>Факты о собаках</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Cat Facts</td>
+								<td className='py-2'>Факты о кошках</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Advice Slip API</td>
+								<td className='py-2'>Случайный совет дня</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Bored API</td>
+								<td className='py-2'>Идею, чем заняться от скуки</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -143,7 +232,15 @@ function PokemonCard({ name, sprite }) {
 
 				<p className='mt-6 text-muted-foreground'>
 					Тот же приём подходит для любого списочного эндпоинта отсюда, где
-					объект содержит ссылку на себя, а не все поля сразу.
+					объект содержит ссылку на себя, а не все поля сразу. Полученный ответ
+					удобно сразу привести в читаемый вид в{' '}
+					<Link
+						href='/tools/json-tools'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						JSON-инструментах
+					</Link>
+					.
 				</p>
 			</section>
 

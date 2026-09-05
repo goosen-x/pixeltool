@@ -33,8 +33,69 @@ export function JsSyntaxSeo() {
 					<code className='font-mono'>fucntion</code>,{' '}
 					<code className='font-mono'>retrun</code>), забытые кавычки у строки.
 					Все эти случаи проверка ловит до запуска, просто разбирая текст кода,
-					как это делает движок браузера.
+					как это делает движок браузера. Если же ошибка сидит в самих данных
+					(объекте или массиве, который вы получили от API), быстрее проверить
+					их отдельно в{' '}
+					<Link
+						href='/tools/json-tools'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						JSON-инструментах
+					</Link>
+					.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Ошибка</th>
+								<th className='py-2 pr-4 font-medium'>Пример</th>
+								<th className='py-2 font-medium'>Исправление</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Незакрытая скобка</td>
+								<td className='py-2 pr-4 font-mono'>
+									function f(a {'{'} return a
+								</td>
+								<td className='py-2'>
+									Закрыть каждую открытую <code className='font-mono'>(</code> и{' '}
+									<code className='font-mono'>{'{'}</code>
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Пропущенная запятая</td>
+								<td className='py-2 pr-4 font-mono'>{'{ a: 1 b: 2 }'}</td>
+								<td className='py-2'>
+									Разделить поля объекта запятой:{' '}
+									<code className='font-mono'>{'{ a: 1, b: 2 }'}</code>
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Опечатка в ключевом слове</td>
+								<td className='py-2 pr-4 font-mono'>fucntion, retrun</td>
+								<td className='py-2'>
+									Проверить написание:{' '}
+									<code className='font-mono'>function</code>,{' '}
+									<code className='font-mono'>return</code>
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Незакрытая строка</td>
+								<td className='py-2 pr-4 font-mono'>const s = &apos;текст</td>
+								<td className='py-2'>Закрыть кавычку того же типа</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Лишняя закрывающая скобка</td>
+								<td className='py-2 pr-4 font-mono'>{'if (a) { b(); } }'}</td>
+								<td className='py-2'>
+									Убрать скобку без пары или добавить недостающую открывающую
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -50,7 +111,16 @@ export function JsSyntaxSeo() {
 					<code className='font-mono'>ReferenceError</code>) возникают уже в
 					работающем коде и видны только в консоли браузера. Этот инструмент
 					закрывает первый случай, когда нужно быстро понять, почему скрипт не
-					грузится, не открывая IDE.
+					грузится, не открывая IDE. Регулярное выражение с опечаткой тоже даёт{' '}
+					<code className='font-mono'>SyntaxError</code>, но разбираться, что в
+					нём не так, удобнее в{' '}
+					<Link
+						href='/tools/regex-tester'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						тестере регулярных выражений
+					</Link>
+					.
 				</p>
 			</section>
 

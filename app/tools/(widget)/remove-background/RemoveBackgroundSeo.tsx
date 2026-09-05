@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function RemoveBackgroundSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -27,6 +29,15 @@ export function RemoveBackgroundSeo() {
 					40 МБ при первом запуске на устройстве. Дальше браузер держит её в
 					кэше, и повторных загрузок не будет, пока кэш не очистят вручную.
 					Обработка каждого следующего фото после этого занимает пару секунд.
+					PNG с прозрачным фоном обычно весит больше исходника, если файл нужен
+					полегче, прогоните его через{' '}
+					<Link
+						href='/tools/compress-image'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						сжатие изображений
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

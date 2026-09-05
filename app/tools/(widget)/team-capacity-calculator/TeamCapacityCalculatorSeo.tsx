@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function TeamCapacityCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -38,8 +40,22 @@ export function TeamCapacityCalculatorSeo() {
 					на возвращение в контекст после каждого прерывания. Реально
 					продуктивных часов у разработчика обычно пять-шесть из восьми, и план
 					на сто процентов номинала срывается почти гарантированно. Оценить
-					стоимость самих совещаний в деньгах поможет калькулятор стоимости
-					встречи.
+					стоимость самих совещаний в деньгах поможет{' '}
+					<Link
+						href='/tools/meeting-cost-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор стоимости встречи
+					</Link>
+					, а насколько быстро задачи проходят весь путь от старта до готовности
+					—{' '}
+					<Link
+						href='/tools/cycle-time-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор Cycle Time
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

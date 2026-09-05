@@ -15,10 +15,16 @@ export function SvgEncoderSeo() {
 					Почему SVG в CSS не кодируют в Base64
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					Base64 нужен, когда двоичный файл (PNG, шрифт, PDF) приходится
-					протащить через место, где допустим только текст. SVG двоичным не
-					является, это обычная разметка, и в правило CSS её можно положить как
-					есть. Достаточно экранировать символы, которые ломают значение{' '}
+					<Link
+						href='/tools/base64-encoder'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						Base64
+					</Link>{' '}
+					нужен, когда двоичный файл (PNG, шрифт, PDF) приходится протащить
+					через место, где допустим только текст. SVG двоичным не является, это
+					обычная разметка, и в правило CSS её можно положить как есть.
+					Достаточно экранировать символы, которые ломают значение{' '}
 					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 						url()
 					</code>{' '}
@@ -40,6 +46,54 @@ export function SvgEncoderSeo() {
 					</Link>
 					.
 				</p>
+			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Три способа подключить SVG
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Инлайн-разметка, экранированная (или Base64) строка в CSS и внешний
+					файл решают разные задачи, вот чем они отличаются:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Способ</th>
+								<th className='py-2 pr-4 font-medium'>Размер</th>
+								<th className='py-2 pr-4 font-medium'>Кэшируется отдельно</th>
+								<th className='py-2 font-medium'>Анимация</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Инлайн SVG в HTML</td>
+								<td className='py-2 pr-4'>Без накрутки</td>
+								<td className='py-2 pr-4'>Нет, живёт в разметке страницы</td>
+								<td className='py-2'>
+									Полная, доступны CSS- и JS-анимация, стили из документа
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Base64/URL в CSS</td>
+								<td className='py-2 pr-4'>+10–35% к весу файла</td>
+								<td className='py-2 pr-4'>Нет, живёт в CSS-файле</td>
+								<td className='py-2'>
+									Только то, что описано внутри самого SVG
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Внешний .svg-файл</td>
+								<td className='py-2 pr-4'>Без накрутки</td>
+								<td className='py-2 pr-4'>Да, отдельным запросом</td>
+								<td className='py-2'>
+									Только то, что описано внутри самого SVG
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>

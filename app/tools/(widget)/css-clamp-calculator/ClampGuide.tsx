@@ -83,7 +83,15 @@ font-size: clamp(1rem, 0.75rem + 1.5vw, 2rem);`}
 			<p className='mt-3 leading-relaxed'>
 				Вклад <Code>rem</Code>-слагаемого должен быть заметным, ориентир — не
 				меньше половины итогового значения на типичной ширине экрана.
-				Калькулятор выше считает такое слагаемое сам.
+				Калькулятор выше считает такое слагаемое сам, а перевести готовое
+				значение между px и rem поможет{' '}
+				<Link
+					href='/tools/px-rem-converter'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					конвертер px в rem
+				</Link>
+				.
 			</p>
 
 			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
@@ -92,8 +100,66 @@ font-size: clamp(1rem, 0.75rem + 1.5vw, 2rem);`}
 			<p className='mt-3 leading-relaxed'>
 				<Code>clamp()</Code> входит в Baseline с 2020 года и работает во всех
 				современных браузерах без исключений. Запасные значения и полифилы не
-				нужны.
+				нужны. Если правило не применяется, чаще всего дело в более специфичном
+				селекторе. Проверить это можно{' '}
+				<Link
+					href='/tools/css-specificity-calculator'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					калькулятором специфичности CSS
+				</Link>
+				.
 			</p>
+
+			<h2 className='mt-10 text-2xl font-bold tracking-tight'>
+				Готовые пресеты для типографики
+			</h2>
+			<p className='mt-3 leading-relaxed'>
+				Значения ниже посчитаны для диапазона экранов 320–1440px по той же
+				формуле, что и калькулятор выше. Подставляйте как отправную точку и
+				подгоняйте под свою сетку.
+			</p>
+			<div className='mt-4 overflow-x-auto'>
+				<table className='w-full text-left text-sm'>
+					<thead>
+						<tr className='border-b text-muted-foreground'>
+							<th className='py-2 pr-4 font-medium'>Элемент</th>
+							<th className='py-2 pr-4 font-medium'>320px → 1440px</th>
+							<th className='py-2 font-medium'>clamp()</th>
+						</tr>
+					</thead>
+					<tbody className='text-foreground'>
+						<tr className='border-b'>
+							<td className='py-2 pr-4'>H1</td>
+							<td className='py-2 pr-4 font-mono'>32px → 56px</td>
+							<td className='py-2 font-mono'>
+								clamp(2rem, 1.571rem + 2.14vw, 3.5rem)
+							</td>
+						</tr>
+						<tr className='border-b'>
+							<td className='py-2 pr-4'>H2</td>
+							<td className='py-2 pr-4 font-mono'>24px → 36px</td>
+							<td className='py-2 font-mono'>
+								clamp(1.5rem, 1.286rem + 1.07vw, 2.25rem)
+							</td>
+						</tr>
+						<tr className='border-b'>
+							<td className='py-2 pr-4'>H3</td>
+							<td className='py-2 pr-4 font-mono'>20px → 28px</td>
+							<td className='py-2 font-mono'>
+								clamp(1.25rem, 1.107rem + 0.71vw, 1.75rem)
+							</td>
+						</tr>
+						<tr>
+							<td className='py-2 pr-4'>Body</td>
+							<td className='py-2 pr-4 font-mono'>16px → 18px</td>
+							<td className='py-2 font-mono'>
+								clamp(1rem, 0.964rem + 0.18vw, 1.125rem)
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
 			<p className='mt-8 leading-relaxed'>
 				Разбор формул, типичных ошибок и продвинутых техник (адаптивная сетка,{' '}

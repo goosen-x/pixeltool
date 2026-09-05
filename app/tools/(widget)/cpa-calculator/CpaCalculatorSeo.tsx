@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function CpaCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -23,7 +25,14 @@ export function CpaCalculatorSeo() {
 					вы покупаете трафик, но окончательное решение о канале принимают по
 					CPA: связка с дорогим кликом может приносить самые дешёвые продажи, и
 					наоборот. CPA сравнивают не абстрактно, а с маржой — сколько вы можете
-					платить за клиента, чтобы сделка осталась прибыльной.
+					платить за клиента, чтобы сделка осталась прибыльной, это и считает{' '}
+					<Link
+						href='/tools/cac-ltv-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор CAC и LTV
+					</Link>
+					.
 				</p>
 			</section>
 
@@ -36,8 +45,14 @@ export function CpaCalculatorSeo() {
 					кликабельность объявления — прямой способ снизить цену клика без
 					изменения ставок. А CPA равен CPC, делённому на конверсию сайта: тот
 					же клик при конверсии 2% вместо 1% даёт вдвое более дешёвое целевое
-					действие. Обе смежные метрики считаются в калькуляторах CTR и
-					конверсии.
+					действие. Обе смежные метрики считаются в{' '}
+					<Link
+						href='/tools/ctr-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе CTR
+					</Link>{' '}
+					и конверсии.
 				</p>
 			</section>
 		</div>

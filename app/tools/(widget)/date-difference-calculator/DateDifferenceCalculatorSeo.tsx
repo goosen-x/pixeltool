@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function DateDifferenceCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -13,7 +15,22 @@ export function DateDifferenceCalculatorSeo() {
 					«докрутилось» до того же дня месяца, столько и месяцев. Из-за этого
 					промежуток без одного дня в год всегда посчитается как «11 месяцев и N
 					дней», а не как «0 лет 356 дней». Ровно так же вы отмечали бы даты в
-					календаре вручную.
+					календаре вручную. Если нужно просто отслеживать обратный отсчёт до
+					одной конкретной даты, для этого удобнее{' '}
+					<Link
+						href='/tools/days-until'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						счётчик дней до даты
+					</Link>
+					, а для возраста человека по дате рождения есть отдельный{' '}
+					<Link
+						href='/tools/age-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор возраста
+					</Link>
+					.
 				</p>
 			</section>
 

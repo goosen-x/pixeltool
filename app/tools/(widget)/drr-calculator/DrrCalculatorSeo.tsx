@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function DrrCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -17,9 +19,15 @@ export function DrrCalculatorSeo() {
 					ДРР и ROAS — одно и то же с разных сторон
 				</h2>
 				<p className='mt-3 text-muted-foreground'>
-					ROAS показывает, сколько выручки принёс рубль рекламы, ДРР — какую
-					долю выручки этот рубль составил. ДРР 20% равен ROAS 500%, ДРР 50% —
-					ROAS 200%. Калькулятор считает обе величины, чтобы удобно было
+					<Link
+						href='/tools/roas-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						ROAS
+					</Link>{' '}
+					показывает, сколько выручки принёс рубль рекламы, ДРР — какую долю
+					выручки этот рубль составил. ДРР 20% равен ROAS 500%, ДРР 50% — ROAS
+					200%. Калькулятор считает обе величины, чтобы удобно было
 					разговаривать с теми, кто привык к другой метрике.
 				</p>
 			</section>

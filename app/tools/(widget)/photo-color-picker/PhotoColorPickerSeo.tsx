@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function PhotoColorPickerSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -9,7 +11,15 @@ export function PhotoColorPickerSeo() {
 					Фото рисуется на canvas, встроенном в браузер холсте для работы с
 					пикселями. При наведении курсора инструмент читает цвет пикселя под
 					ним и переводит его в HEX и RGB. Вся обработка идёт локально, в
-					браузере. На сервер файл не уходит.
+					браузере. На сервер файл не уходит. Подобранные цвета можно сразу
+					использовать в{' '}
+					<Link
+						href='/tools/pixel-art-editor'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						редакторе пиксель-арта
+					</Link>
+					.
 				</p>
 			</section>
 

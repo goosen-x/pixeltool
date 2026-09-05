@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function BitcoinCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -10,7 +12,15 @@ export function BitcoinCalculatorSeo() {
 					запрашивает цену у CoinGecko при каждом открытии страницы и по кнопке
 					обновления — а не хранит устаревшее значение на сервере. Введите сумму
 					в криптовалюте или в обычных деньгах, калькулятор сам посчитает
-					эквивалент в другую сторону.
+					эквивалент в другую сторону. Для перевода между обычными валютами по
+					курсу ЦБ есть отдельный{' '}
+					<Link
+						href='/tools/currency-converter'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						конвертер валют
+					</Link>
+					.
 				</p>
 			</section>
 

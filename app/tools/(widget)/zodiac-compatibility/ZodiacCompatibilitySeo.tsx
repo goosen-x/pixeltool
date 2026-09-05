@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function ZodiacCompatibilitySeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -46,7 +48,14 @@ export function ZodiacCompatibilitySeo() {
 					разборе смотрят положение Луны, Венеры, Марса и асцендента обоих
 					партнёров, а для этого нужны точное время и место рождения. Здесь же
 					сравниваются только солнечные знаки — так, как это делают в популярных
-					гороскопах.
+					гороскопах. Если знак ещё не известен, его можно определить в{' '}
+					<Link
+						href='/tools/zodiac-sign'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе знака зодиака
+					</Link>
+					.
 				</p>
 				<p className='mt-3 text-muted-foreground'>
 					Относиться к результату стоит соответственно: как к красивой системе с

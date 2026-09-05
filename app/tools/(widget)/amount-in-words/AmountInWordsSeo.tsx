@@ -61,6 +61,14 @@ export function AmountInWordsSeo() {
 					>
 						калькулятор НДФЛ
 					</Link>
+					. Если в документе сумма указана в иностранной валюте, перевести её в
+					рубли по курсу ЦБ поможет{' '}
+					<Link
+						href='/tools/currency-converter'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						конвертер валют
+					</Link>
 					.
 				</p>
 			</section>

@@ -502,7 +502,16 @@ div.container > p::first-line
 					<code className='rounded bg-secondary px-1.5 py-0.5 font-mono text-sm'>
 						!important
 					</code>{' '}
-					или свойство, которое просто не наследуется.
+					или свойство, которое просто не наследуется. Та же история с
+					адаптивным размером шрифта из{' '}
+					<Link
+						href='/tools/css-clamp-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятора clamp()
+					</Link>
+					: если он не откликается на ширину экрана, чаще всего дело не в
+					формуле, а в более тяжёлом селекторе.
 				</p>
 				<p className='mt-3 leading-relaxed'>
 					Перебивать чужой стиль лучше аккуратно: добавьте класс родителя или

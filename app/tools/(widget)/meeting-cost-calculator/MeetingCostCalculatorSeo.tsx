@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function MeetingCostCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -38,7 +40,14 @@ export function MeetingCostCalculatorSeo() {
 					несколько миллионов в год, проще решить, кому на нём обязательно быть,
 					можно ли сократить его вдвое и не заменить ли асинхронным отчётом.
 					Оценить, сколько рабочих часов у команды вообще остаётся на задачи
-					после всех совещаний, поможет калькулятор ёмкости команды.
+					после всех совещаний, поможет{' '}
+					<Link
+						href='/tools/team-capacity-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор ёмкости команды
+					</Link>
+					.
 				</p>
 			</section>
 		</div>

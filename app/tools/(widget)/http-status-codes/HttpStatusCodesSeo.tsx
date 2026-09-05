@@ -29,6 +29,100 @@ export function HttpStatusCodesSeo() {
 					всё равно нельзя».
 				</p>
 			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					Коды, которые встречаются чаще всего
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Из нескольких десятков кодов на практике нужны меньше пятнадцати. Вот
+					они, с ситуацией, в которой каждый обычно появляется:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Код</th>
+								<th className='py-2 pr-4 font-medium'>Название</th>
+								<th className='py-2 font-medium'>Когда возникает</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>200</td>
+								<td className='py-2 pr-4'>OK</td>
+								<td className='py-2'>Запрос выполнен успешно</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>301</td>
+								<td className='py-2 pr-4'>Moved Permanently</td>
+								<td className='py-2'>
+									Ресурс окончательно переехал на новый адрес
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>302</td>
+								<td className='py-2 pr-4'>Found</td>
+								<td className='py-2'>Временный редирект, адрес ещё вернётся</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>400</td>
+								<td className='py-2 pr-4'>Bad Request</td>
+								<td className='py-2'>Сервер не смог разобрать запрос</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>401</td>
+								<td className='py-2 pr-4'>Unauthorized</td>
+								<td className='py-2'>
+									Нужна авторизация, вход ещё не выполнен
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>403</td>
+								<td className='py-2 pr-4'>Forbidden</td>
+								<td className='py-2'>
+									Вход выполнен, но доступа к ресурсу нет
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>404</td>
+								<td className='py-2 pr-4'>Not Found</td>
+								<td className='py-2'>Ресурс по этому адресу не существует</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>429</td>
+								<td className='py-2 pr-4'>Too Many Requests</td>
+								<td className='py-2'>
+									Превышен лимит запросов, нужно снизить частоту
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>500</td>
+								<td className='py-2 pr-4'>Internal Server Error</td>
+								<td className='py-2'>
+									Сервер упал на своей стороне без уточнения причины
+								</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>502</td>
+								<td className='py-2 pr-4'>Bad Gateway</td>
+								<td className='py-2'>
+									Промежуточный сервер получил некорректный ответ от
+									вышестоящего
+								</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>503</td>
+								<td className='py-2 pr-4'>Service Unavailable</td>
+								<td className='py-2'>
+									Сервер временно не может обработать запрос (перегрузка,
+									обслуживание)
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
 		</div>
 	)
 }

@@ -21,6 +21,37 @@ export function TimerCountdownSeo() {
 					четырёх таких сессий подряд перерыв увеличивается до 15–30 минут,
 					чтобы мозг успел восстановиться перед новым блоком задач.
 				</p>
+				<p className='mt-3 text-muted-foreground'>
+					Готовые интервалы для разных задач:
+				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Пресет</th>
+								<th className='py-2 font-medium'>Работа / перерыв</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Классический Помодоро</td>
+								<td className='py-2 font-mono'>25 / 5 минут</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Короткий перерыв</td>
+								<td className='py-2 font-mono'>25 / 5 минут</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Длинный перерыв (после 4 циклов)</td>
+								<td className='py-2 font-mono'>25 / 15–30 минут</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Спринт для длинных задач</td>
+								<td className='py-2 font-mono'>50 / 10 минут</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -34,7 +65,16 @@ export function TimerCountdownSeo() {
 					займёт действие, и его нужно замерить: пробежка, время ответа,
 					продолжительность тренировки. Режим Pomodoro — фактически таймер
 					обратного отсчёта с готовым циклом «работа → перерыв», настроенным
-					заранее, чтобы не запускать его вручную после каждой сессии.
+					заранее, чтобы не запускать его вручную после каждой сессии. А если
+					отсчёт идёт не от минут, а от конкретной календарной даты (дедлайна
+					или дня рождения), точнее посчитает{' '}
+					<Link
+						href='/tools/date-difference-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькулятор разницы дат
+					</Link>
+					.
 				</p>
 			</section>
 

@@ -44,6 +44,25 @@ export function TextCounterSeo() {
 			</section>
 
 			<p className='text-muted-foreground'>
+				Готовый текст можно не только посчитать, но и прослушать через{' '}
+				<Link
+					href='/tools/text-to-speech'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					синтез речи
+				</Link>
+				, а если нужно сравнить две версии текста и увидеть отличия построчно,
+				для этого есть{' '}
+				<Link
+					href='/tools/text-diff-tool'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					сравнение текстов
+				</Link>
+				.
+			</p>
+
+			<p className='text-muted-foreground'>
 				Как эти же лимиты title и description влияют на технический SEO-аудит
 				сайта, разобрано в статье{' '}
 				<Link

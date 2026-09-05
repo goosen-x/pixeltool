@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function ProportionCalculatorSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -10,7 +12,15 @@ export function ProportionCalculatorSeo() {
 					d. Чтобы найти неизвестное число, три известных перемножаются
 					крест-накрест, а результат делится на оставшееся: например, для d это
 					b × c / a. Калькулятор сам определяет, какое поле искать — это то,
-					которое вы оставили пустым.
+					которое вы оставили пустым. Если известные числа заданы дробями, а не
+					целыми, посчитать их проще в{' '}
+					<Link
+						href='/tools/fraction-calculator'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						калькуляторе дробей
+					</Link>
+					.
 				</p>
 			</section>
 

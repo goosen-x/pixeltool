@@ -15,6 +15,44 @@ export function PercentCalculatorSeo() {
 					калькуляторе телефона. Переключите режим сверху и впишите известные
 					значения.
 				</p>
+				<div className='mt-4 overflow-x-auto'>
+					<table className='w-full text-left text-sm'>
+						<thead>
+							<tr className='border-b text-muted-foreground'>
+								<th className='py-2 pr-4 font-medium'>Процент</th>
+								<th className='py-2 pr-4 font-medium'>От 1 000 ₽</th>
+								<th className='py-2 pr-4 font-medium'>От 10 000 ₽</th>
+								<th className='py-2 font-medium'>От 100 000 ₽</th>
+							</tr>
+						</thead>
+						<tbody className='text-foreground'>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>5%</td>
+								<td className='py-2 pr-4 font-mono'>50 ₽</td>
+								<td className='py-2 pr-4 font-mono'>500 ₽</td>
+								<td className='py-2 font-mono'>5 000 ₽</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>10%</td>
+								<td className='py-2 pr-4 font-mono'>100 ₽</td>
+								<td className='py-2 pr-4 font-mono'>1 000 ₽</td>
+								<td className='py-2 font-mono'>10 000 ₽</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4 font-mono'>13%</td>
+								<td className='py-2 pr-4 font-mono'>130 ₽</td>
+								<td className='py-2 pr-4 font-mono'>1 300 ₽</td>
+								<td className='py-2 font-mono'>13 000 ₽</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4 font-mono'>20%</td>
+								<td className='py-2 pr-4 font-mono'>200 ₽</td>
+								<td className='py-2 pr-4 font-mono'>2 000 ₽</td>
+								<td className='py-2 font-mono'>20 000 ₽</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</section>
 
 			<section>
@@ -38,6 +76,21 @@ export function PercentCalculatorSeo() {
 					className='cursor-pointer font-medium text-primary hover:underline'
 				>
 					Как посчитать процент: 4 формулы с примерами
+				</Link>
+				. Для процентов, которые начисляются периодически, например по вкладу
+				или кредиту, нужен отдельный{' '}
+				<Link
+					href='/tools/compound-interest-calculator'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					калькулятор сложного процента
+				</Link>
+				, а если исходная величина задана дробью, её проще перевести числами в{' '}
+				<Link
+					href='/tools/fraction-calculator'
+					className='cursor-pointer font-medium text-primary hover:underline'
+				>
+					калькуляторе дробей
 				</Link>
 				.
 			</p>
