@@ -90,6 +90,7 @@ export function CategoryHero({ category }: Props) {
 									fill
 									priority
 									sizes='256px'
+									quality={90}
 									className='object-contain drop-shadow-2xl'
 									onError={() =>
 										setBrokenImages(current => [...current, meta.image])

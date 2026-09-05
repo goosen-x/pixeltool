@@ -5,6 +5,7 @@ import { SEO_REDIRECTS } from './lib/seo/seo-redirects.mjs'
 const nextConfig = {
 	output: 'standalone',
 	images: {
+		qualities: [75, 90],
 		remotePatterns: [
 			{ protocol: 'https', hostname: 'lh3.googleusercontent.com' },
 			{ protocol: 'https', hostname: 'pbs.twimg.com' },

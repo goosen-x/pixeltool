@@ -87,7 +87,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Нет ничего, что требует тяжёлых вычислений на сервере: обработки видео, распознавания текста, работы с большими PDF. Всё это либо невозможно сделать в браузере, либо сделать можно, но плохо, — а плохой инструмент хуже, чем никакого.'
 			}
 		],
-		image: '/images/categories/all-laptop.png'
+		image: '/images/categories/all-tools.png'
 	},
 
 	development: {
@@ -440,7 +440,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Они никуда не делись, просто живут в профильных разделах: регионы по номерам — в «Авто», таймер и разница дат — в «Дате и времени», кодировщик SVG — в «Разработке». Поиск по сайту и ссылки из закладок ведут туда же.'
 			}
 		],
-		image: '/images/categories/tools.png'
+		image: '/images/categories/utilities.png'
 	},
 
 	health: {
@@ -473,7 +473,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Нет, расчёт происходит прямо в браузере — введённые значения никуда не отправляются и не хранятся после закрытия вкладки.'
 			}
 		],
-		image: '/images/categories/health-v2.png'
+		image: '/images/categories/health.png'
 	},
 
 	datetime: {
@@ -507,7 +507,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Да, отсчёт ведётся по системному времени, а не по тикам вкладки, поэтому в фоне он не отстанет.'
 			}
 		],
-		image: '/images/categories/datetime-v2.png'
+		image: '/images/categories/datetime.png'
 	},
 
 	math: {
@@ -549,7 +549,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Здесь считают величину, там — количество материала. Площадь стен вы получите тут, а сколько на неё уйдёт плитки с учётом подрезки и швов — в калькуляторе плитки. Одно вытекает из другого, поэтому разделы связаны ссылками.'
 			}
 		],
-		image: '/images/categories/math-v2.png'
+		image: '/images/categories/math.png'
 	},
 
 	finance: {
@@ -592,7 +592,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Конвертер берёт официальный курс Центробанка — он устанавливается раз в рабочий день для отчётности и налогов, а не для обмена. В банке курс покупки ниже, продажи выше, и разница между ними обычно от одного до трёх процентов.'
 			}
 		],
-		image: '/images/categories/math-v2.png'
+		image: '/images/categories/finance.png'
 	},
 	marketing: {
 		title: 'Маркетинг',
@@ -633,7 +633,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Чтобы планировать от реальности. Спринт срывается, когда его считают в номинальных человеко-днях без вычета встреч и отпусков, а лишние созвоны множатся, пока их цена в деньгах не станет видимой.'
 			}
 		],
-		image: '/images/categories/math-v2.png'
+		image: '/images/categories/marketing.png'
 	},
 	auto: {
 		title: 'Авто',
@@ -665,7 +665,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Коды заканчиваются по мере выдачи номеров. Когда все комбинации с первым кодом исчерпаны, региону выделяют дополнительный: так у Москвы появились 97, 99, 177, 197, 199, 777 и другие. Все они означают один и тот же регион.'
 			}
 		],
-		image: '/images/categories/tools.png'
+		image: '/images/categories/auto.png'
 	},
 	construction: {
 		title: 'Стройка',
@@ -706,7 +706,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'В разделе «Математика»: там калькуляторы площади и объёма со схемами фигур и вычетом оконных и дверных проёмов. Полученные квадраты и кубометры подставляются сюда, в расчёт материала.'
 			}
 		],
-		image: '/images/categories/construction-v2.png'
+		image: '/images/categories/construction.png'
 	},
 
 	entertainment: {
@@ -739,7 +739,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'Нет, всё считается в браузере на время сессии — обновите страницу, и тест начнётся заново.'
 			}
 		],
-		image: '/images/categories/entertainment-v2.png'
+		image: '/images/categories/entertainment.png'
 	},
 
 	esoteric: {
@@ -772,7 +772,7 @@ export const CATEGORY_META: Record<'' | CategoryKey, CategoryMeta> = {
 					'У метода нет единого отраслевого стандарта. Когда промежуточная сумма получается больше 22 (для арканов) или больше 9 (для нумерологии без мастер-чисел), разные авторы по-разному сводят её к финальному числу — отсюда расхождения.'
 			}
 		],
-		image: '/images/categories/esoteric-v2.png'
+		image: '/images/categories/esoteric.png'
 	}
 }
 
