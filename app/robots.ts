@@ -2,6 +2,25 @@ import { MetadataRoute } from 'next'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
+// Служебные разделы. Держим списком, потому что повторить их обязан КАЖДЫЙ
+// блок правил: бот подчиняется только своей группе и правила из '*' не
+// наследует. Раньше блоки Googlebot/Yandexbot/Bingbot состояли из одного
+// Allow: '/' — то есть именно основным поисковикам /dev/, /api/ и /private/
+// были разрешены, а запрет действовал лишь на всех остальных ботов.
+const DISALLOW = [
+	'/api/',
+	'/_next/',
+	// Внутренние страницы. Стенд жестов (/dev/pipetka) специально доступен на
+	// проде — трогать жест надо на настоящем телефоне, — поэтому запрет здесь
+	// уже не «на всякий случай»: на него ложатся ещё мета-роботс
+	// (lib/seo/noindex.ts) и заголовок X-Robots-Tag из next.config.mjs.
+	'/dev/',
+	'*/test-db',
+	'*/test-redirect',
+	'/private/',
+	'*.json'
+]
+
 export default function robots(): MetadataRoute.Robots {
 	return {
 		rules: [
@@ -12,32 +31,25 @@ export default function robots(): MetadataRoute.Robots {
 				// побеждает, так что боты картинок (напр. YandexImages, которая не
 				// наследует правила от Yandexbot) всё равно их проиндексируют.
 				allow: ['/', '/api/og'],
-				disallow: [
-					'/api/',
-					'/_next/',
-					// Внутренние страницы: на проде их и так нет (флаг dev), запрет
-					// здесь — на случай, если dev-сборка окажется на публичном хосте.
-					'/dev/',
-					'*/test-db',
-					'*/test-redirect',
-					'/private/',
-					'*.json'
-				],
+				disallow: DISALLOW,
 				crawlDelay: 1
 			},
 			{
 				userAgent: 'Googlebot',
-				allow: '/',
+				allow: ['/', '/api/og'],
+				disallow: DISALLOW,
 				crawlDelay: 0
 			},
 			{
 				userAgent: 'Yandexbot',
-				allow: '/',
+				allow: ['/', '/api/og'],
+				disallow: DISALLOW,
 				crawlDelay: 0
 			},
 			{
 				userAgent: 'Bingbot',
-				allow: '/',
+				allow: ['/', '/api/og'],
+				disallow: DISALLOW,
 				crawlDelay: 0
 			}
 		],
