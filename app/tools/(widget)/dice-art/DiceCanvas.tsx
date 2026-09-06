@@ -58,6 +58,76 @@ export const DICE_LEVELS = 6
 /** Доля стороны, которую занимает диаметр точки. У настоящих костей примерно столько. */
 const PIP_RADIUS = 0.115
 
+/**
+ * Домино: тринадцать градаций по сумме точек, от пустой костяшки до 6–6.
+ *
+ * Рисуем сами по той же причине, что и кости, только острее: символы домино
+ * есть далеко не в каждом системном шрифте, и там, где их нет, вместо мозаики
+ * получается поле пустых прямоугольников. Где есть — они всё равно разной
+ * ширины с остальными глифами и рушат сетку.
+ */
+export const DOMINO_LEVELS = 13
+
+/** Половинки костяшки для уровня: точки раскладываются поровну между ними. */
+export function levelToDomino(level: number): { top: number; bottom: number } {
+	const top = Math.floor(level / 2)
+	return { top, bottom: level - top }
+}
+
+/** Символ домино для текстовой копии: тайлы идут блоками по семь, шаг — левое число. */
+export function dominoGlyph(level: number): string {
+	const { top, bottom } = levelToDomino(level)
+	return String.fromCodePoint(0x1f063 + top * 7 + bottom)
+}
+
+/** Костяшка вдвое выше своей ширины — сетка под домино считается с тем же отношением. */
+export const DOMINO_RATIO = 2
+
+export function drawDomino(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	level: number,
+	dark: boolean
+) {
+	const pad = width * 0.06
+	const w = width - pad * 2
+	const h = height - pad * 2
+
+	ctx.beginPath()
+	ctx.roundRect(x + pad, y + pad, w, h, w * 0.16)
+	ctx.fillStyle = dark ? '#16181d' : '#ffffff'
+	ctx.fill()
+	ctx.lineWidth = Math.max(1, width * 0.03)
+	ctx.strokeStyle = dark ? '#000000' : '#eef1f5'
+	ctx.stroke()
+
+	// Перемычка между половинками — тонкая: она есть в каждой костяшке и
+	// одинаково затемняет все тринадцать градаций.
+	ctx.beginPath()
+	ctx.moveTo(x + pad + w * 0.16, y + pad + h / 2)
+	ctx.lineTo(x + pad + w * 0.84, y + pad + h / 2)
+	ctx.strokeStyle = dark ? '#2a2f38' : '#dfe4ea'
+	ctx.stroke()
+
+	const { top, bottom } = levelToDomino(level)
+	ctx.fillStyle = dark ? '#ffffff' : '#16181d'
+	const pipRadius = w * PIP_RADIUS
+	const half = h / 2
+
+	const paintHalf = (pips: number, originY: number) => {
+		for (const [px, py] of PIP_LAYOUT[pips] ?? []) {
+			ctx.beginPath()
+			ctx.arc(x + pad + w * px, originY + half * py, pipRadius, 0, Math.PI * 2)
+			ctx.fill()
+		}
+	}
+	paintHalf(top, y + pad)
+	paintHalf(bottom, y + pad + half)
+}
+
 export function drawDie(
 	ctx: CanvasRenderingContext2D,
 	x: number,

@@ -16,28 +16,21 @@ import {
 	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { cn } from '@/lib/utils'
-import { DICE_LEVELS, drawDie } from './DiceCanvas'
+import {
+	DICE_LEVELS,
+	DOMINO_LEVELS,
+	DOMINO_RATIO,
+	dominoGlyph,
+	drawDie,
+	drawDomino
+} from './DiceCanvas'
 import { DiceArtSeo } from './DiceArtSeo'
 
 /**
  * Наборы. У костей уровни считает DiceCanvas — там же объяснено, почему их
  * двенадцать, а не шесть. Текстовые наборы идут от светлого к тёмному.
  */
-const GLYPH_SETS = {
-	braille: ['⠀', '⠁', '⠃', '⠇', '⡇', '⡏', '⡟', '⡿', '⣿'],
-	domino: [
-		'\u{1F063}',
-		'\u{1F064}',
-		'\u{1F06B}',
-		'\u{1F072}',
-		'\u{1F079}',
-		'\u{1F080}',
-		'\u{1F087}',
-		'\u{1F08E}',
-		'\u{1F095}',
-		'\u{1F09C}'
-	]
-} as const
+const BRAILLE_GLYPHS = ['⠀', '⠁', '⠃', '⠇', '⡇', '⡏', '⡟', '⡿', '⣿'] as const
 
 // Текстовая запись костей — те же шесть граней Unicode. Цвет кубика в текст
 // не переносится, поэтому копия и картинка у костей отличаются: см. подпись
@@ -46,22 +39,93 @@ const DICE_GLYPHS = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'] as const
 
 type SetKey = 'dice' | 'braille' | 'domino'
 
-const SETS: Record<SetKey, { label: string; levels: number; hint: string }> = {
+const SETS: Record<
+	SetKey,
+	{ label: string; levels: number; ratio: number; hint: string }
+> = {
 	dice: {
 		label: 'Кости',
 		levels: DICE_LEVELS,
+		ratio: 1,
 		hint: 'Шесть градаций, все кости одного цвета — чем плотнее сетка, тем лучше читается'
 	},
 	braille: {
 		label: 'Брайль',
-		levels: GLYPH_SETS.braille.length,
+		levels: BRAILLE_GLYPHS.length,
+		ratio: 1,
 		hint: '9 градаций — мелкие детали читаются лучше всего'
 	},
 	domino: {
 		label: 'Домино',
-		levels: GLYPH_SETS.domino.length,
-		hint: '10 градаций, но домино рисуют не все шрифты'
+		levels: DOMINO_LEVELS,
+		// Костяшка вдвое выше своей ширины, и сетка считается под неё: иначе
+		// картинка растянулась бы по вертикали ровно вдвое.
+		ratio: DOMINO_RATIO,
+		hint: '13 градаций по сумме точек — от пустой костяшки до 6–6'
 	}
+}
+
+/**
+ * Картинка-пример, с которой страница открывается.
+ *
+ * Рисуется кодом, а не грузится файлом: лишний запрос ради заставки не нужен,
+ * а нарисованный кубик даёт то, что для шести градаций подходит лучше всего —
+ * крупную контрастную форму с мягкой тенью, на которой сразу видно, как
+ * полутон собирается из граней.
+ */
+function buildSampleImage(): HTMLCanvasElement {
+	const canvas = document.createElement('canvas')
+	canvas.width = 900
+	canvas.height = 900
+	const ctx = canvas.getContext('2d')
+	if (!ctx) return canvas
+
+	const bg = ctx.createLinearGradient(0, 0, 900, 900)
+	bg.addColorStop(0, '#f4f6f9')
+	bg.addColorStop(1, '#c8d0da')
+	ctx.fillStyle = bg
+	ctx.fillRect(0, 0, 900, 900)
+
+	ctx.save()
+	ctx.translate(450, 470)
+	ctx.rotate(-0.14)
+
+	ctx.shadowColor = 'rgba(20, 26, 33, 0.45)'
+	ctx.shadowBlur = 70
+	ctx.shadowOffsetY = 40
+	const side = 520
+	const face = ctx.createLinearGradient(
+		-side / 2,
+		-side / 2,
+		side / 2,
+		side / 2
+	)
+	face.addColorStop(0, '#2b3440')
+	face.addColorStop(1, '#12171d')
+	ctx.fillStyle = face
+	ctx.beginPath()
+	ctx.roundRect(-side / 2, -side / 2, side, side, side * 0.16)
+	ctx.fill()
+	ctx.shadowColor = 'transparent'
+
+	// Пятёрка: по ней хорошо видно и центр, и углы.
+	ctx.fillStyle = '#f7f9fb'
+	const offset = side * 0.26
+	const pip = side * 0.075
+	for (const [px, py] of [
+		[-offset, -offset],
+		[offset, -offset],
+		[0, 0],
+		[-offset, offset],
+		[offset, offset]
+	]) {
+		ctx.beginPath()
+		ctx.arc(px, py, pip, 0, Math.PI * 2)
+		ctx.fill()
+	}
+	ctx.restore()
+
+	return canvas
 }
 
 const MIN_COLS = 12
@@ -90,6 +154,9 @@ export default function DiceArtPage() {
 	const previewRef = useRef<HTMLCanvasElement>(null)
 
 	const [imageVersion, setImageVersion] = useState(0)
+	// Страница открывается с примером, а не с пустой рамкой: инструмент такого
+	// рода объясняется одной картинкой быстрее, чем любым описанием.
+	const [isSample, setIsSample] = useState(true)
 	const [cols, setCols] = useState(DEFAULT_COLS)
 	const [setKey, setSetKey] = useState<SetKey>('dice')
 	const [invert, setInvert] = useState(false)
@@ -104,6 +171,18 @@ export default function DiceArtPage() {
 
 	const hasImage = imageVersion > 0
 	const levelCount = SETS[setKey].levels
+	const cellRatio = SETS[setKey].ratio
+
+	const showSample = useCallback(() => {
+		sourceRef.current = buildSampleImage()
+		setIsSample(true)
+		setErrorMessage(null)
+		setImageVersion(v => v + 1)
+	}, [])
+
+	useEffect(() => {
+		showSample()
+	}, [showSample])
 
 	const grid = useMemo<Grid | null>(() => {
 		if (!hasImage) return null
@@ -111,10 +190,11 @@ export default function DiceArtPage() {
 		const ctx = source?.getContext('2d', { willReadFrequently: true })
 		if (!source || !ctx) return null
 
-		// Клетка квадратная: и превью, и экспорт рисуют квадратами, так что
-		// подгонять сетку под пропорции шрифта не нужно.
-		const cell = source.width / cols
-		const rowCount = Math.max(1, Math.floor(source.height / cell))
+		// Ширина клетки задаётся сеткой, высота — пропорцией фигуры набора:
+		// кость и брайлевская клетка квадратные, костяшка домино вдвое выше.
+		const cellW = source.width / cols
+		const cellH = cellW * cellRatio
+		const rowCount = Math.max(1, Math.floor(source.height / cellH))
 		const { data } = ctx.getImageData(0, 0, source.width, source.height)
 
 		// Шаг 1. Средняя яркость и средний цвет каждой клетки.
@@ -124,10 +204,10 @@ export default function DiceArtPage() {
 		for (let row = 0; row < rowCount; row++) {
 			const rowColors: string[] = []
 			for (let col = 0; col < cols; col++) {
-				const x0 = Math.floor(col * cell)
-				const x1 = Math.min(source.width, Math.ceil((col + 1) * cell))
-				const y0 = Math.floor(row * cell)
-				const y1 = Math.min(source.height, Math.ceil((row + 1) * cell))
+				const x0 = Math.floor(col * cellW)
+				const x1 = Math.min(source.width, Math.ceil((col + 1) * cellW))
+				const y0 = Math.floor(row * cellH)
+				const y1 = Math.min(source.height, Math.ceil((row + 1) * cellH))
 
 				let r = 0
 				let g = 0
@@ -209,7 +289,10 @@ export default function DiceArtPage() {
 		}
 
 		return { levels, colors, cols, rowCount, pipCounts }
-	}, [hasImage, imageVersion, cols, setKey, levelCount, invert, dither])
+		// imageVersion — единственный сигнал о том, что sourceRef сменился:
+		// сама картинка живёт в ref, и линтер её не видит.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [hasImage, imageVersion, cols, levelCount, cellRatio, invert, dither])
 
 	/** Одна отрисовка на превью и на экспорт — меняется только размер клетки. */
 	const paint = useCallback(
@@ -218,24 +301,25 @@ export default function DiceArtPage() {
 			const ctx = canvas.getContext('2d')
 			if (!ctx) return
 
-			canvas.width = grid.cols * cell * ratio
-			canvas.height = grid.rowCount * cell * ratio
+			const cellW = cell
+			const cellH = cell * cellRatio
+			canvas.width = grid.cols * cellW * ratio
+			canvas.height = grid.rowCount * cellH * ratio
 			ctx.scale(ratio, ratio)
 			ctx.fillStyle = '#ffffff'
 			ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-			if (setKey !== 'dice') {
-				const glyphs = GLYPH_SETS[setKey]
-				ctx.font = `${cell}px ui-monospace, SFMono-Regular, Menlo, monospace`
+			if (setKey === 'braille') {
+				ctx.font = `${cellW}px ui-monospace, SFMono-Regular, Menlo, monospace`
 				ctx.textAlign = 'center'
 				ctx.textBaseline = 'middle'
 				grid.levels.forEach((row, y) =>
 					row.forEach((level, x) => {
 						ctx.fillStyle = colored ? grid.colors[y][x] : '#16181d'
 						ctx.fillText(
-							glyphs[Math.min(level, glyphs.length - 1)],
-							x * cell + cell / 2,
-							y * cell + cell / 2
+							BRAILLE_GLYPHS[Math.min(level, BRAILLE_GLYPHS.length - 1)],
+							x * cellW + cellW / 2,
+							y * cellH + cellH / 2
 						)
 					})
 				)
@@ -243,7 +327,7 @@ export default function DiceArtPage() {
 			}
 
 			// Тёмный набор рисуем на тёмном фоне: белые поля между чёрными
-			// кубиками читались бы как сетка и съедали бы весь полутон.
+			// фишками читались бы как сетка и съедали бы весь полутон.
 			if (darkDice) {
 				ctx.fillStyle = '#0a0b0e'
 				ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -251,11 +335,15 @@ export default function DiceArtPage() {
 
 			grid.levels.forEach((row, y) =>
 				row.forEach((level, x) => {
-					drawDie(ctx, x * cell, y * cell, cell, level + 1, darkDice)
+					if (setKey === 'domino') {
+						drawDomino(ctx, x * cellW, y * cellH, cellW, cellH, level, darkDice)
+						return
+					}
+					drawDie(ctx, x * cellW, y * cellH, cellW, level + 1, darkDice)
 				})
 			)
 		},
-		[grid, setKey, colored, darkDice]
+		[grid, setKey, colored, darkDice, cellRatio]
 	)
 
 	useEffect(() => {
@@ -268,10 +356,15 @@ export default function DiceArtPage() {
 	// что текст и картинка совпадают клетка в клетку.
 	const text = useMemo(() => {
 		if (!grid) return ''
-		const glyphs = setKey === 'dice' ? DICE_GLYPHS : GLYPH_SETS[setKey]
 		return grid.levels
 			.map(row =>
-				row.map(level => glyphs[Math.min(level, glyphs.length - 1)]).join('')
+				row
+					.map(level => {
+						if (setKey === 'dice') return DICE_GLYPHS[level]
+						if (setKey === 'domino') return dominoGlyph(level)
+						return BRAILLE_GLYPHS[Math.min(level, BRAILLE_GLYPHS.length - 1)]
+					})
+					.join('')
 			)
 			.join('\n')
 	}, [grid, setKey])
@@ -302,6 +395,7 @@ export default function DiceArtPage() {
 			}
 			ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
 			sourceRef.current = canvas
+			setIsSample(false)
 			setImageVersion(v => v + 1)
 			URL.revokeObjectURL(url)
 		}
@@ -312,11 +406,7 @@ export default function DiceArtPage() {
 		image.src = url
 	}
 
-	const reset = () => {
-		sourceRef.current = null
-		setImageVersion(0)
-		setErrorMessage(null)
-	}
+	const reset = showSample
 
 	const copyText = () => {
 		if (!text) return
@@ -438,12 +528,12 @@ export default function DiceArtPage() {
 						>
 							<Upload className='h-4 w-4' />
 						</Button>
-						{hasImage && (
+						{!isSample && (
 							<Button
 								size='icon'
 								variant='ghost'
 								onClick={reset}
-								title='Очистить'
+								title='Убрать фото и вернуть пример'
 								className={toolIconButton}
 							>
 								<Trash2 className='h-4 w-4' />
@@ -465,35 +555,37 @@ export default function DiceArtPage() {
 					className='hidden'
 				/>
 
-				{grid ? (
-					<div className='overflow-x-auto px-0 py-4 sm:px-6 sm:py-6'>
-						<canvas
-							ref={previewRef}
-							aria-label='Мозаика из костей'
-							className='mx-auto block h-auto max-w-full'
-							style={{ width: grid.cols * PREVIEW_CELL }}
-						/>
-					</div>
-				) : (
-					<div className='px-5 py-6 sm:px-6'>
+				<div className='overflow-x-auto px-0 py-4 sm:px-6 sm:py-6'>
+					<canvas
+						ref={previewRef}
+						aria-label={
+							isSample ? 'Пример: мозаика из костей' : 'Мозаика из костей'
+						}
+						className='mx-auto block h-auto max-w-full'
+						style={grid ? { width: grid.cols * PREVIEW_CELL } : undefined}
+					/>
+				</div>
+
+				{errorMessage && (
+					<p className='px-5 pb-4 text-sm text-destructive sm:px-6'>
+						{errorMessage}
+					</p>
+				)}
+
+				{isSample && (
+					<div className='flex flex-wrap items-center gap-x-2 gap-y-1 border-t px-5 py-3 text-sm text-muted-foreground sm:px-6'>
+						<span>Это пример.</span>
 						<button
 							type='button'
 							onClick={() => fileInputRef.current?.click()}
-							className={cn(
-								'flex w-full cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed py-16 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-								isDragging && 'border-primary bg-primary/5'
-							)}
+							className='cursor-pointer font-medium text-primary hover:underline'
 						>
-							<Upload className='h-6 w-6 text-muted-foreground' />
-							<span className='text-sm'>Выберите фото или перетащите сюда</span>
-							<span className='max-w-sm px-6 text-center text-xs text-muted-foreground'>
-								Лучше всего получаются контрастные снимки — портрет крупным
-								планом, силуэт, логотип
-							</span>
+							Загрузите своё фото
 						</button>
-						{errorMessage && (
-							<p className='mt-3 text-sm text-destructive'>{errorMessage}</p>
-						)}
+						<span>
+							или перетащите его сюда — лучше всего выходят контрастные кадры:
+							портрет крупным планом, силуэт, логотип.
+						</span>
 					</div>
 				)}
 
@@ -532,14 +624,14 @@ export default function DiceArtPage() {
 						дизеринг
 					</button>
 
-					{setKey === 'dice' ? (
+					{setKey !== 'braille' ? (
 						<button
 							type='button'
 							onClick={() => setDarkDice(!darkDice)}
 							aria-pressed={darkDice}
 							className={toolPill(darkDice)}
 						>
-							чёрные кости
+							{setKey === 'dice' ? 'чёрные кости' : 'чёрное домино'}
 						</button>
 					) : (
 						<button
@@ -563,7 +655,7 @@ export default function DiceArtPage() {
 							<span className='font-mono tabular-nums text-foreground'>
 								{grid.cols}×{grid.rowCount}
 							</span>
-							{setKey === 'dice' ? ', костей ' : ', клеток '}
+							{setKey === 'braille' ? ', клеток ' : ', фишек '}
 							<span className='font-mono tabular-nums text-foreground'>
 								{total}
 							</span>
@@ -573,13 +665,15 @@ export default function DiceArtPage() {
 
 				{/* Раскладка по граням — то, что нужно при настоящей выкладке: все
 				    кости одинаковые, разница только в том, какой гранью повернуть. */}
-				{grid && setKey === 'dice' && (
+				{grid && setKey !== 'braille' && (
 					<div className='flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-5 py-3 text-sm sm:px-6'>
-						<span className='text-muted-foreground'>гранями вверх</span>
+						<span className='text-muted-foreground'>
+							{setKey === 'dice' ? 'гранями вверх' : 'костяшек'}
+						</span>
 						{grid.pipCounts.map((count, index) => (
 							<span key={index} className='flex items-center gap-1.5'>
 								<span className='text-muted-foreground'>
-									{DICE_GLYPHS[index]}
+									{setKey === 'dice' ? DICE_GLYPHS[index] : dominoGlyph(index)}
 								</span>
 								<span className='font-mono tabular-nums'>{count}</span>
 							</span>
