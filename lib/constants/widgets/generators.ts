@@ -303,7 +303,12 @@ export const generatorWidgets: Widget[] = [
 		title: 'Бросить кубик онлайн',
 		description:
 			'Виртуальный бросок кубика с несколькими конфигурациями и анимациями',
-		recommendedTools: ['coin-flip', 'draw-lots', 'random-number-generator'],
+		recommendedTools: [
+			'coin-flip',
+			'draw-lots',
+			'random-number-generator',
+			'dice-art'
+		],
 		difficulty: 'beginner',
 		tags: ['dice', 'random', 'game', '3d', 'probability', 'roll'],
 		useCase: 'Бросок костей для настольных игр или случайной генерации чисел',
