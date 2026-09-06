@@ -1,12 +1,6 @@
 'use client'
 
-import {
-	useEffect,
-	useRef,
-	useState,
-	type MouseEvent,
-	type TouchEvent
-} from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Check, Copy, Trash2, Upload } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -36,12 +30,13 @@ const HISTORY_LIMIT = 8
 // и палец, и то, что он вот-вот выберет.
 const MAGNIFIER_TOUCH_GAP = 40
 const MAGNIFIER_EDGE_MARGIN = 8
-// Сколько пикселей пройти, прежде чем решить, скролл это или выбор цвета —
-// меньше похоже на дрожание пальца, а не на осознанный жест.
-const GESTURE_DECISION_DISTANCE = 6
-// Насколько вертикальное движение должно перевешивать горизонтальное, чтобы
-// считать его скроллом, а не аккуратным прицеливанием по пикселю.
-const SCROLL_INTENT_RATIO = 1.5
+// Сколько держать палец, чтобы включилась пипетка. Пока палец неподвижен,
+// браузер прокрутку ещё не начал — поэтому preventDefault() с этого момента
+// её и не даёт начать, а обычный свайп по фото остаётся обычной прокруткой.
+const HOLD_MS = 280
+// Допуск на дрожание пальца за время удержания: сдвинулись дальше — значит
+// это был свайп, отдаём жест браузеру.
+const HOLD_SLOP = 10
 
 function loadImage(url: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
@@ -138,13 +133,6 @@ export default function PhotoColorPickerPage() {
 	const magnifierRef = useRef<HTMLCanvasElement>(null)
 	const magnifierFloatRef = useRef<HTMLCanvasElement>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
-	// canvas раньше держал touch-action:none — это глушило скролл насмерть для
-	// любого касания фото, а на мобильном фото часто занимает большую часть
-	// экрана, и до результата снизу было не долистать. Решаем сами, в JS: жест
-	// движется в основном вертикально и достаточно далеко — это скролл,
-	// отпускаем браузеру; иначе — выбор цвета, как раньше.
-	const touchStartRef = useRef<{ x: number; y: number } | null>(null)
-	const touchGestureRef = useRef<'undecided' | 'pick' | 'scroll'>('undecided')
 
 	const [hasImage, setHasImage] = useState(false)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -274,57 +262,104 @@ export default function PhotoColorPickerPage() {
 		setTouchLoupe({ clientX, clientY })
 	}
 
-	const onCanvasTouchStart = (event: TouchEvent<HTMLCanvasElement>) => {
-		const touch = event.touches[0]
-		if (!touch) return
-		touchStartRef.current = { x: touch.clientX, y: touch.clientY }
-		touchGestureRef.current = 'undecided'
-		updateTouchLoupe(touch.clientX, touch.clientY)
+	const resetLoupe = () => {
+		setHoverPos(null)
+		setTouchLoupe(null)
 	}
 
-	const onCanvasTouchMove = (event: TouchEvent<HTMLCanvasElement>) => {
-		const touch = event.touches[0]
-		const start = touchStartRef.current
-		if (!touch || !start) return
+	// Обработчики живут в ref, а слушатели вешаются один раз: сами функции
+	// пересоздаются на каждый рендер (их дёргает setState лупы), и без ref
+	// переподписка случалась бы прямо посреди жеста, теряя таймер удержания.
+	const touchApiRef = useRef({ updateTouchLoupe, handlePick, resetLoupe })
+	touchApiRef.current = { updateTouchLoupe, handlePick, resetLoupe }
 
-		if (touchGestureRef.current === 'undecided') {
-			const dx = touch.clientX - start.x
-			const dy = touch.clientY - start.y
-			if (Math.hypot(dx, dy) >= GESTURE_DECISION_DISTANCE) {
-				touchGestureRef.current =
-					Math.abs(dy) > Math.abs(dx) * SCROLL_INTENT_RATIO ? 'scroll' : 'pick'
-				if (touchGestureRef.current === 'scroll') {
-					setHoverPos(null)
-					setTouchLoupe(null)
-				}
+	// Касания — только нативным addEventListener с { passive: false }. Через
+	// React-пропы (onTouchMove и прочие) это не работает: React с 17-й версии
+	// вешает touchstart, touchmove и wheel на корень документа пассивно, а в
+	// пассивном слушателе preventDefault() не делает ничего. Раньше жест здесь
+	// определялся верно, но браузер о решении не узнавал — и лупа ехала за
+	// пальцем одновременно с прокруткой страницы.
+	useEffect(() => {
+		const canvas = canvasRef.current
+		if (!canvas || !hasImage) return
+
+		let start: { x: number; y: number } | null = null
+		let timer: ReturnType<typeof setTimeout> | null = null
+		let armed = false
+
+		const disarm = () => {
+			if (timer) clearTimeout(timer)
+			timer = null
+		}
+
+		const onStart = (event: TouchEvent) => {
+			const touch = event.touches[0]
+			if (!touch) return
+			start = { x: touch.clientX, y: touch.clientY }
+			armed = false
+			timer = setTimeout(() => {
+				armed = true
+				// Короткий отклик: иначе непонятно, что пипетка уже взята.
+				navigator.vibrate?.(8)
+				if (start) touchApiRef.current.updateTouchLoupe(start.x, start.y)
+			}, HOLD_MS)
+		}
+
+		const onMove = (event: TouchEvent) => {
+			const touch = event.touches[0]
+			if (!touch || !start) return
+
+			if (!armed) {
+				const moved = Math.hypot(
+					touch.clientX - start.x,
+					touch.clientY - start.y
+				)
+				// Свайп начался раньше, чем сработало удержание, — это прокрутка,
+				// молча отдаём жест браузеру.
+				if (moved > HOLD_SLOP) disarm()
+				return
 			}
+
+			event.preventDefault()
+			touchApiRef.current.updateTouchLoupe(touch.clientX, touch.clientY)
 		}
 
-		// Жест распознан как скролл — не вызываем preventDefault и не двигаем
-		// лупу, отдаём событие браузеру как обычный свайп по странице.
-		if (touchGestureRef.current === 'scroll') return
-
-		event.preventDefault()
-		updateTouchLoupe(touch.clientX, touch.clientY)
-	}
-
-	const onCanvasTouchEnd = (event: TouchEvent<HTMLCanvasElement>) => {
-		if (touchGestureRef.current !== 'scroll') {
+		const onEnd = (event: TouchEvent) => {
+			disarm()
 			const touch = event.changedTouches[0]
-			if (touch) handlePick(touch.clientX, touch.clientY)
+			const moved =
+				touch && start
+					? Math.hypot(touch.clientX - start.x, touch.clientY - start.y)
+					: 0
+			// Цвет берём и по удержанию, и по короткому тапу — тап остаётся самым
+			// быстрым способом ткнуть в очевидную точку.
+			if (touch && (armed || moved <= HOLD_SLOP)) {
+				touchApiRef.current.handlePick(touch.clientX, touch.clientY)
+			}
+			armed = false
+			start = null
+			touchApiRef.current.resetLoupe()
 		}
-		touchStartRef.current = null
-		touchGestureRef.current = 'undecided'
-		setHoverPos(null)
-		setTouchLoupe(null)
-	}
 
-	const onCanvasTouchCancel = () => {
-		touchStartRef.current = null
-		touchGestureRef.current = 'undecided'
-		setHoverPos(null)
-		setTouchLoupe(null)
-	}
+		const onCancel = () => {
+			disarm()
+			armed = false
+			start = null
+			touchApiRef.current.resetLoupe()
+		}
+
+		canvas.addEventListener('touchstart', onStart, { passive: true })
+		canvas.addEventListener('touchmove', onMove, { passive: false })
+		canvas.addEventListener('touchend', onEnd)
+		canvas.addEventListener('touchcancel', onCancel)
+		return () => {
+			disarm()
+			canvas.removeEventListener('touchstart', onStart)
+			canvas.removeEventListener('touchmove', onMove)
+			canvas.removeEventListener('touchend', onEnd)
+			canvas.removeEventListener('touchcancel', onCancel)
+		}
+	}, [hasImage])
 
 	const loadFile = async (file: File) => {
 		setErrorMessage(null)
@@ -413,7 +448,7 @@ export default function PhotoColorPickerPage() {
 				<div className={toolBar}>
 					<span className='text-sm text-muted-foreground'>
 						{hasImage
-							? 'Наведите пипетку на фото или коснитесь нужной точки'
+							? 'Коснитесь точки на фото или задержите палец, чтобы вести пипетку с лупой'
 							: 'Загрузите фото, чтобы определить цвет'}
 					</span>
 
@@ -483,13 +518,10 @@ export default function PhotoColorPickerPage() {
 							onMouseMove={onCanvasMouseMove}
 							onMouseLeave={onCanvasMouseLeave}
 							onClick={onCanvasClick}
-							onTouchStart={onCanvasTouchStart}
-							onTouchMove={onCanvasTouchMove}
-							onTouchEnd={onCanvasTouchEnd}
-							onTouchCancel={onCanvasTouchCancel}
 							className={cn(
-								// touch-auto (не none): скролл теперь решается в JS —
-								// см. onCanvasTouchMove — а не глушится CSS насмерть.
+								// touch-auto (не none): обычный свайп по фото должен
+								// прокручивать страницу, как везде. Пипетка перехватывает
+								// жест только после удержания — см. эффект с touchstart.
 								'max-h-[65vh] max-w-full touch-auto sm:max-h-96',
 								// Своя рамка и скругление — только от sm. На телефоне фото
 								// лежит вплотную к краям карточки, и вторая рамка внутри
