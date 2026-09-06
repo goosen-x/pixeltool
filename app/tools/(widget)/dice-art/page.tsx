@@ -16,7 +16,7 @@ import {
 	toolToggleTrack
 } from '@/lib/ui/tool-pill'
 import { cn } from '@/lib/utils'
-import { DICE_LEVELS, drawDie, levelToDie } from './DiceCanvas'
+import { DICE_LEVELS, drawDie } from './DiceCanvas'
 import { DiceArtSeo } from './DiceArtSeo'
 
 /**
@@ -50,7 +50,7 @@ const SETS: Record<SetKey, { label: string; levels: number; hint: string }> = {
 	dice: {
 		label: 'Кости',
 		levels: DICE_LEVELS,
-		hint: '12 градаций: белые кубики от одной точки к шести, дальше чёрные'
+		hint: 'Шесть градаций, все кости одного цвета — чем плотнее сетка, тем лучше читается'
 	},
 	braille: {
 		label: 'Брайль',
@@ -66,7 +66,10 @@ const SETS: Record<SetKey, { label: string; levels: number; hint: string }> = {
 
 const MIN_COLS = 12
 const MAX_COLS = 100
-const DEFAULT_COLS = 40
+// Плотнее, чем хотелось бы для скорости: у одноцветных костей всего шесть
+// градаций, и на сетке уже, чем полсотни клеток, портрет не собирается —
+// проверено на снимках, при 40 клетках лицо разваливается, при 60 читается.
+const DEFAULT_COLS = 56
 const PREVIEW_CELL = 15
 const EXPORT_CELL = 30
 
@@ -75,8 +78,8 @@ type Grid = {
 	colors: string[][]
 	cols: number
 	rowCount: number
-	white: number
-	black: number
+	/** Сколько костей повернуть каждой гранью: pipCounts[0] — единицами вверх. */
+	pipCounts: number[]
 }
 
 export default function DiceArtPage() {
@@ -92,6 +95,9 @@ export default function DiceArtPage() {
 	const [invert, setInvert] = useState(false)
 	const [dither, setDither] = useState(true)
 	const [colored, setColored] = useState(false)
+	// Цвет всего набора: мозаику выкладывают из одинаковых костей, поэтому это
+	// один переключатель на всю работу, а не свойство отдельной клетки.
+	const [darkDice, setDarkDice] = useState(false)
 	const [isDragging, setIsDragging] = useState(false)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [copied, setCopied] = useState(false)
@@ -174,8 +180,7 @@ export default function DiceArtPage() {
 		// получаются чередованием граней, как в газетной растровой печати.
 		const last = levelCount - 1
 		const levels: number[][] = []
-		let white = 0
-		let black = 0
+		const pipCounts = new Array(levelCount).fill(0)
 
 		for (let row = 0; row < rowCount; row++) {
 			const line: number[] = []
@@ -185,11 +190,7 @@ export default function DiceArtPage() {
 				// value = 1 это свет, а нулевой уровень набора — самый светлый.
 				const level = Math.round((1 - value) * last)
 				line.push(level)
-
-				if (setKey === 'dice') {
-					if (levelToDie(level).dark) black++
-					else white++
-				}
+				pipCounts[level]++
 
 				if (!dither) continue
 				const error = value - (1 - level / last)
@@ -207,7 +208,7 @@ export default function DiceArtPage() {
 			levels.push(line)
 		}
 
-		return { levels, colors, cols, rowCount, white, black }
+		return { levels, colors, cols, rowCount, pipCounts }
 	}, [hasImage, imageVersion, cols, setKey, levelCount, invert, dither])
 
 	/** Одна отрисовка на превью и на экспорт — меняется только размер клетки. */
@@ -241,14 +242,20 @@ export default function DiceArtPage() {
 				return
 			}
 
+			// Тёмный набор рисуем на тёмном фоне: белые поля между чёрными
+			// кубиками читались бы как сетка и съедали бы весь полутон.
+			if (darkDice) {
+				ctx.fillStyle = '#0a0b0e'
+				ctx.fillRect(0, 0, canvas.width, canvas.height)
+			}
+
 			grid.levels.forEach((row, y) =>
 				row.forEach((level, x) => {
-					const { pips, dark } = levelToDie(level)
-					drawDie(ctx, x * cell, y * cell, cell, pips, dark)
+					drawDie(ctx, x * cell, y * cell, cell, level + 1, darkDice)
 				})
 			)
 		},
-		[grid, setKey, colored]
+		[grid, setKey, colored, darkDice]
 	)
 
 	useEffect(() => {
@@ -257,21 +264,14 @@ export default function DiceArtPage() {
 		paint(canvas, PREVIEW_CELL, Math.min(window.devicePixelRatio || 1, 2))
 	}, [grid, paint])
 
-	// Текстовая копия. У костей цвет кубика символом не выразить, поэтому в
-	// тексте остаются шесть граней Unicode — об этом сказано под результатом.
+	// Текстовая копия — те же грани символами Unicode. Набор одноцветный, так
+	// что текст и картинка совпадают клетка в клетку.
 	const text = useMemo(() => {
 		if (!grid) return ''
+		const glyphs = setKey === 'dice' ? DICE_GLYPHS : GLYPH_SETS[setKey]
 		return grid.levels
 			.map(row =>
-				row
-					.map(level => {
-						if (setKey === 'dice') {
-							return DICE_GLYPHS[levelToDie(level).pips - 1]
-						}
-						const glyphs = GLYPH_SETS[setKey]
-						return glyphs[Math.min(level, glyphs.length - 1)]
-					})
-					.join('')
+				row.map(level => glyphs[Math.min(level, glyphs.length - 1)]).join('')
 			)
 			.join('\n')
 	}, [grid, setKey])
@@ -532,7 +532,16 @@ export default function DiceArtPage() {
 						дизеринг
 					</button>
 
-					{setKey !== 'dice' && (
+					{setKey === 'dice' ? (
+						<button
+							type='button'
+							onClick={() => setDarkDice(!darkDice)}
+							aria-pressed={darkDice}
+							className={toolPill(darkDice)}
+						>
+							чёрные кости
+						</button>
+					) : (
 						<button
 							type='button'
 							onClick={() => setColored(!colored)}
@@ -554,35 +563,27 @@ export default function DiceArtPage() {
 							<span className='font-mono tabular-nums text-foreground'>
 								{grid.cols}×{grid.rowCount}
 							</span>
-							{setKey === 'dice' ? (
-								<>
-									, костей{' '}
-									<span className='font-mono tabular-nums text-foreground'>
-										{grid.white}
-									</span>{' '}
-									белых и{' '}
-									<span className='font-mono tabular-nums text-foreground'>
-										{grid.black}
-									</span>{' '}
-									чёрных
-								</>
-							) : (
-								<>
-									, клеток{' '}
-									<span className='font-mono tabular-nums text-foreground'>
-										{total}
-									</span>
-								</>
-							)}
+							{setKey === 'dice' ? ', костей ' : ', клеток '}
+							<span className='font-mono tabular-nums text-foreground'>
+								{total}
+							</span>
 						</span>
 					)}
 				</div>
 
+				{/* Раскладка по граням — то, что нужно при настоящей выкладке: все
+				    кости одинаковые, разница только в том, какой гранью повернуть. */}
 				{grid && setKey === 'dice' && (
-					<div className='border-t px-5 py-3 text-xs text-muted-foreground sm:px-6'>
-						Копия в буфер и файл .txt — это шесть граней символами Unicode: цвет
-						кубика в текст не переносится. Двухцветную мозаику забирайте
-						картинкой.
+					<div className='flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-5 py-3 text-sm sm:px-6'>
+						<span className='text-muted-foreground'>гранями вверх</span>
+						{grid.pipCounts.map((count, index) => (
+							<span key={index} className='flex items-center gap-1.5'>
+								<span className='text-muted-foreground'>
+									{DICE_GLYPHS[index]}
+								</span>
+								<span className='font-mono tabular-nums'>{count}</span>
+							</span>
+						))}
 					</div>
 				)}
 			</Card>
