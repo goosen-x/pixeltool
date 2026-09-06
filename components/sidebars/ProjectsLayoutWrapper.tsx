@@ -40,18 +40,21 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 		// её выставляет ChromeHeightVar (lib/ui/chrome-height.ts). 5rem —
 		// фоллбэк на высоту одной шапки (h-20), пока эффект не отработал.
 		<div className='flex h-[calc(100vh-var(--chrome-h,5rem))] relative'>
-			{/* Затемнение под левым сайдбаром-шитом ниже xl */}
+			{/* Затемнение под левым сайдбаром-шитом в диапазоне lg..xl */}
 			{isSidebarOpen && (
 				<div
-					className='fixed inset-0 top-[var(--chrome-h,5rem)] z-30 bg-black/40 xl:hidden'
+					className='fixed inset-0 top-[var(--chrome-h,5rem)] z-30 hidden bg-black/40 lg:block xl:hidden'
 					onClick={() => setIsSidebarOpen(false)}
 				/>
 			)}
 
-			{/* Левый сайдбар: ниже xl — шит поверх контента, от xl — статичная колонка */}
+			{/* Левый сайдбар: ниже lg его нет — там весь каталог отдаёт бургер в
+			    шапке (components/layout/Header/widgets/Burger.tsx, виден до lg), и два
+			    бургера с одинаковым содержимым на мобильном только мешали друг другу.
+			    От lg до xl — шит поверх контента, от xl — статичная колонка */}
 			<div
 				className={cn(
-					'fixed xl:relative top-[var(--chrome-h,5rem)] xl:top-0 left-0 z-40 h-[calc(100vh-var(--chrome-h,5rem))] xl:h-full transform transition-transform duration-300 ease-in-out xl:transform-none',
+					'fixed xl:relative top-[var(--chrome-h,5rem)] xl:top-0 left-0 z-40 hidden h-[calc(100vh-var(--chrome-h,5rem))] transform transition-transform duration-300 ease-in-out lg:block xl:h-full xl:transform-none',
 					isSidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
 				)}
 			>
@@ -63,7 +66,7 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 				<Button
 					variant='outline'
 					size='icon'
-					className='fixed top-[calc(var(--chrome-h,5rem)+1rem)] left-4 z-20 h-12 w-12 cursor-pointer xl:hidden'
+					className='fixed top-[calc(var(--chrome-h,5rem)+1rem)] left-4 z-20 hidden h-12 w-12 cursor-pointer lg:inline-flex xl:hidden'
 					onClick={() => setIsSidebarOpen(true)}
 					aria-label='Категории инструментов'
 				>
@@ -74,7 +77,9 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 			<main className='flex-1 flex flex-col overflow-hidden min-w-0'>
 				<div className='flex-1 flex overflow-hidden'>
 					<div className='flex-1 overflow-y-auto projects-scroll min-w-0'>
-						<div className='container mx-auto pt-20 pb-6 lg:pt-20 lg:pb-8 xl:pt-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
+						{/* pt-20 ниже xl — место под плавающую кнопку сайдбара; на
+						    мобильном кнопки нет, поэтому там обычный отступ */}
+						<div className='container mx-auto pt-8 pb-6 lg:pt-20 lg:pb-8 xl:pt-8 px-4 sm:px-6 lg:px-8 max-w-6xl'>
 							{widget && !widget.demo && (
 								<WidgetStructuredData
 									widget={widget}

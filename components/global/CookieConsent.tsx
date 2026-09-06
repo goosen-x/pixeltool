@@ -34,7 +34,11 @@ export function CookieConsent() {
 	// секунду после гидратации, и тащить ради него в стартовый бандл
 	// анимационную библиотеку с пружиной незачем.
 	return (
-		<div className='animate-fade-in fixed right-0 bottom-0 left-0 z-50 p-4'>
+		// z-40, а не z-50: у модалок Radix тот же z-50, но портал вставляется в
+		// конец body и выигрывает по порядку в DOM. Баннер ложился поверх
+		// шторки поиска на мобильном, закрывая нижнюю треть результатов, и при
+		// этом сам не нажимался — Radix глушит pointer-events на body
+		<div className='animate-fade-in fixed right-0 bottom-0 left-0 z-40 p-4'>
 			<div className='mx-auto max-w-2xl'>
 				<div className='relative rounded-xl bg-card/95 backdrop-blur-md border shadow-lg p-4 sm:p-5'>
 					<button

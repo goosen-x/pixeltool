@@ -167,6 +167,34 @@ export function GlobalWidgetSearch({
 		}
 	}, [open])
 
+	// Высота шторки на мобильном. Ни 100vh, ни 100dvh не знают про виртуальную
+	// клавиатуру: она открывается сразу (autoFocus у поля) и закрывает нижнюю
+	// половину экрана, а шторка остаётся во всю высоту — из восьми результатов
+	// видно два, и до остальных не долистать, потому что список считает, что
+	// места ему хватает. visualViewport знает реально видимую область; offsetTop
+	// нужен из-за iOS, где под клавиатурой страница уезжает вверх вместе с
+	// position: fixed. На десктопе переменные не используются — там sm:-классы.
+	useEffect(() => {
+		const viewport = window.visualViewport
+		if (!open || !viewport) return
+
+		const root = document.documentElement
+		const apply = () => {
+			root.style.setProperty('--search-panel-h', `${viewport.height}px`)
+			root.style.setProperty('--search-panel-top', `${viewport.offsetTop}px`)
+		}
+
+		apply()
+		viewport.addEventListener('resize', apply)
+		viewport.addEventListener('scroll', apply)
+		return () => {
+			viewport.removeEventListener('resize', apply)
+			viewport.removeEventListener('scroll', apply)
+			root.style.removeProperty('--search-panel-h')
+			root.style.removeProperty('--search-panel-top')
+		}
+	}, [open])
+
 	const handleSelect = useCallback(
 		(item: (typeof searchableWidgets)[0]) => {
 			if (searchQuery.trim()) {
@@ -196,7 +224,22 @@ export function GlobalWidgetSearch({
 
 			{/* Search dialog */}
 			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent className='sm:max-w-2xl p-0 overflow-hidden fixed inset-0 sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] w-full h-full sm:h-auto sm:max-h-[85vh] m-0 rounded-none sm:rounded-lg'>
+				{/* На мобильном шторка занимает экран целиком, от sm — обычное
+				    модальное окно по центру. translate-x-0 и max-w-none здесь
+				    обязательны: cn() — это twMerge, и inset-0 вытесняет из базового
+				    DialogContent только left-[50%], а translate-x-[-50%] остаётся и
+				    уводит шторку на пол-экрана влево. Высота — из --search-panel-h
+				    (см. эффект с visualViewport выше), 100dvh как фоллбэк; flex-col
+				    вместо grid, чтобы список результатов растягивался по остатку. */}
+				<DialogContent
+					className={cn(
+						'flex flex-col gap-0 p-0 m-0 overflow-hidden border-0 rounded-none',
+						'fixed inset-0 top-[var(--search-panel-top,0px)] translate-x-0 w-full max-w-none',
+						'h-[var(--search-panel-h,100dvh)] max-h-[var(--search-panel-h,100dvh)]',
+						'sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%]',
+						'sm:h-auto sm:max-h-[85vh] sm:max-w-2xl sm:border sm:rounded-lg'
+					)}
+				>
 					<DialogHeader className='sr-only'>
 						<DialogTitle>Поиск инструментов</DialogTitle>
 						<DialogDescription>
@@ -205,7 +248,10 @@ export function GlobalWidgetSearch({
 					</DialogHeader>
 
 					{/* Search input */}
-					<div className='flex items-center border-b px-4 pr-4 sm:pr-12 h-14'>
+					{/* pr-12 и на мобильном: крестик DialogContent приколот к
+					    right-4/top-4 и на узком экране ложится прямо на поле ввода —
+					    тап по правому краю строки закрывал поиск вместо фокуса */}
+					<div className='flex items-center border-b px-4 pr-12 h-14 shrink-0'>
 						<Search className='w-5 h-5 text-muted-foreground shrink-0' />
 						<Input
 							placeholder='Поиск инструментов...'
@@ -220,7 +266,15 @@ export function GlobalWidgetSearch({
 					</div>
 
 					{/* Results */}
-					<ScrollArea className='h-[calc(100vh-8rem)] sm:h-auto sm:max-h-[400px]'>
+					{/* Раньше высота считалась как 100vh минус шапка и футер, но с
+					    gap-4 у grid сумма перебирала max-h контейнера, и последний
+					    результат вместе с футером уезжал под нижний край.
+					    Селектор в конце строки классов — про внутренний контейнер
+					    Radix: он идёт с display:table и потому тянется по содержимому,
+					    а не по ширине шторки. На 390px список раздувался до 934px,
+					    truncate у названия и описания не срабатывал, и текст уходил
+					    за правый край экрана. */}
+					<ScrollArea className='flex-1 min-h-0 sm:flex-none sm:h-auto sm:max-h-[400px] [&_[data-radix-scroll-area-viewport]>div]:!block'>
 						{filteredWidgets.length === 0 ? (
 							<div className='p-8 text-center text-muted-foreground'>
 								<Search className='w-12 h-12 mx-auto mb-4 opacity-50' />
@@ -279,13 +333,17 @@ export function GlobalWidgetSearch({
 												</p>
 											</div>
 
-											{/* Category badge */}
-											<Badge variant='outline' className='shrink-0'>
+											{/* Категория и стрелка — от sm: на телефоне они съедали
+											    половину строки, и название инструмента обрезалось
+											    многоточием уже на «Калькулятор размеров…» */}
+											<Badge
+												variant='outline'
+												className='shrink-0 hidden sm:inline-flex'
+											>
 												{item.categoryName}
 											</Badge>
 
-											{/* Arrow */}
-											<ArrowRight className='w-4 h-4 text-muted-foreground shrink-0' />
+											<ArrowRight className='w-4 h-4 text-muted-foreground shrink-0 hidden sm:block' />
 										</button>
 									)
 								})}
@@ -294,7 +352,9 @@ export function GlobalWidgetSearch({
 					</ScrollArea>
 
 					{/* Footer */}
-					<div className='border-t px-4 py-3 flex items-center justify-between text-xs text-muted-foreground'>
+					{/* На мобильном футер скрыт: подсказки по клавишам там не нужны,
+					    а с открытой клавиатурой каждая строка идёт списку результатов */}
+					<div className='border-t px-4 py-3 hidden sm:flex items-center justify-between text-xs text-muted-foreground shrink-0'>
 						<div className='hidden sm:flex items-center gap-4'>
 							<span className='flex items-center gap-1'>
 								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
