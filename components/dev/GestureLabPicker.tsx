@@ -122,7 +122,6 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 	const [picked, setPicked] = useState<RGB | null>(null)
 	const [drift, setDrift] = useState<number | null>(null)
 	const [lastGesture, setLastGesture] = useState<string | null>(null)
-	const [tight, setTight] = useState(false)
 	const [photoSize, setPhotoSize] = useState<{ w: number; h: number } | null>(
 		null
 	)
@@ -173,10 +172,9 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 
 	const showLoupeAt = useCallback((clientX: number, clientY: number) => {
 		const photo = photoRef.current
-		const stage = stageRef.current
 		const loupe = loupeRef.current
 		const lctx = loupeCanvasRef.current?.getContext('2d')
-		if (!photo || !stage || !loupe || !lctx) return
+		if (!photo || !loupe || !lctx) return
 
 		const photoRect = photo.getBoundingClientRect()
 		const x = clientX - photoRect.left
@@ -203,16 +201,17 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 		lctx.strokeStyle = 'rgba(0,0,0,.55)'
 		lctx.strokeRect(LOUPE_SIZE / 2 - 5, LOUPE_SIZE / 2 - 5, 10, 10)
 
-		const stageRect = stage.getBoundingClientRect()
-		const sx = clientX - stageRect.left
-		const sy = clientY - stageRect.top
+		// Позиция — от вьюпорта: лупа висит fixed, поэтому её не режет
+		// overflow-hidden у сцены и она всегда остаётся НАД пальцем. Прыжок
+		// «не помещается сверху — уводим вниз» был хуже обрезки: лупа
+		// оказывалась ровно под пальцем, то есть невидимой, и моргала
+		// туда-обратно при движении вдоль верхней кромки фото.
 		const left = Math.min(
-			Math.max(sx - LOUPE_SIZE / 2, LOUPE_MARGIN),
-			stage.clientWidth - LOUPE_SIZE - LOUPE_MARGIN
+			Math.max(clientX - LOUPE_SIZE / 2, LOUPE_MARGIN),
+			window.innerWidth - LOUPE_SIZE - LOUPE_MARGIN
 		)
-		const above = sy - LOUPE_GAP - LOUPE_SIZE
 		loupe.style.left = `${left}px`
-		loupe.style.top = `${above >= LOUPE_MARGIN ? above : sy + LOUPE_GAP}px`
+		loupe.style.top = `${Math.max(clientY - LOUPE_GAP - LOUPE_SIZE, LOUPE_MARGIN)}px`
 		loupe.style.display = 'block'
 	}, [])
 
@@ -271,10 +270,6 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 			window.removeEventListener('resize', onResize)
 		}
 	}, [layout])
-
-	useEffect(() => {
-		layout()
-	}, [tight, layout])
 
 	/* --- мышь: одинаково во всех режимах, кроме прицела --- */
 	useEffect(() => {
@@ -535,25 +530,26 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 	const hex = picked ? toHex(picked) : null
 
 	return (
-		<div className='overflow-hidden rounded-xl border bg-card'>
-			<div
-				className={cn(
-					'transition-[padding]',
-					tight ? 'px-0 py-3' : 'px-5 py-5'
-				)}
-			>
+		<div className='-mx-4 overflow-hidden rounded-none border border-x-0 bg-card sm:mx-0 sm:rounded-xl sm:border-x'>
+			{/* Фото — от края до края карточки: боковые отступы забирали у него
+			    заметную часть и без того узкого экрана. */}
+			<div className='py-3'>
 				<div
 					ref={stageRef}
-					className={cn(
-						'relative flex justify-center overflow-hidden bg-muted/40',
-						tight ? 'border-y' : 'rounded-lg border'
-					)}
+					className='relative flex justify-center overflow-hidden border-y bg-muted/40 select-none'
 				>
-					<canvas ref={photoRef} className='block h-auto max-w-full' />
+					<canvas
+						ref={photoRef}
+						// Пипетка ведётся долгим касанием по картинке — тем самым жестом,
+						// которым система предлагает сохранить изображение и начинает
+						// выделение. Без этих трёх свойств при зажатии подсвечивается то
+						// фото, то вся карточка, то текст за её пределами.
+						className='block h-auto max-w-full select-none [-webkit-touch-callout:none] [-webkit-tap-highlight-color:transparent]'
+					/>
 
 					<div
 						ref={loupeRef}
-						className='pointer-events-none absolute z-20 hidden overflow-hidden rounded-full border-[3px] border-background shadow-lg'
+						className='pointer-events-none fixed z-30 hidden overflow-hidden rounded-full border-[3px] border-background ring-1 ring-black/15 shadow-lg select-none'
 						style={{ width: LOUPE_SIZE, height: LOUPE_SIZE }}
 					>
 						<canvas
@@ -568,7 +564,7 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 						ref={targetRef}
 						type='button'
 						aria-label='Прицел пипетки'
-						className='absolute z-10 hidden h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none rounded-full border-2 border-background shadow-[0_0_0_1.5px_rgba(0,0,0,.35)] active:cursor-grabbing'
+						className='absolute z-10 hidden h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none rounded-full border-2 border-background shadow-[0_0_0_1.5px_rgba(0,0,0,.35)] select-none [-webkit-touch-callout:none] [-webkit-tap-highlight-color:transparent] active:cursor-grabbing'
 						style={{ background: hex ?? 'transparent' }}
 					/>
 				</div>
@@ -620,14 +616,6 @@ export function GestureLabPicker({ gesture }: { gesture: LabGesture }) {
 					className='cursor-pointer'
 				>
 					Своё фото
-				</Button>
-				<Button
-					variant={tight ? 'default' : 'outline'}
-					size='sm'
-					onClick={() => setTight(v => !v)}
-					className='cursor-pointer'
-				>
-					{tight ? 'Вернуть отступы' : 'Убрать отступы'}
 				</Button>
 				<span className='ml-auto font-mono text-xs tabular-nums text-muted-foreground'>
 					{photoSize ? `картинка ${photoSize.w}×${photoSize.h}` : '—'}

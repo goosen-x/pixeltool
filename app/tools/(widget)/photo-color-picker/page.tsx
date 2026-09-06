@@ -138,7 +138,6 @@ export default function PhotoColorPickerPage() {
 	const magnifierRef = useRef<HTMLCanvasElement>(null)
 	const magnifierFloatRef = useRef<HTMLCanvasElement>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
-	const canvasWrapRef = useRef<HTMLDivElement>(null)
 	// canvas раньше держал touch-action:none — это глушило скролл насмерть для
 	// любого касания фото, а на мобильном фото часто занимает большую часть
 	// экрана, и до результата снизу было не долистать. Решаем сами, в JS: жест
@@ -152,15 +151,13 @@ export default function PhotoColorPickerPage() {
 	const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(
 		null
 	)
-	// Позиция плавающей лупы — в CSS-пикселях относительно обёртки canvas
-	// (не в пикселях самой картинки, как hoverPos): нужна для style.left/top
-	// DOM-элемента, а не для чтения пикселя. wrapRect ловим тут же, чтобы не
-	// дёргать getBoundingClientRect ещё раз при каждом ре-рендере лупы.
+	// Точка касания в координатах вьюпорта (не в пикселях картинки, как
+	// hoverPos): лупа позиционируется fixed, потому что у Card стоит
+	// overflow-hidden, и лупа, поднятая над верхним краем фото, обрезалась бы
+	// вместе с ним.
 	const [touchLoupe, setTouchLoupe] = useState<{
-		x: number
-		y: number
-		wrapWidth: number
-		wrapHeight: number
+		clientX: number
+		clientY: number
 	} | null>(null)
 	const [picked, setPicked] = useState<RGB | null>(null)
 	const [history, setHistory] = useState<RGB[]>([])
@@ -274,15 +271,7 @@ export default function PhotoColorPickerPage() {
 
 	const updateTouchLoupe = (clientX: number, clientY: number) => {
 		handleMove(clientX, clientY)
-		const wrap = canvasWrapRef.current
-		if (!wrap) return
-		const wrapRect = wrap.getBoundingClientRect()
-		setTouchLoupe({
-			x: clientX - wrapRect.left,
-			y: clientY - wrapRect.top,
-			wrapWidth: wrapRect.width,
-			wrapHeight: wrapRect.height
-		})
+		setTouchLoupe({ clientX, clientY })
 	}
 
 	const onCanvasTouchStart = (event: TouchEvent<HTMLCanvasElement>) => {
@@ -411,6 +400,12 @@ export default function PhotoColorPickerPage() {
 			<Card
 				className={cn(
 					'overflow-hidden p-0 transition-colors',
+					// Ниже sm карточка идёт от края до края экрана: -mx-4 гасит px-4
+					// контейнера страницы (ProjectsLayoutWrapper), а боковая рамка со
+					// скруглением на самом краю не нужна. Без этого фото упиралось в
+					// overflow-hidden карточки и теряло 34px из 390 — на телефоне это
+					// заметная доля картинки, по которой ещё и целиться пипеткой.
+					'-mx-4 rounded-none border-x-0 sm:mx-0 sm:rounded-xl sm:border-x',
 					isDragging && 'ring-2 ring-primary ring-inset'
 				)}
 				{...dropHandlers}
@@ -446,9 +441,12 @@ export default function PhotoColorPickerPage() {
 
 				<div className={cn('grid', hasImage && 'md:grid-cols-[3fr_2fr]')}>
 					<div
-						ref={canvasWrapRef}
 						className={cn(
-							'relative flex min-w-0 items-center justify-center px-5 py-6 sm:px-6',
+							// Ниже sm фото идёт от края до края карточки: на 390px боковые
+							// отступы съедали 40px из ~316, доступных картинке, а рамка
+							// Card рядом и так отбивает её от фона.
+							'relative flex min-w-0 items-center justify-center select-none',
+							hasImage ? 'p-0 sm:px-6 sm:py-6' : 'px-5 py-6 sm:px-6',
 							hasImage && 'border-b md:border-r md:border-b-0'
 						)}
 					>
@@ -492,31 +490,45 @@ export default function PhotoColorPickerPage() {
 							className={cn(
 								// touch-auto (не none): скролл теперь решается в JS —
 								// см. onCanvasTouchMove — а не глушится CSS насмерть.
-								'max-h-96 max-w-full touch-auto rounded-xl border',
+								'max-h-[65vh] max-w-full touch-auto sm:max-h-96',
+								// Своя рамка и скругление — только от sm. На телефоне фото
+								// лежит вплотную к краям карточки, и вторая рамка внутри
+								// первой там лишняя.
+								'rounded-none border-0 sm:rounded-xl sm:border',
+								// Пипетка ведётся долгим касанием прямо по картинке, а это
+								// ровно тот жест, которым система предлагает сохранить
+								// изображение и начинает выделение: без этих трёх свойств
+								// при зажатии подсвечивается то само фото, то вся карточка,
+								// то текст под ней.
+								'select-none [-webkit-touch-callout:none] [-webkit-tap-highlight-color:transparent]',
 								hasImage ? 'block cursor-crosshair' : 'hidden'
 							)}
 						/>
 
 						{touchLoupe && (
 							<div
-								className='pointer-events-none absolute z-10 overflow-hidden rounded-full border-2 border-background shadow-lg'
+								// fixed и z-30: лупа всегда висит НАД пальцем и при касании
+								// у верхнего края фото просто выходит за него, а не
+								// перепрыгивает вниз. Прыжок был хуже обрезки: лупа
+								// оказывалась ровно под пальцем, то есть невидимой, и
+								// моргала туда-сюда при движении вдоль верхней кромки.
+								className='pointer-events-none fixed z-30 overflow-hidden rounded-full border-2 border-background ring-1 ring-black/15 shadow-lg select-none'
 								style={{
 									width: MAGNIFIER_SIZE,
 									height: MAGNIFIER_SIZE,
 									left: Math.min(
 										Math.max(
-											touchLoupe.x - MAGNIFIER_SIZE / 2,
+											touchLoupe.clientX - MAGNIFIER_SIZE / 2,
 											MAGNIFIER_EDGE_MARGIN
 										),
-										touchLoupe.wrapWidth -
-											MAGNIFIER_SIZE -
-											MAGNIFIER_EDGE_MARGIN
+										window.innerWidth - MAGNIFIER_SIZE - MAGNIFIER_EDGE_MARGIN
 									),
-									top:
-										touchLoupe.y - MAGNIFIER_TOUCH_GAP - MAGNIFIER_SIZE >=
+									// Кламп только по краю экрана — под шапку сайта лупа не
+									// уедет, а внутри страницы ей ничто не мешает.
+									top: Math.max(
+										touchLoupe.clientY - MAGNIFIER_TOUCH_GAP - MAGNIFIER_SIZE,
 										MAGNIFIER_EDGE_MARGIN
-											? touchLoupe.y - MAGNIFIER_TOUCH_GAP - MAGNIFIER_SIZE
-											: touchLoupe.y + MAGNIFIER_TOUCH_GAP
+									)
 								}}
 							>
 								<canvas
