@@ -125,4 +125,46 @@ describe('ToolRatingWidget', () => {
 		)
 		expect(await screen.findByText('5.0 · 1')).toBeInTheDocument()
 	})
+
+	it('после низкой оценки предлагает готовые причины и отправляет выбранную', async () => {
+		const user = userEvent.setup()
+		render(
+			<ToolStatsProvider>
+				<ToolRatingWidget toolId='qr-generator' />
+			</ToolStatsProvider>
+		)
+
+		await user.click(screen.getByRole('button', { name: 'Оценить на 2 из 5' }))
+
+		// Причины кликаются в один тап — за всё время работы старой формы с
+		// пустым полем текст написали один раз на 115 оценок.
+		expect(await screen.findByText('Что не так?')).toBeInTheDocument()
+		const reason = screen.getByRole('button', { name: 'неудобно на телефоне' })
+
+		await user.click(reason)
+
+		expect(fetch).toHaveBeenCalledWith(
+			'/api/tool-stats',
+			expect.objectContaining({
+				method: 'POST',
+				body: expect.stringContaining('неудобно на телефоне')
+			})
+		)
+		expect(
+			await screen.findByText('Спасибо, учтём при доработке.')
+		).toBeInTheDocument()
+	})
+
+	it('высокая оценка не открывает вопрос о причинах', async () => {
+		const user = userEvent.setup()
+		render(
+			<ToolStatsProvider>
+				<ToolRatingWidget toolId='qr-generator' />
+			</ToolStatsProvider>
+		)
+
+		await user.click(screen.getByRole('button', { name: 'Оценить на 5 из 5' }))
+
+		expect(screen.queryByText('Что не так?')).not.toBeInTheDocument()
+	})
 })

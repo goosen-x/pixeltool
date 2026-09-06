@@ -16,11 +16,11 @@ export function FeedbackCard() {
 	const card = (
 		<Card className='w-full cursor-pointer text-left transition-colors hover:border-primary/40'>
 			<CardHeader className='pb-2'>
-				<CardTitle className='text-sm'>Обратная связь</CardTitle>
+				<CardTitle className='text-sm'>Чего не хватило?</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-3'>
 				<p className='text-xs text-muted-foreground'>
-					Нашли ошибку или есть идея — напишите.
+					Что стоит исправить или добавить в этом инструменте.
 				</p>
 
 				<div className='grid grid-cols-3 gap-2'>

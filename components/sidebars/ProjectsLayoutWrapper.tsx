@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils'
 import { ProjectsLeftSidebar } from './ProjectsLeftSidebar'
 import { ProjectsRightSidebar } from './ProjectsRightSidebar'
 import { CompactFooter } from '@/components/layout/CompactFooter'
+import { ToolFeedbackPrompt } from '@/components/feedback/ToolFeedbackPrompt'
 import type { ToolStats } from '@/lib/tool-stats/get-all-stats'
 
 type Props = {
@@ -115,6 +116,10 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 											category={widget?.category}
 										/>
 										<WidgetFAQ widgetId={widgetId} />
+										{/* До lg правого сайдбара нет, а вместе с ним нет и
+										    формы обратной связи — здесь единственная точка
+										    входа для телефона и планшета. */}
+										<ToolFeedbackPrompt />
 									</>
 								)}
 							</WidgetWrapper>

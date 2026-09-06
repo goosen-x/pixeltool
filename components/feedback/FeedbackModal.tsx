@@ -176,9 +176,12 @@ export function FeedbackModal({
 				) : (
 					<>
 						<DialogHeader>
-							<DialogTitle>Обратная связь</DialogTitle>
+							{/* Вопрос, а не название раздела: «обратная связь» — это про
+							    нас, а человеку нужно понять, о чём его спрашивают. */}
+							<DialogTitle>Чего не хватило?</DialogTitle>
 							<DialogDescription>
-								Пишет живой человек — читает тоже.
+								Что стоит исправить или добавить. Пишет живой человек — читает
+								тоже.
 							</DialogDescription>
 						</DialogHeader>
 
