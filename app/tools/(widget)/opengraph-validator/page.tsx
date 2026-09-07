@@ -13,6 +13,29 @@ import { reportClientError } from '@/lib/utils/report-client-error'
 
 /** Ошибка проверки с пометкой, ожидаемая она или нет (см. catch ниже). */
 type ValidationFailure = Error & { expected?: boolean }
+
+/**
+ * Площадки, которые отдают автоматическому запросу страницу без разметки.
+ * Отличается от блокировки: ответ приходит нормальный, просто пустой.
+ */
+const BLIND_SPOTS: { pattern: RegExp; message: string }[] = [
+	{
+		pattern: /(^|\.)vk\.com$/i,
+		message:
+			'ВКонтакте отдаёт автоматическим запросам страницу без og-тегов, а разметку показывает только своим ботам. Это не значит, что превью у вас не настроено: проверьте ссылку в самом ВКонтакте — там видно, как она выглядит на самом деле.'
+	}
+]
+
+function blindSpotNote(pageUrl: string): string | null {
+	try {
+		const { hostname } = new URL(pageUrl)
+		return (
+			BLIND_SPOTS.find(site => site.pattern.test(hostname))?.message ?? null
+		)
+	} catch {
+		return null
+	}
+}
 import {
 	Globe,
 	CheckCircle,
@@ -114,6 +137,17 @@ function buildValidation(
 
 	if (missingTags.length > 0) {
 		errors.push(`Отсутствуют обязательные теги: ${missingTags.join(', ')}`)
+	}
+
+	// Отдельный случай: страница получена, но тегов в ней нет ни одного.
+	// У части площадок это не значит, что теги не настроены — ВКонтакте
+	// отдаёт автоматическому запросу пустой каркас, а разметку показывает
+	// только своим ботам (проверено 07.09.2026: vk.com/durov отвечает 200 и
+	// нулём og-тегов). Без пояснения человек уходит с ложным выводом, что у
+	// него сломано превью.
+	if (Object.keys(foundTags).length === 0) {
+		const emptyForBots = blindSpotNote(url)
+		if (emptyForBots) warnings.push(emptyForBots)
 	}
 
 	if (foundTags['og:image']) {

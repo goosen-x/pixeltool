@@ -6,6 +6,47 @@ import {
 	safeFetch
 } from '@/lib/security/ssrf'
 
+const MANUALLY =
+	'Посмотреть теги можно вручную: откройте страницу в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.'
+
+/**
+ * Площадки, у которых проверка предсказуемо не проходит, — с объяснением про
+ * каждую отдельно.
+ *
+ * Общий текст «сайт не пускает автоматические проверки» человека не
+ * успокаивает: он видит, что ссылка у него открывается, и решает, что сломан
+ * инструмент. Поэтому про крупные площадки говорим прямо и называем их по
+ * имени. Поведение проверено запросами с прод-сервера 07.09.2026, коды в
+ * тексте — те, что они отдают на самом деле; Telegram, YouTube и X в этот
+ * список не входят, потому что сейчас проверяются нормально.
+ */
+const KNOWN_SITES: { pattern: RegExp; message: string }[] = [
+	{
+		pattern: /(^|\.)wildberries\.ru$/i,
+		message: `Wildberries не отдаёт карточки автоматическим проверкам — на запрос с сервера он отвечает кодом 498. Превью для соцсетей площадка формирует сама, поэтому увидеть теги отсюда не получится. ${MANUALLY}`
+	},
+	{
+		pattern: /(^|\.)ozon\.ru$/i,
+		message: `Ozon уводит автоматические запросы в бесконечную цепочку переадресаций — так устроена его защита от ботов, и проверка останавливается, не дойдя до страницы. ${MANUALLY}`
+	},
+	{
+		pattern: /(^|\.)avito\.ru$/i,
+		message: `Avito отвечает на запросы с серверов кодом 439 — это его защита от автоматических обращений. ${MANUALLY}`
+	},
+	{
+		pattern: /(^|\.)(instagram\.com|facebook\.com|fb\.com|threads\.net)$/i,
+		message: `Эта площадка отдаёт страницы только авторизованному браузеру: запрос без входа она либо отклоняет, либо не отвечает на него вовсе. Так же ведут себя её ссылки в режиме инкогнито. ${MANUALLY}`
+	},
+	{
+		pattern: /(^|\.)(dzen\.ru|zen\.yandex\.ru)$/i,
+		message: `Дзен закрывает статьи от автоматических проверок. ${MANUALLY}`
+	}
+]
+
+function knownSiteMessage(hostname: string): string | null {
+	return KNOWN_SITES.find(site => site.pattern.test(hostname))?.message ?? null
+}
+
 /**
  * Ответ об ошибке, в которой мы не виноваты: чужой сайт не пустил, лёг,
  * отвечает не туда или в адресе опечатка.
@@ -71,6 +112,9 @@ export async function GET(request: NextRequest) {
 			// Голый код ответа человеку ничего не говорит, а причины у кодов
 			// разные: 403 от защиты сайта, 404 от опечатки в ссылке и 502 от
 			// чужой аварии требуют от него совершенно разных действий.
+			const known = knownSiteMessage(parsedUrl.hostname)
+			if (known) return expected(known, 400)
+
 			const manually =
 				'Если ссылка открывается у вас в браузере, посмотрите теги вручную: откройте её, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.'
 
@@ -252,6 +296,9 @@ export async function GET(request: NextRequest) {
 					(cause.code === 'ETIMEDOUT' ||
 						cause.code === 'UND_ERR_CONNECT_TIMEOUT')
 
+				const knownNetwork = knownSiteMessage(parsedUrl.hostname)
+				if (knownNetwork) return expected(knownNetwork, 502)
+
 				if (isConnectTimeout) {
 					return expected(
 						'До сайта не удалось достучаться. Скорее всего, он работает, но не отвечает на запросы с нашего сервера — так ведут себя Telegram, Instagram и YouTube. Посмотрите теги вручную: откройте ссылку в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.',
@@ -262,6 +309,16 @@ export async function GET(request: NextRequest) {
 				return expected(
 					'Не удалось соединиться с сайтом. Проверьте, открывается ли ссылка у вас в браузере: если открывается, повторите проверку через минуту.',
 					502
+				)
+			}
+
+			// Бесконечная переадресация — типовая защита от ботов (так делает
+			// Ozon), а не сбой у нас: сообщение из safeFetch уже человеческое.
+			if (error.message.includes('перенаправляет')) {
+				return expected(
+					knownSiteMessage(parsedUrl.hostname) ??
+						`${error.message} ${MANUALLY}`,
+					400
 				)
 			}
 
