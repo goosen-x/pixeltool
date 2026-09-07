@@ -6,15 +6,26 @@ import {
 	safeFetch
 } from '@/lib/security/ssrf'
 
+/**
+ * Ответ об ошибке, в которой мы не виноваты: чужой сайт не пустил, лёг,
+ * отвечает не туда или в адресе опечатка.
+ *
+ * Флаг expected читает клиент и не заводит по такому случаю авто-отчёт в
+ * обратную связь. За три недели 22 из 27 сообщений в канале оказались именно
+ * такими — блокировки Telegram и YouTube, ошибки Wildberries и Facebook,
+ * несуществующие домены. Разбирать в них было нечего, а настоящие отчёты в
+ * этом потоке терялись.
+ */
+function expected(message: string, status: number) {
+	return NextResponse.json({ error: message, expected: true }, { status })
+}
+
 export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
 
 	if (!url) {
-		return NextResponse.json(
-			{ error: 'Введите адрес страницы, которую нужно проверить.' },
-			{ status: 400 }
-		)
+		return expected('Введите адрес страницы, которую нужно проверить.', 400)
 	}
 
 	// Валидация формата и защита от SSRF (см. lib/security/ssrf): без нее
@@ -25,7 +36,7 @@ export async function GET(request: NextRequest) {
 	} catch (error) {
 		const message =
 			error instanceof Error ? error.message : 'Некорректный адрес'
-		return NextResponse.json({ error: message }, { status: 400 })
+		return expected(message, 400)
 	}
 
 	try {
@@ -57,11 +68,36 @@ export async function GET(request: NextRequest) {
 			// об ошибке: tumanvpn.ru/ref/... открывается у живого человека, а
 			// нашему fetch честно отвечает 403). Поэтому не выдаём голый код
 			// ошибки за поломанную ссылку.
-			return NextResponse.json(
-				{
-					error: `Сайт ответил ошибкой ${response.status}. Так бывает, когда он не пускает автоматические проверки или собирает страницу уже в браузере. Если у вас ссылка открывается, посмотрите теги вручную: откройте её, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.`
-				},
-				{ status: 400 }
+			// Голый код ответа человеку ничего не говорит, а причины у кодов
+			// разные: 403 от защиты сайта, 404 от опечатки в ссылке и 502 от
+			// чужой аварии требуют от него совершенно разных действий.
+			const manually =
+				'Если ссылка открывается у вас в браузере, посмотрите теги вручную: откройте её, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.'
+
+			if ([401, 403, 429, 498, 999].includes(response.status)) {
+				return expected(
+					`Сайт не пускает автоматические проверки — он ответил кодом ${response.status}. Так делают соцсети и площадки с защитой от ботов: живой браузер они пускают, а запрос с сервера нет. ${manually}`,
+					400
+				)
+			}
+
+			if (response.status === 404 || response.status === 410) {
+				return expected(
+					'По этому адресу страницы нет. Проверьте ссылку: возможно, в ней опечатка или страницу уже удалили.',
+					400
+				)
+			}
+
+			if (response.status >= 500) {
+				return expected(
+					`У сайта сейчас неполадки: он ответил ошибкой ${response.status}. Это на его стороне — попробуйте повторить проверку позже.`,
+					400
+				)
+			}
+
+			return expected(
+				`Сайт ответил ошибкой ${response.status}. Так бывает, когда он собирает страницу уже в браузере, а нашему запросу отдавать нечего. ${manually}`,
+				400
 			)
 		}
 
@@ -177,12 +213,9 @@ export async function GET(request: NextRequest) {
 
 		if (error instanceof Error) {
 			if (error.name === 'AbortError') {
-				return NextResponse.json(
-					{
-						error:
-							'Сайт не ответил за 15 секунд, проверка остановлена. Попробуйте ещё раз — возможно, он сейчас перегружен.'
-					},
-					{ status: 408 }
+				return expected(
+					'Сайт не ответил за 15 секунд, проверка остановлена. Попробуйте ещё раз — возможно, он сейчас перегружен.',
+					408
 				)
 			}
 
@@ -220,21 +253,15 @@ export async function GET(request: NextRequest) {
 						cause.code === 'UND_ERR_CONNECT_TIMEOUT')
 
 				if (isConnectTimeout) {
-					return NextResponse.json(
-						{
-							error:
-								'До сайта не удалось достучаться. Скорее всего, он работает, но не отвечает на запросы с нашего сервера. Посмотрите теги вручную: откройте ссылку в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.'
-						},
-						{ status: 502 }
+					return expected(
+						'До сайта не удалось достучаться. Скорее всего, он работает, но не отвечает на запросы с нашего сервера — так ведут себя Telegram, Instagram и YouTube. Посмотрите теги вручную: откройте ссылку в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.',
+						502
 					)
 				}
 
-				return NextResponse.json(
-					{
-						error:
-							'Не удалось соединиться с сайтом. Проверьте, открывается ли ссылка у вас в браузере: если открывается, повторите проверку через минуту.'
-					},
-					{ status: 502 }
+				return expected(
+					'Не удалось соединиться с сайтом. Проверьте, открывается ли ссылка у вас в браузере: если открывается, повторите проверку через минуту.',
+					502
 				)
 			}
 

@@ -10,6 +10,9 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useWidgetCreation } from '@/lib/hooks/widgets/useWidgetCreation'
 import { reportClientError } from '@/lib/utils/report-client-error'
+
+/** Ошибка проверки с пометкой, ожидаемая она или нет (см. catch ниже). */
+type ValidationFailure = Error & { expected?: boolean }
 import {
 	Globe,
 	CheckCircle,
@@ -400,10 +403,17 @@ export default function OpenGraphValidatorPage() {
 					// содержательное сообщение (таймаут, статус, текст ошибки
 					// fetch), а клиент показывал один и тот же общий текст.
 					const errorBody = await response.json().catch(() => null)
-					throw new Error(
+					const failure = new Error(
 						errorBody?.error ||
 							`Не удалось загрузить данные страницы (${response.status})`
 					)
+					// Сервер сам отличает «чужой сайт не пустил» от «сломались мы»
+					// (см. expected() в app/api/opengraph-validator/route.ts) —
+					// клиенту остаётся донести признак до отправки отчёта.
+					if (errorBody?.expected) {
+						;(failure as ValidationFailure).expected = true
+					}
+					throw failure
 				}
 
 				const data = await response.json()
@@ -427,11 +437,22 @@ export default function OpenGraphValidatorPage() {
 						: 'Не удалось выполнить проверку'
 				widget.setError(errorMessage)
 				toast.error('Ошибка валидации')
-				void reportClientError({
-					title: 'opengraph-validator: ошибка проверки URL',
-					description: `Проверяемый URL: ${url}\nОшибка: ${errorMessage}`,
-					widget: 'opengraph-validator'
-				})
+
+				// Отчёт заводим только на своих сбоях. Блокировка ботом, опечатка
+				// в домене или чужая авария — не баг инструмента: он отработал
+				// правильно и объяснил человеку, что делать. Раньше такие случаи
+				// падали в канал обратной связи наравне с настоящими поломками и
+				// составили там 22 сообщения из 27.
+				const isExpected =
+					error instanceof Error &&
+					(error as ValidationFailure).expected === true
+				if (!isExpected) {
+					void reportClientError({
+						title: 'opengraph-validator: ошибка проверки URL',
+						description: `Проверяемый URL: ${url}\nОшибка: ${errorMessage}`,
+						widget: 'opengraph-validator'
+					})
+				}
 			} finally {
 				setIsValidating(false)
 				widget.setLoading(false)
