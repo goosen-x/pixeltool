@@ -17,6 +17,12 @@ export interface ToolScreenshotCopy {
 }
 
 export const toolScreenshots: Record<string, ToolScreenshotCopy> = {
+	'inn-checker': {
+		file: 'proverka-inn',
+		alt: 'Проверка ИНН: поле с номером, зелёная отметка о сходящейся контрольной сумме, тип владельца и регион выдачи',
+		caption:
+			'Проверка ИНН считает контрольную сумму прямо при наборе и показывает, кому выдан номер и в каком регионе'
+	},
 	'ab-test-calculator': {
 		file: 'kalkulyator-ab-testa',
 		alt: 'Калькулятор A/B-теста: поля конверсии контроля и варианта, доверительный интервал и значимость разницы',
