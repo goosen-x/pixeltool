@@ -264,6 +264,10 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 					interFont.className
 				)}
 			>
+				{/* Код подтверждения прав на площадку для партнёрской программы, добавлен 08.09.2026 */}
+				<span className='sr-only' aria-hidden='true'>
+					krh17b0sc5fbv0tr
+				</span>
 				{/* disableTransitionOnChange: у карточек, рамок и фона висят transition
 				    с разной длительностью, и при смене темы каждый элемент доезжал до
 				    нового цвета в своём темпе — картинка «плыла». Флаг гасит переходы
