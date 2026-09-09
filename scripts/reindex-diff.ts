@@ -1,93 +1,108 @@
 /**
- * Сравнивает текущий продовский sitemap.xml со снапшотом с прошлого запуска
- * и показывает только новые URL — те, что реально появились с прошлой
- * проверки, а не весь исторический список. Снапшот — единственный источник
- * истины о том, что уже видели; никаких чекбоксов, которые расходятся с
- * тем, что реально отправлено в GSC.
+ * Список страниц, у которых контент изменился с прошлой фиксации, — то есть
+ * тех, чья проиндексированная в Google копия скорее всего устарела. Их несут
+ * руками в Search Console: «Проверка URL» → «Запросить индексирование».
+ *
+ * Почему именно этот список и почему только он:
+ *
+ * 1. Непроиндексированные страницы здесь НЕ ищутся. Их лучше и полнее даёт
+ *    сам Search Console — отчёт «Страницы», фильтр «Не проиндексированы», с
+ *    причиной по каждой. Он же находит старые страницы, которые никогда не
+ *    попадали в индекс, а дифф к ним слеп по устройству: они не новые.
+ * 2. А вот устаревшую копию Search Console показать не может. Такая страница
+ *    в его отчёте зелёная — она проиндексирована. Google не знает, что мы
+ *    поменяли текст; узнать это можно только поштучно, сравнив в «Проверке
+ *    URL» просканированную версию с живой. На 278 страницах так не работают.
+ *    Зато это знает наш lastmod — на нём и построен этот список.
+ *
+ * Яндекс и Bing здесь ни при чём: там обе задачи закрыты автоматически через
+ * scripts/indexnow.mjs, и состояние у него отдельное (см. GOOGLE_STATE и
+ * INDEXNOW_STATE) — иначе он, отрабатывая в CI первым, съедал бы дельту.
  *
  * Использование:
- *   pnpm reindex-diff          — показать новые URL с прошлого запуска
- *   pnpm reindex-diff --commit — то же самое, но сразу обновить снапшот
- *     (считать все текущие URL уже увиденными). Обновлять снапшот стоит
- *     после того как реально отправили новые URL на переобход в GSC.
+ *   pnpm reindex-diff          — показать, что изменилось с прошлой фиксации
+ *   pnpm reindex-diff --commit — зафиксировать текущее состояние. Запускать
+ *     после того, как реально отправили страницы в Search Console.
  */
-import { writeFileSync, readFileSync, existsSync } from 'fs'
-import { join } from 'path'
+import {
+	fetchSitemapEntries,
+	loadSnapshot,
+	saveSnapshot,
+	computeDelta,
+	GOOGLE_STATE
+} from './lib/sitemap-state.mjs'
 
-const SITEMAP_URL = 'https://pixeltool.pro/sitemap.xml'
-const SNAPSHOT_PATH = join(process.cwd(), 'docs/seo/sitemap-snapshot.txt')
-
-async function fetchSitemapUrls(): Promise<string[]> {
-	const res = await fetch(SITEMAP_URL)
-	if (!res.ok) {
-		throw new Error(`Не удалось получить sitemap.xml: ${res.status}`)
-	}
-	const xml = await res.text()
-	const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
-	return [...new Set(urls)].sort()
-}
-
-function readSnapshot(): Set<string> {
-	if (!existsSync(SNAPSHOT_PATH)) return new Set()
-	return new Set(
-		readFileSync(SNAPSHOT_PATH, 'utf-8')
-			.split('\n')
-			.map(line => line.trim())
-			.filter(Boolean)
-	)
-}
-
-function writeSnapshot(urls: string[]) {
-	writeFileSync(SNAPSHOT_PATH, urls.join('\n') + '\n', 'utf-8')
-}
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
 async function main() {
 	const shouldCommit = process.argv.includes('--commit')
 
-	const currentUrls = await fetchSitemapUrls()
-	const previousUrls = readSnapshot()
+	const current = await fetchSitemapEntries(SITE_URL)
+	const { entries: previous, source } = await loadSnapshot(GOOGLE_STATE)
+	const delta = computeDelta(current, previous)
 
-	const newUrls = currentUrls.filter(url => !previousUrls.has(url))
-	const removedUrls = [...previousUrls].filter(
-		url => !currentUrls.includes(url)
+	console.log(
+		`В sitemap ${current.length} URL. Состояние: ${source}` +
+			(source === 'none'
+				? ' — фиксации ещё не было.'
+				: `, ${previous.length} URL.`)
 	)
 
-	if (previousUrls.size === 0) {
+	if (delta.isFirstRun) {
+		const saved = await saveSnapshot(current, GOOGLE_STATE)
 		console.log(
-			`Снапшота ещё нет — это первый запуск. Сохраняю все ${currentUrls.length} текущих URL как известные, со следующего раза будет видна только реальная дельта.`
+			`\nПервый запуск — фиксирую текущие lastmod как отправную точку (${saved.join(', ') || 'никуда'}). Со следующего раза будут видны реальные изменения.`
 		)
-		writeSnapshot(currentUrls)
+		if (delta.toSubmit.length > 0) {
+			console.log(
+				`\nИзменены за последнюю неделю (${delta.toSubmit.length}) — их копия в индексе может быть устаревшей:\n`
+			)
+			delta.toSubmit.forEach(entry =>
+				console.log(`${entry.url}  (${entry.lastmod})`)
+			)
+		}
+		printFooter()
 		return
 	}
 
-	if (newUrls.length === 0) {
-		console.log(
-			'Новых страниц с прошлого снапшота нет. Всё, что видел sitemap, уже было показано раньше.'
-		)
+	if (delta.changed.length === 0) {
+		console.log('\nИзменившегося контента с прошлой фиксации нет.')
 	} else {
 		console.log(
-			`Новые страницы (${newUrls.length}), не было в прошлом снапшоте:\n`
+			`\nИзменился контент — lastmod сдвинулся (${delta.changed.length}). Копия в индексе Google может быть устаревшей:\n`
 		)
-		newUrls.forEach(url => console.log(url))
+		delta.changed.forEach(entry => {
+			const was = previous.find(item => item.url === entry.url)?.lastmod
+			console.log(`${entry.url}  (${was} → ${entry.lastmod})`)
+		})
 	}
 
-	if (removedUrls.length > 0) {
+	if (delta.removed.length > 0) {
 		console.log(
-			`\nПропали из sitemap с прошлого раза (${removedUrls.length}) — если это не редизайн категории/удаление тула, стоит проверить:`
+			`\nПропали из sitemap с прошлой фиксации (${delta.removed.length}) — если это не редизайн категории или удаление тула, стоит проверить:`
 		)
-		removedUrls.forEach(url => console.log(url))
+		delta.removed.forEach(url => console.log(url))
 	}
 
 	if (shouldCommit) {
-		writeSnapshot(currentUrls)
+		const saved = await saveSnapshot(current, GOOGLE_STATE)
 		console.log(
-			'\nСнапшот обновлён — эти URL больше не будут считаться новыми.'
+			`\nСостояние зафиксировано (${saved.join(', ') || 'никуда'}) — эти страницы больше не считаются изменившимися.`
 		)
-	} else if (newUrls.length > 0 || removedUrls.length > 0) {
+	} else if (delta.changed.length > 0) {
 		console.log(
-			'\nСнапшот не обновлён (нет флага --commit). Запусти ещё раз с --commit после того как отправишь новые URL на переобход, иначе они появятся в списке снова.'
+			'\nСостояние не зафиксировано (нет флага --commit). Запусти ещё раз с --commit после отправки в Search Console, иначе те же страницы появятся снова.'
 		)
 	}
+
+	printFooter()
+}
+
+function printFooter() {
+	console.log(
+		'\nНепроиндексированные страницы этот список не показывает и не должен:\n' +
+			'смотри отчёт «Страницы» в Search Console, фильтр «Не проиндексированы».'
+	)
 }
 
 main().catch(error => {
