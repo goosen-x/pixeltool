@@ -21,8 +21,9 @@ export const SearchButton = ({ setIsSearchOpen, compact }: Props) => {
 				onClick={() => setIsSearchOpen(true)}
 				aria-label='Поиск инструментов'
 				title='Поиск инструментов'
+				className='h-10 w-10 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300'
 			>
-				<Search className='h-5 w-5' />
+				<Search className='h-5 w-5 text-muted-foreground' />
 			</Button>
 		)
 	}

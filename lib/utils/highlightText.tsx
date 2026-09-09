@@ -16,7 +16,7 @@ export function highlightText(text: string, query: string) {
 				part.toLowerCase() === query.toLowerCase() ? (
 					<mark
 						key={index}
-						className='rounded-sm bg-blue-100 px-0.5 text-blue-900 dark:bg-blue-500/30 dark:text-blue-100'
+						className='rounded-[1.5px] bg-blue-100 text-blue-900 dark:bg-blue-500/30 dark:text-blue-100'
 					>
 						{part}
 					</mark>

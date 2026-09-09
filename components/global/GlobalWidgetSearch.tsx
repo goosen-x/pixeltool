@@ -14,15 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-	Search,
-	Command,
-	ArrowRight,
-	Hash,
-	Star,
-	Clock,
-	Sparkles
-} from 'lucide-react'
+import { Search, Command, ArrowRight, Hash, Star, Clock } from 'lucide-react'
 import {
 	publicWidgets,
 	widgetCategories,
@@ -233,11 +225,11 @@ export function GlobalWidgetSearch({
 				    вместо grid, чтобы список результатов растягивался по остатку. */}
 				<DialogContent
 					className={cn(
-						'flex flex-col gap-0 p-0 m-0 overflow-hidden border-0 rounded-none',
+						'flex flex-col gap-0 p-0 m-0 border-0 rounded-none',
 						'fixed inset-0 top-[var(--search-panel-top,0px)] translate-x-0 w-full max-w-none',
 						'h-[var(--search-panel-h,100dvh)] max-h-[var(--search-panel-h,100dvh)]',
-						'sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%]',
-						'sm:h-auto sm:max-h-[85vh] sm:max-w-2xl sm:border sm:rounded-lg'
+						'sm:inset-auto sm:left-[50%] sm:top-20 sm:translate-x-[-50%] sm:translate-y-0',
+						'sm:h-auto sm:max-h-[calc(100vh-8rem)] sm:max-w-2xl sm:border sm:rounded-lg'
 					)}
 				>
 					<DialogHeader className='sr-only'>
@@ -247,26 +239,36 @@ export function GlobalWidgetSearch({
 						</DialogDescription>
 					</DialogHeader>
 
-					{/* Search input */}
-					{/* pr-12 и на мобильном: крестик DialogContent приколот к
+					{/* overflow-hidden живёт на отдельном внутреннем контейнере, а не
+					    на DialogContent: там же border/shadow/rounded от Dialog, и
+					    overflow-hidden на том же элементе обрезает собственную тень
+					    по скруглённому углу неровно — получался «двойной бордер».
+					    rounded-[inherit], чтобы клип совпадал с реальным радиусом
+					    DialogContent на обоих брейкпоинтах (rounded-none/sm:rounded-lg). */}
+					<div className='flex flex-1 min-h-0 flex-col overflow-hidden rounded-[inherit]'>
+						{/* Search input */}
+						{/* pr-12 и на мобильном: крестик DialogContent приколот к
 					    right-4/top-4 и на узком экране ложится прямо на поле ввода —
 					    тап по правому краю строки закрывал поиск вместо фокуса */}
-					<div className='flex items-center border-b px-4 pr-12 h-14 shrink-0'>
-						<Search className='w-5 h-5 text-muted-foreground shrink-0' />
-						<Input
-							placeholder='Поиск инструментов...'
-							value={searchQuery}
-							onChange={e => setSearchQuery(e.target.value)}
-							className='flex-1 border-0 focus-visible:ring-0 text-base px-3 h-full'
-							autoFocus
-						/>
-						<Badge variant='secondary' className='ml-2 shrink-0 hidden sm:flex'>
-							<Command className='w-3 h-3 mr-1' />K
-						</Badge>
-					</div>
+						<div className='flex items-center border-b px-4 pr-12 h-14 shrink-0'>
+							<Search className='w-5 h-5 text-muted-foreground shrink-0' />
+							<Input
+								placeholder='Поиск инструментов...'
+								value={searchQuery}
+								onChange={e => setSearchQuery(e.target.value)}
+								className='flex-1 border-0 focus-visible:ring-0 text-base px-3 h-full'
+								autoFocus
+							/>
+							<Badge
+								variant='secondary'
+								className='ml-2 shrink-0 hidden sm:flex'
+							>
+								<Command className='w-3 h-3 mr-1' />K
+							</Badge>
+						</div>
 
-					{/* Results */}
-					{/* Раньше высота считалась как 100vh минус шапка и футер, но с
+						{/* Results */}
+						{/* Раньше высота считалась как 100vh минус шапка и футер, но с
 					    gap-4 у grid сумма перебирала max-h контейнера, и последний
 					    результат вместе с футером уезжал под нижний край.
 					    Селектор в конце строки классов — про внутренний контейнер
@@ -274,114 +276,114 @@ export function GlobalWidgetSearch({
 					    а не по ширине шторки. На 390px список раздувался до 934px,
 					    truncate у названия и описания не срабатывал, и текст уходил
 					    за правый край экрана. */}
-					<ScrollArea className='flex-1 min-h-0 sm:flex-none sm:h-auto sm:max-h-[400px] [&_[data-radix-scroll-area-viewport]>div]:!block'>
-						{filteredWidgets.length === 0 ? (
-							<div className='p-8 text-center text-muted-foreground'>
-								<Search className='w-12 h-12 mx-auto mb-4 opacity-50' />
-								<p className='text-sm'>Ничего не найдено</p>
-							</div>
-						) : (
-							<div className='p-2'>
-								{/* Category label for empty search */}
-								{!searchQuery.trim() && (
-									<div className='px-3 py-2 text-xs font-medium text-muted-foreground'>
-										{favorites.length > 0
-											? 'Рекомендуемые и избранные'
-											: 'Рекомендуемые'}
-									</div>
-								)}
+						<ScrollArea className='flex-1 min-h-0 sm:flex-none sm:h-auto sm:max-h-[400px] [&_[data-radix-scroll-area-viewport]>div]:!block'>
+							{filteredWidgets.length === 0 ? (
+								<div className='p-8 text-center text-muted-foreground'>
+									<Search className='w-12 h-12 mx-auto mb-4 opacity-50' />
+									<p className='text-sm'>Ничего не найдено</p>
+								</div>
+							) : (
+								<div className='p-2'>
+									{/* Category label for empty search */}
+									{!searchQuery.trim() && (
+										<div className='px-3 py-2 text-xs font-medium text-muted-foreground'>
+											{favorites.length > 0
+												? 'Рекомендуемые и избранные'
+												: 'Рекомендуемые'}
+										</div>
+									)}
 
-								{/* Widget results */}
-								{filteredWidgets.map((item, index) => {
-									const Icon = item.widget.icon
-									return (
-										<button
-											key={item.widget.id}
-											onClick={() => handleSelect(item)}
-											className={cn(
-												'w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors',
-												'hover:bg-muted active:bg-muted/80',
-												selectedIndex === index && 'bg-muted'
-											)}
-										>
-											{/* Widget icon */}
-											<div
+									{/* Widget results */}
+									{filteredWidgets.map((item, index) => {
+										const Icon = item.widget.icon
+										return (
+											<button
+												key={item.widget.id}
+												onClick={() => handleSelect(item)}
 												className={cn(
-													'w-10 h-10 rounded-lg flex items-center justify-center text-white shrink-0',
-													`bg-gradient-to-br ${item.widget.gradient}`
+													'w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors',
+													'hover:bg-muted active:bg-muted/80',
+													selectedIndex === index && 'bg-muted'
 												)}
 											>
-												<Icon className='w-5 h-5' />
-											</div>
-
-											{/* Widget info */}
-											<div className='flex-1 min-w-0'>
-												<div className='flex items-center gap-2'>
-													<p className='font-medium text-sm truncate'>
-														{searchQuery
-															? highlightText(item.title, searchQuery)
-															: item.title}
-													</p>
-													{item.isFavorite && (
-														<Star className='w-3 h-3 text-yellow-500 fill-current' />
+												{/* Widget icon */}
+												<div
+													className={cn(
+														'w-10 h-10 rounded-lg flex items-center justify-center text-white shrink-0',
+														`bg-gradient-to-br ${item.widget.gradient}`
 													)}
+												>
+													<Icon className='w-5 h-5' />
 												</div>
-												<p className='text-xs text-muted-foreground truncate'>
-													{searchQuery
-														? highlightText(item.description, searchQuery)
-														: item.description}
-												</p>
-											</div>
 
-											{/* Категория и стрелка — от sm: на телефоне они съедали
+												{/* Widget info */}
+												<div className='flex-1 min-w-0'>
+													<div className='flex items-center gap-2'>
+														<p className='font-medium text-sm truncate'>
+															{searchQuery
+																? highlightText(item.title, searchQuery)
+																: item.title}
+														</p>
+														{item.isFavorite && (
+															<Star className='w-3 h-3 text-yellow-500 fill-current' />
+														)}
+													</div>
+													<p className='text-xs text-muted-foreground truncate'>
+														{searchQuery
+															? highlightText(item.description, searchQuery)
+															: item.description}
+													</p>
+												</div>
+
+												{/* Категория и стрелка — от sm: на телефоне они съедали
 											    половину строки, и название инструмента обрезалось
 											    многоточием уже на «Калькулятор размеров…» */}
-											<Badge
-												variant='outline'
-												className='shrink-0 hidden sm:inline-flex'
-											>
-												{item.categoryName}
-											</Badge>
+												<Badge
+													variant='outline'
+													className='shrink-0 hidden sm:inline-flex'
+												>
+													{item.categoryName}
+												</Badge>
 
-											<ArrowRight className='w-4 h-4 text-muted-foreground shrink-0 hidden sm:block' />
-										</button>
-									)
-								})}
-							</div>
-						)}
-					</ScrollArea>
+												<ArrowRight className='w-4 h-4 text-muted-foreground shrink-0 hidden sm:block' />
+											</button>
+										)
+									})}
+								</div>
+							)}
+						</ScrollArea>
 
-					{/* Footer */}
-					{/* На мобильном футер скрыт: подсказки по клавишам там не нужны,
+						{/* Footer */}
+						{/* На мобильном футер скрыт: подсказки по клавишам там не нужны,
 					    а с открытой клавиатурой каждая строка идёт списку результатов */}
-					<div className='border-t px-4 py-3 hidden sm:flex items-center justify-between text-xs text-muted-foreground shrink-0'>
-						<div className='hidden sm:flex items-center gap-4'>
-							<span className='flex items-center gap-1'>
-								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
-									↑
-								</kbd>
-								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
-									↓
-								</kbd>
-								навигация
-							</span>
-							<span className='flex items-center gap-1'>
-								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
-									↵
-								</kbd>
-								выбрать
-							</span>
-							<span className='flex items-center gap-1'>
-								<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
-									esc
-								</kbd>
-								закрыть
+						<div className='border-t px-4 py-3 hidden sm:flex items-center justify-between text-xs text-muted-foreground shrink-0'>
+							<div className='hidden sm:flex items-center gap-4'>
+								<span className='flex items-center gap-1'>
+									<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
+										↑
+									</kbd>
+									<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
+										↓
+									</kbd>
+									навигация
+								</span>
+								<span className='flex items-center gap-1'>
+									<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
+										↵
+									</kbd>
+									выбрать
+								</span>
+								<span className='flex items-center gap-1'>
+									<kbd className='px-1.5 py-0.5 rounded border bg-muted font-mono'>
+										esc
+									</kbd>
+									закрыть
+								</span>
+							</div>
+							<span className='flex items-center gap-1 mx-auto sm:mx-0'>
+								{toolsCountLabel(publicWidgets.length)}
 							</span>
 						</div>
-						<span className='flex items-center gap-1 mx-auto sm:mx-0'>
-							<Sparkles className='w-3 h-3' />
-							{toolsCountLabel(publicWidgets.length)}
-						</span>
 					</div>
 				</DialogContent>
 			</Dialog>

@@ -34,6 +34,12 @@ export const Footer = () => {
 		}
 	}
 
+	const toolsLinksMiddle = Math.ceil(footerLinks.tools.links.length / 2)
+	const toolsLinksColumns = [
+		footerLinks.tools.links.slice(0, toolsLinksMiddle),
+		footerLinks.tools.links.slice(toolsLinksMiddle)
+	]
+
 	const socialLinks = [
 		{
 			icon: Github,
@@ -91,24 +97,28 @@ export const Footer = () => {
 					</div>
 
 					{/* Links Sections */}
-					<div className='lg:col-span-8 grid grid-cols-2 gap-8 sm:grid-cols-3'>
+					<div className='lg:col-span-8 grid grid-cols-2 gap-8 sm:grid-cols-4'>
 						{/* Tools */}
-						<div>
+						<div className='col-span-2'>
 							<p className='text-sm font-semibold mb-4 text-foreground'>
 								{footerLinks.tools.title}
 							</p>
-							<ul className='space-y-3'>
-								{footerLinks.tools.links.map((link, idx) => (
-									<li key={idx}>
-										<Link
-											href={link.href}
-											className='text-sm text-muted-foreground hover:text-foreground transition-colors'
-										>
-											{link.label}
-										</Link>
-									</li>
+							<div className='grid grid-cols-2 gap-x-6'>
+								{toolsLinksColumns.map((column, columnIdx) => (
+									<ul key={columnIdx} className='space-y-3'>
+										{column.map((link, idx) => (
+											<li key={idx}>
+												<Link
+													href={link.href}
+													className='text-sm text-muted-foreground hover:text-foreground transition-colors'
+												>
+													{link.label}
+												</Link>
+											</li>
+										))}
+									</ul>
 								))}
-							</ul>
+							</div>
 						</div>
 
 						{/* Company */}
