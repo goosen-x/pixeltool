@@ -13,8 +13,7 @@ const ALL_NARRATIVE: PositionalMeaningsFile = {
 }
 
 /**
- * Текст точки, написанный для связного чтения подряд (см.
- * docs/research/destiny-matrix-narrative-prompt.md), или null, пока он
+ * Текст точки, написанный для связного чтения подряд, или null, пока он
  * не написан. Вызывающий код в этом случае падает на
  * getPositionalMeaning (карточный текст), а если и того нет — на общий
  * arcana.meaning.
