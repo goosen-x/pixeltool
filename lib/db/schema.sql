@@ -76,3 +76,22 @@ CREATE TABLE IF NOT EXISTS site_messages (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 	telegram_sent_at TIMESTAMPTZ
 );
+
+-- Импорт «Расширенной аналитики поисковых запросов по URL» из
+-- Яндекс.Вебмастера (см. docs/seo/webmaster-url-report-2026-09.md) — по
+-- странице за период, без разбивки по бакетам позиций (та детализация
+-- остаётся в CSV/файле-отчёте). UNIQUE на (path, period), чтобы повторный
+-- импорт того же отчёта обновлял строки, а не плодил дубли.
+CREATE TABLE IF NOT EXISTS webmaster_url_stats (
+	id SERIAL PRIMARY KEY,
+	path TEXT NOT NULL,
+	period_start DATE NOT NULL,
+	period_end DATE NOT NULL,
+	impressions BIGINT NOT NULL,
+	clicks BIGINT NOT NULL,
+	ctr NUMERIC NOT NULL,
+	avg_position NUMERIC,
+	avg_click_position NUMERIC,
+	imported_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+	UNIQUE (path, period_start, period_end)
+);
