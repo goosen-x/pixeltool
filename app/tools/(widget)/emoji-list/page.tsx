@@ -30,7 +30,7 @@ export default function EmojiListPage() {
 	const widget = getWidgetById('emoji-list')!
 	const [selectedCategory, setSelectedCategory] = useState<
 		CategoryId | 'all' | 'recent'
-	>('all')
+	>('smileys')
 
 	const {
 		recentEmojis,
