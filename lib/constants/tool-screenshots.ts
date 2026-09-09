@@ -17,6 +17,12 @@ export interface ToolScreenshotCopy {
 }
 
 export const toolScreenshots: Record<string, ToolScreenshotCopy> = {
+	'number-base-converter': {
+		file: 'perevod-v-dvoichnuyu-sistemu',
+		alt: 'Перевод в двоичную систему: число 255 в десятичной слева, 11111111 в двоичной справа и разбор по разрядам снизу',
+		caption:
+			'Перевод в двоичную систему показывает не только ответ, но и разбор по разрядам — его и переписывают в тетрадь'
+	},
 	'inn-checker': {
 		file: 'proverka-inn',
 		alt: 'Проверка ИНН: поле с номером, зелёная отметка о сходящейся контрольной сумме, тип владельца и регион выдачи',
