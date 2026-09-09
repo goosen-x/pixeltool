@@ -15,7 +15,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	// const { locale } = await params // Not needed for Russian-only
 
-	// Термы и порядок — из docs/seo/wordstat.md, секция «Главная» (снято 17.07.2026).
+	// Термы и порядок — по замерам Вордстата от 17.07.2026.
 	// Ведём случайными числами (507k/мес) и эмодзи (541k), а не QR (41k): раньше
 	// заголовок обещал «все онлайн-калькуляторы» под спрос в 2,3 млн, которого мы
 	// не обслуживаем ни одним тулом — это обещание уводило людей в отказ.

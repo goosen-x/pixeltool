@@ -192,7 +192,7 @@ export function HeroSection() {
 								aria-hidden
 								className='font-heading text-[clamp(1.5rem,8vw,4.5rem)] font-bold leading-[1.05] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.5)]'
 							>
-								{/* Слова и их порядок — из docs/seo/wordstat.md, секция «Главная».
+								{/* Слова и их порядок — по замерам Вордстата.
 								    Сортировка по пригодному спросу: случайные числа 507k,
 								    пароли 103k, QR 41k, эмодзи (541k валовых, но хвост —
 								    игры и стикеры, нам достаётся «эмодзи скопировать» ~16k).

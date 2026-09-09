@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/carousel'
 import Autoplay from 'embla-carousel-autoplay'
 
-// Порядок — по замеренному спросу (docs/seo/wordstat.md), а не по алфавиту или
+// Порядок — по замеренному спросу Вордстата, а не по алфавиту или
 // порядку в коде. Раньше здесь стоял widgets.slice(0, 15), и поскольку widgets
 // собран как [...cssWidgets, ...htmlWidgets, ...], блок «Популярные инструменты»
 // показывал 12 CSS и 3 HTML — то есть ровно тот кластер, который даёт 0,3%

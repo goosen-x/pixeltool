@@ -135,9 +135,9 @@ describe('позиционные трактовки', () => {
 })
 
 describe('calculateFullDestinyMatrix', () => {
-	// 17.03.1994, сверено вручную с docs/research/destiny-matrix.md
-	// (раздел «Полная методика», числовой пример), формулы дословно
-	// подтверждены на gadalkindom.ru/matritsa-sudby/metodika-raschyota.html
+	// 17.03.1994, сверено вручную с числовым примером из раздела «Полная
+	// методика»; формулы дословно подтверждены на
+	// gadalkindom.ru/matritsa-sudby/metodika-raschyota.html
 	it('считает все производные точки на сквозном примере 17.03.1994', () => {
 		const result = calculateFullDestinyMatrix(17, 3, 1994)
 
