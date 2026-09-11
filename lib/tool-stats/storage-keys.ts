@@ -9,3 +9,7 @@ export function todayViewKey(toolId: string, now: Date = new Date()): string {
 export function ratedKey(toolId: string): string {
 	return `pixeltool:rated:${toolId}`
 }
+
+export function platformFeedbackKey(toolId: string, platformId: string): string {
+	return `pixeltool:platform-feedback:${toolId}:${platformId}`
+}

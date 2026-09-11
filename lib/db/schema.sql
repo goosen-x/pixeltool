@@ -77,6 +77,34 @@ CREATE TABLE IF NOT EXISTS site_messages (
 	telegram_sent_at TIMESTAMPTZ
 );
 
+-- Оценка «сработало / не сработало на конкретной площадке» — точечная, без
+-- звезды и без текста. Завели, когда выяснилось: у invisible-character
+-- 21 оценка со средней 2.48, а tool_feedback пуст — единственным выходом для
+-- недовольства была общая звезда, площадку указать было негде, так низкая
+-- оценка доставалась всему тулу за проблему одной конкретной кнопки. works
+-- хранит обе стороны одним булевым полем, а не отдельной таблицей на каждую.
+CREATE TABLE IF NOT EXISTS platform_feedback (
+	id SERIAL PRIMARY KEY,
+	tool_id TEXT NOT NULL,
+	platform_id TEXT NOT NULL,
+	char_id TEXT NOT NULL,
+	works BOOLEAN NOT NULL,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Готовая сумма к platform_feedback — читать grid при каждой загрузке
+-- страницы через GROUP BY по сырому логу не хочется. Два счётчика, не один
+-- net-score: цель не рейтинг, а диагностика «отвалилась ли площадка», а
+-- «3 работает / 15 не работает» и «18 работает / 0 не работает» дают
+-- одинаковый net +3, хотя это разные ситуации.
+CREATE TABLE IF NOT EXISTS platform_feedback_stats (
+	tool_id TEXT NOT NULL,
+	platform_id TEXT NOT NULL,
+	works_count INTEGER NOT NULL DEFAULT 0,
+	broken_count INTEGER NOT NULL DEFAULT 0,
+	PRIMARY KEY (tool_id, platform_id)
+);
+
 -- Импорт «Расширенной аналитики поисковых запросов по URL» из
 -- Яндекс.Вебмастера (см. docs/seo/webmaster-url-report-2026-09.md) — по
 -- странице за период, без разбивки по бакетам позиций (та детализация

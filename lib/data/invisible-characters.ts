@@ -181,7 +181,7 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 	},
 	{
 		id: 'ios',
-		name: 'iOS',
+		name: 'iOS (название папки)',
 		field: 'имя папки',
 		charId: 'zwj',
 		confidence: 'verified'
@@ -194,6 +194,27 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		confidence: 'thin'
 	},
 	{
+		id: 'steam',
+		name: 'Steam',
+		field: 'ник профиля',
+		charId: 'hangul-filler',
+		confidence: 'sources',
+		caveat: 'Valve периодически закрывает конкретные символы обновлениями'
+	},
+	{
+		// Несколько согласованных гайдов Steam Community называют тот же
+		// Hangul Filler для названия витрины/скриншота — отдельное поле от
+		// ника профиля, поэтому отдельная строка. Сразу после обычного Steam,
+		// а перед ними чётное число карточек (6) — иначе обе строки Steam
+		// разъезжались по сетке 2 колонки на разные ряды по диагонали, а не
+		// рядом в одном ряду.
+		id: 'steam-artwork',
+		name: 'Steam (витрина, иллюстрации)',
+		field: 'название скриншота или иллюстрации',
+		charId: 'hangul-filler',
+		confidence: 'sources'
+	},
+	{
 		// Проверено владельцем проекта 23.08.2026 в имени профиля. Про текст
 		// постов данных нет, поэтому поле сузили до проверенного.
 		id: 'x',
@@ -201,14 +222,6 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		field: 'имя профиля',
 		charId: 'cgj',
 		confidence: 'verified'
-	},
-	{
-		id: 'steam',
-		name: 'Steam',
-		field: 'ник профиля',
-		charId: 'hangul-filler',
-		confidence: 'sources',
-		caveat: 'Valve периодически закрывает конкретные символы обновлениями'
 	},
 	{
 		// Владелец проекта проверил вручную 23.08.2026: Braille Blank не
@@ -232,6 +245,21 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		field: 'отображаемое имя',
 		charId: 'hangul-filler',
 		confidence: 'sources'
+	},
+	{
+		id: 'standoff2',
+		name: 'Standoff 2',
+		field: 'игровой ник',
+		charId: 'hangul-filler',
+		confidence: 'sources'
+	},
+	{
+		id: 'minecraft',
+		name: 'Minecraft',
+		field: 'ник игрока',
+		charId: 'hangul-filler',
+		confidence: 'thin',
+		caveat: 'Источники расплывчаты про конкретный символ, часть форумов советует другие обходные пути'
 	}
 ]
 

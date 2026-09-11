@@ -82,6 +82,19 @@ export function InvisibleCharacterSeo() {
 					самом инструменте выше.
 				</p>
 			</section>
+
+			<section>
+				<h2 className='text-2xl font-bold tracking-tight'>
+					В Steam это не только ник
+				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					У витрины скриншотов и иллюстраций в профиле Steam своё поле
+					названия, отдельное от ника, и оно тоже принимает Hangul Filler.
+					Уберите текст из заголовка иллюстрации и вставьте символ вместо
+					него. Заголовок станет пустым, а сама картинка при этом останется
+					на месте.
+				</p>
+			</section>
 		</div>
 	)
 }

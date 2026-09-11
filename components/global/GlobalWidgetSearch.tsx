@@ -216,18 +216,26 @@ export function GlobalWidgetSearch({
 
 			{/* Search dialog */}
 			<Dialog open={open} onOpenChange={setOpen}>
-				{/* На мобильном шторка занимает экран целиком, от sm — обычное
-				    модальное окно по центру. translate-x-0 и max-w-none здесь
-				    обязательны: cn() — это twMerge, и inset-0 вытесняет из базового
-				    DialogContent только left-[50%], а translate-x-[-50%] остаётся и
-				    уводит шторку на пол-экрана влево. Высота — из --search-panel-h
-				    (см. эффект с visualViewport выше), 100dvh как фоллбэк; flex-col
-				    вместо grid, чтобы список результатов растягивался по остатку. */}
+				{/* На мобильном шторка растёт по контенту от верхнего края экрана,
+				    от sm — обычное модальное окно по центру. translate-x-0 и
+				    max-w-none здесь обязательны: cn() — это twMerge, и left-0/right-0
+				    вытесняет из базового DialogContent только left-[50%], а
+				    translate-x-[-50%] остаётся и уводит шторку на пол-экрана влево.
+				    h-auto вместо фиксированной высоты — иначе при паре результатов под
+				    списком оставалось пустое поле до низа экрана; теперь там просто
+				    виден затемнённый фон оверлея. max-h всё ещё берётся из
+				    --search-panel-h (см. эффект с visualViewport выше; 100dvh —
+				    фоллбэк), чтобы при восьми результатах и открытой клавиатуре список
+				    не выходил за видимую область. flex-col вместо grid, чтобы список
+				    результатов растягивался по остатку. rounded-b-lg снизу — панель
+				    больше не упирается в нижний край экрана, острый срез там
+				    выглядел бы как обрезанный угол; верх остаётся прямым, потому что
+				    прижат к top-0. */}
 				<DialogContent
 					className={cn(
-						'flex flex-col gap-0 p-0 m-0 border-0 rounded-none',
-						'fixed inset-0 top-[var(--search-panel-top,0px)] translate-x-0 w-full max-w-none',
-						'h-[var(--search-panel-h,100dvh)] max-h-[var(--search-panel-h,100dvh)]',
+						'flex flex-col gap-0 p-0 m-0 border-0 rounded-none rounded-b-lg',
+						'fixed left-0 right-0 top-[var(--search-panel-top,0px)] translate-x-0 w-full max-w-none',
+						'h-auto max-h-[var(--search-panel-h,100dvh)]',
 						'sm:inset-auto sm:left-[50%] sm:top-20 sm:translate-x-[-50%] sm:translate-y-0',
 						'sm:h-auto sm:max-h-[calc(100vh-8rem)] sm:max-w-2xl sm:border sm:rounded-lg'
 					)}
@@ -244,7 +252,7 @@ export function GlobalWidgetSearch({
 					    overflow-hidden на том же элементе обрезает собственную тень
 					    по скруглённому углу неровно — получался «двойной бордер».
 					    rounded-[inherit], чтобы клип совпадал с реальным радиусом
-					    DialogContent на обоих брейкпоинтах (rounded-none/sm:rounded-lg). */}
+					    DialogContent на обоих брейкпоинтах (rounded-b-lg/sm:rounded-lg). */}
 					<div className='flex flex-1 min-h-0 flex-col overflow-hidden rounded-[inherit]'>
 						{/* Search input */}
 						{/* pr-12 и на мобильном: крестик DialogContent приколот к
