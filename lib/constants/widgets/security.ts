@@ -336,7 +336,6 @@ export const securityWidgets: Widget[] = [
 		],
 		difficulty: 'beginner',
 		updatedAt: '2026-09-12',
-		demo: true,
 		tags: [
 			'шифр цезаря',
 			'caesar cipher',
