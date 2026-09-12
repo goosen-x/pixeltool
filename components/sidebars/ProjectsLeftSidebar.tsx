@@ -50,7 +50,7 @@ export const ProjectsLeftSidebar = ({ onLinkClick }: Props = {}) => {
 	}
 
 	return (
-		<aside className='w-64 h-[calc(100vh-var(--chrome-h,5rem))] xl:h-full shadow-[1px_0_8px_rgba(0,0,0,0.04)] bg-background xl:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
+		<aside className='w-64 h-[calc(100dvh-var(--chrome-h,5rem))] xl:h-full shadow-[1px_0_8px_rgba(0,0,0,0.04)] bg-background xl:bg-muted/30 backdrop-blur-sm flex-shrink-0'>
 			<div className='flex h-full flex-col'>
 				<CategoriesNavigation
 					collapsed={collapsed}

@@ -40,7 +40,11 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 		// --chrome-h — реальная высота баннера «инструмент месяца» + шапки,
 		// её выставляет ChromeHeightVar (lib/ui/chrome-height.ts). 5rem —
 		// фоллбэк на высоту одной шапки (h-20), пока эффект не отработал.
-		<div className='flex h-[calc(100vh-var(--chrome-h,5rem))] relative'>
+		// 100dvh, не 100vh: на планшетах и телефонах 100vh считается от
+		// вьюпорта со свёрнутой адресной строкой, а она обычно развёрнута —
+		// колонка вылезала за реально видимую область, снизу оставалась
+		// пустая серая полоса. dvh пересчитывается вместе с адресной строкой.
+		<div className='flex h-[calc(100dvh-var(--chrome-h,5rem))] relative'>
 			{/* Затемнение под левым сайдбаром-шитом в диапазоне lg..xl */}
 			{isSidebarOpen && (
 				<div
@@ -55,7 +59,7 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 			    От lg до xl — шит поверх контента, от xl — статичная колонка */}
 			<div
 				className={cn(
-					'fixed xl:relative top-[var(--chrome-h,5rem)] xl:top-0 left-0 z-40 hidden h-[calc(100vh-var(--chrome-h,5rem))] transform transition-transform duration-300 ease-in-out lg:block xl:h-full xl:transform-none',
+					'fixed xl:relative top-[var(--chrome-h,5rem)] xl:top-0 left-0 z-40 hidden h-[calc(100dvh-var(--chrome-h,5rem))] transform transition-transform duration-300 ease-in-out lg:block xl:h-full xl:transform-none',
 					isSidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
 				)}
 			>
