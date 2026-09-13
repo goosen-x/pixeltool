@@ -198,6 +198,7 @@ export default function PasswordGeneratorPage() {
 	const [wordCount, setWordCount] = useState(5)
 	const [wordlist, setWordlist] = useState<readonly string[] | null>(null)
 	const [copied, setCopied] = useState(false)
+	const [spinCount, setSpinCount] = useState(0)
 
 	// Character sets
 	const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz'
@@ -460,15 +461,6 @@ export default function PasswordGeneratorPage() {
 								<Eye className='h-4 w-4' />
 							)}
 						</Button>
-						<Button
-							size='icon'
-							variant='ghost'
-							onClick={generate}
-							title='Другой пароль'
-							className={toolIconButton}
-						>
-							<RefreshCw className='h-4 w-4' />
-						</Button>
 					</div>
 				</div>
 
@@ -522,17 +514,43 @@ export default function PasswordGeneratorPage() {
 					    шкале, и врала на парольных фразах: четыре словарных слова
 					    набирали максимум баллов за длину, хотя по словарю ломаются
 					    несопоставимо быстрее случайной строки той же длины. */}
-					{password && strength && (
-						<div className='mt-6 text-center'>
-							<p className={cn('text-sm font-medium', strengthTone)}>
-								Перебор займёт {formatCrackTime(strength.bits)}
-							</p>
-							<p className='mt-1 text-xs text-muted-foreground'>
-								{strength.caption} · {Math.round(strength.bits)}{' '}
-								{plural(Math.round(strength.bits), 'бит', 'бита', 'бит')}
-							</p>
+					{/* Две равные колонки (grid-cols-2, всегда ровно 50/50 —
+					    не зависит от содержимого ни одной из сторон), а не
+					    holy-grail с auto-центром: там кнопка держалась по центру
+					    всего ряда с пустотой вокруг, а нужно, чтобы кнопка и текст
+					    были прижаты друг к другу вплотную к центральной оси —
+					    правый край кнопки и левый край текста у самой границы
+					    колонок. */}
+					<div className='mt-6 grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:items-center sm:gap-x-6'>
+						<div className='flex justify-center sm:justify-end'>
+							<Button
+								size='lg'
+								onClick={() => {
+									generate()
+									setSpinCount(count => count + 1)
+								}}
+								className='cursor-pointer gap-2'
+							>
+								<RefreshCw
+									className='h-4 w-4 transition-transform duration-500 ease-out'
+									style={{ transform: `rotate(${spinCount * 360}deg)` }}
+								/>
+								Другой пароль
+							</Button>
 						</div>
-					)}
+
+						{password && strength && (
+							<div className='text-center sm:text-left'>
+								<p className={cn('text-sm font-medium', strengthTone)}>
+									Перебор займёт {formatCrackTime(strength.bits)}
+								</p>
+								<p className='mt-1 text-xs text-muted-foreground'>
+									{strength.caption} · {Math.round(strength.bits)}{' '}
+									{plural(Math.round(strength.bits), 'бит', 'бита', 'бит')}
+								</p>
+							</div>
+						)}
+					</div>
 				</div>
 
 				{/* Полоса параметров. Всё видно сразу: раньше половина настроек
