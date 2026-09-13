@@ -5,6 +5,7 @@ excerpt:
   почему он не сохраняется с первого раза и почему в @username это вообще не
   работает.'
 date: '2026-09-10T12:00:00.000Z'
+coverImage: '/images/blog/kak-sdelat-nevidimyy-nik-v-telegram.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
