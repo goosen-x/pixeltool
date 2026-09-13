@@ -137,9 +137,10 @@ export function CaesarWheel({
 		else if (event.key === 'PageDown') by(-5)
 	}
 
-	// Внутреннее кольцо провёрнуто целиком, а каждая буква на нём отвёрнута
-	// назад вокруг собственной точки — иначе внизу диска они встали бы вверх
-	// ногами и читать пары стало бы нельзя
+	// Внутреннее кольцо провёрнуто целиком группой. Буквы на нём тоже стоят
+	// радиально (см. комментарий у внешнего кольца ниже) — при провороте
+	// кольца они естественно уезжают вместе с ним и остаются «спицами», а не
+	// компенсируются обратно до вертикали.
 	const ringAngle = round(-shift * step)
 
 	return (
@@ -164,7 +165,13 @@ export function CaesarWheel({
 				strokeWidth={1}
 			/>
 
-			{/* Внешнее кольцо: открытый алфавит, неподвижен */}
+			{/* Внешнее кольцо: открытый алфавит, неподвижен. Буквы стоят
+			    радиально, «спицами», верхом к краю диска — так выглядят настоящие
+			    печатные и гравированные шифровальные диски (Crypto Museum,
+			    деревянные реплики на Etsy): буква на 12 часах стоит прямо, на
+			    3 часах лежит набок, на 6 часах перевёрнута вверх ногами. Раньше
+			    все буквы стояли одинаково вертикально независимо от положения на
+			    круге, из-за чего диск не читался как диск. */}
 			{letters.map((letter, index) => {
 				const { x, y } = pointOnCircle(R_OUTER_TEXT, index * step)
 				const active = index === highlightIndex || index === 0
@@ -173,6 +180,7 @@ export function CaesarWheel({
 						key={`plain-${letter}`}
 						x={x}
 						y={y}
+						transform={`rotate(${round(index * step)} ${x} ${y})`}
 						textAnchor='middle'
 						dominantBaseline='central'
 						fontSize={size > 26 ? 13 : 15}
@@ -228,7 +236,7 @@ export function CaesarWheel({
 								key={`cipher-${letter}`}
 								x={x}
 								y={y}
-								transform={`rotate(${-ringAngle} ${x} ${y})`}
+								transform={`rotate(${round(index * step)} ${x} ${y})`}
 								textAnchor='middle'
 								dominantBaseline='central'
 								fontSize={size > 26 ? 13 : 15}
