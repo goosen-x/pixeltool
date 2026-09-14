@@ -44,6 +44,14 @@ const remarkToolLink: Plugin<[], Root> = () => {
 		visit(tree, 'paragraph', (node: Paragraph, index, parent) => {
 			if (!parent || index === undefined) return
 
+			// Пункт списка — тоже параграф, и без этой проверки строка
+			// «- [Калькулятор](/tools/foo)» в разделе «Полезные ресурсы»
+			// превращалась в полноразмерную карточку внутри <li>. Список ссылок
+			// должен оставаться списком ссылок. Зеркало этой же проверки живёт
+			// в parseArticleMarkdown (lib/seo/internal-links.ts) — правишь одно,
+			// правь второе, иначе проверка разойдётся с тем, что видит читатель.
+			if (parent.type === 'listItem') return
+
 			// Check if paragraph contains only a tool link
 			if (node.children.length === 1) {
 				const child = node.children[0]

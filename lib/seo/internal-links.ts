@@ -6,6 +6,7 @@ import matter from 'gray-matter'
 import path from 'node:path'
 import fs from 'node:fs'
 import { widgets } from '@/lib/constants/widgets'
+import { toolSubpagePaths } from '@/lib/seo/tool-subpages'
 
 export interface ToolLinkOccurrence {
 	slug: string
@@ -53,7 +54,11 @@ export function parseArticleMarkdown(content: string): ArticleLinks {
 	const ctaLinkNodes = new Set<Link>()
 	const blogSlugs = new Set<string>()
 
-	visit(tree, 'paragraph', (node: Paragraph) => {
+	visit(tree, 'paragraph', (node: Paragraph, _index, parent) => {
+		// Зеркало проверки из remark-tool-link: внутри пункта списка карточка
+		// не рисуется, значит и считать её CTA нельзя. Ссылку подберёт обход
+		// ниже и запишет как inline — тем, чем она и отрисуется.
+		if (parent && parent.type === 'listItem') return
 		if (node.children.length !== 1) return
 		const child = node.children[0]
 
@@ -129,6 +134,12 @@ export interface LinkGraph {
 	tools: ToolInfo[]
 	articles: Article[]
 	toolBlogLinks: Map<string, string[]>
+	/**
+	 * Пути SEO-подстраниц без ведущего `/tools/` — `unit-converter/shagi-v-km`.
+	 * Ссылка на такую страницу приходит из статьи двухсегментным слагом, и без
+	 * этого списка проверка считает её ссылкой на несуществующий тул.
+	 */
+	subpages: string[]
 }
 
 export function loadTools(): ToolInfo[] {
@@ -204,7 +215,8 @@ export function buildLinkGraph(repoRoot: string): LinkGraph {
 	return {
 		tools: loadTools(),
 		articles: loadArticles(path.join(repoRoot, '_posts')),
-		toolBlogLinks: loadToolBlogLinks(path.join(repoRoot, 'app/tools/(widget)'))
+		toolBlogLinks: loadToolBlogLinks(path.join(repoRoot, 'app/tools/(widget)')),
+		subpages: toolSubpagePaths()
 	}
 }
 
@@ -226,14 +238,24 @@ export function runChecks(graph: LinkGraph): CheckReport {
 	const toolPaths = new Set(graph.tools.map(t => t.path))
 	const articleSlugs = new Set(graph.articles.map(a => a.slug))
 
+	const subpagePaths = new Set(graph.subpages ?? [])
+
 	for (const article of graph.articles) {
 		for (const link of article.toolLinks) {
-			if (!toolPaths.has(link.slug)) {
-				issues.push({
-					severity: 'error',
-					message: `Битая ссылка: _posts/${article.slug}.md → /tools/${link.slug} (тула не существует)`
-				})
-			}
+			if (toolPaths.has(link.slug) || subpagePaths.has(link.slug)) continue
+
+			// Слаг из двух сегментов у существующего тула — это опечатка в
+			// подстранице, а не отсутствующий тул. Разные причины, разный текст:
+			// иначе на поиск «а где же тул unit-converter/shagi-v-km» уходит час.
+			const [parentPath, ...rest] = link.slug.split('/')
+			const looksLikeSubpage = rest.length > 0 && toolPaths.has(parentPath)
+
+			issues.push({
+				severity: 'error',
+				message: looksLikeSubpage
+					? `Битая ссылка: _posts/${article.slug}.md → /tools/${link.slug} (у тула ${parentPath} нет такой подстраницы)`
+					: `Битая ссылка: _posts/${article.slug}.md → /tools/${link.slug} (тула не существует)`
+			})
 		}
 
 		for (const slug of article.blogSlugs) {
@@ -314,18 +336,47 @@ export function runChecks(graph: LinkGraph): CheckReport {
 	}
 
 	const articlesBySlug = new Map(graph.articles.map(a => [a.slug, a]))
+
+	/**
+	 * Односторонний related сам по себе не дефект. Когда девять статей про
+	 * скорость сайта показывают на общий разбор, а он на них не показывает —
+	 * это не забытая ссылка, а нормальная форма hub-and-spoke: у хаба свой
+	 * блок «Читайте также» и так переполнен. Требовать взаимности значило бы
+	 * раздуть его до двенадцати карточек.
+	 *
+	 * Дефект — когда две равные статьи ссылаются в одну сторону по недосмотру.
+	 * Отличаем по числу односторонних указателей на цель: три и больше — это
+	 * хаб по факту использования, один-два — вероятная забывчивость.
+	 *
+	 * До введения порога проверка выдавала 81 предупреждение, из них 67 были
+	 * про хабы. Список, который никто не дочитывает, не находит ничего.
+	 */
+	const HUB_ASYMMETRY_THRESHOLD = 3
+
+	const oneSidedInbound = new Map<string, number>()
+	for (const article of graph.articles) {
+		for (const relatedSlug of article.relatedSlugs) {
+			const target = articlesBySlug.get(relatedSlug)
+			if (target && !target.relatedSlugs.includes(article.slug)) {
+				oneSidedInbound.set(relatedSlug, (oneSidedInbound.get(relatedSlug) ?? 0) + 1)
+			}
+		}
+	}
+
 	for (const article of graph.articles) {
 		for (const relatedSlug of article.relatedSlugs) {
 			const relatedArticle = articlesBySlug.get(relatedSlug)
-			if (
-				relatedArticle &&
-				!relatedArticle.relatedSlugs.includes(article.slug)
-			) {
-				issues.push({
-					severity: 'warning',
-					message: `Асимметричный related: ${article.slug}.md → ${relatedSlug}.md, обратной ссылки нет`
-				})
+			if (!relatedArticle || relatedArticle.relatedSlugs.includes(article.slug)) {
+				continue
 			}
+			if ((oneSidedInbound.get(relatedSlug) ?? 0) >= HUB_ASYMMETRY_THRESHOLD) {
+				continue
+			}
+
+			issues.push({
+				severity: 'warning',
+				message: `Асимметричный related: ${article.slug}.md → ${relatedSlug}.md, обратной ссылки нет`
+			})
 		}
 	}
 

@@ -57,6 +57,18 @@ describe('parseArticleMarkdown', () => {
 		])
 	})
 
+	it('ссылка в пункте списка — inline, а не CTA', () => {
+		// remark-tool-link не рисует карточку внутри <li>, поэтому и считать её
+		// карточкой нельзя: раздел «Полезные ресурсы» в конце статьи — обычный
+		// список ссылок, а не четыре баннера подряд.
+		const content = `## Полезные ресурсы\n\n- [Калькулятор](/tools/tool-a)\n- [Второй](/tools/tool-b)\n`
+		const result = parseArticleMarkdown(content)
+		expect(result.toolLinks).toEqual([
+			{ slug: 'tool-a', kind: 'inline' },
+			{ slug: 'tool-b', kind: 'inline' }
+		])
+	})
+
 	it('захватывает малформированные ссылки на тулы вместо того чтобы их игнорировать', () => {
 		const content = `Текст с [ссылкой на тул](/tools/foo/bar/baz) в нём.\n`
 		const result = parseArticleMarkdown(content)
@@ -191,6 +203,7 @@ function fakeGraph(overrides: Partial<LinkGraph> = {}): LinkGraph {
 		tools: [{ id: 'a', path: 'tool-a', title: 'Tool A' }],
 		articles: [],
 		toolBlogLinks: new Map(),
+		subpages: [],
 		...overrides
 	}
 }
@@ -271,6 +284,75 @@ describe('runChecks', () => {
 			message:
 				'Асимметричный related: article-a.md → article-b.md, обратной ссылки нет'
 		})
+	})
+
+	it('не считает битой ссылку на существующую подстраницу тула', () => {
+		const graph = fakeGraph({
+			subpages: ['tool-a/shagi-v-km'],
+			articles: [
+				{
+					slug: 'article-a',
+					title: 'A',
+					relatedSlugs: [],
+					toolLinks: [{ slug: 'tool-a/shagi-v-km', kind: 'inline' }],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(report.issues.filter(i => i.severity === 'error')).toEqual([])
+	})
+
+	it('отличает несуществующую подстраницу от несуществующего тула', () => {
+		const graph = fakeGraph({
+			subpages: ['tool-a/shagi-v-km'],
+			articles: [
+				{
+					slug: 'article-a',
+					title: 'A',
+					relatedSlugs: [],
+					toolLinks: [{ slug: 'tool-a/opechatka', kind: 'inline' }],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(report.issues).toContainEqual({
+			severity: 'error',
+			message:
+				'Битая ссылка: _posts/article-a.md → /tools/tool-a/opechatka (у тула tool-a нет такой подстраницы)'
+		})
+	})
+
+	it('молчит про асимметрию, когда цель ведёт себя как хаб', () => {
+		// Три спицы показывают на общий разбор, он на них — нет. Это нормальная
+		// форма hub-and-spoke, а не забытые ссылки: требовать взаимности значит
+		// раздуть «Читайте также» у хаба.
+		const spoke = (slug: string) => ({
+			slug,
+			title: slug,
+			relatedSlugs: ['hub'],
+			toolLinks: [{ slug: 'tool-a', kind: 'inline' as const }],
+			blogSlugs: []
+		})
+		const graph = fakeGraph({
+			articles: [
+				spoke('spoke-a'),
+				spoke('spoke-b'),
+				spoke('spoke-c'),
+				{
+					slug: 'hub',
+					title: 'Hub',
+					relatedSlugs: [],
+					toolLinks: [{ slug: 'tool-a', kind: 'inline' }],
+					blogSlugs: []
+				}
+			]
+		})
+		const report = runChecks(graph)
+		expect(
+			report.issues.filter(i => i.message.startsWith('Асимметричный related'))
+		).toEqual([])
 	})
 
 	it('не находит проблем в полностью согласованном графе', () => {
