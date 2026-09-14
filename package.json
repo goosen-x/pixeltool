@@ -43,7 +43,9 @@
 		"pagespeed": "npx tsx scripts/pagespeed.ts",
 		"indexnow": "node scripts/indexnow.mjs",
 		"reindex-diff": "npx tsx scripts/reindex-diff.ts",
-		"check:internal-links": "npx tsx scripts/check-internal-links.ts"
+		"check:internal-links": "npx tsx scripts/check-internal-links.ts",
+		"link-graph": "npx tsx scripts/link-graph.ts && node scripts/link-graph-embed.mjs",
+		"cannibalization": "npx tsx scripts/cannibalization.ts"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.10.0",
