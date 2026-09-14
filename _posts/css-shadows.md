@@ -15,6 +15,7 @@ related:
   - css-animations
   - css-variables
   - css-grid-layout
+  - kontrast-teksta-i-fona
 ---
 
 Тень — самый быстрый способ оторвать элемент от фона. И самый быстрый способ

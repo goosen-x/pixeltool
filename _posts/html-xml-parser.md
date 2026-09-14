@@ -13,6 +13,7 @@ related:
   - html-tree-vs-dom-tree
   - chto-takoe-json
   - lighthouse-100
+  - regulyarnye-vyrazheniya
 ---
 
 Разметка почти всегда попадает в руки человека уже испорченной: минифицированная

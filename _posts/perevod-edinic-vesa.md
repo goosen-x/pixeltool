@@ -10,6 +10,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - perevod-edinic-ploshchadi
+  - perevod-edinic-dliny
 ---
 
 Массу измеряют всем подряд: кухонными весами, аптечной мензуркой, автомобильными

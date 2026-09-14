@@ -40,7 +40,9 @@ export const businessWidgets: Widget[] = [
 		recommendedTools: [
 			'roas-calculator',
 			'cac-ltv-calculator',
-			'percent-calculator'
+			'percent-calculator',
+			'compound-interest-calculator',
+			'liquidity-calculator'
 		],
 		difficulty: 'beginner',
 		updatedAt: '2026-09-03',
@@ -87,7 +89,8 @@ export const businessWidgets: Widget[] = [
 		recommendedTools: [
 			'pricing-calculator',
 			'roi-calculator',
-			'percent-calculator'
+			'percent-calculator',
+			'liquidity-calculator'
 		],
 		difficulty: 'beginner',
 		updatedAt: '2026-09-03',

@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - perevod-fizicheskih-edinic
+  - perevod-edinic-ploshchadi
 ---
 
 Объём меряют посудой чаще, чем приборами. Ложка, чашка, стакан, банка: всё это

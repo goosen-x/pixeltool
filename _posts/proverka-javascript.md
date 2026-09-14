@@ -13,6 +13,8 @@ related:
   - chto-takoe-json
   - html-tree-vs-dom-tree
   - lighthouse-100
+  - regulyarnye-vyrazheniya
+  - kak-sravnit-dva-teksta
 ---
 
 Скрипт не запускается, а в консоли краснеет `Uncaught SyntaxError`. Или того

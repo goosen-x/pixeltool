@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-rasschitat-imt
+  - kak-reshit-proportsiyu
 ---
 
 «Посчитать процент» звучит как одна задача, а на деле это четыре разные формулы,

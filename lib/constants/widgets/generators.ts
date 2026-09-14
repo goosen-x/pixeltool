@@ -193,7 +193,8 @@ export const generatorWidgets: Widget[] = [
 		recommendedTools: [
 			'draw-lots',
 			'random-number-generator',
-			'team-randomizer'
+			'team-randomizer',
+			'random-movie-generator'
 		],
 		difficulty: 'beginner',
 		tags: ['random', 'list', 'shuffle', 'sort', 'generator', 'cryptographic'],
@@ -249,7 +250,8 @@ export const generatorWidgets: Widget[] = [
 		recommendedTools: [
 			'draw-lots',
 			'random-number-generator',
-			'random-list-generator'
+			'random-list-generator',
+			'magic-ball'
 		],
 		difficulty: 'beginner',
 		tags: ['coin', 'flip', 'toss', 'random', 'decision', 'heads', 'tails'],
@@ -361,7 +363,9 @@ export const generatorWidgets: Widget[] = [
 		recommendedTools: [
 			'draw-lots',
 			'team-randomizer',
-			'random-number-generator'
+			'random-number-generator',
+			'magic-ball',
+			'random-movie-generator'
 		],
 		difficulty: 'beginner',
 		tags: ['wheel', 'fortune', 'колесо', 'рулетка', 'random', 'spin'],

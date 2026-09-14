@@ -519,11 +519,21 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'cssBoxShadow',
 		path: 'css-box-shadow-generator',
 		gradient: 'from-gray-600 to-gray-800',
-		title: 'Тень в CSS: box-shadow и text-shadow',
-		metaTitle: 'Тень в CSS - box-shadow и text-shadow с готовым кодом',
+		// Инструмент назывался ровно как статья /blog/css-shadows («Тень в CSS:
+		// box-shadow и text-shadow»), вплоть до «с готовым кодом» в metaTitle
+		// против «с готовыми примерами» в заголовке статьи. Развели по интенту:
+		// тулу достаётся транзакционное «генератор», статье — обучающее
+		// «тень в CSS».
+		title: 'Генератор теней CSS',
+		metaTitle: 'Генератор box-shadow и text-shadow онлайн с готовым кодом',
 		description:
 			'Настройте тень блока или текста ползунками и заберите готовый CSS: смещение, размытие, растяжение, внутренняя тень.',
-		recommendedTools: ['css-gradient', 'color-converter', 'css-keyframes'],
+		recommendedTools: [
+			'css-gradient',
+			'color-converter',
+			'css-keyframes',
+			'nested-border-radius'
+		],
 		difficulty: 'intermediate',
 		updatedAt: '2026-07-13',
 		tags: ['css', 'box-shadow', 'text-shadow', 'тень', 'shadow', 'inset'],
@@ -587,7 +597,12 @@ export const cssWidgets: Widget[] = [
 		metaTitle: 'CSS градиент онлайн - генератор фона linear, radial, conic',
 		description:
 			'Соберите CSS-градиент визуально — линейный, радиальный или конический — настройте цветовые точки и направление и скопируйте готовый код CSS и Tailwind.',
-		recommendedTools: ['css-box-shadow', 'color-converter', 'px-rem-converter'],
+		recommendedTools: [
+			'css-box-shadow',
+			'color-converter',
+			'px-rem-converter',
+			'nested-border-radius'
+		],
 		difficulty: 'intermediate',
 		updatedAt: '2026-07-07',
 		tags: ['css', 'gradient', 'linear', 'radial', 'conic', 'generator'],
@@ -704,8 +719,11 @@ export const cssWidgets: Widget[] = [
 		translationKey: 'cssKeyframes',
 		path: 'css-keyframes-generator',
 		gradient: 'from-blue-500 to-purple-600',
-		title: 'CSS-анимации: примеры и готовый код',
-		metaTitle: 'CSS-анимации - примеры, готовый код и конструктор @keyframes',
+		// Как и у генератора теней: инструмент назывался ровно так же, как
+		// статья /blog/css-animations, и они делили головную фразу. Тулу —
+		// транзакционное «конструктор», статье — «CSS-анимации».
+		title: 'Конструктор CSS-анимаций на @keyframes',
+		metaTitle: 'Конструктор @keyframes - CSS-анимации с готовым кодом',
 		description:
 			'Соберите анимацию на @keyframes или возьмите готовую: появление, пульсация, загрузка, анимация кнопки при наведении.',
 		recommendedTools: ['bezier-curve', 'css-box-shadow', 'css-gradient'],

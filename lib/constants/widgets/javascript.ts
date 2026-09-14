@@ -17,7 +17,7 @@ export const javascriptWidgets: Widget[] = [
 			'Вставьте JSON или YAML — получите читаемый вид, сжатую версию, перевод между форматами и разбор структуры.',
 		useCase:
 			'Разбор и правка JSON: сделать читаемым, найти синтаксическую ошибку, сжать перед отправкой, перевести в YAML и обратно',
-		recommendedTools: ['base64-encoder', 'jwt-decoder', 'text-diff-tool'],
+		recommendedTools: ['base64-encoder', 'jwt-decoder', 'text-diff'],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-14',
 		tags: [

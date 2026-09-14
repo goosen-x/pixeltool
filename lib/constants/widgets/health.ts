@@ -19,7 +19,11 @@ export const healthWidgets: Widget[] = [
 			'Посчитайте индекс массы тела по росту и весу — с расшифровкой категории по стандарту ВОЗ.',
 		useCase:
 			'Узнать свой индекс массы тела и понять, в норме ли соотношение роста и веса',
-		recommendedTools: ['date-difference-calculator', 'timer-countdown'],
+		recommendedTools: [
+			'date-difference-calculator',
+			'timer-countdown',
+			'world-aquatics-points-calculator'
+		],
 		difficulty: 'beginner',
 		tags: ['bmi', 'imt', 'health', 'weight', 'height', 'body-mass-index'],
 		metaTitle: 'Калькулятор ИМТ - индекс массы тела онлайн',
@@ -75,7 +79,9 @@ export const healthWidgets: Widget[] = [
 		recommendedTools: [
 			'bmi-calculator',
 			'date-difference-calculator',
-			'percent-calculator'
+			'percent-calculator',
+			'grams-to-cups',
+			'world-aquatics-points-calculator'
 		],
 		difficulty: 'beginner',
 		tags: ['calories', 'kbju', 'nutrition', 'calculator', 'health', 'diet'],

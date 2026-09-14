@@ -12,7 +12,6 @@ author:
 related:
   - smayliki-shrifty-simvoly-dlya-teksta
   - chto-takoe-base64
-  - kak-sravnit-dva-teksta
 ---
 
 Морзянкой до сих пор пользуются радиолюбители и спасатели. А ещё ею шифруют

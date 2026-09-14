@@ -14,6 +14,7 @@ related:
   - chto-takoe-uuid
   - chto-takoe-jwt
   - preview-ssylki-open-graph
+  - azbuka-morze
 ---
 
 Открываете код страницы или ответ API, а вместо картинки видите длиннющую строку

@@ -14,6 +14,7 @@ related:
   - kak-provesti-rozygrysh-sluchaynym-chislom
   - chto-takoe-uuid
   - kak-sozdat-qr-kod
+  - chto-takoe-jwt
 ---
 
 Больше половины утечек происходит из-за пароля вроде `qwerty123` или собственной

@@ -13,6 +13,7 @@ related:
   - nadezhnyy-parol
   - chto-takoe-uuid
   - kak-provesti-rozygrysh-sluchaynym-chislom
+  - kak-sozdat-utm-metku
 ---
 
 QR-код — чёрно-белый квадрат из модулей, который камера телефона читает быстрее,

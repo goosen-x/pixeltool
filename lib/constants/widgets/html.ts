@@ -20,7 +20,8 @@ export const htmlWidgets: Widget[] = [
 		recommendedTools: [
 			'css-specificity',
 			'html-xml-parser',
-			'flexbox-generator'
+			'flexbox-generator',
+			'http-status-codes'
 		],
 		difficulty: 'intermediate',
 		tags: ['html', 'проверка', 'валидатор', 'линтинг', 'ошибки', 'дерево'],
@@ -193,7 +194,12 @@ export const htmlWidgets: Widget[] = [
 			'Проверить и настроить превью ссылки в соцсетях: Open Graph, og:image, предпросмотр для Telegram, Facebook, Twitter и WhatsApp',
 		metaDescription:
 			'Превью и предпросмотр ссылки онлайн: как страница выглядит при репосте в Telegram, Facebook и Twitter. Разбор Open Graph и og:image плюс готовые теги для вставки.',
-		recommendedTools: ['html-tree', 'favicon-generator', 'utm-builder'],
+		recommendedTools: [
+			'html-tree',
+			'favicon-generator',
+			'utm-builder',
+			'http-status-codes'
+		],
 		faqs: [
 			{
 				question: 'Как сделать превью ссылки?',

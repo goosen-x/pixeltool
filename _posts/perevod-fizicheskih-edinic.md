@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - perevod-edinic-dliny
+  - perevod-edinic-obyoma
 ---
 
 Физика оперирует единицами, которые редко совпадают с бытовыми. В задаче

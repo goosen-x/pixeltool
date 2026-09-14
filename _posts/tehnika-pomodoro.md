@@ -11,8 +11,6 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-provesti-rozygrysh-sluchaynym-chislom
-  - nadezhnyy-parol
-  - kak-sozdat-qr-kod
 ---
 
 Час над задачей, а в голове уже три открытые вкладки, телефон и мысли об ужине.

@@ -843,7 +843,12 @@ export const toolWidgets: Widget[] = [
 			'Склейте несколько PDF в один документ: порядок задаётся списком, страницы переносятся без перерисовки. Файлы не уходят на сервер.',
 		useCase:
 			'Собрать один файл из отсканированных по частям договора, приложений и справок — чтобы отправить одним вложением, а не десятью',
-		recommendedTools: ['compress-pdf', 'pdf-to-jpg', 'compress-image'],
+		recommendedTools: [
+			'compress-pdf',
+			'pdf-to-jpg',
+			'compress-image',
+			'sign-pdf'
+		],
 		difficulty: 'beginner',
 		tags: ['pdf', 'объединить', 'склеить', 'документы', 'сканы'],
 		metaTitle: 'Объединить PDF онлайн - склеить файлы в один',
@@ -890,7 +895,7 @@ export const toolWidgets: Widget[] = [
 			'Уменьшите вес PDF: бережно — с сохранением текста, или сильно — растеризацией страниц с ползунком качества. Видно, сколько весит результат.',
 		useCase:
 			'Уложить скан или презентацию в лимит вложения почты и форм госпорталов, где обычно стоит потолок в 5-10 МБ',
-		recommendedTools: ['merge-pdf', 'pdf-to-jpg', 'compress-image'],
+		recommendedTools: ['merge-pdf', 'pdf-to-jpg', 'compress-image', 'sign-pdf'],
 		difficulty: 'beginner',
 		tags: ['pdf', 'сжать', 'уменьшить размер', 'вес файла', 'сканы'],
 		metaTitle: 'Сжать PDF онлайн - уменьшить размер файла',
@@ -1048,7 +1053,8 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'numerology-calculator',
 			'destiny-matrix-calculator',
-			'age-calculator'
+			'age-calculator',
+			'zodiac-compatibility'
 		],
 		difficulty: 'beginner',
 		tags: ['зодиак', 'знак зодиака', 'гороскоп', 'дата рождения', 'астрология'],
@@ -1108,7 +1114,7 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'css-clamp-calculator',
 			'flexbox-generator',
-			'css-box-shadow-generator'
+			'css-box-shadow'
 		],
 		difficulty: 'beginner',
 		tags: ['css', 'border-radius', 'скругление', 'вёрстка', 'интерфейс'],
@@ -1321,7 +1327,8 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'amount-in-words',
 			'ndfl-calculator',
-			'percent-calculator'
+			'percent-calculator',
+			'inn-checker'
 		],
 		difficulty: 'beginner',
 		tags: ['ндс', 'налог', 'счёт', 'бухгалтерия', '22%'],
@@ -1372,7 +1379,8 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'vat-calculator',
 			'percent-calculator',
-			'amount-in-words'
+			'amount-in-words',
+			'inn-checker'
 		],
 		difficulty: 'beginner',
 		tags: ['ндфл', 'налог', 'зарплата', 'прогрессивная шкала', 'на руки'],
@@ -2066,7 +2074,8 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'date-difference-calculator',
 			'expiry-date-calculator',
-			'random-number-generator'
+			'random-number-generator',
+			'compound-interest-calculator'
 		],
 		difficulty: 'beginner',
 		tags: ['percent', 'percentage', 'calculator', 'discount', 'markup'],
@@ -2180,7 +2189,8 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'percent-calculator',
 			'random-number-generator',
-			'password-generator'
+			'password-generator',
+			'currency-converter'
 		],
 		difficulty: 'beginner',
 		tags: ['bitcoin', 'crypto', 'btc', 'eth', 'calculator', 'converter'],
@@ -2192,7 +2202,7 @@ export const toolWidgets: Widget[] = [
 			{
 				question: 'Откуда берётся курс?',
 				answer:
-					'Курс запрашивается у CoinGecko — независимого агрегатора цен с крупных бирж, тот же источник, которым пользуется большинство подобных калькуляторов. Курс актуален на момент запроса, а не хранится на сервере.'
+					'Курс запрашивается у CoinGecko — независимого агрегатора цен с крупных бирж, тот же источник, которым пользуется большинство подобных калькуляторов. Курс актуален на момент запроса, а не хранится на сервере. Он агрегированный, поэтому может отличаться от цены на конкретной бирже на доли процента: это разница в ликвидности и объёмах торгов между площадками, а не ошибка расчёта.'
 			},
 			{
 				question: 'Можно перевести доллары или рубли в биткоин?',
@@ -2326,7 +2336,11 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'percent-calculator',
 			'date-difference-calculator',
-			'px-rem-converter'
+			'px-rem-converter',
+			'grams-to-cups',
+			'tv-size',
+			'number-base-converter',
+			'currency-converter'
 		],
 		difficulty: 'beginner',
 		tags: [
@@ -2495,8 +2509,9 @@ export const toolWidgets: Widget[] = [
 			'Подобрать точный код цвета с фотографии для дизайна, вёрстки или заказа краски',
 		recommendedTools: [
 			'color-converter',
-			'color-contrast-checker',
-			'image-size-checker'
+			'color-contrast',
+			'image-size-checker',
+			'pixel-art-editor'
 		],
 		difficulty: 'beginner',
 		tags: ['color', 'picker', 'eyedropper', 'photo', 'image', 'hex', 'rgb'],
@@ -2548,7 +2563,7 @@ export const toolWidgets: Widget[] = [
 			'Складывайте, вычитайте, умножайте и делите обыкновенные дроби, результат сразу в упрощённом виде',
 		useCase:
 			'Посчитать сумму, разность, произведение или частное двух дробей для домашнего задания или расчёта пропорции',
-		recommendedTools: ['percent-calculator'],
+		recommendedTools: ['percent-calculator', 'number-base-converter'],
 		difficulty: 'beginner',
 		tags: ['fraction', 'calculator', 'math', 'arithmetic', 'gcd'],
 		metaTitle: 'Калькулятор дробей онлайн: сложение и деление',
@@ -2641,7 +2656,7 @@ export const toolWidgets: Widget[] = [
 			'Решите пропорцию a/b = c/d — оставьте одно число пустым, остальные три посчитают его по правилу креста.',
 		useCase:
 			'Найти неизвестный член пропорции: пересчитать рецепт под другое число порций, развести бензин с маслом в нужном соотношении, увеличить чертёж с сохранением пропорций',
-		recommendedTools: ['percent-calculator', 'fraction-calculator'],
+		recommendedTools: ['percent-calculator', 'fraction-calculator', 'tv-size'],
 		difficulty: 'beginner',
 		tags: ['proportion', 'calculator', 'ratio', 'пропорция', 'math'],
 		metaTitle: 'Калькулятор пропорции онлайн: правило креста',
@@ -2723,7 +2738,11 @@ export const toolWidgets: Widget[] = [
 			'Число жизненного пути и число дня рождения по дате: сумма цифр сворачивается до одной, мастер-числа 11, 22 и 33 остаются как есть.',
 		useCase:
 			'Узнать своё число жизненного пути (оно же число судьбы) и принятую трактовку по дате рождения',
-		recommendedTools: ['destiny-matrix-calculator', 'age-calculator'],
+		recommendedTools: [
+			'destiny-matrix-calculator',
+			'age-calculator',
+			'zodiac-compatibility'
+		],
 		difficulty: 'beginner',
 		tags: ['нумерология', 'число судьбы', 'жизненный путь', 'дата рождения'],
 		metaTitle: 'Нумерология по дате рождения: число судьбы',
@@ -3061,7 +3080,8 @@ export const toolWidgets: Widget[] = [
 		recommendedTools: [
 			'compress-image',
 			'image-converter',
-			'photo-color-picker'
+			'photo-color-picker',
+			'pixel-art-editor'
 		],
 		difficulty: 'beginner',
 		tags: ['dice', 'ascii', 'art', 'unicode', 'mosaic', 'image', 'кости'],

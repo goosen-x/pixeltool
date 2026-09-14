@@ -14,6 +14,8 @@ related:
   - html-tree-vs-dom-tree
   - lighthouse-100
   - css-variables
+  - preview-ssylki-open-graph
+  - razmer-kartinki-dlya-socsetey
 ---
 
 Фавикон — та самая маленькая картинка на вкладке браузера. Казалось бы, что тут

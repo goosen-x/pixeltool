@@ -526,11 +526,7 @@ export const textWidgets: Widget[] = [
 			'Найдите в тексте буквы, набранные не тем алфавитом: русскую «о» вместо латинской и наоборот. Подсветим и заменим одним нажатием.',
 		useCase:
 			'Проверить пароль, ник, артикул или строку кода на скрытую подмену букв, из-за которой текст не находится поиском и не совпадает при сравнении',
-		recommendedTools: [
-			'invisible-character',
-			'car-region-codes',
-			'text-diff-tool'
-		],
+		recommendedTools: ['invisible-character', 'car-region-codes', 'text-diff'],
 		difficulty: 'beginner',
 		tags: ['латиница', 'кириллица', 'омоглифы', 'раскладка', 'текст'],
 		metaTitle: 'Латиница в кириллице: найти в тексте',

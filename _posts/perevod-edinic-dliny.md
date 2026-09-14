@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - perevod-edinic-vesa
+  - perevod-fizicheskih-edinic
 ---
 
 Тема выглядит школьной ровно до того момента, пока не приходится покупать

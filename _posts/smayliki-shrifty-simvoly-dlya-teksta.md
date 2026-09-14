@@ -11,7 +11,8 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-provesti-rozygrysh-sluchaynym-chislom
-  - regulyarnye-vyrazheniya
+  - kak-sdelat-nevidimyy-nik-v-telegram
+  - azbuka-morze
 ---
 
 Обычный текст без оформления теряется в ленте. Среди сообщений с эмодзи и

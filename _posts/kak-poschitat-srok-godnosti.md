@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-rasschitat-imt
+  - kak-poschitat-vozrast-po-date-rozhdeniya
 ---
 
 На упаковке продукта редко пишут «годен до такого-то числа». Обычно указывают

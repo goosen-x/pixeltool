@@ -15,6 +15,7 @@ related:
   - css-variables
   - css-shadows
   - lighthouse-100
+  - css-pseudo-selectors
 ---
 
 Анимация в CSS собирается из двух вещей: описания кадров и подключения их к

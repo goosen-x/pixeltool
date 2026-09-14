@@ -28,6 +28,7 @@ related:
   - css-animations
   - css-variables
   - css-flexbox-guide
+  - html-tree-vs-dom-tree
 ---
 
 Псевдоклассы стилизуют элемент по его состоянию или позиции, а псевдоэлементы

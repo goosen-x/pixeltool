@@ -114,7 +114,12 @@ export const securityWidgets: Widget[] = [
 			'Задайте длину и набор символов — пароль соберётся в браузере, а индикатор сразу покажет, насколько он стойкий к перебору.',
 		useCase:
 			'Бесплатный онлайн генератор паролей для соцсетей, почты, аккаунтов и защиты данных',
-		recommendedTools: ['uuid-generator', 'base64-encoder', 'qr-generator'],
+		recommendedTools: [
+			'uuid-generator',
+			'base64-encoder',
+			'qr-generator',
+			'caesar-cipher'
+		],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-28',
 		tags: [
@@ -166,7 +171,12 @@ export const securityWidgets: Widget[] = [
 		title: 'Base64 кодировщик',
 		metaTitle: 'Base64 онлайн - кодировать и декодировать',
 		description: 'Кодируйте и декодируйте данные в формате Base64',
-		recommendedTools: ['jwt-decoder', 'svg-encoder', 'json-tools'],
+		recommendedTools: [
+			'jwt-decoder',
+			'svg-encoder',
+			'json-tools',
+			'caesar-cipher'
+		],
 		difficulty: 'beginner',
 		updatedAt: '2026-07-30',
 		tags: ['base64', 'encode', 'decode', 'converter', 'encryption'],
