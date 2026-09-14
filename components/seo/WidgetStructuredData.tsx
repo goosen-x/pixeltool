@@ -1,6 +1,6 @@
 import { Widget } from '@/lib/constants/widgets'
 import { toolScreenshotBase } from '@/lib/constants/tool-screenshots'
-import { getToolSpecificSchema } from '@/lib/seo/widget-schemas'
+import { getApplicationCategory } from '@/lib/seo/widget-schemas'
 import type { ToolStats } from '@/lib/tool-stats/get-all-stats'
 
 interface WidgetStructuredDataProps {
@@ -43,7 +43,7 @@ export function WidgetStructuredData({
 		name: title,
 		description: description,
 		url: url,
-		applicationCategory: 'DeveloperApplication',
+		applicationCategory: getApplicationCategory(widget.category),
 		browserRequirements: 'Requires JavaScript. Requires HTML5.',
 		applicationSubCategory: getCategoryName(
 			widget.subcategory ?? widget.category
@@ -58,7 +58,9 @@ export function WidgetStructuredData({
 		offers: {
 			'@type': 'Offer',
 			price: '0',
-			priceCurrency: 'USD'
+			// Сайт русскоязычный и бесплатный: доллар в цене ноль ничего не
+			// значил, но валюта должна соответствовать аудитории.
+			priceCurrency: 'RUB'
 		},
 		author: {
 			'@type': 'Organization',
@@ -114,16 +116,6 @@ export function WidgetStructuredData({
 	// FAQ разметку намеренно не создаём здесь — её отдаёт FAQ.tsx (WidgetFAQ),
 	// чтобы на странице был ровно один FAQPage.
 
-	// Get additional schemas
-	const additionalSchemas = getToolSpecificSchema(
-		widget,
-		locale,
-		title,
-		description,
-		url,
-		baseUrl
-	)
-
 	return (
 		<>
 			<script
@@ -138,19 +130,18 @@ export function WidgetStructuredData({
 					__html: JSON.stringify(webPageSchema)
 				}}
 			/>
-			{additionalSchemas.map((schema, index) => (
-				<script
-					key={`additional-schema-${index}`}
-					type='application/ld+json'
-					dangerouslySetInnerHTML={{
-						__html: JSON.stringify(schema)
-					}}
-				/>
-			))}
 		</>
 	)
 }
 
+/**
+ * Человекочитаемая подпись для `applicationSubCategory`.
+ *
+ * Ключи — значения `Widget['category']` плюс три подкатегории «Разработки».
+ * Раньше справочник знал восемь из восемнадцати, и десять категорий — здоровье,
+ * финансы, маркетинг, стройка, дата и время и остальные — падали в общий
+ * «Utility Tools».
+ */
 function getCategoryName(category: string): string {
 	const categories: Record<string, string> = {
 		css: 'CSS Development Tools',
@@ -160,8 +151,17 @@ function getCategoryName(category: string): string {
 		text: 'Text Processing Tools',
 		generators: 'Randomizer Tools',
 		security: 'Password & QR Tools',
-		images: 'Image Tools',
-		tools: 'Utility Tools'
+		images: 'Image & PDF Tools',
+		health: 'Health Calculators',
+		construction: 'Construction Calculators',
+		datetime: 'Date & Time Tools',
+		math: 'Math Calculators',
+		finance: 'Finance Calculators',
+		marketing: 'Marketing Calculators',
+		auto: 'Automotive Tools',
+		entertainment: 'Entertainment Tools',
+		esoteric: 'Esoteric Tools',
+		utilities: 'Utility Tools'
 	}
 	return categories[category] || 'Utility Tools'
 }

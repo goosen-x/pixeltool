@@ -1,6 +1,7 @@
 import { widgetCategories, getWidgetsByCategory } from '@/lib/constants/widgets'
 import { CATEGORY_META } from '@/lib/constants/categories'
-import { unitPairs } from '@/lib/constants/unit-pairs'
+import { getWidgetByPath } from '@/lib/constants/widgets'
+import { TOOL_SUBPAGE_FAMILIES } from '@/lib/seo/tool-subpages'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -30,11 +31,20 @@ function buildLlmsTxt(): string {
 		return `## ${title} (${widgets.length})\n\n${meta.description}\n\n${toolLines.join('\n')}`
 	})
 
-	// Страницы пар единиц — не отдельные тулы, а SEO-страницы одного хаба,
-	// поэтому идут своим блоком, а не внутри категории «Утилиты».
-	const pairLines = unitPairs.map(
-		pair => `- [${pair.h1}](${BASE_URL}/tools/unit-converter/${pair.slug})`
-	)
+	// SEO-подстраницы — не отдельные тулы, а страницы одного хаба, поэтому
+	// идут своими блоками, а не внутри категорий. Раньше здесь были только
+	// пары единиц, и модель, которую спросили «сколько дней до лета» или
+	// «даты знака Лев», не видела ни одной из остальных 24 страниц.
+	const subpageSections = TOOL_SUBPAGE_FAMILIES.map(family => {
+		const hub = getWidgetByPath(family.parentPath)
+		const hubTitle = hub?.title || family.parentPath
+		const hubUrl = `${BASE_URL}/tools/${family.parentPath}`
+		const lines = family.items.map(
+			item => `- [${item.label}](${hubUrl}/${item.slug})`
+		)
+
+		return `## ${hubTitle}\n\nХаб: [${hubUrl}](${hubUrl}). Отдельные страницы:\n\n${lines.join('\n')}`
+	})
 
 	return `# PixelTool
 
@@ -46,11 +56,7 @@ function buildLlmsTxt(): string {
 
 ${sections.join('\n\n')}
 
-## Конвертер единиц измерения
-
-Хаб: [${BASE_URL}/tools/unit-converter](${BASE_URL}/tools/unit-converter). Отдельные страницы под конкретные пары единиц:
-
-${pairLines.join('\n')}
+${subpageSections.join('\n\n')}
 
 ## Другое
 
