@@ -31,6 +31,12 @@ const payload = {
 		if (n.parent) out.p = n.parent
 		if (n.views !== undefined) out.v = n.views
 		if (n.rating) { out.r = n.rating; out.rc = n.ratingCount }
+		if (n.impressions !== undefined) {
+			out.imp = n.impressions
+			out.clk = n.clicks
+			out.ct = n.ctr
+			if (n.position !== undefined) out.pos = n.position
+		}
 		return out
 	}),
 	edges: graph.edges

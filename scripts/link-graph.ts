@@ -74,6 +74,36 @@ function readStatsCsv(filePath: string): Map<string, PageStats> {
 	return stats
 }
 
+interface SearchStats {
+	impressions: number
+	clicks: number
+	ctr: number
+	position: number | null
+}
+
+/**
+ * Выгрузка `webmaster_url_stats` из боевой БД: показы, клики, CTR и средняя
+ * позиция в Яндексе по странице за период. Ключ — путь (`/tools/draw-lots`),
+ * он же `GraphNode.url`, поэтому сводится напрямую без карты идентификаторов.
+ */
+function readSearchCsv(filePath: string): Map<string, SearchStats> {
+	const stats = new Map<string, SearchStats>()
+	if (!fs.existsSync(filePath)) return stats
+
+	const lines = fs.readFileSync(filePath, 'utf-8').trim().split('\n')
+	for (const line of lines.slice(1)) {
+		const [path, , , impressions, clicks, ctr, position] = line.split(',')
+		if (!path) continue
+		stats.set(path, {
+			impressions: Number(impressions) || 0,
+			clicks: Number(clicks) || 0,
+			ctr: Number(ctr) || 0,
+			position: position ? Number(position) : null
+		})
+	}
+	return stats
+}
+
 interface GraphNode {
 	id: string
 	kind: NodeKind
@@ -91,6 +121,12 @@ interface GraphNode {
 	/** Средняя звезда, 1–5. Считается только при ratingCount > 0. */
 	rating?: number
 	ratingCount?: number
+	/** Показы в Яндексе за период выгрузки. */
+	impressions?: number
+	clicks?: number
+	ctr?: number
+	/** Средняя позиция. Ниже 10 — вторая страница выдачи. */
+	position?: number
 }
 
 interface GraphEdge {
@@ -110,6 +146,9 @@ function main(): void {
 	)
 	const blogStats = readStatsCsv(
 		path.join(repoRoot, 'docs/stats/blog_stats.csv')
+	)
+	const searchStats = readSearchCsv(
+		path.join(repoRoot, 'docs/stats/webmaster_url_stats.csv')
 	)
 
 	const applyStats = (
@@ -336,6 +375,17 @@ function main(): void {
 		{ key: 'missing', title: 'Битые ссылки', kind: 'missing' as const }
 	]
 
+	// Поисковая статистика сводится по url, а не по id, поэтому проставляется
+	// одним проходом в конце — после того как все узлы собраны.
+	for (const node of nodes) {
+		const search = searchStats.get(node.url)
+		if (!search) continue
+		node.impressions = search.impressions
+		node.clicks = search.clicks
+		node.ctr = search.ctr
+		if (search.position !== null) node.position = search.position
+	}
+
 	const payload = {
 		generatedAt: new Date().toISOString(),
 		clusters,
@@ -364,12 +414,16 @@ function main(): void {
 	}, {})
 
 	const withViews = nodes.filter(n => n.views !== undefined).length
+	const withSearch = nodes.filter(n => n.impressions !== undefined).length
 	console.log(`Граф выгружен: ${path.relative(repoRoot, outPath)}`)
 	console.log(
 		withViews > 0
 			? `Статистика БД подмешана к ${withViews} узлам`
 			: 'Статистика БД не найдена (docs/stats/*.csv) — граф без просмотров'
 	)
+	if (withSearch > 0) {
+		console.log(`Поисковая статистика Яндекса: ${withSearch} страниц`)
+	}
 	console.log(`Узлы (${nodes.length}):`, byKind)
 	console.log(`Рёбра (${edges.length}):`, edgesByKind)
 }
