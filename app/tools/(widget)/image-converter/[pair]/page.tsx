@@ -5,6 +5,7 @@ import { IMAGE_PAIRS, getImagePair } from '@/lib/constants/image-pairs'
 import { ImageConverterWidget } from '@/components/tools/ImageConverterWidget'
 import { FaqAccordion } from '@/components/tools/FaqAccordion'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { buildToolBreadcrumbs } from '@/lib/seo/tool-breadcrumbs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -86,12 +87,10 @@ export default async function ImagePairPage(props: Params) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
 			/>
 			<Breadcrumbs
-				items={[
-					{ name: 'Главная', url: '/' },
-					{ name: 'Инструменты', url: '/tools' },
-					{ name: 'Конвертер изображений', url: '/tools/image-converter' },
-					{ name: page.h1, url: `/tools/image-converter/${page.slug}` }
-				]}
+				items={buildToolBreadcrumbs('image-converter', {
+					name: page.h1,
+					url: `/tools/image-converter/${page.slug}`
+				})}
 				className='mb-6'
 			/>
 			<div className='mb-4'>

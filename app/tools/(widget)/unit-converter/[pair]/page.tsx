@@ -5,6 +5,7 @@ import { unitPairs, getUnitPairBySlug } from '@/lib/constants/unit-pairs'
 import { UnitConverterWidget } from '@/components/tools/UnitConverterWidget'
 import { FaqAccordion } from '@/components/tools/FaqAccordion'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { buildToolBreadcrumbs } from '@/lib/seo/tool-breadcrumbs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -102,12 +103,10 @@ export default async function UnitPairPage(props: Params) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
 			/>
 			<Breadcrumbs
-				items={[
-					{ name: 'Главная', url: '/' },
-					{ name: 'Инструменты', url: '/tools' },
-					{ name: 'Конвертер единиц измерения', url: '/tools/unit-converter' },
-					{ name: pair.h1, url: `/tools/unit-converter/${pair.slug}` }
-				]}
+				items={buildToolBreadcrumbs('unit-converter', {
+					name: pair.h1,
+					url: `/tools/unit-converter/${pair.slug}`
+				})}
 				className='mb-6'
 			/>
 			<div className='mb-4'>

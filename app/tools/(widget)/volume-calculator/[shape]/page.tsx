@@ -8,6 +8,7 @@ import {
 import { GeometryCalculator } from '@/components/tools/GeometryCalculator'
 import { FaqAccordion } from '@/components/tools/FaqAccordion'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { buildToolBreadcrumbs } from '@/lib/seo/tool-breadcrumbs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 const KIND = 'volume' as const
@@ -105,12 +106,10 @@ export default async function GeometryShapePage(props: Params) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
 			/>
 			<Breadcrumbs
-				items={[
-					{ name: 'Главная', url: '/' },
-					{ name: 'Инструменты', url: '/tools' },
-					{ name: HUB_TITLE, url: `/tools/${HUB_PATH}` },
-					{ name: page.h1, url: `/tools/${HUB_PATH}/${page.slug}` }
-				]}
+				items={buildToolBreadcrumbs(HUB_PATH, {
+					name: page.h1,
+					url: `/tools/${HUB_PATH}/${page.slug}`
+				})}
 				className='mb-6'
 			/>
 			<div className='mb-4'>

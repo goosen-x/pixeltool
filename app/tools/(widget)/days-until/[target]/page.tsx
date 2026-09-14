@@ -8,6 +8,7 @@ import {
 import { DaysUntilWidget } from '@/components/tools/DaysUntilWidget'
 import { FaqAccordion } from '@/components/tools/FaqAccordion'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { buildToolBreadcrumbs } from '@/lib/seo/tool-breadcrumbs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -89,12 +90,10 @@ export default async function DaysUntilTargetPage(props: Params) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
 			/>
 			<Breadcrumbs
-				items={[
-					{ name: 'Главная', url: '/' },
-					{ name: 'Инструменты', url: '/tools' },
-					{ name: 'Сколько дней до даты', url: '/tools/days-until' },
-					{ name: page.h1, url: `/tools/days-until/${page.slug}` }
-				]}
+				items={buildToolBreadcrumbs('days-until', {
+					name: page.h1,
+					url: `/tools/days-until/${page.slug}`
+				})}
 				className='mb-6'
 			/>
 			<div className='mb-4'>

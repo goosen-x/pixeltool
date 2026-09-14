@@ -8,6 +8,7 @@ import { RelatedTools } from '@/components/seo/RelatedTools'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { WidgetStructuredData } from '@/components/seo/WidgetStructuredData'
 import { getWidgetByPath } from '@/lib/constants/widgets'
+import { buildToolBreadcrumbs } from '@/lib/seo/tool-breadcrumbs'
 import { useAnalytics } from '@/lib/hooks/useAnalytics'
 import { ReactNode, useState } from 'react'
 import { Menu } from 'lucide-react'
@@ -96,14 +97,7 @@ export function ProjectsLayoutWrapper({ children, toolStats }: Props) {
 							{widget && (
 								<Breadcrumbs
 									className='px-0 sm:px-0 lg:px-0 pt-0 sm:pt-0 pb-0 sm:pb-0 mb-8 max-w-none mx-0'
-									items={[
-										{ name: 'Главная', url: '/' },
-										{ name: 'Инструменты', url: '/tools' },
-										{
-											name: widget.title || widgetPath || '',
-											url: `/tools/${widget.path}`
-										}
-									]}
+									items={buildToolBreadcrumbs(widget.path)}
 								/>
 							)}
 							{widgetId && <WidgetHeader widgetId={widgetId} />}

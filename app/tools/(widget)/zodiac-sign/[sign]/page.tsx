@@ -7,6 +7,7 @@ import { ZodiacWidget } from '@/components/tools/ZodiacWidget'
 import { ZodiacTable } from '@/components/tools/ZodiacTable'
 import { FaqAccordion } from '@/components/tools/FaqAccordion'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { buildToolBreadcrumbs } from '@/lib/seo/tool-breadcrumbs'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 
@@ -105,12 +106,10 @@ export default async function ZodiacSignPage(props: Params) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
 			/>
 			<Breadcrumbs
-				items={[
-					{ name: 'Главная', url: '/' },
-					{ name: 'Инструменты', url: '/tools' },
-					{ name: 'Знак зодиака по дате рождения', url: '/tools/zodiac-sign' },
-					{ name: page.h1, url: `/tools/zodiac-sign/${sign.id}` }
-				]}
+				items={buildToolBreadcrumbs('zodiac-sign', {
+					name: page.h1,
+					url: `/tools/zodiac-sign/${sign.id}`
+				})}
 				className='mb-6'
 			/>
 			<div className='mb-4'>
