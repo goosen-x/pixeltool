@@ -1,6 +1,5 @@
 import { readFileSync, statSync } from 'fs'
 import { join } from 'path'
-import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { dev } from '@/lib/config/env'
@@ -57,20 +56,38 @@ export default async function DevSerpPage() {
 		rows = parseTsv(readFileSync(TSV_PATH, 'utf-8'))
 		updatedAt = statSync(TSV_PATH).mtime
 	} catch {
-		notFound()
+		// Раньше здесь был notFound(). Пока на страницу заходили по прямому
+		// адресу, это читалось как «страницы нет»; теперь на неё ведёт ссылка
+		// из навигации, и 404 по клику выглядит поломкой. Объясняем причину.
+		return (
+			<main className='mx-auto max-w-7xl px-4 py-8 sm:px-6'>
+				<h1 className='text-2xl font-bold tracking-tight'>Позиции в Яндексе</h1>
+				<p className='mt-3 max-w-prose text-muted-foreground'>
+					Выгрузка ещё не снята: нет файла{' '}
+					<code className='rounded bg-muted px-1.5 py-0.5 font-mono text-sm'>
+						docs/seo/serp-positions.tsv
+					</code>
+					.
+				</p>
+				<p className='mt-3 max-w-prose text-muted-foreground'>
+					Снять его командой{' '}
+					<code className='rounded bg-muted px-1.5 py-0.5 font-mono text-sm'>
+						pnpm serp --built --tsv docs/seo/serp-positions.tsv
+					</code>
+					.{' '}
+					<strong className='font-medium text-foreground'>
+						Запрос платный:
+					</strong>{' '}
+					Yandex Search API списывает деньги за каждую фразу, полный прогон по
+					реестру — около 285 запросов.
+				</p>
+			</main>
+		)
 	}
 
 	return (
 		<main className='mx-auto max-w-7xl px-4 py-8 sm:px-6'>
-			<Link
-				href='/dev/candidates'
-				className='cursor-pointer text-sm text-muted-foreground underline-offset-2 hover:text-primary hover:underline'
-			>
-				← Кандидаты на новые тулы
-			</Link>
-			<h1 className='mt-2 text-2xl font-bold tracking-tight'>
-				Позиции в Яндексе
-			</h1>
+			<h1 className='text-2xl font-bold tracking-tight'>Позиции в Яндексе</h1>
 			<p className='mt-1 text-sm text-muted-foreground'>
 				{rows.length} фраз · снимок от{' '}
 				{updatedAt.toLocaleDateString('ru-RU', {

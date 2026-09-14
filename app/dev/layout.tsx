@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { NOINDEX } from '@/lib/seo/noindex'
+import { DevNav } from '@/components/dev/DevNav'
 
 // Метаданные layout наследуются всеми страницами ветки, если те не переопределят
 // robots своим значением. Страховка на случай новой страницы под /dev, где блок
@@ -10,5 +11,10 @@ export const metadata: Metadata = {
 }
 
 export default function DevLayout({ children }: { children: ReactNode }) {
-	return children
+	return (
+		<>
+			<DevNav />
+			{children}
+		</>
+	)
 }

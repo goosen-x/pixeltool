@@ -358,7 +358,10 @@ export function runChecks(graph: LinkGraph): CheckReport {
 		for (const relatedSlug of article.relatedSlugs) {
 			const target = articlesBySlug.get(relatedSlug)
 			if (target && !target.relatedSlugs.includes(article.slug)) {
-				oneSidedInbound.set(relatedSlug, (oneSidedInbound.get(relatedSlug) ?? 0) + 1)
+				oneSidedInbound.set(
+					relatedSlug,
+					(oneSidedInbound.get(relatedSlug) ?? 0) + 1
+				)
 			}
 		}
 	}
@@ -366,7 +369,10 @@ export function runChecks(graph: LinkGraph): CheckReport {
 	for (const article of graph.articles) {
 		for (const relatedSlug of article.relatedSlugs) {
 			const relatedArticle = articlesBySlug.get(relatedSlug)
-			if (!relatedArticle || relatedArticle.relatedSlugs.includes(article.slug)) {
+			if (
+				!relatedArticle ||
+				relatedArticle.relatedSlugs.includes(article.slug)
+			) {
 				continue
 			}
 			if ((oneSidedInbound.get(relatedSlug) ?? 0) >= HUB_ASYMMETRY_THRESHOLD) {
