@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-rasschitat-imt
+  - lunnyy-kalendar-fazy-luny
 ---
 
 Матрица судьбы (её же называют психоматрицей или матрицей души) — популярный

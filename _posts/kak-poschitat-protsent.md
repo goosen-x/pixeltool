@@ -12,6 +12,8 @@ author:
 related:
   - kak-rasschitat-imt
   - kak-reshit-proportsiyu
+  - sredniy-zarabotok-otpusknye-bolnichnyy-dekretnye
+  - kak-vystavit-schet-nds-rekvizity-summa-propisyu
 ---
 
 «Посчитать процент» звучит как одна задача, а на деле это четыре разные формулы,
