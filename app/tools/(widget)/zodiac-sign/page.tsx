@@ -6,6 +6,8 @@ import { ZodiacWidget } from '@/components/tools/ZodiacWidget'
 import { ZodiacTable } from '@/components/tools/ZodiacTable'
 import { ZodiacSignSeo } from './ZodiacSignSeo'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
+import { SubpageLinks } from '@/components/tools/SubpageLinks'
+import { ZODIAC_PAGES } from '@/lib/constants/zodiac-pages'
 
 export default function ZodiacSignPage() {
 	const widget = getWidgetById('zodiac-sign')!
@@ -26,6 +28,12 @@ export default function ZodiacSignPage() {
 					<ZodiacTable />
 				</div>
 			</div>
+
+			<SubpageLinks
+				parentPath='zodiac-sign'
+				title='Отдельная страница по каждому знаку'
+				items={ZODIAC_PAGES.map(page => ({ slug: page.id, label: page.h1 }))}
+			/>
 
 			<ToolScreenshot slug='zodiac-sign' />
 			<ZodiacSignSeo />
