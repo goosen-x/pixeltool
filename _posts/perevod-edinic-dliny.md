@@ -12,6 +12,7 @@ author:
 related:
   - perevod-edinic-vesa
   - perevod-fizicheskih-edinic
+  - rasschitat-poezdku-na-mashine
 ---
 
 Тема выглядит школьной ровно до того момента, пока не приходится покупать

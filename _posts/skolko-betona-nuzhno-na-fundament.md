@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - skolko-plitki-nuzhno-kupit
+  - kak-schitayut-ploshchad-i-obyom
 ---
 
 Перед заливкой фундамента, стяжки или плиты нужно заранее знать два числа:

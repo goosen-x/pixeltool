@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-provesti-rozygrysh-sluchaynym-chislom
+  - kak-vybrat-kogda-vse-ravno
 ---
 
 Час над задачей, а в голове уже три открытые вкладки, телефон и мысли об ужине.

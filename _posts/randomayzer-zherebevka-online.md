@@ -14,6 +14,7 @@ author:
 related:
   - kak-provesti-rozygrysh-sluchaynym-chislom
   - tehnika-pomodoro
+  - kak-vybrat-kogda-vse-ravno
 ---
 
 «Кто идёт первым?», «В какой команде играть?», «Кому доставать подарок в Тайном

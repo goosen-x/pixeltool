@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - skolko-betona-nuzhno-na-fundament
+  - kak-schitayut-ploshchad-i-obyom
 ---
 
 Купить плитку впритык по площади помещения кажется логичным способом сэкономить,
