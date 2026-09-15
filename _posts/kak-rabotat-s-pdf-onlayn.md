@@ -13,6 +13,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-sravnit-dva-teksta
+  - kak-podgotovit-foto-dlya-sayta
 ---
 
 Нужно склеить пять сканов в один файл перед отправкой в налоговую. Или письмо не
