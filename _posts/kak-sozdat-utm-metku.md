@@ -13,6 +13,7 @@ author:
 related:
   - kak-sozdat-qr-kod
   - preview-ssylki-open-graph
+  - metriki-effektivnosti-reklamy
 ---
 
 Запустили рекламу в Яндекс.Директ, рассылку по email и пост в VK, а в Google

@@ -14,6 +14,7 @@ related:
   - kak-reshit-proportsiyu
   - sredniy-zarabotok-otpusknye-bolnichnyy-dekretnye
   - kak-vystavit-schet-nds-rekvizity-summa-propisyu
+  - metriki-effektivnosti-reklamy
 ---
 
 «Посчитать процент» звучит как одна задача, а на деле это четыре разные формулы,
