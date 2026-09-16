@@ -17,10 +17,12 @@ export default function AreaCalculatorPage() {
 			<SubpageLinks
 				parentPath='area-calculator'
 				title='Площадь отдельных фигур'
-				items={GEOMETRY_PAGES.filter(page => page.kind === 'area').map(page => ({
-					slug: page.slug,
-					label: page.h1
-				}))}
+				items={GEOMETRY_PAGES.filter(page => page.kind === 'area').map(
+					page => ({
+						slug: page.slug,
+						label: page.h1
+					})
+				)}
 			/>
 
 			<ToolScreenshot slug='area-calculator' />

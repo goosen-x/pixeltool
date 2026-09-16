@@ -17,10 +17,12 @@ export default function VolumeCalculatorPage() {
 			<SubpageLinks
 				parentPath='volume-calculator'
 				title='Объём отдельных фигур'
-				items={GEOMETRY_PAGES.filter(page => page.kind === 'volume').map(page => ({
-					slug: page.slug,
-					label: page.h1
-				}))}
+				items={GEOMETRY_PAGES.filter(page => page.kind === 'volume').map(
+					page => ({
+						slug: page.slug,
+						label: page.h1
+					})
+				)}
 			/>
 
 			<ToolScreenshot slug='volume-calculator' />

@@ -17,7 +17,10 @@ export default function DaysUntilPage() {
 			<SubpageLinks
 				parentPath='days-until'
 				title='Готовые счётчики до популярных дат'
-				items={DAYS_UNTIL_PAGES.map(page => ({ slug: page.slug, label: page.h1 }))}
+				items={DAYS_UNTIL_PAGES.map(page => ({
+					slug: page.slug,
+					label: page.h1
+				}))}
 			/>
 
 			<ToolScreenshot slug='days-until' />
