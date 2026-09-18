@@ -15,6 +15,8 @@ related:
   - sredniy-zarabotok-otpusknye-bolnichnyy-dekretnye
   - kak-vystavit-schet-nds-rekvizity-summa-propisyu
   - metriki-effektivnosti-reklamy
+  - odno-chislo-raznye-zapisi
+  - kapitalizatsiya-i-slozhnyy-protsent
 ---
 
 «Посчитать процент» звучит как одна задача, а на деле это четыре разные формулы,

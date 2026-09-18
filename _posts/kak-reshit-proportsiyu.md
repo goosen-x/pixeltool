@@ -11,6 +11,7 @@ author:
   picture: '/images/avatar.jpeg'
 related:
   - kak-poschitat-protsent
+  - odno-chislo-raznye-zapisi
 ---
 
 Пропорция звучит как задача из школьного учебника, но на деле это одна из самых

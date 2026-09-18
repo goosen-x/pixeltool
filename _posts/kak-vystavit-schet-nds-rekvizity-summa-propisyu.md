@@ -11,6 +11,7 @@ author:
 related:
   - kak-poschitat-protsent
   - sredniy-zarabotok-otpusknye-bolnichnyy-dekretnye
+  - kapitalizatsiya-i-slozhnyy-protsent
 ---
 
 В счёте на оплату мало полей, и почти в каждом можно ошибиться так, что документ
