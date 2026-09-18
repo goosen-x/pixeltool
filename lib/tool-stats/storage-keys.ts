@@ -10,6 +10,9 @@ export function ratedKey(toolId: string): string {
 	return `pixeltool:rated:${toolId}`
 }
 
-export function platformFeedbackKey(toolId: string, platformId: string): string {
+export function platformFeedbackKey(
+	toolId: string,
+	platformId: string
+): string {
 	return `pixeltool:platform-feedback:${toolId}:${platformId}`
 }

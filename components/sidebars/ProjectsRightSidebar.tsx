@@ -7,7 +7,7 @@ import { FeedbackCard } from './widgets/FeedbackCard'
 interface Props {
 	/**
 	 * true — страницы инструментов (ProjectsLayoutWrapper): там сайдбар живёт
-	 * внутри h-[calc(100vh-var(--chrome-h,5rem))]-колонки со своим скроллом, и
+	 * внутри h-[calc(100dvh-var(--chrome-h,5rem))]-колонки со своим скроллом, и
 	 * h-full/overflow
 	 * тянут его на всю эту колонку. false — страницы блога: обычный поток
 	 * документа, сайдбар просто position:sticky и сам решает свою высоту по

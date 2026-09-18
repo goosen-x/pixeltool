@@ -259,7 +259,8 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		field: 'ник игрока',
 		charId: 'hangul-filler',
 		confidence: 'thin',
-		caveat: 'Источники расплывчаты про конкретный символ, часть форумов советует другие обходные пути'
+		caveat:
+			'Источники расплывчаты про конкретный символ, часть форумов советует другие обходные пути'
 	}
 ]
 
