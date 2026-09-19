@@ -7,14 +7,16 @@ export function HomePageStructuredData() {
 		url: 'https://pixeltool.pro',
 		description:
 			'Онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом, конвертер единиц измерения и генераторы CSS. Всё считается в браузере, без установки и регистрации.',
-		// UtilityApplication, а не DeveloperApplication: раздел разработки лишь
-		// один из восьми, остальные тулы бытовые.
-		applicationCategory: 'UtilityApplication',
+		// UtilitiesApplication, а не DeveloperApplication: раздел разработки лишь
+		// один из пятнадцати, остальные тулы бытовые. Множественное число не
+		// опечатка — в словаре schema.org значение называется именно так, а
+		// стоявшее здесь 'UtilityApplication' не существует и игнорировалось.
+		applicationCategory: 'UtilitiesApplication',
 		operatingSystem: 'All',
 		offers: {
 			'@type': 'Offer',
 			price: '0',
-			priceCurrency: 'USD'
+			priceCurrency: 'RUB'
 		},
 		author: {
 			'@type': 'Person',

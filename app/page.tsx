@@ -60,15 +60,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 				'@context': 'https://schema.org',
 				'@type': 'WebApplication',
 				name: 'PixelTool',
-				alternateName: 'PixelTool Developer Tools',
+				alternateName: 'PixelTool: онлайн-инструменты',
 				url: 'https://pixeltool.pro',
 				description: metadata.description,
-				applicationCategory: 'DeveloperApplication',
+				// Не DeveloperApplication: раздел разработки — один из пятнадцати,
+				// остальные инструменты бытовые. Из-за этого значения Google
+				// подписывал весь сайт как «Инструменты разработки».
+				applicationCategory: 'UtilitiesApplication',
 				operatingSystem: 'All',
 				offers: {
 					'@type': 'Offer',
 					price: '0',
-					priceCurrency: 'USD'
+					priceCurrency: 'RUB'
 				}
 			})
 		}

@@ -1,6 +1,7 @@
 'use client'
 
 import { Widget } from '@/lib/constants/widgets'
+import { getApplicationCategory } from '@/lib/seo/widget-schemas'
 import { ReactNode } from 'react'
 
 interface WidgetSEOWrapperProps {
@@ -28,7 +29,12 @@ export function WidgetSEOWrapper({ widget, children }: WidgetSEOWrapperProps) {
 				    только микроразметка, иначе на странице два заголовка первого уровня */}
 				<meta itemProp='name' content={title} />
 				<meta itemProp='description' content={description} />
-				<meta itemProp='applicationCategory' content='WebApplication' />
+				{/* Категория, а не тип: в content стоял 'WebApplication' — это
+				    значение @type, среди applicationCategory такого нет. */}
+				<meta
+					itemProp='applicationCategory'
+					content={getApplicationCategory(widget.category)}
+				/>
 				<meta itemProp='operatingSystem' content='Web Browser' />
 
 				<div
