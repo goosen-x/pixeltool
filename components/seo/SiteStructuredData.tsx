@@ -16,9 +16,12 @@ export function SiteStructuredData() {
 		'@id': `${BASE_URL}#organization`,
 		name: 'PixelTool',
 		url: BASE_URL,
+		// /logo.png не существует и отдавал 404 на каждой странице сайта —
+		// панель знаний оставалась без логотипа. Берём существующий файл того
+		// же размера, который заявлен ниже.
 		logo: {
 			'@type': 'ImageObject',
-			url: `${BASE_URL}/logo.png`,
+			url: `${BASE_URL}/favicon-512x512.png`,
 			width: 512,
 			height: 512
 		},

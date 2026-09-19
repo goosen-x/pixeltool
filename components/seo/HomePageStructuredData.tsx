@@ -28,7 +28,7 @@ export function HomePageStructuredData() {
 			name: 'PixelTool',
 			logo: {
 				'@type': 'ImageObject',
-				url: 'https://pixeltool.pro/logo.png'
+				url: 'https://pixeltool.pro/favicon-512x512.png'
 			}
 		},
 		potentialAction: [
@@ -44,22 +44,16 @@ export function HomePageStructuredData() {
 				}
 			}
 		],
+		// Список ведёт к самим разделам, а не перечисляет случайные восемь
+		// инструментов: прежний обещал «более 50», когда их уже 124.
 		featureList: [
-			'CSS Clamp Калькулятор',
-			'Конвертер Цветов',
-			'Генератор Паролей',
-			'Генератор QR Кодов',
-			'HTML/XML Парсер',
-			'Проверка Размера Изображений',
-			'Конвертер Регистра Текста',
-			'И более 50 инструментов'
-		],
-		screenshot: [
-			{
-				'@type': 'ImageObject',
-				url: 'https://pixeltool.pro/screenshots/tools-page.png',
-				caption: 'PixelTool Tools Collection'
-			}
+			'Рандомайзер: случайные числа, жеребьёвка, кубик',
+			'Текст: счётчики, сравнение, эмодзи и символы',
+			'Изображения и PDF: сжатие, конвертация, удаление фона',
+			'Финансы: НДС, НДФЛ, отпускные, больничный',
+			'Математика: площадь, объём, проценты, единицы измерения',
+			'Разработка: CSS, HTML, JSON, регулярные выражения',
+			'Здоровье, дата и время, авто и другие бытовые расчёты'
 		]
 	}
 

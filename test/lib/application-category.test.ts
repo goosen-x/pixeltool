@@ -40,7 +40,9 @@ describe('getApplicationCategory', () => {
 
 	it('каждый инструмент получает валидное значение', () => {
 		for (const widget of widgets) {
-			expect(SCHEMA_ORG_VALUES).toContain(getApplicationCategory(widget.category))
+			expect(SCHEMA_ORG_VALUES).toContain(
+				getApplicationCategory(widget.category)
+			)
 		}
 	})
 
@@ -70,20 +72,22 @@ describe('разметка не содержит захардкоженных к
 	}
 
 	it('нигде не осталось несуществующего UtilityApplication', () => {
-		const offenders = [...collectSources('app'), ...collectSources('components')]
-			.filter(file => {
-				const body = readFileSync(file, 'utf-8')
-				// Исключаем строки-комментарии: в них значение упоминается как
-				// объяснение, почему так делать нельзя.
-				return body
-					.split('\n')
-					.some(
-						line =>
-							line.includes("'UtilityApplication'") &&
-							!line.trimStart().startsWith('//') &&
-							!line.trimStart().startsWith('*')
-					)
-			})
+		const offenders = [
+			...collectSources('app'),
+			...collectSources('components')
+		].filter(file => {
+			const body = readFileSync(file, 'utf-8')
+			// Исключаем строки-комментарии: в них значение упоминается как
+			// объяснение, почему так делать нельзя.
+			return body
+				.split('\n')
+				.some(
+					line =>
+						line.includes("'UtilityApplication'") &&
+						!line.trimStart().startsWith('//') &&
+						!line.trimStart().startsWith('*')
+				)
+		})
 		expect(offenders).toEqual([])
 	})
 })
