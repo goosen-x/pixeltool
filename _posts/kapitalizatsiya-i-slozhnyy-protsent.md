@@ -5,6 +5,7 @@ excerpt:
   итог, правило 72 для быстрой прикидки и почему с курсом валют и криптовалют
   эта арифметика не работает.'
 date: '2026-09-18T12:00:00.000Z'
+coverImage: '/images/blog/kapitalizatsiya-i-slozhnyy-protsent.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

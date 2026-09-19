@@ -5,6 +5,7 @@ excerpt:
   как переводить между ними, почему 0,1 не записывается в двоичной системе точно
   и откуда в шестнадцатеричной взялись буквы.'
 date: '2026-09-18T10:00:00.000Z'
+coverImage: '/images/blog/odno-chislo-raznye-zapisi.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

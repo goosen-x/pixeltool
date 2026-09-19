@@ -5,6 +5,7 @@ excerpt:
   плохим и хорошим, как подбрасывание монетки помогает узнать собственное
   желание и где этот приём применять нельзя.'
 date: '2026-09-15T18:00:00.000Z'
+coverImage: '/images/blog/kak-vybrat-kogda-vse-ravno.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

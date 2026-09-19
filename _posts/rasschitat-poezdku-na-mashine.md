@@ -5,6 +5,7 @@ excerpt:
   расход почти всегда занижен и как измерить свой реальный по одной заправке.
   Плюс что означают цифры на номерах встречных машин.'
 date: '2026-09-15T22:00:00.000Z'
+coverImage: '/images/blog/rasschitat-poezdku-na-mashine.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

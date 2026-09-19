@@ -5,6 +5,7 @@ excerpt:
   правильной формулой, зачем в счёте сумма прописью и как поймать опечатку в ИНН
   контрагента до отправки платежа.'
 date: '2026-09-15T16:00:00.000Z'
+coverImage: '/images/blog/kak-vystavit-schet-nds-rekvizity-summa-propisyu.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

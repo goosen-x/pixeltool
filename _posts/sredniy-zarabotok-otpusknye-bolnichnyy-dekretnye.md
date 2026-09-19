@@ -6,6 +6,7 @@ excerpt:
   каждой свои. Разбираем, откуда берутся коэффициент 29,3 и число 730, почему
   стаж решает больше оклада и с чего удерживают НДФЛ.'
 date: '2026-09-15T14:00:00.000Z'
+coverImage: '/images/blog/sredniy-zarabotok-otpusknye-bolnichnyy-dekretnye.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

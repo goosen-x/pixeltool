@@ -5,6 +5,7 @@ excerpt:
   почему лунные сутки длиннее обычных на 50 минут и за сколько Луна проходит
   один знак зодиака. Что здесь астрономия, а что традиция.'
 date: '2026-09-15T12:00:00.000Z'
+coverImage: '/images/blog/lunnyy-kalendar-fazy-luny.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

@@ -5,6 +5,7 @@ excerpt:
   трём сторонам, объём цилиндра и трубы. Где чаще всего ошибаются: единицы,
   проёмы и внутренний диаметр вместо внешнего.'
 date: '2026-09-15T20:00:00.000Z'
+coverImage: '/images/blog/kak-schitayut-ploshchad-i-obyom.png'
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
