@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function TimezoneDifferenceSeo() {
 	return (
 		<div className='mx-auto mt-16 max-w-3xl space-y-12'>
@@ -123,6 +125,20 @@ export function TimezoneDifferenceSeo() {
 					только текущий, и отдельно показывает, если из-за разницы встреча
 					попадает на следующие или предыдущие сутки, например 23:00 в Москве
 					это уже утро следующего дня во Владивостоке.
+				</p>
+			</section>
+
+			<section>
+				<p className='text-muted-foreground'>
+					Разбор всех одиннадцати поясов России по регионам, с таблицей смещений
+					и объяснением, почему у части стран разница дробная, — в статье{' '}
+					<Link
+						href='/blog/raznica-vo-vremeni-s-moskvoy'
+						className='cursor-pointer font-medium text-primary hover:underline'
+					>
+						Разница во времени с Москвой
+					</Link>
+					.
 				</p>
 			</section>
 		</div>
