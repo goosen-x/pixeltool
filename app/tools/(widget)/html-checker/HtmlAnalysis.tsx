@@ -119,7 +119,10 @@ export function HtmlAnalysis({ html }: { html: string }) {
 		try {
 			await navigator.clipboard.writeText(text)
 			setCopiedKey(key)
-			window.setTimeout(() => setCopiedKey(current => (current === key ? null : current)), 2000)
+			window.setTimeout(
+				() => setCopiedKey(current => (current === key ? null : current)),
+				2000
+			)
 		} catch {
 			toast.error('Не удалось скопировать')
 		}
@@ -139,15 +142,15 @@ export function HtmlAnalysis({ html }: { html: string }) {
 			)
 		}
 		if (lint.length > 0) {
-			blocks.push(
-				`Линтинг:\n${lint.map(m => `- ${formatLint(m)}`).join('\n')}`
-			)
+			blocks.push(`Линтинг:\n${lint.map(m => `- ${formatLint(m)}`).join('\n')}`)
 		}
 		if (blocks.length === 0) return
 		try {
 			await navigator.clipboard.writeText(blocks.join('\n\n'))
 			setCopiedAll(true)
-			toast.success(`Скопировано: ${totalIssues} ${totalIssues === 1 ? 'ошибка' : 'ошибок'}`)
+			toast.success(
+				`Скопировано: ${totalIssues} ${totalIssues === 1 ? 'ошибка' : 'ошибок'}`
+			)
 			window.setTimeout(() => setCopiedAll(false), 2000)
 		} catch {
 			toast.error('Не удалось скопировать')
