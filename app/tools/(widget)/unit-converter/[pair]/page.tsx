@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { getApplicationCategory } from '@/lib/seo/widget-schemas'
+import { getWidgetByPath } from '@/lib/constants/widgets'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { unitPairs, getUnitPairBySlug } from '@/lib/constants/unit-pairs'
@@ -89,9 +91,13 @@ export default async function UnitPairPage(props: Params) {
 		name: pair.h1,
 		description: pair.metaDescription,
 		url,
-		applicationCategory: 'UtilityApplication',
+		// 'UtilityApplication' в словаре schema.org не существует и
+		// игнорировалось; берём категорию родительского тула.
+		applicationCategory: getApplicationCategory(
+			getWidgetByPath('unit-converter')!.category
+		),
 		operatingSystem: 'Web Browser',
-		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
 		isAccessibleForFree: true,
 		inLanguage: 'ru'
 	}

@@ -7,6 +7,7 @@ import { FaqSection } from '@/components/homepage/FaqSection'
 import { publicWidgets } from '@/lib/constants/widgets'
 import { onlineToolsCountLabel, toolsCountLabel } from '@/lib/utils/pluralize'
 import { Metadata } from 'next'
+import { HomePageStructuredData } from '@/components/seo/HomePageStructuredData'
 
 interface Props {
 	params: Promise<{ locale: string }>
@@ -54,23 +55,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		},
 		alternates: {
 			canonical: 'https://pixeltool.pro'
-		},
-		other: {
-			'application-ld+json': JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'WebApplication',
-				name: 'PixelTool',
-				alternateName: 'PixelTool Developer Tools',
-				url: 'https://pixeltool.pro',
-				description: metadata.description,
-				applicationCategory: 'DeveloperApplication',
-				operatingSystem: 'All',
-				offers: {
-					'@type': 'Offer',
-					price: '0',
-					priceCurrency: 'USD'
-				}
-			})
 		}
 	}
 }
@@ -80,6 +64,12 @@ export default async function HomePage({ params }: Props) {
 
 	return (
 		<>
+			{/* Раньше разметка главной уходила в metadata.other с ключом
+			    'application-ld+json' — через дефис вместо слэша. Next рендерил
+			    это обычным <meta name=...> с JSON в атрибуте, и WebApplication
+			    на главной не существовало для поисковика вовсе. */}
+			<HomePageStructuredData />
+
 			<main className='min-h-screen bg-gradient-to-b from-background via-background to-muted/20'>
 				<HeroSection />
 

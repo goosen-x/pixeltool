@@ -1,5 +1,8 @@
 import { Widget } from '@/lib/constants/widgets'
-import { toolScreenshotBase } from '@/lib/constants/tool-screenshots'
+import {
+	toolScreenshotBase,
+	getToolScreenshot
+} from '@/lib/constants/tool-screenshots'
 import { getApplicationCategory } from '@/lib/seo/widget-schemas'
 import type { ToolStats } from '@/lib/tool-stats/get-all-stats'
 
@@ -27,6 +30,7 @@ export function WidgetStructuredData({
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
 	const url = `${baseUrl}/tools/${widget.path}`
 	const screenshotBase = toolScreenshotBase(widget.path)
+	const screenshot = getToolScreenshot(widget.path)
 	const locale = 'ru'
 	const title = widget.title || widget.id
 	const description =
@@ -49,9 +53,32 @@ export function WidgetStructuredData({
 			widget.subcategory ?? widget.category
 		),
 		operatingSystem: 'Web Browser',
-		...(screenshotBase
+		// Полноценный ImageObject, а не просто URL. Это единственный канал, где
+		// Яндекс реально читает нашу разметку: из schema.org он берёт крошки,
+		// ImageObject для Яндекс.Картинок, VideoObject и Recipe — всё остальное
+		// (WebApplication, offers, aggregateRating) адресовано Google.
+		//
+		// ImageObject у тулов уже был и его сняли 28.08.2026 из-за ошибок
+		// валидации: encodingFormat перечислял форматы через запятую вместо
+		// одного значения, а contentUrl вёл на og:image-карточку, а не на
+		// картинку самого инструмента. Сейчас у 104 тулов есть настоящие
+		// скриншоты 1200×675 с описанием и подписью, поэтому оба дефекта
+		// не воспроизводятся.
+		...(screenshotBase && screenshot
 			? {
-					image: `${baseUrl}${screenshotBase}-1200.webp`,
+					image: {
+						'@type': 'ImageObject',
+						contentUrl: `${baseUrl}${screenshotBase}-1200.webp`,
+						url: `${baseUrl}${screenshotBase}-1200.webp`,
+						thumbnailUrl: `${baseUrl}${screenshotBase}-800.webp`,
+						width: 1200,
+						height: 675,
+						encodingFormat: 'image/webp',
+						name: screenshot.alt,
+						caption: screenshot.caption,
+						description: screenshot.alt,
+						representativeOfPage: true
+					},
 					screenshot: `${baseUrl}${screenshotBase}-1200.webp`
 				}
 			: {}),

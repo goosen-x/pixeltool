@@ -1,4 +1,5 @@
 import { publicWidgets } from '@/lib/constants/widgets'
+import { getApplicationCategory } from '@/lib/seo/widget-schemas'
 import { CATEGORY_META } from '@/lib/constants/categories'
 import { widgetMatchesCategory } from '@/lib/utils/filter-widgets'
 import { getAllToolStats } from '@/lib/tool-stats/get-all-stats'
@@ -71,7 +72,11 @@ export async function CatalogStructuredData({ category }: Props) {
 						name: widget.title || widget.translationKey,
 						description: widget.description,
 						url: `${BASE_URL}/tools/${widget.path}`,
-						applicationCategory: 'DeveloperApplication',
+						// Раньше здесь у всех тулов стояло 'DeveloperApplication', и
+						// Google подписывал страницу «Рандомайзер» как «Инструменты
+						// разработки». Берём категорию самого инструмента, как это уже
+						// делает разметка страницы тула (WidgetStructuredData).
+						applicationCategory: getApplicationCategory(widget.category),
 						operatingSystem: 'Web Browser',
 						offers: {
 							'@type': 'Offer',

@@ -7,14 +7,16 @@ export function HomePageStructuredData() {
 		url: 'https://pixeltool.pro',
 		description:
 			'Онлайн-инструменты для повседневных и рабочих задач: случайные числа, QR-коды, пароли, эмодзи, работа с текстом, конвертер единиц измерения и генераторы CSS. Всё считается в браузере, без установки и регистрации.',
-		// UtilityApplication, а не DeveloperApplication: раздел разработки лишь
-		// один из восьми, остальные тулы бытовые.
-		applicationCategory: 'UtilityApplication',
+		// UtilitiesApplication, а не DeveloperApplication: раздел разработки лишь
+		// один из пятнадцати, остальные тулы бытовые. Множественное число не
+		// опечатка — в словаре schema.org значение называется именно так, а
+		// стоявшее здесь 'UtilityApplication' не существует и игнорировалось.
+		applicationCategory: 'UtilitiesApplication',
 		operatingSystem: 'All',
 		offers: {
 			'@type': 'Offer',
 			price: '0',
-			priceCurrency: 'USD'
+			priceCurrency: 'RUB'
 		},
 		author: {
 			'@type': 'Person',
@@ -26,7 +28,7 @@ export function HomePageStructuredData() {
 			name: 'PixelTool',
 			logo: {
 				'@type': 'ImageObject',
-				url: 'https://pixeltool.pro/logo.png'
+				url: 'https://pixeltool.pro/favicon-512x512.png'
 			}
 		},
 		potentialAction: [
@@ -42,22 +44,16 @@ export function HomePageStructuredData() {
 				}
 			}
 		],
+		// Список ведёт к самим разделам, а не перечисляет случайные восемь
+		// инструментов: прежний обещал «более 50», когда их уже 124.
 		featureList: [
-			'CSS Clamp Калькулятор',
-			'Конвертер Цветов',
-			'Генератор Паролей',
-			'Генератор QR Кодов',
-			'HTML/XML Парсер',
-			'Проверка Размера Изображений',
-			'Конвертер Регистра Текста',
-			'И более 50 инструментов'
-		],
-		screenshot: [
-			{
-				'@type': 'ImageObject',
-				url: 'https://pixeltool.pro/screenshots/tools-page.png',
-				caption: 'PixelTool Tools Collection'
-			}
+			'Рандомайзер: случайные числа, жеребьёвка, кубик',
+			'Текст: счётчики, сравнение, эмодзи и символы',
+			'Изображения и PDF: сжатие, конвертация, удаление фона',
+			'Финансы: НДС, НДФЛ, отпускные, больничный',
+			'Математика: площадь, объём, проценты, единицы измерения',
+			'Разработка: CSS, HTML, JSON, регулярные выражения',
+			'Здоровье, дата и время, авто и другие бытовые расчёты'
 		]
 	}
 

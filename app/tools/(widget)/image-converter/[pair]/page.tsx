@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { getApplicationCategory } from '@/lib/seo/widget-schemas'
+import { getWidgetByPath } from '@/lib/constants/widgets'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { IMAGE_PAIRS, getImagePair } from '@/lib/constants/image-pairs'
@@ -73,9 +75,13 @@ export default async function ImagePairPage(props: Params) {
 		name: page.h1,
 		description: page.metaDescription,
 		url,
-		applicationCategory: 'UtilityApplication',
+		// 'UtilityApplication' в словаре schema.org не существует и
+		// игнорировалось; берём категорию родительского тула.
+		applicationCategory: getApplicationCategory(
+			getWidgetByPath('image-converter')!.category
+		),
 		operatingSystem: 'Web Browser',
-		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
 		isAccessibleForFree: true,
 		inLanguage: 'ru'
 	}
