@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react'
 import markdownStyles from './markdown-styles.module.css'
 import { LiveCodeExample } from './live-code-example'
 import { ToolLink } from './tool-link'
+import { CopySymbolInline } from './copy-symbol-inline'
 
 type Props = {
 	content: string
@@ -43,16 +44,18 @@ export function PostBodyWithHighlight({ content }: Props) {
 		return () => root.removeEventListener('click', onClick)
 	}, [])
 
-	// Тело статьи — HTML со вставленными плейсхолдерами двух видов:
-	// <div data-live-example> и <div data-tool-link>. Их заменяем на React-
-	// компоненты, а всё между ними (включая подсвеченные код-блоки) выводим как
-	// есть. Код-блоки трогать не нужно — они уже готовый HTML от Shiki.
+	// Тело статьи — HTML со вставленными плейсхолдерами трёх видов:
+	// <div data-live-example>, <div data-tool-link> и <div data-copy-symbol>.
+	// Их заменяем на React-компоненты, а всё между ними (включая подсвеченные
+	// код-блоки) выводим как есть. Код-блоки трогать не нужно — они уже готовый
+	// HTML от Shiki.
 	const renderContent = () => {
 		const liveExampleRegex = /<div data-live-example='([^']+)'><\/div>/g
 		const toolLinkRegex = /<div data-tool-link='([^']+)'><\/div>/g
+		const copySymbolRegex = /<div data-copy-symbol='([^']+)'><\/div>/g
 
 		const allMatches: Array<{
-			type: 'live' | 'tool'
+			type: 'live' | 'tool' | 'copy-symbol'
 			match: RegExpExecArray
 		}> = []
 
@@ -63,6 +66,10 @@ export function PostBodyWithHighlight({ content }: Props) {
 		let toolMatch
 		while ((toolMatch = toolLinkRegex.exec(content)) !== null) {
 			allMatches.push({ type: 'tool', match: toolMatch })
+		}
+		let copySymbolMatch
+		while ((copySymbolMatch = copySymbolRegex.exec(content)) !== null) {
+			allMatches.push({ type: 'copy-symbol', match: copySymbolMatch })
 		}
 
 		allMatches.sort((a, b) => a.match.index - b.match.index)
@@ -100,7 +107,7 @@ export function PostBodyWithHighlight({ content }: Props) {
 				} catch (error) {
 					console.error('Failed to parse live example data:', error)
 				}
-			} else {
+			} else if (type === 'tool') {
 				const dataStr = match[1].replace(/&#39;/g, "'")
 				try {
 					const data = JSON.parse(dataStr)
@@ -117,6 +124,22 @@ export function PostBodyWithHighlight({ content }: Props) {
 					)
 				} catch (error) {
 					console.error('Failed to parse tool link data:', error)
+				}
+			} else {
+				const dataStr = match[1].replace(/&#39;/g, "'")
+				try {
+					const data = JSON.parse(dataStr)
+					parts.push(
+						<CopySymbolInline
+							key={`copy-symbol-${match.index}`}
+							char={data.char}
+							codepoint={data.codepoint}
+							name={data.name}
+							label={data.label}
+						/>
+					)
+				} catch (error) {
+					console.error('Failed to parse copy symbol data:', error)
 				}
 			}
 

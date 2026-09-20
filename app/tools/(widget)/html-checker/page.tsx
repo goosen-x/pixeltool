@@ -137,7 +137,7 @@ export default function HTMLTreePage() {
 	const [urlValue, setUrlValue] = useState('')
 	const [isFetchingUrl, setIsFetchingUrl] = useState(false)
 	const [isDragging, setIsDragging] = useState(false)
-	const [source, setSource] = useState<SourceMode>('paste')
+	const [source, setSource] = useState<SourceMode>('url')
 
 	const loadFromUrl = useCallback(async () => {
 		const address = urlValue.trim()

@@ -27,6 +27,8 @@ related:
 фильтр Telegram его пропускает там, где режет обычные zero-width символы.
 Проверено вручную в имени профиля, а не взято из чужой статьи.
 
+<div data-copy-symbol='{"char":"͏","codepoint":"U+034F","name":"Combining Grapheme Joiner","label":"Символ для имени в Telegram"}'></div>
+
 Быстрее всего
 [скопировать нужный символ для Telegram](/tools/invisible-character) уже
 готовым. На странице инструмента есть отдельная кнопка под каждую площадку,

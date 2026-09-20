@@ -28,6 +28,7 @@ import {
 } from '@/lib/fonts/fonts'
 import Header from '@/components/layout/Header/Header'
 import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
+import { MobileBottomAd } from '@/components/ads'
 import { ChromeHeightVar } from '@/components/layout/ChromeHeightVar'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
 import { SiteStructuredData } from '@/components/seo/SiteStructuredData'
@@ -260,7 +261,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 		>
 			<body
 				className={cn(
-					'min-h-screen bg-background font-sans antialiased',
+					'min-h-dvh bg-background font-sans antialiased',
 					interFont.className
 				)}
 			>
@@ -290,9 +291,14 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						<ChunkErrorReload />
 						<ConsoleBanner />
 						<WebVitals />
-						<Suspense fallback={null}>
-							<ToolOfMonthBanner />
-						</Suspense>
+						{/* На мобильном баннер почти не кликают (в поле зрения доли секунды
+						    при прокрутке) — вместо него sticky-реклама снизу, см.
+						    MobileBottomAd ниже */}
+						<div className='hidden lg:block'>
+							<Suspense fallback={null}>
+								<ToolOfMonthBanner />
+							</Suspense>
+						</div>
 						<Header />
 						<ChromeHeightVar />
 						<AutoBreadcrumbs />
@@ -304,6 +310,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						<ScrollToTop />
 						<Toaster />
 						<CookieConsent />
+						<MobileBottomAd />
 					</ToolStatsProvider>
 				</ThemeProvider>
 			</body>

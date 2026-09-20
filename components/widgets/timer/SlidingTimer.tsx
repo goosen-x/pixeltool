@@ -23,7 +23,7 @@ export function SlidingTimer({
 	return (
 		<div
 			className={cn(
-				'flex items-center justify-center gap-4 font-mono text-8xl md:text-9xl font-black tracking-wider tabular-nums',
+				'flex items-center justify-center gap-1.5 font-mono text-4xl font-black tracking-wider tabular-nums sm:gap-3 sm:text-6xl md:gap-4 md:text-9xl',
 				className
 			)}
 			style={{
@@ -70,7 +70,7 @@ export function SlidingTimer({
 			{showMilliseconds && (
 				<>
 					<span
-						className='text-5xl md:text-6xl text-muted-foreground/40 font-black tabular-nums'
+						className='text-2xl sm:text-4xl md:text-6xl text-muted-foreground/40 font-black tabular-nums'
 						style={{
 							fontFamily:
 								'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Source Code Pro", monospace'
@@ -78,7 +78,7 @@ export function SlidingTimer({
 					>
 						.
 					</span>
-					<div className='flex items-center text-5xl md:text-6xl text-muted-foreground'>
+					<div className='flex items-center text-2xl sm:text-4xl md:text-6xl text-muted-foreground'>
 						<SlidingNumber value={Math.floor(milliseconds / 10)} padStart />
 					</div>
 				</>

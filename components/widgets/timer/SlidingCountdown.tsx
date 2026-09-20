@@ -27,7 +27,10 @@ export function SlidingCountdown({
 }: SlidingCountdownProps) {
 	return (
 		<div
-			className={cn('flex items-center justify-center gap-4', className)}
+			className={cn(
+				'flex items-center justify-center gap-1.5 sm:gap-3 md:gap-4',
+				className
+			)}
 			style={{
 				fontFamily:
 					'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Source Code Pro", monospace'
@@ -44,7 +47,7 @@ export function SlidingCountdown({
 					>
 						<ChevronUp className='h-4 w-4' />
 					</Button>
-					<div className='text-8xl md:text-9xl font-black tracking-wider tabular-nums'>
+					<div className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums'>
 						<SlidingNumber value={hours} padStart />
 					</div>
 					<Button
@@ -57,13 +60,13 @@ export function SlidingCountdown({
 					</Button>
 				</div>
 			) : (
-				<div className='text-8xl md:text-9xl font-black tracking-wider tabular-nums'>
+				<div className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums'>
 					<SlidingNumber value={hours} padStart />
 				</div>
 			)}
 
 			<span
-				className='text-8xl md:text-9xl font-black tracking-wider tabular-nums text-muted-foreground/40'
+				className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums text-muted-foreground/40'
 				style={{
 					fontFamily:
 						'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Source Code Pro", monospace'
@@ -83,7 +86,7 @@ export function SlidingCountdown({
 					>
 						<ChevronUp className='h-4 w-4' />
 					</Button>
-					<div className='text-8xl md:text-9xl font-black tracking-wider tabular-nums'>
+					<div className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums'>
 						<SlidingNumber value={minutes} padStart />
 					</div>
 					<Button
@@ -96,13 +99,13 @@ export function SlidingCountdown({
 					</Button>
 				</div>
 			) : (
-				<div className='text-8xl md:text-9xl font-black tracking-wider tabular-nums'>
+				<div className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums'>
 					<SlidingNumber value={minutes} padStart />
 				</div>
 			)}
 
 			<span
-				className='text-8xl md:text-9xl font-black tracking-wider tabular-nums text-muted-foreground/40'
+				className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums text-muted-foreground/40'
 				style={{
 					fontFamily:
 						'ui-monospace, "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Source Code Pro", monospace'
@@ -122,7 +125,7 @@ export function SlidingCountdown({
 					>
 						<ChevronUp className='h-4 w-4' />
 					</Button>
-					<div className='text-8xl md:text-9xl font-black tracking-wider tabular-nums'>
+					<div className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums'>
 						<SlidingNumber value={seconds} padStart />
 					</div>
 					<Button
@@ -135,7 +138,7 @@ export function SlidingCountdown({
 					</Button>
 				</div>
 			) : (
-				<div className='text-8xl md:text-9xl font-black tracking-wider tabular-nums'>
+				<div className='text-4xl sm:text-6xl md:text-9xl font-black tracking-wider tabular-nums'>
 					<SlidingNumber value={seconds} padStart />
 				</div>
 			)}

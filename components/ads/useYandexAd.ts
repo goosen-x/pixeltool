@@ -11,7 +11,16 @@ declare global {
 		Ya?: {
 			Context: {
 				AdvManager: {
-					render: (params: { blockId: string; renderTo: string }) => void
+					// renderTo — для обычных RTB-блоков (AdSection/SidebarAd), сами
+					// рисуют себя в заданный контейнер. type/platform — для форматов
+					// вроде Floor Ad (MobileBottomAd), которые создают DOM сами и
+					// renderTo не принимают.
+					render: (params: {
+						blockId: string
+						renderTo?: string
+						type?: string
+						platform?: string
+					}) => void
 				}
 			}
 		}
