@@ -30,6 +30,7 @@ import Header from '@/components/layout/Header/Header'
 import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
 import { MobileBottomAd } from '@/components/ads'
 import { ChromeHeightVar } from '@/components/layout/ChromeHeightVar'
+import { AppHeightVar } from '@/components/layout/AppHeightVar'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
 import { SiteStructuredData } from '@/components/seo/SiteStructuredData'
 
@@ -301,6 +302,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						</div>
 						<Header />
 						<ChromeHeightVar />
+						<AppHeightVar />
 						<AutoBreadcrumbs />
 						<SiteStructuredData />
 						{children}
