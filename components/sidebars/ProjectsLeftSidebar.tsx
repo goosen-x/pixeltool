@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { widgetCategories, getWidgetByPath } from '@/lib/constants/widgets'
 import { CategoriesNavigation } from './widgets/CategoriesNavigation'
+import { FeedbackCard } from './widgets/FeedbackCard'
 
 type Props = { onLinkClick?: () => void }
 
@@ -57,6 +58,15 @@ export const ProjectsLeftSidebar = ({ onLinkClick }: Props = {}) => {
 					toggleCategory={toggleCategory}
 					onItemClick={onLinkClick}
 				/>
+
+				{/* CategoriesNavigation — flex-1, сама забирает всё свободное место,
+				    поэтому карточка ниже прижимается к низу без flex-1/mt-auto —
+				    так же, как раньше здесь стояла ссылка «Настройки» (border-t p-4,
+				    убрана в ed07b16). Ушла из правого сайдбара, чтобы реклама там
+				    занимала всю колонку (fill, см. ProjectsRightSidebar). */}
+				<div className='border-t p-3 lg:p-4'>
+					<FeedbackCard />
+				</div>
 			</div>
 		</aside>
 	)
