@@ -17,6 +17,7 @@ interface UnitConverterWidgetProps {
 	initialCategory?: UnitCategoryId
 	initialFrom?: string
 	initialTo?: string
+	initialValue?: string
 }
 
 function toNumber(value: string): number | null {
@@ -31,14 +32,15 @@ function formatNumber(value: number): string {
 export function UnitConverterWidget({
 	initialCategory = 'length',
 	initialFrom,
-	initialTo
+	initialTo,
+	initialValue
 }: UnitConverterWidgetProps) {
 	const [categoryId, setCategoryId] = useState<UnitCategoryId>(initialCategory)
 	const category = getUnitCategory(categoryId)
 
 	const [fromId, setFromId] = useState(initialFrom || category.units[0].id)
 	const [toId, setToId] = useState(initialTo || category.units[1].id)
-	const [fromValue, setFromValue] = useState('1')
+	const [fromValue, setFromValue] = useState(initialValue || '1')
 
 	// Единицы предыдущей категории не подходят новой — сбрасываем на первые
 	// две прямо в обработчике клика, не через эффект (иначе он срезал бы

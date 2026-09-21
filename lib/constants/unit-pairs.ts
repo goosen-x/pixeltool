@@ -5,6 +5,26 @@ export interface UnitPairFAQ {
 	answer: string
 }
 
+/**
+ * Конкретное число, под которое стоит отдельная страница
+ * `/tools/unit-converter/[pair]/[value]` — по разбору конкурента calculat.io
+ * (`docs/seo/competitor-calculatio-analysis.md`) именно такие страницы с
+ * готовым ответом в заголовке отбирают трафик у нашей общей страницы пары.
+ * Числа не придуманы, а вытащены из Вордстата по каждой паре отдельно
+ * (`docs/seo/unit-converter-popular-numbers.tsv`) — единого списка вроде
+ * «1, 2, 3, 5, 10, 50, 100» на все пары не бывает, у каждой пары свой
+ * жизненный контекст (сантехника, диагонали экранов, морские контейнеры и
+ * так далее).
+ */
+export interface PopularValue {
+	/** Число как оно есть для расчёта, например 0.5 для дюйма 1/2". */
+	value: number
+	/** В какой единице выражено число: from — pair.from, to — pair.to. */
+	unit: 'from' | 'to'
+	/** Как показать число человеку, если не как есть (дробь вместо десятичной). */
+	label?: string
+}
+
 export interface UnitPair {
 	slug: string
 	category: UnitCategoryId
@@ -19,6 +39,7 @@ export interface UnitPair {
 	// отдельным <p>, не единым блоком.
 	intro: string
 	faqs: UnitPairFAQ[]
+	popularValues?: PopularValue[]
 }
 
 /**
@@ -76,6 +97,20 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Сначала переведите дробь в десятичную (3/4 = 0,75), затем умножьте на 25,4: 0,75 × 25,4 = 19,05 мм.'
 			}
+		],
+		// Дробные дюймы (сантехническая резьба) обходят по частоте почти все
+		// целые числа — см. docs/seo/unit-converter-popular-numbers.tsv.
+		popularValues: [
+			{ value: 0.5, unit: 'to', label: '1/2' },
+			{ value: 0.75, unit: 'to', label: '3/4' },
+			{ value: 0.25, unit: 'to', label: '1/4' },
+			{ value: 0.375, unit: 'to', label: '3/8' },
+			{ value: 0.125, unit: 'to', label: '1/8' },
+			{ value: 16, unit: 'from' },
+			{ value: 32, unit: 'from' },
+			{ value: 25, unit: 'from' },
+			{ value: 60, unit: 'from' },
+			{ value: 50, unit: 'from' }
 		]
 	},
 	{
@@ -106,6 +141,20 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Нет, это просто одинаковое название разных единиц. Фунт веса (pound) и фунт стерлингов (pound sterling, валюта) не связаны друг с другом, совпадение в названии чисто историческое: оба восходят к древнеримской либре, но развивались отдельно.'
 			}
+		],
+		// Круглые числа веса тела в контексте похудения (350, 300, 250, 200
+		// фунтов) обходят по частоте большинство других значений.
+		popularValues: [
+			{ value: 1, unit: 'from' },
+			{ value: 10, unit: 'from' },
+			{ value: 15, unit: 'from' },
+			{ value: 50, unit: 'from' },
+			{ value: 100, unit: 'from' },
+			{ value: 150, unit: 'from' },
+			{ value: 200, unit: 'from' },
+			{ value: 250, unit: 'from' },
+			{ value: 300, unit: 'from' },
+			{ value: 350, unit: 'from' }
 		]
 	},
 	{
@@ -196,6 +245,13 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Грубо: удвойте Цельсий и прибавьте 30. Для 20°C получится 70°F вместо точных 68°F, разница небольшая для бытовой прикидки погоды.'
 			}
+		],
+		// Только подтверждённые Вордстатом опорные точки: 32°F (точка
+		// замерзания воды) и 451°F (отсылка к роману Брэдбери) — остальные
+		// «круглые» температуры в выдаче не всплыли, не выдумываем.
+		popularValues: [
+			{ value: 32, unit: 'to' },
+			{ value: 451, unit: 'to' }
 		]
 	},
 	{
@@ -257,6 +313,20 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Обычно дело в округлении: одни сайты показывают точное значение с десятыми долями сантиметра, другие округляют до целых. Сам дюйм при этом везде один и тот же, 2,54 см, расхождение только в том, где остановить округление.'
 			}
+		],
+		// Диагонали телевизоров и мониторов — стандартные размеры розницы,
+		// а не случайные числа.
+		popularValues: [
+			{ value: 1, unit: 'from' },
+			{ value: 5, unit: 'from' },
+			{ value: 24, unit: 'from' },
+			{ value: 27, unit: 'from' },
+			{ value: 32, unit: 'from' },
+			{ value: 43, unit: 'from' },
+			{ value: 50, unit: 'from' },
+			{ value: 55, unit: 'from' },
+			{ value: 65, unit: 'from' },
+			{ value: 75, unit: 'from' }
 		]
 	},
 	{
@@ -350,6 +420,19 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Это стандартная нотация: одинарный штрих (\') обозначает футы, двойной (") обозначает дюймы. Запись 5\'10" значит «5 футов 10 дюймов», а не «5 целых 10 десятых фута».'
 			}
+		],
+		// Типичный диапазон роста взрослого человека в см.
+		popularValues: [
+			{ value: 160, unit: 'from' },
+			{ value: 165, unit: 'from' },
+			{ value: 170, unit: 'from' },
+			{ value: 173, unit: 'from' },
+			{ value: 175, unit: 'from' },
+			{ value: 178, unit: 'from' },
+			{ value: 180, unit: 'from' },
+			{ value: 183, unit: 'from' },
+			{ value: 185, unit: 'from' },
+			{ value: 190, unit: 'from' }
 		]
 	},
 	{
@@ -507,6 +590,19 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Для бытовых задач точность в 1 грамм не бывает избыточной, а вот измерение до миллиграмма требует лабораторных весов совсем другого класса точности и стоимости. Для рецептов и большинства бытовых измерений грамма вполне достаточно.'
 			}
+		],
+		// Типичные порции в кулинарных рецептах.
+		popularValues: [
+			{ value: 30, unit: 'from' },
+			{ value: 50, unit: 'from' },
+			{ value: 70, unit: 'from' },
+			{ value: 100, unit: 'from' },
+			{ value: 200, unit: 'from' },
+			{ value: 300, unit: 'from' },
+			{ value: 350, unit: 'from' },
+			{ value: 400, unit: 'from' },
+			{ value: 500, unit: 'from' },
+			{ value: 600, unit: 'from' }
 		]
 	},
 	{
@@ -537,6 +633,19 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Деление на 12 удобнее для ручных измерений и разметки: оно без остатка делится на 2, 3, 4 и 6, в отличие от 10, которое делится только на 2 и 5. Английская система мер во многом строилась на таких практичных дюжинных делениях, а не на десятичной логике, которую позже выбрали создатели метрической системы.'
 			}
+		],
+		// Типичный диапазон роста взрослого человека в футах.
+		popularValues: [
+			{ value: 1, unit: 'from' },
+			{ value: 2, unit: 'from' },
+			{ value: 3, unit: 'from' },
+			{ value: 4, unit: 'from' },
+			{ value: 5, unit: 'from' },
+			{ value: 6, unit: 'from' },
+			{ value: 7, unit: 'from' },
+			{ value: 8, unit: 'from' },
+			{ value: 9, unit: 'from' },
+			{ value: 10, unit: 'from' }
 		]
 	},
 	{
@@ -1534,6 +1643,19 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Потому что psi опирается на фунт и дюйм, единицы имперской системы, которая в США остаётся бытовым стандартом. Бар появился позже, уже как метрическая альтернатива, и распространился там, где метрическая система и так была принята.'
 			}
+		],
+		// Стандартные значения давления в шинах.
+		popularValues: [
+			{ value: 15, unit: 'from' },
+			{ value: 20, unit: 'from' },
+			{ value: 30, unit: 'from' },
+			{ value: 33, unit: 'from' },
+			{ value: 36, unit: 'from' },
+			{ value: 40, unit: 'from' },
+			{ value: 50, unit: 'from' },
+			{ value: 60, unit: 'from' },
+			{ value: 100, unit: 'from' },
+			{ value: 150, unit: 'from' }
 		]
 	},
 	{
@@ -1653,6 +1775,19 @@ export const unitPairs: UnitPair[] = [
 				answer:
 					'Потому что длина шага зависит от роста, темпа ходьбы и покрытия, единой физической константы тут нет. Расчёт использует общепринятое среднее, 0,75 м, а точную цифру для себя даст только трекер, откалиброванный по вашему собственному шагу.'
 			}
+		],
+		// Круглые цели фитнес-трекеров, «10000 шагов» — самая известная.
+		popularValues: [
+			{ value: 1000, unit: 'from' },
+			{ value: 5000, unit: 'from' },
+			{ value: 7000, unit: 'from' },
+			{ value: 10000, unit: 'from' },
+			{ value: 15000, unit: 'from' },
+			{ value: 20000, unit: 'from' },
+			{ value: 30000, unit: 'from' },
+			{ value: 40000, unit: 'from' },
+			{ value: 50000, unit: 'from' },
+			{ value: 100000, unit: 'from' }
 		]
 	},
 	{
