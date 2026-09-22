@@ -1157,7 +1157,7 @@ export const toolWidgets: Widget[] = [
 		// под это делать нельзя — будут каннибализировать друг друга.
 		searchVolume: 215510,
 		icon: Sparkle,
-		category: 'entertainment',
+		category: 'generators',
 		translationKey: 'magicBall',
 		path: 'magic-ball',
 		gradient: 'from-violet-600 to-indigo-800',
