@@ -642,10 +642,6 @@ export default function HTMLTreePage() {
 								{isFetchingUrl ? 'Загружаем…' : 'Загрузить'}
 							</Button>
 						</div>
-						<p className='mt-3 text-sm text-muted-foreground'>
-							Страницу заберёт наш сервер — из браузера чужой домен не
-							прочитать. HTML нигде не сохраняется, разбор идёт у вас.
-						</p>
 					</div>
 				)}
 
