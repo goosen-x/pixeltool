@@ -1,4 +1,10 @@
-import { Anton, Geist_Mono, Inter, Onest } from 'next/font/google'
+import {
+	Anton,
+	Geist_Mono,
+	Inter,
+	Onest,
+	Roboto_Condensed
+} from 'next/font/google'
 
 // Using Google Fonts with next/font
 export const interFont = Inter({
@@ -38,4 +44,16 @@ export const geistMonoFont = Geist_Mono({
 	subsets: ['latin', 'cyrillic'],
 	variable: '--font-geist-mono',
 	display: 'swap'
+})
+
+// Жирный гротеск-конденс под автомобильные номера (.plate-font в
+// globals.css, car-region-codes/page.tsx). Официальный ГОСТовский ЖР5 не
+// распространяется со свободной лицензией — этот шрифт лишь визуально
+// близкий аналог. preload: false — используется только на одном тул-виджете.
+export const robotoCondensedFont = Roboto_Condensed({
+	weight: '700',
+	subsets: ['latin', 'cyrillic'],
+	variable: '--font-plate',
+	display: 'swap',
+	preload: false
 })

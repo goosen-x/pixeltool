@@ -1462,6 +1462,13 @@ pre[class*='language-'] {
 	}
 }
 
+/* Автомобильный номер (car-region-codes). Официальный ГОСТовский ЖР5 без
+   свободной лицензии не распространяется — Roboto Condensed 700 ближайший
+   безопасный аналог по пропорциям и жирности. */
+.plate-font {
+	font-family: var(--font-plate), 'Arial Narrow', system-ui, sans-serif;
+}
+
 /* Animated card */
 .digit-card {
 	position: absolute;
