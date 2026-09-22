@@ -326,6 +326,36 @@ export default function TimerCountdownPage() {
 		}
 	}
 
+	// Пробел стартует/останавливает таймер — но не когда фокус в поле
+	// ввода (например, в настройках длительности помодоро).
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.code !== 'Space') return
+
+			const target = event.target as HTMLElement
+			if (
+				target.tagName === 'INPUT' ||
+				target.tagName === 'TEXTAREA' ||
+				target.isContentEditable
+			) {
+				return
+			}
+
+			event.preventDefault()
+
+			if (!isRunning) {
+				startTimer()
+			} else if (isPaused) {
+				resumeTimer()
+			} else {
+				pauseTimer()
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyDown)
+		return () => window.removeEventListener('keydown', handleKeyDown)
+	}, [isRunning, isPaused, mode, time, initialTime])
+
 	const handleModeChange = (newMode: TimerMode) => {
 		resetTimer()
 		setMode(newMode)
