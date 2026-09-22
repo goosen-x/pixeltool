@@ -64,7 +64,7 @@ export const ProjectsLeftSidebar = ({ onLinkClick }: Props = {}) => {
 				    так же, как раньше здесь стояла ссылка «Настройки» (border-t p-4,
 				    убрана в ed07b16). Ушла из правого сайдбара, чтобы реклама там
 				    занимала всю колонку (fill, см. ProjectsRightSidebar). */}
-				<div className='border-t p-3 lg:p-4'>
+				<div className='p-3 lg:p-4'>
 					<FeedbackCard />
 				</div>
 			</div>

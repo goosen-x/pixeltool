@@ -30,7 +30,7 @@ export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 	return (
 		<aside
 			className={cn(
-				'w-72 xl:w-80 p-3 lg:p-4 flex-shrink-0',
+				'w-72 xl:w-80 p-3 lg:p-4 flex-shrink-0 bg-background xl:bg-muted/30',
 				boundedHeight && 'h-full overflow-y-auto projects-scroll flex flex-col'
 			)}
 		>
