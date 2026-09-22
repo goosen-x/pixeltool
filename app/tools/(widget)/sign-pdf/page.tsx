@@ -15,12 +15,7 @@ import {
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import {
-	toolBar,
-	toolFooterBar,
-	toolIconButton,
-	toolPill
-} from '@/lib/ui/tool-pill'
+import { toolBar, toolIconButton, toolPill } from '@/lib/ui/tool-pill'
 import { downloadBlob } from '@/lib/utils/download-blob'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -481,6 +476,177 @@ export default function SignPdfPage() {
 					className='hidden'
 				/>
 
+				{file && !drawing && (
+					<>
+						<div className={toolBar}>
+							<span className='flex items-center gap-2 text-sm text-muted-foreground'>
+								<Pen className='h-4 w-4' />
+								Подпись
+								{signature ? (
+									<>
+										{/* eslint-disable-next-line @next/next/no-img-element -- object URL */}
+										<img
+											src={signature.url}
+											alt='Ваша подпись'
+											className='h-7 w-auto rounded border bg-background px-1'
+										/>
+										<button
+											type='button'
+											onClick={() => place(signature)}
+											className={toolPill(false)}
+										>
+											поставить
+										</button>
+									</>
+								) : (
+									<>
+										<button
+											type='button'
+											onClick={() => setDrawing(true)}
+											className={toolPill(false)}
+										>
+											нарисовать
+										</button>
+										<button
+											type='button'
+											onClick={() => {
+												uploadKind.current = 'signature'
+												imageInputRef.current?.click()
+											}}
+											className={toolPill(false)}
+										>
+											загрузить
+										</button>
+									</>
+								)}
+							</span>
+
+							<span className='flex items-center gap-2 text-sm text-muted-foreground'>
+								<Stamp className='h-4 w-4' />
+								Печать
+								{stamp ? (
+									<>
+										{/* eslint-disable-next-line @next/next/no-img-element -- object URL */}
+										<img
+											src={stamp.url}
+											alt='Ваша печать'
+											className='h-7 w-auto rounded border bg-background px-1'
+										/>
+										<button
+											type='button'
+											onClick={() => place(stamp)}
+											className={toolPill(false)}
+										>
+											поставить
+										</button>
+									</>
+								) : (
+									<button
+										type='button'
+										onClick={() => {
+											uploadKind.current = 'stamp'
+											imageInputRef.current?.click()
+										}}
+										className={toolPill(false)}
+									>
+										загрузить
+									</button>
+								)}
+							</span>
+
+							<button
+								type='button'
+								onClick={() => void toggleDropWhite()}
+								aria-pressed={dropWhite}
+								className={toolPill(dropWhite, 'sm:ml-auto')}
+							>
+								убрать белый фон
+							</button>
+						</div>
+
+						<div className={toolBar}>
+							<span className='flex items-center gap-1'>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() => setPageNumber(page => Math.max(1, page - 1))}
+									disabled={pageNumber <= 1}
+									title='Предыдущая страница'
+									className={toolIconButton}
+								>
+									<ChevronLeft className='h-4 w-4' />
+								</Button>
+								<span className='font-mono text-sm tabular-nums'>
+									{pageNumber} / {totalPages}
+								</span>
+								<Button
+									size='icon'
+									variant='ghost'
+									onClick={() =>
+										setPageNumber(page => Math.min(totalPages, page + 1))
+									}
+									disabled={pageNumber >= totalPages}
+									title='Следующая страница'
+									className={toolIconButton}
+								>
+									<ChevronRight className='h-4 w-4' />
+								</Button>
+							</span>
+
+							{selected ? (
+								<>
+									<label className='flex items-center gap-2 text-sm text-muted-foreground'>
+										Размер
+										<Slider
+											value={[Math.round(selected.width * 100)]}
+											onValueChange={([value]) =>
+												updateSelected({ width: value / 100 })
+											}
+											min={5}
+											max={90}
+											step={1}
+											className='w-32 cursor-pointer'
+											aria-label='Размер выбранной картинки'
+										/>
+										<span className='w-10 font-mono text-sm text-foreground tabular-nums'>
+											{Math.round(selected.width * 100)}%
+										</span>
+									</label>
+
+									<Button
+										size='icon'
+										variant='ghost'
+										onClick={removeSelected}
+										title='Убрать со страницы'
+										className={toolIconButton}
+									>
+										<X className='h-4 w-4' />
+									</Button>
+								</>
+							) : (
+								<span className='text-sm text-muted-foreground'>
+									{onPage.length > 0
+										? 'Выберите подпись на странице, чтобы изменить размер'
+										: 'Поставьте подпись или печать на страницу'}
+								</span>
+							)}
+
+							<Button
+								onClick={save}
+								disabled={placements.length === 0 || status === 'saving'}
+								className='cursor-pointer gap-2 sm:ml-auto'
+							>
+								{status === 'saving' ? (
+									<Loader2 className='h-4 w-4 animate-spin' />
+								) : (
+									<Download className='h-4 w-4' />
+								)}
+								Скачать PDF
+							</Button>
+						</div>
+					</>
+				)}
+
 				{!file ? (
 					<div className='px-5 py-6 sm:px-6'>
 						<button
@@ -575,177 +741,6 @@ export default function SignPdfPage() {
 					<p className='border-t px-5 py-3 text-sm text-destructive sm:px-6'>
 						{error}
 					</p>
-				)}
-
-				{file && !drawing && (
-					<>
-						<div className={toolFooterBar}>
-							<span className='flex items-center gap-2 text-sm text-muted-foreground'>
-								<Pen className='h-4 w-4' />
-								Подпись
-								{signature ? (
-									<>
-										{/* eslint-disable-next-line @next/next/no-img-element -- object URL */}
-										<img
-											src={signature.url}
-											alt='Ваша подпись'
-											className='h-7 w-auto rounded border bg-background px-1'
-										/>
-										<button
-											type='button'
-											onClick={() => place(signature)}
-											className={toolPill(false)}
-										>
-											поставить
-										</button>
-									</>
-								) : (
-									<>
-										<button
-											type='button'
-											onClick={() => setDrawing(true)}
-											className={toolPill(false)}
-										>
-											нарисовать
-										</button>
-										<button
-											type='button'
-											onClick={() => {
-												uploadKind.current = 'signature'
-												imageInputRef.current?.click()
-											}}
-											className={toolPill(false)}
-										>
-											загрузить
-										</button>
-									</>
-								)}
-							</span>
-
-							<span className='flex items-center gap-2 text-sm text-muted-foreground'>
-								<Stamp className='h-4 w-4' />
-								Печать
-								{stamp ? (
-									<>
-										{/* eslint-disable-next-line @next/next/no-img-element -- object URL */}
-										<img
-											src={stamp.url}
-											alt='Ваша печать'
-											className='h-7 w-auto rounded border bg-background px-1'
-										/>
-										<button
-											type='button'
-											onClick={() => place(stamp)}
-											className={toolPill(false)}
-										>
-											поставить
-										</button>
-									</>
-								) : (
-									<button
-										type='button'
-										onClick={() => {
-											uploadKind.current = 'stamp'
-											imageInputRef.current?.click()
-										}}
-										className={toolPill(false)}
-									>
-										загрузить
-									</button>
-								)}
-							</span>
-
-							<button
-								type='button'
-								onClick={() => void toggleDropWhite()}
-								aria-pressed={dropWhite}
-								className={toolPill(dropWhite, 'sm:ml-auto')}
-							>
-								убрать белый фон
-							</button>
-						</div>
-
-						<div className={toolFooterBar}>
-							<span className='flex items-center gap-1'>
-								<Button
-									size='icon'
-									variant='ghost'
-									onClick={() => setPageNumber(page => Math.max(1, page - 1))}
-									disabled={pageNumber <= 1}
-									title='Предыдущая страница'
-									className={toolIconButton}
-								>
-									<ChevronLeft className='h-4 w-4' />
-								</Button>
-								<span className='font-mono text-sm tabular-nums'>
-									{pageNumber} / {totalPages}
-								</span>
-								<Button
-									size='icon'
-									variant='ghost'
-									onClick={() =>
-										setPageNumber(page => Math.min(totalPages, page + 1))
-									}
-									disabled={pageNumber >= totalPages}
-									title='Следующая страница'
-									className={toolIconButton}
-								>
-									<ChevronRight className='h-4 w-4' />
-								</Button>
-							</span>
-
-							{selected ? (
-								<>
-									<label className='flex items-center gap-2 text-sm text-muted-foreground'>
-										Размер
-										<Slider
-											value={[Math.round(selected.width * 100)]}
-											onValueChange={([value]) =>
-												updateSelected({ width: value / 100 })
-											}
-											min={5}
-											max={90}
-											step={1}
-											className='w-32 cursor-pointer'
-											aria-label='Размер выбранной картинки'
-										/>
-										<span className='w-10 font-mono text-sm text-foreground tabular-nums'>
-											{Math.round(selected.width * 100)}%
-										</span>
-									</label>
-
-									<Button
-										size='icon'
-										variant='ghost'
-										onClick={removeSelected}
-										title='Убрать со страницы'
-										className={toolIconButton}
-									>
-										<X className='h-4 w-4' />
-									</Button>
-								</>
-							) : (
-								<span className='text-sm text-muted-foreground'>
-									{onPage.length > 0
-										? 'Выберите подпись на странице, чтобы изменить размер'
-										: 'Поставьте подпись или печать на страницу'}
-								</span>
-							)}
-
-							<Button
-								onClick={save}
-								disabled={placements.length === 0 || status === 'saving'}
-								className='cursor-pointer gap-2 sm:ml-auto'
-							>
-								{status === 'saving' ? (
-									<Loader2 className='h-4 w-4 animate-spin' />
-								) : (
-									<Download className='h-4 w-4' />
-								)}
-								Скачать PDF
-							</Button>
-						</div>
-					</>
 				)}
 			</Card>
 
