@@ -33,7 +33,8 @@ export function ScrollToTop() {
 				if (r.width === 0) return
 				const crossX = r.left < btn.right && r.right > btn.left
 				const crossY = r.top - CLEARANCE < btn.bottom && r.bottom > btn.top
-				if (crossX && crossY) need = Math.max(need, btn.bottom - (r.top - CLEARANCE))
+				if (crossX && crossY)
+					need = Math.max(need, btn.bottom - (r.top - CLEARANCE))
 			})
 			setLift(need)
 		}
