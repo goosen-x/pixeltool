@@ -1,6 +1,7 @@
 'use client'
 
 import { AdSection } from '@/components/ads'
+import { GooseLabsCredit } from '@/components/layout/GooseLabsCredit'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -25,7 +26,11 @@ interface Props {
  *
  *  На тулах (boundedHeight) реклама — flex-1 во всю высоту колонки, см.
  *  AdSection, prop fill. На блоге колонка sticky без фиксированной высоты —
- *  flex-grow тянуть не от чего, там у рекламы свой фиксированный min-h. */
+ *  flex-grow тянуть не от чего, там у рекламы свой фиксированный min-h.
+ *
+ *  На тулах под рекламой плашка «Сайт разработан студией GooseLabs». На
+ *  экранах уже lg сайдбара нет — там плашка в CompactFooter. На блоге она
+ *  уже есть в общем футере, в сайдбаре не дублируется. */
 export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 	return (
 		<aside
@@ -35,6 +40,11 @@ export function ProjectsRightSidebar({ boundedHeight = true }: Props) {
 			)}
 		>
 			<AdSection fill={boundedHeight} />
+			{boundedHeight && (
+				<div className='mt-4 flex shrink-0 justify-end'>
+					<GooseLabsCredit placement='tool_sidebar' />
+				</div>
+			)}
 		</aside>
 	)
 }

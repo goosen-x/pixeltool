@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Code2, Github, Mail, ExternalLink, Sparkles } from 'lucide-react'
 import { Logo } from '@/components/global/Logo'
+import { GooseLabsCredit } from '@/components/layout/GooseLabsCredit'
 import { widgetCategories } from '@/lib/constants/widgets'
 
 export const Footer = () => {
@@ -176,9 +177,12 @@ export const Footer = () => {
 
 				{/* Bottom Bar */}
 				<div className='pt-8 border-t border-border/50'>
-					<div className='flex items-center justify-center gap-2 text-sm text-muted-foreground sm:justify-start'>
-						<span>© {year} PixelTool.</span>
-						<span className='hidden sm:inline'>Все права защищены.</span>
+					<div className='flex flex-col items-center justify-between gap-2 text-sm text-muted-foreground sm:flex-row'>
+						<div className='flex items-center gap-2'>
+							<span>© {year} PixelTool.</span>
+							<span className='hidden sm:inline'>Все права защищены.</span>
+						</div>
+						<GooseLabsCredit />
 					</div>
 				</div>
 			</div>

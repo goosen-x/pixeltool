@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { GooseLabsCredit } from '@/components/layout/GooseLabsCredit'
 
 const LINKS = [
 	{ href: '/tools', label: 'Инструменты' },
@@ -19,7 +20,13 @@ export function CompactFooter() {
 	return (
 		<footer className='mt-16 border-t pt-6 pb-4'>
 			<div className='flex flex-col items-center justify-between gap-3 text-sm text-muted-foreground sm:flex-row'>
-				<span>© {year} PixelTool</span>
+				<div className='flex flex-col items-center gap-3 sm:items-start'>
+					<span>© {year} PixelTool</span>
+					{/* От lg плашка живёт в правом сайдбаре (ProjectsRightSidebar). */}
+					<div className='lg:hidden'>
+						<GooseLabsCredit placement='tool_footer' />
+					</div>
+				</div>
 
 				<nav className='flex items-center gap-5'>
 					{LINKS.map(link => (
