@@ -1,63 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { telegramFetch } from '@/lib/telegram/proxy-fetch'
 import { getDb } from '@/lib/db'
+import { parseAttribution, sendLead } from '@/lib/lead-message'
 
 interface ContactRequest {
 	name: string
 	email: string
 	subject: string
 	message: string
+	attribution?: unknown
 }
 
-// Тот же паттерн и те же TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID, что и у
-// app/api/feedback/route.ts — один бот на все уведомления сайта.
-const escapeHtml = (value: unknown): string =>
-	String(value ?? '')
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-
+// Заявки со всех сайтов GooseLabs идут в один бот лидов
+// (TELEGRAM_LEADS_BOT_TOKEN/TELEGRAM_LEADS_CHAT_ID), формат общий: lib/lead-message.ts.
+// Отзывы и баг-репорты (app/api/feedback) идут в общий бот уведомлений.
 async function sendToTelegram(data: ContactRequest) {
-	const botToken = process.env.TELEGRAM_BOT_TOKEN
-	const chatId = process.env.TELEGRAM_CHAT_ID
-
-	if (!botToken || !chatId) {
-		throw new Error('Telegram credentials not configured')
-	}
-
-	const lines = [
-		'📬 <b>Новое сообщение с формы контактов</b>',
-		'',
-		`<b>Имя:</b> ${escapeHtml(data.name)}`,
-		`<b>Email:</b> ${escapeHtml(data.email)}`,
-		`<b>Тема:</b> ${escapeHtml(data.subject)}`,
-		'',
-		`<b>Сообщение</b>`,
-		escapeHtml(data.message),
-		'',
-		`<b>Время:</b> ${escapeHtml(new Date().toLocaleString('ru-RU'))}`
-	]
-
-	const response = await telegramFetch(
-		`https://api.telegram.org/bot${botToken}/sendMessage`,
+	const sent = await sendLead(
 		{
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				chat_id: chatId,
-				text: lines.join('\n'),
-				parse_mode: 'HTML',
-				disable_web_page_preview: true
-			})
-		}
+			site: 'pixeltool.pro',
+			siteTag: 'pixeltool',
+			form: 'Контакты',
+			formTag: 'contact',
+			fields: [
+				['Имя', data.name],
+				['Email', data.email],
+				['Тема', data.subject],
+				['Сообщение', data.message]
+			],
+			attribution: data.attribution
+		},
+		telegramFetch
 	)
-
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}))
-		throw new Error(
-			`Telegram API error: ${errorData.description || response.status}`
-		)
-	}
+	if (!sent) throw new Error('Заявка не доставлена в бот лидов')
 }
 
 export async function POST(request: NextRequest) {
@@ -77,9 +51,17 @@ export async function POST(request: NextRequest) {
 		const {
 			rows: [row]
 		} = await db.query<{ id: number }>(
-			`INSERT INTO site_messages (source, name, email, subject, message)
-			 VALUES ('contact', $1, $2, $3, $4) RETURNING id`,
-			[body.name, body.email, body.subject, body.message]
+			`INSERT INTO site_messages (source, name, email, subject, message, meta)
+			 VALUES ('contact', $1, $2, $3, $4, $5) RETURNING id`,
+			[
+				body.name,
+				body.email,
+				body.subject,
+				body.message,
+				JSON.stringify({
+					attribution: parseAttribution(body.attribution) ?? null
+				})
+			]
 		)
 
 		try {

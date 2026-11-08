@@ -174,7 +174,9 @@ async function sendToTelegram(data: any) {
 
 	const emoji = typeEmoji[data.type] || '📝'
 
+	// Общий бот уведомлений для всех проектов: хэштеги показывают, откуда сообщение.
 	const lines = [
+		`#feedback #pixeltool #${escapeHtml(data.type)}`,
 		`${emoji} <b>Обратная связь: ${escapeHtml(data.type).toUpperCase()}</b>`,
 		'',
 		`<b>Заголовок</b>`,

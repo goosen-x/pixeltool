@@ -7,6 +7,7 @@ import { SiteFooter } from '@/components/layout'
 // import { routing } from '@/i18n/routing'
 import { ReactNode, Suspense } from 'react'
 import YandexMetrika from '@/components/analytics/YandexMetrika'
+import AttributionTracker from '@/components/analytics/AttributionTracker'
 import { ScrollToTop } from '@/components/global/ScrollToTop'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/theme-provider'
@@ -285,6 +286,7 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 							<NavigationProgress />
 						</Suspense>
 						<YandexMetrika />
+						<AttributionTracker />
 						<Suspense fallback={null}>
 							<GlobalGoalsTracker />
 						</Suspense>
