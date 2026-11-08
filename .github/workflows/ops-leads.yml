@@ -46,13 +46,13 @@ jobs:
           envs: DATABASE_URL,ACTION
           script: |
             if [ "$ACTION" = "cleanup-tests" ]; then
-              SQL="DELETE FROM site_leads WHERE name LIKE 'ТЕСТ Claude%' RETURNING id, site; DELETE FROM site_messages WHERE subject LIKE 'ТЕСТ Claude%' RETURNING id, site;"
+              SQL="DELETE FROM site_leads WHERE name LIKE 'ТЕСТ Claude%' RETURNING id, site; DELETE FROM site_messages WHERE (subject LIKE 'ТЕСТ Claude%' OR message LIKE 'ТЕСТ Claude%') RETURNING id, site;"
             else
               SQL="SELECT site, count(*) AS total, count(telegram_sent_at) AS sent_to_tg FROM site_leads GROUP BY site ORDER BY site;
               SELECT id, created_at AT TIME ZONE 'Europe/Moscow', site, form, name, utm_source, utm_campaign, ym_client_id IS NOT NULL AS has_clientid, telegram_sent_at IS NOT NULL AS sent FROM site_leads WHERE name LIKE 'ТЕСТ Claude%' ORDER BY id;
               SELECT site, source, count(*) FROM site_messages GROUP BY site, source ORDER BY site, source;
-              SELECT id, site, source, type, subject FROM site_messages WHERE subject LIKE 'ТЕСТ Claude%' ORDER BY id;"
+              SELECT id, site, source, type, subject FROM site_messages WHERE subject LIKE 'ТЕСТ Claude%' OR message LIKE 'ТЕСТ Claude%' ORDER BY id;"
             fi
             docker ps --format '{{.Names}} {{.Networks}}' | grep -E 'pixeltool|gooselabs|portfolio|postgres' || true
-            docker run --rm --network pixeltool-net -e DATABASE_URL postgres:16-alpine \
-              psql "$DATABASE_URL" -P pager=off -c "$SQL"
+            printf '%s\n' "$SQL" | docker run --rm -i --network pixeltool-net -e DATABASE_URL postgres:16-alpine \
+              psql "$DATABASE_URL" -P pager=off -f -
