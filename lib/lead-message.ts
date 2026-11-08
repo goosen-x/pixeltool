@@ -2,11 +2,13 @@
 // Единый формат заявки для бота лидов. Одинаковый файл во всех проектах
 // GooseLabs: меняешь здесь, переноси и туда.
 //
-// Все заявки со всех сайтов идут в один бот и чат (TELEGRAM_LEADS_BOT_TOKEN,
-// TELEGRAM_LEADS_CHAT_ID). Хэштеги в первой строке позволяют отфильтровать
-// заявки по сайту и форме прямо в Telegram.
+// Все заявки со всех сайтов пишутся в одну базу (lib/lead-store.ts) и идут
+// в один бот и чат (TELEGRAM_LEADS_BOT_TOKEN, TELEGRAM_LEADS_CHAT_ID).
+// Хэштеги в первой строке позволяют отфильтровать заявки по сайту и форме
+// прямо в Telegram, номер заявки совпадает с id в базе.
 
 import { ATTRIBUTION_PARAMS, type Attribution, type Touch } from './attribution'
+import { markLeadSent, saveLead } from './lead-store'
 
 export type LeadField = [
 	label: string,
@@ -23,6 +25,15 @@ export interface Lead {
 	/** Хэштег формы латиницей: quiz, brief, contact */
 	formTag: string
 	fields: LeadField[]
+	/** Контакты отдельными колонками для базы */
+	contact: {
+		name?: string
+		phone?: string
+		email?: string
+		telegram?: string
+		message?: string
+		adsConsent?: boolean
+	}
 	/** Сырые данные с клиента, проверяются здесь же */
 	attribution?: unknown
 }
@@ -148,10 +159,10 @@ function hashtag(value: string): string {
 	return `#${value.replace(/[^\p{L}\p{N}_]/gu, '_')}`
 }
 
-export function formatLeadMessage(lead: Lead): string {
+export function formatLeadMessage(lead: Lead, id?: number | null): string {
 	const lines = [
 		`${hashtag('lead')} ${hashtag(lead.siteTag)} ${hashtag(lead.formTag)}`,
-		`🚀 <b>Заявка · ${escapeHtml(lead.site)}</b>`,
+		`🚀 <b>Заявка${id ? ` №${id}` : ''} · ${escapeHtml(lead.site)}</b>`,
 		`Форма: ${escapeHtml(lead.form)}`,
 		''
 	]
@@ -173,9 +184,34 @@ export function formatLeadMessage(lead: Lead): string {
 		: text
 }
 
-export async function sendLead(
+// Сохраняет заявку в базу и отправляет в бот. Успех, если сработало хотя бы
+// одно: заявка уже не потеряна. Если нет ни базы, ни Telegram, вернёт false.
+export async function submitLead(
 	lead: Lead,
 	fetcher: Fetcher = fetch
+): Promise<boolean> {
+	const attribution = parseAttribution(lead.attribution)
+	const fields: Record<string, string | boolean> = {}
+	for (const [label, value] of lead.fields) {
+		if (value !== undefined && value !== null && value !== '')
+			fields[label] = value
+	}
+	const id = await saveLead({
+		site: lead.site,
+		form: lead.form,
+		...lead.contact,
+		fields,
+		attribution
+	})
+	const sent = await sendLead(lead, fetcher, id)
+	if (sent && id) await markLeadSent(id)
+	return sent || id !== null
+}
+
+async function sendLead(
+	lead: Lead,
+	fetcher: Fetcher,
+	id: number | null
 ): Promise<boolean> {
 	const token = process.env.TELEGRAM_LEADS_BOT_TOKEN
 	const chatId = process.env.TELEGRAM_LEADS_CHAT_ID
@@ -193,7 +229,7 @@ export async function sendLead(
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					chat_id: chatId,
-					text: formatLeadMessage(lead),
+					text: formatLeadMessage(lead, id),
 					parse_mode: 'HTML',
 					disable_web_page_preview: true
 				})

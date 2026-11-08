@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { telegramFetch } from '@/lib/telegram/proxy-fetch'
-import { getDb } from '@/lib/db'
-import { parseAttribution, sendLead } from '@/lib/lead-message'
+import { submitLead } from '@/lib/lead-message'
 
 interface ContactRequest {
 	name: string
@@ -11,27 +10,28 @@ interface ContactRequest {
 	attribution?: unknown
 }
 
-// Заявки со всех сайтов GooseLabs идут в один бот лидов
-// (TELEGRAM_LEADS_BOT_TOKEN/TELEGRAM_LEADS_CHAT_ID), формат общий: lib/lead-message.ts.
-// Отзывы и баг-репорты (app/api/feedback) идут в общий бот уведомлений.
-async function sendToTelegram(data: ContactRequest) {
-	const sent = await sendLead(
-		{
-			site: 'pixeltool.pro',
-			siteTag: 'pixeltool',
-			form: 'Контакты',
-			formTag: 'contact',
-			fields: [
-				['Имя', data.name],
-				['Email', data.email],
-				['Тема', data.subject],
-				['Сообщение', data.message]
-			],
-			attribution: data.attribution
+// Заявки со всех сайтов GooseLabs пишутся в одну базу (таблица site_leads)
+// и идут в один бот лидов. Формат и хранение общие: lib/lead-message.ts,
+// lib/lead-store.ts, lib/attribution.ts.
+function toLead(data: ContactRequest) {
+	return {
+		site: 'pixeltool.pro',
+		siteTag: 'pixeltool',
+		form: 'Контакты',
+		formTag: 'contact',
+		fields: [
+			['Имя', data.name],
+			['Email', data.email],
+			['Тема', data.subject],
+			['Сообщение', data.message]
+		] as [string, string][],
+		contact: {
+			name: data.name,
+			email: data.email,
+			message: `${data.subject}\n\n${data.message}`
 		},
-		telegramFetch
-	)
-	if (!sent) throw new Error('Заявка не доставлена в бот лидов')
+		attribution: data.attribution
+	}
 }
 
 export async function POST(request: NextRequest) {
@@ -45,39 +45,22 @@ export async function POST(request: NextRequest) {
 			)
 		}
 
-		// Сначала БД — это гарантированная копия. Telegram дальше best-effort:
-		// его падение больше не значит, что сообщение потеряно навсегда.
-		const db = await getDb()
-		const {
-			rows: [row]
-		} = await db.query<{ id: number }>(
-			`INSERT INTO site_messages (source, name, email, subject, message, meta)
-			 VALUES ('contact', $1, $2, $3, $4, $5) RETURNING id`,
-			[
-				body.name,
-				body.email,
-				body.subject,
-				body.message,
-				JSON.stringify({
-					attribution: parseAttribution(body.attribution) ?? null
-				})
-			]
-		)
-
-		try {
-			await sendToTelegram(body)
-			await db.query(
-				`UPDATE site_messages SET telegram_sent_at = now() WHERE id = $1`,
-				[row.id]
-			)
-		} catch (telegramError) {
-			console.error(
-				'Сообщение с формы контактов сохранено, но не доставлено в Telegram:',
-				telegramError
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+			return NextResponse.json(
+				{ error: 'Некорректный формат email' },
+				{ status: 400 }
 			)
 		}
 
-		return NextResponse.json({ message: 'Message sent' }, { status: 200 })
+		const ok = await submitLead(toLead(body), telegramFetch)
+		if (!ok) {
+			return NextResponse.json(
+				{ error: 'Не удалось отправить сообщение. Попробуйте позже.' },
+				{ status: 500 }
+			)
+		}
+
+		return NextResponse.json({ message: 'Message sent', success: true })
 	} catch (error) {
 		console.error('Error processing contact form:', error)
 		return NextResponse.json(

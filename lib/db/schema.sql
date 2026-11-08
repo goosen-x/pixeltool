@@ -76,6 +76,9 @@ CREATE TABLE IF NOT EXISTS site_messages (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 	telegram_sent_at TIMESTAMPTZ
 );
+-- Общая база всех сайтов GooseLabs: отзывы portfolio тоже пишутся сюда.
+ALTER TABLE site_messages ADD COLUMN IF NOT EXISTS site TEXT NOT NULL DEFAULT 'pixeltool.pro';
+
 
 -- Оценка «сработало / не сработало на конкретной площадке» — точечная, без
 -- звезды и без текста. Завели, когда выяснилось: у invisible-character
