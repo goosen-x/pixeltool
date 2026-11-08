@@ -31,19 +31,6 @@ export function HomePageStructuredData() {
 				url: 'https://pixeltool.pro/favicon-512x512.png'
 			}
 		},
-		potentialAction: [
-			{
-				'@type': 'UseAction',
-				target: {
-					'@type': 'EntryPoint',
-					urlTemplate: 'https://pixeltool.pro/tools/{tool_name}',
-					actionPlatform: [
-						'http://schema.org/DesktopWebPlatform',
-						'http://schema.org/MobileWebPlatform'
-					]
-				}
-			}
-		],
 		// Список ведёт к самим разделам, а не перечисляет случайные восемь
 		// инструментов: прежний обещал «более 50», когда их уже 124.
 		featureList: [
