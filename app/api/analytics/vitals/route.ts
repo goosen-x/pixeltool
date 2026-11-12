@@ -20,6 +20,20 @@ export async function POST(request: NextRequest) {
 			url: body.url,
 			timestamp: new Date().toISOString()
 		})
+		// Атрибуция CLS (см. components/analytics/WebVitals.tsx) — одной
+		// строкой JSON, чтобы её было удобно грепать из docker logs.
+		if (body.metric === 'CLS' && Array.isArray(body.shifts)) {
+			console.log(
+				'CLS attribution:',
+				JSON.stringify({
+					url: body.url,
+					value: body.value,
+					vw: body.vw,
+					vh: body.vh,
+					shifts: body.shifts
+				})
+			)
+		}
 
 		// Here you could send this data to your analytics service
 		// Example: await sendToAnalytics(body)

@@ -21,6 +21,11 @@ function visibleHeight(element: Element | null): number {
 	return element.getBoundingClientRect().height
 }
 
+/** То же, что measureChromeHeight, но строкой для инлайн-скрипта сразу после
+ *  шапки в app/layout.tsx: выставляет --chrome-h до первой отрисовки, без
+ *  ожидания гидратации. */
+export const MEASURE_CHROME_HEIGHT_INLINE = `(function(){try{var b=document.getElementById(${JSON.stringify(BANNER_ID)});var h=document.querySelector('[data-site-header]')||document.querySelector('header');var t=(b?b.getBoundingClientRect().height:0)+(h?h.getBoundingClientRect().height:0);document.documentElement.style.setProperty(${JSON.stringify(CHROME_HEIGHT_VAR)},Math.round(t)+'px')}catch(_){}})()`
+
 export function measureChromeHeight(): void {
 	if (typeof document === 'undefined') return
 

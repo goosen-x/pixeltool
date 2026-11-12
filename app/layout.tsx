@@ -31,6 +31,7 @@ import Header from '@/components/layout/Header/Header'
 import { ToolOfMonthBanner } from '@/components/layout/ToolOfMonthBanner'
 import { MobileBottomAd } from '@/components/ads'
 import { ChromeHeightVar } from '@/components/layout/ChromeHeightVar'
+import { MEASURE_CHROME_HEIGHT_INLINE } from '@/lib/ui/chrome-height'
 import { AppHeightVar } from '@/components/layout/AppHeightVar'
 import { AutoBreadcrumbs } from '@/components/seo/AutoBreadcrumbs'
 import { SiteStructuredData } from '@/components/seo/SiteStructuredData'
@@ -297,12 +298,24 @@ export default async function RootLayout({ children }: Readonly<Props>) {
 						{/* На мобильном баннер почти не кликают (в поле зрения доли секунды
 						    при прокрутке) — вместо него sticky-реклама снизу, см.
 						    MobileBottomAd ниже */}
+						{/* Без Suspense: с ним баннер даже в ISR-HTML уходил в самый конец
+						    документа и вставлялся скриптом после разбора всей страницы
+						    (~300 КБ). Первая отрисовка успевала пройти без него, потом вся
+						    раскладка съезжала на 40px — часть CLS на десктопе (GSC,
+						    ноябрь 2026). Запрос к БД короткий, а рендер всё равно идёт в
+						    ISR-кэш раз в час, посетитель его не ждёт. */}
 						<div className='hidden lg:block'>
-							<Suspense fallback={null}>
-								<ToolOfMonthBanner />
-							</Suspense>
+							<ToolOfMonthBanner />
 						</div>
 						<Header />
+						{/* Синхронно, до первой отрисовки: баннер и шапка уже разобраны,
+						    сразу выставляем настоящий --chrome-h. Иначе до гидратации
+						    колонки тулов считались от фоллбэка 5rem (а шапка с баннером
+						    121px), и после гидратации всё, что прижато к низу сайдбаров,
+						    прыгало на 41px. */}
+						<script
+							dangerouslySetInnerHTML={{ __html: MEASURE_CHROME_HEIGHT_INLINE }}
+						/>
 						<ChromeHeightVar />
 						<AppHeightVar />
 						<AutoBreadcrumbs />
