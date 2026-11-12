@@ -59,18 +59,19 @@ function linkFor(card: SantaCard): string {
 
 export default function SecretSantaPage() {
 	const widget = getWidgetById('secret-santa')!
-	const [mounted, setMounted] = useState(false)
 	const [card, setCard] = useState<SantaCard | null>(null)
 
 	// Личная ссылка участника живёт в #s=…: хэш не уходит на сервер и в
-	// логи, а прочитать его можно только на клиенте.
+	// логи, а прочитать его можно только на клиенте. Форма организатора
+	// рендерится сразу на сервере: почти все приходят из поиска именно за
+	// ней. Раньше до гидратации стояла заглушка фиксированной высоты, и
+	// подмена её формой сдвигала текст под карточкой (CLS 0,16, 12.11.2026).
 	useEffect(() => {
 		const readHash = () => {
 			const match = window.location.hash.match(/s=([\w-]+)/)
 			setCard(match ? decodeSantaLink(match[1]) : null)
 		}
 		readHash()
-		setMounted(true)
 		window.addEventListener('hashchange', readHash)
 		return () => window.removeEventListener('hashchange', readHash)
 	}, [])
@@ -82,9 +83,7 @@ export default function SecretSantaPage() {
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
-			{!mounted ? (
-				<Card className='min-h-[28rem] p-0' />
-			) : card ? (
+			{card ? (
 				<ParticipantCard card={card} onOrganize={openOrganizer} />
 			) : (
 				<Organizer />
