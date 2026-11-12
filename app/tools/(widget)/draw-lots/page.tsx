@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Check, Copy, RotateCcw, Trash2 } from 'lucide-react'
+import Link from 'next/link'
+import { Check, Copy, Gift, RotateCcw, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -185,6 +186,19 @@ export default function DrawLotsPage() {
 					</span>
 
 					<div className='flex items-center gap-0.5 ml-auto'>
+						{/* Отдельный тул, а не режим здесь: у «Тайного Санты» свой
+						    спрос (Вордстат, ноябрь 2026) и своя логика (никто не дарит
+						    себе, личные ссылки). Ссылка нужна, потому что в ноябре и
+						    декабре по «жеребьёвке онлайн» приходят и за ним. */}
+						{!isDrawing && (
+							<Link
+								href='/tools/secret-santa'
+								className={toolPill(false, 'inline-flex items-center gap-1.5')}
+							>
+								<Gift className='h-3.5 w-3.5' />
+								Тайный Санта
+							</Link>
+						)}
 						{isDrawing ? (
 							<button
 								type='button'
