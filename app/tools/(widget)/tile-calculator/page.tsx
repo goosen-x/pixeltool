@@ -8,6 +8,13 @@ import { getWidgetById } from '@/lib/constants/widgets'
 import { calculateTiles } from '@/lib/utils/tile-calculator'
 import { TileCalculatorSeo } from './TileCalculatorSeo'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
+import { HairlineFigure } from '@/components/tools/HairlineFigure'
+import { TILE_FIGURE } from '@/lib/hairline/figures/construction'
+import {
+	FIGURE_ZERO,
+	figureDim,
+	useFigureFocus
+} from '@/lib/hairline/use-figure-focus'
 
 const WASTE_OPTIONS = [5, 10, 15, 20]
 
@@ -22,11 +29,18 @@ function toNumber(value: string): number | null {
 function Field({
 	label,
 	value,
-	onChange
+	onChange,
+	id,
+	onFocus,
+	onBlur
 }: {
 	label: string
 	value: string
 	onChange: (value: string) => void
+	/** id поля: по нему схема ставит курсор, когда кликают по размеру. */
+	id?: string
+	onFocus?: () => void
+	onBlur?: () => void
 }) {
 	return (
 		<label className='block'>
@@ -34,10 +48,13 @@ function Field({
 				{label}
 			</span>
 			<input
+				id={id}
 				type='text'
 				inputMode='decimal'
 				value={value}
 				onChange={event => onChange(event.target.value)}
+				onFocus={onFocus}
+				onBlur={onBlur}
 				aria-label={label}
 				className={inputClass}
 			/>
@@ -55,6 +72,22 @@ export default function TileCalculatorPage() {
 	const [tileThickness, setTileThickness] = useState('9')
 	const [jointWidth, setJointWidth] = useState('2')
 	const [waste, setWaste] = useState(10)
+	const figure = useFigureFocus('tile')
+	// плитка в см, шов в мм: схеме всё в метрах
+	const figureDims = useMemo(() => {
+		const cm = (v: string) => {
+			const n = toNumber(v)
+			return n === null ? null : n / 100
+		}
+		const joint = toNumber(jointWidth)
+		return [
+			figureDim('roomLength', toNumber(roomLength)),
+			figureDim('roomWidth', toNumber(roomWidth)),
+			figureDim('tileLength', cm(tileLength)),
+			figureDim('tileWidth', cm(tileWidth)),
+			figureDim('joint', joint === null ? FIGURE_ZERO : joint / 1000)
+		]
+	}, [roomLength, roomWidth, tileLength, tileWidth, jointWidth])
 
 	const result = useMemo(() => {
 		const rl = toNumber(roomLength)
@@ -106,40 +139,52 @@ export default function TileCalculatorPage() {
 					</div>
 				</div>
 
-				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-2 sm:px-6'>
-					<Field
-						label='Длина помещения, м'
-						value={roomLength}
-						onChange={setRoomLength}
+				<div className='grid gap-6 border-b px-5 py-6 sm:px-6 md:grid-cols-2 md:items-center'>
+					<HairlineFigure
+						id='tile'
+						figure={TILE_FIGURE}
+						dims={figureDims}
+						focusKey={figure.focusKey}
+						onPick={figure.onPick}
+						label='Схема раскладки плитки с размерами'
+						className='mx-auto w-full max-w-sm'
 					/>
-					<Field
-						label='Ширина помещения, м'
-						value={roomWidth}
-						onChange={setRoomWidth}
-					/>
-				</div>
-
-				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-4 sm:px-6'>
-					<Field
-						label='Длина плитки, см'
-						value={tileLength}
-						onChange={setTileLength}
-					/>
-					<Field
-						label='Ширина плитки, см'
-						value={tileWidth}
-						onChange={setTileWidth}
-					/>
-					<Field
-						label='Толщина плитки, мм'
-						value={tileThickness}
-						onChange={setTileThickness}
-					/>
-					<Field
-						label='Ширина шва, мм'
-						value={jointWidth}
-						onChange={setJointWidth}
-					/>
+					<div className='grid gap-4 sm:grid-cols-2'>
+						<Field
+							label='Длина помещения, м'
+							value={roomLength}
+							onChange={setRoomLength}
+							{...figure.bind('roomLength')}
+						/>
+						<Field
+							label='Ширина помещения, м'
+							value={roomWidth}
+							onChange={setRoomWidth}
+							{...figure.bind('roomWidth')}
+						/>
+						<Field
+							label='Длина плитки, см'
+							value={tileLength}
+							onChange={setTileLength}
+							{...figure.bind('tileLength')}
+						/>
+						<Field
+							label='Ширина плитки, см'
+							value={tileWidth}
+							onChange={setTileWidth}
+							{...figure.bind('tileWidth')}
+						/>
+						<Field
+							label='Толщина плитки, мм'
+							value={tileThickness}
+							onChange={setTileThickness}
+						/>
+						<Field
+							label='Ширина шва, мм'
+							value={jointWidth}
+							onChange={setJointWidth}
+						/>
+					</div>
 				</div>
 
 				{result ? (

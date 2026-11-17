@@ -12,6 +12,9 @@ import {
 } from '@/lib/utils/concrete-calculator'
 import { ConcreteCalculatorSeo } from './ConcreteCalculatorSeo'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
+import { HairlineFigure } from '@/components/tools/HairlineFigure'
+import { CONCRETE_FIGURE } from '@/lib/hairline/figures/construction'
+import { figureDim, useFigureFocus } from '@/lib/hairline/use-figure-focus'
 
 const GRADES: ConcreteGrade[] = ['M100', 'M200', 'M300', 'M400']
 const BAG_WEIGHTS = [25, 50]
@@ -27,11 +30,18 @@ function toNumber(value: string): number | null {
 function Field({
 	label,
 	value,
-	onChange
+	onChange,
+	id,
+	onFocus,
+	onBlur
 }: {
 	label: string
 	value: string
 	onChange: (value: string) => void
+	/** id поля: по нему схема ставит курсор, когда кликают по размеру. */
+	id?: string
+	onFocus?: () => void
+	onBlur?: () => void
 }) {
 	return (
 		<label className='block'>
@@ -39,10 +49,13 @@ function Field({
 				{label}
 			</span>
 			<input
+				id={id}
 				type='text'
 				inputMode='decimal'
 				value={value}
 				onChange={event => onChange(event.target.value)}
+				onFocus={onFocus}
+				onBlur={onBlur}
 				aria-label={label}
 				className={inputClass}
 			/>
@@ -62,6 +75,15 @@ export default function ConcreteCalculatorPage() {
 	const [height, setHeight] = useState('0.2')
 	const [grade, setGrade] = useState<ConcreteGrade>('M200')
 	const [bagWeight, setBagWeight] = useState(50)
+	const figure = useFigureFocus('concrete')
+	const figureDims = useMemo(
+		() => [
+			figureDim('length', toNumber(length)),
+			figureDim('width', toNumber(width)),
+			figureDim('height', toNumber(height))
+		],
+		[length, width, height]
+	)
 
 	const result = useMemo(() => {
 		const l = toNumber(length)
@@ -91,14 +113,36 @@ export default function ConcreteCalculatorPage() {
 					</div>
 				</div>
 
-				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-3 sm:px-6'>
-					<Field label='Длина, м' value={length} onChange={setLength} />
-					<Field label='Ширина, м' value={width} onChange={setWidth} />
-					<Field
-						label='Высота (толщина), м'
-						value={height}
-						onChange={setHeight}
+				<div className='grid gap-6 border-b px-5 py-6 sm:px-6 md:grid-cols-2 md:items-center'>
+					<HairlineFigure
+						id='concrete'
+						figure={CONCRETE_FIGURE}
+						dims={figureDims}
+						focusKey={figure.focusKey}
+						onPick={figure.onPick}
+						label='Схема заливки с размерами'
+						className='mx-auto w-full max-w-sm'
 					/>
+					<div className='grid gap-4'>
+						<Field
+							label='Длина, м'
+							value={length}
+							onChange={setLength}
+							{...figure.bind('length')}
+						/>
+						<Field
+							label='Ширина, м'
+							value={width}
+							onChange={setWidth}
+							{...figure.bind('width')}
+						/>
+						<Field
+							label='Высота (толщина), м'
+							value={height}
+							onChange={setHeight}
+							{...figure.bind('height')}
+						/>
+					</div>
 				</div>
 
 				{result ? (

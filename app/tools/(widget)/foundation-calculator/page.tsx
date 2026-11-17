@@ -15,12 +15,29 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { FoundationCalculatorSeo } from './FoundationCalculatorSeo'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
+import { HairlineFigure } from '@/components/tools/HairlineFigure'
+import {
+	FOUNDATION_PILES_FIGURE,
+	FOUNDATION_SLAB_FIGURE,
+	FOUNDATION_STRIP_FIGURE
+} from '@/lib/hairline/figures/construction'
+import {
+	FIGURE_ZERO,
+	figureDim,
+	useFigureFocus
+} from '@/lib/hairline/use-figure-focus'
 
 const TYPES: { value: FoundationType; label: string }[] = [
 	{ value: 'strip', label: 'Ленточный' },
 	{ value: 'slab', label: 'Плита' },
 	{ value: 'piles', label: 'Столбчатый' }
 ]
+
+const FOUNDATION_FIGURES = {
+	strip: FOUNDATION_STRIP_FIGURE,
+	slab: FOUNDATION_SLAB_FIGURE,
+	piles: FOUNDATION_PILES_FIGURE
+} satisfies Record<FoundationType, unknown>
 
 const GRADES: ConcreteGrade[] = ['M100', 'M200', 'M300', 'M400']
 const BAG_WEIGHTS = [25, 50]
@@ -36,11 +53,18 @@ function toNumber(value: string): number {
 function Field({
 	label,
 	value,
-	onChange
+	onChange,
+	id,
+	onFocus,
+	onBlur
 }: {
 	label: string
 	value: string
 	onChange: (value: string) => void
+	/** id поля: по нему схема ставит курсор, когда кликают по размеру. */
+	id?: string
+	onFocus?: () => void
+	onBlur?: () => void
 }) {
 	return (
 		<label className='block'>
@@ -48,10 +72,13 @@ function Field({
 				{label}
 			</span>
 			<input
+				id={id}
 				type='text'
 				inputMode='decimal'
 				value={value}
 				onChange={event => onChange(event.target.value)}
+				onFocus={onFocus}
+				onBlur={onBlur}
 				aria-label={label}
 				className={inputClass}
 			/>
@@ -77,6 +104,21 @@ export default function FoundationCalculatorPage() {
 	const [rebarLines, setRebarLines] = useState('4')
 	const [grade, setGrade] = useState<ConcreteGrade>('M300')
 	const [bagWeight, setBagWeight] = useState(50)
+	const figure = useFigureFocus('foundation')
+	const figureDims = useMemo(() => {
+		const n = (v: string) => toNumber(v) || null
+		const inner = toNumber(innerWalls)
+		return [
+			figureDim('length', n(length)),
+			figureDim('width', n(width)),
+			figureDim('thickness', n(thickness)),
+			figureDim('height', n(height)),
+			// 0 м внутренних стен — тоже ответ, а не пустое поле
+			figureDim('innerWalls', inner > 0 ? inner : FIGURE_ZERO),
+			figureDim('pileCount', n(pileCount)),
+			figureDim('pileDiameter', n(pileDiameter))
+		]
+	}, [length, width, thickness, height, innerWalls, pileCount, pileDiameter])
 
 	const result = useMemo(() => {
 		const input = {
@@ -128,59 +170,83 @@ export default function FoundationCalculatorPage() {
 					</div>
 				</div>
 
-				<div className='grid gap-4 border-b px-5 py-6 sm:grid-cols-3 sm:px-6'>
-					{type === 'piles' ? (
-						<>
-							<Field
-								label='Число столбов'
-								value={pileCount}
-								onChange={setPileCount}
-							/>
-							<Field
-								label='Диаметр столба, м'
-								value={pileDiameter}
-								onChange={setPileDiameter}
-							/>
-							<Field
-								label='Глубина заложения, м'
-								value={height}
-								onChange={setHeight}
-							/>
-						</>
-					) : (
-						<>
-							<Field
-								label='Длина дома, м'
-								value={length}
-								onChange={setLength}
-							/>
-							<Field label='Ширина дома, м' value={width} onChange={setWidth} />
-							<Field
-								label={type === 'slab' ? 'Толщина плиты, м' : 'Ширина ленты, м'}
-								value={thickness}
-								onChange={setThickness}
-							/>
-							{type === 'strip' && (
-								<>
-									<Field
-										label='Высота ленты, м'
-										value={height}
-										onChange={setHeight}
-									/>
-									<Field
-										label='Внутренние стены, м'
-										value={innerWalls}
-										onChange={setInnerWalls}
-									/>
-								</>
-							)}
-						</>
-					)}
-					<Field
-						label='Прутков арматуры в сечении'
-						value={rebarLines}
-						onChange={setRebarLines}
+				<div className='grid gap-6 border-b px-5 py-6 sm:px-6 md:grid-cols-2 md:items-center'>
+					<HairlineFigure
+						id={`foundation-${type}`}
+						figure={FOUNDATION_FIGURES[type]}
+						dims={figureDims}
+						focusKey={figure.focusKey}
+						onPick={figure.onPick}
+						label='Схема фундамента с размерами'
+						className='mx-auto w-full max-w-sm'
 					/>
+					<div className='grid gap-4 sm:grid-cols-2'>
+						{type === 'piles' ? (
+							<>
+								<Field
+									label='Число столбов'
+									{...figure.bind('pileCount')}
+									value={pileCount}
+									onChange={setPileCount}
+								/>
+								<Field
+									label='Диаметр столба, м'
+									{...figure.bind('pileDiameter')}
+									value={pileDiameter}
+									onChange={setPileDiameter}
+								/>
+								<Field
+									label='Глубина заложения, м'
+									{...figure.bind('height')}
+									value={height}
+									onChange={setHeight}
+								/>
+							</>
+						) : (
+							<>
+								<Field
+									label='Длина дома, м'
+									{...figure.bind('length')}
+									value={length}
+									onChange={setLength}
+								/>
+								<Field
+									label='Ширина дома, м'
+									value={width}
+									onChange={setWidth}
+									{...figure.bind('width')}
+								/>
+								<Field
+									label={
+										type === 'slab' ? 'Толщина плиты, м' : 'Ширина ленты, м'
+									}
+									{...figure.bind('thickness')}
+									value={thickness}
+									onChange={setThickness}
+								/>
+								{type === 'strip' && (
+									<>
+										<Field
+											label='Высота ленты, м'
+											{...figure.bind('height')}
+											value={height}
+											onChange={setHeight}
+										/>
+										<Field
+											label='Внутренние стены, м'
+											value={innerWalls}
+											onChange={setInnerWalls}
+										/>
+									</>
+								)}
+							</>
+						)}
+						<Field
+							label='Прутков арматуры в сечении'
+							value={rebarLines}
+							onChange={setRebarLines}
+						/>
+					</div>
 				</div>
 
 				{result ? (
