@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Plus, X } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,8 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import { ShapeDiagram } from '@/components/tools/ShapeDiagram'
+import { VolumeFigure, type FigureDim } from '@/components/tools/VolumeFigure'
+import { HAIRLINE_SHAPES } from '@/lib/hairline/volume-scene'
 import { shapesByKind, type Shape } from '@/lib/constants/geometry-shapes'
 import {
 	cubicMetersToLiters,
@@ -44,7 +46,31 @@ export function GeometryCalculator({
 		{ width: 0.9, height: 2.1, count: 1 }
 	])
 
+	const [focusKey, setFocusKey] = useState<string | null>(null)
+
 	const shape = shapes.find(item => item.id === shapeId) ?? shapes[0]
+
+	// Размеры для объёмной схемы: каждый сам по себе, пустое поле не гасит
+	// остальные выноски.
+	const figureDims = useMemo<FigureDim[]>(
+		() =>
+			shape.fields.map(field => {
+				const raw = (values[field.key] ?? '').trim()
+				const value = parseFloat(raw.replace(',', '.'))
+				const ok = Number.isFinite(value) && value > 0
+				return {
+					key: field.key,
+					letter: field.label,
+					meters: ok ? toMeters(value, unit) : null,
+					text: ok ? `${raw.replace('.', ',')} ${LENGTH_LABELS[unit]}` : '?'
+				}
+			}),
+		[shape, values, unit]
+	)
+
+	const focusField = useCallback((key: string) => {
+		document.getElementById(`geometry-field-${key}`)?.focus()
+	}, [])
 
 	const selectShape = (next: Shape) => {
 		setShapeId(next.id)
@@ -105,10 +131,20 @@ export function GeometryCalculator({
 
 			<div className='grid gap-8 px-5 py-8 sm:px-6 md:grid-cols-2'>
 				<div className='flex flex-col gap-4'>
-					<ShapeDiagram
-						shapeId={shape.id}
-						className='mx-auto h-44 w-full max-w-xs'
-					/>
+					{HAIRLINE_SHAPES.has(shape.id) ? (
+						<VolumeFigure
+							shapeId={shape.id}
+							dims={figureDims}
+							focusKey={focusKey}
+							onPick={focusField}
+							className='mx-auto w-full max-w-sm'
+						/>
+					) : (
+						<ShapeDiagram
+							shapeId={shape.id}
+							className='mx-auto h-44 w-full max-w-xs'
+						/>
+					)}
 					<p className='text-center font-mono text-sm text-muted-foreground'>
 						{shape.formula}
 					</p>
@@ -122,9 +158,16 @@ export function GeometryCalculator({
 									{field.label}, {LENGTH_LABELS[unit]}
 								</span>
 								<input
+									id={`geometry-field-${field.key}`}
 									type='text'
 									inputMode='decimal'
 									value={values[field.key] ?? ''}
+									onFocus={() => setFocusKey(field.key)}
+									onBlur={() =>
+										setFocusKey(current =>
+											current === field.key ? null : current
+										)
+									}
 									onChange={event =>
 										setValues(current => ({
 											...current,
