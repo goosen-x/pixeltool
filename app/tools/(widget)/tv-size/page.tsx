@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { toolBar, toolFooterBar, toolPill } from '@/lib/ui/tool-pill'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
@@ -13,6 +13,11 @@ import {
 	viewingDistanceM
 } from '@/lib/utils/screen-size'
 import { TvSizeSeo } from './TvSizeSeo'
+import {
+	HairlineFigure,
+	type FigureDim
+} from '@/components/tools/HairlineFigure'
+import { TV_FIGURE } from '@/lib/hairline/figures/tv'
 
 const cm = (v: number) => String(Math.round(v * 10) / 10).replace('.', ',')
 
@@ -21,12 +26,32 @@ export default function TvSizePage() {
 
 	const [diagonal, setDiagonal] = useState('55')
 	const [ratioId, setRatioId] = useState('16-9')
+	const [diagonalFocused, setDiagonalFocused] = useState(false)
 
 	const ratio = getRatio(ratioId)!
 	const size = useMemo(
 		() => screenSize(parseFloat(diagonal.replace(',', '.')), ratio),
 		[diagonal, ratio]
 	)
+
+	// Схема получает размеры в сантиметрах, подписи она собирает сама.
+	const figureDims = useMemo<FigureDim[]>(
+		() =>
+			size
+				? [
+						{ key: 'w', letter: '', meters: size.widthCm, text: '' },
+						{ key: 'h', letter: '', meters: size.heightCm, text: '' },
+						{ key: 'diag', letter: '', meters: size.diagonalCm, text: '' },
+						{ key: 'in', letter: '', meters: size.diagonalInches, text: '' }
+					]
+				: [],
+		[size]
+	)
+
+	// Любой размер на схеме зависит от одной диагонали: клик ставит курсор в неё.
+	const focusDiagonal = useCallback(() => {
+		document.getElementById('tv-diagonal')?.focus()
+	}, [])
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
@@ -35,10 +60,13 @@ export default function TvSizePage() {
 					<label className='flex items-center gap-2 text-sm text-muted-foreground'>
 						Диагональ
 						<input
+							id='tv-diagonal'
 							type='text'
 							inputMode='decimal'
 							value={diagonal}
 							onChange={event => setDiagonal(event.target.value)}
+							onFocus={() => setDiagonalFocused(true)}
+							onBlur={() => setDiagonalFocused(false)}
 							aria-label='Диагональ в дюймах'
 							className='w-20 rounded-md border bg-background px-3 py-1.5 text-center font-mono focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						/>
@@ -63,22 +91,18 @@ export default function TvSizePage() {
 
 				{size ? (
 					<>
-						{/* Схема экрана в пропорции — по числам «121,8 на 68,5» нишу
-						    не представить, а по прямоугольнику видно сразу. */}
+						{/* Схема экрана в пропорции: по числам «121,8 на 68,5» нишу
+						    не представить, а по телевизору с выносками видно сразу. */}
 						<div className='flex flex-col items-center gap-4 px-5 py-8 sm:px-6'>
-							<div
-								className='relative flex w-full max-w-md items-center justify-center rounded-lg border-2 border-foreground/70 bg-muted/30'
-								style={{ aspectRatio: `${ratio.w} / ${ratio.h}` }}
-							>
-								<span className='text-center'>
-									<span className='block font-mono text-3xl font-bold tabular-nums'>
-										{cm(size.widthCm)} × {cm(size.heightCm)}
-									</span>
-									<span className='mt-1 block text-sm text-muted-foreground'>
-										сантиметров
-									</span>
-								</span>
-							</div>
+							<HairlineFigure
+								id='tv-size'
+								figure={TV_FIGURE}
+								dims={figureDims}
+								focusKey={diagonalFocused ? 'diag' : null}
+								onPick={focusDiagonal}
+								label={`Телевизор ${cm(size.widthCm)} на ${cm(size.heightCm)} см`}
+								className='w-full max-w-lg'
+							/>
 
 							<p className='text-center text-base'>
 								{diagonal} {'\u0434\u044e\u0439\u043c\u043e\u0432'} —{' '}
