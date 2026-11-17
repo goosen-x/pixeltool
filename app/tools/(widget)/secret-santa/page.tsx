@@ -143,6 +143,27 @@ function Organizer() {
 
 	const parsed = useMemo(() => parseParticipants(participants), [participants])
 
+	const hasContent =
+		participants !== '' ||
+		exclusions !== '' ||
+		event !== '' ||
+		budget !== '' ||
+		date !== ''
+
+	const clearList = useCallback(() => {
+		setParticipants('')
+		setExclusions('')
+		setEvent('')
+		setBudget('')
+		setDate('')
+		setPairs(null)
+		try {
+			localStorage.removeItem(STORAGE_KEY)
+		} catch {
+			// приватный режим: и так нечего удалять
+		}
+	}, [])
+
 	const draw = useCallback(() => {
 		const result = drawSecretSanta(
 			parsed.map(p => p.name),
@@ -182,17 +203,31 @@ function Organizer() {
 					{parsed.length} из {MAX_PARTICIPANTS} участников · по одному на
 					строку, пожелание через двоеточие
 				</span>
-				<button
-					type='button'
-					onClick={() => setParticipants(EXAMPLE_PARTICIPANTS)}
-					className={cn(
-						toolPill(false, 'inline-flex items-center gap-1.5 sm:ml-auto'),
-						participants === EXAMPLE_PARTICIPANTS && 'invisible'
-					)}
-				>
-					<RotateCcw className='h-3.5 w-3.5' />
-					Вернуть пример
-				</button>
+				<div className='flex items-center gap-1.5 sm:ml-auto'>
+					<button
+						type='button'
+						onClick={clearList}
+						title='Удалить список и начать заново'
+						className={cn(
+							toolPill(false, 'inline-flex items-center gap-1.5'),
+							!hasContent && 'invisible'
+						)}
+					>
+						<Trash2 className='h-3.5 w-3.5' />
+						Удалить список
+					</button>
+					<button
+						type='button'
+						onClick={() => setParticipants(EXAMPLE_PARTICIPANTS)}
+						className={cn(
+							toolPill(false, 'inline-flex items-center gap-1.5'),
+							participants === EXAMPLE_PARTICIPANTS && 'invisible'
+						)}
+					>
+						<RotateCcw className='h-3.5 w-3.5' />
+						Вернуть пример
+					</button>
+				</div>
 			</div>
 
 			<div className='grid sm:grid-cols-2'>
