@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb, isDbUnavailableError } from '@/lib/db'
+import { logVote } from '@/lib/tool-stats/vote-log'
 import { getPostSlugs } from '@/lib/api-file'
 import { blogStatsActionSchema } from '@/lib/blog-stats/schema'
 import { createRateLimiter } from '@/lib/tool-stats/rate-limit'
@@ -123,6 +124,11 @@ export async function POST(request: NextRequest) {
 			 RETURNING rating_sum, rating_count`,
 			[parsed.data.postId, parsed.data.value]
 		)
+		await logVote(db, request, clientIp(request), {
+			kind: 'blog',
+			targetId: parsed.data.postId,
+			value: parsed.data.value
+		})
 
 		const { rating_sum, rating_count } = rows[0]
 		return NextResponse.json({

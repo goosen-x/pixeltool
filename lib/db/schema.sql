@@ -126,3 +126,19 @@ CREATE TABLE IF NOT EXISTS webmaster_url_stats (
 	imported_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 	UNIQUE (path, period_start, period_end)
 );
+
+-- Каждая оценка (звёзды) тулов и статей отдельной строкой со временем.
+-- tool_stats и blog_stats хранят только сумму и количество, и по ним не
+-- понять, откуда взялись, например, 126 единиц у одной статьи при 939
+-- просмотрах (разбор 17.11.2026). IP не храним в открытом виде: только
+-- хэш с солью, его хватает, чтобы увидеть серию голосов с одного адреса.
+CREATE TABLE IF NOT EXISTS rating_votes (
+	id SERIAL PRIMARY KEY,
+	kind TEXT NOT NULL, -- 'tool' | 'blog'
+	target_id TEXT NOT NULL,
+	value SMALLINT NOT NULL,
+	ip_hash TEXT,
+	user_agent TEXT,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS rating_votes_target_idx ON rating_votes (kind, target_id, created_at);
