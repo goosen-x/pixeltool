@@ -140,7 +140,7 @@ export const generatorWidgets: Widget[] = [
 		category: 'generators',
 		translationKey: 'secretSanta',
 		path: 'secret-santa',
-		gradient: 'from-red-500 to-emerald-600',
+		gradient: 'from-red-500 to-red-700',
 		recommendedTools: ['draw-lots', 'team-randomizer', 'fortune-wheel'],
 		difficulty: 'beginner',
 		tags: ['secret-santa', 'gift', 'exchange', 'draw', 'random', 'christmas'],
