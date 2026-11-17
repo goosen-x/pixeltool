@@ -428,9 +428,23 @@ export default function OpenGraphValidatorPage() {
 			widget.setError(null)
 
 			try {
-				const response = await fetch(
-					`/api/opengraph-validator?url=${encodeURIComponent(url)}`
-				)
+				let response: Response
+				try {
+					response = await fetch(
+						`/api/opengraph-validator?url=${encodeURIComponent(url)}`
+					)
+				} catch (networkError) {
+					// Браузер не достучался до нашего же сервера: «Failed to
+					// fetch», «NetworkError», «Load failed» — у разных браузеров
+					// разный текст. Обычно это пропавший интернет, VPN или
+					// блокировщик рекламы; человеку нужен понятный текст, а нам
+					// исходный — в отчёт.
+					const failure = new Error(
+						'Не получилось связаться с сервером проверки. Проверьте интернет; если включён VPN или блокировщик рекламы, попробуйте без них.'
+					) as ValidationFailure
+					failure.cause = networkError
+					throw failure
+				}
 
 				if (!response.ok) {
 					// Раньше причина сбоя терялась — сервер уже возвращает
@@ -483,7 +497,11 @@ export default function OpenGraphValidatorPage() {
 				if (!isExpected) {
 					void reportClientError({
 						title: 'opengraph-validator: ошибка проверки URL',
-						description: `Проверяемый URL: ${url}\nОшибка: ${errorMessage}`,
+						description: `Проверяемый URL: ${url}\nОшибка: ${errorMessage}${
+							error instanceof Error && error.cause instanceof Error
+								? `\nИсходная: ${error.cause.message}`
+								: ''
+						}`,
 						widget: 'opengraph-validator'
 					})
 				}

@@ -44,11 +44,21 @@ export function isPrivateAddress(ip: string): boolean {
 	)
 }
 
+/**
+ * Ошибка с текстом, который можно показать человеку как есть: опечатка в
+ * домене, внутренний адрес, петля переадресаций. Не сбой у нас, поэтому
+ * обработчики отвечают ей как ожидаемой и не шлют в отчёты об ошибках.
+ */
+export class UserFacingError extends Error {}
+
+/** Домен не резолвится: отдельный класс, чтобы переадресация могла назвать, куда именно. */
+export class DomainNotFoundError extends UserFacingError {}
+
 /** Бросает, если хост — литеральный приватный IP или резолвится в такой. */
 export async function assertPublicHost(hostname: string): Promise<void> {
 	if (isIP(hostname)) {
 		if (isPrivateAddress(hostname)) {
-			throw new Error(
+			throw new UserFacingError(
 				'Такой адрес проверить нельзя: он ведёт во внутреннюю сеть, а не в интернет.'
 			)
 		}
@@ -59,13 +69,13 @@ export async function assertPublicHost(hostname: string): Promise<void> {
 	try {
 		addresses = await lookup(hostname, { all: true })
 	} catch {
-		throw new Error(
+		throw new DomainNotFoundError(
 			'Такого домена не существует. Проверьте, нет ли опечатки в адресе.'
 		)
 	}
 
 	if (addresses.some(entry => isPrivateAddress(entry.address))) {
-		throw new Error(
+		throw new UserFacingError(
 			'Такой адрес проверить нельзя: он ведёт во внутреннюю сеть, а не в интернет.'
 		)
 	}
@@ -79,7 +89,7 @@ export async function toSafePublicUrl(input: string): Promise<URL> {
 	const url = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`)
 
 	if (!['http:', 'https:'].includes(url.protocol)) {
-		throw new Error(
+		throw new UserFacingError(
 			'Проверить можно только ссылки, которые начинаются с http:// или https://'
 		)
 	}
@@ -160,7 +170,7 @@ export async function safeFetch(
 		}
 
 		if (hop >= MAX_REDIRECTS) {
-			throw new Error(
+			throw new UserFacingError(
 				'Сайт слишком много раз перенаправляет на другие адреса, проверка остановлена.'
 			)
 		}
@@ -169,16 +179,30 @@ export async function safeFetch(
 		try {
 			next = new URL(location, current)
 		} catch {
-			throw new Error(
+			throw new UserFacingError(
 				'Сайт перенаправил на адрес, который не удалось разобрать.'
 			)
 		}
 
 		if (!['http:', 'https:'].includes(next.protocol)) {
-			throw new Error('Сайт перенаправил туда, куда проверка не может пойти.')
+			throw new UserFacingError(
+				'Сайт перенаправил туда, куда проверка не может пойти.'
+			)
 		}
 
-		await assertPublicHost(next.hostname)
+		try {
+			await assertPublicHost(next.hostname)
+		} catch (error) {
+			// Короткие ссылки часто ведут на сайт, которого уже нет: «такого
+			// домена не существует» про исходный адрес сбивает с толку, он-то
+			// открывается. Называем, куда именно ведёт ссылка.
+			if (error instanceof DomainNotFoundError) {
+				throw new DomainNotFoundError(
+					`Ссылка перенаправляет на ${next.hostname}, а такого домена не существует. Скорее всего, ссылка устарела или сайт, на который она ведёт, закрыт.`
+				)
+			}
+			throw error
+		}
 		current = next
 	}
 }

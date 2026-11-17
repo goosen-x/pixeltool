@@ -3,7 +3,8 @@ import { JSDOM } from 'jsdom'
 import {
 	assertPublicHost,
 	toSafePublicUrl,
-	safeFetch
+	safeFetch,
+	UserFacingError
 } from '@/lib/security/ssrf'
 
 const MANUALLY =
@@ -17,10 +18,10 @@ const MANUALLY =
  * успокаивает: он видит, что ссылка у него открывается, и решает, что сломан
  * инструмент. Поэтому про крупные площадки говорим прямо и называем их по
  * имени. Поведение проверено запросами с прод-сервера 07.09.2026, коды в
- * тексте — те, что они отдают на самом деле; Telegram, YouTube и X в этот
- * список не входят, потому что сейчас проверяются нормально.
+ * тексте — те, что они отдают на самом деле. Telegram и YouTube в списке
+ * только на случай сетевого сбоя: обычно они проверяются нормально.
  */
-const KNOWN_SITES: { pattern: RegExp; message: string }[] = [
+const KNOWN_SITES: { pattern: RegExp; message: string; instant?: boolean }[] = [
 	{
 		pattern: /(^|\.)wildberries\.ru$/i,
 		message: `Wildberries не отдаёт карточки автоматическим проверкам — на запрос с сервера он отвечает кодом 498. Превью для соцсетей площадка формирует сама, поэтому увидеть теги отсюда не получится. ${MANUALLY}`
@@ -35,7 +36,18 @@ const KNOWN_SITES: { pattern: RegExp; message: string }[] = [
 	},
 	{
 		pattern: /(^|\.)(instagram\.com|facebook\.com|fb\.com|threads\.net)$/i,
-		message: `Эта площадка отдаёт страницы только авторизованному браузеру: запрос без входа она либо отклоняет, либо не отвечает на него вовсе. Так же ведут себя её ссылки в режиме инкогнито. ${MANUALLY}`
+		message: `Instagram, Facebook и Threads не поддерживаются: они показывают страницы только тому, кто вошёл в аккаунт, а проверка заходит без входа. Так же их ссылки ведут себя в режиме инкогнито. ${MANUALLY}`,
+		// Отвечаем сразу, не ходя на сайт: запрос к ним висел 30 секунд и
+		// заканчивался тем же отказом (замер 17.11.2026).
+		instant: true
+	},
+	{
+		// Telegram и YouTube проверяются: запрос идёт через прокси
+		// (lib/security/outbound-proxy.ts), замер 17.11.2026 — t.me за 8 с,
+		// youtube.com за 2 с. Текст нужен на случай, когда не сработал и прокси.
+		pattern: /(^|\.)(t\.me|telegram\.me|youtube\.com|youtu\.be)$/i,
+		message:
+			'Telegram и YouTube в России работают с перебоями, и сейчас наш сервер до них не достучался. Обычно проверка проходит: повторите её через минуту.'
 	},
 	{
 		pattern: /(^|\.)(dzen\.ru|zen\.yandex\.ru)$/i,
@@ -79,6 +91,11 @@ export async function GET(request: NextRequest) {
 			error instanceof Error ? error.message : 'Некорректный адрес'
 		return expected(message, 400)
 	}
+
+	const instant = KNOWN_SITES.find(
+		site => site.instant && site.pattern.test(parsedUrl.hostname)
+	)
+	if (instant) return expected(instant.message, 422)
 
 	try {
 		// Fetch the webpage
@@ -301,7 +318,7 @@ export async function GET(request: NextRequest) {
 
 				if (isConnectTimeout) {
 					return expected(
-						'До сайта не удалось достучаться. Скорее всего, он работает, но не отвечает на запросы с нашего сервера — так ведут себя Telegram, Instagram и YouTube. Посмотрите теги вручную: откройте ссылку в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.',
+						`До сайта не удалось достучаться: он не отвечает на запросы с нашего сервера, хотя у вас, возможно, открывается. ${MANUALLY}`,
 						502
 					)
 				}
@@ -312,14 +329,35 @@ export async function GET(request: NextRequest) {
 				)
 			}
 
+			// Сайт начал отвечать и оборвал соединение посреди страницы. Так
+			// делает защита от ботов у части магазинов (shop.mts.ru, 17.11.2026).
+			const cause = (error as Error & { cause?: { code?: string } }).cause
+			if (
+				error.message === 'terminated' ||
+				cause?.code === 'ECONNRESET' ||
+				cause?.code === 'UND_ERR_SOCKET'
+			) {
+				return expected(
+					knownSiteMessage(parsedUrl.hostname) ??
+						`Сайт начал отдавать страницу и оборвал соединение. Так делает защита от ботов у части магазинов и сервисов: браузер она пускает, автоматическую проверку нет. ${MANUALLY}`,
+					502
+				)
+			}
+
 			// Бесконечная переадресация — типовая защита от ботов (так делает
 			// Ozon), а не сбой у нас: сообщение из safeFetch уже человеческое.
-			if (error.message.includes('перенаправляет')) {
+			if (error.message.includes('слишком много раз перенаправляет')) {
 				return expected(
 					knownSiteMessage(parsedUrl.hostname) ??
 						`${error.message} ${MANUALLY}`,
 					400
 				)
+			}
+
+			// Опечатка в домене, переадресация на несуществующий сайт и т. п.:
+			// текст уже написан для человека, это не наш сбой.
+			if (error instanceof UserFacingError) {
+				return expected(error.message, 400)
 			}
 
 			return NextResponse.json(
