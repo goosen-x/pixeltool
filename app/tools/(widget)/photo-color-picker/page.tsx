@@ -10,6 +10,7 @@ import { useFileDrop } from '@/lib/hooks/useFileDrop'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { reportClientError } from '@/lib/utils/report-client-error'
+import { decodeHeic, sniffImageFormat } from '@/lib/utils/image-format'
 import {
 	rgbToHex,
 	rgbToHsl,
@@ -100,7 +101,7 @@ function drawBitmapToCanvas(bitmap: ImageBitmap, canvas: HTMLCanvasElement) {
 // на нескольких разных фото подряд). Поэтому декодируем в три попытки от
 // более правильного результата к более надёжному: с учётом EXIF → без
 // него (фото может лечь на бок) → совсем другой путь через <img>.
-async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
+async function decodeNative(file: File, canvas: HTMLCanvasElement) {
 	if (typeof createImageBitmap !== 'function') {
 		return decodeViaImgElement(file, canvas)
 	}
@@ -124,6 +125,39 @@ async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
 	}
 
 	return decodeViaImgElement(file, canvas)
+}
+
+/** Ошибка, которую можно показать человеку как есть. */
+class ReadableError extends Error {}
+
+// Сначала то, что умеет сам браузер: так быстрее и без лишней загрузки.
+// Если браузер не справился, смотрим, что это за файл на самом деле.
+// HEIC (фото с айфона) открывает только Safari, а в Chrome и на Android
+// раньше был отказ: с сентября по ноябрь 2026 это больше половины всех
+// отчётов «не удалось прочитать файл». Для HEIC подгружаем декодер libheif.
+async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
+	const format = await sniffImageFormat(file)
+	if (format === 'empty') {
+		throw new ReadableError(
+			'Файл пустой: 0 байт. Скорее всего, он не до конца скачался или скопировался.'
+		)
+	}
+
+	try {
+		await decodeNative(file, canvas)
+		return
+	} catch (nativeError) {
+		if (format === 'heic') {
+			drawBitmapToCanvas(await decodeHeic(file), canvas)
+			return
+		}
+		if (format === 'tiff') {
+			throw new ReadableError(
+				'Формат TIFF браузеры не открывают. Сохраните изображение как JPG или PNG и загрузите снова.'
+			)
+		}
+		throw nativeError
+	}
 }
 
 export default function PhotoColorPickerPage() {
@@ -367,7 +401,12 @@ export default function PhotoColorPickerPage() {
 		// accept='image/*' на инпуте не защищает drag-and-drop — сюда может
 		// прилететь любой файл. MIME иногда пуст (некоторые ОС не знают тип
 		// HEIC) — отклоняем только явно НЕ-картинки, не пустой тип.
-		if (file.type && !file.type.startsWith('image/')) {
+		// HEIC на Windows и Android часто приходит как application/octet-stream
+		if (
+			file.type &&
+			!file.type.startsWith('image/') &&
+			!/\.(heic|heif)$/i.test(file.name)
+		) {
 			setErrorMessage('Это не изображение. Перетащите файл фото.')
 			return
 		}
@@ -381,6 +420,11 @@ export default function PhotoColorPickerPage() {
 			setPicked(null)
 			setHistory([])
 		} catch (err) {
+			if (err instanceof ReadableError) {
+				// понятная причина, а не сбой: в отчёты об ошибках не шлём
+				setErrorMessage(err.message)
+				return
+			}
 			setErrorMessage('Не получилось прочитать файл. Попробуйте другое фото.')
 			// Раньше причина сбоя терялась на экране пользователя и никуда
 			// больше не попадала — мы о нём не узнавали, пока человек сам не
@@ -468,7 +512,7 @@ export default function PhotoColorPickerPage() {
 				<input
 					ref={fileInputRef}
 					type='file'
-					accept='image/*'
+					accept='image/*,.heic,.heif'
 					onChange={handleFileSelect}
 					aria-label='Загрузить фото'
 					className='hidden'
