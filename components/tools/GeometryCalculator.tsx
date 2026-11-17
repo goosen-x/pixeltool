@@ -12,8 +12,11 @@ import {
 	toolPill
 } from '@/lib/ui/tool-pill'
 import { ShapeDiagram } from '@/components/tools/ShapeDiagram'
-import { VolumeFigure, type FigureDim } from '@/components/tools/VolumeFigure'
-import { HAIRLINE_SHAPES } from '@/lib/hairline/volume-scene'
+import {
+	HairlineFigure,
+	type FigureDim
+} from '@/components/tools/HairlineFigure'
+import { GEOMETRY_FIGURES } from '@/lib/hairline/figures/geometry'
 import { shapesByKind, type Shape } from '@/lib/constants/geometry-shapes'
 import {
 	cubicMetersToLiters,
@@ -131,9 +134,10 @@ export function GeometryCalculator({
 
 			<div className='grid gap-8 px-5 py-8 sm:px-6 md:grid-cols-2'>
 				<div className='flex flex-col gap-4'>
-					{HAIRLINE_SHAPES.has(shape.id) ? (
-						<VolumeFigure
-							shapeId={shape.id}
+					{GEOMETRY_FIGURES[shape.id] ? (
+						<HairlineFigure
+							id={shape.id}
+							figure={GEOMETRY_FIGURES[shape.id]}
 							dims={figureDims}
 							focusKey={focusKey}
 							onPick={focusField}
