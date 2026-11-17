@@ -135,7 +135,15 @@ export default function LaminateCalculatorPage() {
 			offset,
 			doorWidth: Number.isFinite(door) && door > 0 ? door : 0
 		})
-	}, [roomLength, roomWidth, boardLength, boardWidth, perPack, doorWidth, offset])
+	}, [
+		roomLength,
+		roomWidth,
+		boardLength,
+		boardWidth,
+		perPack,
+		doorWidth,
+		offset
+	])
 
 	const offsetHint = OFFSETS.find(o => o.value === offset)!.hint
 

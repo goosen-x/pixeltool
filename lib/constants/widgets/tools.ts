@@ -2964,7 +2964,11 @@ export const toolWidgets: Widget[] = [
 			'Посчитайте, сколько досок и упаковок ламината нужно на комнату, со схемой раскладки по рядам и плинтусом.',
 		useCase:
 			'Узнать, сколько упаковок ламината купить на комнату с учётом подрезки и смещения рядов, и сколько нужно плинтуса и подложки',
-		recommendedTools: ['tile-calculator', 'area-calculator', 'concrete-calculator'],
+		recommendedTools: [
+			'tile-calculator',
+			'area-calculator',
+			'concrete-calculator'
+		],
 		difficulty: 'beginner',
 		tags: ['laminate', 'floor', 'calculator', 'flooring', 'layout', 'room'],
 		metaTitle: 'Калькулятор ламината на комнату со схемой раскладки',

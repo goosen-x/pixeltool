@@ -123,14 +123,20 @@ export function layoutLaminate(input: LaminateInput): {
 	}
 	// стыки соседних рядов должны расходиться хотя бы на 30 см
 	const staggered = (joints: number[]) =>
-		joints.every(j => prevJoints.every(p => Math.abs(j - p) >= MIN_PIECE - 1e-9))
+		joints.every(j =>
+			prevJoints.every(p => Math.abs(j - p) >= MIN_PIECE - 1e-9)
+		)
 
 	// ряд, если начать его куском start: укорачиваем начало, когда конец
 	// ряда выходит короче 30 см
 	const plan = (raw: number) => {
 		let start = Math.min(raw, L)
 		let end = (L - start) % bl
-		if (end > 1e-9 && end < MIN_PIECE && start - (MIN_PIECE - end) >= MIN_PIECE) {
+		if (
+			end > 1e-9 &&
+			end < MIN_PIECE &&
+			start - (MIN_PIECE - end) >= MIN_PIECE
+		) {
 			start -= MIN_PIECE - end
 			end = (L - start) % bl
 		}
@@ -189,7 +195,12 @@ export function layoutLaminate(input: LaminateInput): {
 
 /** Плинтус по стенам: каждая стена своими планками, обрезки идут на другие стены. */
 function plinth(roomLength: number, roomWidth: number, doorWidth: number) {
-	const walls = [roomLength, roomLength, roomWidth, Math.max(roomWidth - doorWidth, 0)]
+	const walls = [
+		roomLength,
+		roomLength,
+		roomWidth,
+		Math.max(roomWidth - doorWidth, 0)
+	]
 	const cut = cutter(PLINTH_LENGTH, 0.1)
 	for (const wall of walls) {
 		let rest = wall
@@ -212,7 +223,9 @@ export function calculateLaminate(input: LaminateInput): LaminateResult {
 	const packArea = boardArea * input.boardsPerPack
 	const floorArea = input.roomLength * input.roomWidth
 	const boughtArea = packs * packArea
-	const laid = (input.roomLength - 2 * EXPANSION_GAP) * (input.roomWidth - 2 * EXPANSION_GAP)
+	const laid =
+		(input.roomLength - 2 * EXPANSION_GAP) *
+		(input.roomWidth - 2 * EXPANSION_GAP)
 	return {
 		floorArea,
 		rows,
@@ -221,7 +234,10 @@ export function calculateLaminate(input: LaminateInput): LaminateResult {
 		spareBoards: packs * input.boardsPerPack - boards,
 		packArea,
 		boughtArea,
-		wastePercent: Math.max(0, ((boards * boardArea - laid) / (boards * boardArea)) * 100),
+		wastePercent: Math.max(
+			0,
+			((boards * boardArea - laid) / (boards * boardArea)) * 100
+		),
 		...plinth(input.roomLength, input.roomWidth, input.doorWidth),
 		underlayArea: Math.ceil(floorArea)
 	}

@@ -78,8 +78,12 @@ describe('раскладка ламината', () => {
 
 	it('свободное смещение тратит не больше досок, чем 1/2 и 1/3', () => {
 		const free = calculateLaminate(room).boards
-		expect(free).toBeLessThanOrEqual(calculateLaminate({ ...room, offset: 'half' }).boards)
-		expect(free).toBeLessThanOrEqual(calculateLaminate({ ...room, offset: 'third' }).boards)
+		expect(free).toBeLessThanOrEqual(
+			calculateLaminate({ ...room, offset: 'half' }).boards
+		)
+		expect(free).toBeLessThanOrEqual(
+			calculateLaminate({ ...room, offset: 'third' }).boards
+		)
 	})
 
 	it('упаковки округляются вверх, остаток досок показан', () => {

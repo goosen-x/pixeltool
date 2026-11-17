@@ -3,7 +3,11 @@
  * по той раскладке, по которой считается результат (lib/laminate.ts).
  * Одна целая доска обведена и подписана размером.
  */
-import { layoutLaminate, EXPANSION_GAP, type LaminateOffset } from '@/lib/laminate'
+import {
+	layoutLaminate,
+	EXPANSION_GAP,
+	type LaminateOffset
+} from '@/lib/laminate'
 import {
 	box,
 	dimensions,
@@ -76,7 +80,10 @@ export function laminateFigure(offset: LaminateOffset): FigureDef {
 				if (i > 0) rowLines += seg(C(0, row.y), C(laidL, row.y))
 				const y1 = row.y + row.width * step
 				for (const p of row.pieces.slice(1))
-					joints += seg(C(p.x, row.y), C(p.x, Math.min(y1, d.realWidth - 2 * g)))
+					joints += seg(
+						C(p.x, row.y),
+						C(p.x, Math.min(y1, d.realWidth - 2 * g))
+					)
 			})
 			ops.push({ d: rowLines, cls: 'nf lo' }, { d: joints, cls: 'nf' })
 
