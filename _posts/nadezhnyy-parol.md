@@ -6,6 +6,7 @@ excerpt:
   устарели и как проверить готовый пароль, не отправляя его на сомнительный
   сайт.'
 date: '2026-07-22T12:00:00.000Z'
+category: security
 coverImage: '/images/blog/nadezhnyy-parol.png'
 author:
   name: Дмитрий Борисенко

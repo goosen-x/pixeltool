@@ -7,6 +7,7 @@ excerpt:
   ВКонтакте, если картинку поменяли, а старая всё ещё висит.'
 coverImage: '/images/blog/preview-ssylki-open-graph.png'
 date: '2026-07-15T12:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

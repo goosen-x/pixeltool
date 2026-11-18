@@ -5,6 +5,7 @@ excerpt:
   YouTube — официальные цифры площадок и почему картинку обрезает и мылит.'
 coverImage: '/images/blog/razmer-kartinki-dlya-socsetey.png'
 date: '2026-08-05T11:00:00.000Z'
+category: images
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

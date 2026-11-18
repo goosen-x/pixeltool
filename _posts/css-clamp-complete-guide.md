@@ -5,6 +5,7 @@ excerpt:
   типографики и отступов. Практические примеры, калькулятор и лучшие практики.'
 coverImage: '/images/blog/css-clamp-complete-guide.png'
 date: '2025-11-11T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

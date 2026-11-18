@@ -6,6 +6,7 @@ excerpt:
   хорошей.'
 coverImage: '/images/blog/test-skorosti-pechati.png'
 date: '2026-08-27T17:00:00.000Z'
+category: entertainment
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

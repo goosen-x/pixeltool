@@ -7,6 +7,7 @@ excerpt:
   файлы Word/PDF.'
 coverImage: '/images/blog/kak-sravnit-dva-teksta.png'
 date: '2026-08-08T12:00:00.000Z'
+category: text
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

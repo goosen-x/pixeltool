@@ -5,6 +5,7 @@ excerpt:
   в деньгах, разбор на примере кофейни, запас прочности и типичные ошибки при
   делении затрат на постоянные и переменные.'
 date: '2026-11-03T10:00:00.000Z'
+category: finance
 coverImage: '/images/blog/tochka-bezubytochnosti.png'
 author:
   name: Дмитрий Борисенко

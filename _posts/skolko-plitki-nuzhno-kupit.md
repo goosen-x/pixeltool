@@ -6,6 +6,7 @@ excerpt:
   стоит округлять в большую сторону.'
 coverImage: '/images/blog/skolko-plitki-nuzhno-kupit.png'
 date: '2026-08-27T19:00:00.000Z'
+category: construction
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

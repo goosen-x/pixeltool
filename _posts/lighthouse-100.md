@@ -7,6 +7,7 @@ excerpt:
   каждую задачу.'
 coverImage: '/images/blog/lighthouse-100.png'
 date: '2026-05-19T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

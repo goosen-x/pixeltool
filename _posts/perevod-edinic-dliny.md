@@ -5,6 +5,7 @@ excerpt:
   миллиметра до километра, дюймы с футами и ярдами, две разные мили, шаги и
   световой год.'
 date: '2026-08-22T12:00:00.000Z'
+category: math
 coverImage: '/images/blog/perevod-edinic-dliny.png'
 author:
   name: Дмитрий Борисенко

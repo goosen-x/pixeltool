@@ -6,6 +6,7 @@ excerpt:
   до сигнала не засчитывается.'
 coverImage: '/images/blog/test-na-reakciyu-online.png'
 date: '2026-08-27T16:00:00.000Z'
+category: entertainment
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

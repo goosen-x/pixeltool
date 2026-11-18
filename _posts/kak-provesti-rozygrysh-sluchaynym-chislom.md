@@ -5,6 +5,7 @@ excerpt:
   настоящая случайность отличается от «на глаз», и пошаговая инструкция для
   розыгрыша с одним или несколькими призами.'
 date: '2026-07-30T15:00:00.000Z'
+category: generators
 coverImage: '/images/blog/kak-provesti-rozygrysh-sluchaynym-chislom.png'
 author:
   name: Дмитрий Борисенко

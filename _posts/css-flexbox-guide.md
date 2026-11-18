@@ -5,6 +5,7 @@ excerpt:
   таблице, готовые паттерны вёрстки и разбор частых ошибок с примерами кода.'
 coverImage: '/images/blog/css-flexbox-guide.png'
 date: '2026-08-01T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

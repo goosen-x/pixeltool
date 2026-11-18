@@ -6,6 +6,7 @@ excerpt:
   самом деле сводятся к этой формуле.'
 coverImage: '/images/blog/kak-reshit-proportsiyu.png'
 date: '2026-08-27T20:00:00.000Z'
+category: math
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

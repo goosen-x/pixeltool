@@ -6,6 +6,7 @@ excerpt:
   примерах.'
 coverImage: '/images/blog/kak-poschitat-protsent.png'
 date: '2026-08-18T12:00:00.000Z'
+category: math
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

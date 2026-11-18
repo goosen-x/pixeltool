@@ -7,6 +7,7 @@ excerpt:
   ломают отчёты.'
 coverImage: '/images/blog/kak-sozdat-utm-metku.png'
 date: '2026-08-10T14:00:00.000Z'
+category: marketing
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

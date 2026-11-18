@@ -6,6 +6,7 @@ excerpt:
   чаще всего и чем ошибка синтаксиса отличается от ошибки выполнения.'
 coverImage: '/images/blog/proverka-javascript.png'
 date: '2026-07-16T15:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

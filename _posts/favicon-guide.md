@@ -7,6 +7,7 @@ excerpt:
   когда фавикон упрямо не обновляется.'
 coverImage: '/images/blog/favicon-guide.png'
 date: '2026-07-14T12:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

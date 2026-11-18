@@ -6,6 +6,7 @@ excerpt:
   консультацию врача.'
 coverImage: '/images/blog/kak-rasschitat-imt.png'
 date: '2026-08-16T11:00:00.000Z'
+category: health
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

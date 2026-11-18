@@ -46,6 +46,7 @@ export function getPostBySlugFromFile(slug: string): Post {
 		content,
 		preview: data.preview || false,
 		demo: data.demo || false,
+		category: typeof data.category === 'string' ? data.category : undefined,
 		related: Array.isArray(data.related) ? data.related : []
 	}
 }

@@ -6,6 +6,7 @@ excerpt:
   же самое, что проверка валидности.'
 coverImage: '/images/blog/html-xml-parser.png'
 date: '2026-07-17T12:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

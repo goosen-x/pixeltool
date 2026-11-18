@@ -6,6 +6,7 @@ excerpt:
   прямо в браузере.'
 coverImage: '/images/blog/azbuka-morze.png'
 date: '2026-08-15T12:00:00.000Z'
+category: text
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

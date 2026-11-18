@@ -6,6 +6,7 @@ excerpt:
   на примере и объясняем частую ошибку с месяцами разной длины.'
 coverImage: '/images/blog/kak-poschitat-srok-godnosti.png'
 date: '2026-08-19T15:00:00.000Z'
+category: health
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

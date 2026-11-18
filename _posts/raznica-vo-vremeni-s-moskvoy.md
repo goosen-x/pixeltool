@@ -6,6 +6,7 @@ excerpt:
   меняется два раза в год.'
 coverImage: '/images/blog/raznica-vo-vremeni-s-moskvoy.png'
 date: '2026-08-27T12:00:00.000Z'
+category: datetime
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

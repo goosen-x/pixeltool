@@ -18,6 +18,11 @@ export type Post = {
 	 * плашкой. Снимать вместе с demo у тула, когда он утверждён финально.
 	 */
 	demo?: boolean
+	/**
+	 * Рубрика блога — ключ из widgetCategories (finance, math, development…).
+	 * По ней фильтруется листинг /blog.
+	 */
+	category?: string
 	/** Слаги связанных статей — задаются вручную во frontmatter */
 	related?: string[]
 }

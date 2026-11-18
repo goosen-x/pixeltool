@@ -5,6 +5,7 @@ excerpt:
   инструкции для Windows, macOS, Android и iPhone.'
 coverImage: '/images/blog/kak-uznat-razreshenie-ekrana-i-brauzer.png'
 date: '2026-08-01T12:00:00.000Z'
+category: utilities
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

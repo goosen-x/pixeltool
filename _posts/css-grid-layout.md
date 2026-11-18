@@ -6,6 +6,7 @@ excerpt:
   паттернов вёрстки.'
 coverImage: '/images/blog/css-grid-layout.png'
 date: '2025-09-02T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

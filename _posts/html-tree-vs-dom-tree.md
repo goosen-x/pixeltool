@@ -7,6 +7,7 @@ excerpt:
   CSS-селекторы.'
 coverImage: '/images/blog/html-tree-vs-dom-tree.png'
 date: '2026-07-13T12:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

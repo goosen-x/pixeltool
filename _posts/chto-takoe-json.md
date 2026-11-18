@@ -6,6 +6,7 @@ excerpt:
   чем JSON отличается от XML и YAML, и какие ошибки в нём ломают всё чаще всего.'
 coverImage: '/images/blog/chto-takoe-json.png'
 date: '2026-07-16T12:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

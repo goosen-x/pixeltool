@@ -6,6 +6,7 @@ excerpt:
   когда.'
 coverImage: '/images/blog/smayliki-shrifty-simvoly-dlya-teksta.png'
 date: '2026-08-14T13:00:00.000Z'
+category: text
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

@@ -6,6 +6,7 @@ excerpt:
   рождения, от дня недели до количества прожитых недель.'
 coverImage: '/images/blog/kak-poschitat-vozrast-po-date-rozhdeniya.png'
 date: '2026-08-27T14:00:00.000Z'
+category: datetime
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

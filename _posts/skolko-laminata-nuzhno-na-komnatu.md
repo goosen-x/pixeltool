@@ -6,6 +6,7 @@ excerpt:
   расход и сколько метров лежит в одной упаковке.'
 coverImage: '/images/blog/skolko-laminata-nuzhno-na-komnatu.png'
 date: '2026-11-18T12:00:00.000Z'
+category: construction
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

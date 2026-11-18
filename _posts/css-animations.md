@@ -6,6 +6,7 @@ excerpt:
   за последние два года.'
 coverImage: '/images/blog/css-animations.png'
 date: '2025-04-22T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

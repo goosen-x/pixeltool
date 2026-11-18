@@ -6,6 +6,7 @@ excerpt:
   refresh, и почему «я расшифровал токен» и «я проверил токен» — два совершенно
   разных действия.'
 date: '2026-08-02T12:00:00.000Z'
+category: development
 coverImage: '/images/blog/chto-takoe-jwt.png'
 author:
   name: Дмитрий Борисенко

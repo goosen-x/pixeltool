@@ -6,6 +6,7 @@ excerpt:
   мешки цемента для покупки.'
 coverImage: '/images/blog/skolko-betona-nuzhno-na-fundament.png'
 date: '2026-08-27T15:00:00.000Z'
+category: construction
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

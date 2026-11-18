@@ -5,6 +5,7 @@ excerpt:
   нюансы с размером, уровнем коррекции ошибок и типом кода, из-за которых
   готовый код потом не сканируется. Разбираем по шагам.'
 date: '2026-07-28T12:00:00.000Z'
+category: utilities
 coverImage: '/images/blog/kak-sozdat-qr-kod.png'
 author:
   name: Дмитрий Борисенко

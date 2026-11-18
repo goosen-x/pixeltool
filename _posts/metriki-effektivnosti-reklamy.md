@@ -5,6 +5,7 @@ excerpt:
   число с разных сторон и почему хороший CTR сам по себе не значит ничего.
   Формулы с примерами и типичные ловушки.'
 date: '2026-09-16T10:00:00.000Z'
+category: marketing
 coverImage: '/images/blog/metriki-effektivnosti-reklamy.png'
 author:
   name: Дмитрий Борисенко

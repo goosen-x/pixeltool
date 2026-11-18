@@ -5,6 +5,7 @@ excerpt:
   лучше, чем попытка сидеть над задачей без остановки — разбираем классический
   цикл 25/5 и частые ошибки при его использовании.'
 date: '2026-07-31T16:00:00.000Z'
+category: datetime
 coverImage: '/images/blog/tehnika-pomodoro.png'
 author:
   name: Дмитрий Борисенко

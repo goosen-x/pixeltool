@@ -5,6 +5,7 @@ excerpt:
   использовать rem вместо px.'
 coverImage: '/images/blog/px-rem-converter.png'
 date: '2026-07-19T15:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

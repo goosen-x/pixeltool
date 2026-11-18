@@ -5,6 +5,7 @@ excerpt:
   сжимают последним, чем JPG отличается от PNG и WebP на практике и какой вес
   считается приемлемым.'
 date: '2026-09-15T10:00:00.000Z'
+category: images
 coverImage: '/images/blog/kak-podgotovit-foto-dlya-sayta.png'
 author:
   name: Дмитрий Борисенко

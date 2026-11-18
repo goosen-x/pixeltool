@@ -6,6 +6,7 @@ excerpt:
   примеры и лучшие практики.'
 coverImage: '/images/blog/css-pseudo-selectors.png'
 date: '2026-01-27T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'
@@ -970,6 +971,8 @@ img::before {
 - [Генератор CSS градиентов](/tools/css-gradient-generator)
 - [MDN: Псевдоклассы](https://developer.mozilla.org/ru/docs/Web/CSS/Pseudo-classes)
 - [MDN: Псевдоэлементы](https://developer.mozilla.org/ru/docs/Web/CSS/Pseudo-elements)
+- [Автор статьи на Moscow CSS](https://css.moscow/speakers/dmitry-borisenko/):
+  делал доклад «Сила псевдоселекторов в современном CSS» на 29-м митапе
 
 ---
 

@@ -5,6 +5,7 @@ excerpt:
   себестоимости. Формулы, перевод наценки в маржу, расчёт в Excel и почему
   «маржа 40%» и «наценка 40%» дают разную цену.'
 date: '2026-11-05T09:00:00.000Z'
+category: finance
 coverImage: '/images/blog/marzha-marzhinalnost-natsenka.png'
 author:
   name: Дмитрий Борисенко

@@ -5,6 +5,7 @@ excerpt:
   Разбираем, зачем это нужно, что такое загадочная строка data:image/png;base64
   и почему декодирование иногда падает с ошибкой.'
 date: '2026-07-27T12:00:00.000Z'
+category: development
 coverImage: '/images/blog/chto-takoe-base64.png'
 author:
   name: Дмитрий Борисенко

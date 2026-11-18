@@ -8,6 +8,7 @@ excerpt:
   выбрать под конкретную задачу.'
 coverImage: '/images/blog/kak-rabotat-s-pdf-onlayn.png'
 date: '2026-08-21T12:00:00.000Z'
+category: images
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

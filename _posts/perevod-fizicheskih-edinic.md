@@ -5,6 +5,7 @@ excerpt:
   Фаренгейтом и Кельвином, м/с, узлы и мили в час, psi и бары, килокалории,
   лошадиные силы, ньютоны, радианы и миллиамперы.'
 date: '2026-08-22T12:00:00.000Z'
+category: math
 coverImage: '/images/blog/perevod-fizicheskih-edinic.png'
 author:
   name: Дмитрий Борисенко

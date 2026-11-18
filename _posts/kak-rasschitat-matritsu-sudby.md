@@ -6,6 +6,7 @@ excerpt:
   почему на разных сайтах расчёт может отличаться.'
 coverImage: '/images/blog/kak-rasschitat-matritsu-sudby.png'
 date: '2026-08-17T14:00:00.000Z'
+category: esoteric
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

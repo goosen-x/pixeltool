@@ -5,6 +5,7 @@ excerpt:
   токенам, чем жадный квантификатор отличается от ленивого, и готовые паттерны
   для email, URL и телефона — с живым тестером прямо в статье.'
 date: '2026-07-23T12:00:00.000Z'
+category: development
 coverImage: '/images/blog/regulyarnye-vyrazheniya.png'
 author:
   name: Дмитрий Борисенко

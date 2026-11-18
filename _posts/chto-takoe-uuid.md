@@ -4,6 +4,7 @@ excerpt:
   'UUID и GUID — одно и то же: 128-битный идентификатор. Простыми словами про
   версии v1, v4, v7 и когда UUID выигрывает у автоинкремента.'
 date: '2026-08-04T14:00:00.000Z'
+category: development
 coverImage: '/images/blog/chto-takoe-uuid.png'
 author:
   name: Дмитрий Борисенко

@@ -8,6 +8,7 @@ excerpt:
   ориентир, а не медицинское назначение.'
 coverImage: '/images/blog/kak-poschitat-kalorii-i-kbju.png'
 date: '2026-08-20T11:00:00.000Z'
+category: health
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

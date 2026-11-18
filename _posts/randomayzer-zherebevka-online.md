@@ -8,6 +8,7 @@ excerpt:
   — когда какой использовать.'
 coverImage: '/images/blog/randomayzer-zherebevka-online.png'
 date: '2026-08-12T16:00:00.000Z'
+category: generators
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

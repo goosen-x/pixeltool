@@ -6,6 +6,7 @@ excerpt:
   компоненты с CSS переменными.'
 coverImage: '/images/blog/css-variables.png'
 date: '2025-02-11T10:00:00.000Z'
+category: development
 author:
   name: Дмитрий Борисенко
   picture: '/images/avatar.jpeg'

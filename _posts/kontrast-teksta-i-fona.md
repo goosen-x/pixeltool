@@ -6,6 +6,7 @@ excerpt:
   должен был заменить действующий стандарт в WCAG 3, но пока не заменил. С живым
   чекером прямо в статье.'
 date: '2026-07-25T14:00:00.000Z'
+category: development
 coverImage: '/images/blog/kontrast-teksta-i-fona.png'
 author:
   name: Дмитрий Борисенко
