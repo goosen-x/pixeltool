@@ -44,7 +44,7 @@ export default function ContactInfo({ locale }: Props) {
 		{
 			name: 'Twitter/X',
 			icon: FaXTwitter,
-			href: 'https://x.com/Brsnk_Dmtr',
+			href: 'https://x.com/goose_labs',
 			color: 'hover:text-gray-900 dark:hover:text-gray-100'
 		}
 	]

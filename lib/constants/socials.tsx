@@ -18,7 +18,7 @@ export const socials = [
 	{
 		name: 'Twitter',
 		icon: <RiTwitterXFill />,
-		href: 'https://x.com/Brsnk_Dmtr'
+		href: 'https://x.com/goose_labs'
 	},
 	{
 		name: 'LinkedIn',

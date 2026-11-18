@@ -122,8 +122,8 @@ export async function generateMetadata(): Promise<Metadata> {
 				'https://pixeltool.pro/og-image.png',
 				`https://pixeltool.pro/api/og?title=${encodeURIComponent(ogTitle)}&description=${encodeURIComponent(ogDescription)}&locale=${locale}`
 			],
-			creator: '@pixeltool',
-			site: '@pixeltool'
+			creator: '@goose_labs',
+			site: '@goose_labs'
 		},
 		other: {
 			// VK

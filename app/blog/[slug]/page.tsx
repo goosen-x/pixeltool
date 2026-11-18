@@ -173,8 +173,8 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
 			title,
 			description: post.excerpt,
 			images: [imageUrl],
-			creator: '@pixeltool',
-			site: '@pixeltool'
+			creator: '@goose_labs',
+			site: '@goose_labs'
 		},
 		alternates: {
 			canonical: articleUrl

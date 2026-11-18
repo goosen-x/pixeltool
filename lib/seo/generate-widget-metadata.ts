@@ -55,8 +55,8 @@ export function generateWidgetMetadata(widgetKey: string): Metadata {
 			title: metadata.title,
 			description: metadata.description,
 			images: [ogImageUrl],
-			creator: '@pixeltool',
-			site: '@pixeltool'
+			creator: '@goose_labs',
+			site: '@goose_labs'
 		},
 		robots: {
 			index: true,
