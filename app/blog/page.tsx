@@ -1,5 +1,5 @@
 import { getAllPosts } from '@/lib/api-db'
-import { PostPreview } from '@/components/blog/post-preview'
+import { BlogListing } from '@/components/blog/blog-listing'
 import { Metadata } from 'next'
 import Script from 'next/script'
 
@@ -48,8 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			images: [
 				`/api/og?title=${encodeURIComponent('Блог')}&description=${encodeURIComponent(currentMetadata.description)}&locale=${locale}`
 			],
-			creator: '@pixeltool',
-			site: '@pixeltool'
+			creator: '@goose_labs',
+			site: '@goose_labs'
 		},
 		alternates: {
 			canonical: url
@@ -115,39 +115,36 @@ export default async function Blog(props: Props) {
 				}}
 			/>
 			<main>
-				<div className='max-w-7xl mx-auto px-5 pt-12'>
-					<div className='text-center mb-12'>
-						<h1 className='text-4xl md:text-6xl font-bold text-foreground mb-4'>
+				<div className='max-w-7xl mx-auto px-5 pt-10 pb-24'>
+					<div className='mb-10 lg:mb-12'>
+						<h1 className='text-5xl md:text-7xl font-bold tracking-tight text-foreground'>
 							Блог
 						</h1>
-						<p className='text-xl text-muted-foreground max-w-2xl mx-auto'>
+						<p className='mt-4 max-w-2xl text-lg text-muted-foreground'>
 							Разборы и инструкции: расчёты, единицы измерения, работа с текстом
 							и форматами данных
 						</p>
 					</div>
-					<section>
-						{posts.length === 0 ? (
-							<div className='text-center py-16'>
-								<p className='text-xl text-gray-600'>
-									Пока нет опубликованных постов
-								</p>
-							</div>
-						) : (
-							<div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-16 lg:gap-x-32 gap-y-20 md:gap-y-32 mb-32'>
-								{posts.map(post => (
-									<PostPreview
-										key={post.slug}
-										title={post.title}
-										coverImage={post.coverImage}
-										date={post.date}
-										author={post.author}
-										slug={post.slug}
-										excerpt={post.excerpt}
-									/>
-								))}
-							</div>
-						)}
-					</section>
+					{posts.length === 0 ? (
+						<div className='text-center py-16'>
+							<p className='text-xl text-muted-foreground'>
+								Пока нет опубликованных постов
+							</p>
+						</div>
+					) : (
+						// В клиент уходят только поля карточки: тексты статей (content)
+						// раздули бы RSC-пейлоад листинга на сотни килобайт.
+						<BlogListing
+							posts={posts.map(post => ({
+								slug: post.slug,
+								title: post.title,
+								excerpt: post.excerpt,
+								date: post.date,
+								coverImage: post.coverImage,
+								category: post.category
+							}))}
+						/>
+					)}
 				</div>
 			</main>
 		</>
