@@ -12,6 +12,7 @@ related:
   - randomayzer-zherebevka-online
   - kak-provesti-rozygrysh-sluchaynym-chislom
   - kak-vybrat-kogda-vse-ravno
+coverImage: '/images/blog/taynyy-santa-pravila-igry.png'
 ---
 
 Тайный Санта появляется в рабочих чатах каждый декабрь. Кто-то предлагает
