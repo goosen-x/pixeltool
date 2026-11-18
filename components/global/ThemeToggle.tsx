@@ -6,7 +6,10 @@ import { ComponentPropsWithoutRef, useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 
 const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
-	const { theme, setTheme } = useThemeWithTransition()
+	// theme бывает 'system', поэтому смотрим на фактически применённую тему,
+	// иначе при тёмной системной теме первый клик ставил 'dark' и ничего не менял
+	const { resolvedTheme, setTheme } = useThemeWithTransition()
+	const isDark = resolvedTheme === 'dark'
 	const [mounted, setMounted] = useState(false)
 
 	useEffect(() => {
@@ -30,14 +33,14 @@ const ThemeToggle = ({ className }: ComponentPropsWithoutRef<'button'>) => {
 
 	return (
 		<button
-			onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+			onClick={() => setTheme(isDark ? 'light' : 'dark')}
 			className={cn(
 				'h-10 w-10 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/80 hover:border-border transition-all duration-300 flex items-center justify-center group',
 				className
 			)}
 			aria-label='Переключить тему'
 		>
-			{theme === 'dark' ? (
+			{isDark ? (
 				<Sun className='w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors' />
 			) : (
 				<Moon className='w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors' />
