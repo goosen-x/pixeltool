@@ -34,6 +34,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://pixeltool.pro'
  */
 const CONTENT_LAST_UPDATED = '2026-08-27'
 
+/** Свои даты у страниц, которые менялись отдельно от остальной статики. */
+const ROUTE_LAST_UPDATED: Record<string, string> = {
+	'/blog': '2026-11-18', // рубрики, поиск, новая раскладка
+	'/blog/author': '2026-11-18' // CEO GooseLabs, профиль Moscow CSS, сетка статей
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Get all blog posts
 	// Статьи про демо-тулы (Post['demo']) не публикуются в sitemap — см.
@@ -58,10 +64,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const sitemapEntries: MetadataRoute.Sitemap = []
 
 	// Add static routes
+	// Листинг блога меняется с каждой новой статьёй, поэтому берём самую свежую дату.
+	const newestPost = posts.reduce(
+		(max, p) => (p.date.slice(0, 10) > max ? p.date.slice(0, 10) : max),
+		ROUTE_LAST_UPDATED['/blog']
+	)
 	staticRoutes.forEach(route => {
 		sitemapEntries.push({
 			url: `${BASE_URL}${route}`,
-			lastModified: CONTENT_LAST_UPDATED,
+			lastModified:
+				route === '/blog'
+					? newestPost
+					: ROUTE_LAST_UPDATED[route] || CONTENT_LAST_UPDATED,
 			changeFrequency: route === '' ? 'weekly' : 'monthly',
 			priority: route === '' ? 1.0 : route === '/tools' ? 0.9 : 0.8
 		})
