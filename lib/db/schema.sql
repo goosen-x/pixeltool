@@ -142,3 +142,19 @@ CREATE TABLE IF NOT EXISTS rating_votes (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS rating_votes_target_idx ON rating_votes (kind, target_id, created_at);
+
+-- Атрибуция CLS у живых посетителей (components/analytics/WebVitals.tsx):
+-- топ-3 сдвига с элементами. Раньше писалась только в лог контейнера и
+-- пропадала с каждым деплоем, а GSC видит на ПК 0,70 при лабораторных 0,002
+-- (19.11.2026). Пишем только CLS > 0,05.
+CREATE TABLE IF NOT EXISTS cls_shifts (
+	id SERIAL PRIMARY KEY,
+	url TEXT NOT NULL,
+	value REAL NOT NULL,
+	vw SMALLINT,
+	vh SMALLINT,
+	shifts JSONB,
+	user_agent TEXT,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS cls_shifts_created_idx ON cls_shifts (created_at);

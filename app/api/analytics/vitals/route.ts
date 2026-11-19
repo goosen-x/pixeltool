@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getDb, isDbUnavailableError } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
 	try {
@@ -33,6 +34,25 @@ export async function POST(request: NextRequest) {
 					shifts: body.shifts
 				})
 			)
+			try {
+				const db = await getDb()
+				await db.query(
+					`INSERT INTO cls_shifts (url, value, vw, vh, shifts, user_agent)
+					 VALUES ($1, $2, $3, $4, $5, $6)`,
+					[
+						String(body.url ?? '').slice(0, 500),
+						Number(body.value) || 0,
+						Number.isFinite(body.vw) ? Math.min(body.vw, 32000) : null,
+						Number.isFinite(body.vh) ? Math.min(body.vh, 32000) : null,
+						JSON.stringify(body.shifts.slice(0, 3)),
+						request.headers.get('user-agent')?.slice(0, 300) ?? null
+					]
+				)
+			} catch (error) {
+				if (!isDbUnavailableError(error)) {
+					console.error('CLS attribution не записана в БД:', error)
+				}
+			}
 		}
 
 		// Here you could send this data to your analytics service
