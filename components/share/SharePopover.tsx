@@ -55,12 +55,29 @@ interface Props {
 	title?: string
 	/** Компактный вид: только иконка, без подписи */
 	iconOnly?: boolean
+	/** Что расшаривают: нажатия пишутся в share_clicks (app/api/share) */
+	target?: { kind: 'tool' | 'blog'; id: string }
 }
 
-export function SharePopover({ title, iconOnly = false }: Props) {
+type Network = 'telegram' | 'vk' | 'whatsapp' | 'copy'
+
+export function SharePopover({ title, iconOnly = false, target }: Props) {
 	const [copied, setCopied] = useState(false)
 
+	// keepalive: окно соцсети открывается сразу, запрос не должен оборваться
+	// вместе с уходом фокуса со страницы. Ошибку счётчика человеку не показываем.
+	const track = (network: Network) => {
+		if (!target) return
+		fetch('/api/share', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ kind: target.kind, targetId: target.id, network }),
+			keepalive: true
+		}).catch(() => {})
+	}
+
 	const copyLink = () => {
+		track('copy')
 		navigator.clipboard.writeText(window.location.href)
 		setCopied(true)
 		setTimeout(() => setCopied(false), 2000)
@@ -69,7 +86,8 @@ export function SharePopover({ title, iconOnly = false }: Props) {
 
 	// Окно соцсети открываем прямо из обработчика клика, иначе его режет
 	// блокировщик всплывающих окон
-	const shareTo = (network: 'telegram' | 'vk' | 'whatsapp') => {
+	const shareTo = (network: Exclude<Network, 'copy'>) => {
+		track(network)
 		const url = encodeURIComponent(window.location.href)
 		const text = encodeURIComponent(title || document.title)
 

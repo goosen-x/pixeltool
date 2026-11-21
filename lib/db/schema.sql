@@ -158,3 +158,16 @@ CREATE TABLE IF NOT EXISTS cls_shifts (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS cls_shifts_created_idx ON cls_shifts (created_at);
+
+-- Нажатия «Поделиться» (components/share/SharePopover.tsx): что расшарили
+-- (тул или статья) и куда (telegram | whatsapp | vk | copy). Смотрит ночной
+-- разбор Goose Radar рядом с оценками (22.11.2026). IP — только хэш с солью.
+CREATE TABLE IF NOT EXISTS share_clicks (
+	id SERIAL PRIMARY KEY,
+	kind TEXT NOT NULL, -- 'tool' | 'blog'
+	target_id TEXT NOT NULL,
+	network TEXT NOT NULL,
+	ip_hash TEXT,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS share_clicks_target_idx ON share_clicks (kind, target_id, created_at);

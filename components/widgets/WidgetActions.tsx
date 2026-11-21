@@ -47,7 +47,7 @@ export function WidgetActions({ widgetId, title }: Props) {
 				{starred ? 'В избранном' : 'В избранное'}
 			</Button>
 
-			<SharePopover title={title} />
+			<SharePopover title={title} target={{ kind: 'tool', id: widgetId }} />
 
 			<div className='flex items-center gap-2 sm:ml-auto'>
 				{views > 0 && (

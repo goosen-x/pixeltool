@@ -34,7 +34,7 @@ export function BlogPostActions({ postId, title }: Props) {
 				onVote={vote}
 				label='Оценка статьи'
 			/>
-			<SharePopover title={title} />
+			<SharePopover title={title} target={{ kind: 'blog', id: postId }} />
 		</div>
 	)
 }
