@@ -487,7 +487,9 @@ export default function TextEmoticonsPage() {
 				    отдельным блоком с заголовком «Категории» — подпись занимала
 				    строку, а сами кнопки повторяли заголовок карточки ниже. */}
 				<div className={toolBar}>
-					<div className='flex flex-wrap items-center gap-1.5'>
+					{/* На телефоне категории — одна строка с прокруткой: при переносе
+					    кнопки разной ширины ложились вразнобой. */}
+					<div className='-mx-5 flex w-[calc(100%+2.5rem)] items-center gap-1.5 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:w-auto sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden'>
 						{categories.map(category => (
 							<button
 								key={category.id}
@@ -496,7 +498,7 @@ export default function TextEmoticonsPage() {
 								aria-pressed={selectedCategory === category.id}
 								className={toolPill(
 									selectedCategory === category.id,
-									'flex items-center gap-1.5'
+									'flex shrink-0 items-center gap-1.5 whitespace-nowrap'
 								)}
 							>
 								{category.icon}
@@ -532,12 +534,13 @@ export default function TextEmoticonsPage() {
 								onClick={() => handleCopyEmoticon(emoticon.text)}
 								title='Скопировать'
 								className={cn(
-									'flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg px-2 py-3 transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									'flex min-w-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg px-2 py-3 transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 									copiedEmoticon === emoticon.text &&
 										'bg-primary/10 ring-1 ring-primary'
 								)}
 							>
-								<span className='font-mono text-base break-all'>
+								{/* смайлик не переносим: разорванный по строкам он не читается */}
+								<span className='max-w-full overflow-hidden font-mono text-[15px] whitespace-nowrap sm:text-base'>
 									{emoticon.text}
 								</span>
 								{emoticon.name && (
