@@ -159,8 +159,10 @@ export function BlogListing({ posts }: { posts: BlogListItem[] }) {
 	for (let i = 0; i < rest.length; i += 3) groups.push(rest.slice(i, i + 3))
 
 	return (
-		<div className='grid gap-8 lg:grid-cols-[220px_1fr] lg:gap-12'>
-			<aside className='lg:sticky lg:top-24 lg:self-start'>
+		// grid-cols-1 (minmax(0, 1fr)) и min-w-0: без них на телефоне колонка
+		// растягивалась по ширине ленты рубрик, и вся страница уезжала вбок
+		<div className='grid grid-cols-1 gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12'>
+			<aside className='min-w-0 lg:sticky lg:top-24 lg:self-start'>
 				<nav aria-label='Рубрики блога'>
 					<ul className='-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 lg:mx-0 lg:flex-col lg:items-start lg:overflow-visible lg:px-0 lg:pb-0'>
 						<li>
