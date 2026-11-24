@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { isPrivateAddress, safeFetch } from '../ssrf'
+import { isPrivateAddress, safeFetch, toSafePublicUrl } from '../ssrf'
 
 describe('isPrivateAddress', () => {
 	it('помечает частные диапазоны IPv4', () => {
@@ -96,5 +96,20 @@ describe('safeFetch', () => {
 
 		expect(response.status).toBe(200)
 		expect(fetchMock).toHaveBeenCalledTimes(1)
+	})
+})
+
+describe('toSafePublicUrl', () => {
+	it('отбрасывает логин и пароль из адреса (обратная связь 24.11: https://inbox@yuriyp.ru)', async () => {
+		expect(
+			(await toSafePublicUrl('https://inbox@93.184.216.34/page')).href
+		).toBe('https://93.184.216.34/page')
+		expect((await toSafePublicUrl('https://og:inbox@93.184.216.34')).href).toBe(
+			'https://93.184.216.34/'
+		)
+	})
+
+	it('всё так же не пускает на приватные адреса, даже с логином', async () => {
+		await expect(toSafePublicUrl('http://user@127.0.0.1/')).rejects.toThrow()
 	})
 })

@@ -94,6 +94,13 @@ export async function toSafePublicUrl(input: string): Promise<URL> {
 		)
 	}
 
+	// «https://inbox@site.ru» — часть до @ браузер и fetch считают логином. fetch() с
+	// логином в адресе падает ещё до запроса («Request cannot be constructed from a URL
+	// that includes credentials»), и человек видел общую ошибку. Публичной странице логин
+	// не нужен: отбрасываем его и проверяем сам сайт.
+	url.username = ''
+	url.password = ''
+
 	await assertPublicHost(url.hostname)
 	return url
 }
