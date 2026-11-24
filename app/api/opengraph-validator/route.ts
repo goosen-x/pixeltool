@@ -6,6 +6,7 @@ import {
 	safeFetch,
 	UserFacingError
 } from '@/lib/security/ssrf'
+import { tlsCertMessage } from './tls-errors'
 
 const MANUALLY =
 	'Посмотреть теги можно вручную: откройте страницу в браузере, нажмите Ctrl+U (на Mac — Cmd+Option+U) и найдите на странице og:.'
@@ -312,6 +313,11 @@ export async function GET(request: NextRequest) {
 					'code' in cause &&
 					(cause.code === 'ETIMEDOUT' ||
 						cause.code === 'UND_ERR_CONNECT_TIMEOUT')
+
+				// Сайт ответил, но с негодным сертификатом: это не «недоступен»,
+				// а конкретная поломка, которую владелец сайта может починить.
+				const certMessage = tlsCertMessage(error)
+				if (certMessage) return expected(certMessage, 502)
 
 				const knownNetwork = knownSiteMessage(parsedUrl.hostname)
 				if (knownNetwork) return expected(knownNetwork, 502)

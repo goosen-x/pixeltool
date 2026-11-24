@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useWidgetCreation } from '@/lib/hooks/widgets/useWidgetCreation'
 import { reportClientError } from '@/lib/utils/report-client-error'
@@ -584,8 +583,10 @@ export default function OpenGraphValidatorPage() {
 			<Card className='space-y-6 p-4 sm:p-6'>
 				{/* Ввод URL и примеры */}
 				<div>
-					<div className='flex flex-col lg:flex-row gap-6'>
-						<div className='flex-1'>
+					{/* Примеры всегда под полем: в одной строке с ними на десктопе
+					    поле сжималось до «http:» и адрес было не видно. */}
+					<div className='flex flex-col gap-6'>
+						<div className='min-w-0'>
 							<Label htmlFor='url' className='text-sm font-medium'>
 								{'URL для проверки'}
 							</Label>
@@ -597,7 +598,7 @@ export default function OpenGraphValidatorPage() {
 									onChange={e => widget.updateInput('url', e.target.value)}
 									placeholder={'https://example.com'}
 									disabled={widget.isLoading}
-									className='h-10 flex-1 max-w-md'
+									className='h-10 min-w-0 flex-1 sm:max-w-xl'
 								/>
 								<Button
 									onClick={validateUrl}
