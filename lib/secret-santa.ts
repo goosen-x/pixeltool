@@ -61,6 +61,29 @@ export function parseExclusions(text: string): [string, string][] {
 	)
 }
 
+/**
+ * Имена из исключений, которых нет в списке участников. Чаще всего это
+ * опечатка («Петр» вместо «Пётр»): такое исключение молча не сработает, и
+ * супруги могут вытянуть друг друга. Сравнение без учёта регистра, как в
+ * самой жеребьёвке.
+ */
+export function unknownExclusionNames(
+	names: string[],
+	exclusions: [string, string][]
+): string[] {
+	const known = new Set(names.map(n => n.toLowerCase()))
+	const unknown: string[] = []
+	for (const pair of exclusions) {
+		for (const name of pair) {
+			const lower = name.toLowerCase()
+			if (!known.has(lower) && !unknown.some(u => u.toLowerCase() === lower)) {
+				unknown.push(name)
+			}
+		}
+	}
+	return unknown
+}
+
 function shuffle<T>(items: T[]): T[] {
 	const result = [...items]
 	for (let i = result.length - 1; i > 0; i--) {

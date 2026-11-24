@@ -7,6 +7,7 @@ import {
 	Eye,
 	EyeOff,
 	Gift,
+	Pencil,
 	RotateCcw,
 	Share2,
 	Trash2
@@ -31,6 +32,7 @@ import {
 	encodeSantaLink,
 	parseExclusions,
 	parseParticipants,
+	unknownExclusionNames,
 	type SantaCard,
 	type SantaPair
 } from '@/lib/secret-santa'
@@ -142,6 +144,14 @@ function Organizer() {
 	}, [loaded, participants, exclusions, event, budget, date, pairs])
 
 	const parsed = useMemo(() => parseParticipants(participants), [participants])
+	const unknownNames = useMemo(
+		() =>
+			unknownExclusionNames(
+				parsed.map(p => p.name),
+				parseExclusions(exclusions)
+			),
+		[parsed, exclusions]
+	)
 
 	const hasContent =
 		participants !== '' ||
@@ -185,6 +195,7 @@ function Organizer() {
 				wishes={new Map(parsed.map(p => [p.name, p.wish]))}
 				meta={{ event, budget, date }}
 				onReset={() => setPairs(null)}
+				onDelete={clearList}
 			/>
 		)
 	}
@@ -209,7 +220,10 @@ function Organizer() {
 						onClick={clearList}
 						title='Удалить список и начать заново'
 						className={cn(
-							toolPill(false, 'inline-flex items-center gap-1.5'),
+							toolPill(
+								false,
+								'inline-flex items-center gap-1.5 whitespace-nowrap'
+							),
 							!hasContent && 'invisible'
 						)}
 					>
@@ -220,7 +234,10 @@ function Organizer() {
 						type='button'
 						onClick={() => setParticipants(EXAMPLE_PARTICIPANTS)}
 						className={cn(
-							toolPill(false, 'inline-flex items-center gap-1.5'),
+							toolPill(
+								false,
+								'inline-flex items-center gap-1.5 whitespace-nowrap'
+							),
 							participants === EXAMPLE_PARTICIPANTS && 'invisible'
 						)}
 					>
@@ -301,9 +318,18 @@ function Organizer() {
 							aria-label='Исключения'
 							className='min-h-[4.5rem] resize-none font-mono text-base [field-sizing:content] md:text-sm'
 						/>
-						<span className='mt-1 block text-xs text-muted-foreground'>
-							Пара на строку, например супруги. Можно оставить пустым.
-						</span>
+						{unknownNames.length > 0 ? (
+							<span className='mt-1 block text-xs text-destructive'>
+								{unknownNames.length === 1 ? 'Имени' : 'Имён'}{' '}
+								{unknownNames.map(n => `«${n}»`).join(', ')} нет в списке
+								участников, такое исключение не сработает. Проверьте, нет
+								ли опечатки.
+							</span>
+						) : (
+							<span className='mt-1 block text-xs text-muted-foreground'>
+								Пара на строку, например супруги. Можно оставить пустым.
+							</span>
+						)}
 					</label>
 				</div>
 			</div>
@@ -327,12 +353,14 @@ function Results({
 	pairs,
 	wishes,
 	meta,
-	onReset
+	onReset,
+	onDelete
 }: {
 	pairs: SantaPair[]
 	wishes: Map<string, string>
 	meta: { event: string; budget: string; date: string }
 	onReset: () => void
+	onDelete: () => void
 }) {
 	const { trackToolAction } = useYandexGoals()
 	const [showPairs, setShowPairs] = useState(false)
@@ -355,6 +383,30 @@ function Results({
 	)
 
 	const markSent = (name: string) => setSent(prev => new Set(prev).add(name))
+
+	// Повторная жеребьёвка даёт новые пары, а уже разосланные ссылки
+	// продолжают показывать старые: двое могут дарить одному человеку.
+	const editList = () => {
+		if (
+			sent.size > 0 &&
+			!window.confirm(
+				'Ссылки уже начали рассылать. Если провести жеребьёвку заново, старые ссылки покажут прежние пары и всё перепутается. Всё равно изменить список?'
+			)
+		)
+			return
+		onReset()
+	}
+
+	// Сюда попадает организатор, который вернулся на страницу: без этой
+	// кнопки удалить сохранённый список было не из чего (отзыв 17.11.2026).
+	const deleteAll = () => {
+		if (
+			window.confirm(
+				'Удалить список и жеребьёвку из этого браузера? Восстановить их не получится. Разосланные ссылки продолжат работать.'
+			)
+		)
+			onDelete()
+	}
 
 	const copy = async (key: string, text: string) => {
 		try {
@@ -386,11 +438,14 @@ function Results({
 				<span className='text-sm text-muted-foreground'>
 					Жеребьёвка готова · отправьте каждому его ссылку
 				</span>
-				<div className='flex items-center gap-1 sm:ml-auto'>
+				<div className='flex flex-wrap items-center gap-1 sm:ml-auto'>
 					<button
 						type='button'
 						onClick={() => setShowPairs(v => !v)}
-						className={toolPill(showPairs, 'inline-flex items-center gap-1.5')}
+						className={toolPill(
+							showPairs,
+							'inline-flex items-center gap-1.5 whitespace-nowrap'
+						)}
 					>
 						{showPairs ? (
 							<EyeOff className='h-3.5 w-3.5' />
@@ -401,11 +456,26 @@ function Results({
 					</button>
 					<button
 						type='button'
-						onClick={onReset}
-						className={toolPill(false, 'inline-flex items-center gap-1.5')}
+						onClick={editList}
+						className={toolPill(
+							false,
+							'inline-flex items-center gap-1.5 whitespace-nowrap'
+						)}
 					>
-						<RotateCcw className='h-3.5 w-3.5' />
+						<Pencil className='h-3.5 w-3.5' />
 						Изменить список
+					</button>
+					<button
+						type='button'
+						onClick={deleteAll}
+						title='Удалить список и жеребьёвку из этого браузера'
+						className={toolPill(
+							false,
+							'inline-flex items-center gap-1.5 whitespace-nowrap'
+						)}
+					>
+						<Trash2 className='h-3.5 w-3.5' />
+						Удалить
 					</button>
 				</div>
 			</div>

@@ -4,7 +4,8 @@ import {
 	drawSecretSanta,
 	encodeSantaLink,
 	parseExclusions,
-	parseParticipants
+	parseParticipants,
+	unknownExclusionNames
 } from '@/lib/secret-santa'
 
 describe('parseParticipants', () => {
@@ -29,6 +30,26 @@ describe('parseExclusions', () => {
 			['Маша', 'Саша'],
 			['Анна-Мария', 'Ваня']
 		])
+	})
+})
+
+describe('unknownExclusionNames', () => {
+	it('находит имена из исключений, которых нет в списке', () => {
+		expect(
+			unknownExclusionNames(
+				['Аня', 'Пётр', 'Оля'],
+				[
+					['аня', 'Петр'],
+					['Оля', 'Петр']
+				]
+			)
+		).toEqual(['Петр'])
+	})
+
+	it('молчит, когда все имена на месте', () => {
+		expect(unknownExclusionNames(['Аня', 'Петя'], [['Аня', 'Петя']])).toEqual(
+			[]
+		)
 	})
 })
 
