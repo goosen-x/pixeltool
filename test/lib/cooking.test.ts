@@ -4,8 +4,12 @@ import {
 	containersFor,
 	describeAmount,
 	getContainer,
+	containerLabel,
+	containersOf,
+	fallbackContainer,
 	getProduct,
 	gramsIn,
+	parseAmount,
 	PRODUCTS,
 	tableFor
 } from '@/lib/utils/cooking'
@@ -67,15 +71,48 @@ describe('граммы в ёмкости', () => {
 		}
 	})
 
-	it('согласованность: столовая ложка — ровно 1/15 стакана 250 мл', () => {
-		for (const p of PRODUCTS) {
-			expect(gramsIn(p, tbsp) * (250 / 15)).toBeCloseTo(gramsIn(p, glass250), 9)
+})
+
+describe('ложки', () => {
+	const tbspLevel = getContainer('tablespoon-level')!
+	const tsp = getContainer('teaspoon')!
+	const tspLevel = getContainer('teaspoon-level')!
+
+	// Раньше ложка считалась из плотности как ровные 15 мл и подписывалась
+	// «с горкой»: мука выходила 9,6 г вместо табличных 25.
+	it('столовая ложка муки: 25 г с горкой, 15 без', () => {
+		expect(gramsIn(flour, tbsp)).toBe(25)
+		expect(gramsIn(flour, tbspLevel)).toBe(15)
+	})
+
+	it('сахар и соль сходятся с кухонными таблицами', () => {
+		expect(gramsIn(sugar, tbsp)).toBe(25)
+		expect(gramsIn(sugar, tbspLevel)).toBe(20)
+		expect(gramsIn(getProduct('salt')!, tbsp)).toBe(30)
+		expect(gramsIn(getProduct('salt')!, tsp)).toBe(10)
+	})
+
+	it('с горкой всегда тяжелее, чем без, и столовая тяжелее чайной', () => {
+		for (const p of PRODUCTS.filter(p => p.spoons)) {
+			expect(gramsIn(p, tbsp)).toBeGreaterThan(gramsIn(p, tbspLevel))
+			expect(gramsIn(p, tsp)).toBeGreaterThan(gramsIn(p, tspLevel))
+			expect(gramsIn(p, tbspLevel)).toBeGreaterThan(gramsIn(p, tspLevel))
+			expect(gramsIn(p, tbsp)).toBeLessThan(gramsIn(p, glass200))
 		}
 	})
 
-	it('чайная ложка втрое меньше столовой', () => {
-		const tsp = getContainer('teaspoon')!
-		expect(gramsIn(flour, tbsp)).toBeCloseTo(gramsIn(flour, tsp) * 3, 9)
+	it('жидкости в ложке считаются по объёму, без горки', () => {
+		expect(gramsIn(water, tbspLevel)).toBeCloseTo(15, 9)
+		expect(gramsIn(water, tspLevel)).toBeCloseTo(5, 9)
+		expect(containersOf(water).some(c => c.heaped)).toBe(false)
+		expect(containerLabel(tbspLevel, water)).toBe('Столовая ложка')
+		expect(containerLabel(tbspLevel, flour)).toBe('Столовая ложка без горки')
+	})
+
+	it('ложка с горкой у жидкости заменяется той же ложкой без горки', () => {
+		expect(fallbackContainer(tbsp, water).id).toBe('tablespoon-level')
+		expect(fallbackContainer(tsp, water).id).toBe('teaspoon-level')
+		expect(fallbackContainer(tbsp, flour).id).toBe('tablespoon')
 	})
 })
 
@@ -86,7 +123,7 @@ describe('обратный счёт', () => {
 
 	it('круговой обход сходится', () => {
 		for (const p of PRODUCTS) {
-			for (const c of CONTAINERS) {
+			for (const c of containersOf(p)) {
 				const grams = gramsIn(p, c)
 				expect(containersFor(grams, p, c)).toBeCloseTo(1, 9)
 			}
@@ -121,18 +158,54 @@ describe('describeAmount', () => {
 		expect(describeAmount(0)).toBe('0')
 		expect(describeAmount(-1)).toBe('0')
 	})
+
+	it('меньше четверти не превращается в ноль', () => {
+		expect(describeAmount(0.1)).toBe('меньше ¼')
+	})
+})
+
+describe('parseAmount', () => {
+	it('десятичные с запятой и точкой', () => {
+		expect(parseAmount('1,5')).toBe(1.5)
+		expect(parseAmount('1.5')).toBe(1.5)
+		expect(parseAmount(' 2 ')).toBe(2)
+	})
+
+	it('дроби из рецептов', () => {
+		expect(parseAmount('1/2')).toBe(0.5)
+		expect(parseAmount('1 1/2')).toBe(1.5)
+		expect(parseAmount('3/4')).toBe(0.75)
+	})
+
+	it('единица после числа не мешает', () => {
+		expect(parseAmount('250 г')).toBe(250)
+		expect(parseAmount('250г')).toBe(250)
+	})
+
+	it('мусор и деление на ноль — null', () => {
+		expect(parseAmount('')).toBeNull()
+		expect(parseAmount('abc')).toBeNull()
+		expect(parseAmount('1/0')).toBeNull()
+		expect(parseAmount('-1')).toBeNull()
+	})
 })
 
 describe('таблица продукта', () => {
-	it('строк столько же, сколько ёмкостей', () => {
+	it('у сыпучих все ёмкости, у жидкостей без ложек с горкой', () => {
 		expect(tableFor(flour)).toHaveLength(CONTAINERS.length)
+		expect(tableFor(water)).toHaveLength(
+			CONTAINERS.filter(c => !c.heaped).length
+		)
 	})
 
-	it('граммы убывают вместе с объёмом ёмкости', () => {
-		const rows = tableFor(flour)
-		const sorted = [...rows].sort((a, b) => b.container.ml - a.container.ml)
-		for (let i = 1; i < sorted.length; i++) {
-			expect(sorted[i].grams).toBeLessThan(sorted[i - 1].grams)
+	// Десертная ложка без горки и чайная с горкой у разных продуктов меняются
+	// местами, поэтому порядок проверяем без десертной.
+	it('строки идут по убыванию веса', () => {
+		for (const p of PRODUCTS) {
+			const rows = tableFor(p).filter(r => r.container.id !== 'dessertspoon')
+			for (let i = 1; i < rows.length; i++) {
+				expect(rows[i].grams).toBeLessThan(rows[i - 1].grams)
+			}
 		}
 	})
 })

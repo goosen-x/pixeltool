@@ -12,12 +12,15 @@ import {
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import {
-	CONTAINERS,
+	containerLabel,
 	containersFor,
+	containersOf,
 	describeAmount,
+	fallbackContainer,
 	getContainer,
 	getProduct,
 	gramsIn,
+	parseAmount,
 	PRODUCTS,
 	tableFor
 } from '@/lib/utils/cooking'
@@ -44,24 +47,30 @@ export default function GramsToCupsPage() {
 	const [grams, setGrams] = useState('250')
 
 	const product = getProduct(productId)!
-	const container = getContainer(containerId)!
+	// У жидкостей нет ложки с горкой: если она была выбрана, берём ту же
+	// ложку без горки, а не показываем пустую меру.
+	const container = fallbackContainer(getContainer(containerId)!, product)
+	const containerName = containerLabel(container, product)
 
 	const result = useMemo(() => {
 		if (mode === 'toGrams') {
-			const count = parseFloat(amount.replace(',', '.'))
-			if (!Number.isFinite(count) || count < 0) return null
+			const count = parseAmount(amount)
+			if (count === null) return null
 			return {
 				kind: 'grams' as const,
 				value: gramsIn(product, container) * count
 			}
 		}
-		const weight = parseFloat(grams.replace(',', '.'))
-		if (!Number.isFinite(weight) || weight < 0) return null
+		const weight = parseAmount(grams)
+		if (weight === null) return null
 		return {
 			kind: 'containers' as const,
 			value: containersFor(weight, product, container)
 		}
 	}, [mode, amount, grams, product, container])
+
+	const unitsWord = (value: number) =>
+		pluralizeRu(Math.round(value), ['грамм', 'грамма', 'граммов'])
 
 	return (
 		<WidgetSEOWrapper widget={widget}>
@@ -114,7 +123,7 @@ export default function GramsToCupsPage() {
 					<div className='flex flex-wrap items-end justify-center gap-3'>
 						<label className='block'>
 							<span className='mb-1.5 block text-sm text-muted-foreground'>
-								{mode === 'toGrams' ? 'Сколько' : 'Граммов'}
+								{mode === 'toGrams' ? 'Сколько мер' : 'Граммов'}
 							</span>
 							<input
 								type='text'
@@ -137,14 +146,14 @@ export default function GramsToCupsPage() {
 								Мера
 							</span>
 							<ToolSelect
-								value={containerId}
+								value={container.id}
 								onChange={event => setContainerId(event.target.value)}
 								aria-label='Мера'
 								className='py-2'
 							>
-								{CONTAINERS.map(c => (
+								{containersOf(product).map(c => (
 									<option key={c.id} value={c.id}>
-										{c.name}
+										{containerLabel(c, product)}
 									</option>
 								))}
 							</ToolSelect>
@@ -160,12 +169,14 @@ export default function GramsToCupsPage() {
 							</span>
 							<span className='mt-2 block text-sm text-muted-foreground'>
 								{result.kind === 'grams'
-									? `${amount} ${container.name.toLowerCase()} — это ${round(result.value)} ${pluralizeRu(Math.round(result.value), ['грамм', 'грамма', 'граммов'])} продукта «${product.name.toLowerCase()}»`
-									: `${grams} г продукта «${product.name.toLowerCase()}» — это столько мер «${container.name.toLowerCase()}»`}
+									? `${product.name}: ${amount.trim() || '0'} × «${containerName.toLowerCase()}» = ${round(result.value)} ${unitsWord(result.value)}`
+									: `${product.name}: ${grams.trim() || '0'} г ≈ ${round(result.value)} × «${containerName.toLowerCase()}», крупно — с точностью до четверти меры`}
 							</span>
 						</p>
 					) : (
-						<p className='text-sm text-muted-foreground'>Введите число</p>
+						<p className='text-sm text-muted-foreground'>
+							Введите число: 1,5 или 1/2
+						</p>
 					)}
 				</div>
 
@@ -179,12 +190,16 @@ export default function GramsToCupsPage() {
 						<table className='w-full border-collapse text-sm'>
 							<tbody>
 								{tableFor(product).map(({ container: c, grams: g }) => (
-									<tr key={c.id} className='border-b last:border-0'>
+									<tr
+										key={c.id}
+										onClick={() => setContainerId(c.id)}
+										className={`cursor-pointer border-b last:border-0 hover:bg-muted/50 ${c.id === container.id ? 'bg-muted/50 font-medium' : ''}`}
+									>
 										<th
 											scope='row'
 											className='py-2 pr-4 text-left font-normal whitespace-nowrap'
 										>
-											{c.name}
+											{containerLabel(c, product)}
 											{c.hint && (
 												<span className='ml-2 text-xs text-muted-foreground'>
 													{c.hint}
@@ -203,10 +218,10 @@ export default function GramsToCupsPage() {
 
 				<div className={toolFooterBar}>
 					<span className='text-sm text-muted-foreground'>
-						Считается из насыпной плотности {product.name.toLowerCase()} —{' '}
-						{String(product.density).replace('.', ',')} г/мл. У сыпучих разброс
-						между источниками доходит до десяти процентов: зависит от того,
-						насколько плотно продукт лежит
+						{`Стаканы считаются из насыпной плотности: ${String(product.density).replace('.', ',')} г/мл. `}
+						{product.spoons
+							? 'Ложки взяты из кухонных таблиц: ложку зачерпывают, и вес зависит от горки. Разброс между источниками до десяти процентов'
+							: 'Ложки считаются по объёму: столовая 15 мл, чайная 5 мл'}
 					</span>
 				</div>
 			</Card>
