@@ -18,6 +18,7 @@ import {
 	type RGB
 } from '@/lib/utils/color-converter'
 import { PhotoColorPickerSeo } from './PhotoColorPickerSeo'
+import { decodeTiff, TiffTooLargeError } from './decode-tiff'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
 
 const MAX_CANVAS_DIMENSION = 1600
@@ -130,6 +131,42 @@ async function decodeNative(file: File, canvas: HTMLCanvasElement) {
 /** Ошибка, которую можно показать человеку как есть. */
 class ReadableError extends Error {}
 
+// TIFF открывает только Safari. Остальным браузерам раньше показывали
+// «пересохраните в JPG», но в TIFF обычно приходят сканы документов
+// (отзыв 03.11.2026: скан заявления), и пересохранять человеку нечем.
+async function drawTiffToCanvas(file: File, canvas: HTMLCanvasElement) {
+	let decoded
+	try {
+		decoded = await decodeTiff(await file.arrayBuffer())
+	} catch (err) {
+		throw new ReadableError(
+			err instanceof TiffTooLargeError
+				? 'TIFF слишком большой, браузеру не хватит памяти. Уменьшите разрешение скана или сохраните его как JPG.'
+				: 'Этот TIFF не получилось открыть: возможно, у него редкий тип сжатия. Сохраните изображение как JPG или PNG и загрузите снова.'
+		)
+	}
+	const source = document.createElement('canvas')
+	source.width = decoded.width
+	source.height = decoded.height
+	source
+		.getContext('2d')!
+		.putImageData(
+			new ImageData(decoded.data, decoded.width, decoded.height),
+			0,
+			0
+		)
+	const scale = Math.min(
+		1,
+		MAX_CANVAS_DIMENSION / Math.max(decoded.width, decoded.height)
+	)
+	canvas.width = Math.round(decoded.width * scale)
+	canvas.height = Math.round(decoded.height * scale)
+	const ctx = canvas.getContext('2d')!
+	ctx.imageSmoothingQuality = 'high'
+	ctx.drawImage(source, 0, 0, canvas.width, canvas.height)
+	source.width = source.height = 0
+}
+
 // Сначала то, что умеет сам браузер: так быстрее и без лишней загрузки.
 // Если браузер не справился, смотрим, что это за файл на самом деле.
 // HEIC (фото с айфона) открывает только Safari, а в Chrome и на Android
@@ -152,9 +189,8 @@ async function decodeToCanvas(file: File, canvas: HTMLCanvasElement) {
 			return
 		}
 		if (format === 'tiff') {
-			throw new ReadableError(
-				'Формат TIFF браузеры не открывают. Сохраните изображение как JPG или PNG и загрузите снова.'
-			)
+			await drawTiffToCanvas(file, canvas)
+			return
 		}
 		throw nativeError
 	}
@@ -491,9 +527,21 @@ export default function PhotoColorPickerPage() {
 			>
 				<div className={toolBar}>
 					<span className='text-sm text-muted-foreground'>
-						{hasImage
-							? 'Коснитесь точки на фото или задержите палец, чтобы вести пипетку с лупой'
-							: 'Загрузите фото, чтобы определить цвет'}
+						{hasImage ? (
+							<>
+								{/* С мышью про палец писать незачем: там лупа видна сразу
+								    при наведении, достаточно клика. */}
+								<span className='pointer-coarse:hidden'>
+									Кликните по точке на фото, чтобы взять её цвет
+								</span>
+								<span className='hidden pointer-coarse:inline'>
+									Коснитесь точки на фото или задержите палец, чтобы вести
+									пипетку с лупой
+								</span>
+							</>
+						) : (
+							'Загрузите фото, чтобы определить цвет'
+						)}
 					</span>
 
 					<div className='flex items-center gap-0.5 sm:ml-auto'>
@@ -512,7 +560,7 @@ export default function PhotoColorPickerPage() {
 				<input
 					ref={fileInputRef}
 					type='file'
-					accept='image/*,.heic,.heif'
+					accept='image/*,.heic,.heif,.tif,.tiff'
 					onChange={handleFileSelect}
 					aria-label='Загрузить фото'
 					className='hidden'
@@ -553,6 +601,9 @@ export default function PhotoColorPickerPage() {
 								<Upload className='h-6 w-6 text-muted-foreground' />
 								<span className='text-sm'>
 									Выберите фото или перетащите сюда
+								</span>
+								<span className='text-xs text-muted-foreground'>
+									JPG, PNG, WebP, HEIC с айфона, TIFF-сканы
 								</span>
 							</button>
 						)}
@@ -665,7 +716,7 @@ export default function PhotoColorPickerPage() {
 												<span className='w-10 shrink-0 font-mono text-xs text-muted-foreground uppercase'>
 													{format.title}
 												</span>
-												<span className='font-mono text-sm break-all'>
+												<span className='font-mono text-sm break-words'>
 													{format.value}
 												</span>
 											</span>
