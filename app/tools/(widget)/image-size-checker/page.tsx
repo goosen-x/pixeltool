@@ -25,9 +25,17 @@ import { pluralizeRu } from '@/lib/utils/pluralize'
 import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard'
 import { ImageCompressPanel } from '@/components/tools/ImageCompressPanel'
 import { ToolScreenshot } from '@/components/tools/ToolScreenshot'
+import {
+	formatBytesRu,
+	formatLabel,
+	printSizeCm,
+	readImageHeaderFromFile,
+	type ImageHeader
+} from './read-image-header'
 
 interface ImageInfo {
 	name: string
+	/** Пусто, если браузер не умеет показать формат (HEIC, TIFF вне Safari). */
 	url: string
 	width: number
 	height: number
@@ -35,6 +43,8 @@ interface ImageInfo {
 	fileSize: number
 	fileSizeFormatted: string
 	format: string
+	/** DPI из файла, если он записан. */
+	dpi?: number
 	lastModified: Date
 	/** Оригинальный файл — нужен, чтобы передать его в compress-image по клику «Сжать», а не только показать метаданные. */
 	file: File
@@ -144,7 +154,9 @@ function WeightSection({
 				)}
 			</span>
 
-			{heavy && (
+			{/* Сжатие рисует картинку в canvas: HEIC и TIFF, которые браузер не
+			    открыл, оно не осилит, кнопка дала бы только ошибку. */}
+			{heavy && image.url && (
 				<Button
 					variant='outline'
 					onClick={onToggle}
@@ -155,6 +167,38 @@ function WeightSection({
 				</Button>
 			)}
 		</div>
+	)
+}
+
+function NoPreview({ format }: { format: string }) {
+	return (
+		<div className='flex flex-col items-center gap-2 px-6 py-10 text-center text-sm text-muted-foreground'>
+			<ImageIcon className='h-8 w-8' />
+			<span>
+				Браузер не показывает {format}, но размеры прочитаны из самого файла
+			</span>
+		</div>
+	)
+}
+
+const PRINT_DPI = 300
+
+/**
+ * Размер отпечатка в сантиметрах. 300 dpi, обычное требование фотолаборатории
+ * и типографии; dpi, записанный в файле, часто случайный (72 от редактора) и
+ * на печать по факту не влияет, поэтому считаем от 300, а файловый показываем
+ * отдельной плашкой.
+ */
+function PrintSize({ image }: { image: ImageInfo }) {
+	const w = printSizeCm(image.width, PRINT_DPI).toLocaleString('ru-RU')
+	const h = printSizeCm(image.height, PRINT_DPI).toLocaleString('ru-RU')
+	return (
+		<p className='text-sm text-muted-foreground'>
+			Для печати в {PRINT_DPI} dpi:{' '}
+			<span className='whitespace-nowrap font-mono text-foreground'>
+				{w} × {h} см
+			</span>
+		</p>
 	)
 }
 
@@ -206,13 +250,22 @@ export default function ImageSizeCheckerPage() {
 		successMessage: 'Разрешение скопировано'
 	})
 
-	const formatBytes = (bytes: number): string => {
-		if (bytes === 0) return '0 Bytes'
-		const k = 1024
-		const sizes = ['Bytes', 'KB', 'MB', 'GB']
-		const i = Math.floor(Math.log(bytes) / Math.log(k))
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-	}
+	const decodeInBrowser = (
+		file: File
+	): Promise<{ url: string; width: number; height: number }> =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader()
+			reader.onload = e => {
+				const url = e.target?.result as string
+				const img = new window.Image()
+				img.onload = () =>
+					resolve({ url, width: img.naturalWidth, height: img.naturalHeight })
+				img.onerror = () => reject(new Error('Failed to load image'))
+				img.src = url
+			}
+			reader.onerror = () => reject(new Error('Failed to read file'))
+			reader.readAsDataURL(file)
+		})
 
 	const getAspectRatio = (width: number, height: number): string => {
 		const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
@@ -220,42 +273,34 @@ export default function ImageSizeCheckerPage() {
 		return `${width / divisor}:${height / divisor}`
 	}
 
-	const processImage = (file: File): Promise<ImageInfo> => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader()
+	// Сначала заголовок файла: из него размеры и DPI. Потом попытка открыть
+	// картинку браузером ради превью и размеров с учётом поворота из EXIF.
+	// Если браузер формат не знает (HEIC, TIFF), хватает заголовка.
+	const processImage = async (file: File): Promise<ImageInfo> => {
+		let header: ImageHeader | null = null
+		try {
+			header = await readImageHeaderFromFile(file)
+		} catch {
+			header = null
+		}
+		const decoded = await decodeInBrowser(file).catch(() => null)
+		const width = decoded?.width || header?.width
+		const height = decoded?.height || header?.height
+		if (!width || !height) throw new Error('Не изображение')
 
-			reader.onload = e => {
-				const img = new window.Image()
-
-				img.onload = () => {
-					const imageInfo: ImageInfo = {
-						name: file.name,
-						url: e.target?.result as string,
-						width: img.width,
-						height: img.height,
-						aspectRatio: getAspectRatio(img.width, img.height),
-						fileSize: file.size,
-						fileSizeFormatted: formatBytes(file.size),
-						format: file.type || 'unknown',
-						lastModified: new Date(file.lastModified),
-						file
-					}
-					resolve(imageInfo)
-				}
-
-				img.onerror = () => {
-					reject(new Error('Failed to load image'))
-				}
-
-				img.src = e.target?.result as string
-			}
-
-			reader.onerror = () => {
-				reject(new Error('Failed to read file'))
-			}
-
-			reader.readAsDataURL(file)
-		})
+		return {
+			name: file.name,
+			url: decoded?.url ?? '',
+			width,
+			height,
+			aspectRatio: getAspectRatio(width, height),
+			fileSize: file.size,
+			fileSizeFormatted: formatBytesRu(file.size),
+			format: formatLabel(file.type, header, file.name),
+			dpi: header?.dpi,
+			lastModified: new Date(file.lastModified),
+			file
+		}
 	}
 
 	const handleFiles = useCallback(async (files: FileList) => {
@@ -280,10 +325,10 @@ export default function ImageSizeCheckerPage() {
 			}
 		}
 
-		if (newImages.length === 0) {
-			setProblem('Это не изображения — нужны JPG, PNG, GIF, WebP или SVG')
-		} else if (failedNames.length > 0) {
-			setProblem(`Не удалось прочитать: ${failedNames.join(', ')}`)
+		if (failedNames.length > 0) {
+			setProblem(
+				`Не получилось открыть как картинку: ${failedNames.join(', ')}`
+			)
 		}
 
 		setImages(prev => [...prev, ...newImages])
@@ -313,6 +358,9 @@ export default function ImageSizeCheckerPage() {
 			if (e.target.files) {
 				handleFiles(e.target.files)
 			}
+			// Иначе тот же файл после «Очистить» выбрать повторно нельзя:
+			// onChange не сработает, значение поля не поменялось.
+			e.target.value = ''
 		},
 		[handleFiles]
 	)
@@ -342,24 +390,28 @@ export default function ImageSizeCheckerPage() {
 	}, [])
 
 	const exportData = useCallback(() => {
-		const data = images.map(img => ({
-			name: img.name,
-			width: img.width,
-			height: img.height,
-			aspectRatio: img.aspectRatio,
-			fileSize: img.fileSizeFormatted,
-			format: img.format
-		}))
+		// Точка с запятой и BOM: русский Excel иначе склеивает всё в одну
+		// колонку, а кириллица в именах файлов превращается в кракозябры.
+		const cell = (v: string | number | undefined) =>
+			`"${String(v ?? '').replace(/"/g, '""')}"`
+		const csv =
+			'\uFEFF' +
+			[
+				'Имя;Ширина, px;Высота, px;Соотношение;Вес, байт;Формат;DPI',
+				...images.map(img =>
+					[
+						cell(img.name),
+						img.width,
+						img.height,
+						cell(img.aspectRatio),
+						img.fileSize,
+						cell(img.format),
+						img.dpi ?? ''
+					].join(';')
+				)
+			].join('\r\n')
 
-		const csv = [
-			'Name,Width,Height,Aspect Ratio,File Size,Format',
-			...data.map(
-				row =>
-					`"${row.name}",${row.width},${row.height},"${row.aspectRatio}","${row.fileSize}","${row.format}"`
-			)
-		].join('\n')
-
-		const blob = new Blob([csv], { type: 'text/csv' })
+		const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
 		const url = URL.createObjectURL(blob)
 		const a = document.createElement('a')
 		a.href = url
@@ -440,7 +492,7 @@ export default function ImageSizeCheckerPage() {
 						ref={fileInputRef}
 						type='file'
 						multiple
-						accept='image/*'
+						accept='image/*,.heic,.heif,.tif,.tiff'
 						onChange={handleInputChange}
 						aria-label='Загрузить изображения'
 						className='hidden'
@@ -458,7 +510,7 @@ export default function ImageSizeCheckerPage() {
 							</span>
 							<span className='text-sm sm:hidden'>Выберите файлы</span>
 							<span className='text-xs text-muted-foreground'>
-								JPG, PNG, GIF, WebP, SVG
+								JPG, PNG, GIF, WebP, SVG, HEIC, TIFF
 							</span>
 						</button>
 					)}
@@ -466,12 +518,16 @@ export default function ImageSizeCheckerPage() {
 					{images.length === 1 && (
 						<div className='grid gap-6 p-5 sm:grid-cols-[1.2fr_1fr] sm:p-8'>
 							<div className='relative flex h-64 items-center justify-center overflow-hidden rounded-xl border bg-muted sm:h-auto sm:max-h-96'>
-								<Image
-									src={images[0].url}
-									alt={images[0].name}
-									fill
-									className='object-contain'
-								/>
+								{images[0].url ? (
+									<Image
+										src={images[0].url}
+										alt={images[0].name}
+										fill
+										className='object-contain'
+									/>
+								) : (
+									<NoPreview format={images[0].format} />
+								)}
 							</div>
 
 							<div className='flex min-w-0 flex-col gap-4'>
@@ -497,14 +553,19 @@ export default function ImageSizeCheckerPage() {
 
 								<div className='flex flex-wrap items-center gap-2 text-sm'>
 									<RatioBadge image={images[0]} />
-									<Badge variant='outline'>
-										{images[0].format.split('/')[1]?.toUpperCase() || '—'}
-									</Badge>
+									<Badge variant='outline'>{images[0].format}</Badge>
+									{images[0].dpi && (
+										<Badge variant='outline' className='font-mono'>
+											{images[0].dpi} dpi
+										</Badge>
+									)}
 									<span className='text-xs text-muted-foreground'>
 										Изменён:{' '}
 										{images[0].lastModified.toLocaleDateString('ru-RU')}
 									</span>
 								</div>
+
+								<PrintSize image={images[0]} />
 
 								<div className='border-t pt-4'>
 									<WeightSection
@@ -536,13 +597,17 @@ export default function ImageSizeCheckerPage() {
 										<Fragment key={index}>
 											<tr className='group border-b last:border-0 hover:bg-muted/30'>
 												<td className='px-4 py-2'>
-													<div className='relative h-9 w-9 overflow-hidden rounded-md border bg-muted'>
-														<Image
-															src={image.url}
-															alt=''
-															fill
-															className='object-cover'
-														/>
+													<div className='relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-md border bg-muted'>
+														{image.url ? (
+															<Image
+																src={image.url}
+																alt=''
+																fill
+																className='object-cover'
+															/>
+														) : (
+															<ImageIcon className='h-4 w-4 text-muted-foreground' />
+														)}
 													</div>
 												</td>
 												<td className='max-w-48 px-2 py-2'>
@@ -554,13 +619,13 @@ export default function ImageSizeCheckerPage() {
 														{image.lastModified.toLocaleDateString('ru-RU')}
 													</p>
 												</td>
-												<td className='px-2 py-2 font-mono'>
+												<td className='whitespace-nowrap px-2 py-2 font-mono'>
 													{image.width} × {image.height}
 												</td>
 												<td className='px-2 py-2'>
 													<RatioBadge image={image} />
 												</td>
-												<td className='px-2 py-2'>
+												<td className='whitespace-nowrap px-2 py-2'>
 													<span
 														className={cn(
 															'font-mono',
@@ -572,6 +637,7 @@ export default function ImageSizeCheckerPage() {
 														{image.fileSizeFormatted}
 													</span>
 													{image.fileSize > HEAVY_THRESHOLD_BYTES &&
+														image.url &&
 														expandedCompress !== index && (
 															<button
 																type='button'
@@ -583,7 +649,7 @@ export default function ImageSizeCheckerPage() {
 														)}
 												</td>
 												<td className='px-2 py-2 text-muted-foreground'>
-													{image.format.split('/')[1]?.toUpperCase() || '—'}
+													{image.format}
 												</td>
 												<td className='px-2 py-2 text-right'>
 													<div className='flex items-center justify-end opacity-60 group-hover:opacity-100'>
