@@ -11,7 +11,9 @@ import {
 import {
 	calculateTrip,
 	consumptionPer100Km,
-	rangeOnLiters
+	costPerPerson,
+	rangeOnLiters,
+	tripDistance
 } from '@/lib/utils/fuel-calculator'
 import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
@@ -65,7 +67,10 @@ export default function FuelCalculatorPage() {
 
 	const [distance, setDistance] = useState('500')
 	const [consumption, setConsumption] = useState('8')
-	const [price, setPrice] = useState('60')
+	// Средняя цена бензина по Росстату в ноябре 2026 года — около 75 ₽.
+	const [price, setPrice] = useState('75')
+	const [roundTrip, setRoundTrip] = useState(false)
+	const [people, setPeople] = useState('1')
 
 	const [actualDistance, setActualDistance] = useState('450')
 	const [actualLiters, setActualLiters] = useState('36')
@@ -76,8 +81,17 @@ export default function FuelCalculatorPage() {
 		const c = toNumber(consumption)
 		const p = toNumber(price)
 		if (d === null || c === null || p === null) return null
-		return calculateTrip(d, c, p)
-	}, [distance, consumption, price])
+		const km = tripDistance(d, roundTrip)
+		const n = toNumber(people)
+		const count = n !== null && n >= 1 ? Math.floor(n) : 1
+		const result = calculateTrip(km, c, p)
+		return {
+			...result,
+			km,
+			people: count,
+			perPerson: costPerPerson(result.cost, count)
+		}
+	}, [distance, consumption, price, roundTrip, people])
 
 	const actual = useMemo(() => {
 		const d = toNumber(actualDistance)
@@ -138,6 +152,30 @@ export default function FuelCalculatorPage() {
 							<Field label='Цена литра, ₽' value={price} onChange={setPrice} />
 						</div>
 
+						<div className='flex flex-wrap items-end gap-x-6 gap-y-4 border-b px-5 py-4 sm:px-6'>
+							<label className='flex cursor-pointer items-center gap-2 py-2 text-sm text-foreground'>
+								<input
+									type='checkbox'
+									checked={roundTrip}
+									onChange={event => setRoundTrip(event.target.checked)}
+									className='h-4 w-4 cursor-pointer accent-primary'
+								/>
+								Туда и обратно
+							</label>
+							<label className='flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground'>
+								Делим на
+								<input
+									type='text'
+									inputMode='numeric'
+									value={people}
+									onChange={event => setPeople(event.target.value)}
+									aria-label='Сколько человек делят бензин'
+									className={`${inputClass.replace('w-full', 'w-16')} text-center`}
+								/>
+								чел.
+							</label>
+						</div>
+
 						{trip ? (
 							<>
 								<div className='px-5 py-8 text-center sm:px-6'>
@@ -145,8 +183,16 @@ export default function FuelCalculatorPage() {
 										{format(trip.cost, 0)} ₽
 									</span>
 									<span className='mt-2 block text-base font-medium text-muted-foreground'>
-										стоимость поездки
+										{trip.km > 0
+											? `стоимость поездки${roundTrip ? ' туда и обратно' : ''}, ${format(trip.km, 0)} км`
+											: 'стоимость поездки'}
 									</span>
+									{trip.people > 1 && (
+										<span className='mt-1 block text-sm text-muted-foreground'>
+											по {format(trip.perPerson, 0)} ₽ с каждого из{' '}
+											{trip.people}
+										</span>
+									)}
 								</div>
 
 								<div className='grid grid-cols-2 gap-4 border-t px-5 py-6 text-center sm:px-6'>

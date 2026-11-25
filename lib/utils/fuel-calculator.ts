@@ -49,3 +49,17 @@ export function rangeOnLiters(liters: number, litersPer100Km: number): number {
 	if (litersPer100Km <= 0) return 0
 	return (liters / litersPer100Km) * 100
 }
+
+/** Расстояние с учётом обратной дороги: туда и обратно — вдвое длиннее. */
+export function tripDistance(distanceKm: number, roundTrip: boolean): number {
+	return roundTrip ? distanceKm * 2 : distanceKm
+}
+
+/**
+ * Доля каждого, если бензин делят на всех в машине. Меньше одного человека
+ * не бывает: водитель едет в любом случае.
+ */
+export function costPerPerson(cost: number, people: number): number {
+	const count = Math.max(1, Math.floor(people))
+	return cost / count
+}

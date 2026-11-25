@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest'
 import {
 	calculateTrip,
 	consumptionPer100Km,
-	rangeOnLiters
+	rangeOnLiters,
+	tripDistance,
+	costPerPerson
 } from '@/lib/utils/fuel-calculator'
 
 describe('calculateTrip', () => {
@@ -39,5 +41,30 @@ describe('rangeOnLiters', () => {
 
 	it('возвращает ноль при нулевом расходе', () => {
 		expect(rangeOnLiters(50, 0)).toBe(0)
+	})
+})
+
+describe('tripDistance', () => {
+	it('удваивает расстояние для поездки туда и обратно', () => {
+		expect(tripDistance(350, true)).toBe(700)
+		expect(tripDistance(350, false)).toBe(350)
+	})
+
+	it('стоимость поездки туда и обратно вдвое выше', () => {
+		const result = calculateTrip(tripDistance(350, true), 7.5, 75)
+
+		expect(result.liters).toBeCloseTo(52.5)
+		expect(result.cost).toBeCloseTo(3937.5)
+	})
+})
+
+describe('costPerPerson', () => {
+	it('делит стоимость на всех в машине', () => {
+		expect(costPerPerson(3000, 4)).toBeCloseTo(750)
+	})
+
+	it('не опускается ниже одного человека', () => {
+		expect(costPerPerson(3000, 0)).toBe(3000)
+		expect(costPerPerson(3000, 2.7)).toBe(1500)
 	})
 })
