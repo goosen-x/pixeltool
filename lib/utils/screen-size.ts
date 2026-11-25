@@ -95,16 +95,47 @@ export function pixelDensity(
 }
 
 /**
- * Рекомендуемое расстояние до телевизора, метры.
+ * Рекомендуемое расстояние до телевизора, метры: от и до.
  *
- * Ходовой ориентир для Full HD — три диагонали, для 4K — полторы: пиксели
- * мельче, и садиться можно ближе, не видя сетку. Это именно ориентир, а не
- * норматив: комфортное расстояние зависит и от зрения, и от контента.
+ * Нижняя граница — примерно там, где перестаёт быть видна пиксельная сетка
+ * (глаз различает около одной угловой минуты): у Full HD это полторы
+ * диагонали, у 4K пиксели вдвое мельче, и садиться можно на диагональ.
+ * Дальше верхней границы разрешение уже не используется: детали 4K с трёх
+ * метров от 55 дюймов не отличить от Full HD. Отсюда ходовые диапазоны
+ * 1–1,5 диагонали для 4K и 1,5–2,5 для Full HD. Ориентир, а не норматив.
  */
-export function viewingDistanceM(
+export function viewingRangeM(
 	diagonalInches: number,
 	is4k: boolean
-): number {
-	const factor = is4k ? 1.5 : 3
-	return (diagonalInches * CM_PER_INCH * factor) / 100
+): { min: number; max: number } {
+	const [from, to] = is4k ? [1, 1.5] : [1.5, 2.5]
+	const diagonalM = (diagonalInches * CM_PER_INCH) / 100
+	return { min: diagonalM * from, max: diagonalM * to }
+}
+
+/**
+ * Обратная задача: самая большая диагональ, экран которой не шире заданного.
+ * Нужна для вопроса «какой телевизор встанет в нишу шириной N см».
+ */
+export function diagonalForWidth(
+	widthCm: number,
+	ratio: AspectRatio
+): number | null {
+	if (!Number.isFinite(widthCm) || widthCm <= 0) return null
+	const norm = Math.sqrt(ratio.w * ratio.w + ratio.h * ratio.h)
+	return ((widthCm / CM_PER_INCH) * norm) / ratio.w
+}
+
+/**
+ * «32 дюйма», «55 дюймов», «21 дюйм», «55,5 дюйма»: у дробного числа
+ * существительное всегда в родительном единственного.
+ */
+export function inchesWord(value: number): string {
+	if (!Number.isInteger(value)) return 'дюйма'
+	const mod10 = value % 10
+	const mod100 = value % 100
+	if (mod100 >= 11 && mod100 <= 14) return 'дюймов'
+	if (mod10 === 1) return 'дюйм'
+	if (mod10 >= 2 && mod10 <= 4) return 'дюйма'
+	return 'дюймов'
 }

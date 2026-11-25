@@ -6,7 +6,9 @@ import {
 	getRatio,
 	pixelDensity,
 	screenSize,
-	viewingDistanceM
+	viewingRangeM,
+	diagonalForWidth,
+	inchesWord
 } from '@/lib/utils/screen-size'
 
 const wide = getRatio('16-9')!
@@ -108,10 +110,59 @@ describe('плотность пикселей', () => {
 
 describe('расстояние просмотра', () => {
 	it('для 4K ближе, чем для Full HD', () => {
-		expect(viewingDistanceM(55, true)).toBeLessThan(viewingDistanceM(55, false))
+		expect(viewingRangeM(55, true).max).toBeLessThanOrEqual(
+			viewingRangeM(55, false).min
+		)
 	})
 
-	it('55 дюймов 4K — около двух метров', () => {
-		expect(viewingDistanceM(55, true)).toBeCloseTo(2.1, 1)
+	it('55 дюймов: 4K 1,4–2,1 м, Full HD 2,1–3,5 м', () => {
+		const uhd = viewingRangeM(55, true)
+		const fhd = viewingRangeM(55, false)
+		expect(uhd.min).toBeCloseTo(1.4, 1)
+		expect(uhd.max).toBeCloseTo(2.1, 1)
+		expect(fhd.min).toBeCloseTo(2.1, 1)
+		expect(fhd.max).toBeCloseTo(3.5, 1)
+	})
+
+	it('нижняя граница Full HD близка к порогу различимости пикселя', () => {
+		// 1 угловая минута: пиксель 55" Full HD перестаёт различаться с ~2,2 м
+		const s = screenSize(55, wide)!
+		const pixelCm = s.widthCm / 1920
+		const acuityM = pixelCm / Math.tan(Math.PI / 180 / 60) / 100
+		expect(Math.abs(viewingRangeM(55, false).min - acuityM)).toBeLessThan(0.2)
+	})
+})
+
+describe('диагональ по ширине ниши', () => {
+	it('ниша 122 см вмещает 16:9 до 55 дюймов', () => {
+		expect(diagonalForWidth(121.76, wide)!).toBeCloseTo(55, 1)
+	})
+
+	it('обратна screenSize для всех соотношений', () => {
+		for (const r of ASPECT_RATIOS) {
+			const s = screenSize(43, r)!
+			expect(diagonalForWidth(s.widthCm, r)!).toBeCloseTo(43, 9)
+		}
+	})
+
+	it('пустая и отрицательная ширина дают null', () => {
+		expect(diagonalForWidth(0, wide)).toBeNull()
+		expect(diagonalForWidth(-5, wide)).toBeNull()
+		expect(diagonalForWidth(NaN, wide)).toBeNull()
+	})
+})
+
+describe('склонение «дюйм»', () => {
+	it.each([
+		[1, 'дюйм'],
+		[21, 'дюйм'],
+		[32, 'дюйма'],
+		[43, 'дюйма'],
+		[55, 'дюймов'],
+		[11, 'дюймов'],
+		[112, 'дюймов'],
+		[55.5, 'дюйма']
+	])('%s %s', (n, word) => {
+		expect(inchesWord(n)).toBe(word)
 	})
 })
