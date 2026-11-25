@@ -3,12 +3,16 @@ import {
 	CAESAR_ALPHABETS,
 	alphabetSize,
 	caesarBruteForce,
+	caesarLetters,
 	caesarShift,
 	decryptCaesar,
 	detectAlphabet,
 	encryptCaesar,
 	hasForeignLetters,
-	normalizeShift
+	countLetters,
+	normalizeShift,
+	rankCaesarGuesses,
+	suggestYoVariant
 } from '@/lib/utils/caesar-cipher'
 
 describe('алфавиты', () => {
@@ -155,5 +159,130 @@ describe('hasForeignLetters', () => {
 	it('повторный вызов даёт тот же ответ', () => {
 		expect(hasForeignLetters('ABC', 'cyrillic')).toBe(true)
 		expect(hasForeignLetters('ABC', 'cyrillic')).toBe(true)
+	})
+})
+
+describe('русский алфавит без Ё', () => {
+	const noYo = { withYo: false }
+
+	it('32 буквы без Ё', () => {
+		expect(alphabetSize('cyrillic', noYo)).toBe(32)
+		expect(caesarLetters('cyrillic', noYo)).not.toContain('Ё')
+		// На латиницу опция не влияет
+		expect(alphabetSize('latin', noYo)).toBe(26)
+	})
+
+	it('шифрует по 32 буквам: после Е сразу Ж', () => {
+		// С Ё было бы «Тулезх», без Ё Е+3 = И
+		expect(encryptCaesar('Привет', 3, 'cyrillic', noYo)).toBe('Тулеих')
+		expect(encryptCaesar('ЭЮЯ', 3, 'cyrillic', noYo)).toBe('АБВ')
+	})
+
+	it('Ё шифруется как Е', () => {
+		expect(encryptCaesar('ёж', 1, 'cyrillic', noYo)).toBe(
+			encryptCaesar('еж', 1, 'cyrillic', noYo)
+		)
+		expect(caesarShift('Ёлка', 0, 'cyrillic', noYo)).toBe('Елка')
+	})
+
+	it('расшифровка возвращает текст без Ё', () => {
+		const cipher = encryptCaesar('Шифр Цезаря', 7, 'cyrillic', noYo)
+		expect(decryptCaesar(cipher, 7, 'cyrillic', noYo)).toBe('Шифр Цезаря')
+	})
+
+	it('перебор даёт 31 вариант', () => {
+		expect(caesarBruteForce('абв', 'cyrillic', noYo)).toHaveLength(31)
+	})
+})
+
+describe('rankCaesarGuesses', () => {
+	const best = (text: string, alphabet: 'latin' | 'cyrillic') =>
+		rankCaesarGuesses(caesarBruteForce(text, alphabet), alphabet)[0]
+
+	it('ставит верный ключ первым для русской фразы', () => {
+		const cipher = encryptCaesar(
+			'Встречаемся завтра у старого моста',
+			11,
+			'cyrillic'
+		)
+		expect(best(cipher, 'cyrillic')).toEqual({
+			shift: 11,
+			text: 'Встречаемся завтра у старого моста'
+		})
+	})
+
+	it('ставит верный ключ первым для английской фразы', () => {
+		const cipher = encryptCaesar('Meet me at the old bridge', 19, 'latin')
+		expect(best(cipher, 'latin').shift).toBe(19)
+	})
+
+	it('классическое KHOOR ZRUOG расшифровывает ключом 3', () => {
+		expect(best('KHOOR ZRUOG', 'latin')).toEqual({
+			shift: 3,
+			text: 'HELLO WORLD'
+		})
+	})
+
+	it('короткая русская фраза с частыми словами', () => {
+		const cipher = encryptCaesar('Мама мыла раму', 5, 'cyrillic')
+		expect(best(cipher, 'cyrillic').text).toBe('Мама мыла раму')
+	})
+
+	it('работает и в алфавите без Ё', () => {
+		const noYo = { withYo: false }
+		const plain = 'Сокровище зарыто под старым дубом'
+		const ranked = rankCaesarGuesses(
+			caesarBruteForce(
+				encryptCaesar(plain, 9, 'cyrillic', noYo),
+				'cyrillic',
+				noYo
+			),
+			'cyrillic'
+		)
+		expect(ranked[0]).toEqual({ shift: 9, text: plain })
+	})
+
+	it('countLetters считает только буквы выбранного алфавита', () => {
+		expect(countLetters('Ёж, hello!', 'cyrillic')).toBe(2)
+		expect(countLetters('Ёж, hello!', 'latin')).toBe(5)
+	})
+
+	it('не теряет и не дублирует варианты', () => {
+		const ranked = rankCaesarGuesses(
+			caesarBruteForce('Тулезх', 'cyrillic'),
+			'cyrillic'
+		)
+		expect(ranked).toHaveLength(32)
+		expect(new Set(ranked.map(guess => guess.shift)).size).toBe(32)
+	})
+})
+
+describe('suggestYoVariant', () => {
+	const plain = 'Встречаемся завтра у старого моста'
+
+	it('замечает шифровку без Ё, которую вскрывают по 33 буквам', () => {
+		const cipher = encryptCaesar(plain, 3, 'cyrillic', { withYo: false })
+		expect(suggestYoVariant(cipher, true)).toEqual({
+			shift: 3,
+			text: plain,
+			withYo: false
+		})
+	})
+
+	it('замечает обратное: шифровку с Ё при включённом «без Ё»', () => {
+		const cipher = encryptCaesar(plain, 7, 'cyrillic')
+		expect(suggestYoVariant(cipher, false)).toMatchObject({
+			shift: 7,
+			withYo: true
+		})
+	})
+
+	it('молчит, когда алфавит выбран верно', () => {
+		const cipher = encryptCaesar(plain, 7, 'cyrillic')
+		expect(suggestYoVariant(cipher, true)).toBeNull()
+	})
+
+	it('молчит на коротком тексте', () => {
+		expect(suggestYoVariant('Жз', true)).toBeNull()
 	})
 })

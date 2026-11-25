@@ -18,13 +18,17 @@ import { WidgetSEOWrapper } from '@/components/seo/WidgetSEOWrapper'
 import { getWidgetById } from '@/lib/constants/widgets'
 import { CaesarWheel } from '@/components/tools/CaesarWheel'
 import {
-	CAESAR_ALPHABETS,
 	type CaesarAlphabet,
 	alphabetSize,
 	caesarBruteForce,
+	caesarLetters,
 	caesarShift,
+	CONFIDENT_GUESS_LETTERS,
+	countLetters,
 	detectAlphabet,
-	hasForeignLetters
+	hasForeignLetters,
+	rankCaesarGuesses,
+	suggestYoVariant
 } from '@/lib/utils/caesar-cipher'
 import { CaesarCipherSeo } from './CaesarCipherSeo'
 
@@ -49,29 +53,59 @@ export default function CaesarCipherPage() {
 	const [input, setInput] = useState('')
 	const [brute, setBrute] = useState(false)
 	const [copied, setCopied] = useState(false)
+	// Русский алфавит с Ё (33 буквы) или без (32): в школьных задачах и на
+	// других сайтах часто считают без Ё, и тогда ключ из 33 букв даёт мусор
+	const [withYo, setWithYo] = useState(true)
 
-	const size = alphabetSize(alphabet)
-	const letters = useMemo(() => [...CAESAR_ALPHABETS[alphabet]], [alphabet])
+	const options = useMemo(() => ({ withYo }), [withYo])
+	const size = alphabetSize(alphabet, options)
+	const alphabetLetters = caesarLetters(alphabet, options)
+	const letters = useMemo(() => [...alphabetLetters], [alphabetLetters])
 
 	const result = useMemo(
-		() => caesarShift(input, mode === 'encrypt' ? shift : -shift, alphabet),
-		[input, shift, mode, alphabet]
+		() =>
+			caesarShift(
+				input,
+				mode === 'encrypt' ? shift : -shift,
+				alphabet,
+				options
+			),
+		[input, shift, mode, alphabet, options]
 	)
 
 	// Последняя набранная буква подсвечивается на диске вместе со своей
 	// заменой — так связь между текстом и кругом видна прямо во время набора
 	const highlight = useMemo(() => {
 		for (let index = input.length - 1; index >= 0; index--) {
-			if (CAESAR_ALPHABETS[alphabet].includes(input[index].toUpperCase())) {
+			if (alphabetLetters.includes(input[index].toUpperCase())) {
 				return input[index]
 			}
 		}
 		return null
-	}, [input, alphabet])
+	}, [input, alphabetLetters])
 
+	// Перебор отсортирован частотным анализом: самый похожий на язык вариант
+	// наверху, чтобы не читать глазами 32 строки
 	const guesses = useMemo(
-		() => (brute && input ? caesarBruteForce(input, alphabet) : []),
-		[brute, input, alphabet]
+		() =>
+			brute && input
+				? rankCaesarGuesses(
+						caesarBruteForce(input, alphabet, options),
+						alphabet
+					)
+				: [],
+		[brute, input, alphabet, options]
+	)
+
+	const confident = countLetters(input, alphabet) >= CONFIDENT_GUESS_LETTERS
+
+	// Шифровка без Ё, вскрытая по 33 буквам (или наоборот), выглядит почти
+	// читаемой кашей. Если другой вариант алфавита заметно правдоподобнее,
+	// предлагаем переключиться одной кнопкой
+	const yoHint = useMemo(
+		() =>
+			brute && alphabet === 'cyrillic' ? suggestYoVariant(input, withYo) : null,
+		[brute, alphabet, input, withYo]
 	)
 
 	const foreign = input ? hasForeignLetters(input, alphabet) : false
@@ -81,7 +115,13 @@ export default function CaesarCipherPage() {
 	// Сдвиг больше нового алфавита теряет смысл: 30 по латинице — это 4
 	const applyAlphabet = (next: CaesarAlphabet) => {
 		setAlphabet(next)
-		setShift(current => current % alphabetSize(next))
+		setShift(current => current % alphabetSize(next, options))
+	}
+
+	const toggleYo = () => {
+		const next = !withYo
+		setWithYo(next)
+		setShift(current => current % alphabetSize(alphabet, { withYo: next }))
 	}
 
 	const handleInput = (value: string) => {
@@ -202,7 +242,7 @@ export default function CaesarCipherPage() {
 						/>
 
 						<p className='text-center text-sm text-muted-foreground'>
-							Крутите внутреннее кольцо мышью или тяните ползунок — ключей всего{' '}
+							Крутите внутреннее кольцо мышью или тяните ползунок, ключей всего{' '}
 							{size - 1}
 						</p>
 					</div>
@@ -225,6 +265,17 @@ export default function CaesarCipherPage() {
 					</div>
 
 					<div className='flex flex-wrap items-center gap-1.5'>
+						{alphabet === 'cyrillic' && (
+							<button
+								type='button'
+								onClick={toggleYo}
+								aria-pressed={!withYo}
+								className={toolPill(!withYo)}
+								title='Алфавит из 32 букв: Ё считается буквой Е. Включите, если шифровали без Ё'
+							>
+								без Ё
+							</button>
+						)}
 						<button
 							type='button'
 							onClick={() => setShift(3)}
@@ -240,7 +291,7 @@ export default function CaesarCipherPage() {
 								onClick={() => setShift(13)}
 								aria-pressed={shift === 13}
 								className={toolPill(shift === 13)}
-								title='Сдвиг на половину алфавита — обратен самому себе'
+								title='Сдвиг на половину алфавита: повторное применение возвращает исходный текст'
 							>
 								ROT13
 							</button>
@@ -263,8 +314,8 @@ export default function CaesarCipherPage() {
 							className='cursor-pointer text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 						>
 							{alphabet === 'latin'
-								? 'в тексте есть кириллица — она осталась как есть'
-								: 'в тексте есть латиница — она осталась как есть'}
+								? 'в тексте есть кириллица, она осталась как есть'
+								: 'в тексте есть латиница, она осталась как есть'}
 						</button>
 					)}
 
@@ -281,12 +332,34 @@ export default function CaesarCipherPage() {
 				<div className='mt-6'>
 					<p className='px-1 text-sm text-muted-foreground'>
 						{guesses.length > 0
-							? 'Расшифровка всеми ключами — нажмите на строку, чтобы оставить этот сдвиг'
+							? confident
+								? 'Расшифровка всеми ключами: вверху самый похожий на осмысленный текст. Нажмите на строку, чтобы оставить этот сдвиг'
+								: 'Текст короткий, поэтому порядок примерный: просмотрите несколько верхних строк. Нажмите на строку, чтобы оставить этот сдвиг'
 							: 'Введите шифротекст, и здесь появится расшифровка всеми ключами'}
 					</p>
+					{yoHint && (
+						<button
+							type='button'
+							onClick={() => {
+								setWithYo(yoHint.withYo)
+								setShift(yoHint.shift)
+								setMode('decrypt')
+							}}
+							className='mt-2 flex w-full cursor-pointer flex-col gap-1 rounded-xl border border-primary/40 bg-primary/5 px-4 py-3 text-left transition-colors hover:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+						>
+							<span className='text-sm'>
+								{yoHint.withYo
+									? 'Похоже, текст шифровали алфавитом с Ё (33 буквы). Переключить?'
+									: 'Похоже, текст шифровали алфавитом без Ё (32 буквы). Переключить?'}
+							</span>
+							<span className='truncate font-mono text-sm text-muted-foreground'>
+								сдвиг {yoHint.shift}: {yoHint.text}
+							</span>
+						</button>
+					)}
 					{guesses.length > 0 && (
 						<div className='mt-2 divide-y rounded-xl border'>
-							{guesses.map(guess => (
+							{guesses.map((guess, index) => (
 								<button
 									key={guess.shift}
 									type='button'
@@ -302,6 +375,11 @@ export default function CaesarCipherPage() {
 									<span className='min-w-0 flex-1 truncate font-mono text-sm'>
 										{guess.text}
 									</span>
+									{index === 0 && confident && (
+										<span className='shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary'>
+											скорее всего
+										</span>
+									)}
 								</button>
 							))}
 						</div>
