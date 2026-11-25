@@ -9,6 +9,7 @@ import {
 	INVISIBLE_GROUPS,
 	type InvisibleGroup
 } from '@/lib/data/invisible-characters'
+import { copyInvisible } from '@/lib/tools/copy-invisible'
 
 /** Порядок групп: от бытового к экзотике. */
 const ORDER: InvisibleGroup[] = [
@@ -32,13 +33,15 @@ export function InvisibleCharacterCatalog() {
 	const [copied, setCopied] = useState<string | null>(null)
 
 	const copy = async (codepoint: string, char: string, name: string) => {
-		try {
-			await navigator.clipboard.writeText(char)
+		if (await copyInvisible(char)) {
 			setCopied(codepoint)
 			setTimeout(() => setCopied(null), 2000)
 			toast.success(`Скопировано: ${name} (${codepoint})`)
-		} catch {
-			toast.error('Не удалось скопировать символ')
+		} else {
+			toast.error('Браузер не дал скопировать символ', {
+				description:
+					'Откройте страницу в Chrome или Safari, а не во встроенном браузере приложения.'
+			})
 		}
 	}
 
@@ -47,6 +50,10 @@ export function InvisibleCharacterCatalog() {
 			<h2 className='mb-2 text-sm font-medium text-muted-foreground'>
 				Все существующие невидимые символы
 			</h2>
+			<p className='mb-3 text-xs text-muted-foreground'>
+				Для ника начинайте с первой группы: заполнители проходят проверки чаще
+				остальных.
+			</p>
 
 			<Card className='overflow-hidden p-0'>
 				<div className='divide-y'>

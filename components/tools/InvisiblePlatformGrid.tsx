@@ -22,8 +22,10 @@ import { FeedbackModal } from '@/components/feedback/FeedbackModal'
 import {
 	invisiblePlatforms,
 	getInvisibleChar,
+	getFallbackChars,
 	invisibleCharacters
 } from '@/lib/data/invisible-characters'
+import { copyInvisible } from '@/lib/tools/copy-invisible'
 import { platformFeedbackKey } from '@/lib/tool-stats/storage-keys'
 
 const TOOL_ID = 'invisible-character'
@@ -101,6 +103,11 @@ const ICONS: Record<
 
 export function InvisiblePlatformGrid() {
 	const [copiedId, setCopiedId] = useState<string | null>(null)
+	// Площадка, у которой открыты запасные символы. Открываем после первого
+	// копирования: человек ушёл вставлять, вернулся, символ не прошёл, и
+	// следующий вариант уже лежит под той же строкой. Площадки с 👎 держат
+	// запасные открытыми всегда (см. render ниже).
+	const [openPlatform, setOpenPlatform] = useState<string | null>(null)
 	// true — «сработало», false — «не сработало», отсутствие ключа — ещё не
 	// оценивали. Один тап на площадку: как только оценка есть, обе кнопки
 	// блокируются, поменять мнение нельзя (см. sendFeedback ниже).
@@ -140,23 +147,32 @@ export function InvisiblePlatformGrid() {
 	}, [])
 
 	const copyFor = async (
+		copyKey: string,
 		platformId: string,
-		charId: string,
+		char: string,
 		platformName: string,
 		charName: string
 	) => {
-		const char = getInvisibleChar(charId)
 		if (!char) return
 
 		// Символ невидим, поэтому в тосте называем его и площадку: пустое
 		// уведомление выглядело бы поломкой (см. коммит 9f0ee46 выше по списку).
-		try {
-			await navigator.clipboard.writeText(char)
-			setCopiedId(platformId)
-			setTimeout(() => setCopiedId(null), 2000)
-			toast.success(`${platformName}: скопирован ${charName}`)
-		} catch {
-			toast.error('Не удалось скопировать символ')
+		if (await copyInvisible(char)) {
+			setCopiedId(copyKey)
+			setOpenPlatform(platformId)
+			setTimeout(
+				() => setCopiedId(current => (current === copyKey ? null : current)),
+				2000
+			)
+			toast.success(`${platformName}: скопирован ${charName}`, {
+				description:
+					'Вставьте в поле. Если не прошёл, под площадкой есть запасные символы.'
+			})
+		} else {
+			toast.error('Браузер не дал скопировать символ', {
+				description:
+					'Откройте страницу в Chrome или Safari, а не во встроенном браузере приложения.'
+			})
 		}
 	}
 
@@ -172,6 +188,7 @@ export function InvisiblePlatformGrid() {
 		works: boolean
 	) => {
 		setFeedback(prev => ({ ...prev, [platformId]: works }))
+		if (!works) setOpenPlatform(platformId)
 		// +1 сразу, не дожидаясь ответа сервера — на успехе перезапишется
 		// точным значением из RETURNING (см. POST ниже), на неудаче откатится
 		// вместе с feedback в catch.
@@ -210,7 +227,7 @@ export function InvisiblePlatformGrid() {
 			toast.success(
 				works
 					? `Спасибо, отметили, что символ работает на ${platformName}`
-					: `Спасибо, передали разработчику про ${platformName}`
+					: `Спасибо, передали разработчику. Попробуйте запасные символы для ${platformName}`
 			)
 		} catch {
 			toast.error('Не удалось отправить, попробуйте позже')
@@ -266,80 +283,99 @@ export function InvisiblePlatformGrid() {
 					const platformFeedback = feedback[platform.id]
 					const rated = platformFeedback !== undefined
 					const platformStats = stats[platform.id]
+					const fallbacks =
+						!blocked &&
+						(openPlatform === platform.id || platformFeedback === false)
+							? getFallbackChars(platform.id)
+							: []
 
 					return (
-						<div
-							key={platform.id}
-							// Ховер живёт на строке целиком, не на кнопке «Скопировать»:
-							// раньше подсветка обрывалась ровно на её правом крае, а
-							// таблетка с 👍/👎 оставалась вне подсветки — казалось, что фон
-							// обрезан криво. group здесь только при !blocked — у
-							// заблокированных площадок нет ни одного клика, значит и
-							// подсвечивать при наведении нечего.
-							className={cn(
-								'flex items-center gap-2 bg-background pr-3 transition-colors sm:pr-4',
-								!blocked && 'group hover:bg-muted/40'
-							)}
-						>
-							{blocked ? (
-								<div className='flex flex-1 items-center gap-4 px-5 py-4 text-left sm:px-6'>
-									{Icon ? (
-										<Icon
-											className='h-6 w-6 shrink-0 text-muted-foreground'
-											aria-hidden
-										/>
-									) : null}
-									<span className='min-w-0 flex-1'>
-										<span className='font-medium text-foreground'>
-											{platform.name}
-										</span>
-										<span className='mt-0.5 block text-xs text-muted-foreground'>
-											заблокировано разработчиками
-										</span>
-									</span>
-									<Ban className='h-4 w-4 shrink-0 text-muted-foreground' />
-								</div>
-							) : (
-								<>
-									<button
-										type='button'
-										onClick={() =>
-											copyFor(
-												platform.id,
-												platform.charId as string,
-												platform.name,
-												char?.name ?? 'символ'
-											)
-										}
-										title={`Скопировать символ для ${platform.name}`}
-										className='flex flex-1 cursor-pointer items-center gap-4 py-4 pl-5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:pl-6'
-									>
+						<div key={platform.id} className='flex flex-col bg-background'>
+							<div
+								// Ховер живёт на строке целиком, не на кнопке «Скопировать»:
+								// раньше подсветка обрывалась ровно на её правом крае, а
+								// таблетка с 👍/👎 оставалась вне подсветки — казалось, что фон
+								// обрезан криво. group здесь только при !blocked — у
+								// заблокированных площадок нет ни одного клика, значит и
+								// подсвечивать при наведении нечего.
+								className={cn(
+									'flex flex-1 items-center gap-2 pr-3 transition-colors sm:pr-4',
+									!blocked && 'group hover:bg-muted/40'
+								)}
+							>
+								{blocked ? (
+									<div className='flex flex-1 items-center gap-4 px-5 py-4 text-left sm:px-6'>
 										{Icon ? (
 											<Icon
-												className='h-6 w-6 shrink-0 text-muted-foreground group-hover:text-foreground'
+												className='h-6 w-6 shrink-0 text-muted-foreground'
 												aria-hidden
 											/>
 										) : null}
-
 										<span className='min-w-0 flex-1'>
 											<span className='font-medium text-foreground'>
 												{platform.name}
 											</span>
 											<span className='mt-0.5 block text-xs text-muted-foreground'>
-												{`${char?.name} ${char?.codepoint}`}
+												заблокировано разработчиками
 											</span>
 										</span>
+										<Ban className='h-4 w-4 shrink-0 text-muted-foreground' />
+									</div>
+								) : (
+									<>
+										<button
+											type='button'
+											onClick={() =>
+												copyFor(
+													platform.id,
+													platform.id,
+													getInvisibleChar(platform.charId as string),
+													platform.name,
+													char?.name ?? 'символ'
+												)
+											}
+											title={`Скопировать ${char?.name} (${char?.codepoint}) для ${platform.name}`}
+											className='flex flex-1 cursor-pointer items-center gap-4 py-4 pl-5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:pl-6'
+										>
+											{Icon ? (
+												<Icon
+													className='h-6 w-6 shrink-0 text-muted-foreground group-hover:text-foreground'
+													aria-hidden
+												/>
+											) : null}
 
-										<span className='shrink-0 text-muted-foreground group-hover:text-foreground'>
-											{copied ? (
-												<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
-											) : (
-												<Copy className='h-4 w-4' />
-											)}
-										</span>
-									</button>
+											<span className='min-w-0 flex-1'>
+												<span className='font-medium text-foreground'>
+													{platform.name}
+												</span>
+												{/* Раньше здесь стояло только «Combining Grapheme Joiner
+											    U+034F»: школьнику, который ищет пустой ник, это ничего
+											    не говорит, а поле и оговорка («в @username не
+											    проходит») лежали в данных и не выводились. */}
+												<span className='mt-0.5 block text-xs text-muted-foreground'>
+													{platform.field}
+													<span className='hidden sm:inline'>
+														{' '}
+														· {char?.name}
+													</span>
+												</span>
+												{platform.caveat ? (
+													<span className='mt-0.5 block text-xs text-amber-700 dark:text-amber-400'>
+														{platform.caveat}
+													</span>
+												) : null}
+											</span>
 
-									{/* Пара 👍/👎 живёт в общей «таблетке», не как два отдельных
+											<span className='shrink-0 text-muted-foreground group-hover:text-foreground'>
+												{copied ? (
+													<Check className='h-4 w-4 text-green-600 dark:text-green-400' />
+												) : (
+													<Copy className='h-4 w-4' />
+												)}
+											</span>
+										</button>
+
+										{/* Пара 👍/👎 живёт в общей «таблетке», не как два отдельных
 									    значка рядом с копированием: по одиночке они читались как
 									    третья несвязанная сущность — палец у lucide визуально
 									    гораздо «плотнее» галочки и скрепок копирования при
@@ -350,102 +386,139 @@ export function InvisiblePlatformGrid() {
 									    вперёд решения, которое ещё не принято — cвет-подтверждение
 									    остаётся только за уже сделанным выбором (см. platformFeedback
 									    ниже). */}
-									<div className='flex shrink-0 items-center gap-0.5 rounded-md border p-0.5'>
-										<button
-											type='button'
-											disabled={rated}
-											onClick={() =>
-												sendFeedback(
-													platform.id,
-													platform.charId as string,
-													platform.name,
-													true
-												)
-											}
-											title={
-												rated
-													? 'Уже оценили, спасибо'
-													: `Символ сработал на ${platform.name}`
-											}
-											className='inline-flex cursor-pointer items-center justify-center gap-1 rounded-sm px-1.5 py-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-default disabled:hover:bg-transparent'
-										>
-											<ThumbsUp
-												className={
-													platformFeedback === true
-														? 'h-3.5 w-3.5 text-green-600 dark:text-green-400'
-														: 'h-3.5 w-3.5'
+										<div className='flex shrink-0 items-center gap-0.5 rounded-md border p-0.5'>
+											<button
+												type='button'
+												disabled={rated}
+												onClick={() =>
+													sendFeedback(
+														platform.id,
+														platform.charId as string,
+														platform.name,
+														true
+													)
 												}
-												aria-hidden
-											/>
-											{/* Ноль не показываем — на свежих площадках (Minecraft,
+												title={
+													rated
+														? 'Уже оценили, спасибо'
+														: `Символ сработал на ${platform.name}`
+												}
+												className='inline-flex cursor-pointer items-center justify-center gap-1 rounded-sm px-1.5 py-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-default disabled:hover:bg-transparent'
+											>
+												<ThumbsUp
+													className={
+														platformFeedback === true
+															? 'h-3.5 w-3.5 text-green-600 dark:text-green-400'
+															: 'h-3.5 w-3.5'
+													}
+													aria-hidden
+												/>
+												{/* Ноль не показываем — на свежих площадках (Minecraft,
 											    Standoff 2) это просто шум, а не сигнал. */}
-											{!!platformStats?.works && (
-												<span
-													className={cn(
-														'text-[11px] tabular-nums',
-														platformFeedback === true &&
-															'text-green-600 dark:text-green-400'
-													)}
-												>
-													{platformStats.works}
+												{!!platformStats?.works && (
+													<span
+														className={cn(
+															'text-[11px] tabular-nums',
+															platformFeedback === true &&
+																'text-green-600 dark:text-green-400'
+														)}
+													>
+														{platformStats.works}
+													</span>
+												)}
+												<span className='sr-only'>
+													Символ сработал на {platform.name}
+													{platformStats?.works
+														? `, отметили ${platformStats.works} раз`
+														: ''}
 												</span>
-											)}
-											<span className='sr-only'>
-												Символ сработал на {platform.name}
-												{platformStats?.works
-													? `, отметили ${platformStats.works} раз`
-													: ''}
-											</span>
-										</button>
+											</button>
 
-										<div className='h-4 w-px bg-border' aria-hidden />
+											<div className='h-4 w-px bg-border' aria-hidden />
 
-										<button
-											type='button'
-											disabled={rated}
-											onClick={() =>
-												sendFeedback(
-													platform.id,
-													platform.charId as string,
-													platform.name,
-													false
-												)
-											}
-											title={
-												rated
-													? 'Уже оценили, спасибо'
-													: `Символ не сработал на ${platform.name}`
-											}
-											className='inline-flex cursor-pointer items-center justify-center gap-1 rounded-sm px-1.5 py-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-default disabled:hover:bg-transparent'
-										>
-											<ThumbsDown
-												className={
-													platformFeedback === false
-														? 'h-3.5 w-3.5 text-destructive'
-														: 'h-3.5 w-3.5'
+											<button
+												type='button'
+												disabled={rated}
+												onClick={() =>
+													sendFeedback(
+														platform.id,
+														platform.charId as string,
+														platform.name,
+														false
+													)
 												}
-												aria-hidden
-											/>
-											{!!platformStats?.broken && (
-												<span
-													className={cn(
-														'text-[11px] tabular-nums',
-														platformFeedback === false && 'text-destructive'
-													)}
-												>
-													{platformStats.broken}
+												title={
+													rated
+														? 'Уже оценили, спасибо'
+														: `Символ не сработал на ${platform.name}`
+												}
+												className='inline-flex cursor-pointer items-center justify-center gap-1 rounded-sm px-1.5 py-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-default disabled:hover:bg-transparent'
+											>
+												<ThumbsDown
+													className={
+														platformFeedback === false
+															? 'h-3.5 w-3.5 text-destructive'
+															: 'h-3.5 w-3.5'
+													}
+													aria-hidden
+												/>
+												{!!platformStats?.broken && (
+													<span
+														className={cn(
+															'text-[11px] tabular-nums',
+															platformFeedback === false && 'text-destructive'
+														)}
+													>
+														{platformStats.broken}
+													</span>
+												)}
+												<span className='sr-only'>
+													Символ не сработал на {platform.name}
+													{platformStats?.broken
+														? `, отметили ${platformStats.broken} раз`
+														: ''}
 												</span>
-											)}
-											<span className='sr-only'>
-												Символ не сработал на {platform.name}
-												{platformStats?.broken
-													? `, отметили ${platformStats.broken} раз`
-													: ''}
-											</span>
-										</button>
+											</button>
+										</div>
+									</>
+								)}
+							</div>
+							{fallbacks.length > 0 ? (
+								<div className='px-5 pb-4 sm:px-6'>
+									<p className='text-xs text-muted-foreground'>
+										Не прошёл? Попробуйте другой символ:
+									</p>
+									<div className='mt-2 flex flex-wrap gap-1.5'>
+										{fallbacks.map(fallback => {
+											const key = `${platform.id}:${fallback.id}`
+											return (
+												<button
+													key={fallback.id}
+													type='button'
+													onClick={() =>
+														copyFor(
+															key,
+															platform.id,
+															fallback.char,
+															platform.name,
+															fallback.name
+														)
+													}
+													title={`Скопировать ${fallback.name} (${fallback.codepoint})`}
+													className='inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-2 py-1 text-xs text-foreground transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+												>
+													{copiedId === key ? (
+														<Check className='h-3 w-3 text-green-600 dark:text-green-400' />
+													) : (
+														<Copy className='h-3 w-3 text-muted-foreground' />
+													)}
+													{fallback.name}
+												</button>
+											)
+										})}
 									</div>
-								</>
-							)}
+								</div>
+							) : null}
 						</div>
 					)
 				})}

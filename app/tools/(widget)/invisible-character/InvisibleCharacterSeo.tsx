@@ -44,8 +44,8 @@ export function InvisibleCharacterSeo() {
 					Каждый сервис фильтрует ввод по-своему. Где-то проверяют именно на
 					zero-width space и пропускают Braille Blank, где-то наоборот. Заранее
 					узнать, какой символ пройдёт в конкретном поле, нельзя, поэтому на
-					странице несколько вариантов. Не сработал первый, переходите к
-					следующему.
+					странице несколько вариантов. Не сработал первый, берите запасной: они
+					появляются под площадкой сразу после копирования.
 				</p>
 
 				<p className='mt-4 text-muted-foreground'>
@@ -64,17 +64,23 @@ export function InvisibleCharacterSeo() {
 							<tr className='border-b'>
 								<td className='py-2 pr-4'>Zero Width Space</td>
 								<td className='py-2 pr-4 font-mono'>U+200B</td>
-								<td className='py-2'>Telegram: имя и сообщения</td>
+								<td className='py-2'>
+									Запасной для Telegram, в @username не проходит
+								</td>
 							</tr>
 							<tr className='border-b'>
 								<td className='py-2 pr-4'>Braille Blank</td>
 								<td className='py-2 pr-4 font-mono'>U+2800</td>
-								<td className='py-2'>Discord, Roblox, Steam</td>
+								<td className='py-2'>
+									Запасной для Roblox и Steam. В Discord не проходит
+								</td>
 							</tr>
 							<tr className='border-b'>
 								<td className='py-2 pr-4'>Hangul Filler</td>
 								<td className='py-2 pr-4 font-mono'>U+3164</td>
-								<td className='py-2'>PUBG Mobile, Free Fire, Roblox</td>
+								<td className='py-2'>
+									PUBG Mobile, Standoff 2, Roblox, Steam, Instagram, WhatsApp
+								</td>
 							</tr>
 							<tr className='border-b'>
 								<td className='py-2 pr-4'>Hangul Choseong Filler</td>
@@ -91,10 +97,17 @@ export function InvisibleCharacterSeo() {
 								<td className='py-2 pr-4 font-mono'>U+200D</td>
 								<td className='py-2'>iOS: имена папок</td>
 							</tr>
-							<tr>
+							<tr className='border-b'>
 								<td className='py-2 pr-4'>Arabic Letter High Hamza</td>
 								<td className='py-2 pr-4 font-mono'>U+0674</td>
 								<td className='py-2'>Discord: ник и статус</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Arabic Letter High Hamza ×2</td>
+								<td className='py-2 pr-4 font-mono'>U+0674 ×2</td>
+								<td className='py-2'>
+									ВКонтакте: имя (один символ не проходит)
+								</td>
 							</tr>
 						</tbody>
 					</table>

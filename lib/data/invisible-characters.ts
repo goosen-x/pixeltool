@@ -27,7 +27,7 @@ export const invisibleCharacters: InvisibleCharacter[] = [
 		name: 'Braille Blank',
 		char: '⠀',
 		codepoint: 'U+2800',
-		worksWell: 'Discord, Roblox',
+		worksWell: 'Roblox, Steam (запасной)',
 		note: 'Классика для пустого ника в Steam — в отличие от zero-width символов это «настоящий» печатный символ, поля с проверкой на пустоту его пропускают.'
 	},
 	{
@@ -187,11 +187,13 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 		confidence: 'verified'
 	},
 	{
+		// По голосам 👍/👎 на 25.11.2026: 3 «сработало» против 6 «не сработало».
 		id: 'tiktok',
 		name: 'TikTok',
 		field: 'ник и био',
 		charId: 'hangul-filler',
-		confidence: 'thin'
+		confidence: 'thin',
+		caveat: 'Проходит не у всех, держите запасные символы под рукой'
 	},
 	{
 		id: 'steam',
@@ -266,6 +268,58 @@ export const invisiblePlatforms: InvisiblePlatform[] = [
 
 export function getInvisibleChar(charId: string): string {
 	return invisibleCharacters.find(c => c.id === charId)?.char ?? ''
+}
+
+/**
+ * В каком порядке предлагать замену, если основной символ площадки не прошёл.
+ * Сначала буквы-заполнители (их валидаторы режут реже всего), потом пустой
+ * знак Брайля и узкая хамза, в конце служебные символы нулевой ширины, которые
+ * фильтруют чаще остальных. Голоса «не сработало» по TikTok, Instagram, Steam и
+ * PUBG (platform_feedback, ноябрь 2026) показали, что одного символа на
+ * площадку мало: человеку, у которого символ не прошёл, раньше было некуда
+ * идти, кроме каталога из 68 английских названий.
+ */
+const FALLBACK_ORDER = [
+	'hangul-filler',
+	'braille-blank',
+	'choseong-filler',
+	'jungseong-filler',
+	'high-hamza',
+	'cgj',
+	'alm',
+	'zwsp'
+]
+
+/** Сколько запасных символов показывать под площадкой. */
+export const FALLBACK_LIMIT = 4
+
+/**
+ * Запасные символы для площадки: без того, что уже стоит основным. Для ВК
+ * основной символ сдвоенный (одиночный не проходит проверку длины имени),
+ * поэтому и запасные там отдаются парами.
+ */
+export function getFallbackChars(platformId: string): InvisibleCharacter[] {
+	const platform = invisiblePlatforms.find(p => p.id === platformId)
+	if (!platform?.charId) return []
+
+	const doubled = platform.charId === 'high-hamza-x2'
+	const primaryBase = doubled ? 'high-hamza' : platform.charId
+
+	return FALLBACK_ORDER.filter(id => id !== primaryBase)
+		.map(id => invisibleCharacters.find(c => c.id === id))
+		.filter((c): c is InvisibleCharacter => Boolean(c))
+		.slice(0, FALLBACK_LIMIT)
+		.map(c =>
+			doubled
+				? {
+						...c,
+						id: `${c.id}-x2`,
+						name: `${c.name} ×2`,
+						char: c.char.repeat(2),
+						codepoint: `${c.codepoint} ×2`
+					}
+				: c
+		)
 }
 
 export type InvisibleGroup = 'space' | 'zerowidth' | 'bidi' | 'filler' | 'other'
