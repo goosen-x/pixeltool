@@ -248,3 +248,53 @@ export function formatVolume(cubicMeters: number): VolumeDisplay {
 		liters: `${formatNumber(liters)} л`
 	}
 }
+
+/* ------------------------------------------------------- проёмы и площадь */
+
+/** Проём в том виде, как его набрали: строки в текущих единицах. */
+export interface OpeningInput {
+	width: string
+	height: string
+	count: string
+}
+
+/**
+ * Проёмы из полей ввода в метры. Недописанный или пустой проём не
+ * вычитается, а не обнуляет остальные: человек как раз его набирает.
+ */
+export function parseOpenings(
+	inputs: OpeningInput[],
+	unit: LengthUnit
+): Opening[] {
+	const result: Opening[] = []
+	for (const input of inputs) {
+		const width = parseLength(input.width)
+		const height = parseLength(input.height)
+		const count = parseLength(input.count)
+		if (width === null || height === null || count === null) continue
+		result.push({
+			width: toMeters(width, unit),
+			height: toMeters(height, unit),
+			count: Math.round(count)
+		})
+	}
+	return result
+}
+
+/** Квадратный метр в сотках и гектарах. */
+export const SQUARE_METERS_IN_SOTKA = 100
+export const SQUARE_METERS_IN_HECTARE = 10000
+
+/**
+ * Вторая строка под площадью. Комнате «200 000 см²» ничего не даёт, а
+ * участку нужны сотки: их и показываем от 100 м². Сантиметры остаются
+ * для мелочи меньше квадратного метра.
+ */
+export function areaAside(squareMeters: number): string | null {
+	if (!Number.isFinite(squareMeters) || squareMeters <= 0) return null
+	if (squareMeters < 1) return `${formatNumber(squareMeters * 10000)} см²`
+	if (squareMeters < SQUARE_METERS_IN_SOTKA) return null
+	const sotki = `${formatNumber(squareMeters / SQUARE_METERS_IN_SOTKA)} сот.`
+	if (squareMeters < SQUARE_METERS_IN_HECTARE) return sotki
+	return `${sotki}, или ${formatNumber(squareMeters / SQUARE_METERS_IN_HECTARE)} га`
+}

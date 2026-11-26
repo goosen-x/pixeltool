@@ -19,14 +19,16 @@ import {
 import { GEOMETRY_FIGURES } from '@/lib/hairline/figures/geometry'
 import { shapesByKind, type Shape } from '@/lib/constants/geometry-shapes'
 import {
+	areaAside,
 	convertLengthInput,
 	formatNumber,
 	formatVolume,
 	LENGTH_LABELS,
 	parseLength,
+	parseOpenings,
 	toMeters,
 	type LengthUnit,
-	type Opening
+	type OpeningInput
 } from '@/lib/utils/geometry'
 
 const UNITS: LengthUnit[] = ['mm', 'cm', 'm']
@@ -47,8 +49,10 @@ export function GeometryCalculator({
 	const [values, setValues] = useState<Record<string, string>>(() =>
 		presetsFor(shapes.find(s => s.id === (initialShapeId ?? shapes[0].id))!)
 	)
-	const [openings, setOpenings] = useState<Opening[]>([
-		{ width: 0.9, height: 2.1, count: 1 }
+	// Проёмы хранятся строками в текущих единицах, как и размеры фигуры:
+	// числовое поле съедало запятую, и «0,9» было не набрать.
+	const [openings, setOpenings] = useState<OpeningInput[]>([
+		{ width: '0.9', height: '2.1', count: '1' }
 	])
 
 	const [focusKey, setFocusKey] = useState<string | null>(null)
@@ -96,8 +100,11 @@ export function GeometryCalculator({
 
 	const result = useMemo(() => {
 		if (!numbers) return null
-		return shape.compute(numbers, shape.id === 'walls' ? openings : undefined)
-	}, [shape, numbers, openings])
+		return shape.compute(
+			numbers,
+			shape.id === 'walls' ? parseOpenings(openings, unit) : undefined
+		)
+	}, [shape, numbers, openings, unit])
 
 	const isArea = kind === 'area'
 
@@ -112,8 +119,20 @@ export function GeometryCalculator({
 				])
 			)
 		)
+		setOpenings(current =>
+			current.map(opening => ({
+				...opening,
+				width: convertLengthInput(opening.width, unit, next),
+				height: convertLengthInput(opening.height, unit, next)
+			}))
+		)
 		setUnit(next)
 	}
+
+	const updateOpening = (index: number, patch: Partial<OpeningInput>) =>
+		setOpenings(current =>
+			current.map((item, i) => (i === index ? { ...item, ...patch } : item))
+		)
 
 	const volume = !isArea && result ? formatVolume(result.value) : null
 
@@ -206,45 +225,29 @@ export function GeometryCalculator({
 					{shape.id === 'walls' && (
 						<div className='space-y-2'>
 							<span className='block text-sm text-muted-foreground'>
-								Проёмы — окна и двери, вычитаются из площади стен
+								Окна и двери, {LENGTH_LABELS[unit]}: ширина × высота ×
+								количество. Вычитаются из площади стен
 							</span>
 							{openings.map((opening, index) => (
 								<div key={index} className='flex items-center gap-2'>
-									<OpeningInput
+									<OpeningField
 										value={opening.width}
-										label='ширина, м'
-										onChange={width =>
-											setOpenings(current =>
-												current.map((item, i) =>
-													i === index ? { ...item, width } : item
-												)
-											)
-										}
+										label={`ширина, ${LENGTH_LABELS[unit]}`}
+										onChange={width => updateOpening(index, { width })}
 									/>
 									<span className='text-muted-foreground'>×</span>
-									<OpeningInput
+									<OpeningField
 										value={opening.height}
-										label='высота, м'
-										onChange={height =>
-											setOpenings(current =>
-												current.map((item, i) =>
-													i === index ? { ...item, height } : item
-												)
-											)
-										}
+										label={`высота, ${LENGTH_LABELS[unit]}`}
+										onChange={height => updateOpening(index, { height })}
 									/>
-									<span className='text-muted-foreground'>шт.</span>
-									<OpeningInput
+									<span className='text-muted-foreground'>×</span>
+									<OpeningField
 										value={opening.count}
-										label='количество'
-										onChange={count =>
-											setOpenings(current =>
-												current.map((item, i) =>
-													i === index ? { ...item, count } : item
-												)
-											)
-										}
+										label='количество, шт.'
+										onChange={count => updateOpening(index, { count })}
 									/>
+									<span className='text-sm text-muted-foreground'>шт.</span>
 									<Button
 										size='icon'
 										variant='ghost'
@@ -254,6 +257,7 @@ export function GeometryCalculator({
 											)
 										}
 										title='Убрать проём'
+										aria-label='Убрать проём'
 										className={toolIconButton}
 									>
 										<X className='h-4 w-4' />
@@ -265,7 +269,12 @@ export function GeometryCalculator({
 								onClick={() =>
 									setOpenings(current => [
 										...current,
-										{ width: 1.4, height: 1.5, count: 1 }
+										// типовое окно 1,4 × 1,5 м в текущих единицах
+										{
+											width: convertLengthInput('1.4', 'm', unit),
+											height: convertLengthInput('1.5', 'm', unit),
+											count: '1'
+										}
 									])
 								}
 								className='cursor-pointer gap-2 px-2 text-sm'
@@ -295,9 +304,9 @@ export function GeometryCalculator({
 									это {volume.liters}
 								</span>
 							)}
-							{isArea && (
+							{isArea && areaAside(result.value) && (
 								<span className='mt-1 block text-sm text-muted-foreground'>
-									это {formatNumber(result.value * 10000)} см²
+									это {areaAside(result.value)}
 								</span>
 							)}
 
@@ -352,26 +361,24 @@ function presetsFor(shape: Shape): Record<string, string> {
 	)
 }
 
-function OpeningInput({
+function OpeningField({
 	value,
 	label,
 	onChange
 }: {
-	value: number
+	value: string
 	label: string
-	onChange: (value: number) => void
+	onChange: (value: string) => void
 }) {
 	return (
 		<input
 			type='text'
 			inputMode='decimal'
-			value={value}
-			onChange={event => {
-				const parsed = parseFloat(event.target.value.replace(',', '.'))
-				onChange(Number.isFinite(parsed) && parsed >= 0 ? parsed : 0)
-			}}
+			value={value.replace('.', ',')}
+			onChange={event => onChange(event.target.value)}
 			aria-label={`Проём: ${label}`}
-			className='w-16 rounded-md border bg-background px-2 py-1 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+			placeholder={label.split(',')[0]}
+			className='w-16 min-w-0 max-w-24 flex-1 rounded-md border bg-background px-2 py-1 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 		/>
 	)
 }

@@ -68,10 +68,20 @@ export function AreaCalculatorSeo() {
 								<td className='py-2 pr-4'>два основания и высота</td>
 								<td className='py-2 font-mono'>(a + b) × h / 2</td>
 							</tr>
-							<tr>
+							<tr className='border-b'>
 								<td className='py-2 pr-4'>Стены</td>
-								<td className='py-2 pr-4'>периметр, высота, проёмы</td>
-								<td className='py-2 font-mono'>P × h минус окна и двери</td>
+								<td className='py-2 pr-4'>длина, ширина, высота, проёмы</td>
+								<td className='py-2 font-mono'>2 × (a + b) × h − проёмы</td>
+							</tr>
+							<tr className='border-b'>
+								<td className='py-2 pr-4'>Поверхность трубы</td>
+								<td className='py-2 pr-4'>диаметр и длина</td>
+								<td className='py-2 font-mono'>π × D × L</td>
+							</tr>
+							<tr>
+								<td className='py-2 pr-4'>Поверхность шара</td>
+								<td className='py-2 pr-4'>диаметр</td>
+								<td className='py-2 font-mono'>π × D²</td>
 							</tr>
 						</tbody>
 					</table>
@@ -89,6 +99,11 @@ export function AreaCalculatorSeo() {
 					образуют треугольника, то есть сумма двух не больше третьей,
 					инструмент так и скажет, а не покажет ноль или ошибку: у такой фигуры
 					площади не существует, потому что и фигуры не существует.
+				</p>
+				<p className='mt-3 text-muted-foreground'>
+					Если высота известна, например у фронтона или у задачи из учебника,
+					выберите «Треугольник по высоте»: там площадь равна половине
+					произведения основания на высоту.
 				</p>
 				<Formula
 					latex='S = \sqrt{p\,(p-a)(p-b)(p-c)}'
@@ -114,6 +129,12 @@ export function AreaCalculatorSeo() {
 				<h2 className='text-2xl font-bold tracking-tight'>
 					Что дальше делать с площадью
 				</h2>
+				<p className='mt-3 text-muted-foreground'>
+					Для участка под результатом сразу стоят сотки: в одной сотке 100 м²,
+					в гектаре 100 соток. Участок неправильной формы разбейте на
+					прямоугольники и треугольники, посчитайте каждый по сторонам и
+					сложите.
+				</p>
 				<p className='mt-3 text-muted-foreground'>
 					Посчитанные квадраты обычно нужны для материала. Для плитки есть{' '}
 					<Link

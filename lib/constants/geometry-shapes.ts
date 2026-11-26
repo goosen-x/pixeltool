@@ -11,6 +11,7 @@ import {
 	sphereArea,
 	sphereVolume,
 	trapezoidArea,
+	triangleAreaByHeight,
 	triangleAreaBySides,
 	truncatedConeVolume,
 	wallsArea,
@@ -71,8 +72,8 @@ export const SHAPES: Shape[] = [
 		name: 'Прямоугольник',
 		formula: 'S = a × b',
 		fields: [
-			{ key: 'a', label: 'a', preset: 5 },
-			{ key: 'b', label: 'b', preset: 4 }
+			{ key: 'a', label: 'a', name: 'Длина a', preset: 5 },
+			{ key: 'b', label: 'b', name: 'Ширина b', preset: 4 }
 		],
 		compute: v => ({ value: rectangleArea(v.a, v.b) })
 	},
@@ -81,20 +82,20 @@ export const SHAPES: Shape[] = [
 		kind: 'area',
 		name: 'Круг',
 		formula: 'S = π × D² / 4',
-		fields: [{ key: 'd', label: 'D', preset: 3 }],
+		fields: [{ key: 'd', label: 'D', name: 'Диаметр D', preset: 3 }],
 		compute: v => ({ value: circleArea(v.d) })
 	},
 	{
 		id: 'triangle',
 		kind: 'area',
-		name: 'Треугольник',
+		name: 'Треугольник по сторонам',
 		formula: 'S = √(p(p−a)(p−b)(p−c)), p — полупериметр',
 		invalidHint:
 			'Проверьте стороны: сумма любых двух должна быть больше третьей, иначе такого треугольника не существует',
 		fields: [
-			{ key: 'a', label: 'a', preset: 3 },
-			{ key: 'b', label: 'b', preset: 4 },
-			{ key: 'c', label: 'c', preset: 5 }
+			{ key: 'a', label: 'a', name: 'Сторона a', preset: 3 },
+			{ key: 'b', label: 'b', name: 'Сторона b', preset: 4 },
+			{ key: 'c', label: 'c', name: 'Сторона c', preset: 5 }
 		],
 		compute: v => {
 			const area = triangleAreaBySides(v.a, v.b, v.c)
@@ -102,14 +103,28 @@ export const SHAPES: Shape[] = [
 		}
 	},
 	{
+		// Школьный и бытовой вариант: основание и высота известны (фронтон,
+		// косынка из листа). Раньше был обещан в тексте страницы, но в
+		// калькуляторе его не было.
+		id: 'triangle-height',
+		kind: 'area',
+		name: 'Треугольник по высоте',
+		formula: 'S = a × h / 2',
+		fields: [
+			{ key: 'a', label: 'a', name: 'Основание a', preset: 4 },
+			{ key: 'h', label: 'h', name: 'Высота h', preset: 3 }
+		],
+		compute: v => ({ value: triangleAreaByHeight(v.a, v.h) })
+	},
+	{
 		id: 'trapezoid',
 		kind: 'area',
 		name: 'Трапеция',
 		formula: 'S = (a + b) / 2 × h',
 		fields: [
-			{ key: 'a', label: 'a', preset: 6 },
-			{ key: 'b', label: 'b', preset: 4 },
-			{ key: 'h', label: 'h', preset: 3 }
+			{ key: 'a', label: 'a', name: 'Нижнее основание a', preset: 6 },
+			{ key: 'b', label: 'b', name: 'Верхнее основание b', preset: 4 },
+			{ key: 'h', label: 'h', name: 'Высота h', preset: 3 }
 		],
 		compute: v => ({ value: trapezoidArea(v.a, v.b, v.h) })
 	},
@@ -119,10 +134,12 @@ export const SHAPES: Shape[] = [
 		name: 'Кольцо',
 		formula: 'S = π × (D² − d²) / 4',
 		fields: [
-			{ key: 'D', label: 'D', preset: 3 },
-			{ key: 'd', label: 'd', preset: 2 }
+			{ key: 'D', label: 'D', name: 'Наружный диаметр D', preset: 3 },
+			{ key: 'd', label: 'd', name: 'Внутренний диаметр d', preset: 2 }
 		],
-		compute: v => ({ value: ringArea(v.D, v.d) })
+		invalidHint:
+			'Внутренний диаметр d должен быть меньше наружного D, иначе кольца нет',
+		compute: v => (v.d >= v.D ? null : { value: ringArea(v.D, v.d) })
 	},
 	{
 		id: 'walls',
@@ -130,9 +147,9 @@ export const SHAPES: Shape[] = [
 		name: 'Стены комнаты',
 		formula: 'S = 2 × (a + b) × h − проёмы',
 		fields: [
-			{ key: 'a', label: 'a', preset: 5 },
-			{ key: 'b', label: 'b', preset: 4 },
-			{ key: 'h', label: 'h', preset: 2.7 }
+			{ key: 'a', label: 'a', name: 'Длина a', preset: 5 },
+			{ key: 'b', label: 'b', name: 'Ширина b', preset: 4 },
+			{ key: 'h', label: 'h', name: 'Высота потолка h', preset: 2.7 }
 		],
 		compute: (v, openings = []) => ({
 			value: wallsArea(v.a, v.b, v.h, openings),
@@ -152,8 +169,8 @@ export const SHAPES: Shape[] = [
 		name: 'Поверхность трубы',
 		formula: 'S = π × D × L',
 		fields: [
-			{ key: 'd', label: 'D', preset: 0.1 },
-			{ key: 'h', label: 'L', preset: 6 }
+			{ key: 'd', label: 'D', name: 'Наружный диаметр D', preset: 0.1 },
+			{ key: 'h', label: 'L', name: 'Длина L', preset: 6 }
 		],
 		compute: v => ({ value: cylinderLateralArea(v.d, v.h) })
 	},
@@ -162,7 +179,7 @@ export const SHAPES: Shape[] = [
 		kind: 'area',
 		name: 'Поверхность шара',
 		formula: 'S = π × D²',
-		fields: [{ key: 'd', label: 'D', preset: 2 }],
+		fields: [{ key: 'd', label: 'D', name: 'Диаметр D', preset: 2 }],
 		compute: v => ({ value: sphereArea(v.d) })
 	},
 

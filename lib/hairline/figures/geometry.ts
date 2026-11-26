@@ -441,6 +441,34 @@ const trapezoidFigure = fig(
 	FLAT
 )
 
+/** Треугольник по основанию и высоте: вершина над третью основания. */
+const triangleHeightFigure = fig(
+	v => normalize({ a: v.a, h: v.h }),
+	({ a, h }, Q, active) => {
+		const apex = a * 0.35
+		const s = slab(Q, [
+			[0, h],
+			[a, h],
+			[apex, 0]
+		])
+		// высота пунктиром от вершины к основанию
+		return finish(
+			Q,
+			s.ops.concat({
+				d: open([Q([apex, 0, SLAB]), Q([apex, h, SLAB])]),
+				cls: 'nf dash'
+			}),
+			s.pts,
+			[
+				{ key: 'a', A: [0, h, 0], B: [a, h, 0], offA: [0, G, 0] },
+				{ key: 'h', A: [a, 0, 0], B: [a, h, 0], offA: [G, 0, 0] }
+			],
+			active
+		)
+	},
+	FLAT
+)
+
 /** Стены комнаты: короб без крыши, ближние стены прозрачные, видны пунктиром. */
 const wallsFigure = fig(
 	v => normalize({ a: v.a, b: v.b, h: v.h }),
@@ -505,6 +533,7 @@ export const GEOMETRY_FIGURES: Record<string, FigureDef> = {
 	circle: circleFigure,
 	ring: ringFigure,
 	triangle: triangleFigure,
+	'triangle-height': triangleHeightFigure,
 	trapezoid: trapezoidFigure,
 	walls: wallsFigure,
 	'pipe-surface': cylinderFigure('h'),

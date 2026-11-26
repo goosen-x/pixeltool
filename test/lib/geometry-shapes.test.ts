@@ -105,8 +105,8 @@ describe('расчёты фигур', () => {
 		expect(pipe.invalidHint).toBeTruthy()
 	})
 
-	it('у всех полей объёмных фигур есть понятное имя', () => {
-		for (const shape of shapesByKind('volume')) {
+	it('у всех полей всех фигур есть понятное имя', () => {
+		for (const shape of SHAPES) {
 			for (const field of shape.fields) {
 				expect(field.name, `${shape.id}.${field.key}`).toBeTruthy()
 			}
@@ -117,5 +117,22 @@ describe('расчёты фигур', () => {
 		const volume = getShapeById('cylinder')!.compute({ d: 0.6, h: 0.72 })!.value
 		expect(cubicMetersToLiters(volume)).toBeGreaterThan(195)
 		expect(cubicMetersToLiters(volume)).toBeLessThan(210)
+	})
+
+	it('треугольник по высоте: половина основания на высоту', () => {
+		expect(
+			getShapeById('triangle-height')!.compute({ a: 6, h: 2 })!.value
+		).toBeCloseTo(6, 9)
+	})
+
+	it('кольцо с внутренним диаметром не меньше наружного не считается', () => {
+		const ring = getShapeById('ring')!
+		expect(ring.compute({ D: 2, d: 3 })).toBeNull()
+		expect(ring.compute({ D: 2, d: 2 })).toBeNull()
+		expect(ring.invalidHint).toBeTruthy()
+		expect(ring.compute({ D: 3, d: 2 })!.value).toBeCloseTo(
+			(Math.PI * (9 - 4)) / 4,
+			9
+		)
 	})
 })

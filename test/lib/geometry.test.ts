@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+	areaAside,
 	boxVolume,
 	circleArea,
 	coneVolume,
@@ -11,6 +12,7 @@ import {
 	formatVolume,
 	LENGTH_IN_METERS,
 	parseLength,
+	parseOpenings,
 	pipeInnerVolume,
 	pipeWallVolume,
 	rectangleArea,
@@ -265,5 +267,45 @@ describe('formatVolume', () => {
 		expect(v.unit).toBe('см³')
 		expect(v.value).toBe('0,524')
 		expect(v.liters).toContain('мл')
+	})
+})
+
+describe('проёмы из полей ввода', () => {
+	it('понимают запятую и переводят сантиметры в метры', () => {
+		const [door] = parseOpenings(
+			[{ width: '90', height: '210', count: '1' }],
+			'cm'
+		)
+		expect(door.width).toBeCloseTo(0.9, 9)
+		expect(door.height).toBeCloseTo(2.1, 9)
+		expect(
+			parseOpenings([{ width: '0,9', height: '2,1', count: '2' }], 'm')[0]
+		).toEqual({ width: 0.9, height: 2.1, count: 2 })
+	})
+
+	it('недописанный проём пропускается, остальные считаются', () => {
+		const result = parseOpenings(
+			[
+				{ width: '0,', height: '', count: '1' },
+				{ width: '1,4', height: '1,5', count: '1' }
+			],
+			'm'
+		)
+		expect(result).toEqual([{ width: 1.4, height: 1.5, count: 1 }])
+	})
+})
+
+describe('вторая строка под площадью', () => {
+	it('мелочь в квадратных сантиметрах', () => {
+		expect(areaAside(0.06)).toBe('600 см²')
+	})
+
+	it('у комнаты лишней строки нет', () => {
+		expect(areaAside(20)).toBeNull()
+	})
+
+	it('участок в сотках, крупный ещё и в гектарах', () => {
+		expect(areaAside(600)).toBe('6 сот.')
+		expect(areaAside(25000)).toBe('250 сот., или 2,5 га')
 	})
 })
