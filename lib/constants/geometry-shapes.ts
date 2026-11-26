@@ -24,11 +24,16 @@ export interface ShapeField {
 	/** Значение по умолчанию в текущих единицах — чтобы страница открывалась
 	 *  с готовым примером, а не с пустой формой. */
 	preset: number
+	/** Человеческое имя поля над вводом («Внутренний диаметр»). Без него
+	 *  над полем стоит одна буква, и непонятно, что вводить. */
+	name?: string
 }
 
 export interface ShapeResult {
 	/** Основная величина: м² для площади, м³ для объёма. */
 	value: number
+	/** Что это за число, если у фигуры их несколько (труба). */
+	label?: string
 	/** Дополнительные строки — внутренний объём трубы, площадь пола и т.п. */
 	extra?: { label: string; value: number; unit: 'm2' | 'm3' }[]
 }
@@ -40,6 +45,8 @@ export interface Shape {
 	/** Как формула выглядит на бумаге — её ищут не реже самого расчёта. */
 	formula: string
 	fields: ShapeField[]
+	/** Почему compute вернул null при заполненных полях. */
+	invalidHint?: string
 	/** Все длины приходят уже в метрах. */
 	compute: (
 		values: Record<string, number>,
@@ -82,6 +89,8 @@ export const SHAPES: Shape[] = [
 		kind: 'area',
 		name: 'Треугольник',
 		formula: 'S = √(p(p−a)(p−b)(p−c)), p — полупериметр',
+		invalidHint:
+			'Проверьте стороны: сумма любых двух должна быть больше третьей, иначе такого треугольника не существует',
 		fields: [
 			{ key: 'a', label: 'a', preset: 3 },
 			{ key: 'b', label: 'b', preset: 4 },
@@ -164,9 +173,9 @@ export const SHAPES: Shape[] = [
 		name: 'Прямоугольный короб',
 		formula: 'V = a × b × c',
 		fields: [
-			{ key: 'a', label: 'a', preset: 5 },
-			{ key: 'b', label: 'b', preset: 4 },
-			{ key: 'c', label: 'c', preset: 2.7 }
+			{ key: 'a', label: 'a', name: 'Длина a', preset: 5 },
+			{ key: 'b', label: 'b', name: 'Ширина b', preset: 4 },
+			{ key: 'c', label: 'c', name: 'Высота c', preset: 2.7 }
 		],
 		compute: v => ({ value: boxVolume(v.a, v.b, v.c) })
 	},
@@ -176,38 +185,47 @@ export const SHAPES: Shape[] = [
 		name: 'Цилиндр',
 		formula: 'V = π × D² / 4 × h',
 		fields: [
-			{ key: 'd', label: 'D', preset: 1 },
-			{ key: 'h', label: 'h', preset: 1.5 }
+			{ key: 'd', label: 'D', name: 'Диаметр D', preset: 1 },
+			{ key: 'h', label: 'h', name: 'Высота h', preset: 1.5 }
 		],
 		compute: v => ({ value: cylinderVolume(v.d, v.h) })
 	},
 	{
+		// Главное число — вместимость: «объём трубы» ищут, чтобы узнать,
+		// сколько воды или теплоносителя в неё войдёт. Объём стенок (для веса
+		// материала) идёт второй строкой.
 		id: 'pipe',
 		kind: 'volume',
 		name: 'Труба',
-		formula: 'V стенок = π × (D² − d²) / 4 × L',
+		formula: 'V = π × d² / 4 × L',
 		fields: [
-			{ key: 'D', label: 'D', preset: 0.11 },
-			{ key: 'd', label: 'd', preset: 0.1 },
-			{ key: 'h', label: 'L', preset: 6 }
+			{ key: 'D', label: 'D', name: 'Наружный диаметр D', preset: 0.11 },
+			{ key: 'd', label: 'd', name: 'Внутренний диаметр d', preset: 0.1 },
+			{ key: 'h', label: 'L', name: 'Длина L', preset: 6 }
 		],
-		compute: v => ({
-			value: pipeWallVolume(v.D, v.d, v.h),
-			extra: [
-				{
-					label: 'Вместимость трубы',
-					value: pipeInnerVolume(v.d, v.h),
-					unit: 'm3'
-				}
-			]
-		})
+		invalidHint:
+			'Внутренний диаметр d должен быть меньше наружного D: разница между ними и есть стенка трубы',
+		compute: v => {
+			if (v.d >= v.D) return null
+			return {
+				value: pipeInnerVolume(v.d, v.h),
+				label: 'Вместимость, сколько войдёт внутрь',
+				extra: [
+					{
+						label: 'Объём стенок, π × (D² − d²) / 4 × L',
+						value: pipeWallVolume(v.D, v.d, v.h),
+						unit: 'm3'
+					}
+				]
+			}
+		}
 	},
 	{
 		id: 'sphere',
 		kind: 'volume',
 		name: 'Шар',
 		formula: 'V = π × D³ / 6',
-		fields: [{ key: 'd', label: 'D', preset: 1 }],
+		fields: [{ key: 'd', label: 'D', name: 'Диаметр D', preset: 1 }],
 		compute: v => ({ value: sphereVolume(v.d) })
 	},
 	{
@@ -216,8 +234,8 @@ export const SHAPES: Shape[] = [
 		name: 'Конус',
 		formula: 'V = π × D² / 4 × h / 3',
 		fields: [
-			{ key: 'd', label: 'D', preset: 1 },
-			{ key: 'h', label: 'h', preset: 1.5 }
+			{ key: 'd', label: 'D', name: 'Диаметр основания D', preset: 1 },
+			{ key: 'h', label: 'h', name: 'Высота h', preset: 1.5 }
 		],
 		compute: v => ({ value: coneVolume(v.d, v.h) })
 	},
@@ -225,11 +243,11 @@ export const SHAPES: Shape[] = [
 		id: 'truncated-cone',
 		kind: 'volume',
 		name: 'Усечённый конус',
-		formula: 'V = π × h × (R² + R×r + r²) / 3',
+		formula: 'V = π × h × (D² + D×d + d²) / 12',
 		fields: [
-			{ key: 'D', label: 'D', preset: 0.4 },
-			{ key: 'd', label: 'd', preset: 0.3 },
-			{ key: 'h', label: 'h', preset: 0.35 }
+			{ key: 'D', label: 'D', name: 'Нижний диаметр D', preset: 0.4 },
+			{ key: 'd', label: 'd', name: 'Верхний диаметр d', preset: 0.3 },
+			{ key: 'h', label: 'h', name: 'Высота h', preset: 0.35 }
 		],
 		compute: v => ({ value: truncatedConeVolume(v.D, v.d, v.h) })
 	}

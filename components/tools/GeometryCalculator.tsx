@@ -19,9 +19,11 @@ import {
 import { GEOMETRY_FIGURES } from '@/lib/hairline/figures/geometry'
 import { shapesByKind, type Shape } from '@/lib/constants/geometry-shapes'
 import {
-	cubicMetersToLiters,
+	convertLengthInput,
 	formatNumber,
+	formatVolume,
 	LENGTH_LABELS,
+	parseLength,
 	toMeters,
 	type LengthUnit,
 	type Opening
@@ -59,8 +61,8 @@ export function GeometryCalculator({
 		() =>
 			shape.fields.map(field => {
 				const raw = (values[field.key] ?? '').trim()
-				const value = parseFloat(raw.replace(',', '.'))
-				const ok = Number.isFinite(value) && value > 0
+				const value = parseLength(raw) ?? 0
+				const ok = value > 0
 				return {
 					key: field.key,
 					letter: field.label,
@@ -85,8 +87,8 @@ export function GeometryCalculator({
 	const numbers = useMemo(() => {
 		const parsed: Record<string, number> = {}
 		for (const field of shape.fields) {
-			const raw = parseFloat((values[field.key] ?? '').replace(',', '.'))
-			if (!Number.isFinite(raw) || raw <= 0) return null
+			const raw = parseLength(values[field.key] ?? '')
+			if (raw === null) return null
 			parsed[field.key] = toMeters(raw, unit)
 		}
 		return parsed
@@ -98,6 +100,22 @@ export function GeometryCalculator({
 	}, [shape, numbers, openings])
 
 	const isArea = kind === 'area'
+
+	// Смена единиц пересчитывает введённые размеры: фигура остаётся той же,
+	// меняется только запись (5 м → 500 см).
+	const changeUnit = (next: LengthUnit) => {
+		setValues(current =>
+			Object.fromEntries(
+				Object.entries(current).map(([key, raw]) => [
+					key,
+					convertLengthInput(raw, unit, next)
+				])
+			)
+		)
+		setUnit(next)
+	}
+
+	const volume = !isArea && result ? formatVolume(result.value) : null
 
 	return (
 		<Card className='overflow-hidden p-0'>
@@ -120,7 +138,7 @@ export function GeometryCalculator({
 					Размеры в
 					<ToolSelect
 						value={unit}
-						onChange={event => setUnit(event.target.value as LengthUnit)}
+						onChange={event => changeUnit(event.target.value as LengthUnit)}
 						aria-label='Единица измерения ввода'
 					>
 						{UNITS.map(value => (
@@ -159,7 +177,7 @@ export function GeometryCalculator({
 						{shape.fields.map(field => (
 							<label key={field.key} className='block'>
 								<span className='mb-1.5 block text-sm text-muted-foreground'>
-									{field.label}, {LENGTH_LABELS[unit]}
+									{field.name ?? field.label}, {LENGTH_LABELS[unit]}
 								</span>
 								<input
 									id={`geometry-field-${field.key}`}
@@ -178,7 +196,7 @@ export function GeometryCalculator({
 											[field.key]: event.target.value
 										}))
 									}
-									aria-label={`Размер ${field.label} в ${LENGTH_LABELS[unit]}`}
+									aria-label={`${field.name ?? `Размер ${field.label}`} в ${LENGTH_LABELS[unit]}`}
 									className='w-full rounded-md border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 								/>
 							</label>
@@ -259,17 +277,22 @@ export function GeometryCalculator({
 					)}
 
 					{result ? (
-						<div className='rounded-xl border p-4'>
+						<div className='rounded-xl border p-4' aria-live='polite'>
+							{result.label && (
+								<span className='mb-1 block text-sm text-muted-foreground'>
+									{result.label}
+								</span>
+							)}
 							<span className='block font-mono text-3xl font-bold tracking-tight'>
-								{formatNumber(result.value)}{' '}
+								{volume ? volume.value : formatNumber(result.value)}{' '}
 								<span className='text-xl text-muted-foreground'>
-									{isArea ? 'м²' : 'м³'}
+									{volume ? volume.unit : 'м²'}
 								</span>
 							</span>
 
-							{!isArea && (
+							{volume && (
 								<span className='mt-1 block text-sm text-muted-foreground'>
-									это {formatNumber(cubicMetersToLiters(result.value))} литров
+									это {volume.liters}
 								</span>
 							)}
 							{isArea && (
@@ -284,21 +307,21 @@ export function GeometryCalculator({
 									className='mt-2 block text-sm text-muted-foreground'
 								>
 									{extra.label}:{' '}
-									<span className='font-mono text-foreground'>
-										{formatNumber(extra.value)}{' '}
-										{extra.unit === 'm2' ? 'м²' : 'м³'}
-									</span>
-									{extra.unit === 'm3' && (
-										<> ({formatNumber(cubicMetersToLiters(extra.value))} л)</>
+									{extra.unit === 'm3' ? (
+										<VolumeValue cubicMeters={extra.value} />
+									) : (
+										<span className='font-mono text-foreground'>
+											{formatNumber(extra.value)} м²
+										</span>
 									)}
 								</span>
 							))}
 						</div>
 					) : (
 						<p className='rounded-xl border border-dashed p-4 text-sm text-muted-foreground'>
-							{shape.id === 'triangle'
-								? 'Проверьте стороны: сумма любых двух должна быть больше третьей, иначе такого треугольника не существует'
-								: 'Заполните все размеры положительными числами'}
+							{numbers && shape.invalidHint
+								? shape.invalidHint
+								: 'Заполните все размеры положительными числами, например 1,5'}
 						</p>
 					)}
 				</div>
@@ -311,6 +334,15 @@ export function GeometryCalculator({
 				</span>
 			</div>
 		</Card>
+	)
+}
+
+function VolumeValue({ cubicMeters }: { cubicMeters: number }) {
+	const { value, unit, liters } = formatVolume(cubicMeters)
+	return (
+		<span className='font-mono text-foreground'>
+			{value} {unit} ({liters})
+		</span>
 	)
 }
 

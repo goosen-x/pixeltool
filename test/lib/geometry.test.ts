@@ -3,11 +3,14 @@ import {
 	boxVolume,
 	circleArea,
 	coneVolume,
+	convertLengthInput,
 	cubicMetersToLiters,
 	cylinderLateralArea,
 	cylinderVolume,
 	formatNumber,
+	formatVolume,
 	LENGTH_IN_METERS,
+	parseLength,
 	pipeInnerVolume,
 	pipeWallVolume,
 	rectangleArea,
@@ -215,5 +218,52 @@ describe('formatNumber', () => {
 	it('нечисло не показывается как NaN', () => {
 		expect(formatNumber(NaN)).toBe('—')
 		expect(formatNumber(Infinity)).toBe('—')
+	})
+})
+
+describe('parseLength', () => {
+	it('принимает запятую, точку и пробелы между разрядами', () => {
+		expect(parseLength('1,5')).toBe(1.5)
+		expect(parseLength('1.5')).toBe(1.5)
+		expect(parseLength('1 200')).toBe(1200)
+		expect(parseLength(' 2 ')).toBe(2)
+	})
+
+	it('отбрасывает пустое, мусор и неположительное', () => {
+		expect(parseLength('')).toBeNull()
+		expect(parseLength('12abc')).toBeNull()
+		expect(parseLength('0')).toBeNull()
+		expect(parseLength('-3')).toBeNull()
+	})
+})
+
+describe('convertLengthInput', () => {
+	it('при смене единиц фигура остаётся той же', () => {
+		expect(convertLengthInput('5', 'm', 'cm')).toBe('500')
+		expect(convertLengthInput('2,7', 'm', 'mm')).toBe('2700')
+		expect(convertLengthInput('30', 'cm', 'm')).toBe('0.3')
+		expect(convertLengthInput('0.1', 'm', 'mm')).toBe('100')
+	})
+
+	it('недописанный ввод не трогает', () => {
+		expect(convertLengthInput('', 'm', 'cm')).toBe('')
+		expect(convertLengthInput('abc', 'm', 'cm')).toBe('abc')
+	})
+})
+
+describe('formatVolume', () => {
+	it('от литра и больше показывает кубометры и литры', () => {
+		const v = formatVolume(0.254)
+		expect(v.unit).toBe('м³')
+		expect(v.value).toBe('0,254')
+		expect(v.liters).toBe('254 л')
+	})
+
+	it('меньше литра переходит на см³, а не показывает ноль', () => {
+		// шар диаметром 1 см
+		const v = formatVolume(sphereVolume(0.01))
+		expect(v.unit).toBe('см³')
+		expect(v.value).toBe('0,524')
+		expect(v.liters).toContain('мл')
 	})
 })

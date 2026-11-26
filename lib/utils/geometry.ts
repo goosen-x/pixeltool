@@ -186,3 +186,65 @@ export function formatNumber(value: number): string {
 		minimumFractionDigits: 0
 	})
 }
+
+/* ------------------------------------------------------------------- ввод */
+
+/**
+ * Длина из поля ввода: запятая или точка, пробелы между разрядами
+ * («1 200») допустимы. Пустое, нечисловое и неположительное — null.
+ * parseFloat сам по себе прочитал бы «1 200» как 1, а «12abc» как 12.
+ */
+export function parseLength(raw: string): number | null {
+	const cleaned = raw.replace(/[\s ]/g, '').replace(',', '.')
+	if (!/^\d*\.?\d+$|^\d+\.$/.test(cleaned)) return null
+	const value = Number(cleaned)
+	return Number.isFinite(value) && value > 0 ? value : null
+}
+
+/**
+ * Пересчёт введённого числа при смене единиц: 5 м → 500 см, а не «5 см».
+ * Без этого переключатель молча уменьшал фигуру в сто раз. Нечисловой ввод
+ * возвращается как есть, человек его ещё не дописал.
+ */
+export function convertLengthInput(
+	raw: string,
+	from: LengthUnit,
+	to: LengthUnit
+): string {
+	const value = parseLength(raw)
+	if (value === null || from === to) return raw
+	const converted = (value * LENGTH_IN_METERS[from]) / LENGTH_IN_METERS[to]
+	// toPrecision срезает хвосты двоичной арифметики вроде 0.30000000000000004
+	return String(Number(converted.toPrecision(12)))
+}
+
+/* ------------------------------------------------------------- вывод объёма */
+
+export interface VolumeDisplay {
+	value: string
+	unit: 'м³' | 'см³'
+	/** То же количество в литрах, а у мелких объёмов ещё и в миллилитрах. */
+	liters: string
+}
+
+/**
+ * Объём меньше литра в кубометрах выглядит как «0,00005 м³» или вовсе «0»:
+ * шар диаметром 10 мм это 0,0000005 м³. Такие объёмы показываем в см³,
+ * а литры приписываем рядом.
+ */
+export function formatVolume(cubicMeters: number): VolumeDisplay {
+	const liters = cubicMetersToLiters(cubicMeters)
+	if (cubicMeters > 0 && cubicMeters < 0.001) {
+		const cm3 = cubicMeters * 1e6
+		return {
+			value: formatNumber(cm3),
+			unit: 'см³',
+			liters: `${formatNumber(liters)} л, или ${formatNumber(cm3)} мл`
+		}
+	}
+	return {
+		value: formatNumber(cubicMeters),
+		unit: 'м³',
+		liters: `${formatNumber(liters)} л`
+	}
+}

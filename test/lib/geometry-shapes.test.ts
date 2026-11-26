@@ -7,6 +7,7 @@ import {
 import {
 	cubicMetersToLiters,
 	cylinderVolume,
+	pipeWallVolume,
 	rectangleArea
 } from '@/lib/utils/geometry'
 
@@ -87,13 +88,29 @@ describe('расчёты фигур', () => {
 		expect(plain - withDoor).toBeCloseTo(0.9 * 2.1, 9)
 	})
 
-	it('труба отдаёт и стенки, и вместимость', () => {
+	it('у трубы главное число это вместимость, стенки второй строкой', () => {
 		const result = getShapeById('pipe')!.compute({ D: 0.11, d: 0.1, h: 6 })!
-		const inner = result.extra?.find(e => e.label === 'Вместимость трубы')
-		expect(inner).toBeDefined()
 		// шестиметровая труба на 100 мм вмещает около 47 литров
-		expect(cubicMetersToLiters(inner!.value)).toBeGreaterThan(45)
-		expect(cubicMetersToLiters(inner!.value)).toBeLessThan(48)
+		expect(cubicMetersToLiters(result.value)).toBeGreaterThan(45)
+		expect(cubicMetersToLiters(result.value)).toBeLessThan(48)
+		expect(result.label).toMatch(/Вместимость/)
+		const wall = result.extra?.find(e => e.label.startsWith('Объём стенок'))
+		expect(wall?.value).toBeCloseTo(pipeWallVolume(0.11, 0.1, 6), 9)
+	})
+
+	it('труба с внутренним диаметром не меньше наружного не считается', () => {
+		const pipe = getShapeById('pipe')!
+		expect(pipe.compute({ D: 0.1, d: 0.11, h: 6 })).toBeNull()
+		expect(pipe.compute({ D: 0.1, d: 0.1, h: 6 })).toBeNull()
+		expect(pipe.invalidHint).toBeTruthy()
+	})
+
+	it('у всех полей объёмных фигур есть понятное имя', () => {
+		for (const shape of shapesByKind('volume')) {
+			for (const field of shape.fields) {
+				expect(field.name, `${shape.id}.${field.key}`).toBeTruthy()
+			}
+		}
 	})
 
 	it('бочка 200 литров: цилиндр 0.6 × 0.72 близок к ней', () => {
