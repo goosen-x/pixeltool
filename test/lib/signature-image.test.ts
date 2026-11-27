@@ -1,8 +1,93 @@
 import { describe, it, expect } from 'vitest'
 import {
+	flattenPaper,
 	isBackgroundPixel,
 	DEFAULT_BACKGROUND_THRESHOLD as T
 } from '@/lib/tools/signature-image'
+
+/** Картинка w×h, залитая цветом по функции от координат. */
+function makeImage(
+	w: number,
+	h: number,
+	color: (x: number, y: number) => [number, number, number, number?]
+) {
+	const data = new Uint8ClampedArray(w * h * 4)
+	for (let y = 0; y < h; y += 1) {
+		for (let x = 0; x < w; x += 1) {
+			const [r, g, b, a = 255] = color(x, y)
+			data.set([r, g, b, a], (y * w + x) * 4)
+		}
+	}
+	return data
+}
+
+const px = (data: Uint8ClampedArray, w: number, x: number, y: number) =>
+	Array.from(data.slice((y * w + x) * 4, (y * w + x) * 4 + 4))
+
+describe('flattenPaper', () => {
+	// Фото подписи с телефона: серая бумага с перепадом света 205 → 165 и
+	// тёмная линия посередине.
+	const W = 200
+	const H = 100
+	const photo = () =>
+		makeImage(W, H, (x, y) => {
+			if (y >= 48 && y <= 51 && x > 20 && x < 180) return [40, 45, 70]
+			const v = Math.round(205 - (x / W) * 40)
+			return [v, v - 3, v - 10]
+		})
+
+	it('серая бумага с фото становится фоном по обе стороны перепада', () => {
+		const data = photo()
+		// До выравнивания бумага не проходит порог — отсюда серый прямоугольник
+		const [r, g, b] = px(data, W, 190, 10)
+		expect(isBackgroundPixel(r, g, b, T)).toBe(false)
+
+		flattenPaper(data, W, H)
+		for (const x of [5, 100, 195]) {
+			const [r2, g2, b2] = px(data, W, x, 10)
+			expect(isBackgroundPixel(r2, g2, b2, T)).toBe(true)
+		}
+	})
+
+	it('штрих остаётся тёмным', () => {
+		const data = photo()
+		flattenPaper(data, W, H)
+		const [r, g, b] = px(data, W, 100, 49)
+		expect((r + g + b) / 3).toBeLessThan(110)
+	})
+
+	it('белый скан не меняется', () => {
+		const data = makeImage(64, 64, (x, y) =>
+			x === y ? [20, 20, 20] : [255, 255, 255]
+		)
+		const before = Array.from(data)
+		flattenPaper(data, 64, 64)
+		expect(Array.from(data)).toEqual(before)
+	})
+
+	it('картинку с готовой прозрачностью не трогает', () => {
+		// PNG-подпись: чёрные штрихи на прозрачном фоне. Оценка «бумаги» по
+		// одним штрихам выбелила бы саму подпись.
+		const data = makeImage(64, 64, (x, y) =>
+			y > 28 && y < 36 ? [10, 10, 10, 255] : [0, 0, 0, 0]
+		)
+		const before = Array.from(data)
+		flattenPaper(data, 64, 64)
+		expect(Array.from(data)).toEqual(before)
+	})
+
+	it('синяя печать на серой бумаге остаётся цветной', () => {
+		const data = makeImage(W, H, (x, y) =>
+			Math.hypot(x - 100, y - 50) < 30 && Math.hypot(x - 100, y - 50) > 25
+				? [50, 70, 160]
+				: [190, 188, 182]
+		)
+		flattenPaper(data, W, H)
+		const [r, g, b] = px(data, W, 127, 50)
+		expect(isBackgroundPixel(r, g, b, T)).toBe(false)
+		expect(b - r).toBeGreaterThan(60)
+	})
+})
 import { normalizeRotation } from '@/lib/tools/pdf-sign'
 
 describe('isBackgroundPixel', () => {

@@ -102,17 +102,31 @@ export default function SignPdfPage() {
 	const dragOffset = useRef<{ x: number; y: number } | null>(null)
 
 	// Объектные URL живут, пока живёт вкладка, поэтому отзываем их сами.
+	// Только при уходе со страницы и при явной замене картинки: эффект с
+	// зависимостью от списка отзывал бы на каждом изменении и те адреса,
+	// что остались в новом списке, — превью первой страницы пропадало
+	// после перелистывания, подпись — после загрузки печати.
+	const assetsRef = useRef(assets)
+	const previewsRef = useRef(previews)
 	useEffect(() => {
-		return () => {
-			for (const asset of assets) URL.revokeObjectURL(asset.url)
-		}
-	}, [assets])
+		assetsRef.current = assets
+		previewsRef.current = previews
+	}, [assets, previews])
 
 	useEffect(() => {
 		return () => {
-			for (const preview of previews.values()) URL.revokeObjectURL(preview.url)
+			for (const asset of assetsRef.current) URL.revokeObjectURL(asset.url)
+			for (const preview of previewsRef.current.values())
+				URL.revokeObjectURL(preview.url)
 		}
-	}, [previews])
+	}, [])
+
+	const clearPreviews = () => {
+		for (const preview of previewsRef.current.values())
+			URL.revokeObjectURL(preview.url)
+		previewsRef.current = new Map()
+		setPreviews(new Map())
+	}
 
 	const selectPdf = async (chosen: File) => {
 		const problem = checkPdfFile(chosen)
@@ -125,7 +139,7 @@ export default function SignPdfPage() {
 		setStatus('reading')
 		setPlacements([])
 		setSelectedId(null)
-		setPreviews(new Map())
+		clearPreviews()
 		setPageNumber(1)
 
 		try {
@@ -384,8 +398,19 @@ export default function SignPdfPage() {
 		setTotalPages(0)
 		setPlacements([])
 		setSelectedId(null)
-		setPreviews(new Map())
+		clearPreviews()
 		setError(null)
+	}
+
+	/** Убирает картинку целиком — чтобы нарисовать или загрузить другую.
+	 *  Без этого неудачную роспись было не заменить, только перезагрузкой. */
+	const removeAsset = (asset: Asset) => {
+		URL.revokeObjectURL(asset.url)
+		setAssets(current => current.filter(item => item.id !== asset.id))
+		setPlacements(current =>
+			current.filter(placement => placement.imageId !== asset.id)
+		)
+		setSelectedId(null)
 	}
 
 	const save = async () => {
@@ -479,7 +504,7 @@ export default function SignPdfPage() {
 				{file && !drawing && (
 					<>
 						<div className={toolBar}>
-							<span className='flex items-center gap-2 text-sm text-muted-foreground'>
+							<span className='flex flex-wrap items-center gap-2 text-sm text-muted-foreground'>
 								<Pen className='h-4 w-4' />
 								Подпись
 								{signature ? (
@@ -496,6 +521,14 @@ export default function SignPdfPage() {
 											className={toolPill(false)}
 										>
 											поставить
+										</button>
+										<button
+											type='button'
+											onClick={() => removeAsset(signature)}
+											title='Убрать эту подпись, чтобы нарисовать или загрузить другую'
+											className={toolPill(false)}
+										>
+											заменить
 										</button>
 									</>
 								) : (
@@ -521,7 +554,7 @@ export default function SignPdfPage() {
 								)}
 							</span>
 
-							<span className='flex items-center gap-2 text-sm text-muted-foreground'>
+							<span className='flex flex-wrap items-center gap-2 text-sm text-muted-foreground'>
 								<Stamp className='h-4 w-4' />
 								Печать
 								{stamp ? (
@@ -538,6 +571,14 @@ export default function SignPdfPage() {
 											className={toolPill(false)}
 										>
 											поставить
+										</button>
+										<button
+											type='button'
+											onClick={() => removeAsset(stamp)}
+											title='Убрать эту печать, чтобы загрузить другую'
+											className={toolPill(false)}
+										>
+											заменить
 										</button>
 									</>
 								) : (
@@ -679,7 +720,7 @@ export default function SignPdfPage() {
 						{preview ? (
 							<div
 								ref={stageRef}
-								className='relative w-full max-w-lg touch-none select-none'
+								className='relative w-full max-w-lg select-none'
 								onPointerMove={moveDrag}
 								onPointerUp={endDrag}
 								onPointerLeave={endDrag}
@@ -706,7 +747,7 @@ export default function SignPdfPage() {
 											tabIndex={0}
 											aria-label={`${KIND_LABELS[placement.kind]} на странице ${placement.pageNumber}`}
 											className={cn(
-												'absolute cursor-move rounded-sm ring-offset-1',
+												'absolute cursor-move touch-none rounded-sm ring-offset-1',
 												placement.id === selectedId
 													? 'ring-2 ring-primary'
 													: 'ring-1 ring-transparent hover:ring-primary/40'

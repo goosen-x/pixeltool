@@ -32,6 +32,144 @@ export function isBackgroundPixel(
 /** Порог по умолчанию — светлее этого считается бумагой. */
 export const DEFAULT_BACKGROUND_THRESHOLD = 230
 
+/** Темнее этого «бумага» уже не бумага, а штрих или тёмная фотография. */
+const MIN_PAPER_LIGHTNESS = 120
+
+/** Доля прозрачных точек, после которой картинку считаем уже вырезанной. */
+const TRANSPARENT_SHARE = 0.01
+
+/** Цвет бумаги в блоке: 90-й процентиль по каждому каналу. Штрих занимает
+ *  малую часть блока, поэтому верхние значения дают именно бумагу, а не
+ *  самую яркую соринку. */
+function paperOf(r: number[], g: number[], b: number[]): number[] | null {
+	if (r.length === 0) return null
+	const pick = (values: number[]) => {
+		values.sort((a, z) => a - z)
+		return values[Math.floor((values.length - 1) * 0.9)]
+	}
+	return [pick(r), pick(g), pick(b)]
+}
+
+const lightnessOf = (color: number[]) => (color[0] + color[1] + color[2]) / 3
+
+/**
+ * Выравнивает бумагу до белого: каждая точка делится на цвет бумаги вокруг
+ * неё. Работает прямо в массиве RGBA.
+ *
+ * Подпись чаще всего фотографируют телефоном, а не сканируют. Бумага на
+ * таком снимке выходит серой (180–210 вместо 255), да ещё с перепадом света
+ * от угла к углу, и порог «светлее 230 — фон» её не берёт: на документ
+ * ложится серый прямоугольник. Сканерные приложения решают это так же —
+ * оценивают фон по участкам и нормируют на него. У чистого скана бумага и
+ * так белая, деление на 255 ничего не меняет.
+ *
+ * Картинку с готовой прозрачностью не трогаем: фона в ней уже нет, а
+ * оценка «бумаги» по одним штрихам превратила бы их в белое.
+ */
+export function flattenPaper(
+	data: Uint8ClampedArray,
+	width: number,
+	height: number
+): void {
+	let transparent = 0
+	for (let i = 3; i < data.length; i += 4) if (data[i] < 250) transparent += 1
+	if (transparent > width * height * TRANSPARENT_SHARE) return
+
+	const block = Math.max(16, Math.round(Math.max(width, height) / 24))
+	const cols = Math.ceil(width / block)
+	const rows = Math.ceil(height / block)
+
+	const all: number[][] = [[], [], []]
+	const raw: (number[] | null)[] = []
+	for (let by = 0; by < rows; by += 1) {
+		for (let bx = 0; bx < cols; bx += 1) {
+			const r: number[] = []
+			const g: number[] = []
+			const b: number[] = []
+			for (let y = by * block; y < Math.min(height, (by + 1) * block); y += 1) {
+				for (
+					let x = bx * block;
+					x < Math.min(width, (bx + 1) * block);
+					x += 1
+				) {
+					const i = (y * width + x) * 4
+					r.push(data[i])
+					g.push(data[i + 1])
+					b.push(data[i + 2])
+					// Для общей оценки хватает каждой четвёртой точки.
+					if ((x & 3) === 0 && (y & 3) === 0) {
+						all[0].push(data[i])
+						all[1].push(data[i + 1])
+						all[2].push(data[i + 2])
+					}
+				}
+			}
+			raw.push(paperOf(r, g, b))
+		}
+	}
+
+	const global = paperOf(all[0], all[1], all[2])
+	// Тёмный снимок целиком — бумаги на нём не видно, нормировать не на что.
+	if (!global || lightnessOf(global) < MIN_PAPER_LIGHTNESS) return
+
+	// Блок, целиком закрытый штрихом, берёт бумагу у самого светлого соседа;
+	// если и рядом бумаги нет — общую по картинке.
+	const paper: number[][] = []
+	for (let by = 0; by < rows; by += 1) {
+		for (let bx = 0; bx < cols; bx += 1) {
+			let best: number[] | null = null
+			for (let dy = -1; dy <= 1; dy += 1) {
+				for (let dx = -1; dx <= 1; dx += 1) {
+					const nx = bx + dx
+					const ny = by + dy
+					if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue
+					const candidate = raw[ny * cols + nx]
+					if (
+						candidate &&
+						(!best || lightnessOf(candidate) > lightnessOf(best))
+					)
+						best = candidate
+				}
+			}
+			paper.push(
+				best && lightnessOf(best) >= MIN_PAPER_LIGHTNESS ? best : global
+			)
+		}
+	}
+
+	// Между центрами блоков цвет бумаги интерполируется, иначе на перепаде
+	// света проступила бы сетка из квадратов.
+	for (let y = 0; y < height; y += 1) {
+		const fy = Math.min(Math.max((y + 0.5) / block - 0.5, 0), rows - 1)
+		const y0 = Math.floor(fy)
+		const y1 = Math.min(y0 + 1, rows - 1)
+		const ty = fy - y0
+		for (let x = 0; x < width; x += 1) {
+			const fx = Math.min(Math.max((x + 0.5) / block - 0.5, 0), cols - 1)
+			const x0 = Math.floor(fx)
+			const x1 = Math.min(x0 + 1, cols - 1)
+			const tx = fx - x0
+			const a = paper[y0 * cols + x0]
+			const b = paper[y0 * cols + x1]
+			const c = paper[y1 * cols + x0]
+			const d = paper[y1 * cols + x1]
+			const i = (y * width + x) * 4
+			for (let ch = 0; ch < 3; ch += 1) {
+				const level =
+					(a[ch] * (1 - tx) + b[ch] * tx) * (1 - ty) +
+					(c[ch] * (1 - tx) + d[ch] * tx) * ty
+				if (level > 0)
+					data[i + ch] = Math.min(255, (data[i + ch] * 255) / level)
+			}
+		}
+	}
+}
+
+/** Больше этого по длинной стороне картинку не держим: подпись на листе
+ *  занимает несколько сантиметров, а 12-мегапиксельное фото с телефона
+ *  раздуло бы документ на мегабайты. */
+export const MAX_IMAGE_SIDE = 1600
+
 /**
  * Делает светлый фон прозрачным прямо в переданном холсте.
  *
@@ -48,6 +186,8 @@ export function removeBackground(
 
 	const image = context.getImageData(0, 0, canvas.width, canvas.height)
 	const { data } = image
+
+	flattenPaper(data, canvas.width, canvas.height)
 
 	for (let i = 0; i < data.length; i += 4) {
 		const r = data[i]
@@ -138,16 +278,20 @@ export function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 }
 
 /** Рисует загруженный файл на холст — дальше с ним работают как с рисунком. */
-export async function fileToCanvas(file: File): Promise<HTMLCanvasElement> {
+export async function fileToCanvas(
+	file: File,
+	maxSide = MAX_IMAGE_SIDE
+): Promise<HTMLCanvasElement> {
 	const bitmap = await createImageBitmap(file)
+	const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height))
 	const canvas = document.createElement('canvas')
-	canvas.width = bitmap.width
-	canvas.height = bitmap.height
+	canvas.width = Math.max(1, Math.round(bitmap.width * scale))
+	canvas.height = Math.max(1, Math.round(bitmap.height * scale))
 
 	const context = canvas.getContext('2d')
 	if (!context) throw new Error('Браузер не дал холст для отрисовки')
 
-	context.drawImage(bitmap, 0, 0)
+	context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
 	bitmap.close()
 	return canvas
 }
