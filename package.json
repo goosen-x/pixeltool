@@ -75,6 +75,8 @@
 		"@types/prismjs": "^1.26.5",
 		"@types/qrcode": "^1.5.6",
 		"@vercel/postgres": "^0.10.0",
+		"acorn": "^8.16.0",
+		"acorn-jsx": "^5.3.2",
 		"character-entities": "^2.0.2",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
