@@ -5,6 +5,11 @@ import {
 	moonMonth,
 	nextFullMoon,
 	nextNewMoon,
+	moonEvents,
+	moonrises,
+	moonPosition,
+	lunarDayAt,
+	phaseOfDay,
 	phaseFromFraction,
 	PHASES,
 	REFERENCE_NEW_MOON,
@@ -54,45 +59,9 @@ describe('фаза от доли цикла', () => {
 	})
 })
 
-describe('опорная точка', () => {
-	it('в опорное новолуние доля цикла нулевая', () => {
-		expect(moonFraction(new Date(REFERENCE_NEW_MOON))).toBeCloseTo(0, 6)
-	})
-
-	it('в опорное новолуние фаза — новолуние, освещённость около нуля', () => {
-		const state = getMoonState(new Date(REFERENCE_NEW_MOON))
-		expect(state.phase.id).toBe('new')
-		expect(state.illumination).toBeCloseTo(0, 6)
-		expect(state.lunarDay).toBe(1)
-	})
-
-	it('через половину месяца — полнолуние с полной освещённостью', () => {
-		const half = new Date(REFERENCE_NEW_MOON + (SYNODIC_MONTH / 2) * DAY_MS)
-		const state = getMoonState(half)
-		expect(state.phase.id).toBe('full')
-		expect(state.illumination).toBeCloseTo(1, 6)
-	})
-
-	it('через полный синодический месяц цикл повторяется', () => {
-		const later = new Date(REFERENCE_NEW_MOON + SYNODIC_MONTH * DAY_MS)
-		const f = moonFraction(later)
-		// Доля цикла живёт на окружности: 0 и 1 — одна и та же точка, и
-		// накопленная ошибка чисел с плавающей точкой ставит результат по
-		// любую сторону от неё. Проверяем расстояние по кругу, а не значение.
-		const distanceToZero = Math.min(f, 1 - f)
-		expect(distanceToZero).toBeLessThan(1e-6)
-	})
-
-	it('через месяц фаза и освещённость те же, что в опорной точке', () => {
-		const later = new Date(REFERENCE_NEW_MOON + SYNODIC_MONTH * DAY_MS)
-		const state = getMoonState(later)
-		expect(state.phase.id).toBe('new')
-		expect(state.illumination).toBeCloseTo(0, 6)
-	})
-
-	it('даты до опорной тоже дают долю в диапазоне 0…1', () => {
-		const before = new Date(Date.UTC(1980, 5, 15))
-		const f = moonFraction(before)
+describe('даты до 2000 года', () => {
+	it('доля цикла в диапазоне 0…1', () => {
+		const f = moonFraction(new Date(Date.UTC(1980, 5, 15)))
 		expect(f).toBeGreaterThanOrEqual(0)
 		expect(f).toBeLessThan(1)
 	})
@@ -143,11 +112,18 @@ describe('ближайшие новолуние и полнолуние', () => 
 		}
 	})
 
-	it('между соседними новолуниями проходит синодический месяц', () => {
-		const first = nextNewMoon(new Date(2026, 0, 1))
-		const second = nextNewMoon(new Date(first.getTime() + DAY_MS))
-		const gap = (second.getTime() - first.getTime()) / DAY_MS
-		expect(gap).toBeCloseTo(SYNODIC_MONTH, 3)
+	it('между соседними новолуниями 29,3–29,8 суток, в среднем синодический месяц', () => {
+		let prev = nextNewMoon(new Date(Date.UTC(2026, 0, 1)))
+		const first = prev
+		for (let i = 0; i < 24; i++) {
+			const next = nextNewMoon(new Date(prev.getTime() + DAY_MS))
+			const gap = (next.getTime() - prev.getTime()) / DAY_MS
+			expect(gap).toBeGreaterThan(29.2)
+			expect(gap).toBeLessThan(29.9)
+			prev = next
+		}
+		const mean = (prev.getTime() - first.getTime()) / DAY_MS / 24
+		expect(Math.abs(mean - SYNODIC_MONTH)).toBeLessThan(0.05)
 	})
 })
 
@@ -177,5 +153,115 @@ describe('календарь на месяц', () => {
 		month.forEach((day, index) => {
 			expect(day.date.getDate()).toBe(index + 1)
 		})
+	})
+})
+
+// Эталон: astronomy-engine (VSOP87 + ELP), сверено 28.11.2026. Средний
+// синодический месяц, который стоял тут раньше, ошибался до 11 часов:
+// новолуние 19 марта 2026 у него выходило 18-м по Москве.
+const MIN_MS = 60_000
+
+describe('точные моменты фаз', () => {
+	const cases: [string, number][] = [
+		['new', Date.UTC(2026, 2, 19, 1, 24)],
+		['full', Date.UTC(2026, 0, 3, 10, 3)],
+		['full', Date.UTC(2026, 6, 29, 14, 36)],
+		['new', Date.UTC(2026, 6, 14, 9, 44)],
+		['full', Date.UTC(2026, 10, 24, 14, 55)]
+	]
+
+	for (const [id, time] of cases) {
+		it(`${id} ${new Date(time).toISOString()} с точностью до 3 минут`, () => {
+			const found = moonEvents(time - 2 * DAY_MS, time + 2 * DAY_MS).find(
+				e => e.phase.id === id
+			)
+			expect(found).toBeDefined()
+			expect(Math.abs(found!.date.getTime() - time)).toBeLessThan(3 * MIN_MS)
+		})
+	}
+
+	it('за год ровно по 12–13 новолуний и полнолуний, четверти идут по кругу', () => {
+		const events = moonEvents(Date.UTC(2026, 0, 1), Date.UTC(2027, 0, 1))
+		const order = ['new', 'first-quarter', 'full', 'last-quarter']
+		for (let i = 1; i < events.length; i++) {
+			const a = order.indexOf(events[i - 1].phase.id)
+			const b = order.indexOf(events[i].phase.id)
+			expect(b).toBe((a + 1) % 4)
+		}
+		const news = events.filter(e => e.phase.id === 'new').length
+		expect(news).toBeGreaterThanOrEqual(12)
+		expect(news).toBeLessThanOrEqual(13)
+	})
+})
+
+describe('восход Луны и лунный день', () => {
+	it('восходы в Москве 27–29 ноября 2026 совпадают с эталоном до 2 минут', () => {
+		const rises = moonrises(Date.UTC(2026, 10, 27), Date.UTC(2026, 10, 30))
+		const expected = [
+			Date.UTC(2026, 10, 27, 15, 28),
+			Date.UTC(2026, 10, 28, 17, 7),
+			Date.UTC(2026, 10, 29, 18, 43)
+		]
+		expect(rises).toHaveLength(3)
+		rises.forEach((rise, i) => {
+			expect(Math.abs(rise.getTime() - expected[i])).toBeLessThan(2 * MIN_MS)
+		})
+	})
+
+	it('28.11.2026 до вечернего восхода 19-й лунный день, после — 20-й (как в calend.ru)', () => {
+		const noon = lunarDayAt(new Date(Date.UTC(2026, 10, 28, 9)))
+		expect(noon.number).toBe(19)
+		const evening = lunarDayAt(new Date(Date.UTC(2026, 10, 28, 18)))
+		expect(evening.number).toBe(20)
+		expect(
+			Math.abs(evening.start.getTime() - Date.UTC(2026, 10, 28, 17, 7))
+		).toBeLessThan(2 * MIN_MS)
+	})
+
+	it('первый лунный день начинается в момент новолуния', () => {
+		const newMoon = nextNewMoon(new Date(Date.UTC(2026, 11, 1)))
+		const day = lunarDayAt(new Date(newMoon.getTime() + MIN_MS))
+		expect(day.number).toBe(1)
+		expect(day.start.getTime()).toBe(newMoon.getTime())
+	})
+
+	it('за 2026 год лунный день не выходит за 1…30', () => {
+		for (let m = 1; m <= 12; m++) {
+			for (const d of moonMonth(2026, m)) {
+				expect(d.state.lunarDay).toBeGreaterThanOrEqual(1)
+				expect(d.state.lunarDay).toBeLessThanOrEqual(30)
+			}
+		}
+	})
+})
+
+describe('знак Луны', () => {
+	it('28.11.2026 Луна переходит из Рака во Льва около 14:37 по Москве', () => {
+		expect(getMoonState(new Date(Date.UTC(2026, 10, 28, 11, 20))).sign).toBe(3)
+		expect(getMoonState(new Date(Date.UTC(2026, 10, 28, 11, 55))).sign).toBe(4)
+	})
+
+	it('широта Луны не выходит за ±5,3°', () => {
+		for (let i = 0; i < 400; i++) {
+			const lat = moonPosition(Date.UTC(2026, 0, 1) + i * 0.9 * DAY_MS).lat
+			expect(Math.abs(lat)).toBeLessThan(5.35)
+		}
+	})
+})
+
+describe('фаза дня в сетке', () => {
+	it('день с точным полнолунием называется полнолунием, соседние — нет', () => {
+		const month = moonMonth(2026, 11)
+		const full = month.filter(d => d.event?.phase.id === 'full')
+		expect(full).toHaveLength(1)
+		expect(full[0].state.phase.id).toBe('full')
+		const fullIds = month.filter(d => d.state.phase.id === 'full')
+		expect(fullIds).toHaveLength(1)
+	})
+
+	it('phaseOfDay находит событие в сутках', () => {
+		const full = nextFullMoon(new Date(Date.UTC(2026, 10, 20)))
+		expect(phaseOfDay(full).phase.id).toBe('full')
+		expect(phaseOfDay(full).event).toBeDefined()
 	})
 })
